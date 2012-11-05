@@ -22,11 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.cli.MavenCli;
-import org.apache.maven.model.validation.ModelValidator;
-import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.codehaus.plexus.PlexusContainer;
 import org.fedoraproject.maven.resolver.SystemResolver;
-import org.sonatype.aether.repository.WorkspaceReader;
 
 public class Main
 {
@@ -39,7 +36,7 @@ public class Main
             @Override
             protected void customizeContainer( PlexusContainer container )
             {
-                extendContainer( container );
+                LoggerProvider.initialize( container );
             }
         };
     }
@@ -65,14 +62,5 @@ public class Main
         int ret = cli.doMain( args, null, null, null );
         SystemResolver.printInvolvedPackages();
         System.exit( ret );
-    }
-
-    private void extendContainer( PlexusContainer container )
-    {
-        LoggerProvider.initialize( container );
-
-        container.addComponent( new FedoraWorkspaceReader(), WorkspaceReader.class, "ide" );
-        container.addComponent( new FedoraPluginVersionResolver(), PluginVersionResolver.class, "default" );
-        container.addComponent( new FedoraModelValidator(), ModelValidator.class, "default" );
     }
 }

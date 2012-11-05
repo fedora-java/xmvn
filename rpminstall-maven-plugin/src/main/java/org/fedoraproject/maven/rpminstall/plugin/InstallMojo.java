@@ -63,7 +63,7 @@ public class InstallMojo
             if ( !file.getName().endsWith( ".jar" ) )
             {
                 throw new MojoExecutionException( "Artifact file name \"" + file.getName()
-                    + "\" has unsupported extension. The only supported extenmsion is \".jar\"" );
+                    + "\" has unsupported extension. The only supported extension is \".jar\"" );
             }
 
             targetPackage.addJarFile( file, artifact );
