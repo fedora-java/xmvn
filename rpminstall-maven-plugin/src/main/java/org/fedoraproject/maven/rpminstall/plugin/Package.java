@@ -128,7 +128,7 @@ public class Package
         PrintStream ps = new PrintStream( ".mfiles-" + name );
         for ( String path : targetNames )
         {
-            ps.println( path );
+            ps.println( "/" + path );
         }
         ps.close();
     }
