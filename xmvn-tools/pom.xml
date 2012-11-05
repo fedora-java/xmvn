@@ -15,38 +15,31 @@
  ! limitations under the License.
  `-->
 <project>
-  <name>XMvn Parent</name>
-  <description>XMvn Parent POM</description>
+  <name>XMvn Tools Parent</name>
+  <description>XMvn Tools Parent POM</description>
   <version>0</version>
   <groupId>org.fedoraproject.xmvn</groupId>
-  <artifactId>xmvn</artifactId>
+  <artifactId>xmvn-tools</artifactId>
   <modelVersion>4.0.0</modelVersion>
   <packaging>pom</packaging>
+ 
 
-  <properties>
-    <mavenVersion>3.0.4</mavenVersion>
-    <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
-  </properties>
+  <parent>
+    <version>0</version>
+    <groupId>org.fedoraproject.xmvn</groupId>
+    <artifactId>xmvn</artifactId>
+    <relativePath>..</relativePath>
+  </parent>
 
   <modules>
-    <module>xmvn-core</module>
-    <module>xmvn-connector</module>
-    <module>xmvn-tools</module>
-    <module>rpminstall-maven-plugin</module>
-    <module>xmvn-void</module>
+    <module>xmvn-resolve</module>
   </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-core</artifactId>
+      <version>0</version>
+    </dependency>
+  </dependencies>
 </project>
