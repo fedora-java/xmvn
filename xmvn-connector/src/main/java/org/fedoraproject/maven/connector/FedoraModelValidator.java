@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven.connector;
 
+import java.util.List;
+
 import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.building.ModelBuildingRequest;
@@ -23,6 +25,7 @@ import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
  * Maven project object model (POM) validator that is ignoring certain types of model errors.
@@ -36,6 +39,8 @@ import org.codehaus.plexus.component.annotations.Component;
 class FedoraModelValidator
     extends DefaultModelValidator
 {
+    @Requirement
+    private List<ModelCustomizer> modelCustomizers;
 
     private static final String[] ignoredModelProblems =
         new String[] { "'dependencies.dependency.version' for [^ ]+ is missing." };
@@ -43,16 +48,26 @@ class FedoraModelValidator
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        super.validateEffectiveModel( model, request, filter( problems ) );
+        super.validateEffectiveModel( model, request, filterProblems( problems ) );
+        customizeModel( model );
     }
 
     @Override
     public void validateRawModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        super.validateRawModel( model, request, filter( problems ) );
+        super.validateRawModel( model, request, filterProblems( problems ) );
+        customizeModel( model );
     }
 
-    private ModelProblemCollector filter( final ModelProblemCollector problems )
+    private void customizeModel( Model model )
+    {
+        for ( ModelCustomizer customizer : modelCustomizers )
+        {
+            customizer.customizeModel( model );
+        }
+    }
+
+    private ModelProblemCollector filterProblems( final ModelProblemCollector problems )
     {
         return new ModelProblemCollector()
         {
