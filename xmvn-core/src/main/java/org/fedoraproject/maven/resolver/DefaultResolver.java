@@ -33,7 +33,7 @@ public class DefaultResolver
     public DefaultResolver()
     {
         resolvers.add( new LocalResolver() );
-        
+
         if ( Configuration.PREFIX != null )
         {
             File prefix = new File( Configuration.PREFIX );

@@ -36,6 +36,7 @@ public class SingletonRepository
         this.layout = layout;
     }
 
+    @Override
     public File findArtifact( Artifact artifact )
     {
         String path = layout.getArtifactPath( artifact );
@@ -52,6 +53,7 @@ public class SingletonRepository
         return null;
     }
 
+    @Override
     public String toString()
     {
         return "repository at " + root + " with " + layout;

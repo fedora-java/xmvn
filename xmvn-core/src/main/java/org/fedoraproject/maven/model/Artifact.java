@@ -15,114 +15,133 @@
  */
 package org.fedoraproject.maven.model;
 
-public class Artifact implements Comparable<Artifact> {
-	private static final String DEFAULT_VERSION = "SYSTEM";
+public class Artifact
+    implements Comparable<Artifact>
+{
+    private static final String DEFAULT_VERSION = "SYSTEM";
 
-	private final String groupId;
-	private final String artifactId;
-	private final String version;
-	private final String extension;
+    private final String groupId;
 
-	/**
-	 * Dummy artifact that is resolved to an empty JAR provided by XMvn itself.
-	 * Used to skip dependencies.
-	 */
-	public static final Artifact DUMMY = new Artifact("JPP/xmvn", "xmvn-void");
+    private final String artifactId;
 
-	public Artifact(String groupId, String artifactId) {
-		this(groupId, artifactId, null);
-	}
+    private final String version;
 
-	public Artifact(String groupId, String artifactId, String version) {
-		this(groupId, artifactId, version, null);
-	}
+    private final String extension;
 
-	public Artifact(String groupId, String artifactId, String version,
-			String extension) {
+    /**
+     * Dummy artifact that is resolved to an empty JAR provided by XMvn itself. Used to skip dependencies.
+     */
+    public static final Artifact DUMMY = new Artifact( "JPP/xmvn", "xmvn-void" );
 
-		if (groupId == null)
-			throw new IllegalArgumentException("groupId may not be null");
-		if (artifactId == null)
-			throw new IllegalArgumentException("artifactId may not be null");
+    public Artifact( String groupId, String artifactId )
+    {
+        this( groupId, artifactId, null );
+    }
 
-		this.groupId = groupId;
-		this.artifactId = artifactId;
-		this.version = version;
-		this.extension = extension;
-	}
+    public Artifact( String groupId, String artifactId, String version )
+    {
+        this( groupId, artifactId, version, null );
+    }
 
-	@Override
-	public int compareTo(Artifact rhs) {
-		if (!groupId.equals(rhs.groupId))
-			return groupId.compareTo(rhs.groupId);
-		if (!artifactId.equals(rhs.artifactId))
-			return artifactId.compareTo(rhs.artifactId);
-		if (!getVersion().equals(rhs.getVersion()))
-			return getVersion().compareTo(rhs.getVersion());
-		return getExtension().compareTo(rhs.getExtension());
-	}
+    public Artifact( String groupId, String artifactId, String version, String extension )
+    {
 
-	@Override
-	public boolean equals(Object rhs) {
-		return rhs != null && rhs instanceof Artifact
-				&& compareTo((Artifact) rhs) == 0;
-	}
+        if ( groupId == null )
+            throw new IllegalArgumentException( "groupId may not be null" );
+        if ( artifactId == null )
+            throw new IllegalArgumentException( "artifactId may not be null" );
 
-	public String getGroupId() {
-		return groupId;
-	}
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+        this.version = version;
+        this.extension = extension;
+    }
 
-	public String getArtifactId() {
-		return artifactId;
-	}
+    @Override
+    public int compareTo( Artifact rhs )
+    {
+        if ( !groupId.equals( rhs.groupId ) )
+            return groupId.compareTo( rhs.groupId );
+        if ( !artifactId.equals( rhs.artifactId ) )
+            return artifactId.compareTo( rhs.artifactId );
+        if ( !getVersion().equals( rhs.getVersion() ) )
+            return getVersion().compareTo( rhs.getVersion() );
+        return getExtension().compareTo( rhs.getExtension() );
+    }
 
-	public String getVersion() {
-		if (version == null)
-			return DEFAULT_VERSION;
-		return version;
-	}
+    @Override
+    public boolean equals( Object rhs )
+    {
+        return rhs != null && rhs instanceof Artifact && compareTo( (Artifact) rhs ) == 0;
+    }
 
-	public String getExtension() {
-		if (extension == null)
-			return "pom";
-		return extension;
-	}
+    public String getGroupId()
+    {
+        return groupId;
+    }
 
-	public boolean isJppArtifact() {
-		return groupId.equals("JPP") || groupId.startsWith("JPP/");
-	}
+    public String getArtifactId()
+    {
+        return artifactId;
+    }
 
-	public boolean isPom() {
-		return getExtension().equals("pom");
-	}
+    public String getVersion()
+    {
+        if ( version == null )
+            return DEFAULT_VERSION;
+        return version;
+    }
 
-	public Artifact copyVersionAndExtension(Artifact rhs) {
-		return new Artifact(groupId, artifactId, rhs.version, rhs.extension);
-	}
+    public String getExtension()
+    {
+        if ( extension == null )
+            return "pom";
+        return extension;
+    }
 
-	public Artifact clearVersionAndExtension() {
-		return new Artifact(groupId, artifactId);
-	}
+    public boolean isJppArtifact()
+    {
+        return groupId.equals( "JPP" ) || groupId.startsWith( "JPP/" );
+    }
 
-	public String toString() {
-		StringBuffer result = new StringBuffer();
-		result.append('[');
+    public boolean isPom()
+    {
+        return getExtension().equals( "pom" );
+    }
 
-		result.append(groupId);
-		result.append(':');
-		result.append(artifactId);
+    public Artifact copyVersionAndExtension( Artifact rhs )
+    {
+        return new Artifact( groupId, artifactId, rhs.version, rhs.extension );
+    }
 
-		if (version != null) {
-			result.append(':');
-			result.append(version);
-		}
+    public Artifact clearVersionAndExtension()
+    {
+        return new Artifact( groupId, artifactId );
+    }
 
-		if (extension != null) {
-			result.append(':');
-			result.append(extension);
-		}
+    @Override
+    public String toString()
+    {
+        StringBuffer result = new StringBuffer();
+        result.append( '[' );
 
-		result.append(']');
-		return result.toString();
-	}
+        result.append( groupId );
+        result.append( ':' );
+        result.append( artifactId );
+
+        if ( version != null )
+        {
+            result.append( ':' );
+            result.append( version );
+        }
+
+        if ( extension != null )
+        {
+            result.append( ':' );
+            result.append( extension );
+        }
+
+        result.append( ']' );
+        return result.toString();
+    }
 }

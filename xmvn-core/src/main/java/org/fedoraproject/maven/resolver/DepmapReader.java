@@ -109,7 +109,7 @@ class DepmapReader
     private Artifact getArtifactDefinition( Element root, String childTag )
         throws IOException
     {
-        NodeList jppNodeList = (NodeList) root.getElementsByTagName( childTag );
+        NodeList jppNodeList = root.getElementsByTagName( childTag );
 
         if ( jppNodeList.getLength() == 0 )
             return Artifact.DUMMY;
@@ -156,7 +156,7 @@ class DepmapReader
         debug( "Loading depmap file: ", file );
         Document mapDocument = buildFragmentModel( file );
 
-        NodeList depNodes = (NodeList) mapDocument.getElementsByTagName( "dependency" );
+        NodeList depNodes = mapDocument.getElementsByTagName( "dependency" );
 
         for ( int i = 0; i < depNodes.getLength(); i++ )
         {

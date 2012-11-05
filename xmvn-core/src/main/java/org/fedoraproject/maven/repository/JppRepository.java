@@ -53,6 +53,7 @@ public class JppRepository
         initRepos( pomRepos, Configuration.POM_REPOS, Layout.FLAT, Layout.FLAT_VERSIONLESS );
     }
 
+    @Override
     public File findArtifact( Artifact artifact )
     {
         Iterable<Repository> repos = artifact.isPom() ? pomRepos : jarRepos;
