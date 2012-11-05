@@ -80,11 +80,6 @@ public class Package
         addFile( file, jarDir + "/" + name, artifact.getArtifactId() + ".jar" );
     }
 
-    public void addDocumentation( File docFile )
-    {
-
-    }
-
     private void installFiles( Installer installer )
         throws IOException
     {

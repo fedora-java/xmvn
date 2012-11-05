@@ -54,7 +54,7 @@ public class InstallMojo
                                                   + artifact.getGroupId()
                                                   + ":"
                                                   + artifact.getArtifactId()
-                                                  + ": Packaging is not \"pom\" but artifact file is null. Make sure you run ropminstall plugin after \"package\" phase." );
+                                                  + ": Packaging is not \"pom\" but artifact file is null. Make sure you run rpminstall plugin after \"package\" phase." );
 
         targetPackage.addPomFile( pomFile, artifact );
 

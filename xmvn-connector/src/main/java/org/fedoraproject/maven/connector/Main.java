@@ -17,6 +17,10 @@ package org.fedoraproject.maven.connector;
 
 import static org.fedoraproject.maven.utils.Logger.info;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.maven.cli.MavenCli;
 import org.apache.maven.model.validation.ModelValidator;
 import org.apache.maven.plugin.version.PluginVersionResolver;
@@ -45,7 +49,14 @@ public class Main
         info( "Maven RPM extension" );
         info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
 
+        List<String> options = new LinkedList<>();
+        options.add( "--offline" );
+        options.add( "--batch-mode" );
+        options.add( "-Dmaven.repo.local=.xm2" );
+        options.addAll( Arrays.asList( args ) );
+
         Main cli = new Main();
+        args = options.toArray( new String[0] );
         cli.exec( args );
     }
 
