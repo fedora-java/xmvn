@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.maven.connector;
 
-import static org.fedoraproject.maven.utils.Logger.info;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,8 +53,8 @@ public class Main
 
     private int exec( String[] args )
     {
-        info( "Maven RPM extension" );
-        info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
+        logger.info( "Maven RPM extension" );
+        logger.info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
 
         List<String> options = new LinkedList<>();
         options.add( "--offline" );
@@ -69,11 +67,5 @@ public class Main
         int ret = doMain( args, null, null, null );
         SystemResolver.printInvolvedPackages();
         return ret;
-    }
-
-    @Override
-    protected void customizeContainer( PlexusContainer container )
-    {
-        LoggerProvider.initialize( container );
     }
 }
