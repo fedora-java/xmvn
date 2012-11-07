@@ -22,14 +22,38 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.cli.MavenCli;
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.resolver.SystemResolver;
 
+@Component( role = Main.class )
 public class Main
     extends MavenCli
 {
+    @Requirement
+    private Logger logger;
+
     public static int main( String[] args, ClassWorld world )
+    {
+        try
+        {
+            PlexusContainer container = new DefaultPlexusContainer();
+            int ret = container.lookup( Main.class ).exec( args );
+            container.dispose();
+            return ret;
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+            return 1;
+        }
+    }
+
+    private int exec( String[] args )
     {
         info( "Maven RPM extension" );
         info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
@@ -40,13 +64,8 @@ public class Main
         options.add( "-Dmaven.repo.local=.xm2" );
         options.addAll( Arrays.asList( args ) );
 
-        Main cli = new Main();
         args = options.toArray( new String[0] );
-        return cli.exec( args );
-    }
 
-    private int exec( String[] args )
-    {
         int ret = doMain( args, null, null, null );
         SystemResolver.printInvolvedPackages();
         return ret;
