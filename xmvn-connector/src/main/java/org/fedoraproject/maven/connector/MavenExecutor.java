@@ -27,6 +27,8 @@ import org.codehaus.plexus.logging.Logger;
 
 public class MavenExecutor
 {
+    private boolean debug;
+
     public void execute( String... goals )
         throws Throwable
     {
@@ -35,7 +37,7 @@ public class MavenExecutor
         try
         {
             container = new DefaultPlexusContainer();
-            container.getLoggerManager().setThreshold( Logger.LEVEL_WARN );
+            container.getLoggerManager().setThreshold( debug ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
             Maven maven = container.lookup( Maven.class );
 
             MavenExecutionRequest request = new DefaultMavenExecutionRequest();
@@ -55,5 +57,10 @@ public class MavenExecutor
             if ( container != null )
                 container.dispose();
         }
+    }
+
+    public void setDebug( boolean debug )
+    {
+        this.debug = debug;
     }
 }

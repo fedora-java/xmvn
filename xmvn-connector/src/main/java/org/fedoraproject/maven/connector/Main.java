@@ -15,6 +15,13 @@
  */
 package org.fedoraproject.maven.connector;
 
+import java.util.List;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.ParseException;
+import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
@@ -23,7 +30,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
-import org.fedoraproject.maven.resolver.SystemResolver;
+import org.fedoraproject.maven.connector.cli.Command;
 
 @Component( role = Main.class )
 public class Main
@@ -51,28 +58,80 @@ public class Main
 
     private int exec( ClassWorld world, PlexusContainer container, String[] args )
     {
+        // Ugly, aint it?
+        System.setProperty( "maven.version", "3.0.4" );
+        System.setProperty( "maven.build.version", "3.0.4" );
+
         try
         {
-            // Ugly, aint it?
-            System.setProperty( "maven.version", "3.0.4" );
-            System.setProperty( "maven.build.version", "3.0.4" );
-            System.setProperty( "maven.test.skip", "true" );
+            if ( args.length == 0 )
+            {
+                logger.error( "No command given. Specify --help for usage information." );
+                return 1;
+            }
 
-            logger.info( "Running XMvn..." );
+            String commandName = args[0];
+            String[] commandArgs = new String[args.length - 1];
+            System.arraycopy( args, 1, commandArgs, 0, commandArgs.length );
 
-            MavenExecutor executor = new MavenExecutor();
-            logger.info( "Building project..." );
-            executor.execute( "verify", "org.fedoraproject.xmvn:rpminstall-maven-plugin:install" );
-            logger.info( "Generating javadocs..." );
-            executor.execute( "org.apache.maven.plugins:maven-javadoc-plugin:aggregate" );
-            logger.info( "Build finished SUCCESSFULLY" );
+            if ( commandName.equals( "--version" ) )
+            {
+                logger.info( "XMvn version 0" );
+                logger.info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
+                return 0;
+            }
 
-            SystemResolver.printInvolvedPackages();
-            return 0;
+            List<Command> commands = Command.getAvailableCommands( container );
+
+            if ( commandName.equals( "--help" ) )
+            {
+                logger.info( "Usage: xmvn <command> [args]" );
+                logger.info( "" );
+
+                logger.info( "Available commands are:" );
+                for ( Command command : commands )
+                    logger.info( "  * " + command.getName() + " - " + command.getDescription() );
+
+                logger.info( "" );
+                logger.info( "For help about particular commands, run \"xmvn help <command>\"." );
+                return 0;
+            }
+
+            if ( commandArgs.length == 1 && commandArgs[0].equals( "--help" ) )
+            {
+                commandArgs[0] = commandName;
+                commandName = "help";
+            }
+
+            Command command = Command.getByName( container, commandName );
+            if ( command == null )
+            {
+                logger.error( "\"" + commandName + "\" is not a valid command. Specify --help for usage information." );
+                return 1;
+            }
+
+            CommandLine cli;
+            try
+            {
+                CommandLineParser cliParser = new GnuParser();
+                cli = cliParser.parse( command.getOptions(), commandArgs );
+            }
+            catch ( ParseException e )
+            {
+                logger.error( "Failed to parse options for command \"" + commandName + "\": " + e.getMessage() );
+                return 1;
+            }
+
+            logger.info( "Executing command \"" + commandName + "\"..." );
+            return command.execute( container, cli );
         }
         catch ( Throwable e )
         {
-            logger.fatalError( e.getMessage() );
+            if ( e instanceof LifecycleExecutionException )
+                logger.fatalError( e.getMessage() );
+            else
+                logger.fatalError( "Internal XMvn error", e );
+
             return 1;
         }
     }
