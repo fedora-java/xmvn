@@ -29,9 +29,9 @@ public class Artifact
     private final String extension;
 
     /**
-     * Dummy artifact that is resolved to an empty JAR provided by XMvn itself. Used to skip dependencies.
+     * Dummy artifact. Any dependencies on this artifact will be removed during model validation.
      */
-    public static final Artifact DUMMY = new Artifact( "JPP/xmvn", "xmvn-void" );
+    public static final Artifact DUMMY = new Artifact( "org.fedoraproject.xmvn", "xmvn-void" );
 
     public Artifact( String groupId, String artifactId )
     {

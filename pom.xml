@@ -33,7 +33,6 @@
     <module>xmvn-connector</module>
     <module>xmvn-tools</module>
     <module>rpminstall-maven-plugin</module>
-    <module>xmvn-void</module>
   </modules>
 
   <build>
