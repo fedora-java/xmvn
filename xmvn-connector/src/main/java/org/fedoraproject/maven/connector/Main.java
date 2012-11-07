@@ -15,57 +15,65 @@
  */
 package org.fedoraproject.maven.connector;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.resolver.SystemResolver;
 
 @Component( role = Main.class )
 public class Main
-    extends MavenCli
 {
     @Requirement
     private Logger logger;
 
     public static int main( String[] args, ClassWorld world )
+        throws PlexusContainerException, ComponentLookupException
     {
+        DefaultPlexusContainer container = null;
+
         try
         {
-            PlexusContainer container = new DefaultPlexusContainer();
-            int ret = container.lookup( Main.class ).exec( args );
-            container.dispose();
-            return ret;
+            System.out.println( "[INFO] Initializing Plexus..." );
+            container = new DefaultPlexusContainer();
+            container.getLoggerManager().setThreshold( Logger.LEVEL_DEBUG );
+            return container.lookup( Main.class ).exec( world, container, args );
         }
-        catch ( Exception e )
+        finally
         {
-            e.printStackTrace();
-            return 1;
+            container.dispose();
         }
     }
 
-    private int exec( String[] args )
+    private int exec( ClassWorld world, PlexusContainer container, String[] args )
     {
-        logger.info( "Maven RPM extension" );
-        logger.info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
+        try
+        {
+            // Ugly, aint it?
+            System.setProperty( "maven.version", "3.0.4" );
+            System.setProperty( "maven.build.version", "3.0.4" );
+            System.setProperty( "maven.test.skip", "true" );
 
-        List<String> options = new LinkedList<>();
-        options.add( "--offline" );
-        options.add( "--batch-mode" );
-        options.add( "-Dmaven.repo.local=.xm2" );
-        options.addAll( Arrays.asList( args ) );
+            logger.info( "Running XMvn..." );
 
-        args = options.toArray( new String[0] );
+            MavenExecutor executor = new MavenExecutor();
+            logger.info( "Building project..." );
+            executor.execute( "verify", "org.fedoraproject.xmvn:rpminstall-maven-plugin:install" );
+            logger.info( "Generating javadocs..." );
+            executor.execute( "org.apache.maven.plugins:maven-javadoc-plugin:aggregate" );
+            logger.info( "Build finished SUCCESSFULLY" );
 
-        int ret = doMain( args, null, null, null );
-        SystemResolver.printInvolvedPackages();
-        return ret;
+            SystemResolver.printInvolvedPackages();
+            return 0;
+        }
+        catch ( Throwable e )
+        {
+            logger.fatalError( e.getMessage() );
+            return 1;
+        }
     }
 }
