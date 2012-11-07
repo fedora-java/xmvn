@@ -23,25 +23,13 @@ import java.util.List;
 
 import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.ClassWorld;
 import org.fedoraproject.maven.resolver.SystemResolver;
 
 public class Main
+    extends MavenCli
 {
-    private final MavenCli cli;
-
-    private Main()
-    {
-        cli = new MavenCli()
-        {
-            @Override
-            protected void customizeContainer( PlexusContainer container )
-            {
-                LoggerProvider.initialize( container );
-            }
-        };
-    }
-
-    public static void main( String[] args )
+    public static int main( String[] args, ClassWorld world )
     {
         info( "Maven RPM extension" );
         info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
@@ -54,13 +42,19 @@ public class Main
 
         Main cli = new Main();
         args = options.toArray( new String[0] );
-        cli.exec( args );
+        return cli.exec( args );
     }
 
-    private void exec( String[] args )
+    private int exec( String[] args )
     {
-        int ret = cli.doMain( args, null, null, null );
+        int ret = doMain( args, null, null, null );
         SystemResolver.printInvolvedPackages();
-        System.exit( ret );
+        return ret;
+    }
+
+    @Override
+    protected void customizeContainer( PlexusContainer container )
+    {
+        LoggerProvider.initialize( container );
     }
 }
