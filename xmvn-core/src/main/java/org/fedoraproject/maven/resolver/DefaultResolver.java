@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import static org.fedoraproject.maven.utils.Logger.warn;
+import static org.fedoraproject.maven.utils.Logger.debug;
 
 import java.io.File;
 import java.util.Collection;
@@ -58,7 +58,7 @@ public class DefaultResolver
                 return file;
         }
 
-        warn( "Unresolved artifact ", artifact );
+        debug( "Unresolved artifact ", artifact );
         return null;
     }
 }

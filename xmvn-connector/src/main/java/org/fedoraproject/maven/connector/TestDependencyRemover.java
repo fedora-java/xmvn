@@ -29,7 +29,7 @@ import org.codehaus.plexus.logging.Logger;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelCustomizer.class )
+@Component( role = ModelCustomizer.class, hint = "TestDependencyRemover" )
 public class TestDependencyRemover
     implements ModelCustomizer
 {

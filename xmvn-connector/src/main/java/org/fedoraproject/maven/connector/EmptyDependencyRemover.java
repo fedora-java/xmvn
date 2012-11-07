@@ -27,7 +27,7 @@ import org.codehaus.plexus.component.annotations.Component;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelCustomizer.class )
+@Component( role = ModelCustomizer.class, hint = "EmptyDependencyRemover" )
 public class EmptyDependencyRemover
     implements ModelCustomizer
 {

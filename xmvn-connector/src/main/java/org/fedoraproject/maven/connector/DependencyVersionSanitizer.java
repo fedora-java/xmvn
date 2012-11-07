@@ -15,11 +15,14 @@
  */
 package org.fedoraproject.maven.connector;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.component.annotations.Component;
 
 /**
@@ -27,7 +30,7 @@ import org.codehaus.plexus.component.annotations.Component;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelCustomizer.class )
+@Component( role = ModelCustomizer.class, hint = "DependencyVersionSanitizer" )
 public class DependencyVersionSanitizer
     implements ModelCustomizer
 {
@@ -41,6 +44,18 @@ public class DependencyVersionSanitizer
             Dependency dependency = iter.next();
             if ( dependency.getVersion() == null )
                 dependency.setVersion( "SYSTEM" );
+        }
+
+        Build build = model.getBuild();
+        List<Plugin> plugins = Collections.emptyList();
+        if ( build != null )
+            plugins = build.getPlugins();
+
+        for ( Iterator<Plugin> iter = plugins.iterator(); iter.hasNext(); )
+        {
+            Plugin plugin = iter.next();
+            if ( plugin.getVersion() == null )
+                plugin.setVersion( "SYSTEM" );
         }
     }
 }

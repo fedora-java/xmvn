@@ -16,7 +16,6 @@
 package org.fedoraproject.maven.resolver;
 
 import static org.fedoraproject.maven.utils.Logger.debug;
-import static org.fedoraproject.maven.utils.Logger.warn;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -144,7 +143,7 @@ class DepmapReader
         }
         catch ( IOException e )
         {
-            warn( "Could not process depmap file ", fragment.getAbsolutePath(), ": ", e );
+            debug( "Could not process depmap file ", fragment.getAbsolutePath(), ": ", e );
             e.printStackTrace();
         }
     }

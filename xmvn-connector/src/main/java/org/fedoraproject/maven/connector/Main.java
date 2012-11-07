@@ -122,7 +122,7 @@ public class Main
                 return 1;
             }
 
-            logger.info( "Executing command \"" + commandName + "\"..." );
+            logger.debug( "Executing command \"" + commandName + "\"..." );
             return command.execute( container, cli );
         }
         catch ( Throwable e )

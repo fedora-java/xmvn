@@ -85,11 +85,6 @@ public class Logger
         provider.info( concatenate( message ) );
     }
 
-    public static void warn( Object... message )
-    {
-        provider.warn( concatenate( message ) );
-    }
-
     public static void error( Object... message )
     {
         provider.error( concatenate( message ) );
