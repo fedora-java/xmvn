@@ -15,6 +15,7 @@
  */
 package org.apache.maven.plugin;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
@@ -41,9 +42,8 @@ public class MavenPluginValidator
         return false;
     }
 
-    // Not used
     public List<String> getErrors()
     {
-        throw new AssertionError( "This function was not expected to be called!" );
+        return Collections.emptyList();
     }
 }

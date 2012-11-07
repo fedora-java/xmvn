@@ -17,10 +17,8 @@ package org.fedoraproject.maven.connector;
 
 import java.util.List;
 
-import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.building.ModelBuildingRequest;
-import org.apache.maven.model.building.ModelProblem.Severity;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
@@ -28,10 +26,10 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
- * Maven project object model (POM) validator that is ignoring certain types of model errors.
+ * Custom Maven model object model (POM) validator that overrides default Maven model validator.
  * <p>
- * A problem is ignored if its message matches some regular expression specified in configuration file. We could skip
- * validation and pretend that all models are valid, but ignoring potential problems might be too dangerous...
+ * This component first modifies the model using all available customizers and then delegates the actual validation to
+ * the default model validator provided by Maven itself.
  * 
  * @author Mikolaj Izdebski
  */
@@ -42,21 +40,18 @@ class FedoraModelValidator
     @Requirement
     private List<ModelCustomizer> modelCustomizers;
 
-    private static final String[] ignoredModelProblems =
-        new String[] { "'dependencies.dependency.version' for [^ ]+ is missing." };
-
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        super.validateEffectiveModel( model, request, filterProblems( problems ) );
         customizeModel( model );
+        super.validateEffectiveModel( model, request, problems );
     }
 
     @Override
     public void validateRawModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        super.validateRawModel( model, request, filterProblems( problems ) );
         customizeModel( model );
+        super.validateRawModel( model, request, problems );
     }
 
     private void customizeModel( Model model )
@@ -65,25 +60,5 @@ class FedoraModelValidator
         {
             customizer.customizeModel( model );
         }
-    }
-
-    private ModelProblemCollector filterProblems( final ModelProblemCollector problems )
-    {
-        return new ModelProblemCollector()
-        {
-            @Override
-            public void add( Severity severity, String message, InputLocation location, Exception exception )
-            {
-                for ( String regex : ignoredModelProblems )
-                {
-                    if ( message.matches( regex ) )
-                    {
-                        severity = Severity.WARNING;
-                        break;
-                    }
-                }
-                problems.add( severity, message, location, exception );
-            }
-        };
     }
 }
