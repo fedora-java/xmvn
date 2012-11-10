@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.connector;
 
-import org.apache.maven.lifecycle.LifecycleExecutionException;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
@@ -32,6 +31,9 @@ public class Main
 {
     @Requirement
     private Logger logger;
+
+    @Requirement
+    private LoggerProvider loggerProvider;
 
     public static int main( String[] args, ClassWorld world )
         throws PlexusContainerException, ComponentLookupException
@@ -53,6 +55,7 @@ public class Main
 
     private int exec( ClassWorld world, PlexusContainer container, String[] args )
     {
+        org.fedoraproject.maven.utils.Logger.setProvider( loggerProvider );
         System.setProperty( "maven.version", Configuration.getMavenVersion() );
         System.setProperty( "maven.build.version", Configuration.getMavenVersion() );
 
@@ -64,12 +67,7 @@ public class Main
         }
         catch ( Throwable e )
         {
-            if ( e instanceof LifecycleExecutionException )
-                logger.fatalError( e.getMessage() );
-            else
-                logger.fatalError( "Internal XMvn error", e );
-
-            return 1;
+            throw new RuntimeException( e );
         }
     }
 }

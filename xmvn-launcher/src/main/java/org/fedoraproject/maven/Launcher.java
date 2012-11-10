@@ -18,6 +18,7 @@ package org.fedoraproject.maven;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Launch XMvn by calling Plexus Classworlds launcher.
@@ -36,6 +37,7 @@ public class Launcher
             mavenHome = System.getProperty( "xmvn.maven.home" );
         if ( mavenHome == null )
             mavenHome = "/usr/share/maven";
+        System.setProperty( "xmvn.maven.home", mavenHome );
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         PrintStream conf = new PrintStream( bos );
@@ -59,9 +61,37 @@ public class Launcher
         {
             launch( args );
         }
-        catch ( Throwable e )
+        catch ( Throwable exception )
         {
-            throw new RuntimeException( "XMvn launcher error", e );
+            while ( ( exception.getClass() == RuntimeException.class || exception instanceof InvocationTargetException )
+                && exception.getCause() != null )
+            {
+                exception = exception.getCause();
+            }
+
+            StringBuilder detail = new StringBuilder();
+            for ( Throwable exc = exception; exc != null; exc = exc.getCause() )
+            {
+                if ( exc.getMessage() != null && exc.getMessage().length() < 200
+                    && detail.indexOf( exc.getMessage() ) < 0 )
+                {
+                    detail.append( exc.getMessage() );
+                    detail.append( System.lineSeparator() );
+                }
+            }
+
+            System.err.println();
+            System.err.println( "--------------------------------------------------" );
+            System.err.println( "FATAL ERROR:" );
+            System.err.println();
+            exception.printStackTrace();
+            System.err.println();
+            System.err.println( "--------------------------------------------------" );
+            System.err.println( "XMvn was terminated because of unhandled exception" );
+            System.err.println( "Class: " + exception.getClass().getCanonicalName() );
+            System.err.println( "--------------------------------------------------" );
+            System.err.print( detail.toString() );
+            System.exit( 1 );
         }
     }
 }

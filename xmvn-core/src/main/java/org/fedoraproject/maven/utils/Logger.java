@@ -17,6 +17,8 @@ package org.fedoraproject.maven.utils;
 
 import java.io.PrintStream;
 
+import org.fedoraproject.maven.Configuration;
+
 public class Logger
 {
     public static interface Provider
@@ -33,7 +35,6 @@ public class Logger
     static class DefaultProvider
         implements Provider
     {
-
         private static final PrintStream stream = System.out;
 
         @Override
@@ -51,7 +52,7 @@ public class Logger
         @Override
         public void warn( String message )
         {
-            stream.println( "[WARN] " + message );
+            stream.println( "[WARNING] " + message );
         }
 
         @Override
@@ -71,12 +72,19 @@ public class Logger
 
     public static void debug( Object... message )
     {
-        provider.debug( concatenate( message ) );
+        if ( Configuration.isDebugEnabled() )
+            provider.debug( concatenate( message ) );
     }
 
     public static void info( Object... message )
     {
-        provider.info( concatenate( message ) );
+        if ( Configuration.isDebugEnabled() )
+            provider.info( concatenate( message ) );
+    }
+
+    public static void warn( Object... message )
+    {
+        provider.warn( concatenate( message ) );
     }
 
     public static void error( Object... message )

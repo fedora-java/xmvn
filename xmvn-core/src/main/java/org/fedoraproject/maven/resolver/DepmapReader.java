@@ -16,6 +16,7 @@
 package org.fedoraproject.maven.resolver;
 
 import static org.fedoraproject.maven.utils.Logger.debug;
+import static org.fedoraproject.maven.utils.Logger.warn;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +44,7 @@ import org.xml.sax.SAXException;
 class DepmapReader
 {
 
-    private Document buildFragmentModel( File file )
+    private Document buildDepmapModel( File file )
         throws IOException
     {
         try
@@ -93,13 +94,12 @@ class DepmapReader
                 {
                     Arrays.sort( flist );
                     for ( String fragFilename : flist )
-                        tryProcessFragment( map, new File( file, fragFilename ) );
+                        tryLoadDepmapFile( map, new File( file, fragFilename ) );
                 }
             }
-
-            else if ( file.exists() )
+            else
             {
-                tryProcessFragment( map, file );
+                tryLoadDepmapFile( map, file );
             }
         }
     }
@@ -134,25 +134,25 @@ class DepmapReader
         return new Artifact( groupId, artifactId, version );
     }
 
-    private void tryProcessFragment( DependencyMap map, File fragment )
+    private void tryLoadDepmapFile( DependencyMap map, File fragment )
     {
         try
         {
-            processFragment( map, fragment );
+            loadDepmapFile( map, fragment );
         }
         catch ( IOException e )
         {
-            debug( "Could not process depmap file ", fragment.getAbsolutePath(), ": ", e );
-            e.printStackTrace();
+            warn( "Could not load depmap file ", fragment.getAbsolutePath(), ": ", e );
         }
     }
 
-    private void processFragment( DependencyMap map, File file )
+    private void loadDepmapFile( DependencyMap map, File file )
         throws IOException
     {
+        // XXX this is buggy
 
         debug( "Loading depmap file: ", file );
-        Document mapDocument = buildFragmentModel( file );
+        Document mapDocument = buildDepmapModel( file );
 
         NodeList depNodes = mapDocument.getElementsByTagName( "dependency" );
 

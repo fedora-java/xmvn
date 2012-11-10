@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven;
 
+import static org.fedoraproject.maven.utils.Logger.debug;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -67,8 +69,7 @@ public class Configuration
     }
 
     private static List<String> resolvDepmaps = newList( "/etc/maven/maven2-versionless-depmap.xml",
-                                                         "/etc/maven/fragments", "/usr/share/maven-fragments",
-                                                         "depmap.xml" );
+                                                         "/usr/share/maven-fragments" );
 
     public static Collection<String> getDepmaps()
     {
@@ -132,6 +133,13 @@ public class Configuration
         return mavenOnline;
     }
 
+    private static String mavenHome;
+
+    public static String getMavenHome()
+    {
+        return mavenHome;
+    }
+
     private static String mavenVersion = "3.0.4";
 
     public static String getMavenVersion()
@@ -139,7 +147,7 @@ public class Configuration
         return mavenVersion;
     }
 
-    private static void setField( Field field, String value )
+    private static void setField( Field field, String value, String envName )
         throws IllegalAccessException
     {
         Class<?> type = field.getType();
@@ -154,7 +162,7 @@ public class Configuration
             boolean isTrue = value.matches( "1|true|yes|on|enabled" );
             boolean isFalse = value.matches( "0|false|no|off|disabled" );
             if ( isTrue == isFalse )
-                throw new RuntimeException( "Cannot set field " + field.getName() + ": failed to parse '" + value
+                throw new RuntimeException( "Cannot set parameter " + envName + ": failed to parse '" + value
                     + "' as boolean value" );
             field.setBoolean( null, isTrue );
         }
@@ -198,7 +206,7 @@ public class Configuration
                 for ( String value : values )
                 {
                     if ( value != null )
-                        setField( field, value );
+                        setField( field, value, envName );
                 }
             }
         }
@@ -208,8 +216,58 @@ public class Configuration
         }
     }
 
+    @SuppressWarnings( "unchecked" )
+    private static void dumpConfiguration()
+    {
+        try
+        {
+            debug( "--- BEGIN OF XMVN CONFIG DUMP ---" );
+
+            Field[] fields = Configuration.class.getDeclaredFields();
+
+            for ( Field field : fields )
+            {
+                String name = field.getName();
+                String envName = "XMVN_" + name.replaceAll( "([A-Z])", "_$1" ).toUpperCase();
+
+                Class<?> type = field.getType();
+
+                if ( type.equals( String.class ) )
+                {
+                    debug( "  ", envName, " = \"", field.get( null ).toString(), "\"" );
+                }
+
+                else if ( type.equals( boolean.class ) )
+                {
+                    debug( "  ", envName, " = ", field.getBoolean( null ) );
+                }
+
+                else if ( type.equals( List.class ) )
+                {
+                    debug( "  ", envName, " = {" );
+                    for ( String value : (List<String>) field.get( null ) )
+                        debug( "    \"", value, "\"," );
+                    debug( "  }" );
+                }
+
+                else
+                {
+                    throw new RuntimeException( "Internal XMvn error - unsupported field type" );
+                }
+            }
+
+            debug( "--- END OF XMVN CONFIG DUMP ---" );
+        }
+        catch ( IllegalAccessException e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
     static
     {
         loadConfiguration();
+        if ( debug )
+            dumpConfiguration();
     }
 }

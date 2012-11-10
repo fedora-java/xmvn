@@ -52,7 +52,7 @@ public class BuildCommand
         logger.info( "Building project..." );
         executor.execute( baseGoal, "org.fedoraproject.xmvn:xmvn-mojo:install" );
 
-        if ( Configuration.isJavadocSkipped() )
+        if ( Configuration.isJavadocSkipped() == false )
         {
             logger.info( "Generating javadocs..." );
             executor.execute( "org.apache.maven.plugins:maven-javadoc-plugin:aggregate" );
