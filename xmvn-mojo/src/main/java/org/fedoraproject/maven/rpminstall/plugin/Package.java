@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.maven.artifact.Artifact;
+import org.fedoraproject.maven.Configuration;
 import org.fedoraproject.maven.resolver.DependencyMap;
 
 public class Package
@@ -63,7 +64,7 @@ public class Package
         String jppGroupId = "JPP/" + name;
         String jppArtifactId = artifact.getArtifactId();
         String pomName = jppGroupId.replace( '/', '.' ) + "-" + jppArtifactId + ".pom";
-        addFile( file, Installer.POM_DIR, pomName );
+        addFile( file, Configuration.POM_DIR, pomName );
 
         addDepmap( artifact );
     }
@@ -76,7 +77,7 @@ public class Package
 
     public void addJarFile( File file, Artifact artifact )
     {
-        String jarDir = containsNativeCode( file ) ? Installer.JNI_DIR : Installer.JAR_DIR;
+        String jarDir = containsNativeCode( file ) ? Configuration.JNI_DIR : Configuration.JAR_DIR;
         addFile( file, jarDir + "/" + name, artifact.getArtifactId() + ".jar" );
     }
 
@@ -106,7 +107,7 @@ public class Package
             File file = File.createTempFile( "maven-fedora-packager", ".xml" );
             depmap.writeToFile( file );
             String depmapName = name + ".xml";
-            addFile( file, Installer.DEPMAP_DIR, depmapName );
+            addFile( file, Configuration.DEPMAP_DIR, depmapName );
         }
     }
 

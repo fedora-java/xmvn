@@ -17,6 +17,14 @@ package org.fedoraproject.maven;
 
 public class Configuration
 {
+    public static final String JAR_DIR = "usr/share/java";
+
+    public static final String JNI_DIR = "usr/lib/java";
+
+    public static final String POM_DIR = "usr/share/maven-poms";
+
+    public static final String DEPMAP_DIR = "usr/share/maven-fragments";
+
     public static final String LOCAL_DEPMAP = "depmap.xml";
 
     /**

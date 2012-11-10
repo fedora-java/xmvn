@@ -22,14 +22,6 @@ import com.google.common.io.Files;
 
 public class Installer
 {
-    public static final String JAR_DIR = "usr/share/java";
-
-    public static final String JNI_DIR = "usr/lib/java";
-
-    public static final String POM_DIR = "usr/share/maven-poms";
-
-    public static final String DEPMAP_DIR = "usr/share/maven-fragments";
-
     private final File root;
 
     public Installer( File root )
