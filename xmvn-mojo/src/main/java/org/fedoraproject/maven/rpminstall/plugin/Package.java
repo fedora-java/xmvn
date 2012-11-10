@@ -64,7 +64,7 @@ public class Package
         String jppGroupId = "JPP/" + name;
         String jppArtifactId = artifact.getArtifactId();
         String pomName = jppGroupId.replace( '/', '.' ) + "-" + jppArtifactId + ".pom";
-        addFile( file, Configuration.POM_DIR, pomName );
+        addFile( file, Configuration.getInstallPomDir(), pomName );
 
         addDepmap( artifact );
     }
@@ -77,7 +77,7 @@ public class Package
 
     public void addJarFile( File file, Artifact artifact )
     {
-        String jarDir = containsNativeCode( file ) ? Configuration.JNI_DIR : Configuration.JAR_DIR;
+        String jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
         addFile( file, jarDir + "/" + name, artifact.getArtifactId() + ".jar" );
     }
 
@@ -107,7 +107,7 @@ public class Package
             File file = File.createTempFile( "maven-fedora-packager", ".xml" );
             depmap.writeToFile( file );
             String depmapName = name + ".xml";
-            addFile( file, Configuration.DEPMAP_DIR, depmapName );
+            addFile( file, Configuration.getInstallDepmapDir(), depmapName );
         }
     }
 

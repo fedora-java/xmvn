@@ -15,12 +15,11 @@
  */
 package org.fedoraproject.maven.connector.cli;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.Configuration;
 import org.fedoraproject.maven.connector.MavenExecutor;
 import org.fedoraproject.maven.resolver.SystemResolver;
 
@@ -36,36 +35,14 @@ public class PrepCommand
     @Requirement
     private Logger logger;
 
-    private boolean skipTests;
-
-    private boolean debug;
-
     @Override
-    public Options getOptions()
-    {
-        Options options = new Options();
-        options.addOption( "T", "skip-tests", false, "assume tests will be skipped during build" );
-        options.addOption( "X", "debug", false, "display lots of debugging information" );
-        return options;
-    }
-
-    private void parseOptions( CommandLine cli )
-    {
-        skipTests = cli.hasOption( "skip-tests" );
-        debug = cli.hasOption( "debug" );
-    }
-
-    @Override
-    public int execute( PlexusContainer container, CommandLine cli )
+    public int execute( PlexusContainer container )
         throws Throwable
     {
-        parseOptions( cli );
-
-        if ( skipTests )
+        if ( Configuration.areTestsSkipped() )
             System.setProperty( "maven.test.skip", "true" );
 
         MavenExecutor executor = new MavenExecutor();
-        executor.setDebug( debug );
 
         logger.info( "Verifying project..." );
         executor.execute( "org.apache.maven.plugins:maven-dependency-plugin:resolve",

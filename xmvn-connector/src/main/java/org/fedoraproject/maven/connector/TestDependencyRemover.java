@@ -23,6 +23,7 @@ import org.apache.maven.model.Model;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.Configuration;
 
 /**
  * Model customizer that removes all dependencies with test scope if tests are being skipped.
@@ -39,7 +40,7 @@ public class TestDependencyRemover
     @Override
     public void customizeModel( Model model )
     {
-        if ( System.getProperty( "maven.test.skip" ) == null )
+        if ( Configuration.areTestsSkipped() == false )
             return;
 
         List<Dependency> dependencies = model.getDependencies();

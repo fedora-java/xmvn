@@ -82,26 +82,25 @@ class DepmapReader
      */
     public void readArtifactMap( File root, DependencyMap map )
     {
-        tryProcessFragment( map, new File( root, Configuration.VERSIONLESS_DEPMAP ) );
-
-        for ( String path : Configuration.FRAGMENT_DIRS )
+        for ( String path : Configuration.getDepmaps() )
         {
-            processFragmentDirectory( map, new File( root, path ) );
-        }
+            File file = new File( path );
 
-        File localDepmap = new File( Configuration.LOCAL_DEPMAP );
-        if ( localDepmap.exists() )
-            tryProcessFragment( map, localDepmap );
-    }
+            if ( file.isDirectory() )
+            {
+                String flist[] = file.list();
+                if ( flist != null )
+                {
+                    Arrays.sort( flist );
+                    for ( String fragFilename : flist )
+                        tryProcessFragment( map, new File( file, fragFilename ) );
+                }
+            }
 
-    private void processFragmentDirectory( DependencyMap jppArtifactMap, File fragmentDir )
-    {
-        String flist[] = fragmentDir.list();
-        if ( flist != null )
-        {
-            Arrays.sort( flist );
-            for ( String fragFilename : flist )
-                tryProcessFragment( jppArtifactMap, new File( fragmentDir, fragFilename ) );
+            else if ( file.exists() )
+            {
+                tryProcessFragment( map, file );
+            }
         }
     }
 

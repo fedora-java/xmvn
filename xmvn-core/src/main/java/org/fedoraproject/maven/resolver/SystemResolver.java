@@ -29,7 +29,6 @@ import org.fedoraproject.rpmquery.RpmDb;
 public class SystemResolver
     extends AbstractResolver
 {
-
     private final Repository systemRepo;
 
     private static final DependencyMap depmap = new DependencyMap();

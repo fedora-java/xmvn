@@ -24,11 +24,10 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.Configuration;
 
 public class MavenExecutor
 {
-    private boolean debug;
-
     public void execute( String... goals )
         throws Throwable
     {
@@ -37,14 +36,15 @@ public class MavenExecutor
         try
         {
             container = new DefaultPlexusContainer();
-            container.getLoggerManager().setThreshold( debug ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
+            int loggerThreshold = Configuration.isMavenDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
+            container.getLoggerManager().setThreshold( loggerThreshold );
             Maven maven = container.lookup( Maven.class );
 
             MavenExecutionRequest request = new DefaultMavenExecutionRequest();
             request.setGoals( Arrays.asList( goals ) );
-            request.setLocalRepositoryPath( ".xm2" );
+            request.setLocalRepositoryPath( Configuration.getLocalRepoPath() );
             request.setInteractiveMode( false );
-            request.setOffline( true );
+            request.setOffline( Configuration.isMavenOnline() == false );
             request.setPom( new File( "pom.xml" ) );
             request.setSystemProperties( System.getProperties() );
 
@@ -57,10 +57,5 @@ public class MavenExecutor
             if ( container != null )
                 container.dispose();
         }
-    }
-
-    public void setDebug( boolean debug )
-    {
-        this.debug = debug;
     }
 }

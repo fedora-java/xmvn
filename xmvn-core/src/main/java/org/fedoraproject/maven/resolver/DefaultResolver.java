@@ -34,13 +34,13 @@ public class DefaultResolver
     {
         resolvers.add( new LocalResolver() );
 
-        if ( Configuration.PREFIX != null )
+        for ( String prefix : Configuration.getPrefixes() )
         {
-            File prefix = new File( Configuration.PREFIX );
-            if ( prefix.isDirectory() )
+            File root = new File( prefix );
+            if ( root.isDirectory() )
             {
-                Resolver prefixResolver = new SystemResolver( prefix );
-                resolvers.add( new CachingResolver( prefixResolver ) );
+                Resolver resolver = new SystemResolver( root );
+                resolvers.add( new CachingResolver( resolver ) );
             }
         }
 

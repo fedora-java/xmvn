@@ -15,14 +15,10 @@
  */
 package org.fedoraproject.maven.connector.cli;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
 import org.codehaus.plexus.PlexusContainer;
 
 public interface Command
 {
-    Options getOptions();
-
-    int execute( PlexusContainer container, CommandLine cli )
+    int execute( PlexusContainer container )
         throws Throwable;
 }

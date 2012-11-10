@@ -17,8 +17,6 @@ package org.fedoraproject.maven.utils;
 
 import java.io.PrintStream;
 
-import org.fedoraproject.maven.Configuration;
-
 public class Logger
 {
     public static interface Provider
@@ -41,29 +39,25 @@ public class Logger
         @Override
         public void debug( String message )
         {
-            if ( Configuration.LOGGER_VERBOSITY >= 3 )
-                stream.println( "[DEBUG] " + message );
+            stream.println( "[DEBUG] " + message );
         }
 
         @Override
         public void info( String message )
         {
-            if ( Configuration.LOGGER_VERBOSITY >= 2 )
-                stream.println( "[INFO] " + message );
+            stream.println( "[INFO] " + message );
         }
 
         @Override
         public void warn( String message )
         {
-            if ( Configuration.LOGGER_VERBOSITY >= 1 )
-                stream.println( "[WARN] " + message );
+            stream.println( "[WARN] " + message );
         }
 
         @Override
         public void error( String message )
         {
-            if ( Configuration.LOGGER_VERBOSITY >= 0 )
-                stream.println( "[ERROR] " + message );
+            stream.println( "[ERROR] " + message );
         }
 
     }
