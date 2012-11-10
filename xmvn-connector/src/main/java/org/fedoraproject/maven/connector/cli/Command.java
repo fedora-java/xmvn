@@ -15,57 +15,14 @@
  */
 package org.fedoraproject.maven.connector.cli;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
-public abstract class Command
+public interface Command
 {
-    private final String name;
+    Options getOptions();
 
-    public Command( String name )
-    {
-        this.name = name;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public abstract String getDescription();
-
-    public abstract Options getOptions();
-
-    public abstract int execute( PlexusContainer container, CommandLine cli )
+    int execute( PlexusContainer container, CommandLine cli )
         throws Throwable;
-
-    public static List<Command> getAvailableCommands( PlexusContainer container )
-    {
-        try
-        {
-            return container.lookupList( Command.class );
-        }
-        catch ( ComponentLookupException e )
-        {
-            return Collections.emptyList();
-        }
-    }
-
-    public static Command getByName( PlexusContainer container, String commandName )
-    {
-        for ( Command command : getAvailableCommands( container ) )
-        {
-            if ( command.getName().equals( commandName ) )
-            {
-                return command;
-            }
-        }
-
-        return null;
-    }
 }

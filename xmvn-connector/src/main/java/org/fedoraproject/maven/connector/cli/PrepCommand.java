@@ -31,7 +31,7 @@ import org.fedoraproject.maven.resolver.SystemResolver;
  */
 @Component( role = Command.class, hint = "prep" )
 public class PrepCommand
-    extends Command
+    implements Command
 {
     @Requirement
     private Logger logger;
@@ -39,11 +39,6 @@ public class PrepCommand
     private boolean skipTests;
 
     private boolean debug;
-
-    public PrepCommand()
-    {
-        super( "prep" );
-    }
 
     @Override
     public Options getOptions()
@@ -78,11 +73,5 @@ public class PrepCommand
 
         SystemResolver.printInvolvedPackages();
         return 0;
-    }
-
-    @Override
-    public String getDescription()
-    {
-        return "verify model correctness and dependency availability";
     }
 }

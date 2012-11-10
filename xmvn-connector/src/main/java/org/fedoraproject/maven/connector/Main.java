@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.maven.connector;
 
-import java.util.List;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -74,36 +72,7 @@ public class Main
             String[] commandArgs = new String[args.length - 1];
             System.arraycopy( args, 1, commandArgs, 0, commandArgs.length );
 
-            if ( commandName.equals( "--version" ) )
-            {
-                logger.info( "XMvn version 0" );
-                logger.info( "Written by Mikolaj Izdebski <mizdebsk@redhat.com>" );
-                return 0;
-            }
-
-            List<Command> commands = Command.getAvailableCommands( container );
-
-            if ( commandName.equals( "--help" ) )
-            {
-                logger.info( "Usage: xmvn <command> [args]" );
-                logger.info( "" );
-
-                logger.info( "Available commands are:" );
-                for ( Command command : commands )
-                    logger.info( "  * " + command.getName() + " - " + command.getDescription() );
-
-                logger.info( "" );
-                logger.info( "For help about particular commands, run \"xmvn help <command>\"." );
-                return 0;
-            }
-
-            if ( commandArgs.length == 1 && commandArgs[0].equals( "--help" ) )
-            {
-                commandArgs[0] = commandName;
-                commandName = "help";
-            }
-
-            Command command = Command.getByName( container, commandName );
+            Command command = container.lookup( Command.class, commandName );
             if ( command == null )
             {
                 logger.error( "\"" + commandName + "\" is not a valid command. Specify --help for usage information." );

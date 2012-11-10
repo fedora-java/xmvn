@@ -31,7 +31,7 @@ import org.fedoraproject.maven.resolver.SystemResolver;
  */
 @Component( role = Command.class, hint = "build" )
 public class BuildCommand
-    extends Command
+    implements Command
 {
     @Requirement
     private Logger logger;
@@ -41,11 +41,6 @@ public class BuildCommand
     private boolean skipJavadoc;
 
     private boolean debug;
-
-    public BuildCommand()
-    {
-        super( "build" );
-    }
 
     @Override
     public Options getOptions()
@@ -82,7 +77,7 @@ public class BuildCommand
         executor.setDebug( debug );
 
         logger.info( "Building project..." );
-        executor.execute( baseGoal, "org.fedoraproject.xmvn:rpminstall-maven-plugin:install" );
+        executor.execute( baseGoal, "org.fedoraproject.xmvn:xmvn-mojo:install" );
 
         if ( !skipJavadoc )
         {
@@ -94,11 +89,5 @@ public class BuildCommand
 
         SystemResolver.printInvolvedPackages();
         return 0;
-    }
-
-    @Override
-    public String getDescription()
-    {
-        return "compile project";
     }
 }
