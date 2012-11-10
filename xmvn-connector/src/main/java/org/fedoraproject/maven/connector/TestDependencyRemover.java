@@ -39,7 +39,7 @@ public class TestDependencyRemover
     @Override
     public void customizeModel( Model model )
     {
-        if ( Parameters.SKIP_TESTS == false )
+        if ( System.getProperty( "maven.test.skip" ) == null )
             return;
 
         List<Dependency> dependencies = model.getDependencies();
