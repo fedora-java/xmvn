@@ -15,10 +15,10 @@
  ! limitations under the License.
  `-->
 <project>
-  <name>RPM Install Maven Plugin</name>
+  <name>XMvn Mojo</name>
   <version>0</version>
   <groupId>org.fedoraproject.xmvn</groupId>
-  <artifactId>rpminstall-maven-plugin</artifactId>
+  <artifactId>xmvn-mojo</artifactId>
   <modelVersion>4.0.0</modelVersion>
   <packaging>maven-plugin</packaging>
 

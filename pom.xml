@@ -32,7 +32,7 @@
     <module>xmvn-core</module>
     <module>xmvn-connector</module>
     <module>xmvn-tools</module>
-    <module>rpminstall-maven-plugin</module>
+    <module>xmvn-mojo</module>
   </modules>
 
   <build>
