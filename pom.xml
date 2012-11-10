@@ -33,6 +33,7 @@
     <module>xmvn-connector</module>
     <module>xmvn-tools</module>
     <module>xmvn-mojo</module>
+    <module>xmvn-launcher</module>
   </modules>
 
   <build>
