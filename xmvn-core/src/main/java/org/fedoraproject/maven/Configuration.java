@@ -26,18 +26,32 @@ import java.util.List;
 
 public class Configuration
 {
-    private static boolean skipTests;
+    private static boolean skipTests = false;
 
     public static boolean areTestsSkipped()
     {
         return skipTests;
     }
 
-    private static boolean skipJavadoc;
+    private static boolean skipJavadoc = false;
 
     public static boolean isJavadocSkipped()
     {
         return skipJavadoc;
+    }
+
+    private static String installName = null;
+
+    public static String getInstallName()
+    {
+        return installName;
+    }
+
+    private static String installLayout = "";
+
+    public static String getInstallLayout()
+    {
+        return installLayout;
     }
 
     private static String installJarDir = "usr/share/java";

@@ -18,8 +18,8 @@ package org.fedoraproject.maven.rpminstall.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -74,18 +74,27 @@ public class InstallMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        Set<Package> packages = new TreeSet<>();
+        Map<String, Package> packages = new TreeMap<>();
+        PackagingLayout layout = new PackagingLayout();
 
-        String packageName = rootProject.getArtifactId();
-        Package mainPackage = new Package( packageName );
-        packages.add( mainPackage );
+        Package mainPackage = new Package( "" );
+        packages.put( "", mainPackage );
 
         for ( MavenProject project : reactorProjects )
         {
-            installProject( project, mainPackage );
+            String packageName = layout.getPackageName( project.getArtifactId() );
+            Package pkg = packages.get( packageName );
+
+            if ( pkg == null )
+            {
+                pkg = new Package( packageName );
+                packages.put( packageName, pkg );
+            }
+
+            installProject( project, pkg );
         }
 
-        File buildRoot = new File( ".m2-rpminstall-root" );
+        File buildRoot = new File( ".root" );
         if ( buildRoot.exists() )
             buildRoot.delete();
         buildRoot.mkdir();
@@ -93,7 +102,7 @@ public class InstallMojo
         Installer installer = new Installer( buildRoot );
         try
         {
-            for ( Package pkg : packages )
+            for ( Package pkg : packages.values() )
                 pkg.install( installer );
         }
         catch ( IOException e )

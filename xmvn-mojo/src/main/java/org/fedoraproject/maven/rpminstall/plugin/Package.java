@@ -30,11 +30,11 @@ import org.fedoraproject.maven.resolver.DependencyMap;
 public class Package
     implements Comparable<Package>
 {
-    private final String name;
+    private final String suffix;
 
     public Package( String name )
     {
-        this.name = name;
+        suffix = name.equals( "" ) ? "" : "-" + name;
     }
 
     private final DependencyMap depmap = new DependencyMap();
@@ -61,7 +61,7 @@ public class Package
 
     public void addPomFile( File file, Artifact artifact )
     {
-        String jppGroupId = "JPP/" + name;
+        String jppGroupId = "JPP/" + Configuration.getInstallName();
         String jppArtifactId = artifact.getArtifactId();
         String pomName = jppGroupId.replace( '/', '.' ) + "-" + jppArtifactId + ".pom";
         addFile( file, Configuration.getInstallPomDir(), pomName );
@@ -77,8 +77,9 @@ public class Package
 
     public void addJarFile( File file, Artifact artifact )
     {
-        String jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
-        addFile( file, jarDir + "/" + name, artifact.getArtifactId() + ".jar" );
+        String jarDir =
+            containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
+        addFile( file, jarDir + "/" + Configuration.getInstallName(), artifact.getArtifactId() + ".jar" );
     }
 
     private void installFiles( Installer installer )
@@ -96,7 +97,7 @@ public class Package
         String artifactId = artifact.getArtifactId();
         String version = artifact.getVersion();
 
-        depmap.addMapping( groupId, artifactId, version, "JPP/" + name, artifactId );
+        depmap.addMapping( groupId, artifactId, version, "JPP/" + Configuration.getInstallName(), artifactId );
     }
 
     private void installDepmap( Installer installer )
@@ -104,9 +105,9 @@ public class Package
     {
         if ( !depmap.isEmpty() )
         {
-            File file = File.createTempFile( "maven-fedora-packager", ".xml" );
+            File file = File.createTempFile( "xmvn", ".xml" );
             depmap.writeToFile( file );
-            String depmapName = name + ".xml";
+            String depmapName = Configuration.getInstallName() + suffix + ".xml";
             addFile( file, Configuration.getInstallDepmapDir(), depmapName );
         }
     }
@@ -121,7 +122,7 @@ public class Package
             targetNames.add( file.getPath() );
         }
 
-        PrintStream ps = new PrintStream( ".mfiles-" + name );
+        PrintStream ps = new PrintStream( ".mfiles" + suffix );
         for ( String path : targetNames )
         {
             ps.println( "/" + path );
@@ -140,6 +141,6 @@ public class Package
     @Override
     public int compareTo( Package rhs )
     {
-        return name.compareTo( rhs.name );
+        return suffix.compareTo( rhs.suffix );
     }
 }
