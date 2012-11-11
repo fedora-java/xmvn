@@ -55,6 +55,7 @@ public class BuildCommand
         if ( Configuration.isJavadocSkipped() == false )
         {
             logger.info( "Generating javadocs..." );
+            executor.setLoggingThreshold( Logger.LEVEL_ERROR );
             executor.execute( "org.apache.maven.plugins:maven-javadoc-plugin:aggregate" );
         }
 

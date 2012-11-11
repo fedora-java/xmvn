@@ -17,45 +17,56 @@ package org.fedoraproject.maven.connector;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.maven.Maven;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.Configuration;
 
 public class MavenExecutor
 {
+    private final DefaultPlexusContainer container;
+
+    private final Maven maven;
+
+    public MavenExecutor()
+        throws PlexusContainerException, ComponentLookupException
+    {
+        container = new DefaultPlexusContainer();
+        maven = container.lookup( Maven.class );
+        setLoggingThreshold( Configuration.isMavenDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
+    }
+
+    public void setLoggingThreshold( int threshold )
+    {
+        container.getLoggerManager().setThreshold( threshold );
+    }
+
     public void execute( String... goals )
         throws Throwable
     {
-        DefaultPlexusContainer container = null;
+        execute( Arrays.asList( goals ) );
+    }
 
-        try
-        {
-            container = new DefaultPlexusContainer();
-            int loggerThreshold = Configuration.isMavenDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
-            container.getLoggerManager().setThreshold( loggerThreshold );
-            Maven maven = container.lookup( Maven.class );
+    public void execute( List<String> goals )
+        throws Throwable
+    {
+        MavenExecutionRequest request = new DefaultMavenExecutionRequest();
+        request.setGoals( goals );
+        request.setLocalRepositoryPath( Configuration.getLocalRepoPath() );
+        request.setInteractiveMode( false );
+        request.setOffline( Configuration.isMavenOnline() == false );
+        request.setPom( new File( "pom.xml" ) );
+        request.setSystemProperties( System.getProperties() );
 
-            MavenExecutionRequest request = new DefaultMavenExecutionRequest();
-            request.setGoals( Arrays.asList( goals ) );
-            request.setLocalRepositoryPath( Configuration.getLocalRepoPath() );
-            request.setInteractiveMode( false );
-            request.setOffline( Configuration.isMavenOnline() == false );
-            request.setPom( new File( "pom.xml" ) );
-            request.setSystemProperties( System.getProperties() );
-
-            MavenExecutionResult result = maven.execute( request );
-            if ( result.hasExceptions() )
-                throw result.getExceptions().iterator().next();
-        }
-        finally
-        {
-            if ( container != null )
-                container.dispose();
-        }
+        MavenExecutionResult result = maven.execute( request );
+        if ( result.hasExceptions() )
+            throw result.getExceptions().iterator().next();
     }
 }

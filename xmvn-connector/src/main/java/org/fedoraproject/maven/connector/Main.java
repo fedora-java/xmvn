@@ -42,7 +42,7 @@ public class Main
 
         try
         {
-            System.out.println( "[INFO] Initializing Plexus..." );
+            System.out.println( "[INFO] Initializing XMvn..." );
             container = new DefaultPlexusContainer();
             container.getLoggerManager().setThreshold( Logger.LEVEL_DEBUG );
             return container.lookup( Main.class ).exec( world, container, args );
