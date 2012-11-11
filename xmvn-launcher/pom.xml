@@ -15,20 +15,16 @@
  ! limitations under the License.
  `-->
 <project>
-  <name>XMvn Launcher</name>
-  <description>Launches XMvn</description>
-  <version>0</version>
-  <groupId>org.fedoraproject.xmvn</groupId>
-  <artifactId>xmvn-launcher</artifactId>
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <version>0</version>
-    <groupId>org.fedoraproject.xmvn</groupId>
     <artifactId>xmvn</artifactId>
+    <groupId>org.fedoraproject.xmvn</groupId>
+    <version>0</version>
     <relativePath>..</relativePath>
   </parent>
-
+  <artifactId>xmvn-launcher</artifactId>
+  <name>XMvn Launcher</name>
+  <description>Launches XMvn</description>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

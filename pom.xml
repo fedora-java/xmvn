@@ -15,19 +15,25 @@
  ! limitations under the License.
  `-->
 <project>
-  <name>XMvn Parent</name>
-  <description>XMvn Parent POM</description>
-  <version>0</version>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>org.fedoraproject.xmvn</groupId>
   <artifactId>xmvn</artifactId>
-  <modelVersion>4.0.0</modelVersion>
+  <version>0</version>
   <packaging>pom</packaging>
-
-  <properties>
-    <mavenVersion>3.0.4</mavenVersion>
-    <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
-  </properties>
-
+  <name>XMvn Parent</name>
+  <description>XMvn Parent POM</description>
+  <url>https://fedorahosted.org/maven-rpminstall-plugin/</url>
+  <inceptionYear>2012</inceptionYear>
+  <organization>
+    <name>Red Hat, Inc.</name>
+    <url>http://www.redhat.com/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
   <modules>
     <module>xmvn-core</module>
     <module>xmvn-connector</module>
@@ -35,7 +41,10 @@
     <module>xmvn-mojo</module>
     <module>xmvn-launcher</module>
   </modules>
-
+  <properties>
+    <mavenVersion>3.0.4</mavenVersion>
+    <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
+  </properties>
   <build>
     <plugins>
       <plugin>

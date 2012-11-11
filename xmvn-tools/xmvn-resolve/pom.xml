@@ -15,20 +15,15 @@
  ! limitations under the License.
  `-->
 <project>
-  <name>XMvn Resolver Tool</name>
-  <description>
-    A commald-line tool to resolve Maven artifacts from system
-    repositories.
-  </description>
-  <groupId>org.fedoraproject.xmvn.tools</groupId>
-  <artifactId>xmvn-resolve</artifactId>
-  <version>0</version>
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <groupId>org.fedoraproject.xmvn</groupId>
     <artifactId>xmvn-tools</artifactId>
+    <groupId>org.fedoraproject.xmvn</groupId>
     <version>0</version>
     <relativePath>..</relativePath>
   </parent>
+  <artifactId>xmvn-resolve</artifactId>
+  <name>XMvn Resolver Tool</name>
+  <description>A commald-line tool to resolve Maven artifacts from system
+    repositories.</description>
 </project>

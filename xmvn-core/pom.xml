@@ -15,17 +15,14 @@
  ! limitations under the License.
  `-->
 <project>
-  <name>XMvn Core</name>
-  <description>XMvn Core library</description>
-  <version>0</version>
-  <groupId>org.fedoraproject.xmvn</groupId>
-  <artifactId>xmvn-core</artifactId>
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <version>0</version>
-    <groupId>org.fedoraproject.xmvn</groupId>
     <artifactId>xmvn</artifactId>
+    <groupId>org.fedoraproject.xmvn</groupId>
+    <version>0</version>
     <relativePath>..</relativePath>
   </parent>
+  <artifactId>xmvn-core</artifactId>
+  <name>XMvn Core</name>
+  <description>XMvn Core library</description>
 </project>

@@ -15,26 +15,20 @@
  ! limitations under the License.
  `-->
 <project>
-  <name>XMvn Tools Parent</name>
-  <description>XMvn Tools Parent POM</description>
-  <version>0</version>
-  <groupId>org.fedoraproject.xmvn</groupId>
-  <artifactId>xmvn-tools</artifactId>
   <modelVersion>4.0.0</modelVersion>
-  <packaging>pom</packaging>
- 
-
   <parent>
-    <version>0</version>
-    <groupId>org.fedoraproject.xmvn</groupId>
     <artifactId>xmvn</artifactId>
+    <groupId>org.fedoraproject.xmvn</groupId>
+    <version>0</version>
     <relativePath>..</relativePath>
   </parent>
-
+  <artifactId>xmvn-tools</artifactId>
+  <packaging>pom</packaging>
+  <name>XMvn Tools Parent</name>
+  <description>XMvn Tools Parent POM</description>
   <modules>
     <module>xmvn-resolve</module>
   </modules>
-
   <dependencies>
     <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
