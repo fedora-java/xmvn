@@ -72,7 +72,7 @@ public class Launcher
             StringBuilder detail = new StringBuilder();
             for ( Throwable exc = exception; exc != null; exc = exc.getCause() )
             {
-                if ( exc.getMessage() != null && exc.getMessage().length() < 200
+                if ( exc.getMessage() != null && exc.getMessage().length() < 500
                     && detail.indexOf( exc.getMessage() ) < 0 )
                 {
                     detail.append( exc.getMessage() );
