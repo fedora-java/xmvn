@@ -26,18 +26,9 @@ import java.util.List;
 
 public class Configuration
 {
-    private static boolean skipTests = false;
-
     public static boolean areTestsSkipped()
     {
-        return skipTests;
-    }
-
-    private static boolean skipJavadoc = false;
-
-    public static boolean isJavadocSkipped()
-    {
-        return skipJavadoc;
+        return System.getProperty( "maven.test.skip" ) != null;
     }
 
     private static String installName = null;

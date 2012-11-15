@@ -15,59 +15,33 @@
  */
 package org.fedoraproject.maven.connector;
 
-import org.codehaus.plexus.DefaultPlexusContainer;
+import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.logging.Logger;
-import org.fedoraproject.maven.Configuration;
-import org.fedoraproject.maven.connector.cli.Command;
 
-@Component( role = Main.class )
 public class Main
+    extends MavenCli
 {
-    @Requirement
-    private Logger logger;
-
-    @Requirement
-    private LoggerProvider loggerProvider;
-
-    public static int main( String[] args, ClassWorld world )
-        throws PlexusContainerException, ComponentLookupException
+    @Override
+    protected void customizeContainer( PlexusContainer container )
     {
-        DefaultPlexusContainer container = null;
+        super.customizeContainer( container );
 
         try
         {
-            System.out.println( "[INFO] Initializing XMvn..." );
-            container = new DefaultPlexusContainer();
-            container.getLoggerManager().setThreshold( Logger.LEVEL_DEBUG );
-            return container.lookup( Main.class ).exec( world, container, args );
+            LoggerProvider loggerProvider = container.lookup( LoggerProvider.class );
+            org.fedoraproject.maven.utils.Logger.setProvider( loggerProvider );
         }
-        finally
-        {
-            container.dispose();
-        }
-    }
-
-    private int exec( ClassWorld world, PlexusContainer container, String[] args )
-    {
-        org.fedoraproject.maven.utils.Logger.setProvider( loggerProvider );
-        System.setProperty( "maven.version", Configuration.getMavenVersion() );
-        System.setProperty( "maven.build.version", Configuration.getMavenVersion() );
-
-        try
-        {
-            String commandName = args[0];
-            Command command = container.lookup( Command.class, commandName );
-            return command.execute( container );
-        }
-        catch ( Throwable e )
+        catch ( ComponentLookupException e )
         {
             throw new RuntimeException( e );
         }
+    }
+
+    public static int main( String[] args, ClassWorld world )
+    {
+        System.out.println( "[INFO] Initializing..." );
+        return MavenCli.main( args, world );
     }
 }
