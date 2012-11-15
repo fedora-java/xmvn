@@ -15,21 +15,29 @@
  */
 package org.fedoraproject.maven.connector;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.fedoraproject.maven.Configuration;
 
 /**
  * Custom Maven model object model (POM) validator that overrides default Maven model validator.
- * <p>
- * This component first modifies the model using all available customizers and then delegates the actual validation to
- * the default model validator provided by Maven itself.
  * 
  * @author Mikolaj Izdebski
  */
@@ -38,7 +46,7 @@ class FedoraModelValidator
     extends DefaultModelValidator
 {
     @Requirement
-    private List<ModelCustomizer> modelCustomizers;
+    private Logger logger;
 
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
@@ -56,9 +64,107 @@ class FedoraModelValidator
 
     private void customizeModel( Model model )
     {
-        for ( ModelCustomizer customizer : modelCustomizers )
+        customizeDependencies( model );
+        customizePlugins( model );
+    }
+
+    private void customizeDependencies( Model model )
+    {
+        for ( Iterator<Dependency> iter = model.getDependencies().iterator(); iter.hasNext(); )
         {
-            customizer.customizeModel( model );
+            Dependency dependency = iter.next();
+            String groupId = dependency.getGroupId();
+            String artifactId = dependency.getArtifactId();
+            String scope = dependency.getScope();
+
+            if ( isBlacklisted( groupId, artifactId ) )
+            {
+                logger.debug( "Removed dependency " + groupId + ":" + artifactId + " because it was blacklisted." );
+                iter.remove();
+                continue;
+            }
+
+            if ( Configuration.areTestsSkipped() && scope != null && scope.equals( "test" ) )
+            {
+                logger.debug( "Dropped dependency on " + groupId + ":" + artifactId + " because tests are skipped." );
+                iter.remove();
+                continue;
+            }
+
+            if ( dependency.getVersion() == null )
+                dependency.setVersion( "SYSTEM" );
         }
+    }
+
+    private void customizePlugins( Model model )
+    {
+        Build build = model.getBuild();
+        if ( build == null )
+            return;
+
+        for ( Iterator<Plugin> iter = build.getPlugins().iterator(); iter.hasNext(); )
+        {
+            Plugin plugin = iter.next();
+            String groupId = plugin.getGroupId();
+            String artifactId = plugin.getArtifactId();
+
+            if ( isBlacklisted( groupId, artifactId ) )
+            {
+                logger.debug( "Removed plugin " + groupId + ":" + artifactId + " because it was blacklisted." );
+                iter.remove();
+                continue;
+            }
+
+            if ( plugin.getVersion() == null )
+                plugin.setVersion( "SYSTEM" );
+
+            if ( groupId.equals( "org.apache.maven.plugins" ) && artifactId.equals( "maven-compiler-plugin" ) )
+                configureCompiler( plugin );
+        }
+    }
+
+    private void configureCompiler( Plugin plugin )
+    {
+        try
+        {
+            Xpp3Dom config = (Xpp3Dom) plugin.getConfiguration();
+            BigDecimal source = new BigDecimal( config.getChild( "source" ).getValue().trim() );
+            BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
+
+            if ( target.compareTo( source ) < 0 )
+                config.getChild( "target" ).setValue( config.getChild( "source" ).getValue() );
+        }
+        catch ( NullPointerException | ClassCastException | NumberFormatException e )
+        {
+            logger.warn( "Suspicious maven-compiler-plugin configuration", e );
+        }
+    }
+
+    private static final Map<String, Set<String>> blacklist = new TreeMap<>();
+
+    private boolean isBlacklisted( String groupId, String artifactId )
+    {
+        Set<String> group = blacklist.get( groupId );
+        return group != null && group.contains( artifactId );
+    }
+
+    private static void blacklist( String groupId, String artifactId )
+    {
+        Set<String> group = blacklist.get( groupId );
+
+        if ( group == null )
+        {
+            group = new TreeSet<>();
+            blacklist.put( groupId, group );
+        }
+
+        group.add( artifactId );
+    }
+
+    static
+    {
+        blacklist( "org.fedoraproject.xmvn", "xmvn-void" );
+        blacklist( "org.codehaus.mojo", "clirr-maven-plugin" );
+        blacklist( "org.codehaus.mojo", "animal-sniffer-maven-plugin" );
     }
 }

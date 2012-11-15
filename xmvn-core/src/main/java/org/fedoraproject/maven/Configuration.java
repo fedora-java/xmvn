@@ -26,9 +26,11 @@ import java.util.List;
 
 public class Configuration
 {
+    private static final boolean skipTests = System.getProperty( "maven.test.skip" ) != null;
+
     public static boolean areTestsSkipped()
     {
-        return System.getProperty( "maven.test.skip" ) != null;
+        return skipTests;
     }
 
     private static String installName = null;
