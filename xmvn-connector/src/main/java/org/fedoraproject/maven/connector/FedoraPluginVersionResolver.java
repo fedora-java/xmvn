@@ -28,7 +28,7 @@ class FedoraPluginVersionResolver
     implements PluginVersionResolver
 {
     @Override
-    public PluginVersionResult resolve( final PluginVersionRequest request )
+    public PluginVersionResult resolve( PluginVersionRequest request )
     {
         RepositorySystemSession session = request.getRepositorySession();
         WorkspaceReader reader = session.getWorkspaceReader();

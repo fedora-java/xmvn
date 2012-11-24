@@ -16,7 +16,9 @@
 package org.fedoraproject.maven.connector;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -26,6 +28,7 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
@@ -37,7 +40,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.Configuration;
 
 /**
- * Custom Maven model object model (POM) validator that overrides default Maven model validator.
+ * Custom Maven object model (POM) validator that overrides default Maven model validator.
  * 
  * @author Mikolaj Izdebski
  */
@@ -125,18 +128,37 @@ class FedoraModelValidator
 
     private void configureCompiler( Plugin plugin )
     {
-        try
-        {
-            Xpp3Dom config = (Xpp3Dom) plugin.getConfiguration();
-            BigDecimal source = new BigDecimal( config.getChild( "source" ).getValue().trim() );
-            BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
+        Collection<Object> configurations = new LinkedList<Object>();
+        configurations.add( plugin.getConfiguration() );
 
-            if ( target.compareTo( source ) < 0 )
-                config.getChild( "target" ).setValue( config.getChild( "source" ).getValue() );
-        }
-        catch ( NullPointerException | ClassCastException | NumberFormatException e )
+        Collection<PluginExecution> executions = plugin.getExecutions();
+        for ( PluginExecution exec : executions )
+            configurations.add( exec.getConfiguration() );
+
+        for ( Object configObj : configurations )
         {
-            logger.warn( "Suspicious maven-compiler-plugin configuration", e );
+            try
+            {
+                Xpp3Dom config = (Xpp3Dom) configObj;
+                BigDecimal source = new BigDecimal( config.getChild( "source" ).getValue().trim() );
+                BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
+
+                // Source must be at least 1.5
+                BigDecimal minSource = new BigDecimal( "1.5" );
+                if ( source.compareTo( minSource ) < 0 )
+                    source = minSource;
+
+                // Target must not be less than source
+                if ( target.compareTo( source ) < 0 )
+                    target = source;
+
+                config.getChild( "source" ).setValue( source.toString() );
+                config.getChild( "target" ).setValue( target.toString() );
+            }
+            catch ( ClassCastException | NullPointerException | NumberFormatException e )
+            {
+                logger.warn( "Suspicious maven-compiler-plugin configuration", e );
+            }
         }
     }
 
