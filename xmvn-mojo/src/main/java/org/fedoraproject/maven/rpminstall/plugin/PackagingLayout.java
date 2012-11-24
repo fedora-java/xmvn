@@ -45,7 +45,7 @@ public class PackagingLayout
 
             text = replacement;
             for ( int group = 1; group <= matcher.groupCount(); group++ )
-                text = text.replaceAll( "@" + group, matcher.group( group ) );
+                text = text.replace( "@" + group, matcher.group( group ) );
             return text;
         }
     }

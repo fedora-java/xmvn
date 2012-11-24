@@ -94,14 +94,10 @@ public class InstallMojo
             installProject( project, pkg );
         }
 
-        File buildRoot = new File( ".root" );
-        if ( buildRoot.exists() )
-            buildRoot.delete();
-        buildRoot.mkdir();
-
-        Installer installer = new Installer( buildRoot );
         try
         {
+            Installer installer = new Installer( ".root" );
+
             for ( Package pkg : packages.values() )
                 pkg.install( installer );
         }

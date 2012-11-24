@@ -17,22 +17,29 @@ package org.fedoraproject.maven.rpminstall.plugin;
 
 import java.io.File;
 import java.io.IOException;
-
-import com.google.common.io.Files;
+import java.nio.file.Files;
 
 public class Installer
 {
     private final File root;
 
-    public Installer( File root )
+    public Installer( String rootPath )
+        throws IOException
     {
-        this.root = root;
+        File buildRoot = new File( rootPath );
+
+        if ( buildRoot.mkdir() == false )
+            throw new IOException( "Failed to create directory: " + rootPath );
+
+        this.root = buildRoot;
     }
 
     public File createDirectory( String path )
+        throws IOException
     {
         File dir = new File( root, path );
-        dir.mkdirs();
+        if ( dir.mkdirs() == false )
+            throw new IOException( "Unable to create directory: " + dir.getPath() );
         return dir;
     }
 
@@ -50,7 +57,20 @@ public class Installer
     {
         File dir = createDirectory( targetDir );
         File target = new File( dir, targetName );
-        Files.copy( source, target );
+        linkOrCopy( source, target );
         return target;
+    }
+
+    private void linkOrCopy( File source, File target )
+        throws IOException
+    {
+        try
+        {
+            Files.createLink( target.toPath(), source.toPath() );
+        }
+        catch ( IOException | UnsupportedOperationException e )
+        {
+            Files.copy( source.toPath(), target.toPath() );
+        }
     }
 }
