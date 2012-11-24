@@ -157,7 +157,6 @@ class FedoraModelValidator
             }
             catch ( ClassCastException | NullPointerException | NumberFormatException e )
             {
-                logger.warn( "Suspicious maven-compiler-plugin configuration", e );
             }
         }
     }
