@@ -109,14 +109,22 @@ public class Artifact
         return getExtension().equals( "pom" );
     }
 
-    public Artifact copyVersionAndExtension( Artifact rhs )
+    public Artifact clearExtension()
     {
-        return new Artifact( groupId, artifactId, rhs.version, rhs.extension );
+        return new Artifact( groupId, artifactId, version );
     }
 
     public Artifact clearVersionAndExtension()
     {
         return new Artifact( groupId, artifactId );
+    }
+
+    public Artifact copyMissing( Artifact rhs )
+    {
+        String version = this.version != null ? this.version : rhs.version;
+        String extension = this.extension != null ? this.extension : rhs.extension;
+
+        return new Artifact( groupId, artifactId, version, extension );
     }
 
     @Override

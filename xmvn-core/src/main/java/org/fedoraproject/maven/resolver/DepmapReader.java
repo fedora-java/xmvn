@@ -141,8 +141,6 @@ class DepmapReader
     private void loadDepmapFile( DependencyMap map, File file )
         throws IOException
     {
-        // XXX this is buggy
-
         debug( "Loading depmap file: ", file );
         Document mapDocument = buildDepmapModel( file );
 
@@ -157,6 +155,7 @@ class DepmapReader
                 throw new IOException();
 
             Artifact to = getArtifactDefinition( depNode, "jpp" );
+            map.addMapping( from.clearExtension(), to.clearExtension() );
             map.addMapping( from.clearVersionAndExtension(), to.clearVersionAndExtension() );
         }
     }
@@ -180,12 +179,10 @@ class DepmapReader
     private String wrapFragment( File fragmentFile )
         throws IOException
     {
-        String openingTag = "<dependencies>";
-        String closingTag = "</dependencies>";
         StringBuilder buffer = new StringBuilder();
-        buffer.append( openingTag );
+        buffer.append( "<dependencies>" );
         buffer.append( readFile( fragmentFile ) );
-        buffer.append( closingTag );
+        buffer.append( "</dependencies>" );
         String docString = buffer.toString();
         return docString;
     }

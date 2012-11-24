@@ -87,7 +87,7 @@ class FedoraModelValidator
                 continue;
             }
 
-            if ( Configuration.areTestsSkipped() && scope != null && scope.equals( "test" ) )
+            if ( Configuration.testsSkipped() && scope != null && scope.equals( "test" ) )
             {
                 logger.debug( "Dropped dependency on " + groupId + ":" + artifactId + " because tests are skipped." );
                 iter.remove();

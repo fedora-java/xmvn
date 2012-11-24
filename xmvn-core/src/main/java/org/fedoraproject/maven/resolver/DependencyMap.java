@@ -68,7 +68,7 @@ public class DependencyMap
             Artifact next = mapping.get( current );
             if ( next == null )
             {
-                Artifact result = current.copyVersionAndExtension( artifact );
+                Artifact result = current.copyMissing( artifact );
                 debug( "Returning ", result );
                 return result;
             }

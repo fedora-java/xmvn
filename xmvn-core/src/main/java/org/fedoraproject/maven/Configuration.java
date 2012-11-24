@@ -28,7 +28,7 @@ public class Configuration
 {
     private static final boolean skipTests = System.getProperty( "maven.test.skip" ) != null;
 
-    public static boolean areTestsSkipped()
+    public static boolean testsSkipped()
     {
         return skipTests;
     }
