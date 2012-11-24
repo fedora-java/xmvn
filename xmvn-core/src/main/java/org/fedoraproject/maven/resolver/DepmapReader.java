@@ -43,7 +43,6 @@ import org.xml.sax.SAXException;
 
 class DepmapReader
 {
-
     private Document buildDepmapModel( File file )
         throws IOException
     {
@@ -74,13 +73,6 @@ class DepmapReader
         }
     }
 
-    /**
-     * Read artifact dependency mappings from file system and store in given depmap object. Mappings are in increasing
-     * preference so that mappings added earlier can be overridden by mappings added later. Local depmap has highest
-     * preference, followed by the versioned depmaps, followed by the versionless depmap from maven2-common-poms.
-     * 
-     * @param map where to store mappings
-     */
     public void readArtifactMap( File root, DependencyMap map )
     {
         for ( String path : Configuration.getDepmaps() )

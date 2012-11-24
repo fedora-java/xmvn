@@ -75,8 +75,7 @@ public class Configuration
         return installDepmapDir;
     }
 
-    private static List<String> resolvDepmaps = newList( "/etc/maven/maven2-versionless-depmap.xml",
-                                                         "/usr/share/maven-fragments" );
+    private static List<String> resolvDepmaps = newList( "/usr/share/maven-fragments" );
 
     public static Collection<String> getDepmaps()
     {
@@ -93,7 +92,7 @@ public class Configuration
     }
 
     private static List<String> resolvPomRepos = newList( "/usr/share/maven2/poms/", "/usr/share/maven/poms/",
-                                                          "/usr/share/maven-poms/", "/usr/share/maven2/default_poms/" );
+                                                          "/usr/share/maven-poms/" );
 
     public static Collection<String> getPomRepos()
     {
@@ -124,34 +123,6 @@ public class Configuration
     public static boolean isDebugEnabled()
     {
         return debug;
-    }
-
-    private static boolean mavenDebug;
-
-    public static boolean isMavenDebug()
-    {
-        return mavenDebug;
-    }
-
-    private static boolean mavenOnline;
-
-    public static boolean isMavenOnline()
-    {
-        return mavenOnline;
-    }
-
-    private static String mavenHome;
-
-    public static String getMavenHome()
-    {
-        return mavenHome;
-    }
-
-    private static String mavenVersion = "3.0.4";
-
-    public static String getMavenVersion()
-    {
-        return mavenVersion;
     }
 
     private static void setField( Field field, String value, String envName )
