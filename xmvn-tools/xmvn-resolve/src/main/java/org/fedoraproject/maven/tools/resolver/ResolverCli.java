@@ -16,7 +16,6 @@
 package org.fedoraproject.maven.tools.resolver;
 
 import java.io.File;
-import java.util.StringTokenizer;
 
 import org.fedoraproject.maven.resolver.DefaultResolver;
 import org.fedoraproject.maven.resolver.Resolver;
@@ -27,16 +26,25 @@ public class ResolverCli
     public static void main( String[] args )
     {
         Resolver resolver = new DefaultResolver();
+        String[] tokens = new String[4];
 
-        for ( String arg : args )
+        for ( String s : args )
         {
-            StringTokenizer tok = new StringTokenizer( arg, ":" );
-            String groupId = tok.nextToken();
-            String artifactId = tok.nextToken();
-            String version = tok.hasMoreTokens() ? tok.nextToken() : "SYSTEM";
-            String extension = tok.hasMoreTokens() ? tok.nextToken() : "pom";
+            s += "::::";
 
-            File file = resolver.resolve( groupId, artifactId, version, extension );
+            for ( int i = 0; i < tokens.length; i++ )
+            {
+                int j = s.indexOf( ':' );
+
+                String tok = s.substring( 0, j ).trim();
+                if ( tok.equals( "" ) )
+                    tok = null;
+
+                s = s.substring( j + 1 );
+                tokens[i] = tok;
+            }
+
+            File file = resolver.resolve( tokens[0], tokens[1], tokens[2], tokens[3] );
             System.out.println( file );
         }
 
