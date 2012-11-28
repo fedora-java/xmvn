@@ -20,6 +20,8 @@ import java.io.IOException;
 
 public class FileUtils
 {
+    public static final File CWD = new File( "." );
+
     public static final File ROOT = new File( "/" );
 
     public static final File BIT_BUCKET = new File( "/dev/null" );
@@ -40,5 +42,15 @@ public class FileUtils
         {
             return file;
         }
+    }
+
+    /**
+     * Return process current working directory.
+     * 
+     * @return current working directory
+     */
+    public static File getCwd()
+    {
+        return CWD.getAbsoluteFile();
     }
 }

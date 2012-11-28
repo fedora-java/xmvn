@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.fedoraproject.maven.utils.FileUtils;
+
 public class Configuration
 {
     private static final boolean skipTests = System.getProperty( "maven.test.skip" ) != null;
@@ -33,7 +35,7 @@ public class Configuration
         return skipTests;
     }
 
-    private static String installName = null;
+    private static String installName = FileUtils.getCwd().getName();
 
     public static String getInstallName()
     {
