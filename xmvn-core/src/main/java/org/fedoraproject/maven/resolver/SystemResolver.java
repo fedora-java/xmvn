@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.fedoraproject.maven.Configuration;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.repository.JppRepository;
 import org.fedoraproject.maven.repository.Repository;
@@ -59,15 +60,19 @@ public class SystemResolver
         }
 
         debug( "Artifact ", artifact, " was resolved to ", file );
-        String rpmPackage = rpmdb.lookupFile( file );
-        if ( rpmPackage != null )
+
+        if ( Configuration.isDebugEnabled() )
         {
-            usedRpmPackages.add( rpmPackage );
-            debug( "Artifact ", artifact, " is provided by ", rpmPackage );
-        }
-        else
-        {
-            debug( "Artifact ", artifact, " is not provided by any package" );
+            String rpmPackage = rpmdb.lookupFile( file );
+            if ( rpmPackage != null )
+            {
+                usedRpmPackages.add( rpmPackage );
+                debug( "Artifact ", artifact, " is provided by ", rpmPackage );
+            }
+            else
+            {
+                debug( "Artifact ", artifact, " is not provided by any package" );
+            }
         }
 
         return file;
