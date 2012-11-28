@@ -28,7 +28,7 @@ public class Installer
     {
         File buildRoot = new File( rootPath );
 
-        if ( buildRoot.mkdir() == false )
+        if ( !buildRoot.isDirectory() && buildRoot.mkdir() == false )
             throw new IOException( "Failed to create directory: " + rootPath );
 
         this.root = buildRoot;
@@ -38,7 +38,7 @@ public class Installer
         throws IOException
     {
         File dir = new File( root, path );
-        if ( dir.mkdirs() == false )
+        if ( !dir.isDirectory() && dir.mkdirs() == false )
             throw new IOException( "Unable to create directory: " + dir.getPath() );
         return dir;
     }
