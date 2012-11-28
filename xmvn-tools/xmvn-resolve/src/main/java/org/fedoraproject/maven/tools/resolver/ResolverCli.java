@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.maven.tools.resolver;
 
+import java.io.File;
 import java.util.StringTokenizer;
 
 import org.fedoraproject.maven.resolver.DefaultResolver;
@@ -35,7 +36,8 @@ public class ResolverCli
             String version = tok.hasMoreTokens() ? tok.nextToken() : "SYSTEM";
             String extension = tok.hasMoreTokens() ? tok.nextToken() : "pom";
 
-            resolver.resolve( groupId, artifactId, version, extension );
+            File file = resolver.resolve( groupId, artifactId, version, extension );
+            System.out.println( file );
         }
 
         SystemResolver.printInvolvedPackages();
