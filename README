@@ -1,1 +1,9 @@
-To be written.
+XMvn is a set of extensions for Apache Maven that can be used to
+manage system artifact repository and use it to resolve Maven
+artifacts in offline mode. It also provides Maven plugins to help with
+creating RPM packages containing Maven artifacts.
+
+XMvn is free software. You can redistribute and/or modify it under the
+terms of Apache License Version 2.0.
+
+XMvn was written by Mikolaj Izdebski.
