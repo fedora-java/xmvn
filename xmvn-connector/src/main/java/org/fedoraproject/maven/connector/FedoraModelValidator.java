@@ -58,13 +58,6 @@ class FedoraModelValidator
         super.validateEffectiveModel( model, request, problems );
     }
 
-    @Override
-    public void validateRawModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
-    {
-        customizeModel( model );
-        super.validateRawModel( model, request, problems );
-    }
-
     private void customizeModel( Model model )
     {
         customizeDependencies( model );
