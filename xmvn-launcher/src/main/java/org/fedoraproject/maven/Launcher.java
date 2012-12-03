@@ -52,6 +52,7 @@ public class Launcher
         launcher = new org.codehaus.plexus.classworlds.launcher.Launcher();
         launcher.configure( new ByteArrayInputStream( bos.toByteArray() ) );
         launcher.launch( args );
+        System.exit( launcher.getExitCode() );
     }
 
     public static void main( String[] args )
