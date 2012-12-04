@@ -77,6 +77,20 @@ public class Configuration
         return installDepmapDir;
     }
 
+    private static List<String> installDepmaps = newList();
+
+    public static Collection<String> getInstallDepmaps()
+    {
+        return Collections.unmodifiableCollection( installDepmaps );
+    }
+
+    private static List<String> installVersions = newList();
+
+    public static Collection<String> getInstallVersions()
+    {
+        return Collections.unmodifiableCollection( installVersions );
+    }
+
     private static List<String> resolvDepmaps = newList( "/usr/share/maven-fragments" );
 
     public static Collection<String> getDepmaps()
