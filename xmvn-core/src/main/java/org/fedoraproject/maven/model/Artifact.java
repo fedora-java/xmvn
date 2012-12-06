@@ -45,11 +45,15 @@ public class Artifact
 
     public Artifact( String groupId, String artifactId, String version, String extension )
     {
-
         if ( groupId == null )
             throw new IllegalArgumentException( "groupId may not be null" );
         if ( artifactId == null )
             throw new IllegalArgumentException( "artifactId may not be null" );
+
+        if ( groupId.equals( "@" ) )
+            groupId = "JPP";
+        else
+            groupId = groupId.replaceAll( "^@", "JPP/" );
 
         this.groupId = groupId;
         this.artifactId = artifactId;
