@@ -22,6 +22,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -43,11 +47,12 @@ public class InstallMojo
     private void installProject( MavenProject project, Package targetPackage )
         throws MojoExecutionException
     {
+        Model pom = project.getModel();
         Artifact artifact = project.getArtifact();
         File pomFile = project.getFile();
         File file = artifact.getFile();
 
-        String packaging = project.getPackaging();
+        String packaging = pom.getPackaging();
         if ( !packaging.equals( "pom" ) && file == null )
             throw new MojoExecutionException(
                                               "Failed to install project "
@@ -67,6 +72,36 @@ public class InstallMojo
             }
 
             targetPackage.addJarFile( file, artifact );
+        }
+
+        for ( Dependency dep : pom.getDependencies() )
+        {
+            String scope = dep.getScope();
+            if ( scope.equals( "compile" ) || scope.equals( "runtime" ) || scope.equals( "provided" ) )
+                targetPackage.addRequires( dep.getGroupId(), dep.getArtifactId() );
+        }
+
+        if ( packaging.equals( "pom" ) && pom.getBuild() != null )
+        {
+            for ( Plugin plugin : pom.getBuild().getPlugins() )
+            {
+                String groupId = plugin.getGroupId();
+                if ( groupId == null )
+                    groupId = "org.apache.maven.plugins";
+                targetPackage.addRequires( groupId, plugin.getArtifactId() );
+            }
+        }
+
+        if ( packaging.equals( "pom" ) || packaging.equals( "maven-plugin" ) )
+        {
+            Parent parent = pom.getParent();
+            if ( parent != null )
+            {
+                String groupId = parent.getGroupId();
+                if ( groupId == null )
+                    groupId = pom.getGroupId();
+                targetPackage.addRequires( groupId, pom.getArtifactId() );
+            }
         }
     }
 

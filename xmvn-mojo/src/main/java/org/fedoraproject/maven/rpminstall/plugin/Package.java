@@ -25,7 +25,6 @@ import java.util.TreeSet;
 
 import org.apache.maven.artifact.Artifact;
 import org.fedoraproject.maven.Configuration;
-import org.fedoraproject.maven.resolver.DependencyMap;
 
 public class Package
     implements Comparable<Package>
@@ -37,7 +36,7 @@ public class Package
         suffix = name.equals( "" ) ? "" : "-" + name;
     }
 
-    private final DependencyMap depmap = new DependencyMap();
+    private final FragmentFile depmap = new FragmentFile();
 
     class TargetFile
     {
@@ -100,13 +99,18 @@ public class Package
         depmap.addMapping( groupId, artifactId, version, "JPP/" + Configuration.getInstallName(), artifactId );
     }
 
-    private void installDepmap( Installer installer )
+    public void addRequires( String groupId, String artifactId )
+    {
+        depmap.addDependency( groupId, artifactId );
+    }
+
+    private void installMetadata( Installer installer )
         throws IOException
     {
         if ( !depmap.isEmpty() )
         {
             File file = File.createTempFile( "xmvn", ".xml" );
-            depmap.writeToFile( file );
+            depmap.write( file );
             String depmapName = Configuration.getInstallName() + suffix + ".xml";
             addFile( file, Configuration.getInstallDepmapDir(), depmapName );
         }
@@ -133,7 +137,7 @@ public class Package
     public void install( Installer installer )
         throws IOException
     {
-        installDepmap( installer );
+        installMetadata( installer );
         installFiles( installer );
         createFileList();
     }
