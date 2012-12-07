@@ -79,6 +79,8 @@ public class Package
         String jarDir =
             containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
         addFile( file, jarDir + "/" + Configuration.getInstallName(), artifact.getArtifactId() + ".jar" );
+
+        depmap.addJavaVersionRequirement( "1.5" );
     }
 
     private void installFiles( Installer installer )

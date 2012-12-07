@@ -35,7 +35,7 @@ public class FragmentFile
     @Override
     public boolean isEmpty()
     {
-        return super.isEmpty() && dependencies.isEmpty();
+        return super.isEmpty() && dependencies.isEmpty() && javaVersionRequirement == null;
     }
 
     public void addDependency( Artifact artifact )
@@ -48,9 +48,19 @@ public class FragmentFile
         addDependency( new Artifact( groupId, artifactId ) );
     }
 
-    public void addJavaVersionRequirement( String str )
+    public void addJavaVersionRequirement( String versionStr )
     {
-        // TODO: implement
+        BigDecimal version = new BigDecimal( "1.5" );
+        try
+        {
+            version = new BigDecimal( versionStr );
+        }
+        catch ( NumberFormatException e )
+        {
+        }
+
+        if ( javaVersionRequirement == null || javaVersionRequirement.compareTo( version ) < 0 )
+            javaVersionRequirement = version;
     }
 
     public void write( File file )
