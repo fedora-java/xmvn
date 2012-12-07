@@ -16,7 +16,9 @@
 package org.fedoraproject.maven.rpminstall.plugin;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,6 +28,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -33,6 +36,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
 public class InstallMojo
@@ -44,15 +48,68 @@ public class InstallMojo
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
+    private static Model getRawModel( MavenProject project )
+        throws MojoExecutionException
+    {
+        try
+        {
+            Reader reader = new FileReader( project.getFile() );
+            try
+            {
+                return new MavenXpp3Reader().read( reader );
+            }
+            finally
+            {
+                reader.close();
+            }
+        }
+        catch ( XmlPullParserException | IOException e )
+        {
+            throw new MojoExecutionException( "Failed to read POM", e );
+        }
+    }
+
+    private void generateEffectiveRequires( Model pom, Package targetPackage )
+    {
+        for ( Dependency dep : pom.getDependencies() )
+        {
+            String scope = dep.getScope();
+            if ( scope.equals( "compile" ) || scope.equals( "runtime" ) || scope.equals( "provided" ) )
+                targetPackage.addRequires( dep.getGroupId(), dep.getArtifactId() );
+        }
+    }
+
+    private void generateRawRequires( Model pom, Package targetPackage )
+    {
+        Parent parent = pom.getParent();
+        if ( parent != null )
+        {
+            String groupId = parent.getGroupId();
+            if ( groupId == null )
+                groupId = pom.getGroupId();
+            targetPackage.addRequires( groupId, pom.getArtifactId() );
+        }
+
+        if ( pom.getPackaging().equals( "pom" ) && pom.getBuild() != null )
+        {
+            for ( Plugin plugin : pom.getBuild().getPlugins() )
+            {
+                String groupId = plugin.getGroupId();
+                if ( groupId == null )
+                    groupId = "org.apache.maven.plugins";
+                targetPackage.addRequires( groupId, plugin.getArtifactId() );
+            }
+        }
+    }
+
     private void installProject( MavenProject project, Package targetPackage )
         throws MojoExecutionException
     {
-        Model pom = project.getModel();
         Artifact artifact = project.getArtifact();
         File pomFile = project.getFile();
         File file = artifact.getFile();
 
-        String packaging = pom.getPackaging();
+        String packaging = project.getPackaging();
         if ( !packaging.equals( "pom" ) && file == null )
             throw new MojoExecutionException(
                                               "Failed to install project "
@@ -74,34 +131,11 @@ public class InstallMojo
             targetPackage.addJarFile( file, artifact );
         }
 
-        for ( Dependency dep : pom.getDependencies() )
-        {
-            String scope = dep.getScope();
-            if ( scope.equals( "compile" ) || scope.equals( "runtime" ) || scope.equals( "provided" ) )
-                targetPackage.addRequires( dep.getGroupId(), dep.getArtifactId() );
-        }
-
-        if ( packaging.equals( "pom" ) && pom.getBuild() != null )
-        {
-            for ( Plugin plugin : pom.getBuild().getPlugins() )
-            {
-                String groupId = plugin.getGroupId();
-                if ( groupId == null )
-                    groupId = "org.apache.maven.plugins";
-                targetPackage.addRequires( groupId, plugin.getArtifactId() );
-            }
-        }
+        generateEffectiveRequires( project.getModel(), targetPackage );
 
         if ( packaging.equals( "pom" ) || packaging.equals( "maven-plugin" ) )
         {
-            Parent parent = pom.getParent();
-            if ( parent != null )
-            {
-                String groupId = parent.getGroupId();
-                if ( groupId == null )
-                    groupId = pom.getGroupId();
-                targetPackage.addRequires( groupId, pom.getArtifactId() );
-            }
+            generateRawRequires( getRawModel( project ), targetPackage );
         }
     }
 

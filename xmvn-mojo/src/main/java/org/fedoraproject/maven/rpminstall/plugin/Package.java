@@ -109,6 +109,8 @@ public class Package
     private void installMetadata( Installer installer )
         throws IOException
     {
+        depmap.optimize();
+
         if ( !depmap.isEmpty() )
         {
             File file = File.createTempFile( "xmvn", ".xml" );

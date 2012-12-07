@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -61,6 +62,16 @@ public class FragmentFile
 
         if ( javaVersionRequirement == null || javaVersionRequirement.compareTo( version ) < 0 )
             javaVersionRequirement = version;
+    }
+
+    public void optimize()
+    {
+        for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )
+        {
+            Artifact artifact = iter.next();
+            if ( mapping.containsKey( artifact ) )
+                iter.remove();
+        }
     }
 
     public void write( File file )
