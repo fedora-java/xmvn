@@ -17,8 +17,11 @@ package org.fedoraproject.maven.rpminstall.plugin;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -29,6 +32,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -36,6 +40,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
+import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
@@ -66,6 +72,29 @@ public class InstallMojo
         catch ( XmlPullParserException | IOException e )
         {
             throw new MojoExecutionException( "Failed to read POM", e );
+        }
+    }
+
+    private void writeSimpleEffectiveModel( File file, Model pom )
+        throws MojoExecutionException
+    {
+        pom.setDependencyManagement( null );
+        pom.setBuild( null );
+
+        try
+        {
+            Writer sWriter = new StringWriter();
+            MavenXpp3Writer pomWriter = new MavenXpp3Writer();
+            pomWriter.write( sWriter, pom );
+            sWriter.close();
+            Writer fWriter = new FileWriter( file );
+            XMLWriter writer = new PrettyPrintXMLWriter( fWriter, "  ", "UTF-8", null );
+            writer.writeMarkup( sWriter.toString() );
+            fWriter.close();
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Failed to write effective POM", e );
         }
     }
 
@@ -103,7 +132,7 @@ public class InstallMojo
     }
 
     private void installProject( MavenProject project, Package targetPackage )
-        throws MojoExecutionException
+        throws MojoExecutionException, IOException
     {
         Artifact artifact = project.getArtifact();
         File pomFile = project.getFile();
@@ -118,7 +147,10 @@ public class InstallMojo
                                                   + artifact.getArtifactId()
                                                   + ": Packaging is not \"pom\" but artifact file is null. Make sure you run rpminstall plugin after \"package\" phase." );
 
-        targetPackage.addPomFile( pomFile, artifact );
+        if ( file != null )
+            targetPackage.addPomFile( pomFile, artifact );
+        else
+            writeSimpleEffectiveModel( File.createTempFile( "xmvn", ".xml" ), project.getModel() );
 
         if ( file != null )
         {
@@ -149,22 +181,22 @@ public class InstallMojo
         Package mainPackage = new Package( "" );
         packages.put( "", mainPackage );
 
-        for ( MavenProject project : reactorProjects )
-        {
-            String packageName = layout.getPackageName( project.getArtifactId() );
-            Package pkg = packages.get( packageName );
-
-            if ( pkg == null )
-            {
-                pkg = new Package( packageName );
-                packages.put( packageName, pkg );
-            }
-
-            installProject( project, pkg );
-        }
-
         try
         {
+            for ( MavenProject project : reactorProjects )
+            {
+                String packageName = layout.getPackageName( project.getArtifactId() );
+                Package pkg = packages.get( packageName );
+
+                if ( pkg == null )
+                {
+                    pkg = new Package( packageName );
+                    packages.put( packageName, pkg );
+                }
+
+                installProject( project, pkg );
+            }
+
             Installer installer = new Installer( ".root" );
 
             for ( Package pkg : packages.values() )
