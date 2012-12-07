@@ -31,6 +31,8 @@ public class Package
 {
     private final String suffix;
 
+    private boolean pureDevelPackage = true;
+
     public Package( String name )
     {
         suffix = name.equals( "" ) ? "" : "-" + name;
@@ -51,6 +53,8 @@ public class Package
 
     public void addFile( File file, String dirPath, String fileName )
     {
+        pureDevelPackage = false;
+
         TargetFile target = new TargetFile();
         target.sourceFile = file;
         target.dirPath = dirPath;
@@ -106,6 +110,11 @@ public class Package
         depmap.addDependency( groupId, artifactId );
     }
 
+    public void addDevelRequires( String groupId, String artifactId )
+    {
+        depmap.addDevelDependency( groupId, artifactId );
+    }
+
     private void installMetadata( Installer installer )
         throws IOException
     {
@@ -114,7 +123,7 @@ public class Package
         if ( !depmap.isEmpty() )
         {
             File file = File.createTempFile( "xmvn", ".xml" );
-            depmap.write( file );
+            depmap.write( file, pureDevelPackage );
             String depmapName = Configuration.getInstallName() + suffix + ".xml";
             addFile( file, Configuration.getInstallDepmapDir(), depmapName );
         }

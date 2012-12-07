@@ -31,12 +31,15 @@ public class FragmentFile
 {
     private final Set<Artifact> dependencies = new TreeSet<>();
 
+    private final Set<Artifact> develDependencies = new TreeSet<>();
+
     private BigDecimal javaVersionRequirement;
 
     @Override
     public boolean isEmpty()
     {
-        return super.isEmpty() && dependencies.isEmpty() && javaVersionRequirement == null;
+        return super.isEmpty() && dependencies.isEmpty() && develDependencies.isEmpty()
+            && javaVersionRequirement == null;
     }
 
     public void addDependency( Artifact artifact )
@@ -44,9 +47,19 @@ public class FragmentFile
         dependencies.add( artifact.clearVersionAndExtension() );
     }
 
+    public void addDevelDependency( Artifact artifact )
+    {
+        develDependencies.add( artifact.clearVersionAndExtension() );
+    }
+
     public void addDependency( String groupId, String artifactId )
     {
         addDependency( new Artifact( groupId, artifactId ) );
+    }
+
+    public void addDevelDependency( String groupId, String artifactId )
+    {
+        addDevelDependency( new Artifact( groupId, artifactId ) );
     }
 
     public void addJavaVersionRequirement( String versionStr )
@@ -74,7 +87,7 @@ public class FragmentFile
         }
     }
 
-    public void write( File file )
+    public void write( File file, boolean writeDevel )
         throws IOException
     {
         PrintStream ps = new PrintStream( file );
@@ -107,7 +120,11 @@ public class FragmentFile
             ps.println( "  </dependency>" );
         }
 
-        for ( Artifact dependency : dependencies )
+        Set<Artifact> combinedDependencies = new TreeSet<>( dependencies );
+        if ( writeDevel )
+            combinedDependencies.addAll( develDependencies );
+
+        for ( Artifact dependency : combinedDependencies )
         {
             ps.println( "  <autoRequires>" );
             ps.println( "    <groupId>" + dependency.getGroupId() + "</groupId>" );

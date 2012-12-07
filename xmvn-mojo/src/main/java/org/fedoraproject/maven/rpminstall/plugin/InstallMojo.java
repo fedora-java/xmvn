@@ -116,7 +116,7 @@ public class InstallMojo
             String groupId = parent.getGroupId();
             if ( groupId == null )
                 groupId = pom.getGroupId();
-            targetPackage.addRequires( groupId, parent.getArtifactId() );
+            targetPackage.addDevelRequires( groupId, parent.getArtifactId() );
         }
 
         if ( pom.getPackaging().equals( "pom" ) && pom.getBuild() != null )
@@ -126,7 +126,7 @@ public class InstallMojo
                 String groupId = plugin.getGroupId();
                 if ( groupId == null )
                     groupId = "org.apache.maven.plugins";
-                targetPackage.addRequires( groupId, plugin.getArtifactId() );
+                targetPackage.addDevelRequires( groupId, plugin.getArtifactId() );
             }
         }
     }
@@ -148,11 +148,6 @@ public class InstallMojo
                                                   + ": Packaging is not \"pom\" but artifact file is null. Make sure you run rpminstall plugin after \"package\" phase." );
 
         if ( file != null )
-            targetPackage.addPomFile( pomFile, artifact );
-        else
-            writeSimpleEffectiveModel( File.createTempFile( "xmvn", ".xml" ), project.getModel() );
-
-        if ( file != null )
         {
             if ( !file.getName().endsWith( ".jar" ) )
             {
@@ -160,13 +155,13 @@ public class InstallMojo
                     + "\" has unsupported extension. The only supported extension is \".jar\"" );
             }
 
+            writeSimpleEffectiveModel( File.createTempFile( "xmvn", ".pom.xml" ), project.getModel() );
             targetPackage.addJarFile( file, artifact );
+            generateEffectiveRequires( project.getModel(), targetPackage );
         }
-
-        generateEffectiveRequires( project.getModel(), targetPackage );
-
-        if ( packaging.equals( "pom" ) || packaging.equals( "maven-plugin" ) )
+        else
         {
+            targetPackage.addPomFile( pomFile, artifact );
             generateRawRequires( getRawModel( project ), targetPackage );
         }
     }
