@@ -78,8 +78,7 @@ public class InstallMojo
     private void writeSimpleEffectiveModel( File file, Model pom )
         throws MojoExecutionException
     {
-        pom.setDependencyManagement( null );
-        pom.setBuild( null );
+        pom.setParent( null );
 
         try
         {
@@ -89,7 +88,7 @@ public class InstallMojo
             sWriter.close();
             Writer fWriter = new FileWriter( file );
             XMLWriter writer = new PrettyPrintXMLWriter( fWriter, "  ", "UTF-8", null );
-            writer.writeMarkup( sWriter.toString() );
+            writer.writeMarkup( sWriter.toString().replaceAll( "<\\?xml[^>]+\\?>", "" ) );
             fWriter.close();
         }
         catch ( IOException e )
@@ -135,7 +134,6 @@ public class InstallMojo
         throws MojoExecutionException, IOException
     {
         Artifact artifact = project.getArtifact();
-        File pomFile = project.getFile();
         File file = artifact.getFile();
 
         String packaging = project.getPackaging();
@@ -155,13 +153,15 @@ public class InstallMojo
                     + "\" has unsupported extension. The only supported extension is \".jar\"" );
             }
 
-            writeSimpleEffectiveModel( File.createTempFile( "xmvn", ".pom.xml" ), project.getModel() );
+            File pomFile = File.createTempFile( "xmvn-" + project.getArtifactId() + "-", ".pom.xml" );
+            writeSimpleEffectiveModel( pomFile, project.getModel() );
+            targetPackage.addPomFile( pomFile, artifact );
             targetPackage.addJarFile( file, artifact );
             generateEffectiveRequires( project.getModel(), targetPackage );
         }
         else
         {
-            targetPackage.addPomFile( pomFile, artifact );
+            targetPackage.addPomFile( project.getFile(), artifact );
             generateRawRequires( getRawModel( project ), targetPackage );
         }
     }
