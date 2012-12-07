@@ -87,7 +87,7 @@ public class InstallMojo
             String groupId = parent.getGroupId();
             if ( groupId == null )
                 groupId = pom.getGroupId();
-            targetPackage.addRequires( groupId, pom.getArtifactId() );
+            targetPackage.addRequires( groupId, parent.getArtifactId() );
         }
 
         if ( pom.getPackaging().equals( "pom" ) && pom.getBuild() != null )
