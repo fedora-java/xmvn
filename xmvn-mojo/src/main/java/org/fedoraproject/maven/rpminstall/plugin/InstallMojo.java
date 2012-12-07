@@ -157,13 +157,14 @@ public class InstallMojo
             writeSimpleEffectiveModel( pomFile, project.getModel() );
             targetPackage.addPomFile( pomFile, artifact );
             targetPackage.addJarFile( file, artifact );
-            generateEffectiveRequires( project.getModel(), targetPackage );
         }
         else
         {
             targetPackage.addPomFile( project.getFile(), artifact );
             generateRawRequires( getRawModel( project ), targetPackage );
         }
+
+        generateEffectiveRequires( project.getModel(), targetPackage );
     }
 
     @Override
