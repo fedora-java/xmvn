@@ -53,8 +53,6 @@ public class Package
 
     public void addFile( File file, String dirPath, String fileName )
     {
-        pureDevelPackage = false;
-
         TargetFile target = new TargetFile();
         target.sourceFile = file;
         target.dirPath = dirPath;
@@ -80,6 +78,8 @@ public class Package
 
     public void addJarFile( File file, Artifact artifact )
     {
+        pureDevelPackage = false;
+
         String jarDir =
             containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
         addFile( file, jarDir + "/" + Configuration.getInstallName(), artifact.getArtifactId() + ".jar" );
