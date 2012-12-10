@@ -85,6 +85,13 @@ public class FragmentFile
             if ( mapping.containsKey( artifact ) )
                 iter.remove();
         }
+
+        for ( Iterator<Artifact> iter = develDependencies.iterator(); iter.hasNext(); )
+        {
+            Artifact artifact = iter.next();
+            if ( mapping.containsKey( artifact ) )
+                iter.remove();
+        }
     }
 
     public void write( File file, boolean writeDevel )
