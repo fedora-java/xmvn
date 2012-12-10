@@ -148,7 +148,7 @@ class FedoraModelValidator
                 config.getChild( "source" ).setValue( source.toString() );
                 config.getChild( "target" ).setValue( target.toString() );
             }
-            catch ( ClassCastException | NullPointerException | NumberFormatException e )
+            catch ( NullPointerException | NumberFormatException e )
             {
             }
         }

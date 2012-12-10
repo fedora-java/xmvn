@@ -18,6 +18,7 @@ package org.fedoraproject.maven.rpminstall.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -76,7 +77,7 @@ public class Package
         return false;
     }
 
-    public void addJarFile( File file, Artifact artifact )
+    public void addJarFile( File file, Artifact artifact, BigDecimal javaVersion )
     {
         pureDevelPackage = false;
 
@@ -84,7 +85,7 @@ public class Package
             containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
         addFile( file, jarDir + "/" + Configuration.getInstallName(), artifact.getArtifactId() + ".jar" );
 
-        depmap.addJavaVersionRequirement( "1.5" );
+        depmap.addJavaVersionRequirement( javaVersion );
     }
 
     private void installFiles( Installer installer )

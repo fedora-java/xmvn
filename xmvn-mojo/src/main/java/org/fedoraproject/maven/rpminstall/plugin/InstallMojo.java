@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,6 +34,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.AbstractMojo;
@@ -42,6 +46,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
@@ -130,6 +135,46 @@ public class InstallMojo
         }
     }
 
+    private BigDecimal getJavaCompilerTarget( MavenProject project )
+    {
+        BigDecimal version = new BigDecimal( "1.5" );
+
+        if ( project.getBuild() != null )
+        {
+            for ( Plugin plugin : project.getBuild().getPlugins() )
+            {
+                String groupId = plugin.getGroupId();
+                String artifactId = plugin.getArtifactId();
+                if ( groupId.equals( "org.apache.maven.plugins" ) && artifactId.equals( "maven-compiler-plugin" ) )
+                {
+                    Collection<Object> configurations = new LinkedList<Object>();
+                    configurations.add( plugin.getConfiguration() );
+
+                    Collection<PluginExecution> executions = plugin.getExecutions();
+                    for ( PluginExecution exec : executions )
+                        configurations.add( exec.getConfiguration() );
+
+                    for ( Object configObj : configurations )
+                    {
+                        try
+                        {
+                            Xpp3Dom config = (Xpp3Dom) configObj;
+                            BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
+                            if ( version.compareTo( target ) < 0 )
+                                version = target;
+                        }
+                        catch ( NullPointerException | NumberFormatException e )
+                        {
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return version;
+    }
+
     private void installProject( MavenProject project, Package targetPackage )
         throws MojoExecutionException, IOException
     {
@@ -153,10 +198,11 @@ public class InstallMojo
                     + "\" has unsupported extension. The only supported extension is \".jar\"" );
             }
 
+            BigDecimal targetVersion = getJavaCompilerTarget( project );
             File pomFile = File.createTempFile( "xmvn-" + project.getArtifactId() + "-", ".pom.xml" );
             writeSimpleEffectiveModel( pomFile, project.getModel() );
             targetPackage.addPomFile( pomFile, artifact );
-            targetPackage.addJarFile( file, artifact );
+            targetPackage.addJarFile( file, artifact, targetVersion );
         }
         else
         {

@@ -62,17 +62,8 @@ public class FragmentFile
         addDevelDependency( new Artifact( groupId, artifactId ) );
     }
 
-    public void addJavaVersionRequirement( String versionStr )
+    public void addJavaVersionRequirement( BigDecimal version )
     {
-        BigDecimal version = new BigDecimal( "1.5" );
-        try
-        {
-            version = new BigDecimal( versionStr );
-        }
-        catch ( NumberFormatException e )
-        {
-        }
-
         if ( javaVersionRequirement == null || javaVersionRequirement.compareTo( version ) < 0 )
             javaVersionRequirement = version;
     }
