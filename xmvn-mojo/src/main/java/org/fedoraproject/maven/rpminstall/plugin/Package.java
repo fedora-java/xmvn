@@ -26,6 +26,8 @@ import java.util.TreeSet;
 
 import org.apache.maven.artifact.Artifact;
 import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.Rule;
+import org.fedoraproject.maven.utils.FileUtils;
 
 public class Package
     implements Comparable<Package>
@@ -61,6 +63,12 @@ public class Package
         targetFiles.add( target );
     }
 
+    public void addFile( File file, String target )
+    {
+        File targetFile = new File( target );
+        addFile( file, targetFile.getParent(), targetFile.getName() );
+    }
+
     public void addPomFile( File file, Artifact artifact )
     {
         String jppGroupId = "JPP/" + Configuration.getInstallName();
@@ -78,12 +86,31 @@ public class Package
     }
 
     public void addJarFile( File file, Artifact artifact, BigDecimal javaVersion )
+        throws IOException
     {
         pureDevelPackage = false;
 
+        List<String> extraList = new LinkedList<>();
+        for ( Rule rule : Configuration.getInstallFiles() )
+            if ( rule.getPattern().matches( artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion() ) )
+                extraList.add( rule.getReplacementString() );
+        // TODO: Allow use of @1,@2,... in file name
+
+        String baseFile = Configuration.getInstallName() + "/" + artifact.getArtifactId();
+        if ( !extraList.isEmpty() )
+            baseFile = extraList.remove( 0 );
+
         String jarDir =
             containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
-        addFile( file, jarDir + "/" + Configuration.getInstallName(), artifact.getArtifactId() + ".jar" );
+        addFile( file, jarDir + "/" + baseFile );
+
+        for ( String symlink : extraList )
+        {
+            File symlinkFile = FileUtils.createAnonymousSymlink( "/" + jarDir + "/" + baseFile );
+            if ( !symlink.startsWith( "/" ) )
+                symlink = jarDir + "/" + symlink;
+            addFile( symlinkFile, symlink );
+        }
 
         depmap.addJavaVersionRequirement( javaVersion );
     }
