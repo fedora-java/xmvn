@@ -99,7 +99,6 @@ public class Configuration
     }
 
     private static List<String> resolvJarRepos = newList( "/usr/share/maven/repository/",
-                                                          "/usr/share/maven/repository-java-jni/",
                                                           "/usr/share/maven/repository-jni/" );
 
     public static Collection<String> getJarRepos()
