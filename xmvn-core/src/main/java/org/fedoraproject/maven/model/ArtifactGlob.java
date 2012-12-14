@@ -37,11 +37,16 @@ public class ArtifactGlob
         versionPattern = GlobUtils.glob2pattern( tok[2] );
     }
 
+    public boolean matches( String groupId, String artifactId, String version )
+    {
+        return ( groupIdPattern == null || groupIdPattern.matcher( groupId ).matches() )
+            && ( artifactIdPattern == null || artifactIdPattern.matcher( artifactId ).matches() )
+            && ( versionPattern == null || versionPattern.matcher( version ).matches() );
+    }
+
     public boolean matches( Artifact artifact )
     {
-        return ( groupIdPattern == null || groupIdPattern.matcher( artifact.getGroupId() ).matches() )
-            && ( artifactIdPattern == null || artifactIdPattern.matcher( artifact.getArtifactId() ).matches() )
-            && ( versionPattern == null || versionPattern.matcher( artifact.getVersion() ).matches() );
+        return matches( artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion() );
     }
 
     private String match( String source, Pattern pattern, String target )
