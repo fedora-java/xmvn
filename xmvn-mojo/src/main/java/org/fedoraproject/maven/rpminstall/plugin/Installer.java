@@ -18,6 +18,7 @@ package org.fedoraproject.maven.rpminstall.plugin;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 
 public class Installer
 {
@@ -70,7 +71,7 @@ public class Installer
         }
         catch ( IOException | UnsupportedOperationException e )
         {
-            Files.copy( source.toPath(), target.toPath() );
+            Files.copy( source.toPath(), target.toPath(), LinkOption.NOFOLLOW_LINKS );
         }
     }
 }
