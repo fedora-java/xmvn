@@ -17,6 +17,7 @@ package org.fedoraproject.maven.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class FileUtils
 {
@@ -52,5 +53,14 @@ public class FileUtils
     public static File getCwd()
     {
         return CWD.getAbsoluteFile();
+    }
+
+    public static File createAnonymousSymlink( String target )
+        throws IOException
+    {
+        File symlinkFile = File.createTempFile( "xmvn", ".symlink" );
+        symlinkFile.delete();
+        Files.createSymbolicLink( symlinkFile.toPath(), new File( target ).toPath() );
+        return symlinkFile;
     }
 }
