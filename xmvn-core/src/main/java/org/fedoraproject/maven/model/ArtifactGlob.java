@@ -38,8 +38,8 @@ public class ArtifactGlob
 
     public boolean matches( Artifact artifact )
     {
-        return groupId.matcher( artifact.getGroupId() ).matches()
-            && artifactId.matcher( artifact.getArtifactId() ).matches()
-            && version.matcher( artifact.getVersion() ).matches();
+        return ( groupId == null || groupId.matcher( artifact.getGroupId() ).matches() )
+            && ( artifactId == null || artifactId.matcher( artifact.getArtifactId() ).matches() )
+            && ( version == null || version.matcher( artifact.getVersion() ).matches() );
     }
 }

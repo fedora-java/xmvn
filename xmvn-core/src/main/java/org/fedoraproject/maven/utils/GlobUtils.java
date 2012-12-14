@@ -21,7 +21,7 @@ public class GlobUtils
 {
     private static final String specialChars = "(){}.,?*+|<=>!";
 
-    public static String glob2re( String glob )
+    private static String glob2re( String glob )
     {
         StringBuilder re = new StringBuilder();
         boolean escape = false;
@@ -85,7 +85,7 @@ public class GlobUtils
     public static Pattern glob2pattern( String glob )
     {
         if ( glob == null )
-            return Pattern.compile( "" );
+            return null;
         return Pattern.compile( glob2re( glob ) );
     }
 }
