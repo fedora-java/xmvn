@@ -38,6 +38,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.model.Artifact;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
@@ -175,9 +176,14 @@ class FedoraModelValidator
         group.add( artifactId );
     }
 
+    private static void blacklist( Artifact artifact )
+    {
+        blacklist( artifact.getGroupId(), artifact.getArtifactId() );
+    }
+
     static
     {
-        blacklist( "org.fedoraproject.xmvn", "xmvn-void" );
+        blacklist( Artifact.DUMMY );
         blacklist( "org.codehaus.mojo", "clirr-maven-plugin" );
         blacklist( "org.codehaus.mojo", "animal-sniffer-maven-plugin" );
     }
