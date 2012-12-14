@@ -20,31 +20,18 @@ import java.io.File;
 import org.fedoraproject.maven.resolver.DefaultResolver;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.resolver.SystemResolver;
+import org.fedoraproject.maven.utils.StringSplitter;
 
 public class ResolverCli
 {
     public static void main( String[] args )
     {
         Resolver resolver = new DefaultResolver();
-        String[] tokens = new String[4];
 
         for ( String s : args )
         {
-            s += "::::";
-
-            for ( int i = 0; i < tokens.length; i++ )
-            {
-                int j = s.indexOf( ':' );
-
-                String tok = s.substring( 0, j ).trim();
-                if ( tok.equals( "" ) )
-                    tok = null;
-
-                s = s.substring( j + 1 );
-                tokens[i] = tok;
-            }
-
-            File file = resolver.resolve( tokens[0], tokens[1], tokens[2], tokens[3] );
+            String[] tok = StringSplitter.split( s, 4, ':' );
+            File file = resolver.resolve( tok[0], tok[1], tok[2], tok[3] );
             System.out.println( file );
         }
 
