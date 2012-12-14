@@ -29,7 +29,7 @@ public class Rule
 {
     private final ArtifactGlob pattern;
 
-    private final Object replacement;
+    private final String replacement;
 
     public Rule( String pattern, String replacement )
     {
@@ -42,7 +42,7 @@ public class Rule
         return pattern;
     }
 
-    public Object getReplacementString()
+    public String getReplacementString()
     {
         return replacement;
     }
