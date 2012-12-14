@@ -50,11 +50,6 @@ public class Artifact
         if ( artifactId == null )
             throw new IllegalArgumentException( "artifactId may not be null" );
 
-        if ( groupId.equals( "@" ) )
-            groupId = "JPP";
-        else
-            groupId = groupId.replaceAll( "^@", "JPP/" );
-
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
