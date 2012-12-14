@@ -44,9 +44,31 @@ public class Configuration
 
     private static String installLayout = "";
 
+    // TODO: convert this to list of rules
     public static String getInstallLayout()
     {
         return installLayout;
+    }
+
+    private static String installFiles = "";
+
+    public static Collection<Rule> getInstallFiles()
+    {
+        return Rule.parseRules( installFiles );
+    }
+
+    private static String installDepmaps = "";
+
+    public static Collection<Rule> getInstallDepmaps()
+    {
+        return Rule.parseRules( installDepmaps );
+    }
+
+    private static List<String> installVersions = newList();
+
+    public static Collection<String> getInstallVersions()
+    {
+        return Collections.unmodifiableCollection( installVersions );
     }
 
     private static String installJarDir = "usr/share/java";
@@ -75,20 +97,6 @@ public class Configuration
     public static String getInstallDepmapDir()
     {
         return installDepmapDir;
-    }
-
-    private static List<String> installDepmaps = newList();
-
-    public static Collection<String> getInstallDepmaps()
-    {
-        return Collections.unmodifiableCollection( installDepmaps );
-    }
-
-    private static List<String> installVersions = newList();
-
-    public static Collection<String> getInstallVersions()
-    {
-        return Collections.unmodifiableCollection( installVersions );
     }
 
     private static List<String> resolvDepmaps = newList( "/usr/share/maven-fragments" );
