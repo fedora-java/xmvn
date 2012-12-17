@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.Path;
 
 public class FileUtils
 {
@@ -56,25 +57,26 @@ public class FileUtils
         return CWD.getAbsoluteFile();
     }
 
-    public static void linkOrCopy( File source, File target )
+    public static void linkOrCopy( Path source, Path target )
         throws IOException
     {
         try
         {
-            Files.createLink( target.toPath(), source.toPath() );
+            Files.createLink( target, source );
         }
         catch ( IOException | UnsupportedOperationException e )
         {
-            Files.copy( source.toPath(), target.toPath(), LinkOption.NOFOLLOW_LINKS );
+            Files.copy( source, target, LinkOption.NOFOLLOW_LINKS );
         }
     }
 
-    public static File createAnonymousSymlink( String target )
+    public static Path createAnonymousSymlink( Path target )
         throws IOException
     {
         File symlinkFile = File.createTempFile( "xmvn", ".symlink" );
         symlinkFile.delete();
-        Files.createSymbolicLink( symlinkFile.toPath(), new File( target ).toPath() );
-        return symlinkFile;
+        Path symlinkPath = symlinkFile.toPath();
+        Files.createSymbolicLink( symlinkPath, target );
+        return symlinkPath;
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.rpminstall.plugin;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,6 +22,9 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,6 +50,8 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.Rule;
 
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
 public class InstallMojo
@@ -80,7 +84,7 @@ public class InstallMojo
         }
     }
 
-    private void writeSimpleEffectiveModel( File file, Model pom )
+    private void writeSimpleEffectiveModel( Path path, Model pom )
         throws MojoExecutionException
     {
         pom.setParent( null );
@@ -91,7 +95,7 @@ public class InstallMojo
             MavenXpp3Writer pomWriter = new MavenXpp3Writer();
             pomWriter.write( sWriter, pom );
             sWriter.close();
-            Writer fWriter = new FileWriter( file );
+            Writer fWriter = new FileWriter( path.toFile() );
             XMLWriter writer = new PrettyPrintXMLWriter( fWriter, "  ", "UTF-8", null );
             writer.writeMarkup( sWriter.toString().replaceAll( "<\\?xml[^>]+\\?>", "" ) );
             fWriter.close();
@@ -179,34 +183,58 @@ public class InstallMojo
         throws MojoExecutionException, IOException
     {
         Artifact artifact = project.getArtifact();
-        File file = artifact.getFile();
+        String groupId = artifact.getGroupId();
+        String artifactId = artifact.getArtifactId();
+        String version = artifact.getArtifactId();
+        Path file = artifact.getFile() != null ? artifact.getFile().toPath() : null;
 
         String packaging = project.getPackaging();
         if ( !packaging.equals( "pom" ) && file == null )
             throw new MojoExecutionException(
                                               "Failed to install project "
-                                                  + artifact.getGroupId()
+                                                  + groupId
                                                   + ":"
-                                                  + artifact.getArtifactId()
+                                                  + artifactId
                                                   + ": Packaging is not \"pom\" but artifact file is null. Make sure you run rpminstall plugin after \"package\" phase." );
 
         if ( file != null )
         {
-            if ( !file.getName().endsWith( ".jar" ) )
+            if ( !file.getFileName().toString().endsWith( ".jar" ) )
             {
-                throw new MojoExecutionException( "Artifact file name \"" + file.getName()
+                throw new MojoExecutionException( "Artifact file name \"" + file.getFileName()
                     + "\" has unsupported extension. The only supported extension is \".jar\"" );
             }
 
             BigDecimal targetVersion = getJavaCompilerTarget( project );
-            File pomFile = File.createTempFile( "xmvn-" + project.getArtifactId() + "-", ".pom.xml" );
+            Path pomFile = Files.createTempFile( "xmvn-" + artifactId + "-", ".pom.xml" );
             writeSimpleEffectiveModel( pomFile, project.getModel() );
-            targetPackage.addPomFile( pomFile, artifact );
-            targetPackage.addJarFile( file, artifact, targetVersion );
+            List<Path> extraList = new LinkedList<>();
+
+            for ( Rule rule : Configuration.getInstallFiles() )
+                if ( rule.getPattern().matches( groupId, artifactId, version ) )
+                    extraList.add( Paths.get( rule.getReplacementString() ) );
+            // TODO: Allow use of @1,@2,... in file name
+
+            Path baseFile = Paths.get( Configuration.getInstallName() + "/" + artifactId );
+            if ( !extraList.isEmpty() )
+                baseFile = extraList.remove( 0 );
+
+            Path jppGroup = baseFile.getFileName();
+            Path jppName = Paths.get( "JPP" );
+            if ( baseFile.getParent() != null )
+                jppName = jppName.resolve( baseFile.getParent() );
+
+            targetPackage.addJarFile( file, baseFile, extraList, targetVersion );
+            targetPackage.addPomFile( pomFile, jppGroup, jppName );
+            targetPackage.addDepmap( groupId, artifactId, version, jppGroup, jppName );
         }
         else
         {
-            targetPackage.addPomFile( project.getFile(), artifact );
+            Path pomFile = project.getFile().toPath();
+            Path jppGroup = Paths.get( "JPP" ).resolve( Configuration.getInstallName() );
+            Path jppName = Paths.get( groupId + "@" + artifactId );
+            targetPackage.addPomFile( pomFile, jppGroup, jppName );
+            targetPackage.addDepmap( groupId, artifactId, version, jppGroup, jppName );
             generateRawRequires( getRawModel( project ), targetPackage );
         }
 
@@ -239,7 +267,8 @@ public class InstallMojo
                 installProject( project, pkg );
             }
 
-            Installer installer = new Installer( ".root" );
+            // TODO: make .root configurable
+            Installer installer = new Installer( Paths.get( ".root" ) );
 
             for ( Package pkg : packages.values() )
                 pkg.install( installer );

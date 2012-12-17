@@ -18,6 +18,8 @@ package org.fedoraproject.maven;
 import static org.fedoraproject.maven.utils.Logger.debug;
 
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -73,30 +75,30 @@ public class Configuration
 
     private static String installJarDir = "usr/share/java";
 
-    public static String getInstallJarDir()
+    public static Path getInstallJarDir()
     {
-        return installJarDir;
+        return Paths.get( installJarDir );
     }
 
     private static String installJniDir = "usr/lib/java";
 
-    public static String getInstallJniDir()
+    public static Path getInstallJniDir()
     {
-        return installJniDir;
+        return Paths.get( installJniDir );
     }
 
     private static String installPomDir = "usr/share/maven-poms";
 
-    public static String getInstallPomDir()
+    public static Path getInstallPomDir()
     {
-        return installPomDir;
+        return Paths.get( installPomDir );
     }
 
     private static String installDepmapDir = "usr/share/maven-fragments";
 
-    public static String getInstallDepmapDir()
+    public static Path getInstallDepmapDir()
     {
-        return installDepmapDir;
+        return Paths.get( installDepmapDir );
     }
 
     private static List<String> resolvDepmaps = newList( "/usr/share/maven-fragments" );

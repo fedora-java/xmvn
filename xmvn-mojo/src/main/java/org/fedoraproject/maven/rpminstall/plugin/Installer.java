@@ -15,49 +15,32 @@
  */
 package org.fedoraproject.maven.rpminstall.plugin;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.fedoraproject.maven.utils.FileUtils;
 
 public class Installer
 {
-    private final File root;
+    private final Path root;
 
-    public Installer( String rootPath )
+    public Installer( Path root )
         throws IOException
     {
-        File buildRoot = new File( rootPath );
+        if ( Files.exists( root ) && !Files.isDirectory( root ) )
+            throw new IOException( root + " is not a directory" );
 
-        if ( !buildRoot.isDirectory() && buildRoot.mkdir() == false )
-            throw new IOException( "Failed to create directory: " + rootPath );
-
-        this.root = buildRoot;
+        Files.createDirectories( root );
+        this.root = root;
     }
 
-    public File createDirectory( String path )
+    public Path installFile( Path source, Path targetDir, Path targetName )
         throws IOException
     {
-        File dir = new File( root, path );
-        if ( !dir.isDirectory() && dir.mkdirs() == false )
-            throw new IOException( "Unable to create directory: " + dir.getPath() );
-        return dir;
-    }
-
-    public File touchFile( String dirPath, String fileName )
-        throws IOException
-    {
-        File dir = createDirectory( dirPath );
-        File file = new File( dir, fileName );
-        file.createNewFile();
-        return file;
-    }
-
-    public File installFile( File source, String targetDir, String targetName )
-        throws IOException
-    {
-        File dir = createDirectory( targetDir );
-        File target = new File( dir, targetName );
+        Path dir = root.resolve( targetDir );
+        Files.createDirectories( dir );
+        Path target = targetDir.resolve( targetName );
         FileUtils.linkOrCopy( source, target );
         return target;
     }

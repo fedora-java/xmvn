@@ -15,18 +15,19 @@
  */
 package org.fedoraproject.maven.rpminstall.plugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.maven.artifact.Artifact;
 import org.fedoraproject.maven.Configuration;
-import org.fedoraproject.maven.Rule;
 import org.fedoraproject.maven.utils.FileUtils;
 
 public class Package
@@ -45,16 +46,16 @@ public class Package
 
     class TargetFile
     {
-        File sourceFile;
+        Path sourceFile;
 
-        String dirPath;
+        Path dirPath;
 
-        String targetName;
+        Path targetName;
     }
 
     private final List<TargetFile> targetFiles = new LinkedList<>();
 
-    public void addFile( File file, String dirPath, String fileName )
+    public void addFile( Path file, Path dirPath, Path fileName )
     {
         TargetFile target = new TargetFile();
         target.sourceFile = file;
@@ -63,52 +64,37 @@ public class Package
         targetFiles.add( target );
     }
 
-    public void addFile( File file, String target )
+    public void addFile( Path file, Path target )
     {
-        File targetFile = new File( target );
-        addFile( file, targetFile.getParent(), targetFile.getName() );
+        addFile( file, target.getParent(), target.getFileName() );
     }
 
-    public void addPomFile( File file, Artifact artifact )
+    public void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
     {
-        String jppGroupId = "JPP/" + Configuration.getInstallName();
-        String jppArtifactId = artifact.getArtifactId();
-        String pomName = jppGroupId.replace( '/', '.' ) + "-" + jppArtifactId + ".pom";
+        Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
         addFile( file, Configuration.getInstallPomDir(), pomName );
-
-        addDepmap( artifact );
     }
 
-    private static boolean containsNativeCode( File jar )
+    private static boolean containsNativeCode( Path jar )
     {
         // TODO: implement
         return false;
     }
 
-    public void addJarFile( File file, Artifact artifact, BigDecimal javaVersion )
+    public void addJarFile( Path file, Path baseFile, Collection<Path> symlinks, BigDecimal javaVersion )
         throws IOException
     {
         pureDevelPackage = false;
 
-        List<String> extraList = new LinkedList<>();
-        for ( Rule rule : Configuration.getInstallFiles() )
-            if ( rule.getPattern().matches( artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion() ) )
-                extraList.add( rule.getReplacementString() );
-        // TODO: Allow use of @1,@2,... in file name
+        Path jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
+        addFile( file, jarDir.resolve( baseFile ) );
 
-        String baseFile = Configuration.getInstallName() + "/" + artifact.getArtifactId();
-        if ( !extraList.isEmpty() )
-            baseFile = extraList.remove( 0 );
-
-        String jarDir =
-            containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
-        addFile( file, jarDir + "/" + baseFile );
-
-        for ( String symlink : extraList )
+        for ( Path symlink : symlinks )
         {
-            File symlinkFile = FileUtils.createAnonymousSymlink( "/" + jarDir + "/" + baseFile );
-            if ( !symlink.startsWith( "/" ) )
-                symlink = jarDir + "/" + symlink;
+            Path target = Paths.get( "/" ).resolve( jarDir ).resolve( baseFile );
+            Path symlinkFile = FileUtils.createAnonymousSymlink( target );
+            if ( !symlink.isAbsolute() )
+                symlink = jarDir.resolve( symlink );
             addFile( symlinkFile, symlink );
         }
 
@@ -124,13 +110,9 @@ public class Package
         }
     }
 
-    public void addDepmap( Artifact artifact )
+    public void addDepmap( String groupId, String artifactId, String version, Path jppGroupId, Path jppArtifactId )
     {
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
-
-        depmap.addMapping( groupId, artifactId, version, "JPP/" + Configuration.getInstallName(), artifactId );
+        depmap.addMapping( groupId, artifactId, version, jppGroupId.toString(), jppArtifactId.toString() );
     }
 
     public void addRequires( String groupId, String artifactId )
@@ -150,9 +132,9 @@ public class Package
 
         if ( !depmap.isEmpty() )
         {
-            File file = File.createTempFile( "xmvn", ".xml" );
+            Path file = Files.createTempFile( "xmvn", ".xml" );
             depmap.write( file, pureDevelPackage );
-            String depmapName = Configuration.getInstallName() + suffix + ".xml";
+            Path depmapName = Paths.get( Configuration.getInstallName() + suffix + ".xml" );
             addFile( file, Configuration.getInstallDepmapDir(), depmapName );
         }
     }
@@ -160,18 +142,13 @@ public class Package
     private void createFileList()
         throws IOException
     {
-        Set<String> targetNames = new TreeSet<>();
+        Set<Path> targetNames = new TreeSet<>();
         for ( TargetFile target : targetFiles )
-        {
-            File file = new File( target.dirPath, target.targetName );
-            targetNames.add( file.getPath() );
-        }
+            targetNames.add( target.dirPath.resolve( target.targetName ) );
 
         PrintStream ps = new PrintStream( ".mfiles" + suffix );
-        for ( String path : targetNames )
-        {
+        for ( Path path : targetNames )
             ps.println( "/" + path );
-        }
         ps.close();
     }
 
