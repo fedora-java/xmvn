@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +63,9 @@ public class InstallMojo
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
+
+    // List of dependency scopes for which auto-requires are generated. Must be in ascending order.
+    private static final String[] dependencyScopes = new String[] { "compile", "provided", "runtime" };
 
     private static Model getRawModel( MavenProject project )
         throws MojoExecutionException
@@ -107,7 +111,7 @@ public class InstallMojo
         for ( Dependency dep : pom.getDependencies() )
         {
             String scope = dep.getScope();
-            if ( scope.equals( "compile" ) || scope.equals( "runtime" ) || scope.equals( "provided" ) )
+            if ( Arrays.binarySearch( dependencyScopes, scope ) >= 0 )
                 targetPackage.addRequires( dep.getGroupId(), dep.getArtifactId() );
         }
     }
