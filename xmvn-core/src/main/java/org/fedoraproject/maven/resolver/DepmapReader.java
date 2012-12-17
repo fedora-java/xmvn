@@ -52,15 +52,10 @@ class DepmapReader
             fact.setNamespaceAware( true );
             DocumentBuilder builder = fact.newDocumentBuilder();
             String contents = wrapFragment( file );
-            Reader reader = new StringReader( contents );
-            try
+            try (Reader reader = new StringReader( contents ))
             {
                 InputSource source = new InputSource( reader );
                 return builder.parse( source );
-            }
-            finally
-            {
-                reader.close();
             }
         }
         catch ( ParserConfigurationException e )

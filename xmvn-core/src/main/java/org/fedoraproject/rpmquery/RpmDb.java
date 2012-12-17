@@ -49,13 +49,13 @@ public class RpmDb
         child.getOutputStream().close();
 
         Reader reader = new InputStreamReader( child.getInputStream() );
-        BufferedReader bufferedReader = new BufferedReader( reader );
-
         Collection<String> lines = new ArrayList<>();
-        String line;
-        while ( ( line = bufferedReader.readLine() ) != null )
-            lines.add( line );
-        bufferedReader.close();
+        try (BufferedReader bufferedReader = new BufferedReader( reader ))
+        {
+            String line;
+            while ( ( line = bufferedReader.readLine() ) != null )
+                lines.add( line );
+        }
 
         int exitStatus;
         try

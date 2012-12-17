@@ -39,14 +39,15 @@ public class Launcher
         System.setProperty( "xmvn.maven.home", mavenHome );
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        PrintStream conf = new PrintStream( bos );
-        conf.println( "main is org.fedoraproject.maven.connector.Main from plexus.core" );
-        conf.println( "[plexus.core]" );
-        conf.println( "load " + xmvnDir + "/xmvn-core.jar" );
-        conf.println( "load " + xmvnDir + "/xmvn-connector.jar" );
-        conf.println( "optionally " + mavenHome + "/lib/ext/*.jar" );
-        conf.println( "load " + mavenHome + "/lib/*.jar" );
-        conf.close();
+        try (PrintStream conf = new PrintStream( bos ))
+        {
+            conf.println( "main is org.fedoraproject.maven.connector.Main from plexus.core" );
+            conf.println( "[plexus.core]" );
+            conf.println( "load " + xmvnDir + "/xmvn-core.jar" );
+            conf.println( "load " + xmvnDir + "/xmvn-connector.jar" );
+            conf.println( "optionally " + mavenHome + "/lib/ext/*.jar" );
+            conf.println( "load " + mavenHome + "/lib/*.jar" );
+        }
 
         org.codehaus.plexus.classworlds.launcher.Launcher launcher;
         launcher = new org.codehaus.plexus.classworlds.launcher.Launcher();

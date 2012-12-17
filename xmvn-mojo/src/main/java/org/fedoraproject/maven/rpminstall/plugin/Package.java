@@ -146,10 +146,11 @@ public class Package
         for ( TargetFile target : targetFiles )
             targetNames.add( target.dirPath.resolve( target.targetName ) );
 
-        PrintStream ps = new PrintStream( ".mfiles" + suffix );
-        for ( Path path : targetNames )
-            ps.println( "/" + path );
-        ps.close();
+        try (PrintStream ps = new PrintStream( ".mfiles" + suffix ))
+        {
+            for ( Path path : targetNames )
+                ps.println( "/" + path );
+        }
     }
 
     public void install( Installer installer )

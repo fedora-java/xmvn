@@ -68,14 +68,9 @@ public class InstallMojo
     {
         try
         {
-            Reader reader = new FileReader( project.getFile() );
-            try
+            try (Reader reader = new FileReader( project.getFile() ))
             {
                 return new MavenXpp3Reader().read( reader );
-            }
-            finally
-            {
-                reader.close();
             }
         }
         catch ( XmlPullParserException | IOException e )
@@ -94,11 +89,12 @@ public class InstallMojo
             Writer sWriter = new StringWriter();
             MavenXpp3Writer pomWriter = new MavenXpp3Writer();
             pomWriter.write( sWriter, pom );
-            sWriter.close();
-            Writer fWriter = new FileWriter( path.toFile() );
-            XMLWriter writer = new PrettyPrintXMLWriter( fWriter, "  ", "UTF-8", null );
-            writer.writeMarkup( sWriter.toString().replaceAll( "<\\?xml[^>]+\\?>", "" ) );
-            fWriter.close();
+
+            try (Writer fWriter = new FileWriter( path.toFile() ))
+            {
+                XMLWriter writer = new PrettyPrintXMLWriter( fWriter, "  ", "UTF-8", null );
+                writer.writeMarkup( sWriter.toString().replaceAll( "<\\?xml[^>]+\\?>", "" ) );
+            }
         }
         catch ( IOException e )
         {
