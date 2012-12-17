@@ -61,9 +61,9 @@ public class Configuration
     private static String installLayout = "";
 
     // TODO: convert this to list of rules
-    public static String getInstallLayout()
+    public static Collection<Rule> getInstallLayout()
     {
-        return installLayout;
+        return Rule.parseRules( installLayout );
     }
 
     private static String installFiles = "";

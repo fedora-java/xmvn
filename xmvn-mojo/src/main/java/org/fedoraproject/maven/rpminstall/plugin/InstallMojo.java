@@ -240,12 +240,24 @@ public class InstallMojo
         generateEffectiveRequires( project.getModel(), targetPackage );
     }
 
+    private String getPackageName( Artifact artifact )
+    {
+        String groupId = artifact.getGroupId();
+        String artifactId = artifact.getArtifactId();
+        String version = artifact.getArtifactId();
+
+        for ( Rule rule : Configuration.getInstallLayout() )
+            if ( rule.matches( groupId, artifactId, version ) )
+                return rule.getReplacementString();
+
+        return "";
+    }
+
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
         Map<String, Package> packages = new TreeMap<>();
-        PackagingLayout layout = new PackagingLayout();
 
         Package mainPackage = new Package( "" );
         packages.put( "", mainPackage );
@@ -254,7 +266,7 @@ public class InstallMojo
         {
             for ( MavenProject project : reactorProjects )
             {
-                String packageName = layout.getPackageName( project.getArtifactId() );
+                String packageName = getPackageName( project.getArtifact() );
                 Package pkg = packages.get( packageName );
 
                 if ( pkg == null )
