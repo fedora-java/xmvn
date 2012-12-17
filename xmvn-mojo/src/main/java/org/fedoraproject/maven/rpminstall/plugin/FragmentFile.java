@@ -71,17 +71,21 @@ public class FragmentFile
 
     public void optimize()
     {
+        Set<Artifact> versionlessArtifacts = new TreeSet<>();
+        for ( Artifact artifact : mapping.keySet() )
+            versionlessArtifacts.add( artifact.clearVersionAndExtension() );
+
         for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )
         {
-            Artifact artifact = iter.next();
-            if ( mapping.containsKey( artifact ) )
+            Artifact dependency = iter.next();
+            if ( versionlessArtifacts.contains( dependency ) )
                 iter.remove();
         }
 
         for ( Iterator<Artifact> iter = develDependencies.iterator(); iter.hasNext(); )
         {
-            Artifact artifact = iter.next();
-            if ( mapping.containsKey( artifact ) )
+            Artifact dependency = iter.next();
+            if ( versionlessArtifacts.contains( dependency ) )
                 iter.remove();
         }
     }
