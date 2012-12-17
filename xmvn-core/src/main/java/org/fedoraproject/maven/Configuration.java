@@ -37,6 +37,20 @@ public class Configuration
         return skipTests;
     }
 
+    private static final boolean skipProvides = false;
+
+    public static boolean providesSkipped()
+    {
+        return skipProvides;
+    }
+
+    private static final boolean skipRequires = false;
+
+    public static boolean requiresSkipped()
+    {
+        return skipRequires;
+    }
+
     private static String installName = FileUtils.getCwd().getName();
 
     public static String getInstallName()
@@ -64,13 +78,6 @@ public class Configuration
     public static Collection<Rule> getInstallDepmaps()
     {
         return Rule.parseRules( installDepmaps );
-    }
-
-    private static List<String> installVersions = newList();
-
-    public static Collection<String> getInstallVersions()
-    {
-        return Collections.unmodifiableCollection( installVersions );
     }
 
     private static String installJarDir = "usr/share/java";
