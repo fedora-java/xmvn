@@ -193,6 +193,10 @@ public class InstallMojo
                                                   + artifactId
                                                   + ": Packaging is not \"pom\" but artifact file is null. Make sure you run rpminstall plugin after \"package\" phase." );
 
+        Path jppGroup;
+        Path jppName;
+        Path pomFile;
+
         if ( file != null )
         {
             if ( !file.getFileName().toString().endsWith( ".jar" ) )
@@ -202,12 +206,12 @@ public class InstallMojo
             }
 
             BigDecimal targetVersion = getJavaCompilerTarget( project );
-            Path pomFile = Files.createTempFile( "xmvn-" + artifactId + "-", ".pom.xml" );
+            pomFile = Files.createTempFile( "xmvn-" + artifactId + "-", ".pom.xml" );
             writeSimpleEffectiveModel( pomFile, project.getModel() );
             List<Path> extraList = new LinkedList<>();
 
             for ( Rule rule : Configuration.getInstallFiles() )
-                if ( rule.getPattern().matches( groupId, artifactId, version ) )
+                if ( rule.matches( groupId, artifactId, version ) )
                     extraList.add( Paths.get( rule.getReplacementString() ) );
             // TODO: Allow use of @1,@2,... in file name
 
@@ -215,24 +219,23 @@ public class InstallMojo
             if ( !extraList.isEmpty() )
                 baseFile = extraList.remove( 0 );
 
-            Path jppGroup = baseFile.getFileName();
-            Path jppName = Paths.get( "JPP" );
+            jppGroup = baseFile.getFileName();
+            jppName = Paths.get( "JPP" );
             if ( baseFile.getParent() != null )
                 jppName = jppName.resolve( baseFile.getParent() );
 
             targetPackage.addJarFile( file, baseFile, extraList, targetVersion );
-            targetPackage.addPomFile( pomFile, jppGroup, jppName );
-            targetPackage.addDepmap( groupId, artifactId, version, jppGroup, jppName );
         }
         else
         {
-            Path pomFile = project.getFile().toPath();
-            Path jppGroup = Paths.get( "JPP" ).resolve( Configuration.getInstallName() );
-            Path jppName = Paths.get( groupId + "@" + artifactId );
-            targetPackage.addPomFile( pomFile, jppGroup, jppName );
-            targetPackage.addDepmap( groupId, artifactId, version, jppGroup, jppName );
+            pomFile = project.getFile().toPath();
+            jppGroup = Paths.get( "JPP" ).resolve( Configuration.getInstallName() );
+            jppName = Paths.get( groupId + "@" + artifactId );
             generateRawRequires( getRawModel( project ), targetPackage );
         }
+
+        targetPackage.addPomFile( pomFile, jppGroup, jppName );
+        targetPackage.createDepmaps( groupId, artifactId, version, jppGroup, jppName );
 
         generateEffectiveRequires( project.getModel(), targetPackage );
     }

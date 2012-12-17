@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.model.ArtifactGlob;
 
 public class Rule
@@ -37,14 +38,19 @@ public class Rule
         this.replacement = replacement;
     }
 
-    public ArtifactGlob getPattern()
+    public boolean matches( String groupId, String artifactId, String version )
     {
-        return pattern;
+        return pattern.matches( groupId, artifactId, version );
     }
 
     public String getReplacementString()
     {
         return replacement;
+    }
+
+    public Artifact createArtifact( Artifact artifact )
+    {
+        return pattern.createArtifactFromTemplate( artifact, replacement );
     }
 
     public static Collection<Rule> parseRules( String text )

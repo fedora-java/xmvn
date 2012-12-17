@@ -31,6 +31,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.Rule;
+import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.utils.FileUtils;
 
 public class Package
@@ -133,9 +135,19 @@ public class Package
         }
     }
 
-    public void addDepmap( String groupId, String artifactId, String version, Path jppGroupId, Path jppArtifactId )
+    public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName )
     {
-        depmap.addMapping( groupId, artifactId, version, jppGroupId.toString(), jppArtifactId.toString() );
+        Artifact artifact = new Artifact( groupId, artifactId, version );
+        Artifact jppArtifact = new Artifact( jppGroup.toString(), jppName.toString(), version );
+
+        depmap.addMapping( artifact, jppArtifact );
+
+        for ( Rule rule : Configuration.getInstallDepmaps() )
+        {
+            Artifact target = rule.createArtifact( artifact );
+            if ( target != null )
+                depmap.addMapping( target, jppArtifact );
+        }
     }
 
     public void addRequires( String groupId, String artifactId )
