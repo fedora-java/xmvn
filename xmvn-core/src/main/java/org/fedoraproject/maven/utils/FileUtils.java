@@ -18,6 +18,7 @@ package org.fedoraproject.maven.utils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 
 public class FileUtils
 {
@@ -53,6 +54,19 @@ public class FileUtils
     public static File getCwd()
     {
         return CWD.getAbsoluteFile();
+    }
+
+    public static void linkOrCopy( File source, File target )
+        throws IOException
+    {
+        try
+        {
+            Files.createLink( target.toPath(), source.toPath() );
+        }
+        catch ( IOException | UnsupportedOperationException e )
+        {
+            Files.copy( source.toPath(), target.toPath(), LinkOption.NOFOLLOW_LINKS );
+        }
     }
 
     public static File createAnonymousSymlink( String target )

@@ -17,8 +17,8 @@ package org.fedoraproject.maven.rpminstall.plugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
+
+import org.fedoraproject.maven.utils.FileUtils;
 
 public class Installer
 {
@@ -58,20 +58,7 @@ public class Installer
     {
         File dir = createDirectory( targetDir );
         File target = new File( dir, targetName );
-        linkOrCopy( source, target );
+        FileUtils.linkOrCopy( source, target );
         return target;
-    }
-
-    private void linkOrCopy( File source, File target )
-        throws IOException
-    {
-        try
-        {
-            Files.createLink( target.toPath(), source.toPath() );
-        }
-        catch ( IOException | UnsupportedOperationException e )
-        {
-            Files.copy( source.toPath(), target.toPath(), LinkOption.NOFOLLOW_LINKS );
-        }
     }
 }
