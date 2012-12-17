@@ -122,7 +122,7 @@ class FedoraModelValidator
 
     private void configureCompiler( Plugin plugin )
     {
-        Collection<Object> configurations = new LinkedList<Object>();
+        Collection<Object> configurations = new LinkedList<>();
         configurations.add( plugin.getConfiguration() );
 
         Collection<PluginExecution> executions = plugin.getExecutions();

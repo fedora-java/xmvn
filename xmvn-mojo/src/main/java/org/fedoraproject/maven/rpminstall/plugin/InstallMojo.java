@@ -147,7 +147,7 @@ public class InstallMojo
                 String artifactId = plugin.getArtifactId();
                 if ( groupId.equals( "org.apache.maven.plugins" ) && artifactId.equals( "maven-compiler-plugin" ) )
                 {
-                    Collection<Object> configurations = new LinkedList<Object>();
+                    Collection<Object> configurations = new LinkedList<>();
                     configurations.add( plugin.getConfiguration() );
 
                     Collection<PluginExecution> executions = plugin.getExecutions();
