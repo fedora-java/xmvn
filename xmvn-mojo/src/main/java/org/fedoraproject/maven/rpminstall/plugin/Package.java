@@ -81,6 +81,7 @@ public class Package
     }
 
     private static boolean containsNativeCode( Path jar )
+        throws IOException
     {
         // From /usr/include/linux/elf.h
         final int ELFMAG0 = 0x7F;
@@ -98,9 +99,6 @@ public class Package
                 if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2 && jis.read() == ELFMAG3 )
                     return true;
             }
-        }
-        catch ( IOException e )
-        {
         }
 
         return false;
