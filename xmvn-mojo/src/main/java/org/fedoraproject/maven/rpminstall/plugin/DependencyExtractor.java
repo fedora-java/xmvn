@@ -40,11 +40,16 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.fedoraproject.maven.Configuration;
 
 public class DependencyExtractor
 {
     // List of dependency scopes for which auto-requires are generated. Must be in ascending order.
-    private static final String[] dependencyScopes = new String[] { "compile", "provided", "runtime" };
+    private static final String[] runtimeScopes = new String[] { "compile", "provided", "runtime" };
+
+    private static final String[] buildAndTestScopes = new String[] { "compile", "provided", "test" };
+
+    private static final String[] buildOnlyScopes = new String[] { "compile", "provided", };
 
     /**
      * Obtain raw model for given project.
@@ -88,14 +93,25 @@ public class DependencyExtractor
         }
     }
 
-    public static void generateEffectiveRequires( Model model, DependencyVisitor visitor )
+    private static void generateEffectiveRequires( Model model, DependencyVisitor visitor, String[] scopes )
     {
         for ( Dependency dep : model.getDependencies() )
         {
             String scope = dep.getScope();
-            if ( Arrays.binarySearch( dependencyScopes, scope ) >= 0 )
+            if ( Arrays.binarySearch( scopes, scope ) >= 0 )
                 visitor.visitRuntimeDependency( dep.getGroupId(), dep.getArtifactId() );
         }
+    }
+
+    public static void generateEffectiveRuntimeRequires( Model model, DependencyVisitor visitor )
+    {
+        generateEffectiveRequires( model, visitor, runtimeScopes );
+    }
+
+    public static void generateEffectiveBuildRequires( Model model, DependencyVisitor visitor )
+    {
+        String[] scopes = Configuration.testsSkipped() ? buildOnlyScopes : buildAndTestScopes;
+        generateEffectiveRequires( model, visitor, scopes );
     }
 
     public static void generateRawRequires( Model model, DependencyVisitor visitor )

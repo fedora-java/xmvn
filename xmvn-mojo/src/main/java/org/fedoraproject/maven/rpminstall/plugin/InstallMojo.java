@@ -113,7 +113,7 @@ public class InstallMojo
         targetPackage.addPomFile( pomFile, jppGroup, jppName );
         targetPackage.createDepmaps( groupId, artifactId, version, jppGroup, jppName );
 
-        DependencyExtractor.generateEffectiveRequires( project.getModel(), metadata );
+        DependencyExtractor.generateEffectiveRuntimeRequires( project.getModel(), metadata );
     }
 
     private String getPackageName( Artifact artifact )
