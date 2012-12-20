@@ -21,12 +21,26 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
+/**
+ * Various utilities related to file and path manipulation.
+ * 
+ * @author Mikolaj Izdebski
+ */
 public class FileUtils
 {
+    /**
+     * Current working directory.
+     */
     public static final File CWD = new File( "." );
 
+    /**
+     * Root directory of the file system.
+     */
     public static final File ROOT = new File( "/" );
 
+    /**
+     * Bit bucket. Any data written to this file is discarded.
+     */
     public static final File BIT_BUCKET = new File( "/dev/null" );
 
     /**
@@ -57,6 +71,13 @@ public class FileUtils
         return CWD.getAbsoluteFile();
     }
 
+    /**
+     * Create hard link or copy file if creating hard link is not possible.
+     * 
+     * @param source source file
+     * @param target link target or destination file
+     * @throws IOException if any I/O exception occurs
+     */
     public static void linkOrCopy( Path source, Path target )
         throws IOException
     {
@@ -70,6 +91,13 @@ public class FileUtils
         }
     }
 
+    /**
+     * Create a temporary symbolic link pointing to specified target path
+     * 
+     * @param target target of the symbolic link
+     * @return path to created symlink
+     * @throws IOException if any I/O exception occurs
+     */
     public static Path createAnonymousSymlink( Path target )
         throws IOException
     {
