@@ -40,6 +40,10 @@ public class Package
 {
     private final String suffix;
 
+    public static final String MAIN = "";
+
+    private static final String NOINSTALL_SUFFIX = "__noinstall";
+
     private boolean pureDevelPackage = true;
 
     public Package( String name )
@@ -192,6 +196,11 @@ public class Package
         installMetadata( installer );
         installFiles( installer );
         createFileList();
+    }
+
+    public boolean isInstallable()
+    {
+        return suffix.equals( NOINSTALL_SUFFIX );
     }
 
     @Override

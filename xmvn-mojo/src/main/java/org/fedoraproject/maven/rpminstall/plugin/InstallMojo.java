@@ -254,7 +254,7 @@ public class InstallMojo
             if ( rule.matches( groupId, artifactId, version ) )
                 return rule.getReplacementString();
 
-        return "";
+        return Package.MAIN;
     }
 
     @Override
@@ -263,8 +263,8 @@ public class InstallMojo
     {
         Map<String, Package> packages = new TreeMap<>();
 
-        Package mainPackage = new Package( "" );
-        packages.put( "", mainPackage );
+        Package mainPackage = new Package( Package.MAIN );
+        packages.put( Package.MAIN, mainPackage );
 
         try
         {
@@ -286,7 +286,8 @@ public class InstallMojo
             Installer installer = new Installer( Paths.get( ".root" ) );
 
             for ( Package pkg : packages.values() )
-                pkg.install( installer );
+                if ( pkg.isInstallable() )
+                    pkg.install( installer );
         }
         catch ( IOException e )
         {
