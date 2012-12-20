@@ -17,11 +17,26 @@ package org.fedoraproject.maven.utils;
 
 import java.util.regex.Pattern;
 
+/**
+ * Utility routines for converting glob paterns to regulat expressions.
+ * 
+ * @author Mikolaj Izdebski
+ */
 public class GlobUtils
 {
+    /**
+     * Character with special meaning in regular expression namespace. These characters should be escaped when
+     * converting glob expression to regular expression.
+     */
     private static final String specialChars = "(){}.,?*+|<=>!";
 
-    private static String glob2re( String glob )
+    /**
+     * Convert wildcard pattern to regular expression.
+     * 
+     * @param glob wildcard pattern to convery
+     * @return regular expression
+     */
+    public static String glob2re( String glob )
     {
         StringBuilder re = new StringBuilder();
         boolean escape = false;
@@ -82,6 +97,12 @@ public class GlobUtils
         return re.toString();
     }
 
+    /**
+     * Create <code>Pattern</code> from wildcard patter.
+     * 
+     * @param glob wildcard pattern to convery
+     * @return pattern corresponding to given wildcard pattern
+     */
     public static Pattern glob2pattern( String glob )
     {
         if ( glob == null )
