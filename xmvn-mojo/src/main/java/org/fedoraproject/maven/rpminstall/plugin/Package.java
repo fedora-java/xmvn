@@ -18,7 +18,6 @@ package org.fedoraproject.maven.rpminstall.plugin;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,7 +50,7 @@ public class Package
         suffix = name.equals( "" ) ? "" : "-" + name;
     }
 
-    private final FragmentFile depmap = new FragmentFile();
+    private final FragmentFile metadata = new FragmentFile();
 
     class TargetFile
     {
@@ -108,7 +107,7 @@ public class Package
         return false;
     }
 
-    public void addJarFile( Path file, Path baseFile, Collection<Path> symlinks, BigDecimal javaVersion )
+    public void addJarFile( Path file, Path baseFile, Collection<Path> symlinks )
         throws IOException
     {
         pureDevelPackage = false;
@@ -124,8 +123,6 @@ public class Package
                 symlink = jarDir.resolve( symlink );
             addFile( symlinkFile, symlink );
         }
-
-        depmap.addJavaVersionRequirement( javaVersion );
     }
 
     private void installFiles( Installer installer )
@@ -142,35 +139,25 @@ public class Package
         Artifact artifact = new Artifact( groupId, artifactId, version );
         Artifact jppArtifact = new Artifact( jppGroup.toString(), jppName.toString(), version );
 
-        depmap.addMapping( artifact, jppArtifact );
+        getMetadata().addMapping( artifact, jppArtifact );
 
         for ( Rule rule : Configuration.getInstallDepmaps() )
         {
             Artifact target = rule.createArtifact( artifact );
             if ( target != null )
-                depmap.addMapping( target, jppArtifact );
+                getMetadata().addMapping( target, jppArtifact );
         }
-    }
-
-    public void addRequires( String groupId, String artifactId )
-    {
-        depmap.addDependency( groupId, artifactId );
-    }
-
-    public void addDevelRequires( String groupId, String artifactId )
-    {
-        depmap.addDevelDependency( groupId, artifactId );
     }
 
     private void installMetadata( Installer installer )
         throws IOException
     {
-        depmap.optimize();
+        getMetadata().optimize();
 
-        if ( !depmap.isEmpty() )
+        if ( !getMetadata().isEmpty() )
         {
             Path file = Files.createTempFile( "xmvn", ".xml" );
-            depmap.write( file, pureDevelPackage );
+            getMetadata().write( file, pureDevelPackage );
             Path depmapName = Paths.get( Configuration.getInstallName() + suffix + ".xml" );
             addFile( file, Configuration.getInstallDepmapDir(), depmapName );
         }
@@ -201,6 +188,11 @@ public class Package
     public boolean isInstallable()
     {
         return suffix.equals( NOINSTALL_SUFFIX );
+    }
+
+    public FragmentFile getMetadata()
+    {
+        return metadata;
     }
 
     @Override

@@ -29,6 +29,7 @@ import org.fedoraproject.maven.resolver.DependencyMap;
 
 public class FragmentFile
     extends DependencyMap
+    implements DependencyVisitor
 {
     private final Set<Artifact> dependencies = new TreeSet<>();
 
@@ -43,27 +44,20 @@ public class FragmentFile
             && javaVersionRequirement == null;
     }
 
-    public void addDependency( Artifact artifact )
+    @Override
+    public void visitRuntimeDependency( String groupId, String artifactId )
     {
-        dependencies.add( artifact.clearVersionAndExtension() );
+        dependencies.add( new Artifact( groupId, artifactId ) );
     }
 
-    public void addDevelDependency( Artifact artifact )
+    @Override
+    public void visitBuildDependency( String groupId, String artifactId )
     {
-        develDependencies.add( artifact.clearVersionAndExtension() );
+        develDependencies.add( new Artifact( groupId, artifactId ) );
     }
 
-    public void addDependency( String groupId, String artifactId )
-    {
-        addDependency( new Artifact( groupId, artifactId ) );
-    }
-
-    public void addDevelDependency( String groupId, String artifactId )
-    {
-        addDevelDependency( new Artifact( groupId, artifactId ) );
-    }
-
-    public void addJavaVersionRequirement( BigDecimal version )
+    @Override
+    public void visitJavaVersionDependency( BigDecimal version )
     {
         if ( javaVersionRequirement == null || javaVersionRequirement.compareTo( version ) < 0 )
             javaVersionRequirement = version;
