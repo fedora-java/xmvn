@@ -107,17 +107,18 @@ public class Package
         return false;
     }
 
-    public void addJarFile( Path file, Path baseFile, Collection<Path> symlinks )
+    public void addJarFile( Path file, Path baseName, Collection<Path> symlinks )
         throws IOException
     {
         pureDevelPackage = false;
 
+        Path jarFile = Paths.get( baseName + ".jar" );
         Path jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
-        addFile( file, jarDir.resolve( baseFile ) );
+        addFile( file, jarDir.resolve( jarFile ) );
 
         for ( Path symlink : symlinks )
         {
-            Path target = Paths.get( "/" ).resolve( jarDir ).resolve( baseFile );
+            Path target = Paths.get( "/" ).resolve( jarDir ).resolve( jarFile );
             Path symlinkFile = FileUtils.createAnonymousSymlink( target );
             if ( !symlink.isAbsolute() )
                 symlink = jarDir.resolve( symlink );
