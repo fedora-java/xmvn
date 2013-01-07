@@ -52,7 +52,7 @@ public class InstallMojo
         Artifact artifact = project.getArtifact();
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
-        String version = artifact.getArtifactId();
+        String version = artifact.getVersion();
         Path file = artifact.getFile() != null ? artifact.getFile().toPath() : null;
 
         String packaging = project.getPackaging();
@@ -120,7 +120,7 @@ public class InstallMojo
     {
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
-        String version = artifact.getArtifactId();
+        String version = artifact.getVersion();
 
         for ( Rule rule : Configuration.getInstallLayout() )
             if ( rule.matches( groupId, artifactId, version ) )
