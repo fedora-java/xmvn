@@ -40,7 +40,7 @@ public class Installer
     {
         Path dir = root.resolve( targetDir );
         Files.createDirectories( dir );
-        Path target = targetDir.resolve( targetName );
+        Path target = dir.resolve( targetName );
         FileUtils.linkOrCopy( source, target );
         return target;
     }
