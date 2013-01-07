@@ -91,10 +91,10 @@ public class InstallMojo
             if ( !extraList.isEmpty() )
                 baseFile = extraList.remove( 0 );
 
-            jppGroup = baseFile.getFileName();
-            jppName = Paths.get( "JPP" );
+            jppName = baseFile.getFileName();
+            jppGroup = Paths.get( "JPP" );
             if ( baseFile.getParent() != null )
-                jppName = jppName.resolve( baseFile.getParent() );
+                jppGroup = jppGroup.resolve( baseFile.getParent() );
 
             targetPackage.addJarFile( file, baseFile, extraList );
 
