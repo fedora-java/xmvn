@@ -23,5 +23,5 @@ git archive -v --prefix=${name}-snapshot/ master | xz >${tarball}
 
 read -e -p "Upload ${tarball} to fedorapeople.org? (y/N): "
 if [ "$REPLY" = y ]; then
-    scp ${tarball} fedorapeople.org:${name}
+    scp ${tarball} fedorapeople.org:public_html/${name}
 fi
