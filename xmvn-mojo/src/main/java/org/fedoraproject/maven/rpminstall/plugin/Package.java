@@ -187,7 +187,7 @@ public class Package
 
     public boolean isInstallable()
     {
-        return suffix.equals( NOINSTALL_SUFFIX );
+        return !suffix.equals( NOINSTALL_SUFFIX );
     }
 
     public FragmentFile getMetadata()
