@@ -120,6 +120,7 @@ public class Package
         {
             Path target = Paths.get( "/" ).resolve( jarDir ).resolve( jarFile );
             Path symlinkFile = FileUtils.createAnonymousSymlink( target );
+            symlink = Paths.get( symlink + ".jar" );
             if ( !symlink.isAbsolute() )
                 symlink = jarDir.resolve( symlink );
             addFile( symlinkFile, symlink );
