@@ -107,11 +107,12 @@ public class Package
         return false;
     }
 
-    public void addJarFile( Path file, Path jarFile, Collection<Path> symlinks )
+    public void addJarFile( Path file, Path baseName, Collection<Path> symlinks )
         throws IOException
     {
         pureDevelPackage = false;
 
+        Path jarFile = Paths.get( baseName + ".jar" );
         Path jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
         addFile( file, jarDir.resolve( jarFile ) );
 
