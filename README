@@ -7,3 +7,14 @@ XMvn is free software. You can redistribute and/or modify it under the
 terms of Apache License Version 2.0.
 
 XMvn was written by Mikolaj Izdebski.
+
+* Contact
+
+XMvn is a community project, new contributotrs are welcome. The most
+straightforward way to introduce new features is writting them yourself.
+The preferred way to requests features and report bugs is Red Hat Bugzilla:
+  http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
+
+The easiest way to get support is asking on IRC -- #fedora-java on freenode.
+You can also write to Fedora Java list <java-devel@lists.fedoraproject.org>
+or directly to XMVn maintainers <xmvn-owner@fedoraproject.org>.
