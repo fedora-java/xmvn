@@ -43,6 +43,8 @@ public class BuilddepMojo
 
     private final Set<String> reactorArtifacts = new TreeSet<>();
 
+    private static BigDecimal MIN_SUPPORTED_JAVA_VERSION = new BigDecimal( "1.5" );
+
     private BigDecimal javaVersion = null;
 
     @Override
@@ -88,10 +90,13 @@ public class BuilddepMojo
             {
                 ps.println( "BuildRequires:  maven-local" );
 
-                if ( javaVersion != null )
+                if ( javaVersion == null || javaVersion.compareTo( MIN_SUPPORTED_JAVA_VERSION ) <= 0 )
                 {
-                    String epoch = javaVersion.compareTo( new BigDecimal( "1.5" ) ) >= 0 ? "1:" : "";
-                    ps.println( "BuildRequires:  java-devel >= " + epoch + javaVersion );
+                    ps.println( "BuildRequires:  java-devel" );
+                }
+                else
+                {
+                    ps.println( "BuildRequires:  java-devel >= 1:" + javaVersion );
                 }
 
                 buildDeps.removeAll( reactorArtifacts );
