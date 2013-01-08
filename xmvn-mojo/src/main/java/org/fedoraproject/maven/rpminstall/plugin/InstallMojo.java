@@ -83,8 +83,15 @@ public class InstallMojo
             List<Path> extraList = new LinkedList<>();
 
             for ( Rule rule : Configuration.getInstallFiles() )
+            {
                 if ( rule.matches( groupId, artifactId, version ) )
-                    extraList.add( Paths.get( rule.getReplacementString() ) );
+                {
+                    String path = rule.getReplacementString();
+                    if ( !path.endsWith( ".jar" ) )
+                        path += ".jar";
+                    extraList.add( Paths.get( path ) );
+                }
+            }
             // TODO: Allow use of @1,@2,... in file name
 
             Path baseFile = Paths.get( Configuration.getInstallName() + "/" + artifactId );
