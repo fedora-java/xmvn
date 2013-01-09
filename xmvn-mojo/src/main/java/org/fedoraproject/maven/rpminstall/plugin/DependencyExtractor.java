@@ -34,7 +34,6 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
@@ -56,7 +55,7 @@ public class DependencyExtractor
      * 
      * @param project project to get model of
      * @return raw model
-     * @throws MojoExecutionException
+     * @throws IOException if parsing XML file fails
      */
     public static Model getRawModel( MavenProject project )
         throws IOException
