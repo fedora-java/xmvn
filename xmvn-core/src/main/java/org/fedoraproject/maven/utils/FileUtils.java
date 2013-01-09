@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
@@ -90,7 +91,7 @@ public class FileUtils
         }
         catch ( IOException | UnsupportedOperationException e )
         {
-            Files.copy( source, target, LinkOption.NOFOLLOW_LINKS );
+            Files.copy( source, target, StandardCopyOption.COPY_ATTRIBUTES, LinkOption.NOFOLLOW_LINKS );
         }
     }
 
@@ -117,7 +118,7 @@ public class FileUtils
      * @param perm POSIX file permissions in integer format, for example <code>0764</code>
      * @return POSIX file permissions in string format, for example <code>rwxr-xr--</code>
      */
-    public static Set<PosixFilePermission> getPermissions( int perm )
+    private static Set<PosixFilePermission> getPermissions( int perm )
     {
         if ( perm < 0 || perm > 0777 )
             throw new IllegalArgumentException( "Permissions must be in range from 0 to 0777" );
@@ -146,6 +147,7 @@ public class FileUtils
     public static void chmod( Path path, int mode )
         throws IOException
     {
-        Files.setPosixFilePermissions( path, getPermissions( mode ) );
+        if ( !Files.isSymbolicLink( path ) )
+            Files.setPosixFilePermissions( path, getPermissions( mode ) );
     }
 }

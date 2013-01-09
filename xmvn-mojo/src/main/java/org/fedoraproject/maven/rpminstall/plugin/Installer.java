@@ -35,13 +35,23 @@ public class Installer
         this.root = root;
     }
 
-    public Path installFile( Path source, Path targetDir, Path targetName )
+    public Path installDirectory( Path target )
         throws IOException
     {
-        Path dir = root.resolve( targetDir );
-        Files.createDirectories( dir );
+        Path dir = root.resolve( target );
+        dir.equals( root );
+        return Files.createDirectories( dir );
+    }
+
+    public Path installFile( Path source, Path targetDir, Path targetName, int mode )
+        throws IOException
+    {
+        Path dir = installDirectory( targetDir );
+
         Path target = dir.resolve( targetName );
         FileUtils.linkOrCopy( source, target );
+        FileUtils.chmod( target, mode );
+
         return target;
     }
 }

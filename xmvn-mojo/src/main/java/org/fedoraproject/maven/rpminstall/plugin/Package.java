@@ -59,28 +59,31 @@ public class Package
         Path dirPath;
 
         Path targetName;
+
+        int mode;
     }
 
     private final List<TargetFile> targetFiles = new LinkedList<>();
 
-    public void addFile( Path file, Path dirPath, Path fileName )
+    public void addFile( Path file, Path dirPath, Path fileName, int mode )
     {
         TargetFile target = new TargetFile();
         target.sourceFile = file;
         target.dirPath = dirPath;
         target.targetName = fileName;
+        target.mode = mode;
         targetFiles.add( target );
     }
 
-    public void addFile( Path file, Path target )
+    public void addFile( Path file, Path target, int mode )
     {
-        addFile( file, target.getParent(), target.getFileName() );
+        addFile( file, target.getParent(), target.getFileName(), mode );
     }
 
     public void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
     {
         Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
-        addFile( file, Configuration.getInstallPomDir(), pomName );
+        addFile( file, Configuration.getInstallPomDir(), pomName, 0644 );
     }
 
     private static boolean containsNativeCode( Path jar )
@@ -114,7 +117,7 @@ public class Package
 
         Path jarFile = Paths.get( baseName + ".jar" );
         Path jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
-        addFile( file, jarDir.resolve( jarFile ) );
+        addFile( file, jarDir.resolve( jarFile ), 0644 );
 
         for ( Path symlink : symlinks )
         {
@@ -123,7 +126,7 @@ public class Package
             symlink = Paths.get( symlink + ".jar" );
             if ( !symlink.isAbsolute() )
                 symlink = jarDir.resolve( symlink );
-            addFile( symlinkFile, symlink );
+            addFile( symlinkFile, symlink, 0644 );
         }
     }
 
@@ -132,7 +135,7 @@ public class Package
     {
         for ( TargetFile target : targetFiles )
         {
-            installer.installFile( target.sourceFile, target.dirPath, target.targetName );
+            installer.installFile( target.sourceFile, target.dirPath, target.targetName, target.mode );
         }
     }
 
@@ -161,7 +164,7 @@ public class Package
             Path file = Files.createTempFile( "xmvn", ".xml" );
             getMetadata().write( file, pureDevelPackage );
             Path depmapName = Paths.get( Configuration.getInstallName() + suffix + ".xml" );
-            addFile( file, Configuration.getInstallDepmapDir(), depmapName );
+            addFile( file, Configuration.getInstallDepmapDir(), depmapName, 0644 );
         }
     }
 
