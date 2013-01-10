@@ -26,4 +26,11 @@
   <name>XMvn Resolver Tool</name>
   <description>A commald-line tool to resolve Maven artifacts from system
     repositories.</description>
+  <dependencies>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.30</version>
+    </dependency>
+  </dependencies>
 </project>

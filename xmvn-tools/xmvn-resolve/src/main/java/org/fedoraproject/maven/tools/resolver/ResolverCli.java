@@ -16,19 +16,67 @@
 package org.fedoraproject.maven.tools.resolver;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.fedoraproject.maven.resolver.DefaultResolver;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.resolver.SystemResolver;
 import org.fedoraproject.maven.utils.StringSplitter;
 
+import com.beust.jcommander.DynamicParameter;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+
 public class ResolverCli
 {
-    public static void main( String[] args )
+    @Parameter
+    public List<String> parameters = new LinkedList<>();
+
+    @Parameter( names = { "-h", "--help" }, help = true, description = "Display usage information" )
+    private boolean help;
+
+    @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
+    public boolean debug = false;
+
+    @DynamicParameter( names = "-D", description = "Define system property" )
+    public Map<String, String> defines = new TreeMap<>();
+
+    public ResolverCli( String[] args )
+    {
+        try
+        {
+            JCommander jcomm = new JCommander( this, args );
+            jcomm.setProgramName( "xmvn-resolve" );
+
+            if ( help )
+            {
+                System.out.println( "xmvn-resolve: Resolve artifacts from system repository" );
+                System.out.println();
+                jcomm.usage();
+                System.exit( 0 );
+            }
+
+            for ( String param : defines.keySet() )
+                System.setProperty( param, defines.get( param ) );
+            if ( debug )
+                System.setProperty( "xmvn.debug", "true" );
+        }
+        catch ( ParameterException e )
+        {
+            System.err.println( e.getMessage() + ". Specify -h for usage." );
+            System.exit( 1 );
+        }
+    }
+
+    public void run()
     {
         Resolver resolver = new DefaultResolver();
 
-        for ( String s : args )
+        for ( String s : parameters )
         {
             String[] tok = StringSplitter.split( s, 4, ':' );
             File file = resolver.resolve( tok[0], tok[1], tok[2], tok[3] );
@@ -36,5 +84,11 @@ public class ResolverCli
         }
 
         SystemResolver.printInvolvedPackages();
+    }
+
+    public static void main( String[] args )
+    {
+        ResolverCli cli = new ResolverCli( args );
+        cli.run();
     }
 }
