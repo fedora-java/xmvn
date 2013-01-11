@@ -12,9 +12,6 @@
 * make builddep mojo print the list BuildRequires on stdout (so it
   gets included in mock build.log)
 
-* parametrize minimal Java source format (currently it's hardcoded as
-  1.5, apache-commons-lang FTBFS with 1.5 because of new enum keyword)
-
 * SCL support ?? (wrt auto requires generator)
 
 * improve compat package resolver (maybe version ranges, maybe number

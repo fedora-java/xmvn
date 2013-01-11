@@ -18,6 +18,7 @@ package org.fedoraproject.maven;
 import static org.fedoraproject.maven.utils.Logger.debug;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -49,6 +50,19 @@ public class Configuration
     public static boolean requiresSkipped()
     {
         return skipRequires;
+    }
+
+    private static String compilerSource = null;
+
+    public static BigDecimal getCompilerSource()
+    {
+        String source = isCompilerSourceSpecified() ? compilerSource : "1.5";
+        return new BigDecimal( source );
+    }
+
+    public static boolean isCompilerSourceSpecified()
+    {
+        return compilerSource != null;
     }
 
     private static String installName = FileUtils.getCwd().getName();

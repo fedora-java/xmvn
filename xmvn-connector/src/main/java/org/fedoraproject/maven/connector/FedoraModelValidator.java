@@ -138,8 +138,8 @@ class FedoraModelValidator
                 BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
 
                 // Source must be at least 1.5
-                BigDecimal minSource = new BigDecimal( "1.5" );
-                if ( source.compareTo( minSource ) < 0 )
+                BigDecimal minSource = Configuration.getCompilerSource();
+                if ( Configuration.isCompilerSourceSpecified() || source.compareTo( minSource ) < 0 )
                     source = minSource;
 
                 // Target must not be less than source
