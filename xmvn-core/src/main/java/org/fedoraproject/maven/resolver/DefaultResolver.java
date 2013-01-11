@@ -51,6 +51,8 @@ public class DefaultResolver
     @Override
     public File resolve( Artifact artifact )
     {
+        debug( "Trying to resolve artifact ", artifact );
+
         for ( Resolver resolver : resolvers )
         {
             File file = resolver.resolve( artifact );

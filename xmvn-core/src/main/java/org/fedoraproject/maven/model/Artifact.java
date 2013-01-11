@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.maven.model;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 public class Artifact
     implements Comparable<Artifact>
 {
@@ -150,5 +153,26 @@ public class Artifact
 
         result.append( ']' );
         return result.toString();
+    }
+
+    public static String collectionToString( Collection<Artifact> set )
+    {
+        if ( set.isEmpty() )
+            return "[]";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append( "[ " );
+
+        Iterator<Artifact> iter = set.iterator();
+        sb.append( iter.next() );
+
+        while ( iter.hasNext() )
+        {
+            sb.append( ", " );
+            sb.append( iter.next() );
+        }
+
+        sb.append( " ]" );
+        return sb.toString();
     }
 }

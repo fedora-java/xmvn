@@ -16,8 +16,9 @@
 package org.fedoraproject.maven.resolver;
 
 import static org.fedoraproject.maven.utils.Logger.debug;
-import static org.fedoraproject.maven.utils.Logger.error;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -27,7 +28,7 @@ import org.fedoraproject.maven.model.Artifact;
 
 public class DependencyMap
 {
-    protected final Map<Artifact, Artifact> mapping = new TreeMap<>();
+    protected final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
 
     public boolean isEmpty()
     {
@@ -44,37 +45,46 @@ public class DependencyMap
 
     public void addMapping( Artifact from, Artifact to )
     {
-        Artifact old = mapping.put( from, to );
-        if ( old != null && !old.equals( to ) )
-            debug( "Mapping ", from, " => ", old, " was overridden" );
+        Set<Artifact> set = mapping.get( from );
+        if ( set == null )
+        {
+            set = new TreeSet<>();
+            mapping.put( from, set );
+        }
 
+        set.add( to );
         debug( "Added mapping ", from, " => ", to );
     }
 
-    public Artifact translate( Artifact artifact )
+    private void walk( Set<Artifact> visited, List<Artifact> resolved, Artifact parent )
     {
-        Set<Artifact> visitedSet = new TreeSet<>();
+        visited.add( parent );
 
-        Artifact current = artifact.clearVersionAndExtension();
-        debug( "Trying to translate artifact ", current );
-
-        while ( !visitedSet.contains( current ) )
+        if ( mapping.containsKey( parent ) )
         {
-            visitedSet.add( current );
-
-            Artifact next = mapping.get( current );
-            if ( next == null )
+            for ( Artifact child : mapping.get( parent ) )
             {
-                Artifact result = current.copyMissing( artifact );
-                debug( "Returning ", result );
-                return result;
-            }
+                if ( visited.contains( child ) )
+                    continue;
 
-            debug( "Artifact ", current, " was mapped to ", next );
-            current = next;
+                debug( "Artifact ", parent, " was mapped to ", child );
+                walk( visited, resolved, child );
+            }
         }
 
-        error( "Depmap for ", current, " contains a cycle" );
-        throw new RuntimeException( "Ddepmap for " + current + " is cyclic" );
+        resolved.add( parent );
+        visited.remove( parent );
+    }
+
+    public List<Artifact> translate( Artifact current )
+    {
+        debug( "Trying to translate artifact ", current );
+
+        Set<Artifact> visited = new TreeSet<>();
+        List<Artifact> resolved = new LinkedList<>();
+        walk( visited, resolved, current );
+
+        debug( "Translation result is ", Artifact.collectionToString( resolved ) );
+        return resolved;
     }
 }

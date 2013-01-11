@@ -33,6 +33,6 @@ public class LocalResolver
     @Override
     public File resolve( Artifact artifact )
     {
-        return repo.findArtifact( artifact );
+        return repo.findArtifact( artifact, true );
     }
 }

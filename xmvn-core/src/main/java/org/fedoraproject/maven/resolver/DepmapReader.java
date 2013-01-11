@@ -150,7 +150,6 @@ class DepmapReader
                 throw new IOException();
 
             Artifact to = getArtifactDefinition( depNode, "jpp" );
-            map.addMapping( from.clearExtension(), to.clearExtension() );
             map.addMapping( from.clearVersionAndExtension(), to.clearVersionAndExtension() );
         }
     }

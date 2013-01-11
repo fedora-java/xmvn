@@ -3,9 +3,6 @@
 
 * bail out if any rule (except default) is never successfully matched
 
-* support compat packages (in resolver loop over the same depmaps,
-  don't override identical depmaps; this blocks jboss-as transition)
-
 * fix builddep mojo (verify if generated BuildRequires are correct and
   complete)
 

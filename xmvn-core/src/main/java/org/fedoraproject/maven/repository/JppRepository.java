@@ -54,12 +54,12 @@ public class JppRepository
     }
 
     @Override
-    public File findArtifact( Artifact artifact )
+    public File findArtifact( Artifact artifact, boolean versioned )
     {
         Iterable<Repository> repos = artifact.isPom() ? pomRepos : jarRepos;
         for ( Repository repo : repos )
         {
-            File file = repo.findArtifact( artifact );
+            File file = repo.findArtifact( artifact, versioned );
             if ( file != null )
                 return file;
         }

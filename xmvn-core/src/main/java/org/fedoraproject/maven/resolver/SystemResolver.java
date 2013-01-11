@@ -18,6 +18,7 @@ package org.fedoraproject.maven.resolver;
 import static org.fedoraproject.maven.utils.Logger.debug;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -48,14 +49,24 @@ public class SystemResolver
     @Override
     public File resolve( Artifact artifact )
     {
-
         debug( "Resolving ", artifact );
-        Artifact jppArtifact = depmap.translate( artifact );
-        File file = systemRepo.findArtifact( jppArtifact );
+        List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
+
+        File file = null;
+        outer: for ( boolean versioned : new Boolean[] { true, false } )
+        {
+            for ( Artifact jppArtifact : jppList )
+            {
+                jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
+                file = systemRepo.findArtifact( jppArtifact, versioned );
+                if ( file != null )
+                    break outer;
+            }
+        }
+
         if ( file == null )
         {
             debug( "Failed to resolve artifact ", artifact );
-            debug( "JPP artifact for ", artifact, " is ", jppArtifact );
             return null;
         }
 

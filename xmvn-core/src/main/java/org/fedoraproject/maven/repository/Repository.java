@@ -21,5 +21,5 @@ import org.fedoraproject.maven.model.Artifact;
 
 public interface Repository
 {
-    File findArtifact( Artifact artifact );
+    File findArtifact( Artifact artifact, boolean versioned );
 }

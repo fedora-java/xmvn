@@ -257,7 +257,7 @@ public class Configuration
 
                 if ( type.equals( String.class ) )
                 {
-                    debug( "  ", envName, " = \"", field.get( null ).toString(), "\"" );
+                    debug( "  ", envName, " = \"", String.valueOf( field.get( null ) ), "\"" );
                 }
 
                 else if ( type.equals( boolean.class ) )

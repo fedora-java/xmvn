@@ -70,6 +70,11 @@ public enum Layout
         this.versioned = versioned;
     }
 
+    public boolean isVersioned()
+    {
+        return versioned;
+    }
+
     public String getArtifactPath( Artifact artifact )
     {
         StringBuilder path = new StringBuilder();
@@ -83,6 +88,11 @@ public enum Layout
         {
             path.append( groupId.replace( '/', '.' ) );
             path.append( '-' );
+        }
+        else if ( deep )
+        {
+            path.append( groupId.replace( '.', '/' ) );
+            path.append( '/' );
         }
         else
         {

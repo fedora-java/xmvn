@@ -100,20 +100,21 @@ public class FragmentFile
 
             for ( Artifact mavenArtifact : mapping.keySet() )
             {
-                Artifact jppArtifact = mapping.get( mavenArtifact );
-
-                ps.println( "  <dependency>" );
-                ps.println( "    <maven>" );
-                ps.println( "      <groupId>" + mavenArtifact.getGroupId() + "</groupId>" );
-                ps.println( "      <artifactId>" + mavenArtifact.getArtifactId() + "</artifactId>" );
-                ps.println( "      <version>" + mavenArtifact.getVersion() + "</version>" );
-                ps.println( "    </maven>" );
-                ps.println( "    <jpp>" );
-                ps.println( "      <groupId>" + jppArtifact.getGroupId() + "</groupId>" );
-                ps.println( "      <artifactId>" + jppArtifact.getArtifactId() + "</artifactId>" );
-                ps.println( "      <version>" + jppArtifact.getVersion() + "</version>" );
-                ps.println( "    </jpp>" );
-                ps.println( "  </dependency>" );
+                for ( Artifact jppArtifact : mapping.get( mavenArtifact ) )
+                {
+                    ps.println( "  <dependency>" );
+                    ps.println( "    <maven>" );
+                    ps.println( "      <groupId>" + mavenArtifact.getGroupId() + "</groupId>" );
+                    ps.println( "      <artifactId>" + mavenArtifact.getArtifactId() + "</artifactId>" );
+                    ps.println( "      <version>" + mavenArtifact.getVersion() + "</version>" );
+                    ps.println( "    </maven>" );
+                    ps.println( "    <jpp>" );
+                    ps.println( "      <groupId>" + jppArtifact.getGroupId() + "</groupId>" );
+                    ps.println( "      <artifactId>" + jppArtifact.getArtifactId() + "</artifactId>" );
+                    ps.println( "      <version>" + jppArtifact.getVersion() + "</version>" );
+                    ps.println( "    </jpp>" );
+                    ps.println( "  </dependency>" );
+                }
             }
 
             if ( !Configuration.requiresSkipped() )
