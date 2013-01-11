@@ -1,0 +1,30 @@
+* support backreferences in regex replacements (very useful for
+  multi-artifact packages like jetty, maven-surefire)
+
+* bail out if any rule (except default) is never successfully matched
+
+* support compat packages (in resolver loop over the same depmaps,
+  don't override identical depmaps; this blocks jboss-as transition)
+
+* fix builddep mojo (verify if generated BuildRequires are correct and
+  complete)
+
+* make builddep mojo print the list BuildRequires on stdout (so it
+  gets included in mock build.log)
+
+* parametrize minimal Java source format (currently it's hardcoded as
+  1.5, apache-commons-lang FTBFS with 1.5 because of new enum keyword)
+
+* SCL support ?? (wrt auto requires generator)
+
+* improve compat package resolver (maybe version ranges, maybe number
+  of matching components)
+
+* externalize (don't hardcode) launcher Plexus Classworlds config for
+  xmvn-launcher
+
+* eliminate warnings about missing plugins versions
+
+* make installed sumlinks relative (instead of absolute)
+
+* don't rely on JPP symlinks when resolving artifacts
