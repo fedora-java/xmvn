@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.fedoraproject.xmvn</groupId>
   <artifactId>xmvn</artifactId>
-  <version>0.2.3</version>
+  <version>0.2.4</version>
   <packaging>pom</packaging>
   <name>XMvn Parent</name>
   <description>XMvn Parent POM</description>
