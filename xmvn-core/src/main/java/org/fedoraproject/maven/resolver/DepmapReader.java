@@ -157,16 +157,13 @@ class DepmapReader
     private CharBuffer readFile( File fragmentFile )
         throws IOException
     {
-        FileInputStream fragmentStream = new FileInputStream( fragmentFile );
-        try
+        try (FileInputStream fragmentStream = new FileInputStream( fragmentFile ))
         {
-            FileChannel channel = fragmentStream.getChannel();
-            MappedByteBuffer buffer = channel.map( FileChannel.MapMode.READ_ONLY, 0, channel.size() );
-            return Charset.defaultCharset().decode( buffer );
-        }
-        finally
-        {
-            fragmentStream.close();
+            try (FileChannel channel = fragmentStream.getChannel())
+            {
+                MappedByteBuffer buffer = channel.map( FileChannel.MapMode.READ_ONLY, 0, channel.size() );
+                return Charset.defaultCharset().decode( buffer );
+            }
         }
     }
 
