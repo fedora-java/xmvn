@@ -16,6 +16,4 @@
 
 * eliminate warnings about missing plugins versions
 
-* make installed sumlinks relative (instead of absolute)
-
 * don't rely on JPP symlinks when resolving artifacts

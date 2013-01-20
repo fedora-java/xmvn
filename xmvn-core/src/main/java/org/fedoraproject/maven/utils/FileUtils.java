@@ -107,6 +107,7 @@ public class FileUtils
     {
         File symlinkFile = File.createTempFile( "xmvn", ".symlink" );
         symlinkFile.delete();
+        // FIXME: there is a race condition
         Path symlinkPath = symlinkFile.toPath();
         Files.createSymbolicLink( symlinkPath, target );
         return symlinkPath;
@@ -116,7 +117,7 @@ public class FileUtils
      * Convert POSIX permissions from integer to string format.
      * 
      * @param perm POSIX file permissions in integer format, for example <code>0764</code>
-     * @return POSIX file permissions in string format, for example <code>rwxr-xr--</code>
+     * @return POSIX file permissions in string format, for example <code>rwxrw-r--</code>
      */
     private static Set<PosixFilePermission> getPermissions( int perm )
     {

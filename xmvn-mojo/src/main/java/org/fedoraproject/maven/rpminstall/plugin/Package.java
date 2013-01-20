@@ -115,17 +115,20 @@ public class Package
     {
         pureDevelPackage = false;
 
-        Path jarFile = Paths.get( baseName + ".jar" );
         Path jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
-        addFile( file, jarDir.resolve( jarFile ), 0644 );
+        Path jarFile = jarDir.resolve( Paths.get( baseName + ".jar" ) );
+        addFile( file, jarFile, 0644 );
 
         for ( Path symlink : symlinks )
         {
-            Path target = Paths.get( "/" ).resolve( jarDir ).resolve( jarFile );
-            Path symlinkFile = FileUtils.createAnonymousSymlink( target );
             symlink = Paths.get( symlink + ".jar" );
-            if ( !symlink.isAbsolute() )
+            if ( symlink.isAbsolute() )
+                symlink = Paths.get( "/" ).relativize( symlink );
+            else
                 symlink = jarDir.resolve( symlink );
+
+            Path symlinkTarget = symlink.getParent().relativize( jarFile );
+            Path symlinkFile = FileUtils.createAnonymousSymlink( symlinkTarget );
             addFile( symlinkFile, symlink, 0644 );
         }
     }
