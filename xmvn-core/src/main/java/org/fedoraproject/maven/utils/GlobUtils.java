@@ -18,7 +18,7 @@ package org.fedoraproject.maven.utils;
 import java.util.regex.Pattern;
 
 /**
- * Utility routines for converting glob paterns to regulat expressions.
+ * Utility routines for converting glob patterns to regular expressions.
  * 
  * @author Mikolaj Izdebski
  */
@@ -33,7 +33,7 @@ public class GlobUtils
     /**
      * Convert wildcard pattern to regular expression.
      * 
-     * @param glob wildcard pattern to convery
+     * @param glob wildcard pattern to convert
      * @return regular expression
      */
     public static String glob2re( String glob )
@@ -100,7 +100,7 @@ public class GlobUtils
     /**
      * Create <code>Pattern</code> from wildcard patter.
      * 
-     * @param glob wildcard pattern to convery
+     * @param glob wildcard pattern to convert
      * @return pattern corresponding to given wildcard pattern
      */
     public static Pattern glob2pattern( String glob )

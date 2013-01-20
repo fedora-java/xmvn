@@ -31,21 +31,21 @@ import org.fedoraproject.maven.utils.FileUtils;
 
 public class Configuration
 {
-    private static final boolean skipTests = System.getProperty( "maven.test.skip" ) != null;
+    private static boolean skipTests = System.getProperty( "maven.test.skip" ) != null;
 
     public static boolean testsSkipped()
     {
         return skipTests;
     }
 
-    private static final boolean skipProvides = false;
+    private static boolean skipProvides = false;
 
     public static boolean providesSkipped()
     {
         return skipProvides;
     }
 
-    private static final boolean skipRequires = false;
+    private static boolean skipRequires = false;
 
     public static boolean requiresSkipped()
     {
