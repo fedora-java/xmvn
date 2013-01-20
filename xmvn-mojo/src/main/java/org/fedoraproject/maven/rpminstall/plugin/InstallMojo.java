@@ -83,9 +83,11 @@ public class InstallMojo
             List<Path> extraList = new LinkedList<>();
 
             for ( Rule rule : Configuration.getInstallFiles() )
-                if ( rule.matches( groupId, artifactId, version ) )
-                    extraList.add( Paths.get( rule.getReplacementString() ) );
-            // TODO: Allow use of @1,@2,... in file name
+            {
+                String name = rule.match( groupId, artifactId, version );
+                if ( name != null )
+                    extraList.add( Paths.get( name ) );
+            }
 
             Path baseFile = Paths.get( Configuration.getInstallName() + "/" + artifactId );
             if ( !extraList.isEmpty() )
@@ -123,8 +125,11 @@ public class InstallMojo
         String version = artifact.getVersion();
 
         for ( Rule rule : Configuration.getInstallLayout() )
-            if ( rule.matches( groupId, artifactId, version ) )
-                return rule.getReplacementString();
+        {
+            String name = rule.match( groupId, artifactId, version );
+            if ( name != null )
+                return name;
+        }
 
         return Package.MAIN;
     }

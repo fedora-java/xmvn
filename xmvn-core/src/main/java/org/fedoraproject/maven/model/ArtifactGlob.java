@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,16 +39,27 @@ public class ArtifactGlob
         versionPattern = GlobUtils.glob2pattern( tok[2] );
     }
 
-    public boolean matches( String groupId, String artifactId, String version )
+    public String match( String groupId, String artifactId, String version, String result )
     {
-        return ( groupIdPattern == null || groupIdPattern.matcher( groupId ).matches() )
-            && ( artifactIdPattern == null || artifactIdPattern.matcher( artifactId ).matches() )
-            && ( versionPattern == null || versionPattern.matcher( version ).matches() );
-    }
+        List<Matcher> matchers = new ArrayList<>( 3 );
+        if ( groupIdPattern != null )
+            matchers.add( groupIdPattern.matcher( groupId ) );
+        if ( artifactIdPattern != null )
+            matchers.add( artifactIdPattern.matcher( artifactId ) );
+        if ( versionPattern != null )
+            matchers.add( versionPattern.matcher( version ) );
 
-    public boolean matches( Artifact artifact )
-    {
-        return matches( artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion() );
+        int group = 1;
+        for ( Matcher matcher : matchers )
+        {
+            if ( !matcher.matches() )
+                return null;
+
+            for ( int i = 1; i <= matcher.groupCount(); i++, group++ )
+                result = result.replace( "@" + group, matcher.group( i ) );
+        }
+
+        return result.trim();
     }
 
     private String match( String source, Pattern pattern, String target )

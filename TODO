@@ -1,6 +1,3 @@
-* support backreferences in regex replacements (very useful for
-  multi-artifact packages like jetty, maven-surefire)
-
 * bail out if any rule (except default) is never successfully matched
 
 * fix builddep mojo (verify if generated BuildRequires are correct and

@@ -38,14 +38,9 @@ public class Rule
         this.replacement = replacement;
     }
 
-    public boolean matches( String groupId, String artifactId, String version )
+    public String match( String groupId, String artifactId, String version )
     {
-        return pattern.matches( groupId, artifactId, version );
-    }
-
-    public String getReplacementString()
-    {
-        return replacement;
+        return pattern.match( groupId, artifactId, version, replacement );
     }
 
     public Artifact createArtifact( Artifact artifact )
