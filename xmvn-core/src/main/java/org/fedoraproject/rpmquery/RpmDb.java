@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.CountDownLatch;
 
 import org.fedoraproject.maven.utils.FileUtils;
 
@@ -36,7 +36,7 @@ public class RpmDb
 {
     private static final Map<String, String> paths = new TreeMap<>();
 
-    private static final Semaphore ready = new Semaphore( 0 );
+    private static final CountDownLatch ready = new CountDownLatch( 1 );
 
     private static Iterable<String> execQuery( String query )
         throws IOException
@@ -98,7 +98,7 @@ public class RpmDb
         }
         finally
         {
-            ready.release();
+            ready.countDown();
         }
     }
 
@@ -123,9 +123,15 @@ public class RpmDb
 
     public String lookupFile( File file )
     {
-        file = followSymlink( file );
-        ready.acquireUninterruptibly();
-        ready.release();
-        return paths.get( file.getPath() );
+        try
+        {
+            file = followSymlink( file );
+            ready.await();
+            return paths.get( file.getPath() );
+        }
+        catch ( InterruptedException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 }
