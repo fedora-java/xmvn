@@ -155,6 +155,12 @@ public class Artifact
         return result.toString();
     }
 
+    @Override
+    public int hashCode()
+    {
+        return 42;
+    }
+
     public static String collectionToString( Collection<Artifact> set )
     {
         if ( set.isEmpty() )
