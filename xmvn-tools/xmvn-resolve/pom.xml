@@ -19,7 +19,7 @@
   <parent>
     <artifactId>xmvn-tools</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
-    <version>0.2.5</version>
+    <version>0.2.6</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>xmvn-resolve</artifactId>

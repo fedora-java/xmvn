@@ -19,7 +19,7 @@
   <parent>
     <artifactId>xmvn</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
-    <version>0.2.5</version>
+    <version>0.2.6</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>xmvn-mojo</artifactId>
@@ -44,7 +44,7 @@
     <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
       <artifactId>xmvn-core</artifactId>
-      <version>0.2.5</version>
+      <version>0.2.6</version>
     </dependency>
   </dependencies>
   <build>
