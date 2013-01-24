@@ -184,7 +184,5 @@ class FedoraModelValidator
     static
     {
         blacklist( Artifact.DUMMY );
-        blacklist( "org.codehaus.mojo", "clirr-maven-plugin" );
-        blacklist( "org.codehaus.mojo", "animal-sniffer-maven-plugin" );
     }
 }
