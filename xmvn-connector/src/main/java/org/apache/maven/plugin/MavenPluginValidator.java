@@ -34,7 +34,8 @@ public class MavenPluginValidator
 
     public void validate( PluginDescriptor pluginDescriptor )
     {
-        pluginDescriptor.setVersion( "SYSTEM" );
+        if ( pluginDescriptor.getVersion() == null )
+            pluginDescriptor.setVersion( "SYSTEM" );
     }
 
     public boolean hasErrors()
