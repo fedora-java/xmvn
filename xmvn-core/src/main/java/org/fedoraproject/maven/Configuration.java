@@ -144,7 +144,7 @@ public class Configuration
         return Collections.unmodifiableCollection( resolvPomRepos );
     }
 
-    public static List<String> resolvPrefixes = newList();
+    public static List<String> resolvPrefixes = newList( "/" );
 
     public static Collection<String> getPrefixes()
     {

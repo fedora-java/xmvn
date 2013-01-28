@@ -23,7 +23,6 @@ import java.util.LinkedList;
 
 import org.fedoraproject.maven.Configuration;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.utils.FileUtils;
 
 public class DefaultResolver
     extends AbstractResolver
@@ -43,9 +42,6 @@ public class DefaultResolver
                 resolvers.add( new CachingResolver( resolver ) );
             }
         }
-
-        Resolver rootResolver = new SystemResolver( FileUtils.ROOT );
-        resolvers.add( new CachingResolver( rootResolver ) );
     }
 
     @Override
