@@ -43,31 +43,6 @@ import org.xml.sax.SAXException;
 
 class DepmapReader
 {
-    private Document buildDepmapModel( File file )
-        throws IOException
-    {
-        try
-        {
-            DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-            fact.setNamespaceAware( true );
-            DocumentBuilder builder = fact.newDocumentBuilder();
-            String contents = wrapFragment( file );
-            try (Reader reader = new StringReader( contents ))
-            {
-                InputSource source = new InputSource( reader );
-                return builder.parse( source );
-            }
-        }
-        catch ( ParserConfigurationException e )
-        {
-            throw new IOException( e );
-        }
-        catch ( SAXException e )
-        {
-            throw new IOException( e );
-        }
-    }
-
     public void readArtifactMap( File root, DependencyMap map )
     {
         for ( String path : Configuration.getDepmaps() )
@@ -89,36 +64,6 @@ class DepmapReader
                 tryLoadDepmapFile( map, file );
             }
         }
-    }
-
-    private Artifact getArtifactDefinition( Element root, String childTag )
-        throws IOException
-    {
-        NodeList jppNodeList = root.getElementsByTagName( childTag );
-
-        if ( jppNodeList.getLength() == 0 )
-            return Artifact.DUMMY;
-
-        Element element = (Element) jppNodeList.item( 0 );
-
-        NodeList nodes = element.getElementsByTagName( "groupId" );
-        if ( nodes.getLength() != 1 )
-            throw new IOException();
-        String groupId = nodes.item( 0 ).getTextContent().trim();
-
-        nodes = element.getElementsByTagName( "artifactId" );
-        if ( nodes.getLength() != 1 )
-            throw new IOException();
-        String artifactId = nodes.item( 0 ).getTextContent().trim();
-
-        nodes = element.getElementsByTagName( "version" );
-        if ( nodes.getLength() > 1 )
-            throw new IOException();
-        String version = null;
-        if ( nodes.getLength() != 0 )
-            version = nodes.item( 0 ).getTextContent().trim();
-
-        return new Artifact( groupId, artifactId, version );
     }
 
     private void tryLoadDepmapFile( DependencyMap map, File fragment )
@@ -154,16 +99,28 @@ class DepmapReader
         }
     }
 
-    private CharBuffer readFile( File fragmentFile )
+    private Document buildDepmapModel( File file )
         throws IOException
     {
-        try (FileInputStream fragmentStream = new FileInputStream( fragmentFile ))
+        try
         {
-            try (FileChannel channel = fragmentStream.getChannel())
+            DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+            fact.setNamespaceAware( true );
+            DocumentBuilder builder = fact.newDocumentBuilder();
+            String contents = wrapFragment( file );
+            try (Reader reader = new StringReader( contents ))
             {
-                MappedByteBuffer buffer = channel.map( FileChannel.MapMode.READ_ONLY, 0, channel.size() );
-                return Charset.defaultCharset().decode( buffer );
+                InputSource source = new InputSource( reader );
+                return builder.parse( source );
             }
+        }
+        catch ( ParserConfigurationException e )
+        {
+            throw new IOException( e );
+        }
+        catch ( SAXException e )
+        {
+            throw new IOException( e );
         }
     }
 
@@ -174,7 +131,49 @@ class DepmapReader
         buffer.append( "<dependencies>" );
         buffer.append( readFile( fragmentFile ) );
         buffer.append( "</dependencies>" );
-        String docString = buffer.toString();
-        return docString;
+        return buffer.toString();
+    }
+
+    private CharBuffer readFile( File file )
+        throws IOException
+    {
+        try (FileInputStream fragmentStream = new FileInputStream( file ))
+        {
+            try (FileChannel channel = fragmentStream.getChannel())
+            {
+                MappedByteBuffer buffer = channel.map( FileChannel.MapMode.READ_ONLY, 0, channel.size() );
+                return Charset.defaultCharset().decode( buffer );
+            }
+        }
+    }
+
+    private Artifact getArtifactDefinition( Element root, String childTag )
+        throws IOException
+    {
+        NodeList jppNodeList = root.getElementsByTagName( childTag );
+
+        if ( jppNodeList.getLength() == 0 )
+            return Artifact.DUMMY;
+
+        Element element = (Element) jppNodeList.item( 0 );
+
+        NodeList nodes = element.getElementsByTagName( "groupId" );
+        if ( nodes.getLength() != 1 )
+            throw new IOException();
+        String groupId = nodes.item( 0 ).getTextContent().trim();
+
+        nodes = element.getElementsByTagName( "artifactId" );
+        if ( nodes.getLength() != 1 )
+            throw new IOException();
+        String artifactId = nodes.item( 0 ).getTextContent().trim();
+
+        nodes = element.getElementsByTagName( "version" );
+        if ( nodes.getLength() > 1 )
+            throw new IOException();
+        String version = null;
+        if ( nodes.getLength() != 0 )
+            version = nodes.item( 0 ).getTextContent().trim();
+
+        return new Artifact( groupId, artifactId, version );
     }
 }
