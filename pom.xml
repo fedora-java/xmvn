@@ -25,7 +25,7 @@
   <packaging>pom</packaging>
   <name>XMvn Parent</name>
   <description>XMvn Parent POM</description>
-  <url>https://fedorahosted.org/maven-rpminstall-plugin/</url>
+  <url>http://mizdebsk.fedorapeople.org/xmvn/</url>
   <inceptionYear>2012</inceptionYear>
   <organization>
     <name>Red Hat, Inc.</name>
@@ -37,6 +37,16 @@
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
+  <developers>
+    <developer>
+      <id>mizdebsk</id>
+      <name>Mikolaj Izdebski</name>
+      <email>mizdebsk@redhat.com</email>
+      <organization>Red Hat, Inc.</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
   <modules>
     <module>xmvn-core</module>
     <module>xmvn-connector</module>
@@ -44,6 +54,15 @@
     <module>xmvn-mojo</module>
     <module>xmvn-launcher</module>
   </modules>
+  <scm>
+    <url>http://git.fedorahosted.org/git/xmvn.git</url>
+    <connection>scm:git:git://git.fedorahosted.org/xmvn.git</connection>
+    <developerConnection>scm:git:ssh://git.fedorahosted.org/git/xmvn.git</developerConnection>
+  </scm>
+  <issueManagement>
+    <system>Bugzilla</system>
+    <url>https://bugzilla.redhat.com/</url>
+  </issueManagement>
   <properties>
     <mavenVersion>3.0.4</mavenVersion>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
