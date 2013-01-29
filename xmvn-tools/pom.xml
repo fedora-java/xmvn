@@ -36,7 +36,6 @@
     <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
       <artifactId>xmvn-core</artifactId>
-      <version>0.2.6</version>
     </dependency>
   </dependencies>
 </project>
