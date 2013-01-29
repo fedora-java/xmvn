@@ -19,3 +19,5 @@
 * don't rely on JPP symlinks when resolving artifacts
 
 * build-classpath and build-jar-repository
+
+* document all custom configuration options
