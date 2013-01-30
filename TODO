@@ -21,3 +21,6 @@
 * build-classpath and build-jar-repository
 
 * document all custom configuration options
+
+* better handle inter-subpackage dependencies (versioned deps,
+  dependency graphs etc.)
