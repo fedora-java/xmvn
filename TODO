@@ -24,3 +24,7 @@
 
 * better handle inter-subpackage dependencies (versioned deps,
   dependency graphs etc.)
+
+* allow installing artifacts without building them (like package is
+  built with ant, pom.xml cannot be used to build it, but still
+  pom.xml and jar files should be installable)
