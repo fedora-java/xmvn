@@ -184,5 +184,12 @@ class FedoraModelValidator
     static
     {
         blacklist( Artifact.DUMMY );
+        blacklist( "JPP/maven", "empty-dep" );
+
+        // TODO: This list should be configurable somehow
+        blacklist( "javax.activation", "activation" );
+        blacklist( "org.eclipse.jetty.orbit", "javax.activation" );
+        blacklist( "org.apache.maven.wagon", "wagon-webdav" );
+        blacklist( "org.apache.maven.wagon", "wagon-webdav-jackrabbit" );
     }
 }
