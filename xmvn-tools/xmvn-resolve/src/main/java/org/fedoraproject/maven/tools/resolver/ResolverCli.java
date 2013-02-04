@@ -16,6 +16,8 @@
 package org.fedoraproject.maven.tools.resolver;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,9 @@ public class ResolverCli
 
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
     public boolean debug = false;
+
+    @Parameter( names = { "-c", "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts" )
+    public boolean classpath = false;
 
     @DynamicParameter( names = "-D", description = "Define system property" )
     public Map<String, String> defines = new TreeMap<>();
@@ -72,16 +77,40 @@ public class ResolverCli
         }
     }
 
+    private void printResult( List<File> result )
+    {
+        if ( classpath )
+        {
+            Iterator<File> it = result.iterator();
+            System.out.print( it.next() );
+            while ( it.hasNext() )
+            {
+                System.out.print( ':' );
+                System.out.print( it.next() );
+            }
+            System.out.println();
+        }
+        else
+        {
+            for ( File f : result )
+                System.out.println( f );
+        }
+    }
+
     public void run()
     {
         Resolver resolver = new DefaultResolver();
+        List<File> result = new ArrayList<>();
 
         for ( String s : parameters )
         {
             String[] tok = StringSplitter.split( s, 4, ':' );
             File file = resolver.resolve( tok[0], tok[1], tok[2], tok[3] );
-            System.out.println( file );
+            result.add( file );
         }
+
+        if ( !result.isEmpty() )
+            printResult( result );
 
         SystemResolver.printInvolvedPackages();
     }
