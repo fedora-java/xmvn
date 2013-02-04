@@ -24,35 +24,35 @@ public enum Layout
      * <p>
      * Example: <code>g/r/o/u/p/artifact/ver/artifact-ver.ext</code>
      */
-    MAVEN( "Maven", false, true, true ),
+    MAVEN( "Maven", false, true, true, false ),
 
     /**
      * Version-aware repository JPP layout.
      * <p>
      * Example: <code>g/r/o/u/p/artifact-ver.ext</code>
      */
-    JPP( "version-aware JPP", false, false, true ),
+    JPP( "version-aware JPP", false, false, true, true ),
 
     /**
      * Version-unaware JPP repository layout.
      * <p>
      * Example: <code>g/r/o/u/p/artifact.ext</code>
      */
-    JPP_VERSIONLESS( "versionless JPP", false, false, false ),
+    JPP_VERSIONLESS( "versionless JPP", false, false, false, true ),
 
     /**
      * Version-aware flat repository layout.
      * <p>
      * Example: <code>g.r.o.u.p-artifact-ver.ext</code>
      */
-    FLAT( "version-aware flat", true, false, true ),
+    FLAT( "version-aware flat", true, false, true, false ),
 
     /**
      * Version-unaware flat repository layout.
      * <p>
      * Example: <code>g.r.o.u.p-artifact.ext</code>
      */
-    FLAT_VERSIONLESS( "versionless flat", true, false, false );
+    FLAT_VERSIONLESS( "versionless flat", true, false, false, false );
 
     private final String name;
 
@@ -62,12 +62,15 @@ public enum Layout
 
     private final boolean versioned;
 
-    private Layout( String name, boolean flat, boolean deep, boolean versioned )
+    private final boolean skipJpp;
+
+    private Layout( String name, boolean flat, boolean deep, boolean versioned, boolean skipJpp )
     {
         this.name = name;
         this.flat = flat;
         this.deep = deep;
         this.versioned = versioned;
+        this.skipJpp = skipJpp;
     }
 
     public boolean isVersioned()
@@ -84,20 +87,31 @@ public enum Layout
         String version = artifact.getVersion();
         String extension = artifact.getExtension();
 
-        if ( flat )
+        if ( skipJpp )
         {
-            path.append( groupId.replace( '/', '.' ) );
-            path.append( '-' );
+            if ( groupId.startsWith( "JPP/" ) )
+                groupId = groupId.substring( 4 );
+            else if ( groupId.equals( "JPP" ) )
+                groupId = null;
         }
-        else if ( deep )
+
+        if ( groupId != null )
         {
-            path.append( groupId.replace( '.', '/' ) );
-            path.append( '/' );
-        }
-        else
-        {
-            path.append( groupId );
-            path.append( '/' );
+            if ( flat )
+            {
+                path.append( groupId.replace( '/', '.' ) );
+                path.append( '-' );
+            }
+            else if ( deep )
+            {
+                path.append( groupId.replace( '.', '/' ) );
+                path.append( '/' );
+            }
+            else
+            {
+                path.append( groupId );
+                path.append( '/' );
+            }
         }
 
         path.append( artifactId );

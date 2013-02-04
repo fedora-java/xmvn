@@ -128,8 +128,7 @@ public class Configuration
         return Collections.unmodifiableCollection( resolvDepmaps );
     }
 
-    private static List<String> resolvJarRepos = newList( "/usr/share/maven/repository/",
-                                                          "/usr/share/maven/repository-jni/" );
+    private static List<String> resolvJarRepos = newList( "/usr/share/java/", "/usr/lib/java/" );
 
     public static Collection<String> getJarRepos()
     {
