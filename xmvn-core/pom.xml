@@ -22,7 +22,7 @@
   <parent>
     <artifactId>xmvn</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
-    <version>0.2.6</version>
+    <version>0.3.0</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>xmvn-core</artifactId>
