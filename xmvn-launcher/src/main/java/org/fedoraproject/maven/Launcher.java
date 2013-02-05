@@ -38,6 +38,8 @@ public class Launcher
             mavenHome = "/usr/share/maven";
         System.setProperty( "xmvn.maven.home", mavenHome );
 
+        // TODO: config file should be moved to a file, perhaps in /etc
+        // TODO: instead of enumerating all JARs use something like /usr/share/xmvn/lib/*.jar
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try (PrintStream conf = new PrintStream( bos ))
         {
@@ -47,6 +49,7 @@ public class Launcher
             conf.println( "load " + xmvnDir + "/xmvn-connector.jar" );
             conf.println( "optionally " + mavenHome + "/lib/ext/*.jar" );
             conf.println( "load " + mavenHome + "/lib/*.jar" );
+            conf.println( "load /usr/share/java/xml-commons-apis.jar" );
         }
 
         org.codehaus.plexus.classworlds.launcher.Launcher launcher;
