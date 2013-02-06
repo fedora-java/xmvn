@@ -15,10 +15,13 @@
  */
 package org.fedoraproject.maven;
 
+import java.io.File;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.resolver.DependencyMap;
+import org.fedoraproject.maven.resolver.DepmapReader;
 
 public class ArtifactBlacklist
 {
@@ -44,7 +47,10 @@ public class ArtifactBlacklist
         blacklist.add( artifact.clearVersionAndExtension() );
     }
 
-    static
+    /**
+     * Construct the initial artifact blacklist.
+     */
+    private static void createInitialBlacklist()
     {
         add( Artifact.DUMMY );
         add( Artifact.DUMMY_JPP );
@@ -54,5 +60,30 @@ public class ArtifactBlacklist
         add( "org.eclipse.jetty.orbit", "javax.activation" );
         add( "org.apache.maven.wagon", "wagon-webdav" );
         add( "org.apache.maven.wagon", "wagon-webdav-jackrabbit" );
+    }
+
+    /**
+     * Blacklist all aliases of already blacklisted artifacts.
+     */
+    private static void blacklistAliases()
+    {
+        Set<Artifact> aliasBlacklist = new TreeSet<>();
+
+        for ( String prefix : Configuration.getPrefixes() )
+        {
+            File root = new File( prefix );
+            DependencyMap depmap = DepmapReader.readArtifactMap( root );
+
+            for ( Artifact artifact : blacklist )
+                aliasBlacklist.addAll( depmap.relativesOf( artifact ) );
+        }
+
+        blacklist.addAll( aliasBlacklist );
+    }
+
+    static
+    {
+        createInitialBlacklist();
+        blacklistAliases();
     }
 }
