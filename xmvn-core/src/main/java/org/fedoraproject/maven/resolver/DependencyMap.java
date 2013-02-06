@@ -23,16 +23,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.fedoraproject.maven.model.Artifact;
 
 public class DependencyMap
 {
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+
     protected final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
 
     public boolean isEmpty()
     {
-        return mapping.isEmpty();
+        try
+        {
+            lock.readLock().lock();
+            return mapping.isEmpty();
+        }
+        finally
+        {
+            lock.readLock().unlock();
+        }
     }
 
     public void addMapping( String groupId, String artifactId, String version, String jppGroupId, String jppArtifactId )
@@ -45,14 +57,24 @@ public class DependencyMap
 
     public void addMapping( Artifact from, Artifact to )
     {
-        Set<Artifact> set = mapping.get( from );
-        if ( set == null )
+        try
         {
-            set = new TreeSet<>();
-            mapping.put( from, set );
+            lock.writeLock().lock();
+
+            Set<Artifact> set = mapping.get( from );
+            if ( set == null )
+            {
+                set = new TreeSet<>();
+                mapping.put( from, set );
+            }
+
+            set.add( to );
+        }
+        finally
+        {
+            lock.writeLock().unlock();
         }
 
-        set.add( to );
         debug( "Added mapping ", from, " => ", to );
     }
 
@@ -82,7 +104,16 @@ public class DependencyMap
 
         Set<Artifact> visited = new TreeSet<>();
         List<Artifact> resolved = new LinkedList<>();
-        walk( visited, resolved, current );
+
+        try
+        {
+            lock.readLock().lock();
+            walk( visited, resolved, current );
+        }
+        finally
+        {
+            lock.readLock().unlock();
+        }
 
         debug( "Translation result is ", Artifact.collectionToString( resolved ) );
         return resolved;
