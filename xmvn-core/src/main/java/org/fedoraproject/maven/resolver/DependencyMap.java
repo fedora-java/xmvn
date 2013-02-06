@@ -34,6 +34,8 @@ public class DependencyMap
 
     protected final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
 
+    private final Map<Artifact, Set<Artifact>> reverseMapping = new TreeMap<>();
+
     public boolean isEmpty()
     {
         try
@@ -55,20 +57,25 @@ public class DependencyMap
         addMapping( mavenArtifact, jppArtifact );
     }
 
+    private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
+    {
+        Set<Artifact> set = map.get( from );
+        if ( set == null )
+        {
+            set = new TreeSet<>();
+            map.put( from, set );
+        }
+
+        set.add( to );
+    }
+
     public void addMapping( Artifact from, Artifact to )
     {
         try
         {
             lock.writeLock().lock();
-
-            Set<Artifact> set = mapping.get( from );
-            if ( set == null )
-            {
-                set = new TreeSet<>();
-                mapping.put( from, set );
-            }
-
-            set.add( to );
+            addMapping( mapping, from, to );
+            addMapping( reverseMapping, to, from );
         }
         finally
         {
@@ -78,19 +85,28 @@ public class DependencyMap
         debug( "Added mapping ", from, " => ", to );
     }
 
-    private void walk( Set<Artifact> visited, List<Artifact> resolved, Artifact parent )
+    /**
+     * Search given mapping recursively in depth-first order.
+     * 
+     * @param map graph to search
+     * @param visited set of visited nodes on the path from the root
+     * @param resolved list of visited nodes
+     * @param parent starting point
+     */
+    private static void walk( Map<Artifact, Set<Artifact>> map, Set<Artifact> visited, List<Artifact> resolved,
+                              Artifact parent )
     {
         visited.add( parent );
 
-        if ( mapping.containsKey( parent ) )
+        if ( map.containsKey( parent ) )
         {
-            for ( Artifact child : mapping.get( parent ) )
+            for ( Artifact child : map.get( parent ) )
             {
                 if ( visited.contains( child ) )
                     continue;
 
                 debug( "Artifact ", parent, " was mapped to ", child );
-                walk( visited, resolved, child );
+                walk( map, visited, resolved, child );
             }
         }
 
@@ -98,24 +114,67 @@ public class DependencyMap
         visited.remove( parent );
     }
 
-    public List<Artifact> translate( Artifact current )
+    /**
+     * Walk given mapping in depth-first order.
+     * 
+     * @param map graph to search
+     * @param current starting point of the search
+     * @return list of all nodes in depth-first order
+     */
+    private List<Artifact> depthFirstWalk( Map<Artifact, Set<Artifact>> map, Artifact current )
     {
-        debug( "Trying to translate artifact ", current );
-
         Set<Artifact> visited = new TreeSet<>();
-        List<Artifact> resolved = new LinkedList<>();
+        List<Artifact> result = new LinkedList<>();
+
+        walk( map, visited, result, current );
+
+        return result;
+    }
+
+    /**
+     * Compute a list of artifacts reachable from given start artifact in a reflective transitive closure of dependency
+     * graph. The list is in depth-first order. The list is never empty because it always contains the given artifact.
+     * 
+     * @param artifact start point of depth-first search
+     * @return list of artifacts to which given artifact can be mapped
+     */
+    public List<Artifact> translate( Artifact artifact )
+    {
+        debug( "Trying to translate artifact ", artifact );
 
         try
         {
             lock.readLock().lock();
-            walk( visited, resolved, current );
+            List<Artifact> resolved = depthFirstWalk( mapping, artifact );
+            debug( "Translation result is ", Artifact.collectionToString( resolved ) );
+            return resolved;
         }
         finally
         {
             lock.readLock().unlock();
         }
+    }
 
-        debug( "Translation result is ", Artifact.collectionToString( resolved ) );
-        return resolved;
+    /**
+     * Find all artifacts somehow related to given artifact.
+     * 
+     * @param artifact artifact relatives of which are to be found
+     * @return related set containing all artifacts reachable from given artifact and artifacts from which given
+     *         artifact is reachable
+     */
+    public Set<Artifact> relativesOf( Artifact artifact )
+    {
+        try
+        {
+            lock.readLock().lock();
+            Set<Artifact> resultSet = new TreeSet<>();
+            for ( Artifact aa : depthFirstWalk( reverseMapping, artifact ) )
+                resultSet.addAll( depthFirstWalk( mapping, aa ) );
+            return resultSet;
+        }
+        finally
+        {
+            lock.readLock().unlock();
+        }
     }
 }
