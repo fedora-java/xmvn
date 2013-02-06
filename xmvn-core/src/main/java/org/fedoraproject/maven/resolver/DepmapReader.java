@@ -43,7 +43,19 @@ import org.xml.sax.SAXException;
 
 class DepmapReader
 {
-    public void readArtifactMap( File root, DependencyMap map )
+    private DepmapReader()
+    {
+    }
+
+    public static DependencyMap readArtifactMap( File root )
+    {
+        DependencyMap depmap = new DependencyMap();
+        DepmapReader depmapReader = new DepmapReader();
+        depmapReader.readArtifactMap( root, depmap );
+        return depmap;
+    }
+
+    private void readArtifactMap( File root, DependencyMap map )
     {
         for ( String path : Configuration.getDepmaps() )
         {

@@ -33,7 +33,7 @@ public class SystemResolver
 {
     private final Repository systemRepo;
 
-    private static final DependencyMap depmap = new DependencyMap();
+    private final DependencyMap depmap;
 
     private static final RpmDb rpmdb = new RpmDb();
 
@@ -42,8 +42,7 @@ public class SystemResolver
     public SystemResolver( File root )
     {
         systemRepo = new JppRepository( root );
-        DepmapReader depmapReader = new DepmapReader();
-        depmapReader.readArtifactMap( root, depmap );
+        depmap = DepmapReader.readArtifactMap( root );
     }
 
     @Override
