@@ -37,6 +37,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.fedoraproject.maven.ArtifactBlacklist;
 import org.fedoraproject.maven.Configuration;
 import org.fedoraproject.maven.model.Artifact;
 
@@ -74,7 +75,7 @@ class FedoraModelValidator
             String artifactId = dependency.getArtifactId();
             String scope = dependency.getScope();
 
-            if ( isBlacklisted( groupId, artifactId ) )
+            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed dependency " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -105,7 +106,7 @@ class FedoraModelValidator
             String groupId = plugin.getGroupId();
             String artifactId = plugin.getArtifactId();
 
-            if ( isBlacklisted( groupId, artifactId ) )
+            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed plugin " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -153,43 +154,5 @@ class FedoraModelValidator
             {
             }
         }
-    }
-
-    private static final Map<String, Set<String>> blacklist = new TreeMap<>();
-
-    private boolean isBlacklisted( String groupId, String artifactId )
-    {
-        Set<String> group = blacklist.get( groupId );
-        return group != null && group.contains( artifactId );
-    }
-
-    private static void blacklist( String groupId, String artifactId )
-    {
-        Set<String> group = blacklist.get( groupId );
-
-        if ( group == null )
-        {
-            group = new TreeSet<>();
-            blacklist.put( groupId, group );
-        }
-
-        group.add( artifactId );
-    }
-
-    private static void blacklist( Artifact artifact )
-    {
-        blacklist( artifact.getGroupId(), artifact.getArtifactId() );
-    }
-
-    static
-    {
-        blacklist( Artifact.DUMMY );
-        blacklist( "JPP/maven", "empty-dep" );
-
-        // TODO: This list should be configurable somehow
-        blacklist( "javax.activation", "activation" );
-        blacklist( "org.eclipse.jetty.orbit", "javax.activation" );
-        blacklist( "org.apache.maven.wagon", "wagon-webdav" );
-        blacklist( "org.apache.maven.wagon", "wagon-webdav-jackrabbit" );
     }
 }
