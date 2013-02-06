@@ -28,6 +28,9 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,16 +46,56 @@ import org.xml.sax.SAXException;
 
 class DepmapReader
 {
+    private final DependencyMap depmap = new DependencyMap();
+
+    private final CountDownLatch ready = new CountDownLatch( 1 );
+
+    private static Map<File, DepmapReader> readers = new TreeMap<>();
+
     private DepmapReader()
     {
     }
 
     public static DependencyMap readArtifactMap( File root )
     {
-        DependencyMap depmap = new DependencyMap();
-        DepmapReader depmapReader = new DepmapReader();
-        depmapReader.readArtifactMap( root, depmap );
-        return depmap;
+        boolean notYetInitialized = false;
+        DepmapReader reader = null;
+
+        synchronized ( readers )
+        {
+            reader = readers.get( root );
+            if ( reader == null )
+            {
+                reader = new DepmapReader();
+                readers.put( root, reader );
+                notYetInitialized = true;
+            }
+        }
+
+        if ( notYetInitialized )
+        {
+            try
+            {
+                reader.readArtifactMap( root, reader.depmap );
+            }
+            finally
+            {
+                reader.ready.countDown();
+            }
+        }
+        else
+        {
+            try
+            {
+                reader.ready.await();
+            }
+            catch ( InterruptedException e )
+            {
+                return null;
+            }
+        }
+
+        return reader.depmap;
     }
 
     private void readArtifactMap( File root, DependencyMap map )
