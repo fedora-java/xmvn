@@ -36,6 +36,12 @@ public class Artifact
      */
     public static final Artifact DUMMY = new Artifact( "org.fedoraproject.xmvn", "xmvn-void" );
 
+    /**
+     * The same as <code>DUMMY</code>, but in JPP style. Any dependencies on this artifact will be removed during model
+     * validation.
+     */
+    public static final Artifact DUMMY_JPP = new Artifact( "JPP/maven", "empty-dep" );
+
     public Artifact( String groupId, String artifactId )
     {
         this( groupId, artifactId, null );

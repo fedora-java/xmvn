@@ -58,7 +58,7 @@ public class ArtifactBlacklist
     static
     {
         add( Artifact.DUMMY );
-        add( "JPP/maven", "empty-dep" );
+        add( Artifact.DUMMY_JPP );
 
         // TODO: This list should be configurable somehow
         add( "javax.activation", "activation" );
