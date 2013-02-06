@@ -19,10 +19,6 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
@@ -39,7 +35,6 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.ArtifactBlacklist;
 import org.fedoraproject.maven.Configuration;
-import org.fedoraproject.maven.model.Artifact;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
