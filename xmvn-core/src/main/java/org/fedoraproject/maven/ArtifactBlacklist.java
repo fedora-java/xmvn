@@ -15,44 +15,33 @@
  */
 package org.fedoraproject.maven;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.fedoraproject.maven.model.Artifact;
 
 public class ArtifactBlacklist
 {
-    private static final Map<String, Set<String>> blacklist = new TreeMap<>();
+    private static final Set<Artifact> blacklist = new TreeSet<>();
 
     public static boolean contains( String groupId, String artifactId )
     {
-        Set<String> group = blacklist.get( groupId );
-        return group != null && group.contains( artifactId );
+        return contains( new Artifact( groupId, artifactId ) );
     }
 
     public static boolean contains( Artifact artifact )
     {
-        return contains( artifact.getGroupId(), artifact.getArtifactId() );
+        return blacklist.contains( artifact.clearVersionAndExtension() );
     }
 
     public static void add( String groupId, String artifactId )
     {
-        Set<String> group = blacklist.get( groupId );
-
-        if ( group == null )
-        {
-            group = new TreeSet<>();
-            blacklist.put( groupId, group );
-        }
-
-        group.add( artifactId );
+        add( new Artifact( groupId, artifactId ) );
     }
 
     public static void add( Artifact artifact )
     {
-        add( artifact.getGroupId(), artifact.getArtifactId() );
+        blacklist.add( artifact.clearVersionAndExtension() );
     }
 
     static
