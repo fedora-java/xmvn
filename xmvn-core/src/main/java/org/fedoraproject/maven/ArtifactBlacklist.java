@@ -29,7 +29,7 @@ public class ArtifactBlacklist
         return contains( new Artifact( groupId, artifactId ) );
     }
 
-    public static boolean contains( Artifact artifact )
+    public static synchronized boolean contains( Artifact artifact )
     {
         return blacklist.contains( artifact.clearVersionAndExtension() );
     }
@@ -39,7 +39,7 @@ public class ArtifactBlacklist
         add( new Artifact( groupId, artifactId ) );
     }
 
-    public static void add( Artifact artifact )
+    public static synchronized void add( Artifact artifact )
     {
         blacklist.add( artifact.clearVersionAndExtension() );
     }
