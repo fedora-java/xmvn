@@ -16,6 +16,7 @@
 package org.fedoraproject.maven;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -45,6 +46,16 @@ public class ArtifactBlacklist
     public static synchronized void add( Artifact artifact )
     {
         blacklist.add( artifact.clearVersionAndExtension() );
+    }
+
+    /**
+     * Enumerate all blacklisted artifacts.
+     * 
+     * @return set view of artifact blacklist
+     */
+    public static Set<Artifact> setView()
+    {
+        return Collections.unmodifiableSet( blacklist );
     }
 
     /**
