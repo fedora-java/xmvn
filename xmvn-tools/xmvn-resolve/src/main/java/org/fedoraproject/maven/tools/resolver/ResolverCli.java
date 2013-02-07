@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.fedoraproject.maven.ArtifactBlacklist;
 import org.fedoraproject.maven.resolver.DefaultResolver;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.resolver.SystemResolver;
@@ -113,6 +114,8 @@ public class ResolverCli
             printResult( result );
 
         SystemResolver.printInvolvedPackages();
+        // Load ArtifactBlacklist class so it can print useful debugging information during its static initialization
+        ArtifactBlacklist.class.getClass();
     }
 
     public static void main( String[] args )
