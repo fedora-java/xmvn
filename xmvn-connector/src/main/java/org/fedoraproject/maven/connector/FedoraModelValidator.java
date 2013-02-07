@@ -22,6 +22,7 @@ import java.util.LinkedList;
 
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Extension;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
@@ -58,6 +59,7 @@ class FedoraModelValidator
     private void customizeModel( Model model )
     {
         customizeDependencies( model );
+        customizeExtensions( model );
         customizePlugins( model );
     }
 
@@ -90,6 +92,31 @@ class FedoraModelValidator
             if ( ( scope == null || scope.equals( "compile" ) ) && dependency.isOptional() )
                 dependency.setScope( "provided" );
         }
+    }
+
+    private void customizeExtensions( Model model )
+    {
+        Build build = model.getBuild();
+        if ( build == null )
+            return;
+
+        for ( Iterator<Extension> iter = build.getExtensions().iterator(); iter.hasNext(); )
+        {
+            Extension extension = iter.next();
+            String groupId = extension.getGroupId();
+            String artifactId = extension.getArtifactId();
+
+            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
+            {
+                logger.debug( "Removed extension " + groupId + ":" + artifactId + " because it was blacklisted." );
+                iter.remove();
+                continue;
+            }
+
+            if ( extension.getVersion() == null )
+                extension.setVersion( "SYSTEM" );
+        }
+
     }
 
     private void customizePlugins( Model model )
