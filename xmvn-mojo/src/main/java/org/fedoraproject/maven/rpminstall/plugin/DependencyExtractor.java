@@ -44,7 +44,7 @@ import org.fedoraproject.maven.Configuration;
 public class DependencyExtractor
 {
     // List of dependency scopes for which auto-requires are generated. Must be in ascending order.
-    private static final String[] runtimeScopes = new String[] { "compile", "provided", "runtime" };
+    private static final String[] runtimeScopes = new String[] { "compile", "runtime" };
 
     private static final String[] buildAndTestScopes = new String[] { "compile", "provided", "test" };
 
