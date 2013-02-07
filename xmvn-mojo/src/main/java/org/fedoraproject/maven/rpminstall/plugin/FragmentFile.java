@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.fedoraproject.maven.ArtifactBlacklist;
 import org.fedoraproject.maven.Configuration;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.resolver.DependencyMap;
@@ -125,6 +126,9 @@ public class FragmentFile
 
                 for ( Artifact dependency : combinedDependencies )
                 {
+                    if ( ArtifactBlacklist.contains( dependency ) )
+                        continue;
+
                     ps.println( "  <autoRequires>" );
                     ps.println( "    <groupId>" + dependency.getGroupId() + "</groupId>" );
                     ps.println( "    <artifactId>" + dependency.getArtifactId() + "</artifactId>" );
