@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven;
 
+import static org.fedoraproject.maven.utils.Logger.debug;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Set;
@@ -71,6 +73,8 @@ public class ArtifactBlacklist
         add( "org.eclipse.jetty.orbit", "javax.activation" );
         add( "org.apache.maven.wagon", "wagon-webdav" );
         add( "org.apache.maven.wagon", "wagon-webdav-jackrabbit" );
+
+        debug( "Initial artifact blacklist is: ", Artifact.collectionToString( blacklist, true ) );
     }
 
     /**
@@ -86,10 +90,15 @@ public class ArtifactBlacklist
             DependencyMap depmap = DepmapReader.readArtifactMap( root );
 
             for ( Artifact artifact : blacklist )
-                aliasBlacklist.addAll( depmap.relativesOf( artifact ) );
+            {
+                Set<Artifact> relatives = depmap.relativesOf( artifact );
+                aliasBlacklist.addAll( relatives );
+                debug( "Blacklisted relatives of ", artifact, ": ", Artifact.collectionToString( blacklist ) );
+            }
         }
 
         blacklist.addAll( aliasBlacklist );
+        debug( "Final artifact blacklist is: ", Artifact.collectionToString( blacklist, true ) );
     }
 
     static
