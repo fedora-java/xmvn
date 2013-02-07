@@ -93,7 +93,7 @@ public class ArtifactBlacklist
             {
                 Set<Artifact> relatives = depmap.relativesOf( artifact );
                 aliasBlacklist.addAll( relatives );
-                debug( "Blacklisted relatives of ", artifact, ": ", Artifact.collectionToString( blacklist ) );
+                debug( "Blacklisted relatives of ", artifact, ": ", Artifact.collectionToString( relatives ) );
             }
         }
 
