@@ -135,6 +135,11 @@ public class Artifact
         return new Artifact( groupId, artifactId, version, extension );
     }
 
+    /**
+     * Convert this artifact into human-readable string.
+     * 
+     * @return string representation this artifact
+     */
     @Override
     public String toString()
     {
@@ -167,24 +172,45 @@ public class Artifact
         return 42;
     }
 
+    /**
+     * Convert a collection of artifacts to a human-readable string. This function uses single-line representation.
+     * 
+     * @param collection collection of artifacts
+     * @return string representation of given collection of artifacts
+     */
     public static String collectionToString( Collection<Artifact> set )
     {
-        if ( set.isEmpty() )
+        return collectionToString( set, false );
+    }
+
+    /**
+     * Convert a collection of artifacts to a human-readable string.
+     * 
+     * @param collection collection of artifacts
+     * @param multiLine if multi-line representation should be used instead of single-line
+     * @return string representation of given collection of artifacts
+     */
+    public static String collectionToString( Collection<Artifact> collection, boolean multiLine )
+    {
+        if ( collection.isEmpty() )
             return "[]";
 
-        StringBuilder sb = new StringBuilder();
-        sb.append( "[ " );
+        String separator = multiLine ? System.lineSeparator() : " ";
+        String indent = multiLine ? "  " : "";
 
-        Iterator<Artifact> iter = set.iterator();
-        sb.append( iter.next() );
+        StringBuilder sb = new StringBuilder();
+        sb.append( "[" + separator );
+
+        Iterator<Artifact> iter = collection.iterator();
+        sb.append( indent + iter.next() );
 
         while ( iter.hasNext() )
         {
-            sb.append( ", " );
-            sb.append( iter.next() );
+            sb.append( "," + separator );
+            sb.append( indent + iter.next() );
         }
 
-        sb.append( " ]" );
+        sb.append( separator + "]" );
         return sb.toString();
     }
 }
