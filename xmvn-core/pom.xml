@@ -30,10 +30,48 @@
   <description>XMvn Core library</description>
   <dependencies>
     <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
       <version>2.0.2</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.modello</groupId>
+        <artifactId>modello-maven-plugin</artifactId>
+        <version>1.6</version>
+        <configuration>
+          <version>0.4.0</version>
+          <useJava5>true</useJava5>
+          <models>
+            <model>src/main/mdo/config.mdo</model>
+          </models>
+        </configuration>
+        <executions>
+          <execution>
+            <id>site-docs</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>xdoc</goal>
+              <!--goal>xsd</goal-->
+            </goals>
+          </execution>
+          <execution>
+            <id>standard</id>
+            <goals>
+              <goal>java</goal>
+              <goal>xpp3-reader</goal>
+              <goal>xpp3-writer</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
