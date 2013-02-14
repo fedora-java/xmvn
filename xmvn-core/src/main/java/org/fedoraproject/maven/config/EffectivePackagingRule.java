@@ -106,7 +106,7 @@ public class EffectivePackagingRule
         {
             alias = expandBackreferences( matchers, alias );
             if ( !getAliases().contains( alias ) )
-                addAliase( alias );
+                addAlias( alias );
         }
 
         for ( String file : rule.getFiles() )

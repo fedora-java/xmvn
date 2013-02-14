@@ -161,12 +161,41 @@
           <name>aliases</name>
           <version>0.4.0+</version>
           <description>Alternative identifiers of artifacts.</description>
-          <association>
+	  <!-- Modello would generate methods addAliase() and removeAliase()
+	       instead of addAlias() and removeALias(). To workaround this we
+	       skip generating of adders and generate them manually. -->
+          <association xml.tagName="alias" java.adder="false">
             <type>Artifact</type>
             <multiplicity>*</multiplicity>
           </association>
         </field>
       </fields>
+      <codeSegments>
+	<codeSegment>
+	  <version>0.4.0+</version>
+	  <code>
+	    <![CDATA[
+    /**
+     * Add an alias.
+     * @param artifact alias to be added
+     */
+    public void addAlias( Artifact artifact )
+    {
+        getAliases().add( artifact );
+    }
+
+    /**
+     * Remove an alias.
+     * @param artifact alias to be removed
+     */
+    public void removeAlias( Artifact artifact )
+    {
+        getAliases().remove( artifact );
+    }
+	    ]]>
+	  </code>
+	</codeSegment>
+      </codeSegments>
     </class>
 
     <class>
