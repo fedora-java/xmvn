@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -33,8 +33,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.fedoraproject.maven.Configuration;
-import org.fedoraproject.maven.Rule;
+import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.fedoraproject.maven.config.EffectivePackagingRule;
+import org.fedoraproject.maven.config.PackagingRule;
 
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
 public class InstallMojo
@@ -46,7 +47,7 @@ public class InstallMojo
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
-    private void installProject( MavenProject project, Package targetPackage )
+    private void installProject( MavenProject project, Package targetPackage, PackagingRule rule )
         throws MojoExecutionException, IOException
     {
         Artifact artifact = project.getArtifact();
@@ -68,6 +69,7 @@ public class InstallMojo
         Path jppName;
         Path pomFile;
         DependencyVisitor metadata = targetPackage.getMetadata();
+        String packageName = ConfigurationXXX.getConfiguration().getInstallerSettings().getPackageName();
 
         if ( file != null )
         {
@@ -80,16 +82,12 @@ public class InstallMojo
             pomFile = Files.createTempFile( "xmvn-" + artifactId + "-", ".pom.xml" );
             DependencyExtractor.simplifyEffectiveModel( project.getModel() );
             DependencyExtractor.writeModel( project.getModel(), pomFile );
-            List<Path> extraList = new LinkedList<>();
 
-            for ( Rule rule : Configuration.getInstallFiles() )
-            {
-                String name = rule.match( groupId, artifactId, version );
-                if ( name != null )
-                    extraList.add( Paths.get( name ) );
-            }
+            List<Path> extraList = new ArrayList<>( rule.getFiles().size() );
+            for ( String fileName : rule.getFiles() )
+                extraList.add( Paths.get( fileName ) );
 
-            Path baseFile = Paths.get( Configuration.getInstallName() + "/" + artifactId );
+            Path baseFile = Paths.get( packageName + "/" + artifactId );
             if ( !extraList.isEmpty() )
                 baseFile = extraList.remove( 0 );
 
@@ -105,7 +103,7 @@ public class InstallMojo
         else
         {
             pomFile = project.getFile().toPath();
-            jppGroup = Paths.get( "JPP" ).resolve( Configuration.getInstallName() );
+            jppGroup = Paths.get( "JPP" ).resolve( packageName );
             jppName = Paths.get( groupId + "@" + artifactId );
 
             Model rawModel = DependencyExtractor.getRawModel( project );
@@ -113,25 +111,9 @@ public class InstallMojo
         }
 
         targetPackage.addPomFile( pomFile, jppGroup, jppName );
-        targetPackage.createDepmaps( groupId, artifactId, version, jppGroup, jppName );
+        targetPackage.createDepmaps( groupId, artifactId, version, jppGroup, jppName, rule );
 
         DependencyExtractor.generateEffectiveRuntimeRequires( project.getModel(), metadata );
-    }
-
-    private String getPackageName( Artifact artifact )
-    {
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
-
-        for ( Rule rule : Configuration.getInstallLayout() )
-        {
-            String name = rule.match( groupId, artifactId, version );
-            if ( name != null )
-                return name;
-        }
-
-        return Package.MAIN;
     }
 
     @Override
@@ -147,7 +129,11 @@ public class InstallMojo
         {
             for ( MavenProject project : reactorProjects )
             {
-                String packageName = getPackageName( project.getArtifact() );
+                PackagingRule rule =
+                    new EffectivePackagingRule( project.getGroupId(), project.getArtifactId(), project.getVersion() );
+                String packageName = rule.getTargetPackage();
+                if ( packageName == null )
+                    packageName = Package.MAIN;
                 Package pkg = packages.get( packageName );
 
                 if ( pkg == null )
@@ -156,7 +142,7 @@ public class InstallMojo
                     packages.put( packageName, pkg );
                 }
 
-                installProject( project, pkg );
+                installProject( project, pkg, rule );
             }
 
             // TODO: make .root configurable

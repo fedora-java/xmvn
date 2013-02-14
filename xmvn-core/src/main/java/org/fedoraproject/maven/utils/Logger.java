@@ -17,7 +17,7 @@ package org.fedoraproject.maven.utils;
 
 import java.io.PrintStream;
 
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ConfigurationXXX;
 
 public class Logger
 {
@@ -72,13 +72,13 @@ public class Logger
 
     public static void debug( Object... message )
     {
-        if ( Configuration.isDebugEnabled() )
+        if ( ConfigurationXXX.getConfiguration().getBuildSettings().isDebug() )
             provider.debug( concatenate( message ) );
     }
 
     public static void info( Object... message )
     {
-        if ( Configuration.isDebugEnabled() )
+        if ( ConfigurationXXX.getConfiguration().getBuildSettings().isDebug() )
             provider.info( concatenate( message ) );
     }
 

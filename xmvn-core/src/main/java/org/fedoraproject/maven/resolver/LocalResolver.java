@@ -17,7 +17,7 @@ package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ConfigurationXXX;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.repository.Layout;
 import org.fedoraproject.maven.repository.Repository;
@@ -26,7 +26,9 @@ import org.fedoraproject.maven.repository.SingletonRepository;
 public class LocalResolver
     extends AbstractResolver
 {
-    private final File localRepoDir = new File( Configuration.getLocalRepoPath() );
+    // FIXME: only the first local repository is used for now
+    private final File localRepoDir =
+        new File( ConfigurationXXX.getConfiguration().getResolverSettings().getLocalRepositories().iterator().next() );
 
     private final Repository repo = new SingletonRepository( localRepoDir, Layout.MAVEN );
 

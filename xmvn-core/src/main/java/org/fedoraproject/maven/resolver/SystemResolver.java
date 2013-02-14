@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ConfigurationXXX;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.repository.JppRepository;
 import org.fedoraproject.maven.repository.Repository;
@@ -71,7 +71,7 @@ public class SystemResolver
 
         debug( "Artifact ", artifact, " was resolved to ", file );
 
-        if ( Configuration.isDebugEnabled() )
+        if ( ConfigurationXXX.getConfiguration().getBuildSettings().isDebug() )
         {
             String rpmPackage = rpmdb.lookupFile( file );
             if ( rpmPackage != null )

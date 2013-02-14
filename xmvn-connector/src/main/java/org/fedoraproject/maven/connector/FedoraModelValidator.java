@@ -34,8 +34,8 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.ArtifactBlacklist;
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ArtifactBlacklistXXX;
+import org.fedoraproject.maven.config.ConfigurationXXX;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
@@ -72,14 +72,15 @@ class FedoraModelValidator
             String artifactId = dependency.getArtifactId();
             String scope = dependency.getScope();
 
-            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
+            if ( ArtifactBlacklistXXX.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed dependency " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
                 continue;
             }
 
-            if ( Configuration.testsSkipped() && scope != null && scope.equals( "test" ) )
+            if ( ConfigurationXXX.getConfiguration().getBuildSettings().isSkipTests() && scope != null
+                && scope.equals( "test" ) )
             {
                 logger.debug( "Dropped dependency on " + groupId + ":" + artifactId + " because tests are skipped." );
                 iter.remove();
@@ -106,7 +107,7 @@ class FedoraModelValidator
             String groupId = extension.getGroupId();
             String artifactId = extension.getArtifactId();
 
-            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
+            if ( ArtifactBlacklistXXX.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed extension " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -131,7 +132,7 @@ class FedoraModelValidator
             String groupId = plugin.getGroupId();
             String artifactId = plugin.getArtifactId();
 
-            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
+            if ( ArtifactBlacklistXXX.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed plugin " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -164,8 +165,8 @@ class FedoraModelValidator
                 BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
 
                 // Source must be at least 1.5
-                BigDecimal minSource = Configuration.getCompilerSource();
-                if ( Configuration.isCompilerSourceSpecified() || source.compareTo( minSource ) < 0 )
+                BigDecimal minSource = ConfigurationXXX.getCompilerSource();
+                if ( ConfigurationXXX.isCompilerSourceSpecified() || source.compareTo( minSource ) < 0 )
                     source = minSource;
 
                 // Target must not be less than source

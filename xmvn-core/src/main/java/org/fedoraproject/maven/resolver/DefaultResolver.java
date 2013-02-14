@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ConfigurationXXX;
 import org.fedoraproject.maven.model.Artifact;
 
 public class DefaultResolver
@@ -33,7 +33,7 @@ public class DefaultResolver
     {
         resolvers.add( new LocalResolver() );
 
-        for ( String prefix : Configuration.getPrefixes() )
+        for ( String prefix : ConfigurationXXX.getConfiguration().getResolverSettings().getPrefixes() )
         {
             File root = new File( prefix );
             if ( root.isDirectory() )

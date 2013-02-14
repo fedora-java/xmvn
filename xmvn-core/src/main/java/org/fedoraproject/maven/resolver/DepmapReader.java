@@ -36,7 +36,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ConfigurationXXX;
 import org.fedoraproject.maven.model.Artifact;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -100,7 +100,7 @@ public class DepmapReader
 
     private void readArtifactMap( File root, DependencyMap map )
     {
-        for ( String path : Configuration.getDepmaps() )
+        for ( String path : ConfigurationXXX.getConfiguration().getResolverSettings().getMetadataRepositories() )
         {
             File file = new File( path );
 

@@ -29,8 +29,9 @@ import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.fedoraproject.maven.Configuration;
-import org.fedoraproject.maven.Rule;
+import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.fedoraproject.maven.config.InstallerSettings;
+import org.fedoraproject.maven.config.PackagingRule;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.utils.FileUtils;
 
@@ -83,7 +84,8 @@ public class Package
     public void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
     {
         Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
-        addFile( file, Configuration.getInstallPomDir(), pomName, 0644 );
+        Path pomDir = Paths.get( ConfigurationXXX.getConfiguration().getInstallerSettings().getPomDir() );
+        addFile( file, pomDir, pomName, 0644 );
     }
 
     private static boolean containsNativeCode( Path jar )
@@ -115,7 +117,9 @@ public class Package
     {
         pureDevelPackage = false;
 
-        Path jarDir = containsNativeCode( file ) ? Configuration.getInstallJniDir() : Configuration.getInstallJarDir();
+        InstallerSettings instSettings = ConfigurationXXX.getConfiguration().getInstallerSettings();
+
+        Path jarDir = Paths.get( containsNativeCode( file ) ? instSettings.getJniDir() : instSettings.getJarDir() );
         Path jarFile = jarDir.resolve( Paths.get( baseName + ".jar" ) );
         addFile( file, jarFile, 0644 );
 
@@ -142,18 +146,18 @@ public class Package
         }
     }
 
-    public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName )
+    public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
+                               PackagingRule rule )
     {
         Artifact artifact = new Artifact( groupId, artifactId, version );
         Artifact jppArtifact = new Artifact( jppGroup.toString(), jppName.toString(), version );
 
         getMetadata().addMapping( artifact, jppArtifact );
 
-        for ( Rule rule : Configuration.getInstallDepmaps() )
+        for ( org.fedoraproject.maven.config.Artifact alias2 : rule.getAliases() )
         {
-            Artifact target = rule.createArtifact( artifact );
-            if ( target != null )
-                getMetadata().addMapping( target, jppArtifact );
+            Artifact alias = new Artifact( alias2.getGroupId(), alias2.getArtifactId(), alias2.getVersion() );
+            getMetadata().addMapping( alias, jppArtifact );
         }
     }
 
@@ -166,8 +170,10 @@ public class Package
         {
             Path file = Files.createTempFile( "xmvn", ".xml" );
             getMetadata().write( file, pureDevelPackage );
-            Path depmapName = Paths.get( Configuration.getInstallName() + suffix + ".xml" );
-            addFile( file, Configuration.getInstallDepmapDir(), depmapName, 0644 );
+            String packageName = ConfigurationXXX.getConfiguration().getInstallerSettings().getPackageName();
+            Path depmapName = Paths.get( packageName + suffix + ".xml" );
+            Path depmapDir = Paths.get( ConfigurationXXX.getConfiguration().getInstallerSettings().getMetadataDir() );
+            addFile( file, depmapDir, depmapName, 0644 );
         }
     }
 

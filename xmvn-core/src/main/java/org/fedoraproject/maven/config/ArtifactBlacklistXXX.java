@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven;
+package org.fedoraproject.maven.config;
 
 import static org.fedoraproject.maven.utils.Logger.debug;
 
@@ -26,7 +26,8 @@ import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.resolver.DependencyMap;
 import org.fedoraproject.maven.resolver.DepmapReader;
 
-public class ArtifactBlacklist
+// FIXME: get rid of this class
+public class ArtifactBlacklistXXX
 {
     private static final Set<Artifact> blacklist = new TreeSet<>();
 
@@ -84,7 +85,7 @@ public class ArtifactBlacklist
     {
         Set<Artifact> aliasBlacklist = new TreeSet<>();
 
-        for ( String prefix : Configuration.getPrefixes() )
+        for ( String prefix : ConfigurationXXX.getConfiguration().getResolverSettings().getPrefixes() )
         {
             File root = new File( prefix );
             DependencyMap depmap = DepmapReader.readArtifactMap( root );
