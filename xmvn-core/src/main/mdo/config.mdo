@@ -94,35 +94,6 @@
       </fields>
     </class>
 
-    <class>
-      <name>ArtifactGlob</name>
-      <version>0.4.0+</version>
-      <description>A pattern identifying one or more Maven artifacts.</description>
-      <fields>
-        <field>
-          <name>groupId</name>
-          <version>0.4.0+</version>
-          <description>Glob pattern specifying group ID of the artifact.</description>
-          <type>String</type>
-	  <defaultValue>*</defaultValue>
-        </field>
-        <field>
-          <name>artifactId</name>
-          <version>0.4.0+</version>
-	  <required>true</required>
-          <description>Glob pattern specifying ID of the artifact.</description>
-          <type>String</type>
-        </field>
-        <field>
-          <name>version</name>
-          <version>0.4.0+</version>
-          <description>Glob pattern specifying version of the artifact.</description>
-          <type>String</type>
-	  <defaultValue>*</defaultValue>
-        </field>
-      </fields>
-    </class>
-
     <class xml.tagName="artifact">
       <name>Artifact</name>
       <version>0.4.0+</version>
@@ -168,7 +139,7 @@
 	  <required>true</required>
           <description>Pattern specifying one or more Maven artifacts.</description>
 	  <association>
-            <type>ArtifactGlob</type>
+            <type>Artifact</type>
 	  </association>
         </field>
         <field>

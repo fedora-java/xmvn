@@ -68,7 +68,7 @@ public class EffectivePackagingRule
 
     private void applyRule( PackagingRule rule )
     {
-        ArtifactGlob glob = rule.getArtifactGlob();
+        org.fedoraproject.maven.config.Artifact glob = rule.getArtifactGlob();
         Pattern groupIdPattern = GlobUtils.glob2pattern( glob.getGroupId() );
         Pattern artifactIdPattern = GlobUtils.glob2pattern( glob.getArtifactId() );
         Pattern versionPattern = GlobUtils.glob2pattern( glob.getVersion() );
