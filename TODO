@@ -26,3 +26,10 @@
 * allow installing artifacts without building them (like package is
   built with ant, pom.xml cannot be used to build it, but still
   pom.xml and jar files should be installable)
+
+* in configuration model use Boolean instead of String when possible
+
+* implement clone() of configuration model
+
+* in tests don't modify configuration directly; clone it and customize
+  the clone
