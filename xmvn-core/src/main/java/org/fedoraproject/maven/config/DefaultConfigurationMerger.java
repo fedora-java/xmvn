@@ -98,6 +98,9 @@ public class DefaultConfigurationMerger
 
         if ( dominant.getMetadataDir() == null )
             dominant.setMetadataDir( recessive.getMetadataDir() );
+
+        if ( dominant.getInstallRoot() == null )
+            dominant.setInstallRoot( recessive.getInstallRoot() );
     }
 
     private void mergeConfiguration( Configuration dominant, Configuration recessive )

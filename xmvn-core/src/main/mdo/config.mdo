@@ -324,6 +324,15 @@ will take precedence over user configuration.</p>
 	  </description>
           <type>String</type>
         </field>
+        <field>
+          <name>installRoot</name>
+          <version>0.4.0+</version>
+	  <required>true</required>
+          <description>
+	    Directory into which artfiacts are installed.
+	  </description>
+          <type>String</type>
+        </field>
       </fields>
       <codeSegments>
 	<codeSegment>

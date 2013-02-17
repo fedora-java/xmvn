@@ -157,8 +157,8 @@ public class InstallMojo
                 installProject( project, pkg, rule );
             }
 
-            // TODO: make .root configurable
-            Installer installer = new Installer( Paths.get( ".root" ) );
+            Path installRoot = Paths.get( settings.getInstallRoot() );
+            Installer installer = new Installer( installRoot );
 
             for ( Package pkg : packages.values() )
                 if ( pkg.isInstallable() )
