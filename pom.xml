@@ -158,6 +158,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>plexus-component-metadata</artifactId>
+                    <versionRange>[1.0-beta-3.0.5,)</versionRange>
                     <goals>
                       <goal>generate-metadata</goal>
                       <goal>generate-test-metadata</goal>
@@ -171,6 +172,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
+                    <versionRange>[2.5,)</versionRange>
                     <goals>
                       <goal>clean</goal>
                     </goals>
