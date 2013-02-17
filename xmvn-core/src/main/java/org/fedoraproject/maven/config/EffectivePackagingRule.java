@@ -20,15 +20,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.utils.GlobUtils;
 
 class EffectivePackagingRule
     extends PackagingRule
 {
     private static final long serialVersionUID = 1L;
-
-    private final Artifact artifact;
 
     private static String expandBackreferences( List<Matcher> matchers, String result )
     {
@@ -68,22 +65,19 @@ class EffectivePackagingRule
 
     private void applyRule( PackagingRule rule )
     {
-        org.fedoraproject.maven.config.Artifact glob = rule.getArtifactGlob();
+        Artifact glob = rule.getArtifactGlob();
         Pattern groupIdPattern = GlobUtils.glob2pattern( glob.getGroupId() );
         Pattern artifactIdPattern = GlobUtils.glob2pattern( glob.getArtifactId() );
         Pattern versionPattern = GlobUtils.glob2pattern( glob.getVersion() );
 
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
-
+        Artifact artifact = getArtifactGlob();
         List<Matcher> matchers = new ArrayList<>( 3 );
         if ( groupIdPattern != null )
-            matchers.add( groupIdPattern.matcher( groupId ) );
+            matchers.add( groupIdPattern.matcher( artifact.getGroupId() ) );
         if ( artifactIdPattern != null )
-            matchers.add( artifactIdPattern.matcher( artifactId ) );
+            matchers.add( artifactIdPattern.matcher( artifact.getArtifactId() ) );
         if ( versionPattern != null )
-            matchers.add( versionPattern.matcher( version ) );
+            matchers.add( versionPattern.matcher( artifact.getVersion() ) );
 
         for ( Matcher matcher : matchers )
             if ( !matcher.matches() )
@@ -91,16 +85,7 @@ class EffectivePackagingRule
 
         String targetPackage = rule.getTargetPackage();
         if ( targetPackage != null )
-        {
-            targetPackage = expandBackreferences( matchers, targetPackage );
-            if ( targetPackage != null )
-            {
-                if ( getTargetPackage() != null && !getTargetPackage().equals( targetPackage ) )
-                    throw new RuntimeException( "Artifact " + artifact + " was assigned to more then one package: "
-                        + getTargetPackage() + " and " + targetPackage );
-                setTargetPackage( targetPackage );
-            }
-        }
+            setTargetPackage( expandBackreferences( matchers, targetPackage ) );
 
         for ( org.fedoraproject.maven.config.Artifact alias : rule.getAliases() )
         {
@@ -120,7 +105,11 @@ class EffectivePackagingRule
     public EffectivePackagingRule( List<PackagingRule> artifactManagement, String groupId, String artifactId,
                                    String version )
     {
-        artifact = new Artifact( groupId, artifactId, version );
+        Artifact artifact = new Artifact();
+        artifact.setGroupId( groupId );
+        artifact.setArtifactId( artifactId );
+        artifact.setVersion( version );
+        setArtifactGlob( artifact );
 
         for ( PackagingRule rule : artifactManagement )
         {
