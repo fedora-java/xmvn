@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.config;
+package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 import java.util.Collections;
@@ -23,9 +23,8 @@ import java.util.TreeSet;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.resolver.DependencyMap;
-import org.fedoraproject.maven.resolver.DepmapReader;
 
 @Component( role = ArtifactBlacklist.class )
 class DefaultArtifactBlacklist

@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.fedoraproject.maven.model.Artifact;
 
-public class DependencyMap
+class DependencyMap
 {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 

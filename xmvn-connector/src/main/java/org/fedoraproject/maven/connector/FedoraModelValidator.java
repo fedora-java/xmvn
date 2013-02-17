@@ -34,8 +34,8 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.config.ArtifactBlacklist;
 import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.fedoraproject.maven.resolver.ArtifactBlacklist;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
