@@ -4,22 +4,11 @@
     <debug>false</debug>
     <skipTests>false</skipTests>
   </buildSettings>
-  <artifactManagement/>
   <resolverSettings>
-    <localRepositories/>
-    <jarRepositories/>
-    <pomRepositories/>
-    <metadataRepositories/>
-    <prefixes/>
-    <blacklist/>
+    <debug>false</debug>
   </resolverSettings>
   <installerSettings>
-    <packageName/>
     <skipProvides>false</skipProvides>
     <skipRequires>false</skipRequires>
-    <jarDir/>
-    <jniDir/>
-    <pomDir/>
-    <metadataDir/>
   </installerSettings>
 </configuration>
