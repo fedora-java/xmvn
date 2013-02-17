@@ -15,34 +15,56 @@
  */
 package org.fedoraproject.maven.rpminstall.plugin;
 
+import static org.fedoraproject.maven.utils.Logger.debug;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.fedoraproject.maven.config.ConfigurationXXX;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.resolver.DependencyMap;
 
 public class FragmentFile
-    extends DependencyMap
     implements DependencyVisitor
 {
+    private final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
+
     private final Set<Artifact> dependencies = new TreeSet<>();
 
     private final Set<Artifact> develDependencies = new TreeSet<>();
 
     private BigDecimal javaVersionRequirement;
 
-    @Override
     public boolean isEmpty()
     {
-        return super.isEmpty() && dependencies.isEmpty() && develDependencies.isEmpty()
+        return mapping.isEmpty() && dependencies.isEmpty() && develDependencies.isEmpty()
             && javaVersionRequirement == null;
+    }
+
+    private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
+    {
+        Set<Artifact> set = map.get( from );
+        if ( set == null )
+        {
+            set = new TreeSet<>();
+            map.put( from, set );
+        }
+
+        set.add( to );
+    }
+
+    public void addMapping( Artifact from, Artifact to )
+    {
+        addMapping( mapping, from, to );
+
+        debug( "Added mapping ", from, " => ", to );
     }
 
     @Override
