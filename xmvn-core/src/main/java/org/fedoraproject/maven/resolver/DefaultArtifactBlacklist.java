@@ -37,6 +37,8 @@ public class DefaultArtifactBlacklist
     @Requirement
     private Configurator configurator;
 
+    private boolean initialized;
+
     private final Set<Artifact> blacklist = new TreeSet<>();
 
     @Override
@@ -48,6 +50,13 @@ public class DefaultArtifactBlacklist
     @Override
     public synchronized boolean contains( Artifact artifact )
     {
+        if ( !initialized )
+        {
+            initialized = true;
+            createInitialBlacklist();
+            blacklistAliases();
+        }
+
         return blacklist.contains( artifact.clearVersionAndExtension() );
     }
 
@@ -60,6 +69,13 @@ public class DefaultArtifactBlacklist
     @Override
     public synchronized void add( Artifact artifact )
     {
+        if ( !initialized )
+        {
+            initialized = true;
+            createInitialBlacklist();
+            blacklistAliases();
+        }
+
         blacklist.add( artifact.clearVersionAndExtension() );
     }
 
@@ -110,11 +126,5 @@ public class DefaultArtifactBlacklist
 
         blacklist.addAll( aliasBlacklist );
         logger.debug( "Final artifact blacklist is: " + Artifact.collectionToString( blacklist, true ) );
-    }
-
-    public DefaultArtifactBlacklist()
-    {
-        createInitialBlacklist();
-        blacklistAliases();
     }
 }
