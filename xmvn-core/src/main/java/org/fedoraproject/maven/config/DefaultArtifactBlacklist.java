@@ -81,11 +81,8 @@ class DefaultArtifactBlacklist
         add( Artifact.DUMMY );
         add( Artifact.DUMMY_JPP );
 
-        // TODO: This list should be configurable somehow
-        add( "javax.activation", "activation" );
-        add( "org.eclipse.jetty.orbit", "javax.activation" );
-        add( "org.apache.maven.wagon", "wagon-webdav" );
-        add( "org.apache.maven.wagon", "wagon-webdav-jackrabbit" );
+        for ( org.fedoraproject.maven.config.Artifact artifact : configurator.getConfiguration().getResolverSettings().getBlacklist() )
+            add( artifact.getGroupId(), artifact.getArtifactId() );
 
         logger.debug( "Initial artifact blacklist is: " + Artifact.collectionToString( blacklist, true ) );
     }
