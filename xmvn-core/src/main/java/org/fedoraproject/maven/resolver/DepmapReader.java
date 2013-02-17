@@ -52,7 +52,7 @@ class DepmapReader
 
     private static Map<File, DepmapReader> readers = new TreeMap<>();
 
-    private DepmapReader()
+    DepmapReader()
     {
     }
 
@@ -98,7 +98,7 @@ class DepmapReader
         return reader.depmap;
     }
 
-    private void readArtifactMap( File root, DependencyMap map, ResolverSettings settings )
+    void readArtifactMap( File root, DependencyMap map, ResolverSettings settings )
     {
         for ( String path : settings.getMetadataRepositories() )
         {
