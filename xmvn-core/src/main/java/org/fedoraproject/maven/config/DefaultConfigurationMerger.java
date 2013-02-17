@@ -21,6 +21,11 @@ import java.util.TreeSet;
 
 import org.codehaus.plexus.component.annotations.Component;
 
+/**
+ * Default implementation of configuration merger.
+ * 
+ * @author Mikolaj Izdebski
+ */
 @Component( role = ConfigurationMerger.class )
 public class DefaultConfigurationMerger
     implements ConfigurationMerger

@@ -15,7 +15,24 @@
  */
 package org.fedoraproject.maven.config;
 
+/**
+ * Component that can merge XMvn configurations.
+ * 
+ * @author Mikolaj Izdebski
+ */
 public interface ConfigurationMerger
 {
+    /**
+     * Merge two configurations, with one with one having precedence in the case of conflict.
+     * <p>
+     * Caller should not depend on contents of dominant configuration after the merge was attempted as the
+     * implementation is free to modify it. Recessive configuration is never changed.
+     * 
+     * @param dominant the dominant configuration into which the recessive configuration will be merged (may be
+     *            <code>null</code>)
+     * @param recessive the recessive configuration from which the configuration will inherited (may not be
+     *            <code>null</code>)
+     * @return merged configuration (not <code>null</code>, may be the same as dominant)
+     */
     Configuration merge( Configuration dominant, Configuration recessive );
 }
