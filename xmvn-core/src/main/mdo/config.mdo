@@ -42,7 +42,8 @@
           <name>debug</name>
           <version>0.4.0+</version>
           <description>
-	    Whether detailed debugging information should be logged.
+	    Whether detailed debugging information about the build
+	    process should be logged.
           </description>
           <type>boolean</type>
           <defaultValue>false</defaultValue>
@@ -276,6 +277,16 @@
       <version>0.4.0+</version>
       <description>XMvn settings related to resolution of artifacts.</description>
       <fields>
+        <field>
+          <name>debug</name>
+          <version>0.4.0+</version>
+          <description>
+	    Whether detailed debugging information about artifact
+	    resolution process should be logged.
+          </description>
+          <type>boolean</type>
+          <defaultValue>false</defaultValue>
+        </field>
         <field>
           <name>localRepositories</name>
           <version>0.4.0+</version>
