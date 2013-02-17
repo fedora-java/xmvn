@@ -17,5 +17,21 @@ package org.fedoraproject.maven.config;
 
 public interface Configurator
 {
+    Configuration getDefaultConfiguration();
+
+    Configuration getSystemConfiguration();
+
+    Configuration getRawSystemConfiguration();
+
+    Configuration getUserConfiguration();
+
+    Configuration getRawUserConfiguration();
+
+    Configuration getReactorConfiguration();
+
+    Configuration getRawReactorConfiguration();
+
     Configuration getConfiguration();
+
+    void dumpConfiguration();
 }
