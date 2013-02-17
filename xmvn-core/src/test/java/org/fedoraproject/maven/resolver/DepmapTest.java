@@ -34,7 +34,7 @@ public class DepmapTest
     private DependencyMap readDepmap( Path fragment )
         throws Exception
     {
-        ResolverSettings settings = lookup( Configurator.class ).getConfiguration().getResolverSettings();
+        ResolverSettings settings = lookup( Configurator.class ).getDefaultConfiguration().getResolverSettings();
         DepmapReader reader = new DepmapReader();
         DependencyMap depmap = new DependencyMap();
         settings.addMetadataRepository( fragment.toAbsolutePath().toString() );

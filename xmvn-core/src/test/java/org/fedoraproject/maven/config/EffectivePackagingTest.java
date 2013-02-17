@@ -30,7 +30,7 @@ public class EffectivePackagingTest
     public void testRuleAggregation()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -65,7 +65,7 @@ public class EffectivePackagingTest
     public void testWildcards()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -101,7 +101,7 @@ public class EffectivePackagingTest
     public void testEmptyGlob()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 

@@ -48,7 +48,7 @@ public class BasicResolverTest
         Configurator configurator = lookup( Configurator.class );
         assertNotNull( configurator );
 
-        Configuration configuration = configurator.getConfiguration();
+        Configuration configuration = configurator.getDefaultConfiguration();
         assertNotNull( configuration );
 
         ResolverSettings settings = configuration.getResolverSettings();
