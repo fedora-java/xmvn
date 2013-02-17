@@ -1,0 +1,25 @@
+<dependency>
+    <maven>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+    </maven>
+    <jpp>
+        <groupId>JPP</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+    </jpp>
+</dependency>
+
+<dependency>
+    <maven>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+    </maven>
+    <jpp>
+        <groupId>JPP</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+    </jpp>
+</dependency>
