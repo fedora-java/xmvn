@@ -15,7 +15,12 @@
  */
 package org.fedoraproject.maven.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Reader;
 
 @Component( role = Configurator.class )
 public class DefaultConfigurator
@@ -24,7 +29,16 @@ public class DefaultConfigurator
     @Override
     public Configuration getConfiguration()
     {
-        // TODO Auto-generated method stub
-        return null;
+        try
+        {
+            ClassLoader loader = getClass().getClassLoader();
+            InputStream stream = loader.getResourceAsStream( "default-configuration.xml" );
+            ConfigurationXpp3Reader reader = new ConfigurationXpp3Reader();
+            return reader.read( stream );
+        }
+        catch ( IOException | XmlPullParserException e )
+        {
+            throw new RuntimeException( "Failed to load embedded default configuration", e );
+        }
     }
 }

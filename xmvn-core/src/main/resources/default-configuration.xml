@@ -1,0 +1,25 @@
+<configuration>
+  <properties/>
+  <buildSettings>
+    <debug>false</debug>
+    <skipTests>false</skipTests>
+  </buildSettings>
+  <artifactManagement/>
+  <resolverSettings>
+    <localRepositories/>
+    <jarRepositories/>
+    <pomRepositories/>
+    <metadataRepositories/>
+    <prefixes/>
+    <blacklist/>
+  </resolverSettings>
+  <installerSettings>
+    <packageName/>
+    <skipProvides>false</skipProvides>
+    <skipRequires>false</skipRequires>
+    <jarDir/>
+    <jniDir/>
+    <pomDir/>
+    <metadataDir/>
+  </installerSettings>
+</configuration>
