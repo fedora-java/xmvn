@@ -27,7 +27,7 @@ import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
 @Component( role = Resolver.class )
-class DefaultResolver
+public class DefaultResolver
     extends AbstractResolver
 {
     @Requirement

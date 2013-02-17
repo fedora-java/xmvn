@@ -28,7 +28,7 @@ import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
 @Component( role = ArtifactBlacklist.class )
-class DefaultArtifactBlacklist
+public class DefaultArtifactBlacklist
     implements ArtifactBlacklist
 {
     @Requirement

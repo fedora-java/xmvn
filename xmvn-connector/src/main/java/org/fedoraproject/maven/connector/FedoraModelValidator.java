@@ -43,7 +43,7 @@ import org.fedoraproject.maven.resolver.ArtifactBlacklist;
  * @author Mikolaj Izdebski
  */
 @Component( role = ModelValidator.class )
-class FedoraModelValidator
+public class FedoraModelValidator
     extends DefaultModelValidator
 {
     @Requirement

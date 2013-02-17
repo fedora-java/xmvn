@@ -27,7 +27,7 @@ import org.sonatype.aether.repository.WorkspaceReader;
 import org.sonatype.aether.repository.WorkspaceRepository;
 
 @Component( role = WorkspaceReader.class, hint = "ide" )
-class FedoraWorkspaceReader
+public class FedoraWorkspaceReader
     implements WorkspaceReader
 {
     @Requirement
