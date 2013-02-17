@@ -23,8 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.fedoraproject.maven.config.ArtifactBlacklistXXX;
-import org.fedoraproject.maven.resolver.DefaultResolver;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.resolver.SystemResolver;
 import org.fedoraproject.maven.utils.StringSplitter;
@@ -34,6 +38,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
+@Component( role = ResolverCli.class )
 public class ResolverCli
 {
     @Parameter
@@ -51,7 +56,10 @@ public class ResolverCli
     @DynamicParameter( names = "-D", description = "Define system property" )
     public Map<String, String> defines = new TreeMap<>();
 
-    public ResolverCli( String[] args )
+    @Requirement
+    private Resolver resolver;
+
+    private void parseArgs( String[] args )
     {
         try
         {
@@ -100,7 +108,6 @@ public class ResolverCli
 
     public void run()
     {
-        Resolver resolver = new DefaultResolver();
         List<File> result = new ArrayList<>();
 
         for ( String s : parameters )
@@ -114,13 +121,27 @@ public class ResolverCli
             printResult( result );
 
         SystemResolver.printInvolvedPackages();
-        // Load ArtifactBlacklist class so it can print useful debugging information during its static initialization
-        ArtifactBlacklistXXX.class.getClass();
     }
 
     public static void main( String[] args )
     {
-        ResolverCli cli = new ResolverCli( args );
-        cli.run();
+        PlexusContainer container = null;
+        try
+        {
+            container = new DefaultPlexusContainer();
+            ResolverCli cli = container.lookup( ResolverCli.class );
+            cli.parseArgs( args );
+            cli.run();
+        }
+        catch ( PlexusContainerException | ComponentLookupException e )
+        {
+            e.printStackTrace();
+            System.exit( 1 );
+        }
+        finally
+        {
+            if ( container != null )
+                container.dispose();
+        }
     }
 }
