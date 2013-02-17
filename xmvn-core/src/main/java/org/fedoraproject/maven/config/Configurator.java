@@ -15,23 +15,76 @@
  */
 package org.fedoraproject.maven.config;
 
+/**
+ * Component that provides various XMvn configuration variants.
+ * 
+ * @author Mikolaj Izdebski
+ */
 public interface Configurator
 {
+    /**
+     * Returns default XMvn configuration. This is effective configuration and hence it's always available.
+     * 
+     * @return default configuration
+     */
     Configuration getDefaultConfiguration();
 
+    /**
+     * Returns effective system XMvn configuration. This configuration is always available.
+     * 
+     * @return effective system configuration
+     */
     Configuration getSystemConfiguration();
 
+    /**
+     * Returns raw system XMvn configuration. This configuration may be unavailable, in which case <code>null</code> is
+     * returned.
+     * 
+     * @return raw system configuration or <code>null</code> if not available
+     */
     Configuration getRawSystemConfiguration();
 
+    /**
+     * Returns effective user XMvn configuration. This configuration is always available.
+     * 
+     * @return effective user configuration
+     */
     Configuration getUserConfiguration();
 
+    /**
+     * Returns raw user XMvn configuration. This configuration may be unavailable, in which case <code>null</code> is
+     * returned.
+     * 
+     * @return raw user configuration or <code>null</code> if not available
+     */
     Configuration getRawUserConfiguration();
 
+    /**
+     * Returns effective reactor XMvn configuration. This configuration is always available.
+     * 
+     * @return effective reactor configuration
+     */
     Configuration getReactorConfiguration();
 
+    /**
+     * Returns raw reactor XMvn configuration. This configuration may be unavailable, in which case <code>null</code> is
+     * returned.
+     * 
+     * @return raw reactor configuration or <code>null</code> if not available
+     */
     Configuration getRawReactorConfiguration();
 
+    /**
+     * Returns implicit XMvn configuration. This configuration is always available.
+     * 
+     * @return implicit configuration
+     */
     Configuration getConfiguration();
 
+    /**
+     * Log information different kinds of configuration.
+     * <p>
+     * Configuration dumps are written through Plexus container default logger.
+     */
     void dumpConfiguration();
 }

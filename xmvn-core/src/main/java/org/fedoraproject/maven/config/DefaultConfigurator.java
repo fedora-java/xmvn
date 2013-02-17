@@ -30,6 +30,11 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Reader;
 import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
 
+/**
+ * Default implementation of XMvn configurator.
+ * 
+ * @author Mikolaj Izdebski
+ */
 @Component( role = Configurator.class )
 public class DefaultConfigurator
     implements Configurator
