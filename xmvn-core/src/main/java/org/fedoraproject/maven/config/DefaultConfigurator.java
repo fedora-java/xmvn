@@ -26,19 +26,26 @@ import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Reader;
 public class DefaultConfigurator
     implements Configurator
 {
+    private volatile Configuration configuration;
+
     @Override
     public Configuration getConfiguration()
     {
-        try
+        if ( configuration == null )
         {
-            ClassLoader loader = getClass().getClassLoader();
-            InputStream stream = loader.getResourceAsStream( "default-configuration.xml" );
-            ConfigurationXpp3Reader reader = new ConfigurationXpp3Reader();
-            return reader.read( stream );
+            try
+            {
+                ClassLoader loader = getClass().getClassLoader();
+                InputStream stream = loader.getResourceAsStream( "default-configuration.xml" );
+                ConfigurationXpp3Reader reader = new ConfigurationXpp3Reader();
+                configuration = reader.read( stream );
+            }
+            catch ( IOException | XmlPullParserException e )
+            {
+                throw new RuntimeException( "Failed to load embedded default configuration", e );
+            }
         }
-        catch ( IOException | XmlPullParserException e )
-        {
-            throw new RuntimeException( "Failed to load embedded default configuration", e );
-        }
+
+        return configuration;
     }
 }
