@@ -45,8 +45,7 @@
 	    Whether detailed debugging information about the build
 	    process should be logged.
           </description>
-          <type>boolean</type>
-          <defaultValue>false</defaultValue>
+          <type>String</type>
         </field>
         <field>
           <name>skipTests</name>
@@ -54,8 +53,7 @@
           <description>
 	    Whether compilation and execution of unit and integration tests should be skipped.
           </description>
-          <type>boolean</type>
-          <defaultValue>false</defaultValue>
+          <type>String</type>
         </field>
         <field>
           <name>compilerSource</name>
@@ -68,6 +66,48 @@
           <type>String</type>
         </field>
       </fields>
+      <codeSegments>
+	<codeSegment>
+	  <version>0.4.0+</version>
+	  <code>
+	    <![CDATA[
+    /**
+     * Return whether detailed debugging information about the build process should be logged.
+     */
+    public boolean isDebug()
+    {
+        return Boolean.valueOf( debug );
+    }
+
+    /**
+     * Set whether detailed debugging information about the build process should be logged.
+     * @param debug
+     */
+    public void setDebug( boolean debug )
+    {
+        this.debug = String.valueOf( debug );
+    }
+
+    /**
+     * Return whether compilation and execution of unit and integration tests should be skipped.
+     */
+    public boolean isSkipTests()
+    {
+        return Boolean.valueOf( skipTests );
+    }
+
+    /**
+     * Set whether compilation and execution of unit and integration tests should be skipped.
+     * @param skipTests
+     */
+    public void setSkipTests( boolean skipTests )
+    {
+        this.skipTests = String.valueOf( skipTests );
+    }
+	    ]]>
+	  </code>
+	</codeSegment>
+      </codeSegments>
     </class>
 
     <class>
@@ -219,8 +259,7 @@
           <description>
             Whether generation of package provides should be skipped.
           </description>
-          <type>boolean</type>
-          <defaultValue>false</defaultValue>
+          <type>String</type>
         </field>
         <field>
           <name>skipRequires</name>
@@ -228,8 +267,7 @@
           <description>
             Whether generation of package requires should be skipped.
           </description>
-          <type>boolean</type>
-          <defaultValue>false</defaultValue>
+          <type>String</type>
         </field>
         <field>
           <name>jarDir</name>
@@ -270,6 +308,48 @@
           <type>String</type>
         </field>
       </fields>
+      <codeSegments>
+	<codeSegment>
+	  <version>0.4.0+</version>
+	  <code>
+	    <![CDATA[
+    /**
+     * Return whether generation of package provides should be skipped.
+     */
+    public boolean isSkipProvides()
+    {
+        return Boolean.valueOf( skipProvides );
+    }
+
+    /**
+     * Set whether generation of package provides should be skipped.
+     * @param skipProvides
+     */
+    public void setSkipProvides( boolean skipProvides )
+    {
+        this.skipProvides = String.valueOf( skipProvides );
+    }
+
+    /**
+     * Return whether generation of package requires should be skipped.
+     */
+    public boolean isSkipRequires()
+    {
+        return Boolean.valueOf( skipRequires );
+    }
+
+    /**
+     * Set whether generation of package requires should be skipped.
+     * @param skipRequires
+     */
+    public void setDebug( boolean skipRequires )
+    {
+        this.skipRequires = String.valueOf( skipRequires );
+    }
+	    ]]>
+	  </code>
+	</codeSegment>
+      </codeSegments>
     </class>
 
     <class>
@@ -284,8 +364,7 @@
 	    Whether detailed debugging information about artifact
 	    resolution process should be logged.
           </description>
-          <type>boolean</type>
-          <defaultValue>false</defaultValue>
+          <type>String</type>
         </field>
         <field>
           <name>localRepositories</name>
@@ -357,6 +436,31 @@
           </association>
         </field>
       </fields>
+      <codeSegments>
+	<codeSegment>
+	  <version>0.4.0+</version>
+	  <code>
+	    <![CDATA[
+    /**
+     * Return whether detailed debugging information about artifact resolution process should be logged.
+     */
+    public boolean isDebug()
+    {
+        return Boolean.valueOf( debug );
+    }
+
+    /**
+     * Set whether detailed debugging information about artifact resolution process should be logged.
+     * @param debug
+     */
+    public void setDebug( boolean debug )
+    {
+        this.debug = String.valueOf( debug );
+    }
+	    ]]>
+	  </code>
+	</codeSegment>
+      </codeSegments>
     </class>
 
     <class rootElement="true" xml.tagName="configuration">
