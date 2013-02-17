@@ -36,7 +36,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
-import org.fedoraproject.maven.config.EffectivePackagingRule;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
 
@@ -140,9 +139,10 @@ public class InstallMojo
         {
             for ( MavenProject project : reactorProjects )
             {
-                PackagingRule rule =
-                    new EffectivePackagingRule( configuration.getArtifactManagement(), project.getGroupId(),
-                                                project.getArtifactId(), project.getVersion() );
+                String groupId = project.getGroupId();
+                String artifactId = project.getArtifactId();
+                String version = project.getVersion();
+                PackagingRule rule = configuration.createEffectivePackagingRule( groupId, artifactId, version );
                 String packageName = rule.getTargetPackage();
                 if ( packageName == null )
                     packageName = Package.MAIN;

@@ -426,6 +426,25 @@
         </field>
 
       </fields>
+      <codeSegments>
+	<codeSegment>
+	  <version>0.4.0+</version>
+	  <code>
+	    <![CDATA[
+    /**
+     * Create an effective packaging rule for specified artifact.
+     * @param groupId
+     * @param artifactId
+     * @param verson
+     */
+    public PackagingRule createEffectivePackagingRule( String groupId, String artifactId, String version )
+    {
+        return new EffectivePackagingRule( artifactManagement, groupId, artifactId, version );
+    }
+	    ]]>
+	  </code>
+	</codeSegment>
+      </codeSegments>
     </class>
   </classes>
 </model>

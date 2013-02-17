@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.utils.GlobUtils;
 
-public class EffectivePackagingRule
+class EffectivePackagingRule
     extends PackagingRule
 {
     private static final long serialVersionUID = 1L;
@@ -117,7 +117,6 @@ public class EffectivePackagingRule
         }
     }
 
-    // TODO: make this accessible directly from Configuration
     public EffectivePackagingRule( List<PackagingRule> artifactManagement, String groupId, String artifactId,
                                    String version )
     {
