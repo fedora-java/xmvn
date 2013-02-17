@@ -16,6 +16,8 @@
 package org.fedoraproject.maven.resolver;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
@@ -26,32 +28,27 @@ import org.fedoraproject.maven.repository.SingletonRepository;
 class LocalResolver
     extends AbstractResolver
 {
-    private final Repository repo;
+    private final List<Repository> repositories = new LinkedList<>();
 
     public LocalResolver( ResolverSettings settings )
     {
-        // FIXME: only the first local repository is used for now
-        if ( settings.getLocalRepositories().size() > 0 )
+        for ( String localRepoDir : settings.getLocalRepositories() )
         {
-            String localRepoDir = settings.getLocalRepositories().iterator().next();
-            repo = new SingletonRepository( new File( localRepoDir ), Layout.MAVEN );
-        }
-        else
-        {
-            repo = null;
+            Repository repo = new SingletonRepository( new File( localRepoDir ), Layout.MAVEN );
+            repositories.add( repo );
         }
     }
 
     @Override
     public File resolve( Artifact artifact )
     {
-        if ( repo != null )
+        for ( Repository repo : repositories )
         {
-            return repo.findArtifact( artifact, true );
+            File artifactFile = repo.findArtifact( artifact, true );
+            if ( artifactFile != null )
+                return artifactFile;
         }
-        else
-        {
-            return null;
-        }
+
+        return null;
     }
 }
