@@ -36,13 +36,15 @@ public class DefaultResolver
     @Requirement
     private Configurator configurator;
 
+    boolean initialized;
+
     private final Collection<Resolver> resolvers = new LinkedList<>();
 
-    public DefaultResolver()
+    private void initialize()
     {
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
 
-        resolvers.add( new LocalResolver() );
+        resolvers.add( new LocalResolver( settings ) );
 
         for ( String prefix : settings.getPrefixes() )
         {
@@ -53,11 +55,16 @@ public class DefaultResolver
                 resolvers.add( new CachingResolver( resolver ) );
             }
         }
+
+        initialized = true;
     }
 
     @Override
     public File resolve( Artifact artifact )
     {
+        if ( !initialized )
+            initialize();
+
         logger.debug( "Trying to resolve artifact " + artifact );
 
         for ( Resolver resolver : resolvers )
