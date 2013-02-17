@@ -34,7 +34,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.config.ArtifactBlacklistXXX;
+import org.fedoraproject.maven.config.ArtifactBlacklist;
 import org.fedoraproject.maven.config.ConfigurationXXX;
 
 /**
@@ -48,6 +48,9 @@ class FedoraModelValidator
 {
     @Requirement
     private Logger logger;
+
+    @Requirement
+    private ArtifactBlacklist blacklist;
 
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
@@ -72,7 +75,7 @@ class FedoraModelValidator
             String artifactId = dependency.getArtifactId();
             String scope = dependency.getScope();
 
-            if ( ArtifactBlacklistXXX.contains( groupId, artifactId ) )
+            if ( blacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed dependency " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -107,7 +110,7 @@ class FedoraModelValidator
             String groupId = extension.getGroupId();
             String artifactId = extension.getArtifactId();
 
-            if ( ArtifactBlacklistXXX.contains( groupId, artifactId ) )
+            if ( blacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed extension " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -132,7 +135,7 @@ class FedoraModelValidator
             String groupId = plugin.getGroupId();
             String artifactId = plugin.getArtifactId();
 
-            if ( ArtifactBlacklistXXX.contains( groupId, artifactId ) )
+            if ( blacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed plugin " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();

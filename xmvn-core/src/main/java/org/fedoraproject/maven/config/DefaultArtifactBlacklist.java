@@ -15,38 +15,50 @@
  */
 package org.fedoraproject.maven.config;
 
-import static org.fedoraproject.maven.utils.Logger.debug;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.resolver.DependencyMap;
 import org.fedoraproject.maven.resolver.DepmapReader;
 
-// FIXME: get rid of this class
-public class ArtifactBlacklistXXX
+@Component( role = ArtifactBlacklist.class )
+class DefaultArtifactBlacklist
+    implements ArtifactBlacklist
 {
-    private static final Set<Artifact> blacklist = new TreeSet<>();
+    @Requirement
+    private Logger logger;
 
-    public static boolean contains( String groupId, String artifactId )
+    @Requirement
+    private Configurator configurator;
+
+    private final Set<Artifact> blacklist = new TreeSet<>();
+
+    @Override
+    public boolean contains( String groupId, String artifactId )
     {
         return contains( new Artifact( groupId, artifactId ) );
     }
 
-    public static synchronized boolean contains( Artifact artifact )
+    @Override
+    public synchronized boolean contains( Artifact artifact )
     {
         return blacklist.contains( artifact.clearVersionAndExtension() );
     }
 
-    public static void add( String groupId, String artifactId )
+    @Override
+    public void add( String groupId, String artifactId )
     {
         add( new Artifact( groupId, artifactId ) );
     }
 
-    public static synchronized void add( Artifact artifact )
+    @Override
+    public synchronized void add( Artifact artifact )
     {
         blacklist.add( artifact.clearVersionAndExtension() );
     }
@@ -56,7 +68,7 @@ public class ArtifactBlacklistXXX
      * 
      * @return set view of artifact blacklist
      */
-    public static Set<Artifact> setView()
+    public Set<Artifact> setView()
     {
         return Collections.unmodifiableSet( blacklist );
     }
@@ -64,7 +76,7 @@ public class ArtifactBlacklistXXX
     /**
      * Construct the initial artifact blacklist.
      */
-    private static void createInitialBlacklist()
+    private void createInitialBlacklist()
     {
         add( Artifact.DUMMY );
         add( Artifact.DUMMY_JPP );
@@ -75,17 +87,17 @@ public class ArtifactBlacklistXXX
         add( "org.apache.maven.wagon", "wagon-webdav" );
         add( "org.apache.maven.wagon", "wagon-webdav-jackrabbit" );
 
-        debug( "Initial artifact blacklist is: ", Artifact.collectionToString( blacklist, true ) );
+        logger.debug( "Initial artifact blacklist is: " + Artifact.collectionToString( blacklist, true ) );
     }
 
     /**
      * Blacklist all aliases of already blacklisted artifacts.
      */
-    private static void blacklistAliases()
+    private void blacklistAliases()
     {
         Set<Artifact> aliasBlacklist = new TreeSet<>();
 
-        for ( String prefix : ConfigurationXXX.getConfiguration().getResolverSettings().getPrefixes() )
+        for ( String prefix : configurator.getConfiguration().getResolverSettings().getPrefixes() )
         {
             File root = new File( prefix );
             DependencyMap depmap = DepmapReader.readArtifactMap( root );
@@ -94,15 +106,15 @@ public class ArtifactBlacklistXXX
             {
                 Set<Artifact> relatives = depmap.relativesOf( artifact );
                 aliasBlacklist.addAll( relatives );
-                debug( "Blacklisted relatives of ", artifact, ": ", Artifact.collectionToString( relatives ) );
+                logger.debug( "Blacklisted relatives of " + artifact + ": " + Artifact.collectionToString( relatives ) );
             }
         }
 
         blacklist.addAll( aliasBlacklist );
-        debug( "Final artifact blacklist is: ", Artifact.collectionToString( blacklist, true ) );
+        logger.debug( "Final artifact blacklist is: " + Artifact.collectionToString( blacklist, true ) );
     }
 
-    static
+    public DefaultArtifactBlacklist()
     {
         createInitialBlacklist();
         blacklistAliases();
