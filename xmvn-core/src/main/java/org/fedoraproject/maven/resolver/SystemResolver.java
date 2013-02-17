@@ -28,7 +28,7 @@ import org.fedoraproject.maven.repository.JppRepository;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.rpmquery.RpmDb;
 
-public class SystemResolver
+class SystemResolver
     extends AbstractResolver
 {
     private final Repository systemRepo;

@@ -23,7 +23,7 @@ import org.fedoraproject.maven.repository.Layout;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.SingletonRepository;
 
-public class LocalResolver
+class LocalResolver
     extends AbstractResolver
 {
     // FIXME: only the first local repository is used for now

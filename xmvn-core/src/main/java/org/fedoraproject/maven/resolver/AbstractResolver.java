@@ -31,5 +31,4 @@ abstract class AbstractResolver
 
     @Override
     public abstract File resolve( Artifact artifact );
-
 }

@@ -30,7 +30,6 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.fedoraproject.maven.resolver.Resolver;
-import org.fedoraproject.maven.resolver.SystemResolver;
 import org.fedoraproject.maven.utils.StringSplitter;
 
 import com.beust.jcommander.DynamicParameter;
@@ -119,8 +118,6 @@ public class ResolverCli
 
         if ( !result.isEmpty() )
             printResult( result );
-
-        SystemResolver.printInvolvedPackages();
     }
 
     public static void main( String[] args )
