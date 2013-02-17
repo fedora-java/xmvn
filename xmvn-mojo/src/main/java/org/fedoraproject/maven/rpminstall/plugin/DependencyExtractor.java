@@ -39,7 +39,7 @@ import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.fedoraproject.maven.config.BuildSettings;
 
 public class DependencyExtractor
 {
@@ -107,10 +107,9 @@ public class DependencyExtractor
         generateEffectiveRequires( model, visitor, runtimeScopes );
     }
 
-    public static void generateEffectiveBuildRequires( Model model, DependencyVisitor visitor )
+    public static void generateEffectiveBuildRequires( Model model, DependencyVisitor visitor, BuildSettings settings )
     {
-        String[] scopes =
-            ConfigurationXXX.getConfiguration().getBuildSettings().isSkipTests() ? buildOnlyScopes : buildAndTestScopes;
+        String[] scopes = settings.isSkipTests() ? buildOnlyScopes : buildAndTestScopes;
         generateEffectiveRequires( model, visitor, scopes );
     }
 

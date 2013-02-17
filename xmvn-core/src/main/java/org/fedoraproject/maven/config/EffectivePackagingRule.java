@@ -118,11 +118,12 @@ public class EffectivePackagingRule
     }
 
     // TODO: make this accessible directly from Configuration
-    public EffectivePackagingRule( String groupId, String artifactId, String version )
+    public EffectivePackagingRule( List<PackagingRule> artifactManagement, String groupId, String artifactId,
+                                   String version )
     {
         artifact = new Artifact( groupId, artifactId, version );
 
-        for ( PackagingRule rule : ConfigurationXXX.getConfiguration().getArtifactManagement() )
+        for ( PackagingRule rule : artifactManagement )
         {
             applyRule( rule );
         }

@@ -29,7 +29,6 @@ import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.fedoraproject.maven.config.ConfigurationXXX;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
 import org.fedoraproject.maven.model.Artifact;
@@ -46,8 +45,11 @@ public class Package
 
     private boolean pureDevelPackage = true;
 
-    public Package( String name )
+    private final InstallerSettings settings;
+
+    public Package( String name, InstallerSettings settings )
     {
+        this.settings = settings;
         suffix = name.equals( "" ) ? "" : "-" + name;
     }
 
@@ -84,7 +86,7 @@ public class Package
     public void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
     {
         Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
-        Path pomDir = Paths.get( ConfigurationXXX.getConfiguration().getInstallerSettings().getPomDir() );
+        Path pomDir = Paths.get( settings.getPomDir() );
         addFile( file, pomDir, pomName, 0644 );
     }
 
@@ -117,9 +119,7 @@ public class Package
     {
         pureDevelPackage = false;
 
-        InstallerSettings instSettings = ConfigurationXXX.getConfiguration().getInstallerSettings();
-
-        Path jarDir = Paths.get( containsNativeCode( file ) ? instSettings.getJniDir() : instSettings.getJarDir() );
+        Path jarDir = Paths.get( containsNativeCode( file ) ? settings.getJniDir() : settings.getJarDir() );
         Path jarFile = jarDir.resolve( Paths.get( baseName + ".jar" ) );
         addFile( file, jarFile, 0644 );
 
@@ -169,10 +169,10 @@ public class Package
         if ( !getMetadata().isEmpty() )
         {
             Path file = Files.createTempFile( "xmvn", ".xml" );
-            getMetadata().write( file, pureDevelPackage );
-            String packageName = ConfigurationXXX.getConfiguration().getInstallerSettings().getPackageName();
+            getMetadata().write( file, pureDevelPackage, settings );
+            String packageName = settings.getPackageName();
             Path depmapName = Paths.get( packageName + suffix + ".xml" );
-            Path depmapDir = Paths.get( ConfigurationXXX.getConfiguration().getInstallerSettings().getMetadataDir() );
+            Path depmapDir = Paths.get( settings.getMetadataDir() );
             addFile( file, depmapDir, depmapName, 0644 );
         }
     }

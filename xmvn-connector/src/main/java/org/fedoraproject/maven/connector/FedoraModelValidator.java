@@ -34,7 +34,8 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.fedoraproject.maven.config.BuildSettings;
+import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.resolver.ArtifactBlacklist;
 
 /**
@@ -48,6 +49,9 @@ public class FedoraModelValidator
 {
     @Requirement
     private Logger logger;
+
+    @Requirement
+    private Configurator configurator;
 
     @Requirement
     private ArtifactBlacklist blacklist;
@@ -68,6 +72,8 @@ public class FedoraModelValidator
 
     private void customizeDependencies( Model model )
     {
+        BuildSettings settings = configurator.getConfiguration().getBuildSettings();
+
         for ( Iterator<Dependency> iter = model.getDependencies().iterator(); iter.hasNext(); )
         {
             Dependency dependency = iter.next();
@@ -82,8 +88,7 @@ public class FedoraModelValidator
                 continue;
             }
 
-            if ( ConfigurationXXX.getConfiguration().getBuildSettings().isSkipTests() && scope != null
-                && scope.equals( "test" ) )
+            if ( settings.isSkipTests() && scope != null && scope.equals( "test" ) )
             {
                 logger.debug( "Dropped dependency on " + groupId + ":" + artifactId + " because tests are skipped." );
                 iter.remove();
@@ -152,6 +157,15 @@ public class FedoraModelValidator
 
     private void configureCompiler( Plugin plugin )
     {
+        boolean minSourceSpecified = false;
+        BigDecimal minSource = new BigDecimal( "1.5" );
+        String compilerSource = configurator.getConfiguration().getBuildSettings().getCompilerSource();
+        if ( compilerSource != null )
+        {
+            minSourceSpecified = true;
+            minSource = new BigDecimal( compilerSource );
+        }
+
         Collection<Object> configurations = new LinkedList<>();
         configurations.add( plugin.getConfiguration() );
 
@@ -168,8 +182,7 @@ public class FedoraModelValidator
                 BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
 
                 // Source must be at least 1.5
-                BigDecimal minSource = ConfigurationXXX.getCompilerSource();
-                if ( ConfigurationXXX.isCompilerSourceSpecified() || source.compareTo( minSource ) < 0 )
+                if ( minSourceSpecified || source.compareTo( minSource ) < 0 )
                     source = minSource;
 
                 // Target must not be less than source

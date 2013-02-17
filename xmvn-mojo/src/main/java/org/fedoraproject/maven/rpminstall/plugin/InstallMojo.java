@@ -33,8 +33,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.fedoraproject.maven.config.Configuration;
+import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.EffectivePackagingRule;
+import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
 
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
@@ -46,6 +49,11 @@ public class InstallMojo
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
+
+    @Requirement
+    private Configurator configurator;
+
+    private InstallerSettings settings;
 
     private void installProject( MavenProject project, Package targetPackage, PackagingRule rule )
         throws MojoExecutionException, IOException
@@ -69,7 +77,7 @@ public class InstallMojo
         Path jppName;
         Path pomFile;
         DependencyVisitor metadata = targetPackage.getMetadata();
-        String packageName = ConfigurationXXX.getConfiguration().getInstallerSettings().getPackageName();
+        String packageName = settings.getPackageName();
 
         if ( file != null )
         {
@@ -120,9 +128,12 @@ public class InstallMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        Configuration configuration = configurator.getConfiguration();
+        settings = configuration.getInstallerSettings();
+
         Map<String, Package> packages = new TreeMap<>();
 
-        Package mainPackage = new Package( Package.MAIN );
+        Package mainPackage = new Package( Package.MAIN, settings );
         packages.put( Package.MAIN, mainPackage );
 
         try
@@ -130,7 +141,8 @@ public class InstallMojo
             for ( MavenProject project : reactorProjects )
             {
                 PackagingRule rule =
-                    new EffectivePackagingRule( project.getGroupId(), project.getArtifactId(), project.getVersion() );
+                    new EffectivePackagingRule( configuration.getArtifactManagement(), project.getGroupId(),
+                                                project.getArtifactId(), project.getVersion() );
                 String packageName = rule.getTargetPackage();
                 if ( packageName == null )
                     packageName = Package.MAIN;
@@ -138,7 +150,7 @@ public class InstallMojo
 
                 if ( pkg == null )
                 {
-                    pkg = new Package( packageName );
+                    pkg = new Package( packageName, settings );
                     packages.put( packageName, pkg );
                 }
 

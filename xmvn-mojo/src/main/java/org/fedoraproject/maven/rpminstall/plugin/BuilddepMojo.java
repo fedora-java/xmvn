@@ -30,6 +30,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.fedoraproject.maven.config.BuildSettings;
+import org.fedoraproject.maven.config.Configurator;
 
 @Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.TEST )
 public class BuilddepMojo
@@ -38,6 +41,9 @@ public class BuilddepMojo
 {
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
+
+    @Requirement
+    private Configurator configurator;
 
     private final Set<String> buildDeps = new TreeSet<>();
 
@@ -70,6 +76,8 @@ public class BuilddepMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        BuildSettings settings = configurator.getConfiguration().getBuildSettings();
+
         try
         {
             for ( MavenProject project : reactorProjects )
@@ -80,7 +88,7 @@ public class BuilddepMojo
 
                 Model rawModel = DependencyExtractor.getRawModel( project );
                 DependencyExtractor.generateRawRequires( rawModel, this );
-                DependencyExtractor.generateEffectiveBuildRequires( project.getModel(), this );
+                DependencyExtractor.generateEffectiveBuildRequires( project.getModel(), this, settings );
 
                 if ( !project.getPackaging().equals( "pom" ) )
                     DependencyExtractor.getJavaCompilerTarget( project, this );
