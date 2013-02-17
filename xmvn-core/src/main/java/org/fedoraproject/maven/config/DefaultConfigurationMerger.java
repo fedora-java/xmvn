@@ -118,10 +118,7 @@ public class DefaultConfigurationMerger
     public Configuration merge( Configuration dominant, Configuration recessive )
     {
         if ( dominant == null )
-        {
-            // FIXME: this should be a deep clone of recessive
-            return recessive;
-        }
+            dominant = new Configuration();
 
         mergeConfiguration( dominant, recessive );
         return dominant;
