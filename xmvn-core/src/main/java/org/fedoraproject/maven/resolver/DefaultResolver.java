@@ -15,18 +15,23 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import static org.fedoraproject.maven.utils.Logger.debug;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.ConfigurationXXX;
 import org.fedoraproject.maven.model.Artifact;
 
+@Component( role = Resolver.class )
 public class DefaultResolver
     extends AbstractResolver
 {
+    @Requirement
+    private Logger logger;
+
     private final Collection<Resolver> resolvers = new LinkedList<>();
 
     public DefaultResolver()
@@ -47,7 +52,7 @@ public class DefaultResolver
     @Override
     public File resolve( Artifact artifact )
     {
-        debug( "Trying to resolve artifact ", artifact );
+        logger.debug( "Trying to resolve artifact " + artifact );
 
         for ( Resolver resolver : resolvers )
         {
@@ -56,7 +61,7 @@ public class DefaultResolver
                 return file;
         }
 
-        debug( "Unresolved artifact ", artifact );
+        logger.debug( "Unresolved artifact " + artifact );
         return null;
     }
 }
