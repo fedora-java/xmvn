@@ -36,7 +36,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,7 +56,7 @@ class DepmapReader
     {
     }
 
-    public static DependencyMap readArtifactMap( File root )
+    public static DependencyMap readArtifactMap( File root, ResolverSettings settings )
     {
         boolean notYetInitialized = false;
         DepmapReader reader = null;
@@ -76,7 +76,7 @@ class DepmapReader
         {
             try
             {
-                reader.readArtifactMap( root, reader.depmap );
+                reader.readArtifactMap( root, reader.depmap, settings );
             }
             finally
             {
@@ -98,9 +98,9 @@ class DepmapReader
         return reader.depmap;
     }
 
-    private void readArtifactMap( File root, DependencyMap map )
+    private void readArtifactMap( File root, DependencyMap map, ResolverSettings settings )
     {
-        for ( String path : ConfigurationXXX.getConfiguration().getResolverSettings().getMetadataRepositories() )
+        for ( String path : settings.getMetadataRepositories() )
         {
             File file = new File( path );
 

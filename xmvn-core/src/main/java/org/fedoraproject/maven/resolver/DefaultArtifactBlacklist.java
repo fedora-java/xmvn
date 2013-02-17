@@ -24,6 +24,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.Configurator;
+import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
 @Component( role = ArtifactBlacklist.class )
@@ -92,11 +93,12 @@ class DefaultArtifactBlacklist
     private void blacklistAliases()
     {
         Set<Artifact> aliasBlacklist = new TreeSet<>();
+        ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
 
-        for ( String prefix : configurator.getConfiguration().getResolverSettings().getPrefixes() )
+        for ( String prefix : settings.getPrefixes() )
         {
             File root = new File( prefix );
-            DependencyMap depmap = DepmapReader.readArtifactMap( root );
+            DependencyMap depmap = DepmapReader.readArtifactMap( root, settings );
 
             for ( Artifact artifact : blacklist )
             {

@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.fedoraproject.maven.config.ConfigurationXXX;
+import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.repository.JppRepository;
 import org.fedoraproject.maven.repository.Repository;
@@ -39,10 +40,10 @@ class SystemResolver
 
     private static final Set<String> usedRpmPackages = new TreeSet<>();
 
-    public SystemResolver( File root )
+    public SystemResolver( File root, ResolverSettings settings )
     {
         systemRepo = new JppRepository( root );
-        depmap = DepmapReader.readArtifactMap( root );
+        depmap = DepmapReader.readArtifactMap( root, settings );
     }
 
     @Override
