@@ -17,8 +17,6 @@ package org.fedoraproject.maven.utils;
 
 import java.io.PrintStream;
 
-import org.fedoraproject.maven.config.ConfigurationXXX;
-
 public class Logger
 {
     public static interface Provider
@@ -72,14 +70,12 @@ public class Logger
 
     public static void debug( Object... message )
     {
-        if ( ConfigurationXXX.getConfiguration().getBuildSettings().isDebug() )
-            provider.debug( concatenate( message ) );
+        provider.debug( concatenate( message ) );
     }
 
     public static void info( Object... message )
     {
-        if ( ConfigurationXXX.getConfiguration().getBuildSettings().isDebug() )
-            provider.info( concatenate( message ) );
+        provider.info( concatenate( message ) );
     }
 
     public static void warn( Object... message )
