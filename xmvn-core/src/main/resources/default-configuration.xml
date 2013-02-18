@@ -1,0 +1,14 @@
+<configuration>
+  <properties/>
+  <buildSettings>
+    <debug>false</debug>
+    <skipTests>false</skipTests>
+  </buildSettings>
+  <resolverSettings>
+    <debug>false</debug>
+  </resolverSettings>
+  <installerSettings>
+    <skipProvides>false</skipProvides>
+    <skipRequires>false</skipRequires>
+  </installerSettings>
+</configuration>

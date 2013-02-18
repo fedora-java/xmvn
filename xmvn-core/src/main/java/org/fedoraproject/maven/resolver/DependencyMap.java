@@ -28,11 +28,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.fedoraproject.maven.model.Artifact;
 
-public class DependencyMap
+class DependencyMap
 {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    protected final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
+    private final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
 
     private final Map<Artifact, Set<Artifact>> reverseMapping = new TreeMap<>();
 

@@ -34,8 +34,9 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.ArtifactBlacklist;
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.BuildSettings;
+import org.fedoraproject.maven.config.Configurator;
+import org.fedoraproject.maven.resolver.ArtifactBlacklist;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
@@ -43,11 +44,17 @@ import org.fedoraproject.maven.Configuration;
  * @author Mikolaj Izdebski
  */
 @Component( role = ModelValidator.class )
-class FedoraModelValidator
+public class FedoraModelValidator
     extends DefaultModelValidator
 {
     @Requirement
     private Logger logger;
+
+    @Requirement
+    private Configurator configurator;
+
+    @Requirement
+    private ArtifactBlacklist blacklist;
 
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
@@ -65,6 +72,8 @@ class FedoraModelValidator
 
     private void customizeDependencies( Model model )
     {
+        BuildSettings settings = configurator.getConfiguration().getBuildSettings();
+
         for ( Iterator<Dependency> iter = model.getDependencies().iterator(); iter.hasNext(); )
         {
             Dependency dependency = iter.next();
@@ -72,14 +81,14 @@ class FedoraModelValidator
             String artifactId = dependency.getArtifactId();
             String scope = dependency.getScope();
 
-            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
+            if ( blacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed dependency " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
                 continue;
             }
 
-            if ( Configuration.testsSkipped() && scope != null && scope.equals( "test" ) )
+            if ( settings.isSkipTests() && scope != null && scope.equals( "test" ) )
             {
                 logger.debug( "Dropped dependency on " + groupId + ":" + artifactId + " because tests are skipped." );
                 iter.remove();
@@ -106,7 +115,7 @@ class FedoraModelValidator
             String groupId = extension.getGroupId();
             String artifactId = extension.getArtifactId();
 
-            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
+            if ( blacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed extension " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -131,7 +140,7 @@ class FedoraModelValidator
             String groupId = plugin.getGroupId();
             String artifactId = plugin.getArtifactId();
 
-            if ( ArtifactBlacklist.contains( groupId, artifactId ) )
+            if ( blacklist.contains( groupId, artifactId ) )
             {
                 logger.debug( "Removed plugin " + groupId + ":" + artifactId + " because it was blacklisted." );
                 iter.remove();
@@ -148,6 +157,15 @@ class FedoraModelValidator
 
     private void configureCompiler( Plugin plugin )
     {
+        boolean minSourceSpecified = false;
+        BigDecimal minSource = new BigDecimal( "1.5" );
+        String compilerSource = configurator.getConfiguration().getBuildSettings().getCompilerSource();
+        if ( compilerSource != null )
+        {
+            minSourceSpecified = true;
+            minSource = new BigDecimal( compilerSource );
+        }
+
         Collection<Object> configurations = new LinkedList<>();
         configurations.add( plugin.getConfiguration() );
 
@@ -164,8 +182,7 @@ class FedoraModelValidator
                 BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
 
                 // Source must be at least 1.5
-                BigDecimal minSource = Configuration.getCompilerSource();
-                if ( Configuration.isCompilerSourceSpecified() || source.compareTo( minSource ) < 0 )
+                if ( minSourceSpecified || source.compareTo( minSource ) < 0 )
                     source = minSource;
 
                 // Target must not be less than source

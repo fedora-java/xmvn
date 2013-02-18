@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 import org.fedoraproject.maven.model.Artifact;
 
-public class CachingResolver
+class CachingResolver
     extends AbstractResolver
 {
     private final Map<Artifact, File> cache = new TreeMap<>();

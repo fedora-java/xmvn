@@ -20,17 +20,18 @@ import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
-import org.fedoraproject.maven.resolver.DefaultResolver;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.WorkspaceReader;
 import org.sonatype.aether.repository.WorkspaceRepository;
 
 @Component( role = WorkspaceReader.class, hint = "ide" )
-class FedoraWorkspaceReader
+public class FedoraWorkspaceReader
     implements WorkspaceReader
 {
-    private static final Resolver resolver = new DefaultResolver();
+    @Requirement
+    private Resolver resolver;
 
     private static final WorkspaceRepository repository = new WorkspaceRepository();
 

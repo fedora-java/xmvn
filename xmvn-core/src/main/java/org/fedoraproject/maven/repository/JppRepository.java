@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
 public class JppRepository
@@ -45,12 +45,12 @@ public class JppRepository
         }
     }
 
-    public JppRepository( File root )
+    public JppRepository( File root, ResolverSettings settings )
     {
         this.root = root;
 
-        initRepos( jarRepos, Configuration.getJarRepos(), Layout.JPP, Layout.JPP_VERSIONLESS );
-        initRepos( pomRepos, Configuration.getPomRepos(), Layout.FLAT, Layout.FLAT_VERSIONLESS );
+        initRepos( jarRepos, settings.getJarRepositories(), Layout.JPP, Layout.JPP_VERSIONLESS );
+        initRepos( pomRepos, settings.getPomRepositories(), Layout.FLAT, Layout.FLAT_VERSIONLESS );
     }
 
     @Override

@@ -15,20 +15,15 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import java.io.File;
-
 import org.fedoraproject.maven.model.Artifact;
 
-abstract class AbstractResolver
-    implements Resolver
+public interface ArtifactBlacklist
 {
-    @Override
-    public File resolve( String groupId, String artifactId, String version, String extension )
-    {
-        Artifact artifact = new Artifact( groupId, artifactId, version, extension );
-        return resolve( artifact );
-    }
+    boolean contains( String groupId, String artifactId );
 
-    @Override
-    public abstract File resolve( Artifact artifact );
+    boolean contains( Artifact artifact );
+
+    void add( String groupId, String artifactId );
+
+    void add( Artifact artifact );
 }

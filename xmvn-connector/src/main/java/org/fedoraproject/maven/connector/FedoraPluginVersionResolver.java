@@ -24,7 +24,7 @@ import org.sonatype.aether.repository.ArtifactRepository;
 import org.sonatype.aether.repository.WorkspaceReader;
 
 @Component( role = PluginVersionResolver.class )
-class FedoraPluginVersionResolver
+public class FedoraPluginVersionResolver
     implements PluginVersionResolver
 {
     @Override

@@ -22,15 +22,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.fedoraproject.maven.Configuration;
+import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.repository.JppRepository;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.rpmquery.RpmDb;
 
-public class SystemResolver
+class SystemResolver
     extends AbstractResolver
 {
+    private final ResolverSettings settings;
+
     private final Repository systemRepo;
 
     private final DependencyMap depmap;
@@ -39,10 +41,11 @@ public class SystemResolver
 
     private static final Set<String> usedRpmPackages = new TreeSet<>();
 
-    public SystemResolver( File root )
+    public SystemResolver( File root, ResolverSettings settings )
     {
-        systemRepo = new JppRepository( root );
-        depmap = DepmapReader.readArtifactMap( root );
+        this.settings = settings;
+        systemRepo = new JppRepository( root, settings );
+        depmap = DepmapReader.readArtifactMap( root, settings );
     }
 
     @Override
@@ -71,7 +74,7 @@ public class SystemResolver
 
         debug( "Artifact ", artifact, " was resolved to ", file );
 
-        if ( Configuration.isDebugEnabled() )
+        if ( settings.isDebug() )
         {
             String rpmPackage = rpmdb.lookupFile( file );
             if ( rpmPackage != null )
