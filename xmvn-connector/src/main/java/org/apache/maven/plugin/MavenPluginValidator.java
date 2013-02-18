@@ -28,6 +28,8 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
  */
 public class MavenPluginValidator
 {
+    // This constructor must be provided for compatibility with Maven
+    @SuppressWarnings( "unused" )
     public MavenPluginValidator( Artifact pluginArtifact )
     {
     }
