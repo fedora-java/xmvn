@@ -50,7 +50,7 @@ will take precedence over user configuration.</p>
   </defaults>
   <classes>
 
-    <class>
+    <class java.clone="deep">
       <name>BuildSettings</name>
       <version>0.4.0+</version>
       <description>Basic build settings.</description>
@@ -127,7 +127,7 @@ will take precedence over user configuration.</p>
       </codeSegments>
     </class>
 
-    <class>
+    <class java.clone="deep">
       <name>Property</name>
       <version>0.4.0+</version>
       <description>
@@ -152,7 +152,7 @@ will take precedence over user configuration.</p>
       </fields>
     </class>
 
-    <class xml.tagName="artifact">
+    <class xml.tagName="artifact" java.clone="deep">
       <name>Artifact</name>
       <version>0.4.0+</version>
       <description>Identifier of Maven artifact.</description>
@@ -186,7 +186,7 @@ will take precedence over user configuration.</p>
       </fields>
     </class>
 
-    <class xml.tagName="rule">
+    <class xml.tagName="rule" java.clone="deep">
       <name>PackagingRule</name>
       <version>0.4.0+</version>
       <description>Identification of Maven Artifact.</description>
@@ -256,7 +256,7 @@ will take precedence over user configuration.</p>
       </codeSegments>
     </class>
 
-    <class>
+    <class java.clone="deep">
       <name>InstallerSettings</name>
       <version>0.4.0+</version>
       <description>XMvn settings related to installation of artifacts.</description>
@@ -378,7 +378,7 @@ will take precedence over user configuration.</p>
       </codeSegments>
     </class>
 
-    <class>
+    <class java.clone="deep">
       <name>ResolverSettings</name>
       <version>0.4.0+</version>
       <description>XMvn settings related to resolution of artifacts.</description>
@@ -489,7 +489,7 @@ will take precedence over user configuration.</p>
       </codeSegments>
     </class>
 
-    <class rootElement="true" xml.tagName="configuration">
+    <class rootElement="true" xml.tagName="configuration" java.clone="deep">
       <name>Configuration</name>
       <version>0.4.0+</version>
       <description>
