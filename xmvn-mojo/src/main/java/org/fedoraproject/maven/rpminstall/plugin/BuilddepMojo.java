@@ -30,11 +30,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.config.Configurator;
 
 @Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.TEST )
+@Component( role = BuilddepMojo.class )
 public class BuilddepMojo
     extends AbstractMojo
     implements DependencyVisitor
