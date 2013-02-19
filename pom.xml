@@ -118,9 +118,9 @@
         <version>1.5.5</version>
       </dependency>
       <dependency>
-	<groupId>org.codehaus.plexus</groupId>
-	<artifactId>plexus-container-default</artifactId>
-	<version>1.5.5</version>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.5.5</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>

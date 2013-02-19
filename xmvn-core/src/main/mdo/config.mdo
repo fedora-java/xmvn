@@ -17,7 +17,7 @@
 <model xmlns="http://modello.codehaus.org/MODELLO/1.4.0"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://modello.codehaus.org/MODELLO/1.4.0
-			   http://modello.codehaus.org/xsd/modello-1.4.0.xsd">
+                           http://modello.codehaus.org/xsd/modello-1.4.0.xsd">
   <id>config</id>
   <name>Configuration</name>
   <description>
@@ -59,8 +59,8 @@ will take precedence over user configuration.</p>
           <name>debug</name>
           <version>0.4.0+</version>
           <description>
-	    Whether detailed debugging information about the build
-	    process should be logged.
+            Whether detailed debugging information about the build
+            process should be logged.
           </description>
           <type>Boolean</type>
         </field>
@@ -68,7 +68,7 @@ will take precedence over user configuration.</p>
           <name>skipTests</name>
           <version>0.4.0+</version>
           <description>
-	    Whether compilation and execution of unit and integration tests should be skipped.
+            Whether compilation and execution of unit and integration tests should be skipped.
           </description>
           <type>Boolean</type>
         </field>
@@ -76,9 +76,9 @@ will take precedence over user configuration.</p>
           <name>compilerSource</name>
           <version>0.4.0+</version>
           <description>
-	    Compatibility version of Java sources in the reactor. If
-	    not specified then it defaults to 1.5 or whatever is
-	    specified in configuration of Maven Compiler Plugin.
+            Compatibility version of Java sources in the reactor. If
+            not specified then it defaults to 1.5 or whatever is
+            specified in configuration of Maven Compiler Plugin.
           </description>
           <type>String</type>
         </field>
@@ -89,21 +89,21 @@ will take precedence over user configuration.</p>
       <name>Property</name>
       <version>0.4.0+</version>
       <description>
-	This element describes Java system property along with its
-	value.
+        This element describes Java system property along with its
+        value.
       </description>
       <fields>
         <field>
           <name>name</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>Name of the property.</description>
           <type>String</type>
         </field>
         <field>
           <name>value</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>Value of the property.</description>
           <type>String</type>
         </field>
@@ -124,7 +124,7 @@ will take precedence over user configuration.</p>
         <field>
           <name>artifactId</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>Artifact ID of the artifact.</description>
           <type>String</type>
         </field>
@@ -139,7 +139,7 @@ will take precedence over user configuration.</p>
           <version>0.4.0+</version>
           <description>Extension of the artifact.</description>
           <type>String</type>
-	  <defaultValue>pom</defaultValue>
+          <defaultValue>pom</defaultValue>
         </field>
       </fields>
     </class>
@@ -152,11 +152,11 @@ will take precedence over user configuration.</p>
         <field>
           <name>artifactGlob</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>Pattern specifying one or more Maven artifacts.</description>
-	  <association>
+          <association>
             <type>Artifact</type>
-	  </association>
+          </association>
         </field>
         <field>
           <name>targetPackage</name>
@@ -177,9 +177,9 @@ will take precedence over user configuration.</p>
           <name>aliases</name>
           <version>0.4.0+</version>
           <description>Alternative identifiers of artifacts.</description>
-	  <!-- Modello would generate methods addAliase() and removeAliase()
-	       instead of addAlias() and removeALias(). To workaround this we
-	       skip generating of adders and generate them manually. -->
+          <!-- Modello would generate methods addAliase() and removeAliase()
+               instead of addAlias() and removeALias(). To workaround this we
+               skip generating of adders and generate them manually. -->
           <association xml.tagName="alias" java.adder="false">
             <type>Artifact</type>
             <multiplicity>*</multiplicity>
@@ -187,10 +187,10 @@ will take precedence over user configuration.</p>
         </field>
       </fields>
       <codeSegments>
-	<codeSegment>
-	  <version>0.4.0+</version>
-	  <code>
-	    <![CDATA[
+        <codeSegment>
+          <version>0.4.0+</version>
+          <code>
+            <![CDATA[
     /**
      * Add an alias.
      * @param artifact alias to be added
@@ -208,9 +208,9 @@ will take precedence over user configuration.</p>
     {
         getAliases().remove( artifact );
     }
-	    ]]>
-	  </code>
-	</codeSegment>
+            ]]>
+          </code>
+        </codeSegment>
       </codeSegments>
     </class>
 
@@ -247,48 +247,48 @@ will take precedence over user configuration.</p>
         <field>
           <name>jarDir</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>
-	    Directory into which platform-independant JAR files are be
-	    installed.
-	  </description>
+            Directory into which platform-independant JAR files are be
+            installed.
+          </description>
           <type>String</type>
         </field>
         <field>
           <name>jniDir</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>
-	    Directory into which platform-dependant JAR files are be
-	    installed.
-	  </description>
+            Directory into which platform-dependant JAR files are be
+            installed.
+          </description>
           <type>String</type>
         </field>
         <field>
           <name>pomDir</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>
-	    Directory into which POM files are be installed.
-	  </description>
+            Directory into which POM files are be installed.
+          </description>
           <type>String</type>
         </field>
         <field>
           <name>metadataDir</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>
-	    Directory into which XMvn metadata files are be installed.
-	  </description>
+            Directory into which XMvn metadata files are be installed.
+          </description>
           <type>String</type>
         </field>
         <field>
           <name>installRoot</name>
           <version>0.4.0+</version>
-	  <required>true</required>
+          <required>true</required>
           <description>
-	    Directory into which artfiacts are installed.
-	  </description>
+            Directory into which artfiacts are installed.
+          </description>
           <type>String</type>
         </field>
       </fields>
@@ -303,8 +303,8 @@ will take precedence over user configuration.</p>
           <name>debug</name>
           <version>0.4.0+</version>
           <description>
-	    Whether detailed debugging information about artifact
-	    resolution process should be logged.
+            Whether detailed debugging information about artifact
+            resolution process should be logged.
           </description>
           <type>Boolean</type>
         </field>
@@ -312,7 +312,7 @@ will take precedence over user configuration.</p>
           <name>localRepositories</name>
           <version>0.4.0+</version>
           <description>
-	    List of local repositories where XMvn will look for artifacts.
+            List of local repositories where XMvn will look for artifacts.
           </description>
           <association>
             <type>String</type>
@@ -323,7 +323,7 @@ will take precedence over user configuration.</p>
           <name>jarRepositories</name>
           <version>0.4.0+</version>
           <description>
-	    List of system repositories where XMvn will look for JAR files.
+            List of system repositories where XMvn will look for JAR files.
           </description>
           <association>
             <type>String</type>
@@ -334,8 +334,8 @@ will take precedence over user configuration.</p>
           <name>pomRepositories</name>
           <version>0.4.0+</version>
           <description>
-	    List of system repositories where XMvn will look for POM
-	    files.
+            List of system repositories where XMvn will look for POM
+            files.
           </description>
           <association>
             <type>String</type>
@@ -346,8 +346,8 @@ will take precedence over user configuration.</p>
           <name>metadataRepositories</name>
           <version>0.4.0+</version>
           <description>
-	    List of repositories where XMvn will look for metadata
-	    files.
+            List of repositories where XMvn will look for metadata
+            files.
           </description>
           <association>
             <type>String</type>
@@ -358,8 +358,8 @@ will take precedence over user configuration.</p>
           <name>prefixes</name>
           <version>0.4.0+</version>
           <description>
-	    List of prefixes that XMvn resolver will prepend to system
-	    repositories.
+            List of prefixes that XMvn resolver will prepend to system
+            repositories.
           </description>
           <association>
             <type>String</type>
@@ -370,7 +370,7 @@ will take precedence over user configuration.</p>
           <name>blacklist</name>
           <version>0.4.0+</version>
           <description>
-	    List of blacklisted artifacts which will not be resolved.
+            List of blacklisted artifacts which will not be resolved.
           </description>
           <association>
             <type>Artifact</type>
@@ -448,10 +448,10 @@ will take precedence over user configuration.</p>
 
       </fields>
       <codeSegments>
-	<codeSegment>
-	  <version>0.4.0+</version>
-	  <code>
-	    <![CDATA[
+        <codeSegment>
+          <version>0.4.0+</version>
+          <code>
+            <![CDATA[
     /**
      * Create an effective packaging rule for specified artifact.
      * @param groupId
@@ -462,9 +462,9 @@ will take precedence over user configuration.</p>
     {
         return new EffectivePackagingRule( artifactManagement, groupId, artifactId, version );
     }
-	    ]]>
-	  </code>
-	</codeSegment>
+            ]]>
+          </code>
+        </codeSegment>
       </codeSegments>
     </class>
   </classes>
