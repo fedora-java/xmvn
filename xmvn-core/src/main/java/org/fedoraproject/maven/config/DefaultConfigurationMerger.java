@@ -43,11 +43,11 @@ public class DefaultConfigurationMerger
 
     private void mergeBuildSettings( BuildSettings dominant, BuildSettings recessive )
     {
-        if ( dominant.getDebug() == null )
-            dominant.setDebug( recessive.getDebug() );
+        if ( dominant.isDebug() == null )
+            dominant.setDebug( recessive.isDebug() );
 
-        if ( dominant.getSkipTests() == null )
-            dominant.setSkipTests( recessive.getSkipTests() );
+        if ( dominant.isSkipTests() == null )
+            dominant.setSkipTests( recessive.isSkipTests() );
 
         if ( dominant.getCompilerSource() == null )
             dominant.setCompilerSource( recessive.getCompilerSource() );
@@ -60,8 +60,8 @@ public class DefaultConfigurationMerger
 
     private void mergeResolverSettings( ResolverSettings dominant, ResolverSettings recessive )
     {
-        if ( dominant.getDebug() == null )
-            dominant.setDebug( recessive.getDebug() );
+        if ( dominant.isDebug() == null )
+            dominant.setDebug( recessive.isDebug() );
 
         dominant.getLocalRepositories().addAll( recessive.getLocalRepositories() );
 
@@ -81,11 +81,11 @@ public class DefaultConfigurationMerger
         if ( dominant.getPackageName() == null )
             dominant.setPackageName( recessive.getPackageName() );
 
-        if ( dominant.getSkipProvides() == null )
-            dominant.setSkipProvides( recessive.getSkipProvides() );
+        if ( dominant.isSkipProvides() == null )
+            dominant.setSkipProvides( recessive.isSkipProvides() );
 
-        if ( dominant.getSkipRequires() == null )
-            dominant.setSkipRequires( recessive.getSkipRequires() );
+        if ( dominant.isSkipRequires() == null )
+            dominant.setSkipRequires( recessive.isSkipRequires() );
 
         if ( dominant.getJarDir() == null )
             dominant.setJarDir( recessive.getJarDir() );
