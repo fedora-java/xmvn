@@ -33,3 +33,6 @@
 
 * in tests don't modify configuration directly; clone it and customize
   the clone
+
+* add more configuration options to control how auto-requires are
+  generated and whether effective POM should be installed or not
