@@ -17,6 +17,9 @@ package org.fedoraproject.maven.utils;
 
 import java.io.PrintStream;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class Logger
 {
     public static interface Provider

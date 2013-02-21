@@ -22,10 +22,12 @@ import java.io.File;
 
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class SingletonRepository
     implements Repository
 {
-
     private final File root;
 
     private final Layout layout;

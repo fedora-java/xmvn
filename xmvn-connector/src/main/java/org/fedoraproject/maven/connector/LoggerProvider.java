@@ -19,6 +19,9 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Component( role = LoggerProvider.class )
 public class LoggerProvider
     implements org.fedoraproject.maven.utils.Logger.Provider

@@ -22,6 +22,9 @@ import java.util.regex.Pattern;
 
 import org.fedoraproject.maven.utils.GlobUtils;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 class EffectivePackagingRule
     extends PackagingRule
 {

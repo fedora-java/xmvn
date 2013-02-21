@@ -17,6 +17,9 @@ package org.fedoraproject.maven.rpminstall.plugin;
 
 import java.math.BigDecimal;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public interface DependencyVisitor
 {
     void visitBuildDependency( String groupId, String artifactId );

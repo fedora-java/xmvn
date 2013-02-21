@@ -23,6 +23,9 @@ import java.util.TreeMap;
 
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 class CachingResolver
     extends AbstractResolver
 {

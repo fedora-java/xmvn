@@ -41,6 +41,9 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.fedoraproject.maven.config.BuildSettings;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DependencyExtractor
 {
     // List of dependency scopes for which auto-requires are generated. Must be in ascending order.

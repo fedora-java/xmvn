@@ -26,6 +26,9 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.WorkspaceReader;
 import org.sonatype.aether.repository.WorkspaceRepository;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Component( role = WorkspaceReader.class, hint = "ide" )
 public class FedoraWorkspaceReader
     implements WorkspaceReader

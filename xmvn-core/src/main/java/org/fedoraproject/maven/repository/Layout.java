@@ -17,6 +17,9 @@ package org.fedoraproject.maven.repository;
 
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public enum Layout
 {
     /**

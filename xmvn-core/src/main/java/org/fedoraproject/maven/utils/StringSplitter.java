@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.maven.utils;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class StringSplitter
 {
     public static String[] split( String s, int n, char delim )

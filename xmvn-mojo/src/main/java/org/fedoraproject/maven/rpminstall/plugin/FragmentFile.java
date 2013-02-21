@@ -30,6 +30,9 @@ import java.util.TreeSet;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class FragmentFile
     implements DependencyVisitor
 {

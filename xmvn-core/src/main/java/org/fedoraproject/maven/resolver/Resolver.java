@@ -19,6 +19,9 @@ import java.io.File;
 
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public interface Resolver
 {
     File resolve( Artifact artifact );

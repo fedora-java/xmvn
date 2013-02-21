@@ -23,6 +23,9 @@ import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.repository.ArtifactRepository;
 import org.sonatype.aether.repository.WorkspaceReader;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Component( role = PluginVersionResolver.class )
 public class FedoraPluginVersionResolver
     implements PluginVersionResolver

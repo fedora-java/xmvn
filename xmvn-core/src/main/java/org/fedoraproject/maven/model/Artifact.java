@@ -18,6 +18,9 @@ package org.fedoraproject.maven.model;
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class Artifact
     implements Comparable<Artifact>
 {

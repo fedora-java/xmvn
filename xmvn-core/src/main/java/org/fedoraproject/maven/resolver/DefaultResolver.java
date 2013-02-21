@@ -26,6 +26,9 @@ import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Component( role = Resolver.class )
 public class DefaultResolver
     extends AbstractResolver

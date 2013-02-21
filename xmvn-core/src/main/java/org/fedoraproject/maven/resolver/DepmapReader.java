@@ -44,6 +44,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 class DepmapReader
 {
     private final DependencyMap depmap = new DependencyMap();

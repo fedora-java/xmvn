@@ -17,6 +17,9 @@ package org.fedoraproject.maven.resolver;
 
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public interface ArtifactBlacklist
 {
     boolean contains( String groupId, String artifactId );

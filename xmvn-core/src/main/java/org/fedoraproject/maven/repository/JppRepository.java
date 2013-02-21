@@ -22,10 +22,12 @@ import java.util.LinkedList;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class JppRepository
     implements Repository
 {
-
     private final Collection<Repository> jarRepos = new LinkedList<>();
 
     private final Collection<Repository> pomRepos = new LinkedList<>();

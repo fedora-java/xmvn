@@ -35,6 +35,9 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.config.Configurator;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.TEST )
 @Component( role = BuilddepMojo.class )
 public class BuilddepMojo

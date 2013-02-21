@@ -40,6 +40,9 @@ import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
 @Component( role = InstallMojo.class )
 public class InstallMojo

@@ -28,6 +28,9 @@ import org.fedoraproject.maven.repository.JppRepository;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.rpmquery.RpmDb;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 class SystemResolver
     extends AbstractResolver
 {

@@ -25,6 +25,9 @@ import org.fedoraproject.maven.repository.Layout;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.SingletonRepository;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 class LocalResolver
     extends AbstractResolver
 {

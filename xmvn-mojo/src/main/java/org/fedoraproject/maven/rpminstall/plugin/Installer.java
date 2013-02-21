@@ -21,6 +21,9 @@ import java.nio.file.Path;
 
 import org.fedoraproject.maven.utils.FileUtils;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class Installer
 {
     private final Path root;

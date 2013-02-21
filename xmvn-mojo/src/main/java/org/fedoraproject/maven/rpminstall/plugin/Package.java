@@ -34,6 +34,9 @@ import org.fedoraproject.maven.config.PackagingRule;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.utils.FileUtils;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class Package
     implements Comparable<Package>
 {
