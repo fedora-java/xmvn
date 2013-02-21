@@ -16,8 +16,8 @@
 package org.fedoraproject.maven.config;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.codehaus.plexus.component.annotations.Component;
 
@@ -30,15 +30,12 @@ import org.codehaus.plexus.component.annotations.Component;
 public class DefaultConfigurationMerger
     implements ConfigurationMerger
 {
-    private void mergeProperties( List<Property> dominant, List<Property> recessive )
+    private void mergeProperties( Properties dominant, Properties recessive )
     {
-        Set<String> set = new TreeSet<>();
-        for ( Property property : dominant )
-            set.add( property.getName() );
-
-        for ( Property property : recessive )
-            if ( !set.contains( property.getName() ) )
-                dominant.add( property );
+        Set<Object> dominantKeySet = dominant.keySet();
+        for ( Object key : recessive.keySet() )
+            if ( !dominantKeySet.contains( key ) )
+                dominant.put( key, recessive.get( key ) );
     }
 
     private void mergeBuildSettings( BuildSettings dominant, BuildSettings recessive )
