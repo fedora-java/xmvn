@@ -168,7 +168,7 @@ will take precedence over user configuration.</p>
           <name>files</name>
           <version>0.4.0+</version>
           <description>Files holding the artifact.</description>
-          <association>
+          <association xml.tagName="file">
             <type>String</type>
             <multiplicity>*</multiplicity>
           </association>
@@ -314,7 +314,7 @@ will take precedence over user configuration.</p>
           <description>
             List of local repositories where XMvn will look for artifacts.
           </description>
-          <association>
+          <association xml.tagName="repository">
             <type>String</type>
             <multiplicity>*</multiplicity>
           </association>
@@ -325,7 +325,7 @@ will take precedence over user configuration.</p>
           <description>
             List of system repositories where XMvn will look for JAR files.
           </description>
-          <association>
+          <association xml.tagName="repository">
             <type>String</type>
             <multiplicity>*</multiplicity>
           </association>
@@ -337,7 +337,7 @@ will take precedence over user configuration.</p>
             List of system repositories where XMvn will look for POM
             files.
           </description>
-          <association>
+          <association xml.tagName="repository">
             <type>String</type>
             <multiplicity>*</multiplicity>
           </association>
@@ -349,7 +349,7 @@ will take precedence over user configuration.</p>
             List of repositories where XMvn will look for metadata
             files.
           </description>
-          <association>
+          <association xml.tagName="repository">
             <type>String</type>
             <multiplicity>*</multiplicity>
           </association>
@@ -361,7 +361,7 @@ will take precedence over user configuration.</p>
             List of prefixes that XMvn resolver will prepend to system
             repositories.
           </description>
-          <association>
+          <association xml.tagName="prefix">
             <type>String</type>
             <multiplicity>*</multiplicity>
           </association>
@@ -372,7 +372,7 @@ will take precedence over user configuration.</p>
           <description>
             List of blacklisted artifacts which will not be resolved.
           </description>
-          <association>
+          <association xml.tagName="artifact">
             <type>Artifact</type>
             <multiplicity>*</multiplicity>
           </association>
@@ -418,7 +418,7 @@ will take precedence over user configuration.</p>
             This element configures how artifacts should be assigned
             to individual packages.
           </description>
-          <association>
+          <association xml.tagName="rule">
             <type>PackagingRule</type>
             <multiplicity>*</multiplicity>
           </association>
