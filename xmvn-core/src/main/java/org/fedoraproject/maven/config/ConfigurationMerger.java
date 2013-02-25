@@ -29,10 +29,10 @@ public interface ConfigurationMerger
      * implementation is free to modify it. Recessive configuration is never changed.
      * 
      * @param dominant the dominant configuration into which the recessive configuration will be merged (may be
-     *            <code>null</code>)
+     *            @{code null})
      * @param recessive the recessive configuration from which the configuration will inherited (may not be
-     *            <code>null</code>)
-     * @return merged configuration (not <code>null</code>, may be the same as dominant)
+     *            @{code null})
+     * @return merged configuration (not @{code null}, may be the same as dominant)
      */
     Configuration merge( Configuration dominant, Configuration recessive );
 }

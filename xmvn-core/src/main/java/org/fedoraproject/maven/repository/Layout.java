@@ -25,35 +25,35 @@ public enum Layout
     /**
      * Maven repository layout, as used by upstream Maven.
      * <p>
-     * Example: <code>g/r/o/u/p/artifact/ver/artifact-ver.ext</code>
+     * Example: @{code g/r/o/u/p/artifact/ver/artifact-ver.ext}
      */
     MAVEN( "Maven", false, true, true, false ),
 
     /**
      * Version-aware repository JPP layout.
      * <p>
-     * Example: <code>g/r/o/u/p/artifact-ver.ext</code>
+     * Example: @{code g/r/o/u/p/artifact-ver.ext}
      */
     JPP( "version-aware JPP", false, false, true, true ),
 
     /**
      * Version-unaware JPP repository layout.
      * <p>
-     * Example: <code>g/r/o/u/p/artifact.ext</code>
+     * Example: @{code g/r/o/u/p/artifact.ext}
      */
     JPP_VERSIONLESS( "versionless JPP", false, false, false, true ),
 
     /**
      * Version-aware flat repository layout.
      * <p>
-     * Example: <code>g.r.o.u.p-artifact-ver.ext</code>
+     * Example: @{code g.r.o.u.p-artifact-ver.ext}
      */
     FLAT( "version-aware flat", true, false, true, false ),
 
     /**
      * Version-unaware flat repository layout.
      * <p>
-     * Example: <code>g.r.o.u.p-artifact.ext</code>
+     * Example: @{code g.r.o.u.p-artifact.ext}
      */
     FLAT_VERSIONLESS( "versionless flat", true, false, false, false );
 

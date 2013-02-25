@@ -37,10 +37,10 @@ public interface Configurator
     Configuration getSystemConfiguration();
 
     /**
-     * Returns raw system XMvn configuration. This configuration may be unavailable, in which case <code>null</code> is
+     * Returns raw system XMvn configuration. This configuration may be unavailable, in which case @{code null} is
      * returned.
      * 
-     * @return raw system configuration or <code>null</code> if not available
+     * @return raw system configuration or @{code null} if not available
      */
     Configuration getRawSystemConfiguration();
 
@@ -52,10 +52,10 @@ public interface Configurator
     Configuration getUserConfiguration();
 
     /**
-     * Returns raw user XMvn configuration. This configuration may be unavailable, in which case <code>null</code> is
+     * Returns raw user XMvn configuration. This configuration may be unavailable, in which case @{code null} is
      * returned.
      * 
-     * @return raw user configuration or <code>null</code> if not available
+     * @return raw user configuration or @{code null} if not available
      */
     Configuration getRawUserConfiguration();
 
@@ -67,10 +67,10 @@ public interface Configurator
     Configuration getReactorConfiguration();
 
     /**
-     * Returns raw reactor XMvn configuration. This configuration may be unavailable, in which case <code>null</code> is
+     * Returns raw reactor XMvn configuration. This configuration may be unavailable, in which case @{code null} is
      * returned.
      * 
-     * @return raw reactor configuration or <code>null</code> if not available
+     * @return raw reactor configuration or @{code null} if not available
      */
     Configuration getRawReactorConfiguration();
 

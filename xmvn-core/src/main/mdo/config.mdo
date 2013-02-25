@@ -26,10 +26,10 @@
 
 <p>XMvn reads configuration from four different places:
 <ol>
-<li><strong>reactor configuration</strong> (<code>${project.basedir}/.xmvn/reactor-configuration.xml</code>)</li>
-<li><strong>user configuration</strong> (<code>${user.home}/.xmvn/user-configuration.xml</code>)</li>
-<li><strong>system configuration</strong> (<code>/etc/xmvn/system-configuration.xml</code>)</li>
-<li><strong>default configuration</strong> (<code>default-configuration.xml</code>, embedded in XMvn as a resource)</li>
+<li><strong>reactor configuration</strong> (@{code ${project.basedir}/.xmvn/reactor-configuration.xml})</li>
+<li><strong>user configuration</strong> (@{code ${user.home}/.xmvn/user-configuration.xml})</li>
+<li><strong>system configuration</strong> (@{code /etc/xmvn/system-configuration.xml})</li>
+<li><strong>default configuration</strong> (@{code default-configuration.xml}, embedded in XMvn as a resource)</li>
 </ol>
 </p>
 
