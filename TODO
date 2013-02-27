@@ -1,38 +1,102 @@
-* bail out if any rule (except default) is never successfully matched
+-*- outline -*-
 
-* fix builddep mojo (verify if generated BuildRequires are correct and
-  complete)
+This document describes future features to be implemented in XMvn.
 
-* make builddep mojo print the list BuildRequires on stdout (so it
-  gets included in mock build.log)
+To request a new feature contact the author on IRC (mizdebsk @
+#fedora-java @ FreeNode), send an email to mizdebsk@redhat.com or
+submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
+http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
-* SCL support ?? (wrt auto requires generator)
 
-* improve compat package resolver (maybe version ranges, maybe number
-  of matching components)
+* Milestone 0.4.0
 
-* externalize (don't hardcode) launcher Plexus Classworlds config for
-  xmvn-launcher
+** improved configuration
 
-* eliminate warnings about missing plugins versions
+*** XML configuration
+    instead of system properties and environmental variables
 
-* build-classpath and build-jar-repository
+*** Modello based
+    supports model versions; can generate documentation; it's the
+    "Maven way", used by other Maven components
 
-* document all custom configuration options
+*** configuration inheritance
 
-* better handle inter-subpackage dependencies (versioned deps,
-  dependency graphs etc.)
+*** final fields
+    some configuration settings cannot be overridden by offspring
+    configuration files
 
-* allow installing artifacts without building them (like package is
-  built with ant, pom.xml cannot be used to build it, but still
-  pom.xml and jar files should be installable)
+*** configuration from pluginManagement
+    just like Eclipse M2E does
 
-* in configuration model use Boolean instead of String when possible
+*** in configuration model use Boolean instead of String when possible
+    String was used as a workaround for [MODELLO-267]
 
-* implement clone() of configuration model
+*** singleton configurator
+    configurator should generate configuration once and cache it
 
-* in tests don't modify configuration directly; clone it and customize
-  the clone
+*** implement clone() of configuration model
+    it should be possible to create a deep clone of full configuration
+    to play with it without affecting global settings
 
-* add more configuration options to control how auto-requires are
-  generated and whether effective POM should be installed or not
+*** in tests don't modify configuration directly
+    clone it and customize the clone
+
+*** document all custom configuration options
+
+*** add more configuration options
+    how auto-requires are generated and whether effective POM should be
+    installed or not
+
+** improved Plexus Classworlds configuration
+
+*** externalize config for xmvn-launcher
+    Plexus Classworlds launcher config ought to be extracted as a
+    separate file, not hardcoded in source files
+
+*** set and use xmvn.home system property
+    this is needed to improve maven-invoker usage
+
+** new site
+
+*** automatically generated
+    maven-site-plugin
+
+*** automatically deployable
+    SCP to fedorapeople.org (wagon needs fixing)
+
+
+* Milestone 1.0.0
+
+** distinguish between public API and private implementation
+
+** plugin API
+
+** allow installing artifacts without building them
+   like package is built with ant, pom.xml cannot be used to build it,
+   but still pom.xml and jar files should be installable
+
+** SCL support
+   wrt auto requires generator
+
+** usability in Debian
+   working basic debhelper or CDBS integration
+
+** fix builddep MOJO
+   verify if generated BuildRequires are correct and complete; make
+   builddep mojo print the list BuildRequires on stdout (so it gets
+   included in mock build.log)
+
+** improve compat package resolver
+   maybe version ranges, maybe number of matching components
+
+
+* Random ideas (no milestone assigned)
+
+** bail out if any rule (except default) is never successfully matched
+
+** eliminate warnings about missing plugins versions
+
+** build-classpath and build-jar-repository
+
+** better handle inter-subpackage dependencies
+   versioned deps, dependency graphs etc.
