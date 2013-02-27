@@ -64,7 +64,7 @@
     <url>https://bugzilla.redhat.com/</url>
   </issueManagement>
   <properties>
-    <mavenVersion>3.0.4</mavenVersion>
+    <mavenVersion>3.0.5</mavenVersion>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
   </properties>
   <prerequisites>
