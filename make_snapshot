@@ -19,7 +19,7 @@ set -e
 
 name=xmvn
 tarball=${name}-snapshot.tar.xz
-git archive -v --prefix=${name}-snapshot/ master | xz >${tarball}
+git archive -v --prefix=${name}-snapshot/ HEAD | xz >${tarball}
 
 read -e -p "Upload ${tarball} to fedorapeople.org? (y/N): "
 if [ "$REPLY" = y ]; then
