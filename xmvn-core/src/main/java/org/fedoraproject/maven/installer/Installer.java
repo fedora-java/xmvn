@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.rpminstall.plugin;
+package org.fedoraproject.maven.installer;
 
 import java.io.IOException;
 import java.nio.file.Files;

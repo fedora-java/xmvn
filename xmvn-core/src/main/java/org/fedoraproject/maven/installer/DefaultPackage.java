@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.rpminstall.plugin;
+package org.fedoraproject.maven.installer;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,8 +37,8 @@ import org.fedoraproject.maven.utils.FileUtils;
 /**
  * @author Mikolaj Izdebski
  */
-public class Package
-    implements Comparable<Package>
+public class DefaultPackage
+    implements Package, Comparable<DefaultPackage>
 {
     private final String suffix;
 
@@ -50,7 +50,7 @@ public class Package
 
     private final InstallerSettings settings;
 
-    public Package( String name, InstallerSettings settings )
+    public DefaultPackage( String name, InstallerSettings settings )
     {
         this.settings = settings;
         suffix = name.equals( "" ) ? "" : "-" + name;
@@ -86,6 +86,7 @@ public class Package
         addFile( file, target.getParent(), target.getFileName(), mode );
     }
 
+    @Override
     public void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
     {
         Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
@@ -117,6 +118,7 @@ public class Package
         return false;
     }
 
+    @Override
     public void addJarFile( Path file, Path baseName, Collection<Path> symlinks )
         throws IOException
     {
@@ -149,6 +151,7 @@ public class Package
         }
     }
 
+    @Override
     public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
                                PackagingRule rule )
     {
@@ -164,7 +167,7 @@ public class Package
         }
     }
 
-    private void installMetadata( Installer installer )
+    private void installMetadata()
         throws IOException
     {
         getMetadata().optimize();
@@ -197,7 +200,7 @@ public class Package
     public void install( Installer installer )
         throws IOException
     {
-        installMetadata( installer );
+        installMetadata();
         installFiles( installer );
         createFileList();
     }
@@ -207,13 +210,14 @@ public class Package
         return !suffix.endsWith( NOINSTALL_SUFFIX );
     }
 
+    @Override
     public FragmentFile getMetadata()
     {
         return metadata;
     }
 
     @Override
-    public int compareTo( Package rhs )
+    public int compareTo( DefaultPackage rhs )
     {
         return suffix.compareTo( rhs.suffix );
     }

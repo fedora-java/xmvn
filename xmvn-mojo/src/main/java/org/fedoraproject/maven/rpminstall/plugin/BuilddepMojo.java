@@ -34,6 +34,8 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.config.Configurator;
+import org.fedoraproject.maven.installer.DependencyExtractor;
+import org.fedoraproject.maven.installer.DependencyVisitor;
 
 /**
  * @author Mikolaj Izdebski
