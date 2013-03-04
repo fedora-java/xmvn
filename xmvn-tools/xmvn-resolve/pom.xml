@@ -26,9 +26,14 @@
     <relativePath>..</relativePath>
   </parent>
   <artifactId>xmvn-resolve</artifactId>
-  <name>XMvn Resolver Tool</name>
-  <description>A commald-line tool to resolve Maven artifacts from system
-    repositories.</description>
+  <name>XMvn Resolver</name>
+  <description>
+    XMvn Resolver is a very simple commald-line tool to resolve Maven
+    artifacts from system repositories.  Basically it's just an
+    interface to artifact resolution mechanism implemented by XMvn
+    Core.  The primary intended use case of XMvn Resolver is debugging
+    local artifact repositories.
+  </description>
   <dependencies>
     <dependency>
       <groupId>com.beust</groupId>

@@ -1,0 +1,99 @@
+            -----------------------------------------
+              How to embed XMvn in your application
+            -----------------------------------------
+                        Mikolaj Izdebski
+            -----------------------------------------
+                           2013-02-27
+
+
+How to embed XMvn in your application
+
+* Abstract
+
+  In this short tutorial I am going to show you how you can use
+  services offered by XMvn from your application.  As an example I'll
+  use local artifact resolver service that can find artifacts
+  installed locally in the system.
+
+* Tutorial
+
+  Before you start using XMvn you need to know what API it provides.
+  You can use API documentation and source cross-reference available
+  on this website.
+
+  Don't rely on private APIs.  All interfecaes and classes being part
+  of public API of XMvn state so in their Javadocs.  Any non-public
+  API may change without any notice, even in minor releases.  So it's
+  best for you to make sure that the API you want to use is public.
+
+  XMvn is a component library - it's a set of Plexus components.  You
+  need have a Plexus container to use XMvn and XMvn JARs must be part
+  of container realm (if your application doesn't use Plexus then you
+  can create new container, see the example below).  Then to obtain
+  class implementing Resolver interface you can simply write:
+
+------------------------------------------------------------------------
+Resolver resolver = container.lookup( Resolver.class );
+------------------------------------------------------------------------
+
+  Now you can use the <<<Resolver>>> API to find the location of some
+  artifact in the system, for example Apache Commons IO:
+
+------------------------------------------------------------------------
+File commonsIoJar = resolver.resolve( "org.apache.commons", "commons-io", "SYSTEM", "jar" );
+------------------------------------------------------------------------
+
+  The returned File will point to the location of the Commons IO JAR
+  file or it will be <<<null>>> in case artifact resolution failed for
+  some reason.
+
+  A full example is shown below:
+
+    * <<<pom.xml>>>:
+
+------------------------------------------------------------------------
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>example</groupId>
+  <artifactId>example</artifactId>
+  <version>example</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-core</artifactId>
+      <version>0.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.5.5</version>
+    </dependency>
+  </dependencies>
+</project>
+------------------------------------------------------------------------
+
+    * <<<src/main/java/Example.java>>>:
+
+------------------------------------------------------------------------
+import java.io.*;
+import org.codehaus.plexus.*;
+import org.fedoraproject.maven.resolver.*;
+
+public class Example
+{
+    public static void main( String[] args )
+        throws Exception
+    {
+        PlexusContainer container = new DefaultPlexusContainer();
+        Resolver resolver = container.lookup( Resolver.class );
+        File commonsIoJar = resolver.resolve( "org.apache.commons", "commons-io", "SYSTEM", "jar" );
+        System.out.println( "Commons IO JAR is located at " + commonsIoJar );
+    }
+}
+------------------------------------------------------------------------
+
+  To compile and execute this example using Maven, run:
+
+------------------------------------------------------------------------
+mvn compile exec:java -DmainClass=Example
+------------------------------------------------------------------------

@@ -27,6 +27,13 @@
   </parent>
   <artifactId>xmvn-connector</artifactId>
   <name>XMvn Connector</name>
+  <description>
+    XMvn Connector is a set of Plexus components that override a few
+    default components provided by Maven.  These components rely on
+    other XMvn modules (most notably XMvn Core) to do the hard work.
+    This way XMvn Connector effectively connects Apache Maven with
+    XMvn.
+  </description>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>

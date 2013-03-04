@@ -27,7 +27,13 @@
   </parent>
   <artifactId>xmvn-launcher</artifactId>
   <name>XMvn Launcher</name>
-  <description>Launches XMvn</description>
+  <description>
+    XMvn launcher is a very simple module responsible for
+    bootstrapping and launching XMvn.  It first calls Plexus
+    classworlds to create core class realm and populate it with all
+    classes necessary to run Maven and XMvn and then launches Maven
+    CLI.
+  </description>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

@@ -27,7 +27,13 @@
   </parent>
   <artifactId>xmvn-mojo</artifactId>
   <packaging>maven-plugin</packaging>
-  <name>XMvn Mojo</name>
+  <name>XMvn MOJO</name>
+  <description>
+    XMvn MOJO is a Maven plugin, which consists of several MOJOs.
+    Some goals of these MOJOs are intended to be attached to default
+    Maven lifecycle when building packages, others can be called
+    directly from Maven command line.
+  </description>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -74,6 +80,9 @@
         </executions>
         <configuration>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+          <requirements>
+            <maven>3.0</maven>
+          </requirements>
         </configuration>
       </plugin>
     </plugins>

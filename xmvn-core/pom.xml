@@ -27,7 +27,11 @@
   </parent>
   <artifactId>xmvn-core</artifactId>
   <name>XMvn Core</name>
-  <description>XMvn Core library</description>
+  <description>
+    XMvn Core module implements the essential functionality of XMvn
+    such as resolution of artifacts from system repository.  XMvn core
+    is needed by all other modules.
+  </description>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -77,7 +81,7 @@
             <phase>pre-site</phase>
             <goals>
               <goal>xdoc</goal>
-              <!--goal>xsd</goal-->
+              <goal>xsd</goal>
             </goals>
           </execution>
           <execution>

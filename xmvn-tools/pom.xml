@@ -27,8 +27,11 @@
   </parent>
   <artifactId>xmvn-tools</artifactId>
   <packaging>pom</packaging>
-  <name>XMvn Tools Parent</name>
-  <description>XMvn Tools Parent POM</description>
+  <name>XMvn Tools</name>
+  <description>
+    XMvn Tools is parent POM for all XMvn tools.  It holds
+    configuration common to all XMvn tools.
+  </description>
   <modules>
     <module>xmvn-resolve</module>
   </modules>
