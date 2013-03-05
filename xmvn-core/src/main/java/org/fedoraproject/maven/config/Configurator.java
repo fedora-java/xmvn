@@ -23,66 +23,29 @@ package org.fedoraproject.maven.config;
 public interface Configurator
 {
     /**
-     * Returns default XMvn configuration. This is effective configuration and hence it's always available.
+     * Returns default XMvn configuration.
+     * <p>
+     * Default configuration is minimal correct configuration that is embedded in XMvn itself. It doesn't contain any
+     * customizations coming from configuration files. Default configuration can be useful as a base on which
+     * configuration is built dynamically during runtime.
      * 
      * @return default configuration
      */
     Configuration getDefaultConfiguration();
 
     /**
-     * Returns effective system XMvn configuration. This configuration is always available.
+     * Returns XMvn master configuration.
+     * <p>
+     * Master configuration is combination of multiple configuration files coming from various sources, merged in
+     * certain way. See XMvn documentation for detailed information where master configuration is read from and how it's
+     * merged.
      * 
-     * @return effective system configuration
-     */
-    Configuration getSystemConfiguration();
-
-    /**
-     * Returns raw system XMvn configuration. This configuration may be unavailable, in which case @{code null} is
-     * returned.
-     * 
-     * @return raw system configuration or @{code null} if not available
-     */
-    Configuration getRawSystemConfiguration();
-
-    /**
-     * Returns effective user XMvn configuration. This configuration is always available.
-     * 
-     * @return effective user configuration
-     */
-    Configuration getUserConfiguration();
-
-    /**
-     * Returns raw user XMvn configuration. This configuration may be unavailable, in which case @{code null} is
-     * returned.
-     * 
-     * @return raw user configuration or @{code null} if not available
-     */
-    Configuration getRawUserConfiguration();
-
-    /**
-     * Returns effective reactor XMvn configuration. This configuration is always available.
-     * 
-     * @return effective reactor configuration
-     */
-    Configuration getReactorConfiguration();
-
-    /**
-     * Returns raw reactor XMvn configuration. This configuration may be unavailable, in which case @{code null} is
-     * returned.
-     * 
-     * @return raw reactor configuration or @{code null} if not available
-     */
-    Configuration getRawReactorConfiguration();
-
-    /**
-     * Returns implicit XMvn configuration. This configuration is always available.
-     * 
-     * @return implicit configuration
+     * @return master configuration
      */
     Configuration getConfiguration();
 
     /**
-     * Log information different kinds of configuration.
+     * Dump the master configuration.
      * <p>
      * Configuration dumps are written through Plexus container default logger.
      */

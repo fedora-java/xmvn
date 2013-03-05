@@ -16,16 +16,21 @@
 package org.fedoraproject.maven.config;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Reader;
 import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
@@ -45,7 +50,9 @@ public class DefaultConfigurator
     @Requirement
     private ConfigurationMerger merger;
 
-    private Configuration loadConfiguration( InputStream stream )
+    private List<Path> configFiles;
+
+    private Configuration loadConfigurationFromStream( InputStream stream )
         throws IOException
     {
         try
@@ -59,30 +66,13 @@ public class DefaultConfigurator
         }
     }
 
-    private Configuration loadRawConfiguration( String name, Path path )
-    {
-        try (InputStream childStream = new FileInputStream( path.toFile() ))
-        {
-            return loadConfiguration( childStream );
-        }
-        catch ( FileNotFoundException e )
-        {
-            logger.warn( "Failed to load " + name + " configuration from " + path + ": " + e );
-            return null;
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( "Failed to load " + name + " configuration from " + path, e );
-        }
-    }
-
     @Override
     public Configuration getDefaultConfiguration()
     {
         ClassLoader loader = getClass().getClassLoader();
         try (InputStream stream = loader.getResourceAsStream( "default-configuration.xml" ))
         {
-            return loadConfiguration( stream );
+            return loadConfigurationFromStream( stream );
         }
         catch ( IOException e )
         {
@@ -90,83 +80,144 @@ public class DefaultConfigurator
         }
     }
 
-    @Override
-    public Configuration getRawSystemConfiguration()
+    private Configuration loadConfiguration( Path path )
+        throws IOException
     {
-        Path systemConfig = Paths.get( "/etc/xmvn/system-configuration.xml" );
-        return loadRawConfiguration( "system", systemConfig );
+        try (InputStream childStream = new FileInputStream( path.toFile() ))
+        {
+            return loadConfigurationFromStream( childStream );
+        }
     }
 
-    @Override
-    public Configuration getSystemConfiguration()
+    private String getEvnDefault( String key, Object defaultValue )
     {
-        return merger.merge( getRawSystemConfiguration(), getDefaultConfiguration() );
+        String value = System.getenv( key );
+        if ( !StringUtils.isNotEmpty( value ) )
+        {
+            logger.debug( "Environmental variable $" + key + " is unset or empty, using default value: " + defaultValue );
+            return defaultValue.toString();
+        }
+
+        return value;
     }
 
-    @Override
-    public Configuration getRawUserConfiguration()
+    private void addConfigFile( Path file )
     {
-        Path userHome = Paths.get( System.getProperty( "user.home" ) );
-        Path userConfig = userHome.resolve( ".xmvn" ).resolve( "user-configuration.xml" );
-        return loadRawConfiguration( "user", userConfig );
+        if ( !Files.isRegularFile( file ) )
+        {
+            logger.debug( "Skipping configuration file " + file + ": not a regular file" );
+            return;
+        }
+
+        configFiles.add( file );
     }
 
-    @Override
-    public Configuration getUserConfiguration()
+    private void addConfigDir( Path directory )
+        throws IOException
     {
-        return merger.merge( getRawUserConfiguration(), getSystemConfiguration() );
+        if ( !Files.isDirectory( directory ) )
+        {
+            logger.debug( "Skipping configuration directory " + directory + ": not a directory" );
+            return;
+        }
+
+        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream( directory ))
+        {
+            for ( Path file : directoryStream )
+                addConfigFile( file );
+        }
     }
 
-    @Override
-    public Configuration getRawReactorConfiguration()
+    private void addXdgBasePath( String location )
+        throws IOException
     {
-        Path reactorPath = Paths.get( "." ).toAbsolutePath();
-        Path reactorConfig = reactorPath.resolve( ".xmvn" ).resolve( "reactor-configuration.xml" );
-        return loadRawConfiguration( "reactor", reactorConfig );
-    }
+        Path base = Paths.get( location );
+        if ( !base.isAbsolute() )
+        {
+            logger.debug( "Skipping XDG configuration directory " + base + ": path is not absolute" );
+            return;
+        }
 
-    @Override
-    public Configuration getReactorConfiguration()
-    {
-        return merger.merge( getRawReactorConfiguration(), getUserConfiguration() );
+        base = base.resolve( "xmvn" );
+        addConfigDir( base.resolve( "config.d" ) );
+        addConfigFile( base.resolve( "configuration.xml" ) );
     }
 
     @Override
     public Configuration getConfiguration()
     {
-        return getReactorConfiguration();
-    }
-
-    private void dump( String name, Configuration configuration )
-    {
-        try (StringWriter writer = new StringWriter())
+        try
         {
-            if ( configuration != null )
+            Path reactorConfDir = Paths.get( ".xmvn" ).toAbsolutePath();
+            Path xdgHome = Paths.get( getEvnDefault( "HOME", System.getProperty( "user.home" ) ) );
+
+            // 1. artifact configuration: pom.xml
+            configFiles = new ArrayList<>();
+
+            // 2. reactor configuration directory: $PWD/.xmvn/conf.d/
+            addConfigDir( reactorConfDir.resolve( "config.d" ) );
+            // 3. reactor configuration file: $PWD/.xmvn/configuration.xml
+            addConfigFile( reactorConfDir.resolve( "configuration.xml" ) );
+
+            // 4. user configuration directory: $XDG_CONFIG_HOME/xmvn/conf.d/
+            // 5. user configuration file: $XDG_CONFIG_HOME/xmvn/configuration.xml
+            addXdgBasePath( getEvnDefault( "XDG_CONFIG_HOME", xdgHome.resolve( ".config" ) ) );
+
+            // 6. user data directory: $XDG_DATA_HOME/xmvn/conf.d/
+            // 7. user data file: $XDG_DATA_HOME/xmvn/configuration.xml
+            addXdgBasePath( getEvnDefault( "XDG_DATA_HOME", xdgHome.resolve( ".local" ).resolve( "share" ) ) );
+
+            // 8. system configuration directories: $XDG_CONFIG_DIRS/xmvn/conf.d/
+            // 9. system configuration files: $XDG_CONFIG_DIRS/xmvn/configuration.xml
+            for ( String part : StringUtils.split( getEvnDefault( "XDG_CONFIG_DIRS", "/etc/xdg" ), ":" ) )
+                addXdgBasePath( part );
+
+            // 10. system data directories: $XDG_DATA_DIRS/xmvn/conf.d/
+            // 11. system data files: $XDG_DATA_DIRS/xmvn/configuration.xml
+            for ( String part : StringUtils.split( getEvnDefault( "XDG_DATA_DIRS", "/usr/local/share:/usr/share" ), ":" ) )
+                addXdgBasePath( part );
+
+            // 12. built-in xmvn-core.jar
+            Configuration conf = getDefaultConfiguration();
+
+            if ( configFiles.isEmpty() )
             {
-                ConfigurationXpp3Writer dumper = new ConfigurationXpp3Writer();
-                dumper.write( writer, configuration );
+                logger.warn( "No XMvn configuratiion files were found. Using default embedded configuration." );
             }
             else
             {
-                writer.write( " (non-existent)\n" );
+                logger.debug( "XMvn configuration files used:" );
+                for ( Path file : configFiles )
+                    logger.debug( "  * " + file.toString() );
             }
-            logger.debug( "XMvn " + name + " configuration:\n" + writer.toString() );
+
+            List<Path> reversedConfigFiles = new ArrayList<>( configFiles );
+            Collections.reverse( reversedConfigFiles );
+            for ( Path file : reversedConfigFiles )
+                conf = merger.merge( loadConfiguration( file ), conf );
+
+            return conf;
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            throw new RuntimeException( "Failed to load XMvn configuration", e );
         }
     }
 
     @Override
     public void dumpConfiguration()
     {
-        dump( "default", getDefaultConfiguration() );
-        dump( "raw system", getRawSystemConfiguration() );
-        dump( "effective system", getSystemConfiguration() );
-        dump( "raw user", getRawUserConfiguration() );
-        dump( "effective user", getUserConfiguration() );
-        dump( "raw reactor", getRawReactorConfiguration() );
-        dump( "effective reactor", getReactorConfiguration() );
+        Configuration configuration = getConfiguration();
+
+        try (StringWriter writer = new StringWriter())
+        {
+            ConfigurationXpp3Writer dumper = new ConfigurationXpp3Writer();
+            dumper.write( writer, configuration );
+            logger.debug( "XMvn configuration:\n" + writer.toString() );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 }
