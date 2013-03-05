@@ -1,0 +1,99 @@
+            ----------------------
+              XMvn configuration
+            ----------------------
+               Mikolaj Izdebski
+            ----------------------
+                  2013-03-05
+
+
+Configuring XMvn
+
+* Basics
+
+  XMvn is driven by configuration.  It loads configuration in XML
+  format, which can be used to control many aspects of XMvn behaviour.
+
+  XMvn loads configuration from various sources.  Each source uses
+  exactly the same configuration format.  Configuration particles from
+  all the sources are merged together into a single master XMvn
+  configuration.
+
+* Sources of configuration
+
+  XMvn reads its configuration from the following sources:
+
+    [[1]] Artifact configuration - specified in <<<pluginManagement>>>
+          in artifact POM,
+
+    [[2]] Reactor configuration directory - specified in configuration
+          files in <<<$PWD/.xmvn/conf.d/>>> directory,
+
+    [[3]] Reactor configuration file - specified in configuration file
+          <<<$PWD/.xmvn/configuration.xml>>>,
+
+    [[4]] User configuration directory - specified in configuration
+    	  files in <<<$XDG_CONFIG_HOME/xmvn/conf.d/>>> directory,
+
+    [[5]] User configuration file - specified in configuration file
+    	  <<<$XDG_CONFIG_HOME/xmvn/configuration.xml>>>,
+
+    [[6]] User data directory - specified in configuration files in
+          <<<$XDG_DATA_HOME/xmvn/conf.d/>>> directory,
+
+    [[7]] User data file - specified in configuration file
+    	  <<<$XDG_DATA_HOME/xmvn/configuration.xml>>>,
+
+    [[8]] System configuration directories - specified in
+    	  configuration files in <<<$XDG_CONFIG_DIRS/xmvn/conf.d/>>>
+    	  directory,
+
+    [[9]] System configuration files - specified in configuration file
+    	  <<<$XDG_CONFIG_DIRS/xmvn/configuration.xml>>>,
+
+    [[10]] System data directories - specified in configuration files
+    	   in <<<$XDG_DATA_DIRS/xmvn/conf.d/>>> directory,
+
+    [[11]] System data files - specified in configuration file
+    	   <<<$XDG_DATA_DIRS/xmvn/configuration.xml>>>,
+
+    [[12]] Builtin configuration - embedded directly in
+    	   <<<xmvn-core.jar>>> as a resource.
+
+  In the above list <<<$PWD>>> means current working directory. For
+  the meaning of <<<$XDG_CONFIG_HOME>>>, <<<$XDG_DATA_HOME>>>,
+  <<<$XDG_CONFIG_DIRS>>> and <<<$XDG_DATA_DIRS>>> see the
+  {{{http://standards.freedesktop.org/basedir-spec/basedir-spec-0.8.html}q
+  XDG Base Directory Specification}}.
+
+** Artifact configuration
+
+  Every Maven artifact can specify XMvn configuration in
+  pluginManagement in its POM (see maven POM reference for more
+  details about pluginManagement).  This configuration has highest
+  precedence and it is subject to standard maven POM inheritance
+  mechanisms.  This means that parent POM files can specify XMvn
+  configuration for all offspring artifacts.
+
+  Configuration in POM does not interfere with normal Maven build if
+  XMvn is not used.  In particular Maven will not try to download XMvn
+  artifacts during normal build.  This means that XMvn configuration
+  can be easily included in upstream POM files (if upstream is willing
+  to cooperate).
+
+** Reactor configuration
+
+   <TBD>
+
+** User and system configuration
+
+   <TBD>
+
+** Builtin configuration
+
+   <TBD>
+
+* Configuration merging
+
+  Each configuration source has defined its precedence, which affects
+  the way how configuration particles are merged together to give the
+  single master configuration.
