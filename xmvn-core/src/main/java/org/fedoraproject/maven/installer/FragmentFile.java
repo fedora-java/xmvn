@@ -157,7 +157,7 @@ public class FragmentFile
                     s.startTag( ns, "autoRequires" );
                     s.startTag( ns, "groupId" ).text( dependency.getGroupId() ).endTag( ns, "groupId" );
                     s.startTag( ns, "artifactId" ).text( dependency.getArtifactId() ).endTag( ns, "artifactId" );
-                    s.startTag( ns, "endRequires" );
+                    s.endTag( ns, "autoRequires" );
                 }
             }
 
