@@ -128,7 +128,7 @@ public class FragmentFile
                 s.startTag( ns, "skipProvides" ).endTag( ns, "skipProvides" );
 
             if ( javaVersionRequirement != null && !settings.isSkipRequires() )
-                s.startTag( ns, "skipProvides" ).text( javaVersionRequirement.toString() ).endTag( ns, "requiresJava" );
+                s.startTag( ns, "requiresJava" ).text( javaVersionRequirement.toString() ).endTag( ns, "requiresJava" );
 
             for ( Artifact mavenArtifact : mapping.keySet() )
             {
@@ -142,7 +142,7 @@ public class FragmentFile
                     s.startTag( ns, "groupId" ).text( jppArtifact.getGroupId() ).endTag( ns, "groupId" );
                     s.startTag( ns, "artifactId" ).text( jppArtifact.getArtifactId() ).endTag( ns, "artifactId" );
                     s.startTag( ns, "version" ).text( jppArtifact.getVersion() ).endTag( ns, "version" );
-                    s.endTag( ns, "jpp" ).endTag( ns, "maven" );
+                    s.endTag( ns, "jpp" ).endTag( ns, "dependency" );
                 }
             }
 
