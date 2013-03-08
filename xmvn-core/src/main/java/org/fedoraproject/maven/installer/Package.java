@@ -31,6 +31,9 @@ public interface Package
     void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
         throws IOException;
 
+    void addEffectivePomFile( Path file, Path jppGroupId, Path jppArtifactId )
+        throws IOException;
+
     void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
                         PackagingRule rule )
         throws IOException;

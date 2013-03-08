@@ -16,7 +16,6 @@
 package org.fedoraproject.maven.installer;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ import org.fedoraproject.maven.config.PackagingRule;
  */
 @Component( role = ProjectInstaller.class, hint = "jar" )
 public class JarInstaller
-    implements ProjectInstaller
+    extends AbstractProjectInstaller
 {
     @Requirement
     private Configurator configurator;
@@ -61,10 +60,6 @@ public class JarInstaller
         InstallerSettings settings = configurator.getConfiguration().getInstallerSettings();
         String packageName = settings.getPackageName();
 
-        Path pomFile = Files.createTempFile( "xmvn-" + artifactId + "-", ".pom.xml" );
-        DependencyExtractor.simplifyEffectiveModel( project.getModel() );
-        DependencyExtractor.writeModel( project.getModel(), pomFile );
-
         List<Path> extraList = new ArrayList<>( rule.getFiles().size() );
         for ( String fileName : rule.getFiles() )
             extraList.add( Paths.get( fileName ) );
@@ -82,7 +77,10 @@ public class JarInstaller
 
         DependencyExtractor.getJavaCompilerTarget( project, metadata );
 
-        targetPackage.addPomFile( pomFile, jppGroup, jppName );
+        boolean installRawPom = settings.isEnableRawPoms() && settings.isJarRawModel();
+        boolean installEffectivePom = settings.isEnableEffectivePoms() && settings.isJarEffectiveModel();
+        installProjectPom( project, targetPackage, jppGroup, jppName, installRawPom, installEffectivePom );
+
         targetPackage.createDepmaps( groupId, artifactId, version, jppGroup, jppName, rule );
 
         DependencyExtractor.generateEffectiveRuntimeRequires( project.getModel(), metadata );

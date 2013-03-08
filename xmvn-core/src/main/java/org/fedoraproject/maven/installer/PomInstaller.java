@@ -35,7 +35,7 @@ import org.fedoraproject.maven.config.PackagingRule;
  */
 @Component( role = ProjectInstaller.class, hint = "pom" )
 public class PomInstaller
-    implements ProjectInstaller
+    extends AbstractProjectInstaller
 {
     @Requirement
     private Configurator configurator;
@@ -59,14 +59,16 @@ public class PomInstaller
         InstallerSettings settings = configurator.getConfiguration().getInstallerSettings();
         String packageName = settings.getPackageName();
 
-        Path pomFile = project.getFile().toPath();
         Path jppGroup = Paths.get( "JPP" ).resolve( packageName );
         Path jppName = Paths.get( groupId + "@" + artifactId );
 
         Model rawModel = DependencyExtractor.getRawModel( project );
         DependencyExtractor.generateRawRequires( rawModel, metadata );
 
-        targetPackage.addPomFile( pomFile, jppGroup, jppName );
+        boolean installRawPom = settings.isEnableRawPoms() && settings.isPomRawModel();
+        boolean installEffectivePom = settings.isEnableEffectivePoms() && settings.isPomEffectiveModel();
+        installProjectPom( project, targetPackage, jppGroup, jppName, installRawPom, installEffectivePom );
+
         targetPackage.createDepmaps( groupId, artifactId, version, jppGroup, jppName, rule );
 
         DependencyExtractor.generateEffectiveRuntimeRequires( project.getModel(), metadata );

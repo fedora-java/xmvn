@@ -94,6 +94,14 @@ public class DefaultPackage
         addFile( file, pomDir, pomName, 0644 );
     }
 
+    @Override
+    public void addEffectivePomFile( Path file, Path jppGroupId, Path jppArtifactId )
+    {
+        Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
+        Path effectvePomDir = Paths.get( settings.getEffectivePomDir() );
+        addFile( file, effectvePomDir, pomName, 0644 );
+    }
+
     private static boolean containsNativeCode( Path jar )
         throws IOException
     {
