@@ -206,7 +206,7 @@ public class DefaultConfigurator
 
             if ( configFiles.isEmpty() )
             {
-                logger.warn( "No XMvn configuratiion files were found. Using default embedded configuration." );
+                logger.warn( "No XMvn configuration files were found. Using default embedded configuration." );
             }
             else
             {

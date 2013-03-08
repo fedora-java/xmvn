@@ -84,6 +84,24 @@ public class DefaultConfigurationMerger
         if ( dominant.isSkipRequires() == null )
             dominant.setSkipRequires( recessive.isSkipRequires() );
 
+        if ( dominant.isEnableRawPoms() == null )
+            dominant.setEnableRawPoms( recessive.isEnableRawPoms() );
+
+        if ( dominant.isEnableEffectivePoms() == null )
+            dominant.setEnableEffectivePoms( recessive.isEnableEffectivePoms() );
+
+        if ( dominant.isPomRawModel() == null )
+            dominant.setPomRawModel( recessive.isPomRawModel() );
+
+        if ( dominant.isPomEffectiveModel() == null )
+            dominant.setPomEffectiveModel( recessive.isPomEffectiveModel() );
+
+        if ( dominant.isJarRawModel() == null )
+            dominant.setJarRawModel( recessive.isJarRawModel() );
+
+        if ( dominant.isJarEffectiveModel() == null )
+            dominant.setJarEffectiveModel( recessive.isJarEffectiveModel() );
+
         if ( dominant.getJarDir() == null )
             dominant.setJarDir( recessive.getJarDir() );
 
@@ -92,6 +110,9 @@ public class DefaultConfigurationMerger
 
         if ( dominant.getPomDir() == null )
             dominant.setPomDir( recessive.getPomDir() );
+
+        if ( dominant.getEffectivePomDir() == null )
+            dominant.setEffectivePomDir( recessive.getEffectivePomDir() );
 
         if ( dominant.getMetadataDir() == null )
             dominant.setMetadataDir( recessive.getMetadataDir() );

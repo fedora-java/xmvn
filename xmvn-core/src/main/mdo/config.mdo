@@ -221,6 +221,58 @@ will take precedence over user configuration.</p>
           <type>Boolean</type>
         </field>
         <field>
+          <name>enableRawPoms</name>
+          <version>0.4.0+</version>
+          <description>
+            Whether raw POM files should ever be installed.
+          </description>
+          <type>Boolean</type>
+        </field>
+        <field>
+          <name>enableEffectivePoms</name>
+          <version>0.4.0+</version>
+          <description>
+            Whether effective POM files should ever be installed.
+          </description>
+          <type>Boolean</type>
+        </field>
+        <field>
+          <name>pomRawModel</name>
+          <version>0.4.0+</version>
+          <description>
+            Whether installation of raw POMs should be performed for
+            POM artifacts.
+          </description>
+          <type>Boolean</type>
+        </field>
+        <field>
+          <name>pomEffectiveModel</name>
+          <version>0.4.0+</version>
+          <description>
+            Whether installation of effective POMs should be performed
+            for POM artifacts.
+          </description>
+          <type>Boolean</type>
+        </field>
+        <field>
+          <name>jarRawModel</name>
+          <version>0.4.0+</version>
+          <description>
+            Whether installation of raw POMs should be performed for
+            JAR artifacts.
+          </description>
+          <type>Boolean</type>
+        </field>
+        <field>
+          <name>jarEffectiveModel</name>
+          <version>0.4.0+</version>
+          <description>
+            Whether installation of effective POMs should be performed
+            for JAR artifacts.
+          </description>
+          <type>Boolean</type>
+        </field>
+        <field>
           <name>jarDir</name>
           <version>0.4.0+</version>
           <required>true</required>
@@ -245,7 +297,16 @@ will take precedence over user configuration.</p>
           <version>0.4.0+</version>
           <required>true</required>
           <description>
-            Directory into which POM files are be installed.
+            Directory into which raw POM files are be installed.
+          </description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>effectivePomDir</name>
+          <version>0.4.0+</version>
+          <required>true</required>
+          <description>
+            Directory into which effective POM files are be installed.
           </description>
           <type>String</type>
         </field>
