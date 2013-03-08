@@ -196,6 +196,15 @@ will take precedence over user configuration.</p>
       <description>XMvn settings related to installation of artifacts.</description>
       <fields>
         <field>
+          <name>debug</name>
+          <version>0.4.0+</version>
+          <description>
+            Whether additional debugging information about artifact
+            installation should be printed.
+          </description>
+          <type>Boolean</type>
+        </field>
+        <field>
           <name>packageName</name>
           <version>0.4.0+</version>
           <description>

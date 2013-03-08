@@ -75,6 +75,9 @@ public class DefaultConfigurationMerger
 
     private void mergeInstallerSettings( InstallerSettings dominant, InstallerSettings recessive )
     {
+        if ( dominant.isDebug() == null )
+            dominant.setDebug( recessive.isDebug() );
+
         if ( dominant.getPackageName() == null )
             dominant.setPackageName( recessive.getPackageName() );
 
