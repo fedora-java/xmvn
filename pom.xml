@@ -68,7 +68,6 @@
     <module>xmvn-core</module>
     <module>xmvn-connector</module>
     <module>xmvn-mojo</module>
-    <module>xmvn-launcher</module>
     <module>xmvn-tools</module>
   </modules>
   <scm>
