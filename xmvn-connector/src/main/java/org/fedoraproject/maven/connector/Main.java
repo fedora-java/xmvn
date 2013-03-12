@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.maven.connector;
 
+import org.apache.maven.cli.CliRequest;
 import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -49,6 +50,7 @@ public class Main
     public static int main( String[] args, ClassWorld world )
     {
         System.out.println( "[INFO] Initializing..." );
-        return MavenCli.main( args, world );
+        MavenCli cli = new Main();
+        return cli.doMain( new CliRequest( args, world ) );
     }
 }
