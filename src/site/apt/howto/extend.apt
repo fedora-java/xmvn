@@ -1,0 +1,232 @@
+            -----------------------------------------
+               How to create an extension for XMvn
+            -----------------------------------------
+                        Mikolaj Izdebski
+            -----------------------------------------
+                           2013-03-12
+
+
+How to create an extension for XMvn
+
+* Abstract
+
+  In this short tutorial I am going to show you how you can extend
+  functionality provided by XMvn.  As an example I will create a very
+  simple extension that allows XMvn to be used to install Eclipse
+  artifacts.
+
+* Tutorial
+
+  First we'll start with creating a skeleton POM file.  XMvn
+  extensions don't use separate packaging type, you need to use
+  packaging <<<jar>>> (which is default, so you can omit it).
+  Obviously we need to add a dependency on XMvn Core as this module
+  provides functionality we depend on.  We'll use dependency scope
+  <<<provided>>> as we need XMvn API to compile our extension, but
+  during runtime XMvn will be provided for us (whatever loads our
+  extension it will load XMvn first).
+
+------------------------------------------------------------------------
+  <dependency>
+    <groupId>org.fedoraproject.xmvn</groupId>
+    <artifactId>xmvn-core</artifactId>
+    <version>0.4.0</version>
+    <scope>provided</scope>
+  </dependency>
+------------------------------------------------------------------------
+
+  Now we can start wrting some code.  To create an installer for
+  Exlipse artifacts we need to provide implementation for interface
+  <<<org.fedoraproject.maven.installer.ProjectInstaller>>>.  In order
+  for XMvn to be able to find and load our extension we need to
+  implement is as a Plexus component.
+
+------------------------------------------------------------------------
+@Component( role = ProjectInstaller.class )
+public class EclipseInstaller
+    implements ProjectInstaller
+{
+}
+------------------------------------------------------------------------
+
+  <<<ProjectInstaller>>> interface requires us to implement two
+  abstract methods: <<<getSupportedPackagingTypes()>>> and
+  <<<installProject()>>>.
+
+  The first method simply returns a <<<List>>> of packaging types
+  supported by our extension.  There are several Eclipse packaging
+  types, but in this example I'll cover only three:
+  <<<eclipse-plugin>>>, <<<eclipse-test-plugin>>> and
+  <<<eclipse-feature>>>.  In its simplest form the implementation of
+  <<<getSupportedPackagingTypes()>>> could look like:
+
+------------------------------------------------------------------------
+    public List<String> getSupportedPackagingTypes()
+    {
+        // Return list of packaging types we support.
+        return Arrays.asList( "eclipse-plugin", "eclipse-test-plugin", "eclipse-feature" );
+    }
+------------------------------------------------------------------------
+
+  Now it's time to implement the second method.  Bundles are normal
+  JAR files so we want to them into standard JAR location.
+  Additionally we need to create additional symlinks in Eclipse
+  directory so that Equinox can find and load these bundles.
+
+  Because we don't want to hardcode the location of JAR directory (and
+  to show how to obtain and use configuration objects) we'll query
+  standard XMvn configurator to give us the directory path.  To obtain
+  a reference to the configurator (or any other service provided by
+  XMvn) it's enough to create a field of appriopriate type (in this
+  case <<<org.fedoraproject.maven.config.Configurator>>>) and annotate
+  it with <<<org.codehaus.plexus.component.annotations.Requirement>>>.
+  This way Plexus container will inject the dependency automatically.
+
+------------------------------------------------------------------------
+    // Configurator is dynamic dependency. This private field will be injected by Sisu during runtime.
+    @Requirement
+    private Configurator configurator;
+------------------------------------------------------------------------
+
+  Once we have a reference to an instance of configurator we can ask
+  it to give us the location of JAR directory and use it to create a
+  <<<Path>>> object pointing to the target JAR file.
+
+------------------------------------------------------------------------
+        // Install all JARs into /usr/share/java (or whatever is configured as JAR dir)
+        // FIXME: in JAR is platform-dependent install in into JNI dir instead
+        Path javaDir = Paths.get( configurator.getConfiguration().getInstallerSettings().getJarDir() );
+        Path target = javaDir.resolve( project.getArtifactId() );
+------------------------------------------------------------------------
+
+  In a simillar way we can decide where to place the symlink to the
+  bundle (either in <<<features>>> or <<<plugins>>> directory).  Of
+  course this example is oversimplified, in real extension the path
+  should not be hardcoded and there the code may a bit be more
+  complicated.
+
+------------------------------------------------------------------------
+        // Create symlink to the JAR somewhere under /usr/lib64/eclipse/. In real plugin the location should be
+        // configurable.
+        Path eclipseDir = Paths.get( "/usr/lib64/eclipse" );
+        eclipseDir = eclipseDir.resolve( project.getPackaging().contains( "feature" ) ? "features" : "plugins" );
+        Path symlink = eclipseDir.resolve( project.getArtifactId() );
+------------------------------------------------------------------------
+
+  After we decided where base JAR and the symlink should go we can
+  just call <<<addJarFile()>>> method to perform the installation.
+
+------------------------------------------------------------------------
+        // So far we just determined paths to different files. Now it's time to call XMvn to do the real work.
+        targetPackage.addJarFile( source, target, Collections.singletonList( symlink ) );
+------------------------------------------------------------------------
+
+  We have used Maven API here so of course we need to add dependency on Maven Core to our POM.
+
+------------------------------------------------------------------------
+  <dependency>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-core</artifactId>
+    <version>3.0.5</version>
+    <scope>provided</scope>
+  </dependency>
+------------------------------------------------------------------------
+
+  After building the extension with famous <<<mvn clean install>>> we
+  can place it in <<<lib/ext/>>> directory of XMvn installation.  The
+  extension will be automatically loaded by Plexus Classworlds during
+  XMvn bootup and implemented functionality will be available to
+  packages built with XMvn out of the box.
+
+  Note that in this example I completely ignored POM instalation.
+  This is because this tutorial is supposed to be just a starting
+  point to creating extensions and not complete documentation on this
+  subject and I wanted to keep this it short and simple.
+
+  For more information refer to API documentation and source code for
+  installers for standard packaging types (like <<<pom>>> or
+  <<<jar>>>), which are implemented in XMvn itself.
+
+  Snippets of the complete source code for this example follow.
+
+    * <<<pom.xml>>>:
+
+------------------------------------------------------------------------
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>eclipse-xmvn-extension</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-core</artifactId>
+      <version>0.4.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>3.0.5</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
+------------------------------------------------------------------------
+
+    * <<<src/main/java/EclipseInstaller.java>>>:
+
+------------------------------------------------------------------------
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.fedoraproject.maven.config.Configurator;
+import org.fedoraproject.maven.config.PackagingRule;
+import org.fedoraproject.maven.installer.Package;
+import org.fedoraproject.maven.installer.ProjectInstallationException;
+import org.fedoraproject.maven.installer.ProjectInstaller;
+
+@Component( role = ProjectInstaller.class )
+public class EclipseInstaller
+    implements ProjectInstaller
+{
+    // Configurator is dynamic dependency. This private field will be injected by Sisu during runtime.
+    @Requirement
+    private Configurator configurator;
+
+    public List<String> getSupportedPackagingTypes()
+    {
+        // Return list of packaging types we support.
+        return Arrays.asList( "eclipse-plugin", "eclipse-test-plugin", "eclipse-feature" );
+    }
+
+    public void installProject( MavenProject project, Package targetPackage, PackagingRule rule )
+        throws ProjectInstallationException, IOException
+    {
+        Path source = project.getArtifact().getFile().toPath();
+
+        // Install all JARs into /usr/share/java (or whatever is configured as JAR dir)
+        // FIXME: in JAR is platform-dependent install in into JNI dir instead
+        Path javaDir = Paths.get( configurator.getConfiguration().getInstallerSettings().getJarDir() );
+        Path target = javaDir.resolve( project.getArtifactId() );
+
+        // Create symlink to the JAR somewhere under /usr/lib64/eclipse/. In real plugin the location should be
+        // configurable.
+        Path eclipseDir = Paths.get( "/usr/lib64/eclipse" );
+        eclipseDir = eclipseDir.resolve( project.getPackaging().contains( "feature" ) ? "features" : "plugins" );
+        Path symlink = eclipseDir.resolve( project.getArtifactId() );
+
+        // So far we just determined paths to different files. Now it's time to call XMvn to do the real work.
+        targetPackage.addJarFile( source, target, Collections.singletonList( symlink ) );
+
+        // TODO: install POM file as well
+    }
+}
+------------------------------------------------------------------------
