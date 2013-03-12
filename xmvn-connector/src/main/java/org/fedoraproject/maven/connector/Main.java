@@ -19,6 +19,7 @@ import org.apache.maven.cli.MavenCli;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.fedoraproject.maven.config.Configurator;
 
 /**
  * @author Mikolaj Izdebski
@@ -35,6 +36,9 @@ public class Main
         {
             LoggerProvider loggerProvider = container.lookup( LoggerProvider.class );
             org.fedoraproject.maven.utils.Logger.setProvider( loggerProvider );
+
+            Configurator configurator = container.lookup( Configurator.class );
+            configurator.dumpConfiguration();
         }
         catch ( ComponentLookupException e )
         {
