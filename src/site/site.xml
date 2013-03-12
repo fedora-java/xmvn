@@ -61,7 +61,6 @@
       <item name="XMvn Core" href="xmvn-core/index.html"/>
       <item name="XMvn Connector" href="xmvn-connector/index.html"/>
       <item name="XMvn MOJO" href="xmvn-mojo/index.html"/>
-      <item name="XMvn Launcher" href="xmvn-launcher/index.html"/>
       <item name="XMvn Tools" href="xmvn-tools/index.html">
         <item name="XMvn Resolve" href="xmvn-tools/xmvn-resolve/index.html"/>
       </item>
