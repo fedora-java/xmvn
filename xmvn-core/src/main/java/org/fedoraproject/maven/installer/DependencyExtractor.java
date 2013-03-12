@@ -19,7 +19,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.nio.file.Path;
@@ -35,8 +34,6 @@ import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.PrettyPrintXMLWriter;
-import org.codehaus.plexus.util.xml.XMLWriter;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.fedoraproject.maven.config.BuildSettings;
@@ -84,14 +81,10 @@ public class DependencyExtractor
     public static void writeModel( Model model, Path path )
         throws IOException
     {
-        Writer stringWriter = new StringWriter();
-        MavenXpp3Writer pomWriter = new MavenXpp3Writer();
-        pomWriter.write( stringWriter, model );
-
-        try (Writer fWriter = new FileWriter( path.toFile() ))
+        try (Writer writer = new FileWriter( path.toFile() ))
         {
-            XMLWriter writer = new PrettyPrintXMLWriter( fWriter, "  ", "UTF-8", null );
-            writer.writeMarkup( stringWriter.toString().replaceAll( "<\\?xml[^>]+\\?>", "" ) );
+            MavenXpp3Writer pomWriter = new MavenXpp3Writer();
+            pomWriter.write( writer, model );
         }
     }
 
