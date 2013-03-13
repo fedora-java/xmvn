@@ -132,6 +132,31 @@ public class EclipseInstaller
   </dependency>
 ------------------------------------------------------------------------
 
+  To generate all the metadata necessary for XMvn to recognize our
+  extension we must run <<<generate-metadata>>> goal of
+  <<<plexus-component-metadata>>> plugin.  This is done bt adding
+  appropriate entry in the POM.
+
+------------------------------------------------------------------------
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>1.5.5</version>
+        <executions>
+          <execution>
+            <id>process-classes</id>
+            <goals>
+              <goal>generate-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+------------------------------------------------------------------------
+
   After building the extension with famous <<<mvn clean install>>> we
   can place it in <<<lib/ext/>>> directory of XMvn installation.  The
   extension will be automatically loaded by Plexus Classworlds during
@@ -171,6 +196,23 @@ public class EclipseInstaller
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>1.5.5</version>
+        <executions>
+          <execution>
+            <id>process-classes</id>
+            <goals>
+              <goal>generate-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
 ------------------------------------------------------------------------
 
