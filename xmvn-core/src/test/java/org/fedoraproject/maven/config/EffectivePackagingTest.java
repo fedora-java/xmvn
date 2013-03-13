@@ -116,4 +116,34 @@ public class EffectivePackagingTest
 
         artifactManagement.clear();
     }
+
+    /**
+     * Test if empty pattern matches everything.
+     * 
+     * @throws Exception
+     */
+    public void testEmptyPattern()
+        throws Exception
+    {
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
+        assertTrue( artifactManagement.isEmpty() );
+
+        Artifact glob = new Artifact();
+        glob.setGroupId( "" );
+        glob.setArtifactId( "" );
+        glob.setVersion( "" );
+
+        PackagingRule rule = new PackagingRule();
+        rule.setArtifactGlob( glob );
+        rule.setTargetPackage( "fooBar" );
+        artifactManagement.add( rule );
+
+        PackagingRule effectiveRule = configuration.createEffectivePackagingRule( "foo", "bar", "baz" );
+        assertNotNull( effectiveRule );
+        assertNotNull( effectiveRule.getTargetPackage() );
+        assertTrue( effectiveRule.getTargetPackage().equals( "fooBar" ) );
+
+        artifactManagement.clear();
+    }
 }
