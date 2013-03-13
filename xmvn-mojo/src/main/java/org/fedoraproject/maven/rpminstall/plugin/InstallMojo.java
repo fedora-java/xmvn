@@ -84,7 +84,8 @@ public class InstallMojo
             }
         }
 
-        throw new MojoExecutionException( "Unable to find suitable installer to install project " + projectId );
+        throw new MojoExecutionException( "Unable to find suitable installer to install project " + projectId
+            + ", which has packaging type " + packaging );
     }
 
     @Override
