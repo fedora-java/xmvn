@@ -17,6 +17,8 @@ package org.fedoraproject.maven.utils;
 
 import java.util.regex.Pattern;
 
+import org.codehaus.plexus.util.StringUtils;
+
 /**
  * Utility routines for converting glob patterns to regular expressions.
  * 
@@ -105,7 +107,7 @@ public class GlobUtils
      */
     public static Pattern glob2pattern( String glob )
     {
-        if ( glob == null )
+        if ( StringUtils.isEmpty( glob ) )
             return null;
         return Pattern.compile( glob2re( glob ) );
     }

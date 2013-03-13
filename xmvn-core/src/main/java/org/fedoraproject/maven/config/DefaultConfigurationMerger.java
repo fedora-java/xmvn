@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * Default implementation of configuration merger.
@@ -46,7 +47,7 @@ public class DefaultConfigurationMerger
         if ( dominant.isSkipTests() == null )
             dominant.setSkipTests( recessive.isSkipTests() );
 
-        if ( dominant.getCompilerSource() == null )
+        if ( StringUtils.isEmpty( dominant.getCompilerSource() ) )
             dominant.setCompilerSource( recessive.getCompilerSource() );
     }
 
@@ -78,7 +79,7 @@ public class DefaultConfigurationMerger
         if ( dominant.isDebug() == null )
             dominant.setDebug( recessive.isDebug() );
 
-        if ( dominant.getPackageName() == null )
+        if ( StringUtils.isEmpty( dominant.getPackageName() ) )
             dominant.setPackageName( recessive.getPackageName() );
 
         if ( dominant.isSkipProvides() == null )
@@ -105,22 +106,22 @@ public class DefaultConfigurationMerger
         if ( dominant.isJarEffectiveModel() == null )
             dominant.setJarEffectiveModel( recessive.isJarEffectiveModel() );
 
-        if ( dominant.getJarDir() == null )
+        if ( StringUtils.isEmpty( dominant.getJarDir() ) )
             dominant.setJarDir( recessive.getJarDir() );
 
-        if ( dominant.getJniDir() == null )
+        if ( StringUtils.isEmpty( dominant.getJniDir() ) )
             dominant.setJniDir( recessive.getJniDir() );
 
-        if ( dominant.getPomDir() == null )
+        if ( StringUtils.isEmpty( dominant.getPomDir() ) )
             dominant.setPomDir( recessive.getPomDir() );
 
-        if ( dominant.getEffectivePomDir() == null )
+        if ( StringUtils.isEmpty( dominant.getEffectivePomDir() ) )
             dominant.setEffectivePomDir( recessive.getEffectivePomDir() );
 
-        if ( dominant.getMetadataDir() == null )
+        if ( StringUtils.isEmpty( dominant.getMetadataDir() ) )
             dominant.setMetadataDir( recessive.getMetadataDir() );
 
-        if ( dominant.getInstallRoot() == null )
+        if ( StringUtils.isEmpty( dominant.getInstallRoot() ) )
             dominant.setInstallRoot( recessive.getInstallRoot() );
     }
 
