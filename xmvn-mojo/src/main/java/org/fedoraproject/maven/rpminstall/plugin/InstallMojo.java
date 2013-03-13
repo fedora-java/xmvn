@@ -16,6 +16,7 @@
 package org.fedoraproject.maven.rpminstall.plugin;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -31,10 +32,12 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
+import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
 import org.fedoraproject.maven.installer.DefaultPackage;
 import org.fedoraproject.maven.installer.Installer;
 import org.fedoraproject.maven.installer.ProjectInstallationException;
@@ -53,6 +56,9 @@ public class InstallMojo
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
+
+    @Requirement
+    private Logger logger;
 
     @Requirement
     private Configurator configurator;
@@ -112,6 +118,18 @@ public class InstallMojo
                 if ( packageName == null )
                     packageName = DefaultPackage.MAIN;
                 DefaultPackage pkg = packages.get( packageName );
+
+                if ( logger.isDebugEnabled() )
+                {
+                    try (StringWriter buffer = new StringWriter())
+                    {
+                        Configuration wrapperConfiguration = new Configuration();
+                        wrapperConfiguration.addArtifactManagement( rule );
+                        ConfigurationXpp3Writer configurationWriter = new ConfigurationXpp3Writer();
+                        configurationWriter.write( buffer, wrapperConfiguration );
+                        logger.debug( "Effective packaging rule for " + groupId + ":" + artifactId + ":\n" + buffer );
+                    }
+                }
 
                 if ( pkg == null )
                 {
