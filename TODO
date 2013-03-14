@@ -21,25 +21,8 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 *** configuration inheritance
 
-*** final fields
-    some configuration settings cannot be overridden by offspring
-    configuration files
-
-*** configuration from pluginManagement
-    just like Eclipse M2E does
-
 *** in configuration model use Boolean instead of String when possible
     String was used as a workaround for [MODELLO-267]
-
-*** singleton configurator
-    configurator should generate configuration once and cache it
-
-*** implement clone() of configuration model
-    it should be possible to create a deep clone of full configuration
-    to play with it without affecting global settings
-
-*** in tests don't modify configuration directly
-    clone it and customize the clone
 
 *** document all custom configuration options
 
@@ -47,9 +30,9 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
     how auto-requires are generated and whether effective POM should be
     installed or not
 
-** improved Plexus Classworlds configuration
+** improved bootstrapping
 
-*** externalize config for xmvn-launcher
+*** remove xmvn-launcher
     Plexus Classworlds launcher config ought to be extracted as a
     separate file, not hardcoded in source files
 
@@ -63,6 +46,28 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 *** automatically deployable
     SCP to fedorapeople.org (wagon needs fixing)
+
+
+* Milestone 0.5.0
+
+** improved configuration
+
+*** final fields
+    some configuration settings cannot be overridden by offspring
+    configuration files
+
+*** configuration from pluginManagement
+    just like Eclipse M2E does
+
+*** singleton configurator
+    configurator should generate configuration once and cache it
+
+*** implement clone() of configuration model
+    it should be possible to create a deep clone of full configuration
+    to play with it without affecting global settings
+
+*** in tests don't modify configuration directly
+    clone it and customize the clone
 
 
 * Milestone 1.0.0
