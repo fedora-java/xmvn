@@ -18,6 +18,14 @@ Configuring XMvn
   all the sources are merged together into a single master XMvn
   configuration.
 
+* Compatibility levels
+
+  XMvn has support for different compatibility levels.  Compatibility
+  level decies which set of configuration files is loaded.  Each of
+  the levels has different set of configuration files.  Unless
+  otherwise indicated, all XMvn documentation assumes that default
+  compatibility level is used.
+
 * Sources of configuration
 
   XMvn reads its configuration from the following sources:
