@@ -185,9 +185,16 @@ class DepmapReader
     private String wrapFragment( File fragmentFile )
         throws IOException
     {
+        CharBuffer contents = readFile( fragmentFile );
+
+        if ( contents.length() >= 5 && contents.subSequence( 0, 5 ).toString().equalsIgnoreCase( "<?xml" ) )
+        {
+            return contents.toString();
+        }
+
         StringBuilder buffer = new StringBuilder();
         buffer.append( "<dependencies>" );
-        buffer.append( readFile( fragmentFile ) );
+        buffer.append( contents );
         buffer.append( "</dependencies>" );
         return buffer.toString();
     }
