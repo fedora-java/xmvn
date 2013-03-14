@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- Depmap with XML preamble. -->
+<dependencyMap>
+  <requiresJava>1.6</requiresJava>
+  <dependency>
+    <maven>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </maven>
+    <jpp>
+      <groupId>JPP</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </jpp>
+  </dependency>
+  <dependency>
+    <maven>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </maven>
+    <jpp>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </jpp>
+  </dependency>
+</dependencyMap>

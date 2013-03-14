@@ -109,6 +109,7 @@ public class DepmapTest
         depmaps.add( "new-style-depmap.xml" );
         depmaps.add( "indirect-depmap.xml" );
         depmaps.add( "cyclic-depmap.xml" );
+        depmaps.add( "xml-depmap.xml" );
 
         for ( String file : depmaps )
         {
