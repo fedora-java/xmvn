@@ -70,13 +70,13 @@ Configuring XMvn
   In the above list <<<$PWD>>> means current working directory. For
   the meaning of <<<$XDG_CONFIG_HOME>>>, <<<$XDG_DATA_HOME>>>,
   <<<$XDG_CONFIG_DIRS>>> and <<<$XDG_DATA_DIRS>>> see the
-  {{{http://standards.freedesktop.org/basedir-spec/basedir-spec-0.8.html}q
+  {{{http://standards.freedesktop.org/basedir-spec/basedir-spec-0.8.html}
   XDG Base Directory Specification}}.
 
 ** Artifact configuration
 
   Every Maven artifact can specify XMvn configuration in
-  pluginManagement in its POM (see maven POM reference for more
+  <<<pluginManagement>>> in its POM (see maven POM reference for more
   details about pluginManagement).  This configuration has highest
   precedence and it is subject to standard maven POM inheritance
   mechanisms.  This means that parent POM files can specify XMvn
@@ -88,17 +88,13 @@ Configuring XMvn
   can be easily included in upstream POM files (if upstream is willing
   to cooperate).
 
-** Reactor configuration
-
-   <TBD>
-
-** User and system configuration
-
-   <TBD>
-
 ** Builtin configuration
 
-   <TBD>
+  As builtin configuration is embedded into XMvn it is assumed to
+  always be present and correct.  Builtin configuration is minimal and
+  it is not really usable, but it is used only if no other
+  configuration files are provided or available, for example when
+  unsupported compatbility level is specified.
 
 * Configuration merging
 
