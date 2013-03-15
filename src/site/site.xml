@@ -31,11 +31,11 @@
   </custom>
   <body>
     <links>
-      <item name="Fedora Java SIG" href="http://fedoraproject.org/wiki/SIGs/Java"/>
-      <item name="Fedora Java" href="http://fedoraproject.org/wiki/Java"/>
-      <item name="Fedora Project" href="http://fedoraproject.org/"/>
-      <item name="Apache Maven" href="http://maven.apache.org/"/>
-      <item name="Plexus" href="http://plexus.codehaus.org/"/>
+      <item name="Fedora Java SIG" href="http://fedoraproject.org/wiki/SIGs/Java" target="_blank"/>
+      <item name="Fedora Java" href="http://fedoraproject.org/wiki/Java" target="_blank"/>
+      <item name="Fedora Project" href="http://fedoraproject.org/" target="_blank"/>
+      <item name="Apache Maven" href="http://maven.apache.org/" target="_blank"/>
+      <item name="Plexus" href="http://plexus.codehaus.org/" target="_blank"/>
     </links>
 
     <menu name="Download XMvn" inherit="top">
