@@ -1,0 +1,43 @@
+            --------------------------
+              Release notes for XMvn
+            --------------------------
+                 Mikolaj Izdebski
+            --------------------------
+                    2013-03-15
+
+
+Release notes for XMvn
+
+* What's new in XMvn 0.4.0
+
+  * Major features
+
+    * Improved configuration
+
+      Starting from version 0.4.0 XMvn is configured using XML
+      configuration files instead of environmental variables.  The
+      configuration model was built using Modello and it's fully
+      documented.  The XML model supports new configuration options,
+      it's more flexible and has new features, such as inheritance of
+      different configuration files.
+
+    * Improved bootstrapping
+
+      Prior to version 0.4.0 XMvn used to be bootstrapped using a
+      custom launcher code.  In version 0.4.0 XMvn Launcher module was
+      dropped and bootstrapping process was migrated to standard
+      Classworlds launcher.  Now the bootstrap process can be
+      controlled with standard <<<m2.conf>>> file.
+
+    * New site
+
+      Now XMvn site is created from XMvn POM using Maven Site Plugin.
+      It contains much more detailed information about the project,
+      including release notes, Javadocs, source cross-reference and
+      much more.
+
+  * Major bugfixes
+
+    * XMvn installation now uses standard Maven directory layout,
+      which improves integration with other Maven components and fixes
+      problems with Maven Invoker.
