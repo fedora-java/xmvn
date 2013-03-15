@@ -1,0 +1,142 @@
+            ------------------------
+              Contributing Patches
+            ------------------------
+                Mikolaj Izdebski
+            ------------------------
+                   2013-03-15
+
+
+~~ Derrived from patches.xml file from Apache Commons Site
+~~ revision 1457052 (org.apache.commons:commons-site).
+~~ svn co http://svn.apache.org/repos/asf/commons/cms-site/trunk/
+~~ Mikolaj Izdebski changed this file.
+~~
+~~ Licensed to the Apache Software Foundation (ASF) under one or more
+~~ contributor license agreements.  See the NOTICE file distributed with
+~~ this work for additional information regarding copyright ownership.
+~~ The ASF licenses this file to You under the Apache License, Version 2.0
+~~ (the "License"); you may not use this file except in compliance with
+~~ the License.  You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+
+
+Contributing Patches
+
+* Respect The Original Style
+
+  Please respect the style of the orginal file.  Make sure that your
+  additions fit in with that style.
+
+  XMvn project has its coding conventions, which is based on
+  {{{http://maven.apache.org/developers/conventions/code.html}Maven
+  Code Style And Code Conventions}}, and every contribution is
+  supposed to adhere to them.
+
+  If a patch is submitted which doesn't satisfy the coding
+  conventions, then either a committer will need to rewrite the
+  submission or it will be rejected.  Getting it right in this first
+  place will save you having to rewrite it.
+
+* Spaces vs Tabs
+
+  The source should be indented using spaces rather than tabs.  The
+  standard indentation is 4 spaces per indent - but respect the number
+  of spaces used by the original.
+
+  Some IDEs include automatic source (re)formatting.  If you use an
+  IDE, please check that this feature is either disabled or set to use
+  (4) spaces.
+
+  If a patch is submitted which uses tabs rather than spaces, then
+  either a committer will have to reformat it before it's applied or
+  the patch will be rejected.  Again, it's easier to get it right in
+  the first place rather than have to reformat and resubmit your
+  patch.
+
+  Please try and restrict patches to the minimum necessary to
+  implement the change.  If there are a lot of irrelevant formatting
+  or other changes, it makes it much harder to review the patch, and
+  it may be rejected.
+
+* Test Cases
+
+  XMvn uses {{{http://www.junit.org/index.html}JUnit}} for unit
+  testing.  If you're not familiar with the principles of unit
+  testing, then the JUnit site has some
+  {{{http://www.junit.org/taxonomy/term/12}good articles}}.
+
+  <<Before you submit>> your patch, please do a clean build of the
+  full distribution and run the unit tests (this can be done from the
+  build script).  This ensures that your patch doesn't break any
+  existing functionality.
+
+  We strongly recommend that you create and submit test cases together
+  with the rest of your contribution.  Test cases ensure that bugs
+  stay fixed and features don't get broken.  Test cases will probably
+  be needed anyway so submitting them saves time.  If your patch is
+  intended to fix a bug, it helps to create a unit test for the bug
+  first.  Test with this before and after applying the fix.
+
+* Creating A Patch
+
+  XMvn source code repository holds the current source.  Information
+  about using XMvn source code repository is available in Source
+  Repository section.
+
+  Please create your patch against the master branch in the source
+  code repository since this makes the job of applying the patch much
+  easier.  If you don't have the repository cloned, then clone it.  If
+  you have, then please do a pull before you make your changes.
+
+  The patch should be in git format.  You can create a patch in this
+  format by using <<<git format-patch>>>.
+
+  The patch should be created from the project root, i.e. the
+  directory which contains the <<<src/>>> folder and the main Maven
+  <<<pom.xml>>> file.  This ensures that the proper relative path
+  names are included, and makes it easier to apply the patch to the
+  correct file (there can be several files with the same name in a
+  project).
+
+  Try to give your patch files meaningful names.  This makes it easier
+  for developers who need to apply a number of different patches.
+  Also the file should have an extension of <<<.patch>>> or
+  <<<.txt>>>; files without extensions tend to be flagged as binary by
+  Bugzilla, which makes them awkward to use.
+
+  For example:
+
+--------------------------------------------------
+git format-patch HEAD^ --stdout >rhbz-123456.patch
+--------------------------------------------------
+
+* Submitting A Patch
+
+  Please use Bugzilla, patches sent to the mailing lists are harder to
+  track and use up more bandwidth.
+
+  XMvn uses the main {{{https://bugzilla.redhat.com/}Red Hat
+  Bugzilla}} bug tracker.  XMvn has its own component called <xmvn>,
+  which belongs to product <Fedora>.
+
+  Please give a detailed description of what your patch does and some
+  reasons why it should be committed (if it's not obvious).  Add the
+  patch as an attachment to a bug report, either a new one or if you
+  find an existing report then attach it there.  Both will result in
+  an email being sent to XMvn maintainers.
+
+  If there has already been discussion of the issue on the mailing
+  list (but no Bugzilla entry has been created), you may wish to make
+  a note on that discussion thread that you have created a new issue.
+
+  All the commons documentation is in the XMvn version control system
+  - including this document.  If you see anything that's wrong or you
+  think that you can add something that's missing then please submit a
+  patch!
