@@ -52,7 +52,9 @@
       <item name="Configuration Reference" href="xmvn-core/config.html"/>
       <item name="Tutorials" href="howto/index.html" collapse="true">
         <item name="Embedding XMvn in your application" href="howto/embed.html"/>
+        <!-- Not yet available
         <item name="Using XMvn from Maven plugin" href="howto/plugin.html"/>
+        -->
         <item name="Creating extension for XMvn" href="howto/extend.html"/>
       </item>
     </menu>
