@@ -73,6 +73,13 @@ Configuring XMvn
   {{{http://standards.freedesktop.org/basedir-spec/basedir-spec-0.8.html}
   XDG Base Directory Specification}}.
 
+  All these files are in the same format, which is fully documented in
+  configuration reference.  Configuration is inherited from files of
+  lower precedence.  For example if some setting is not found in
+  reactor configuration then it will be inherited from user
+  configuration, but if this setting is explicitly set in reactor
+  configuration then it will take precedence over user configuration.
+
 ** Artifact configuration
 
   Every Maven artifact can specify XMvn configuration in

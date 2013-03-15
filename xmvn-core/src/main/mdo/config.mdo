@@ -24,23 +24,6 @@
   <description>
     <![CDATA[
 <p>This is a reference for the configuration for XMvn.</p>
-
-<p>XMvn reads configuration from four different places:
-<ol>
-<li><strong>reactor configuration</strong> (<code>${project.basedir}/.xmvn/reactor-configuration.xml</code>)</li>
-<li><strong>user configuration</strong> (<code>${user.home}/.xmvn/user-configuration.xml</code>)</li>
-<li><strong>system configuration</strong> (<code>/etc/xmvn/system-configuration.xml</code>)</li>
-<li><strong>default configuration</strong> (<code>default-configuration.xml</code>, embedded in XMvn as a resource)</li>
-</ol>
-</p>
-
-<p>All these files are in the same format, which is described in this
-document. Configuration is inherited from files of lower
-precedence. For example if some setting is not found in reactor
-configuration then it will be inherited from user configuration, but
-if this setting is explicitly set in reactor configuration then it
-will take precedence over user configuration.</p>
-
     ]]>
   </description>
   <defaults>
