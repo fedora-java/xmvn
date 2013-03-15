@@ -8,46 +8,6 @@ submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
 http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 
-* Milestone 0.4.0
-
-** improved configuration
-
-*** XML configuration
-    instead of system properties and environmental variables
-
-*** Modello based
-    supports model versions; can generate documentation; it's the
-    "Maven way", used by other Maven components
-
-*** configuration inheritance
-
-*** in configuration model use Boolean instead of String when possible
-    String was used as a workaround for [MODELLO-267]
-
-*** document all custom configuration options
-
-*** add more configuration options
-    how auto-requires are generated and whether effective POM should be
-    installed or not
-
-** improved bootstrapping
-
-*** remove xmvn-launcher
-    Plexus Classworlds launcher config ought to be extracted as a
-    separate file, not hardcoded in source files
-
-*** set and use xmvn.home system property
-    this is needed to improve maven-invoker usage
-
-** new site
-
-*** automatically generated
-    maven-site-plugin
-
-*** automatically deployable
-    SCP to fedorapeople.org (wagon needs fixing)
-
-
 * Milestone 0.5.0
 
 ** improved configuration
