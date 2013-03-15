@@ -41,3 +41,19 @@ Release notes for XMvn
     * XMvn installation now uses standard Maven directory layout,
       which improves integration with other Maven components and fixes
       problems with Maven Invoker.
+
+  * Minor features
+
+    * Improved support for Fedora Software Collections
+
+    * Enchanced artifact blacklist
+
+    * Improved logging
+
+    * Added m2eclipse configuration to POM
+
+    * Javadocs use API diagrams generated with Graphviz
+
+  * Minor bugfixes
+
+    * Many minor bugfixes, see git log for a full list
