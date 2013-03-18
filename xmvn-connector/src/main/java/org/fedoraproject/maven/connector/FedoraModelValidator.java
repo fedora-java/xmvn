@@ -97,9 +97,6 @@ public class FedoraModelValidator
 
             if ( dependency.getVersion() == null )
                 dependency.setVersion( "SYSTEM" );
-
-            if ( ( scope == null || scope.equals( "compile" ) ) && dependency.isOptional() )
-                dependency.setScope( "provided" );
         }
     }
 
