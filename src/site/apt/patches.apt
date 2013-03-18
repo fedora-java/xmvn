@@ -34,7 +34,7 @@ Contributing Patches
   Please respect the style of the orginal file.  Make sure that your
   additions fit in with that style.
 
-  XMvn project has its coding conventions, which is based on
+  XMvn project has its coding conventions, which are based on
   {{{http://maven.apache.org/developers/conventions/code.html}Maven
   Code Style And Code Conventions}}, and every contribution is
   supposed to adhere to them.
@@ -67,22 +67,19 @@ Contributing Patches
 
 * Test Cases
 
-  XMvn uses {{{http://www.junit.org/index.html}JUnit}} for unit
-  testing.  If you're not familiar with the principles of unit
-  testing, then the JUnit site has some
-  {{{http://www.junit.org/taxonomy/term/12}good articles}}.
-
   <<Before you submit>> your patch, please do a clean build of the
   full distribution and run the unit tests (this can be done from the
   build script).  This ensures that your patch doesn't break any
   existing functionality.
 
-  We strongly recommend that you create and submit test cases together
-  with the rest of your contribution.  Test cases ensure that bugs
-  stay fixed and features don't get broken.  Test cases will probably
-  be needed anyway so submitting them saves time.  If your patch is
-  intended to fix a bug, it helps to create a unit test for the bug
-  first.  Test with this before and after applying the fix.
+  XMvn uses {{{http://www.junit.org/index.html}JUnit}} for unit
+  testing.  It is strongly recommend that you create and submit test
+  cases together with the rest of your contribution.  Test cases
+  ensure that bugs stay fixed and features don't get broken.  Test
+  cases will probably be needed anyway so submitting them saves time.
+  If your patch is intended to fix a bug, it helps to create a unit
+  test for the bug first.  Test with this before and after applying
+  the fix.
 
 * Creating A Patch
 
@@ -136,7 +133,7 @@ git format-patch HEAD^ --stdout >rhbz-123456.patch
   list (but no Bugzilla entry has been created), you may wish to make
   a note on that discussion thread that you have created a new issue.
 
-  All the commons documentation is in the XMvn version control system
-  - including this document.  If you see anything that's wrong or you
+  All the documentation is in the XMvn version control system,
+  including this document.  If you see anything that's wrong or you
   think that you can add something that's missing then please submit a
   patch!
