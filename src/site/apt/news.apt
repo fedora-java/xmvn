@@ -8,6 +8,17 @@
 
 Release notes for XMvn
 
+* What's new in XMvn 0.4.1
+
+  * Minor bugfixes
+
+    * Don't set scope of optional compile dependencies to <provided>
+
+      The code that was setting scope of optional dependencies to
+      <provided> was removed.  This code was meant to be used for
+      testing only and it was never supposed to make into a stable
+      release.
+
 * What's new in XMvn 0.4.0
 
   * Major features
