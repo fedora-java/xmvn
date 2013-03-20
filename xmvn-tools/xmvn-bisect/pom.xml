@@ -20,34 +20,21 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xmvn</artifactId>
+    <artifactId>xmvn-tools</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
     <version>0.5.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  <artifactId>xmvn-tools</artifactId>
-  <packaging>pom</packaging>
-  <name>XMvn Tools</name>
+  <artifactId>xmvn-bisect</artifactId>
+  <name>XMvn Bisect</name>
   <description>
-    XMvn Tools is parent POM for all XMvn tools.  It holds
-    configuration common to all XMvn tools.
+    TODO: add description
   </description>
-  <modules>
-    <module>xmvn-resolve</module>
-    <module>xmvn-bisect</module>
-  </modules>
   <dependencies>
     <dependency>
-      <groupId>org.fedoraproject.xmvn</groupId>
-      <artifactId>xmvn-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-component-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-container-default</artifactId>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.30</version>
     </dependency>
   </dependencies>
 </project>
