@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileLock;
 
+import org.codehaus.plexus.util.StringUtils;
+
 /**
  * Atomic integer value, which stores its value in a text file.
  * 
@@ -74,7 +76,7 @@ public class AtomicFileCounter
             throw new IOException( "Semaphore file is too large" );
         file.readFully( buffer, 0, (int) length );
         String text = new String( buffer, 0, (int) length, "US-ASCII" );
-        return Integer.parseInt( text );
+        return Integer.parseInt( StringUtils.chompLast( text.trim() ) );
     }
 
     private void writeValue( int value )
@@ -118,7 +120,13 @@ public class AtomicFileCounter
         }
     }
 
-    private void setValue( int value )
+    /**
+     * Set value of the counter.
+     * 
+     * @param value value of the counter
+     * @throws IOException
+     */
+    public void setValue( int value )
         throws IOException
     {
         try (FileLock lock = lock())
