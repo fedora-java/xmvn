@@ -105,8 +105,8 @@ public class BisectCli
             badLog = "default.log";
 
         logger.info( "Bisection build finished" );
-        logger.info( "Successful build: " + ( goodId - 1 ) + ", see " + goodLog );
-        logger.info( "Failed build:     " + ( badId + 1 ) + ", see " + badLog );
+        logger.info( "Failed build:     " + badId + ", see " + badLog );
+        logger.info( "Successful build: " + goodId + ", see " + goodLog );
         logger.info( "Try:" );
         logger.info( "  $ git diff --no-index --color " + badLog + " " + goodLog );
     }
