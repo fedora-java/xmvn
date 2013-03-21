@@ -1,0 +1,98 @@
+            --------------------------
+              Debugging builds using bisection method
+            --------------------------
+                 Mikolaj Izdebski
+            --------------------------
+                    2013-03-21
+
+
+Debugging builds using bisection method
+
+* Abstract
+
+  If your local build fails, but you can build the same sources with
+  upstream Maven then you can use <<<xmvn-bisect>>> tool to debug your
+  build.
+
+  This command will first build your project in pure local and pure
+  upstream modes and then try different combinations of upstream and
+  local artifacts.  It will point to two builds that dffer only by one
+  dependency.  Normally one of the builds will be successfull and the
+  other one failed.  Diff between these build logs can be very helpful
+  when debugging build failure.
+
+* Requirements
+
+  To use <<<xmvn-bisect>>> tool to debug build fallure of a project
+  the following conditions must be met (hard requirements):
+
+  * the all project dependencies are available in both system
+    repository and some external repository (upstream repository; for
+    example Maven Central),
+
+  * project build initiated from local repository fails,
+
+  * project build initiated from upstream repository succeeds.
+
+  XMvn Bisect can give poor results unless the following conditions
+  are met (soft requirements):
+
+  * the build is stable (there is no hazard; random build failures
+    will likely cause false positives and greatly reduce usefulness of
+    the reuslt),
+
+  * only one dependency artifact is causing build failure in local
+    mode (if there are multiple reasons then <<<xmvn-bisect>>> may be
+    able to find one of them, but it can just fail to find any reason
+    at all).
+
+* Preparation
+
+  Before you start debugging a project with <<<xmvn-bisect>>> it is
+  recommended that you clean local repositories (like <<<$HOME/.m2>>>
+  and <<<$PWD/.xm2>>>) from any artifacts which are present in the
+  reactor, if possible.  This may be impossible if the project being
+  built depends on itself.
+
+  It is also recommended to build the project from upstream repository
+  attempting to run <<<xmvn-bisect>>>.  This will cause any dependency
+  artifacts to be downloaded and cached in local repository.  After
+  this step is complete <<<xmvn-bisect>>> can be ran in offline mode.
+  Doing this should reduce pollution of build logs (otherwise some
+  logs might contain lines informing about artifacts being downloaded)
+  and reduce hazard in general (for example upstream artifact being
+  accidently used instead of local one).
+
+* Running XMvn Bisect
+
+  XMvn Bisect supports most of standard Maven command-line options.
+  Run <<<xmvn-bisect>>> to see the full list of supported command-line
+  options along with their meanings.
+
+  In most cases building project with XMvn Bisect is as simple as
+  using standard Maven command and replacing <<<mvn>>> with
+  <<<xmvn-bisect>>>, for example <<<mvn-bisect clean compile>>> or
+  <<<xmvn-bisect -P jdk7 -Dmaven.test.skip=true>>>.
+
+* Analyzing output
+
+  Upon successfull completion of the command there should be several
+  build logs in current working directory.  Name of the logs are
+  prefixed with <<<bisect->>>.  Two builds, usually one failed and one
+  successful, should be noted.  A command to see the diff between two
+  build logs should also be given.  For example:
+
+------------------------------------------------------------------------------
+[INFO] Failed build:     14, see bisect-build-14.log
+[INFO] Successful build: 15, see bisect-build-15.log
+[INFO] Try:
+[INFO]   $ git diff --no-index --color bisect-build-14.log bisect-build-15.log
+------------------------------------------------------------------------------
+
+  The diff between two build logs can be examined to look for
+  differences that could cause build failure.
+
+* Notes
+
+  It is recommended to enable Maven debugging output (option <<<-X>>>)
+  when debugging builds with XMvn Bisect.
