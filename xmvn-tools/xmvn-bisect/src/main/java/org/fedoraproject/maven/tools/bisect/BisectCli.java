@@ -40,6 +40,16 @@ public class BisectCli
     @Requirement
     private BuildExecutor buildExecutor;
 
+    private static String getBuildLogName( int buildId )
+    {
+        return String.format( "bisect-build-%d.log", buildId );
+    }
+
+    private static String getInitialBuildName()
+    {
+        return "bisect-initial.log";
+    }
+
     public void run( String[] args )
         throws Exception
     {
@@ -60,7 +70,7 @@ public class BisectCli
 
         int badId = 0;
         logger.info( "Running initial upstream build" );
-        boolean success = buildExecutor.executeBuild( request, "bisect-initial.log", commandLineParser.isVerbose() );
+        boolean success = buildExecutor.executeBuild( request, getInitialBuildName(), commandLineParser.isVerbose() );
         int goodId = counterInitialValue - counter.getValue();
         if ( !success )
         {
@@ -78,7 +88,7 @@ public class BisectCli
                 + "], trying " + tryId );
             counter.setValue( tryId );
 
-            success = buildExecutor.executeBuild( request, "bisect-" + tryId + ".log", commandLineParser.isVerbose() );
+            success = buildExecutor.executeBuild( request, getBuildLogName( tryId ), commandLineParser.isVerbose() );
             logger.info( "Bisection build number " + tryId + " " + ( success ? "succeeded" : "failed" ) );
 
             if ( success )
@@ -87,10 +97,10 @@ public class BisectCli
                 badId = tryId;
         }
 
-        String goodLog = "bisect-" + goodId + ".log";
+        String goodLog = getBuildLogName( goodId );
         if ( goodId == counterInitialValue )
-            goodLog = "bisect-initial.log";
-        String badLog = "bisect-" + badId + ".log";
+            goodLog = getInitialBuildName();
+        String badLog = getBuildLogName( badId );
         if ( badId == 0 )
             badLog = "default.log";
 
