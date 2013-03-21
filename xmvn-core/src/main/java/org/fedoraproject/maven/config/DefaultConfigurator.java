@@ -26,6 +26,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
@@ -147,7 +149,11 @@ public class DefaultConfigurator
 
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream( directory ))
         {
+            Set<Path> childreen = new TreeSet<>();
             for ( Path file : directoryStream )
+                childreen.add( file );
+
+            for ( Path file : childreen )
                 addConfigFile( file, false );
         }
     }
