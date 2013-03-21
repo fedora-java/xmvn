@@ -12,6 +12,13 @@ Release notes for XMvn
 
   * Minor bugfixes
 
+    * Correctly handle conflicts between explicit packaging rules and
+      implicit singleton packaging rule
+
+      Previously it was unspecified which of rules would take
+      precedence.  Since version 0.4.1 the first rule encountered will
+      be used.
+
     * Don't set scope of optional compile dependencies to <provided>
 
       The code that was setting scope of optional dependencies to
