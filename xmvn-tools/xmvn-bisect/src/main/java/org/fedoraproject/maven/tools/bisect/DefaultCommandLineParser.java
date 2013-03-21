@@ -59,6 +59,9 @@ public class DefaultCommandLineParser
     @Parameter( names = { "-C", "--counter" }, description = "Path to temporary semaphore file" )
     private String counterPath;
 
+    @Parameter( names = { "-q", "--skip-sanity" }, description = "Skip sanity checks to speedup the process" )
+    private boolean noSanityChecks;
+
     @Parameter( names = { "-am", "--also-make" }, description = "Enable 'also make' mode" )
     private boolean alsoMake;
 
@@ -281,5 +284,11 @@ public class DefaultCommandLineParser
     public String getCounterPath()
     {
         return counterPath;
+    }
+
+    @Override
+    public boolean isSkipSanityChecks()
+    {
+        return noSanityChecks;
     }
 }

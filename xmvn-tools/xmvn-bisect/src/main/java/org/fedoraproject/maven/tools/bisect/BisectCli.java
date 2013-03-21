@@ -54,28 +54,43 @@ public class BisectCli
         throws Exception
     {
         commandLineParser.parseCommandLine( args );
+        boolean verbose = commandLineParser.isVerbose();
+
         InvocationRequest request = commandLineParser.createInvocationRequest();
         request.setShellEnvironmentInherited( true );
 
         for ( Entry<String, String> entry : commandLineParser.getSystemProperties().entrySet() )
             System.setProperty( entry.getKey(), entry.getValue() );
 
-        String counterPath = "/home/kojan/git/xmvn/bisect";
         request.addShellEnvironment( "M2_HOME", commandLineParser.getSystemProperties().get( "maven.home" ) );
 
         request.getProperties().put( "xmvn.bisect.repository", commandLineParser.getRepoPath() );
         request.getProperties().put( "xmvn.bisect.counter", commandLineParser.getCounterPath() );
 
         int counterInitialValue = 1000000000;
-        AtomicFileCounter counter = new AtomicFileCounter( counterPath, counterInitialValue );
+        AtomicFileCounter counter = new AtomicFileCounter( commandLineParser.getCounterPath(), 0 );
+
+        if ( !commandLineParser.isSkipSanityChecks() )
+        {
+            logger.info( "Checking if standard local build really fails" );
+            boolean success = buildExecutor.executeBuild( request, getBuildLogName( 0 ), verbose );
+            if ( success )
+            {
+                logger.fatalError( "Standard local build was successfull, expected failure." );
+                logger.info( "Build log is available in " + getBuildLogName( 0 ) );
+                System.exit( 1 );
+            }
+        }
 
         int badId = 0;
         logger.info( "Running initial upstream build" );
-        boolean success = buildExecutor.executeBuild( request, getInitialBuildName(), commandLineParser.isVerbose() );
+        counter.setValue( counterInitialValue );
+        boolean success = buildExecutor.executeBuild( request, getInitialBuildName(), verbose );
         int goodId = counterInitialValue - counter.getValue();
         if ( !success )
         {
             logger.fatalError( "Build failed even when resolving artifacts completely from bisection repository" );
+            logger.info( "Build log is available in " + getInitialBuildName() );
             System.exit( 1 );
         }
 

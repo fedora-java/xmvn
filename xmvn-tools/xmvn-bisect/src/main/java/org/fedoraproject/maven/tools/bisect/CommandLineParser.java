@@ -39,4 +39,6 @@ public interface CommandLineParser
     String getRepoPath();
 
     String getCounterPath();
+
+    boolean isSkipSanityChecks();
 }
