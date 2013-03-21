@@ -12,6 +12,12 @@ Release notes for XMvn
 
   * Minor bugfixes
 
+    * Read configuration files in sorted order
+
+      In previous versions configuration files were read in in the
+      system default order.  This was causing unpredictable results in
+      cases where the order of configurationd did matter.
+
     * Correctly handle conflicts between explicit packaging rules and
       implicit singleton packaging rule
 
