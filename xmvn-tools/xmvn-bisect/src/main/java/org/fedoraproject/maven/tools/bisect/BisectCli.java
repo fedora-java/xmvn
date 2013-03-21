@@ -62,8 +62,9 @@ public class BisectCli
 
         String counterPath = "/home/kojan/git/xmvn/bisect";
         request.addShellEnvironment( "M2_HOME", commandLineParser.getSystemProperties().get( "maven.home" ) );
-        request.getProperties().put( "xmvn.bisect.repository", "/home/kojan/.m2" );
-        request.getProperties().put( "xmvn.bisect.counter", counterPath );
+
+        request.getProperties().put( "xmvn.bisect.repository", commandLineParser.getRepoPath() );
+        request.getProperties().put( "xmvn.bisect.counter", commandLineParser.getCounterPath() );
 
         int counterInitialValue = 1000000000;
         AtomicFileCounter counter = new AtomicFileCounter( counterPath, counterInitialValue );

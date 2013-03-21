@@ -16,6 +16,7 @@
 package org.fedoraproject.maven.tools.bisect;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,12 @@ public class DefaultCommandLineParser
 
     @Parameter( names = { "-v", "--verbose" }, description = "Print build logs to standard output" )
     private boolean verbose;
+
+    @Parameter( names = { "-R", "--repository" }, description = "Path to alternative bisection repository" )
+    private String repoPath;
+
+    @Parameter( names = { "-C", "--counter" }, description = "Path to temporary semaphore file" )
+    private String counterPath;
 
     @Parameter( names = { "-am", "--also-make" }, description = "Enable 'also make' mode" )
     private boolean alsoMake;
@@ -147,6 +154,15 @@ public class DefaultCommandLineParser
     private void setDefaultValues()
     {
         defines.put( "maven.home", "/usr/share/xmvn" );
+
+        String userHome = System.getProperty( "user.home" );
+        if ( userHome == null )
+            userHome = System.getenv( "HOME" );
+        if ( userHome == null )
+            throw new RuntimeException( "Failed to obtain user home path" );
+
+        counterPath = Paths.get( "bisect-counter" ).toAbsolutePath().toString();
+        repoPath = Paths.get( userHome ).resolve( ".m2" ).toAbsolutePath().toString();
 
         InvocationRequest request = new DefaultInvocationRequest();
 
@@ -253,5 +269,17 @@ public class DefaultCommandLineParser
     public boolean isVerbose()
     {
         return verbose;
+    }
+
+    @Override
+    public String getRepoPath()
+    {
+        return repoPath;
+    }
+
+    @Override
+    public String getCounterPath()
+    {
+        return counterPath;
     }
 }

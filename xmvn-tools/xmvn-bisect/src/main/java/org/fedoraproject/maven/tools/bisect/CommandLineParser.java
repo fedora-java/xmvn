@@ -35,4 +35,8 @@ public interface CommandLineParser
     boolean useBinarySearch();
 
     boolean isVerbose();
+
+    String getRepoPath();
+
+    String getCounterPath();
 }
