@@ -79,7 +79,7 @@
     <site>
       <id>fedorapeople.org</id>
       <name>XMvn Website</name>
-      <url>scp://10.34.4.202/home/kojan/site</url>
+      <url>scp://192.168.18.1/home/kojan/site</url>
     </site>
   </distributionManagement>
   <issueManagement>

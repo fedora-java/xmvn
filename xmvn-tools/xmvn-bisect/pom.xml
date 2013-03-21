@@ -28,7 +28,8 @@
   <artifactId>xmvn-bisect</artifactId>
   <name>XMvn Bisect</name>
   <description>
-    TODO: add description
+    XMvn Bisect is a debugging tool that can diagnose build failures
+    by using bisection method.
   </description>
   <dependencies>
     <dependency>
