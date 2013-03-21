@@ -42,9 +42,9 @@ Debugging builds using bisection method
     the reuslt),
 
   * only one dependency artifact is causing build failure in local
-    mode (if there are multiple reasons then <<<xmvn-bisect>>> may be
-    able to find one of them, but it can just fail to find any reason
-    at all).
+    mode (if there are multiple reasons of build failure then
+    <<<xmvn-bisect>>> may be able to find one of them, but it can just
+    fail to find any reason at all).
 
 * Preparation
 
@@ -72,7 +72,7 @@ Debugging builds using bisection method
   In most cases building project with XMvn Bisect is as simple as
   using standard Maven command and replacing <<<mvn>>> with
   <<<xmvn-bisect>>>, for example <<<mvn-bisect clean compile>>> or
-  <<<xmvn-bisect -P jdk7 -Dmaven.test.skip=true>>>.
+  <<<xmvn-bisect -o -X -P jdk7 -Dmaven.test.skip=true clean verify>>>.
 
 * Analyzing output
 
@@ -96,3 +96,9 @@ Debugging builds using bisection method
 
   It is recommended to enable Maven debugging output (option <<<-X>>>)
   when debugging builds with XMvn Bisect.
+
+  Usually Maven Clean Plugin should be part of the build sequence.
+  XMvn Bisect runs all the builds from the same working directory.
+  Results of previous builds, if not cleaned properly, may interfere
+  with next builds and negatively affect the build.  To reduce
+  interference it's usually add <<<clean>>> as the first goal.
