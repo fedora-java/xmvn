@@ -19,6 +19,8 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.TreeMap;
 
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
@@ -44,8 +46,11 @@ public class DefaultCommandLineParser
     @Parameter( names = { "-h", "--help" }, help = true, description = "Display usage information" )
     private boolean help;
 
-    @Parameter( names = { "-l", "--linear" }, help = true, description = "Use linear search instead of binary search" )
+    @Parameter( names = { "-l", "--linear" }, description = "Use linear search instead of binary search" )
     private boolean linearSearch;
+
+    @Parameter( names = { "-v", "--verbose" }, description = "Print build logs to standard output" )
+    private boolean verbose;
 
     @Parameter( names = { "-am", "--also-make" }, description = "Enable 'also make' mode" )
     private boolean alsoMake;
@@ -199,6 +204,11 @@ public class DefaultCommandLineParser
         request.setUpdateSnapshots( updateSnapshots );
         request.setUserSettingsFile( stringToFile( userSettings ) );
 
+        Properties properties = new Properties();
+        for ( Entry<String, String> entry : defines.entrySet() )
+            properties.put( entry.getKey(), entry.getValue() );
+        request.setProperties( properties );
+
         return request;
     }
 
@@ -234,8 +244,14 @@ public class DefaultCommandLineParser
     }
 
     @Override
-    public boolean useLinearSearch()
+    public boolean useBinarySearch()
     {
-        return linearSearch;
+        return !linearSearch;
+    }
+
+    @Override
+    public boolean isVerbose()
+    {
+        return verbose;
     }
 }

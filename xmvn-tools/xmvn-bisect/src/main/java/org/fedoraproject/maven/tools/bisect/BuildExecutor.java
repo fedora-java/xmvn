@@ -29,9 +29,11 @@ public interface BuildExecutor
      * Execute Maven build and evaluate if is succeeded.
      * 
      * @param request invocation request to use to execute the build
+     * @param logPath path to log file
+     * @param verbose print logs to standard output
      * @return {@code true} iff the build succeeded
      * @throws MavenInvocationException if build failed due to an internal error
      */
-    boolean executeBuild( InvocationRequest request )
+    boolean executeBuild( InvocationRequest request, String logPath, boolean verbose )
         throws MavenInvocationException;
 }

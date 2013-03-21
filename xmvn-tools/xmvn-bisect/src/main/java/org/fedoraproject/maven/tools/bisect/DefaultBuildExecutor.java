@@ -15,6 +15,11 @@
  */
 package org.fedoraproject.maven.tools.bisect;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
+import org.apache.maven.shared.invoker.InvocationOutputHandler;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
@@ -24,17 +29,45 @@ import org.codehaus.plexus.component.annotations.Requirement;
 
 @Component( role = BuildExecutor.class )
 public class DefaultBuildExecutor
-    implements BuildExecutor
+    implements BuildExecutor, InvocationOutputHandler
 {
     @Requirement
     private Invoker invoker;
 
+    private PrintWriter log;
+
     @Override
-    public boolean executeBuild( InvocationRequest request )
+    public boolean executeBuild( InvocationRequest request, String logPath, boolean verbose )
         throws MavenInvocationException
     {
-        InvocationResult result = invoker.execute( request );
+        try
+        {
+            log = new PrintWriter( logPath );
 
-        return result.getExitCode() == 0;
+            request.setOutputHandler( this );
+            request.setErrorHandler( this );
+
+            File mavenHome = new File( request.getProperties().get( "maven.home" ).toString() );
+            invoker.setMavenHome( mavenHome );
+            InvocationResult result = invoker.execute( request );
+
+            return result.getExitCode() == 0;
+        }
+        catch ( FileNotFoundException e )
+        {
+            throw new RuntimeException( e );
+        }
+        finally
+        {
+            if ( log != null )
+                log.close();
+        }
+    }
+
+    @Override
+    public void consumeLine( String line )
+    {
+        log.println( line );
+        // System.out.println( line );
     }
 }

@@ -32,5 +32,7 @@ public interface CommandLineParser
 
     Map<String, String> getSystemProperties();
 
-    boolean useLinearSearch();
+    boolean useBinarySearch();
+
+    boolean isVerbose();
 }
