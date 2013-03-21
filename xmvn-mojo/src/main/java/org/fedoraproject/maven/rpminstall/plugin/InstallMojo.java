@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
@@ -115,7 +116,7 @@ public class InstallMojo
                 String version = project.getVersion();
                 PackagingRule rule = configuration.createEffectivePackagingRule( groupId, artifactId, version );
                 String packageName = rule.getTargetPackage();
-                if ( packageName == null )
+                if ( StringUtils.isEmpty( packageName ) )
                     packageName = DefaultPackage.MAIN;
                 DefaultPackage pkg = packages.get( packageName );
 
