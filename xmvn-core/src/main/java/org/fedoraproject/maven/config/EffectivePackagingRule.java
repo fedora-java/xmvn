@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.utils.GlobUtils;
 
 /**
@@ -87,7 +88,7 @@ class EffectivePackagingRule
                 return;
 
         String targetPackage = rule.getTargetPackage();
-        if ( targetPackage != null )
+        if ( StringUtils.isEmpty( getTargetPackage() ) && StringUtils.isNotEmpty( targetPackage ) )
             setTargetPackage( expandBackreferences( matchers, targetPackage ) );
 
         for ( org.fedoraproject.maven.config.Artifact alias : rule.getAliases() )
