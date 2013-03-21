@@ -16,15 +16,21 @@
 package org.fedoraproject.maven.resolver;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.repository.Layout;
+import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.repository.SingletonRepository;
+import org.fedoraproject.maven.utils.AtomicFileCounter;
 
 /**
  * @author Mikolaj Izdebski
@@ -39,12 +45,50 @@ public class DefaultResolver
     @Requirement
     private Configurator configurator;
 
-    boolean initialized;
+    private AtomicFileCounter bisectCounter;
+
+    private Repository bisectRepo;
+
+    private boolean initialized;
 
     private final Collection<Resolver> resolvers = new LinkedList<>();
 
+    private void initializeBisect()
+    {
+        try
+        {
+            String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
+            String bisectRepoPath = System.getProperty( "xmvn.bisect.repository" );
+
+            if ( StringUtils.isEmpty( bisectRepoPath ) || StringUtils.isEmpty( bisectCounterPath ) )
+            {
+                logger.debug( "Bisection build is not enabled" );
+                return;
+            }
+
+            File bisectRepoRoot = new File( bisectRepoPath );
+            if ( !bisectRepoRoot.isDirectory() )
+            {
+                logger.fatalError( "xmvn.bisect.repository is not a directory" );
+                throw new RuntimeException( "xmvn.bisect.repository is not a directory" );
+            }
+
+            bisectRepo = new SingletonRepository( bisectRepoRoot, Layout.MAVEN );
+            bisectCounter = new AtomicFileCounter( bisectCounterPath );
+
+            logger.info( "Enabled XMvn bisection build" );
+        }
+        catch ( IOException e )
+        {
+            logger.fatalError( "Unable to initialize XMvn bisection build", e );
+            throw new RuntimeException( e );
+        }
+    }
+
     private void initialize()
     {
+        initializeBisect();
+
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
 
         resolvers.add( new LocalResolver( settings ) );
@@ -62,11 +106,33 @@ public class DefaultResolver
         initialized = true;
     }
 
+    private boolean resolveFromBisectRepo()
+    {
+        if ( bisectCounter == null || bisectRepo == null )
+            return false;
+
+        try
+        {
+            return bisectCounter.tryDecrement() > 0;
+        }
+        catch ( IOException e )
+        {
+            logger.fatalError( "Failed to decrement bisection counter", e );
+            throw new RuntimeException( e );
+        }
+    }
+
     @Override
     public File resolve( Artifact artifact )
     {
         if ( !initialized )
             initialize();
+
+        if ( resolveFromBisectRepo() )
+        {
+            logger.debug( "Resolving artifact " + artifact + " from bisection repository." );
+            return bisectRepo.findArtifact( artifact, true );
+        }
 
         logger.debug( "Trying to resolve artifact " + artifact );
 
