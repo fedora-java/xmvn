@@ -43,3 +43,23 @@ if [ "$REPLY" = y ]; then
     git push --tags
     scp ${tarball} fedorahosted.org:${name}
 fi
+
+news=$(sed -n '
+/^*/ {
+    s/..//
+   :l
+    s/^  //
+    p
+    n
+    s/^*//
+    Tl
+    q
+}' src/site/apt/news.apt)
+
+echo
+tee news-${ver}.eml <<EOF
+To: Fedora Java Development List <java-devel@lists.fedoraproject.org>
+Subject: XMvn ${ver} release notes
+
+${news}
+EOF
