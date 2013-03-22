@@ -18,10 +18,16 @@
 set -e
 
 name=xmvn
-ver=$(git tag | tail -1)
+ver=$(git describe --tags)
+version_regex="^(0|[1-9][0-9]*)[.][1-9][0-9]*[.][1-9][0-9]*$"
 
-if [ -z "${ver}" ];then
-    echo "No git tags found" >&2
+if ! grep -qE "${version_regex}" <<<"${ver}"; then
+    cat >&2 <<EOF
+Current version '${ver}' is not a correct release version.
+
+Release versions must be in format maj.min.rel; maj >= 0, min > 0 and rel > 0
+(i.e. they must match ${version_regex} regex).
+EOF
     exit 1
 fi
 
