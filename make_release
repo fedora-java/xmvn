@@ -19,14 +19,18 @@ set -e
 
 name=xmvn
 ver=$(git describe --tags)
-version_regex="^(0|[1-9][0-9]*)[.][1-9][0-9]*[.][1-9][0-9]*$"
+
+# Decimal integer >= 0
+number="(0|[1-9][0-9]*)"
+# Allowed format of release version
+version_regex="^${number}[.]${number}[.]${number}$"
 
 if ! grep -qE "${version_regex}" <<<"${ver}"; then
     cat >&2 <<EOF
 Current version '${ver}' is not a correct release version.
 
-Release versions must be in format maj.min.rel; maj >= 0, min > 0 and rel > 0
-(i.e. they must match ${version_regex} regex).
+Release versions must be in format maj.min.rel; maj >= 0, min >= 0 and rel >= 0
+(they must match ${version_regex} regex).
 EOF
     exit 1
 fi
