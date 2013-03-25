@@ -34,6 +34,8 @@ Debugging builds using bisection method
 
   * project build initiated from upstream repository succeeds.
 
+  []
+
   XMvn Bisect can give poor results unless the following conditions
   are met (soft requirements):
 
@@ -66,12 +68,12 @@ Debugging builds using bisection method
 * Running XMvn Bisect
 
   XMvn Bisect supports most of standard Maven command-line options.
-  Run <<<xmvn-bisect>>> to see the full list of supported command-line
-  options along with their meanings.
+  Run <<<xmvn-bisect -h>>> to see the full list of supported
+  command-line options along with their meanings.
 
   In most cases building project with XMvn Bisect is as simple as
   using standard Maven command and replacing <<<mvn>>> with
-  <<<xmvn-bisect>>>, for example <<<mvn-bisect clean compile>>> or
+  <<<xmvn-bisect>>>, for example <<<xmvn-bisect clean compile>>> or
   <<<xmvn-bisect -o -X -P jdk7 -Dmaven.test.skip=true clean verify>>>.
 
 * Analyzing output
@@ -79,8 +81,8 @@ Debugging builds using bisection method
   Upon successfull completion of the command there should be several
   build logs in current working directory.  Name of the logs are
   prefixed with <<<bisect->>>.  Two builds, usually one failed and one
-  successful, should be noted.  A command to see the diff between two
-  build logs should also be given.  For example:
+  successful, should be pointed to.  A command to see the diff between
+  two build logs should also be given.  For example:
 
 ------------------------------------------------------------------------------
 [INFO] Failed build:     14, see bisect-build-14.log
@@ -95,10 +97,12 @@ Debugging builds using bisection method
 * Notes
 
   It is recommended to enable Maven debugging output (option <<<-X>>>)
-  when debugging builds with XMvn Bisect.
+  when debugging builds with XMvn Bisect.  This doesn't affect XMvn
+  Bisect run itself, but may help investigating the cause of the build
+  failure.
 
   Usually Maven Clean Plugin should be part of the build sequence.
   XMvn Bisect runs all the builds from the same working directory.
   Results of previous builds, if not cleaned properly, may interfere
   with next builds and negatively affect the build.  To reduce
-  interference it's usually add <<<clean>>> as the first goal.
+  interference it's usually good to run <<<clean>>> as the first goal.
