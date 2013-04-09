@@ -21,7 +21,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.fedoraproject.xmvn</groupId>
   <artifactId>xmvn</artifactId>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
   <packaging>pom</packaging>
   <name>XMvn</name>
   <description>
@@ -79,7 +79,7 @@
     <site>
       <id>fedorapeople.org</id>
       <name>XMvn Website</name>
-      <url>scp://10.34.4.202/home/kojan/site</url>
+      <url>scp://10.34.4.133/home/kojan/site</url>
     </site>
   </distributionManagement>
   <issueManagement>
