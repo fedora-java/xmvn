@@ -184,4 +184,43 @@ public class EffectivePackagingTest
 
         artifactManagement.clear();
     }
+
+    /**
+     * Test if artifact aliases work as expected.
+     * 
+     * @throws Exception
+     */
+    public void testAliases()
+        throws Exception
+    {
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
+        assertTrue( artifactManagement.isEmpty() );
+
+        Artifact glob = new Artifact();
+        glob.setGroupId( "" );
+        glob.setArtifactId( "{*}" );
+        glob.setVersion( "" );
+
+        Artifact alias = new Artifact();
+        alias.setGroupId( "" );
+        alias.setArtifactId( "@1-test" );
+        alias.setVersion( "" );
+
+        PackagingRule rule = new PackagingRule();
+        rule.setArtifactGlob( glob );
+        rule.addAlias( alias );
+        artifactManagement.add( rule );
+
+        PackagingRule effRule = configuration.createEffectivePackagingRule( "foo", "bar", "1.2.3" );
+
+        assertEquals( effRule.getAliases().size(), 1 );
+        Artifact effAlias = effRule.getAliases().iterator().next();
+
+        assertEquals( effAlias.getGroupId(), "foo" );
+        assertEquals( effAlias.getArtifactId(), "bar-test" );
+        assertEquals( effAlias.getVersion(), "1.2.3" );
+
+        artifactManagement.clear();
+    }
 }
