@@ -146,4 +146,81 @@ public class EffectivePackagingTest
 
         artifactManagement.clear();
     }
+
+    /**
+     * Test if explicit rules correctly override default singleton packaging rule.
+     * 
+     * @throws Exception
+     */
+    public void testSingletonAndSpecificRule()
+        throws Exception
+    {
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
+        assertTrue( artifactManagement.isEmpty() );
+
+        Artifact glob1 = new Artifact();
+        glob1.setGroupId( "" );
+        glob1.setArtifactId( "{sisu,guice}-{*}" );
+        glob1.setVersion( "" );
+
+        PackagingRule rule1 = new PackagingRule();
+        rule1.setArtifactGlob( glob1 );
+        rule1.setTargetPackage( "@2" );
+        artifactManagement.add( rule1 );
+
+        Artifact glob2 = new Artifact();
+        glob2.setArtifactId( "{*}" );
+
+        PackagingRule rule2 = new PackagingRule();
+        rule2.setArtifactGlob( glob2 );
+        rule2.setTargetPackage( "@1" );
+        artifactManagement.add( rule2 );
+
+        PackagingRule effRule =
+            configuration.createEffectivePackagingRule( "org.sonatype.sisu", "sisu-parent", "2.3.0" );
+        assertNotNull( effRule.getTargetPackage() );
+        assertTrue( effRule.getTargetPackage().equals( "parent" ) );
+
+        artifactManagement.clear();
+    }
+
+    /**
+     * Test if artifact aliases work as expected.
+     * 
+     * @throws Exception
+     */
+    public void testAliases()
+        throws Exception
+    {
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
+        assertTrue( artifactManagement.isEmpty() );
+
+        Artifact glob = new Artifact();
+        glob.setGroupId( "" );
+        glob.setArtifactId( "{*}" );
+        glob.setVersion( "" );
+
+        Artifact alias = new Artifact();
+        alias.setGroupId( "" );
+        alias.setArtifactId( "@1-test" );
+        alias.setVersion( "" );
+
+        PackagingRule rule = new PackagingRule();
+        rule.setArtifactGlob( glob );
+        rule.addAlias( alias );
+        artifactManagement.add( rule );
+
+        PackagingRule effRule = configuration.createEffectivePackagingRule( "foo", "bar", "1.2.3" );
+
+        assertEquals( effRule.getAliases().size(), 1 );
+        Artifact effAlias = effRule.getAliases().iterator().next();
+
+        assertEquals( effAlias.getGroupId(), "foo" );
+        assertEquals( effAlias.getArtifactId(), "bar-test" );
+        assertEquals( effAlias.getVersion(), "1.2.3" );
+
+        artifactManagement.clear();
+    }
 }
