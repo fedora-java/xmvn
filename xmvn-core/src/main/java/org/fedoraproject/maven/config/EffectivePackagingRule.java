@@ -94,6 +94,14 @@ class EffectivePackagingRule
         for ( org.fedoraproject.maven.config.Artifact alias : rule.getAliases() )
         {
             alias = expandBackreferences( matchers, alias );
+
+            if ( StringUtils.isEmpty( alias.getGroupId() ) )
+                alias.setGroupId( artifact.getGroupId() );
+            if ( StringUtils.isEmpty( alias.getArtifactId() ) )
+                alias.setArtifactId( artifact.getArtifactId() );
+            if ( StringUtils.isEmpty( alias.getVersion() ) )
+                alias.setVersion( artifact.getVersion() );
+
             if ( !getAliases().contains( alias ) )
                 addAlias( alias );
         }
