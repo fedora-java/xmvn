@@ -3,10 +3,20 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-03-15
+                    2013-04-09
 
 
 Release notes for XMvn
+
+* What's new in XMvn 0.4.2
+
+  * Minor bugfixes
+
+    * Empty fields in artifact aliases
+
+      Version 0.4.0 introduced a regression - empty fields in artifact
+      aliases were not replaced by corresponding fields from the main
+      artifact.  This bug was fixed in version 0.4.2.
 
 * What's new in XMvn 0.4.1
 
