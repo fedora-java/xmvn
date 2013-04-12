@@ -23,7 +23,7 @@ import java.nio.channels.FileLock;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
- * Atomic integer value, which stores its value in a text file.
+ * Atomic integer object, which stores its value in a text file.
  * 
  * @author Mikolaj Izdebski
  */
