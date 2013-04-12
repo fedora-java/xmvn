@@ -144,6 +144,16 @@
             <multiplicity>*</multiplicity>
           </association>
         </field>
+        <field>
+          <name>optional</name>
+          <version>0.5.0+</version>
+          <description>
+            Whether this rule is optional.  Non-optional rules cause
+            build failure if they are not matched.
+          </description>
+          <type>Boolean</type>
+          <defaultValue>false</defaultValue>
+        </field>
       </fields>
       <codeSegments>
         <codeSegment>
