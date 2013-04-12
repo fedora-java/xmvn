@@ -24,6 +24,18 @@ import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.utils.GlobUtils;
 
 /**
+ * Effective artifact packaging rule.
+ * <p>
+ * In general packaging rules are in n-to-m relation with artifacts. One artifact can have one or more packaging rules
+ * and one packaging rule can match zero or more artifacts. This approach is well suited for configuring build process
+ * by humans.
+ * <p>
+ * In contrast, effective packaging rules are in 1-to-1 relation with artifacts. Every artifact has exactly one
+ * effective packaging rule. This form is best for machine processing.
+ * <p>
+ * Effective packaging rules are created from raw configuration rules by merging and/or splitting and expanding regular
+ * expression patterns.
+ * 
  * @author Mikolaj Izdebski
  */
 class EffectivePackagingRule
@@ -114,6 +126,14 @@ class EffectivePackagingRule
         }
     }
 
+    /**
+     * Create effective packaging rule for given artifact.
+     * 
+     * @param artifactManagement list of raw packaging rules that are foundation of newly constructed effective rule
+     * @param groupId groupId of artifact for which effective rule is to be created
+     * @param artifactId artifactId of artifact for which effective rule is to be created
+     * @param version version of artifact for which effective rule is to be created
+     */
     public EffectivePackagingRule( List<PackagingRule> artifactManagement, String groupId, String artifactId,
                                    String version )
     {
