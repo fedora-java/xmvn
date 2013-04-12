@@ -100,7 +100,7 @@ public class GlobUtils
     }
 
     /**
-     * Create @{code Pattern} from wildcard patter.
+     * Create {@code Pattern} from wildcard patter.
      * 
      * @param glob wildcard pattern to convert
      * @return pattern corresponding to given wildcard pattern

@@ -48,7 +48,7 @@ public class FileUtils
     public static final File BIT_BUCKET = new File( "/dev/null" );
 
     /**
-     * Follow every symlink in every component of given file recursively, just like @{code readlink -f} does.
+     * Follow every symlink in every component of given file recursively, just like {@code readlink -f} does.
      * 
      * @param file path in which symlinks are to be followed
      * @return canonical file
@@ -116,8 +116,8 @@ public class FileUtils
     /**
      * Convert POSIX permissions from integer to string format.
      * 
-     * @param perm POSIX file permissions in integer format, for example @{code 0764}
-     * @return POSIX file permissions in string format, for example @{code rwxrw-r--}
+     * @param perm POSIX file permissions in integer format, for example {@code 0764}
+     * @return POSIX file permissions in string format, for example {@code rwxrw-r--}
      */
     private static Set<PosixFilePermission> getPermissions( int perm )
     {
