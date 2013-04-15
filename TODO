@@ -49,7 +49,7 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 ** fix builddep MOJO
    verify if generated BuildRequires are correct and complete; make
    builddep mojo print the list BuildRequires on stdout (so it gets
-   included in mock build.log)
+   included in mock build.log).  Especially verify profile activation.
 
 ** improve compat package resolver
    maybe version ranges, maybe number of matching components
