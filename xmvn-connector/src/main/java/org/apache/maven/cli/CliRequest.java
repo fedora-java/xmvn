@@ -18,6 +18,14 @@ package org.apache.maven.cli;
 import org.codehaus.plexus.classworlds.ClassWorld;
 
 /**
+ * This is XMvn specific class and it resides in {@code org.apache.maven} namespace only becuse it needs to access
+ * package-private class {@code MavenCli.CliRequest}.
+ * <p>
+ * The only reason for existence of this class is exporting private Maven API, which in XMvn authors' opinion should be
+ * public.
+ * <p>
+ * TODO: This should be worked with Maven upstream.
+ * 
  * @author Mikolaj Izdebski
  */
 public class CliRequest
