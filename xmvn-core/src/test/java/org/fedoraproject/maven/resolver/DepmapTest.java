@@ -34,12 +34,12 @@ public class DepmapTest
     private DependencyMap readDepmap( Path fragment )
         throws Exception
     {
-        ResolverSettings settings = lookup( Configurator.class ).getDefaultConfiguration().getResolverSettings();
+        Configurator configurator = lookup( Configurator.class );
+        ResolverSettings settings = configurator.getDefaultConfiguration().getResolverSettings().clone();
         DepmapReader reader = new DepmapReader();
         DependencyMap depmap = new DependencyMap();
         settings.addMetadataRepository( fragment.toAbsolutePath().toString() );
         reader.readArtifactMap( new File( "/" ), depmap, settings );
-        settings.removeMetadataRepository( fragment.toAbsolutePath().toString() );
         assertNotNull( depmap );
         return depmap;
     }

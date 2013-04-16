@@ -30,7 +30,7 @@ public class EffectivePackagingTest
     public void testRuleAggregation()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -53,8 +53,6 @@ public class EffectivePackagingTest
         assertTrue( effectiveRule.getFiles().get( 0 ).equals( "file1" ) );
         assertTrue( effectiveRule.getFiles().get( 1 ).equals( "file2" ) );
         assertEquals( effectiveRule.getFiles().size(), 2 );
-
-        artifactManagement.clear();
     }
 
     /**
@@ -65,7 +63,7 @@ public class EffectivePackagingTest
     public void testWildcards()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -89,8 +87,6 @@ public class EffectivePackagingTest
 
         PackagingRule effRule3 = configuration.createEffectivePackagingRule( "foobar", "lorem-dolor", "1.253" );
         assertNull( effRule3.getTargetPackage() );
-
-        artifactManagement.clear();
     }
 
     /**
@@ -101,7 +97,7 @@ public class EffectivePackagingTest
     public void testEmptyGlob()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -113,8 +109,6 @@ public class EffectivePackagingTest
         PackagingRule effRule1 = configuration.createEffectivePackagingRule( "com.example", "some-test", "0.42" );
         assertNotNull( effRule1.getTargetPackage() );
         assertTrue( effRule1.getTargetPackage().equals( "somePackage" ) );
-
-        artifactManagement.clear();
     }
 
     /**
@@ -125,7 +119,7 @@ public class EffectivePackagingTest
     public void testEmptyPattern()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -143,8 +137,6 @@ public class EffectivePackagingTest
         assertNotNull( effectiveRule );
         assertNotNull( effectiveRule.getTargetPackage() );
         assertTrue( effectiveRule.getTargetPackage().equals( "fooBar" ) );
-
-        artifactManagement.clear();
     }
 
     /**
@@ -155,7 +147,7 @@ public class EffectivePackagingTest
     public void testSingletonAndSpecificRule()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -181,8 +173,6 @@ public class EffectivePackagingTest
             configuration.createEffectivePackagingRule( "org.sonatype.sisu", "sisu-parent", "2.3.0" );
         assertNotNull( effRule.getTargetPackage() );
         assertTrue( effRule.getTargetPackage().equals( "parent" ) );
-
-        artifactManagement.clear();
     }
 
     /**
@@ -193,7 +183,7 @@ public class EffectivePackagingTest
     public void testAliases()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration();
+        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -220,7 +210,5 @@ public class EffectivePackagingTest
         assertEquals( effAlias.getGroupId(), "foo" );
         assertEquals( effAlias.getArtifactId(), "bar-test" );
         assertEquals( effAlias.getVersion(), "1.2.3" );
-
-        artifactManagement.clear();
     }
 }
