@@ -98,6 +98,7 @@ class EffectivePackagingRule
         for ( Matcher matcher : matchers )
             if ( !matcher.matches() )
                 return;
+        rule.setMatched( true );
 
         String targetPackage = rule.getTargetPackage();
         if ( StringUtils.isEmpty( getTargetPackage() ) && StringUtils.isNotEmpty( targetPackage ) )
@@ -142,6 +143,8 @@ class EffectivePackagingRule
         artifact.setArtifactId( artifactId );
         artifact.setVersion( version );
         setArtifactGlob( artifact );
+        setOptional( false );
+        setMatched( true );
 
         for ( PackagingRule rule : artifactManagement )
         {

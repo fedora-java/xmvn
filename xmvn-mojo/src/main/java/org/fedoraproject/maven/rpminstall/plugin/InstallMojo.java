@@ -34,6 +34,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
+import org.fedoraproject.maven.config.Artifact;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
@@ -95,6 +96,28 @@ public class InstallMojo
             + ", which has packaging type " + packaging );
     }
 
+    private void checkForUnmatchedRules( List<PackagingRule> artifactManagement )
+        throws MojoFailureException
+    {
+        boolean unmatchedRuleFound = false;
+
+        for ( PackagingRule rule : artifactManagement )
+        {
+            if ( !rule.isOptional() && !rule.isMatched() )
+            {
+                unmatchedRuleFound = true;
+                Artifact glob = rule.getArtifactGlob();
+                String globString = glob.getGroupId() + ":" + glob.getArtifactId() + ":" + glob.getVersion();
+                logger.error( "Unmatched packaging rule: " + globString );
+            }
+        }
+
+        if ( unmatchedRuleFound )
+        {
+            throw new MojoFailureException( "There are unmatched packaging rules" );
+        }
+    }
+
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -140,6 +163,8 @@ public class InstallMojo
 
                 installProject( project, pkg, rule );
             }
+
+            checkForUnmatchedRules( configuration.getArtifactManagement() );
 
             Path installRoot = Paths.get( settings.getInstallRoot() );
             Installer installer = new Installer( installRoot );

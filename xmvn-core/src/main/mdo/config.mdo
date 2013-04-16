@@ -154,6 +154,17 @@
           <type>Boolean</type>
           <defaultValue>false</defaultValue>
         </field>
+        <field xml.transient="true">
+          <name>matched</name>
+          <version>0.5.0+</version>
+          <description>
+            Whether any reactor artifact matches artifact glob pattern
+            for this rule.  Non-optional rules cause build failure if
+            they are not matched.
+          </description>
+          <type>Boolean</type>
+          <defaultValue>false</defaultValue>
+        </field>
       </fields>
       <codeSegments>
         <codeSegment>
