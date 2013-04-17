@@ -19,6 +19,23 @@ Release notes for XMvn
       resolution failures in some rare cases.  This bug was fixed in
       version 0.5.0.
 
+  * Minor features
+
+    * Improved configuration loading
+
+      Starting from version 0.5.0 configuration is read only once at
+      the beginning of the build.  In previous versions configuration
+      was read every time it was needed.  The new approach is not only
+      faster, but also allows configuration to be modified by plugins
+      during runtime.
+
+    * Better handling of inaccurate configuration
+
+      In previos versions any packaging rules that didn't match any
+      artifact in the reactor were silently ignored.  Since version
+      0.5.0 any non-optional packaging rule that is not used causes
+      the build to fail.
+
 * What's new in XMvn 0.4.2
 
   * Minor bugfixes
