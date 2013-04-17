@@ -42,7 +42,7 @@ import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Configurator.class )
+@Component( role = Configurator.class, instantiationStrategy = "singleton" )
 public class DefaultConfigurator
     implements Configurator
 {
@@ -51,6 +51,10 @@ public class DefaultConfigurator
 
     @Requirement
     private ConfigurationMerger merger;
+
+    private Configuration cachedConfiguration;
+
+    private Configuration cachedDefaultConfiguration;
 
     private List<Path> configFiles;
 
@@ -68,8 +72,7 @@ public class DefaultConfigurator
         }
     }
 
-    @Override
-    public Configuration getDefaultConfiguration()
+    private Configuration loadDefaultConfiguration()
     {
         ClassLoader loader = getClass().getClassLoader();
         try (InputStream stream = loader.getResourceAsStream( "default-configuration.xml" ))
@@ -173,8 +176,7 @@ public class DefaultConfigurator
         addConfigFile( base.resolve( "configuration.xml" ), true );
     }
 
-    @Override
-    public Configuration getConfiguration()
+    private Configuration loadConfiguration()
     {
         try
         {
@@ -232,6 +234,24 @@ public class DefaultConfigurator
         {
             throw new RuntimeException( "Failed to load XMvn configuration", e );
         }
+    }
+
+    @Override
+    public synchronized Configuration getDefaultConfiguration()
+    {
+        if ( cachedDefaultConfiguration == null )
+            cachedDefaultConfiguration = loadDefaultConfiguration();
+
+        return cachedDefaultConfiguration;
+    }
+
+    @Override
+    public synchronized Configuration getConfiguration()
+    {
+        if ( cachedConfiguration == null )
+            cachedConfiguration = loadConfiguration();
+
+        return cachedConfiguration;
     }
 
     @Override
