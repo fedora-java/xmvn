@@ -19,6 +19,13 @@ Release notes for XMvn
       resolution failures in some rare cases.  This bug was fixed in
       version 0.5.0.
 
+    * Fixed exit code of XMvn Resolve
+
+      Now <<<xmvn-resolve>>> returns 0 when it successfully resolves
+      all artifacts, 1 on failure to resolve one or more artifacts and
+      2 when some other error occurs.  In the last case a stack trace
+      is printed too.
+
   * Minor features
 
     * Improved configuration loading

@@ -25,10 +25,8 @@ import java.util.TreeMap;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.StringSplitter;
 
@@ -38,6 +36,11 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
 /**
+ * Resolve artifacts given on command line.
+ * <p>
+ * Return 0 when all artifacts are successfully resolved, 1 on failure to resolve one or more artifacts and 2 when some
+ * other error occurs. In the last case a stack trace is printed too.
+ * 
  * @author Mikolaj Izdebski
  */
 @Component( role = ResolverCli.class )
@@ -108,7 +111,7 @@ public class ResolverCli
         }
     }
 
-    public void run()
+    public int run()
     {
         List<File> result = new ArrayList<>();
 
@@ -116,11 +119,14 @@ public class ResolverCli
         {
             String[] tok = StringSplitter.split( s, 4, ':' );
             File file = resolver.resolve( tok[0], tok[1], tok[2], tok[3] );
+            if ( file == null )
+                return 1;
             result.add( file );
         }
 
         if ( !result.isEmpty() )
             printResult( result );
+        return 0;
     }
 
     public static void main( String[] args )
@@ -131,12 +137,12 @@ public class ResolverCli
             container = new DefaultPlexusContainer();
             ResolverCli cli = container.lookup( ResolverCli.class );
             cli.parseArgs( args );
-            cli.run();
+            System.exit( cli.run() );
         }
-        catch ( PlexusContainerException | ComponentLookupException e )
+        catch ( Throwable e )
         {
             e.printStackTrace();
-            System.exit( 1 );
+            System.exit( 2 );
         }
         finally
         {
