@@ -105,11 +105,7 @@ public class BuilddepMojo
             {
                 ps.println( "BuildRequires:  maven-local" );
 
-                if ( javaVersion == null || javaVersion.compareTo( MIN_SUPPORTED_JAVA_VERSION ) <= 0 )
-                {
-                    ps.println( "BuildRequires:  java-devel" );
-                }
-                else
+                if ( javaVersion != null && javaVersion.compareTo( MIN_SUPPORTED_JAVA_VERSION ) > 0 )
                 {
                     ps.println( "BuildRequires:  java-devel >= 1:" + javaVersion );
                 }

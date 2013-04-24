@@ -129,10 +129,9 @@ public class BisectCli
 
     public static void main( String[] args )
     {
-        PlexusContainer container = null;
         try
         {
-            container = new DefaultPlexusContainer();
+            PlexusContainer container = new DefaultPlexusContainer();
             BisectCli cli = container.lookup( BisectCli.class );
             cli.run( args );
         }
