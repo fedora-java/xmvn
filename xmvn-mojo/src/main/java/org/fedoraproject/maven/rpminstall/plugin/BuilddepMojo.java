@@ -40,7 +40,7 @@ import org.fedoraproject.maven.installer.DependencyVisitor;
 /**
  * @author Mikolaj Izdebski
  */
-@Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.TEST )
+@Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
 @Component( role = BuilddepMojo.class )
 public class BuilddepMojo
     extends AbstractMojo
