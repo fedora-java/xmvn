@@ -65,3 +65,7 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 ** better handle inter-subpackage dependencies
    versioned deps, dependency graphs etc.
+
+** add support for classifiers and stereotypes
+
+** add support for version ranges
