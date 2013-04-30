@@ -28,6 +28,19 @@ Release notes for XMvn
 
   * Minor features
 
+    * Basic support for dependency version ranges
+
+      In previous versions XMvn did not support dependency version
+      ranges.  If range was used in POM then Maven would try to
+      resolve all available versions from remote repository and pick
+      the best match.
+
+      Starting from XMvn 0.5.0 any dependency version ranges without
+      recommended version specified are replaced with version
+      <<<SYSTEM>>>, which means default artifact version in the
+      system.  This prevents Maven from trying to use remote
+      repositories.
+
     * Improved configuration loading
 
       Starting from version 0.5.0 configuration is read only once at

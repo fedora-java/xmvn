@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
@@ -33,6 +35,7 @@ import org.apache.maven.model.validation.ModelValidator;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.config.Configurator;
@@ -95,8 +98,7 @@ public class FedoraModelValidator
                 continue;
             }
 
-            if ( dependency.getVersion() == null )
-                dependency.setVersion( "SYSTEM" );
+            dependency.setVersion( replaceVersion( groupId, artifactId, dependency.getVersion() ) );
         }
     }
 
@@ -119,8 +121,7 @@ public class FedoraModelValidator
                 continue;
             }
 
-            if ( extension.getVersion() == null )
-                extension.setVersion( "SYSTEM" );
+            extension.setVersion( replaceVersion( groupId, artifactId, extension.getVersion() ) );
         }
 
     }
@@ -144,12 +145,38 @@ public class FedoraModelValidator
                 continue;
             }
 
-            if ( plugin.getVersion() == null )
-                plugin.setVersion( "SYSTEM" );
+            plugin.setVersion( replaceVersion( groupId, artifactId, plugin.getVersion() ) );
 
             if ( groupId.equals( "org.apache.maven.plugins" ) && artifactId.equals( "maven-compiler-plugin" ) )
                 configureCompiler( plugin );
         }
+    }
+
+    private String replaceVersion( String groupId, String artifactId, String version )
+    {
+        String id = groupId + ":" + artifactId;
+
+        if ( StringUtils.isEmpty( version ) )
+        {
+            logger.debug( "Missing version of dependency " + id + ", using SYSTEM." );
+            return "SYSTEM";
+        }
+
+        try
+        {
+            if ( VersionRange.createFromVersionSpec( version ).getRecommendedVersion() == null )
+            {
+                logger.debug( "Dependency " + id + " has no recommended version, falling back to SYSTEM." );
+                return "SYSTEM";
+            }
+        }
+        catch ( InvalidVersionSpecificationException e )
+        {
+            logger.debug( "Dependency " + id + " is using invalid version range, falling back to SYSTEM." );
+            return "SYSTEM";
+        }
+
+        return version;
     }
 
     private void configureCompiler( Plugin plugin )
