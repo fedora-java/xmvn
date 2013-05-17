@@ -3,7 +3,7 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-04-09
+                    2013-05-17
 
 
 Release notes for XMvn
@@ -25,6 +25,17 @@ Release notes for XMvn
       all artifacts, 1 on failure to resolve one or more artifacts and
       2 when some other error occurs.  In the last case a stack trace
       is printed too.
+
+    * Fixed installation of artifact marked as not installable
+
+      Before version 0.5.0 XMvn tried to find installers for all
+      artifacts in the reactor, even for those marked as not
+      installable.  As a result reactors that contained artifacts with
+      unsupported packaging types failed to build, even if instalation
+      of these artifacts was explicitly skipped.
+
+      This bug was fixed in XMvn 0.5.0, in which artifact packaging
+      type has to be supported only if the artifact is installable.
 
   * Minor features
 
