@@ -15,6 +15,7 @@
  ! limitations under the License.
  `-->
 <assembly>
+  <id>bin</id>
   <formats>
     <format>tar.bz2</format>
   </formats>
