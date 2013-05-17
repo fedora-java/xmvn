@@ -161,7 +161,8 @@ public class InstallMojo
                     packages.put( packageName, pkg );
                 }
 
-                installProject( project, pkg, rule );
+                if ( pkg.isInstallable() )
+                    installProject( project, pkg, rule );
             }
 
             checkForUnmatchedRules( configuration.getArtifactManagement() );
