@@ -73,7 +73,7 @@
                 <artifactItem>
                   <groupId>org.apache.maven</groupId>
                   <artifactId>apache-maven</artifactId>
-                  <version>3.0.5</version>
+                  <version>${mavenVersion}</version>
                   <type>tar.gz</type>
                   <classifier>bin</classifier>
                 </artifactItem>

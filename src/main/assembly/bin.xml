@@ -36,13 +36,13 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>target/dependency/apache-maven-3.0.5</directory>
+      <directory>target/dependency/apache-maven-${mavenVersion}</directory>
       <outputDirectory>.</outputDirectory>
     </fileSet>
   </fileSets>
   <files>
     <file>
-      <source>target/dependency/apache-maven-3.0.5/bin/mvn</source>
+      <source>target/dependency/apache-maven-${mavenVersion}/bin/mvn</source>
       <outputDirectory>bin</outputDirectory>
       <destName>xmvn</destName>
       <fileMode>0755</fileMode>
