@@ -21,7 +21,9 @@
   <dependencySets>
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
       <scope>runtime</scope>
+      <outputDirectory>lib/ext</outputDirectory>
     </dependencySet>
   </dependencySets>
   <fileSets>
