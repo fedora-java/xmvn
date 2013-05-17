@@ -190,14 +190,14 @@
         <version>${junitVersion}</version>
       </dependency>
       <dependency>
-	<groupId>com.beust</groupId>
-	<artifactId>jcommander</artifactId>
-	<version>${jcommanderVersion}</version>
+        <groupId>com.beust</groupId>
+        <artifactId>jcommander</artifactId>
+        <version>${jcommanderVersion}</version>
       </dependency>
       <dependency>
-	<groupId>org.apache.maven.shared</groupId>
-	<artifactId>maven-invoker</artifactId>
-	<version>${mavenInvokerVersion}</version>
+        <groupId>org.apache.maven.shared</groupId>
+        <artifactId>maven-invoker</artifactId>
+        <version>${mavenInvokerVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -228,44 +228,44 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${dependencyPluginVersion}</version>
         </plugin>
-	<plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
           <version>${pluginToolsVersion}</version>
-	</plugin>
-	<plugin>
+        </plugin>
+        <plugin>
           <groupId>org.codehaus.modello</groupId>
           <artifactId>modello-maven-plugin</artifactId>
-	  <version>${modelloVersion}</version>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-assembly-plugin</artifactId>
-	  <version>${assemblyPluginVersion}</version>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-clean-plugin</artifactId>
-	  <version>${cleanPluginVersion}</version>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-deploy-plugin</artifactId>
-	  <version>${deployPluginVersion}</version>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-install-plugin</artifactId>
-	  <version>${installPluginVersion}</version>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-jar-plugin</artifactId>
-	  <version>${jarPluginVersion}</version>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-resources-plugin</artifactId>
-	  <version>${resourcesPluginVersion}</version>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-surefire-plugin</artifactId>
-	  <version>${surefireVersion}</version>
-	</plugin>
+          <version>${modelloVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${assemblyPluginVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${cleanPluginVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${deployPluginVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${installPluginVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${jarPluginVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${resourcesPluginVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefireVersion}</version>
+        </plugin>
         <!-- This plugin's configuration is used to store Eclipse m2e settings
              only. It has no influence on the Maven build itself. -->
         <plugin>
@@ -403,19 +403,19 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-report-plugin</artifactId>
-	<version>${surefireVersion}</version>
+        <version>${surefireVersion}</version>
       </plugin>
       <plugin>
         <artifactId>maven-plugin-plugin</artifactId>
-	<version>${pluginToolsVersion}</version>
+        <version>${pluginToolsVersion}</version>
       </plugin>
       <plugin>
         <artifactId>maven-jxr-plugin</artifactId>
-	<version>${jxrPluginVersion}</version>
+        <version>${jxrPluginVersion}</version>
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-	<version>${javadocPluginVersion}</version>
+        <version>${javadocPluginVersion}</version>
         <configuration>
           <show>package</show>
           <detectJavaApiLink>false</detectJavaApiLink>

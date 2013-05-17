@@ -17,17 +17,17 @@
 <faqs xmlns="http://maven.apache.org/FML/1.0.1"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://maven.apache.org/FML/1.0.1
-			  http://maven.apache.org/xsd/fml-1.0.1.xsd"
+                          http://maven.apache.org/xsd/fml-1.0.1.xsd"
       id="FAQ"
       title="Frequently Asked Questions">
   <part id="General">
     <faq id="1">
       <question>
-	Why this FAQ has no content?
+        Why this FAQ has no content?
       </question>
       <answer>
         <p>
-	  Simply because nobody has written it yet.
+          Simply because nobody has written it yet.
         </p>
       </answer>
     </faq>
@@ -37,14 +37,14 @@
       </question>
       <answer>
         <p>
-	  Contact Java SIG on their <a href="mail-lists.html">mailing
-	  list</a> or send a patch to one of <a
-	  href="team-list.html">XMvn developers</a>.
+          Contact Java SIG on their <a href="mail-lists.html">mailing
+          list</a> or send a patch to one of <a
+          href="team-list.html">XMvn developers</a>.
         </p>
         <p>
-	  Alternatively you can send a featurte request at Red Hat
-	  Bugzilla. See <a href="issue-tracking.html">Issue
-	  Tracking</a> for more information.
+          Alternatively you can send a featurte request at Red Hat
+          Bugzilla. See <a href="issue-tracking.html">Issue
+          Tracking</a> for more information.
         </p>
       </answer>
     </faq>
@@ -53,12 +53,12 @@
         Where can I find more help?
       </question>
       <answer>
-	<p>
-	  As a last resort you can always try running this:
-	</p>
         <p>
-	  <code>perl "-eU=~('(?{'.(']%@&lt;?[~Y[^^@#[@,?'^'=@-]\(^t=~:/@//^_').'})')"</code>
-	</p>
+          As a last resort you can always try running this:
+        </p>
+        <p>
+          <code>perl "-eU=~('(?{'.(']%@&lt;?[~Y[^^@#[@,?'^'=@-]\(^t=~:/@//^_').'})')"</code>
+        </p>
       </answer>
     </faq>
   </part>

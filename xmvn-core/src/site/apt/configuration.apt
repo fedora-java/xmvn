@@ -40,32 +40,32 @@ Configuring XMvn
           <<<$PWD/.xmvn/configuration.xml>>>,
 
     [[4]] User configuration directory - specified in configuration
-    	  files in <<<$XDG_CONFIG_HOME/xmvn/conf.d/>>> directory,
+          files in <<<$XDG_CONFIG_HOME/xmvn/conf.d/>>> directory,
 
     [[5]] User configuration file - specified in configuration file
-    	  <<<$XDG_CONFIG_HOME/xmvn/configuration.xml>>>,
+          <<<$XDG_CONFIG_HOME/xmvn/configuration.xml>>>,
 
     [[6]] User data directory - specified in configuration files in
           <<<$XDG_DATA_HOME/xmvn/conf.d/>>> directory,
 
     [[7]] User data file - specified in configuration file
-    	  <<<$XDG_DATA_HOME/xmvn/configuration.xml>>>,
+          <<<$XDG_DATA_HOME/xmvn/configuration.xml>>>,
 
     [[8]] System configuration directories - specified in
-    	  configuration files in <<<$XDG_CONFIG_DIRS/xmvn/conf.d/>>>
-    	  directory,
+          configuration files in <<<$XDG_CONFIG_DIRS/xmvn/conf.d/>>>
+          directory,
 
     [[9]] System configuration files - specified in configuration file
-    	  <<<$XDG_CONFIG_DIRS/xmvn/configuration.xml>>>,
+          <<<$XDG_CONFIG_DIRS/xmvn/configuration.xml>>>,
 
     [[10]] System data directories - specified in configuration files
-    	   in <<<$XDG_DATA_DIRS/xmvn/conf.d/>>> directory,
+           in <<<$XDG_DATA_DIRS/xmvn/conf.d/>>> directory,
 
     [[11]] System data files - specified in configuration file
-    	   <<<$XDG_DATA_DIRS/xmvn/configuration.xml>>>,
+           <<<$XDG_DATA_DIRS/xmvn/configuration.xml>>>,
 
     [[12]] Builtin configuration - embedded directly in
-    	   <<<xmvn-core.jar>>> as a resource.
+           <<<xmvn-core.jar>>> as a resource.
 
   In the above list <<<$PWD>>> means current working directory. For
   the meaning of <<<$XDG_CONFIG_HOME>>>, <<<$XDG_DATA_HOME>>>,
