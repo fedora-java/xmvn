@@ -96,9 +96,11 @@ public class BisectCli
 
         while ( goodId - badId > 1 )
         {
-            int tryId = badId + 1;
+            int tryId;
             if ( commandLineParser.useBinarySearch() )
-                tryId += ( goodId - badId ) / 2;
+                tryId = badId + ( goodId - badId ) / 2;
+            else
+                tryId = badId + 1;
 
             logger.info( "Bisection iteration: current range is [" + ( badId + 1 ) + "," + ( goodId - 1 )
                 + "], trying " + tryId );
