@@ -24,9 +24,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.StringSplitter;
 
@@ -43,7 +42,6 @@ import com.beust.jcommander.ParameterException;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ResolverCli.class )
 public class ResolverCli
 {
     @Parameter
@@ -60,9 +58,6 @@ public class ResolverCli
 
     @DynamicParameter( names = "-D", description = "Define system property" )
     public Map<String, String> defines = new TreeMap<>();
-
-    @Requirement
-    private Resolver resolver;
 
     private void parseArgs( String[] args )
     {
@@ -111,43 +106,54 @@ public class ResolverCli
         }
     }
 
-    public int run()
+    public void run()
     {
-        List<File> result = new ArrayList<>();
-
-        for ( String s : parameters )
-        {
-            String[] tok = StringSplitter.split( s, 4, ':' );
-            File file = resolver.resolve( tok[0], tok[1], tok[2], tok[3] );
-            if ( file == null )
-                return 1;
-            result.add( file );
-        }
-
-        if ( !result.isEmpty() )
-            printResult( result );
-        return 0;
-    }
-
-    public static void main( String[] args )
-    {
-        PlexusContainer container = null;
         try
         {
-            container = new DefaultPlexusContainer();
-            ResolverCli cli = container.lookup( ResolverCli.class );
-            cli.parseArgs( args );
-            System.exit( cli.run() );
+            DefaultPlexusContainer container = new DefaultPlexusContainer();
+            container.getLoggerManager().setThresholds( debug ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
+            Logger logger = container.lookup( Logger.class );
+            Resolver resolver = container.lookup( Resolver.class );
+
+            boolean error = false;
+            List<File> result = new ArrayList<>();
+
+            for ( String s : parameters )
+            {
+                String[] tok = StringSplitter.split( s, 4, ':' );
+                Artifact artifact = new Artifact( tok[0], tok[1], tok[2], tok[3] );
+
+                File file = resolver.resolve( artifact );
+                if ( file == null )
+                {
+                    error = true;
+                    logger.error( "Unable to resolve artifact " + artifact );
+                }
+                else
+                {
+                    result.add( file );
+                }
+            }
+
+            if ( error )
+                System.exit( 1 );
+
+            if ( !result.isEmpty() )
+                printResult( result );
+
+            System.exit( 0 );
         }
         catch ( Throwable e )
         {
             e.printStackTrace();
             System.exit( 2 );
         }
-        finally
-        {
-            if ( container != null )
-                container.dispose();
-        }
+    }
+
+    public static void main( String[] args )
+    {
+        ResolverCli cli = new ResolverCli();
+        cli.parseArgs( args );
+        cli.run();
     }
 }
