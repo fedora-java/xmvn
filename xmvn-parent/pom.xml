@@ -89,7 +89,6 @@
     <plexusUtilsVersion>3.0.10</plexusUtilsVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
-    <sisuVersion>2.3.4</sisuVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
@@ -160,9 +159,9 @@
         <version>${plexusVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.sonatype.sisu</groupId>
-        <artifactId>sisu-inject-plexus</artifactId>
-        <version>${sisuVersion}</version>
+        <groupId>sonatype.sisu</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>${plexusVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
