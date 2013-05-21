@@ -59,6 +59,10 @@ case "${tool}" in #((
         tool=resolver
         class=org.fedoraproject.maven.tools.resolver.ResolverCli
         ;;
+    *subst*)
+        tool=subst
+        class=org.fedoraproject.maven.tools.subst.SubstCli
+        ;;
     *)
         class="${tool}"
 esac

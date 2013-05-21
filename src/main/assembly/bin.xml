@@ -68,6 +68,17 @@
         <include>*.jar</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>xmvn-tools/xmvn-subst/target/dependency</directory>
+      <outputDirectory>lib/subst</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>xmvn-tools/xmvn-subst/target</directory>
+      <outputDirectory>lib/subst</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
   </fileSets>
   <files>
     <file>
@@ -88,6 +99,13 @@
       <source>xmvn-tools/src/main/bin/tool-script</source>
       <outputDirectory>bin</outputDirectory>
       <destName>xmvn-resolve</destName>
+      <fileMode>0755</fileMode>
+      <lineEnding>unix</lineEnding>
+    </file>
+    <file>
+      <source>xmvn-tools/src/main/bin/tool-script</source>
+      <outputDirectory>bin</outputDirectory>
+      <destName>xmvn-subst</destName>
       <fileMode>0755</fileMode>
       <lineEnding>unix</lineEnding>
     </file>
