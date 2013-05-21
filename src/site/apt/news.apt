@@ -3,12 +3,21 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-05-17
+                    2013-05-21
 
 
 Release notes for XMvn
 
 * What's new in XMvn 0.5.0
+
+  * Major features
+
+    * XMvn Subst
+
+      Version 0.5.0 brings a new tool - XMvn Subst.  This tool is able
+      to replace individual artifact files with symbolic links to
+      corresponding files in system artifact repository.  It is also
+      able to recursively process whole directories.
 
   * Minor bugfixes
 
