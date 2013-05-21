@@ -31,10 +31,4 @@
     XMvn Subst is a tool that can substitute Maven artifact files with
     symbolic links to corresponding files in artifact repository.
   </description>
-  <dependencies>
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-    </dependency>
-  </dependencies>
 </project>

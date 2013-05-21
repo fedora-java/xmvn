@@ -34,10 +34,4 @@
     Core.  The primary intended use case of XMvn Resolver is debugging
     local artifact repositories.
   </description>
-  <dependencies>
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
-    </dependency>
-  </dependencies>
 </project>
