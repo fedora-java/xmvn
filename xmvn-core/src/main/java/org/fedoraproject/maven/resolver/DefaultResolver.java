@@ -90,6 +90,7 @@ public class DefaultResolver
         initializeBisect();
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
+        logger.setThreshold( settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
 
         resolvers.add( new LocalResolver( settings ) );
 
@@ -98,8 +99,8 @@ public class DefaultResolver
             File root = new File( prefix );
             if ( root.isDirectory() )
             {
-                Resolver resolver = new SystemResolver( root, settings );
-                resolvers.add( new CachingResolver( resolver ) );
+                Resolver resolver = new SystemResolver( root, settings, logger );
+                resolvers.add( new CachingResolver( resolver, logger ) );
             }
         }
 

@@ -113,11 +113,12 @@ public class DefaultArtifactBlacklist
     {
         Set<Artifact> aliasBlacklist = new TreeSet<>();
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
+        logger.setThreshold( settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
 
         for ( String prefix : settings.getPrefixes() )
         {
             File root = new File( prefix );
-            DependencyMap depmap = DepmapReader.readArtifactMap( root, settings );
+            DependencyMap depmap = DepmapReader.readArtifactMap( root, settings, logger );
 
             for ( Artifact artifact : blacklist )
             {

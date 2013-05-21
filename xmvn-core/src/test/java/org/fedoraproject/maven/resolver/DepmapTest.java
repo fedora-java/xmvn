@@ -27,6 +27,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.util.BitBucketLogger;
 
 public class DepmapTest
     extends PlexusTestCase
@@ -36,8 +37,8 @@ public class DepmapTest
     {
         Configurator configurator = lookup( Configurator.class );
         ResolverSettings settings = configurator.getDefaultConfiguration().getResolverSettings().clone();
-        DepmapReader reader = new DepmapReader();
-        DependencyMap depmap = new DependencyMap();
+        DepmapReader reader = new DepmapReader( new BitBucketLogger() );
+        DependencyMap depmap = new DependencyMap( new BitBucketLogger() );
         settings.addMetadataRepository( fragment.toAbsolutePath().toString() );
         reader.readArtifactMap( new File( "/" ), depmap, settings );
         assertNotNull( depmap );

@@ -15,12 +15,11 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import static org.fedoraproject.maven.utils.Logger.debug;
-
 import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
@@ -29,13 +28,16 @@ import org.fedoraproject.maven.model.Artifact;
 class CachingResolver
     extends AbstractResolver
 {
+    private final Logger logger;
+
     private final Map<Artifact, File> cache = new TreeMap<>();
 
     private final Resolver provider;
 
-    public CachingResolver( Resolver provider )
+    public CachingResolver( Resolver provider, Logger logger )
     {
         this.provider = provider;
+        this.logger = logger;
     }
 
     @Override
@@ -45,7 +47,7 @@ class CachingResolver
 
         if ( file != null )
         {
-            debug( "Artifact ", artifact, " was resolved from cache" );
+            logger.debug( "Artifact " + artifact + " was resolved from cache" );
         }
         else
         {

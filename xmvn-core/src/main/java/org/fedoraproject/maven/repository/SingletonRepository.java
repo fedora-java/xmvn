@@ -16,7 +16,6 @@
 package org.fedoraproject.maven.repository;
 
 import static org.fedoraproject.maven.utils.FileUtils.followSymlink;
-import static org.fedoraproject.maven.utils.Logger.debug;
 
 import java.io.File;
 
@@ -50,11 +49,13 @@ public class SingletonRepository
         if ( file.exists() )
         {
             file = followSymlink( file );
-            debug( "Resolved ", artifact, " to ", file );
+            // FIXME
+            // debug( "Resolved ", artifact, " to ", file );
             return file;
         }
 
-        debug( "File ", file, " was not found" );
+        // FIXME
+        // debug( "File ", file, " was not found" );
         return null;
     }
 

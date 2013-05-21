@@ -15,13 +15,12 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import static org.fedoraproject.maven.utils.Logger.debug;
-
 import java.io.File;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.repository.JppRepository;
@@ -34,6 +33,8 @@ import org.fedoraproject.rpmquery.RpmDb;
 class SystemResolver
     extends AbstractResolver
 {
+    private final Logger logger;
+
     private final ResolverSettings settings;
 
     private final Repository systemRepo;
@@ -44,17 +45,18 @@ class SystemResolver
 
     private static final Set<String> usedRpmPackages = new TreeSet<>();
 
-    public SystemResolver( File root, ResolverSettings settings )
+    public SystemResolver( File root, ResolverSettings settings, Logger logger )
     {
         this.settings = settings;
+        this.logger = logger;
         systemRepo = new JppRepository( root, settings );
-        depmap = DepmapReader.readArtifactMap( root, settings );
+        depmap = DepmapReader.readArtifactMap( root, settings, logger );
     }
 
     @Override
     public File resolve( Artifact artifact )
     {
-        debug( "Resolving ", artifact );
+        logger.debug( "Resolving " + artifact );
         List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
 
         File file = null;
@@ -71,11 +73,11 @@ class SystemResolver
 
         if ( file == null )
         {
-            debug( "Failed to resolve artifact ", artifact );
+            logger.debug( "Failed to resolve artifact " + artifact );
             return null;
         }
 
-        debug( "Artifact ", artifact, " was resolved to ", file );
+        logger.debug( "Artifact " + artifact + " was resolved to " + file );
 
         if ( settings.isDebug() )
         {
@@ -83,24 +85,24 @@ class SystemResolver
             if ( rpmPackage != null )
             {
                 usedRpmPackages.add( rpmPackage );
-                debug( "Artifact ", artifact, " is provided by ", rpmPackage );
+                logger.debug( "Artifact " + artifact + " is provided by " + rpmPackage );
             }
             else
             {
-                debug( "Artifact ", artifact, " is not provided by any package" );
+                logger.debug( "Artifact " + artifact + " is not provided by any package" );
             }
         }
 
         return file;
     }
 
-    public static void printInvolvedPackages()
+    public static void printInvolvedPackages( Logger logger )
     {
         if ( !usedRpmPackages.isEmpty() )
         {
-            debug( "Packages involved in artifact resolution:" );
+            logger.debug( "Packages involved in artifact resolution:" );
             for ( String pkg : usedRpmPackages )
-                debug( "  * ", pkg );
+                logger.debug( "  * " + pkg );
         }
     }
 }

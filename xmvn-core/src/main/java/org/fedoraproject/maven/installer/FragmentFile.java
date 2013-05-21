@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.maven.installer;
 
-import static org.fedoraproject.maven.utils.Logger.debug;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -28,6 +26,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.fedoraproject.maven.config.InstallerSettings;
@@ -39,6 +38,8 @@ import org.fedoraproject.maven.model.Artifact;
 public class FragmentFile
     implements DependencyVisitor
 {
+    private final Logger logger;
+
     private final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
 
     private final Set<Artifact> dependencies = new TreeSet<>();
@@ -46,6 +47,11 @@ public class FragmentFile
     private final Set<Artifact> develDependencies = new TreeSet<>();
 
     private BigDecimal javaVersionRequirement;
+
+    public FragmentFile( Logger logger )
+    {
+        this.logger = logger;
+    }
 
     public boolean isEmpty()
     {
@@ -69,7 +75,7 @@ public class FragmentFile
     {
         addMapping( mapping, from, to );
 
-        debug( "Added mapping ", from, " => ", to );
+        logger.debug( "Added mapping " + from + " => " + to );
     }
 
     @Override

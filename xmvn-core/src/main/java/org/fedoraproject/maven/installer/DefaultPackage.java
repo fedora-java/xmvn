@@ -29,6 +29,7 @@ import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
 import org.fedoraproject.maven.model.Artifact;
@@ -40,6 +41,8 @@ import org.fedoraproject.maven.utils.FileUtils;
 public class DefaultPackage
     implements Package, Comparable<DefaultPackage>
 {
+    private final Logger logger;
+
     private final String suffix;
 
     public static final String MAIN = "";
@@ -50,13 +53,15 @@ public class DefaultPackage
 
     private final InstallerSettings settings;
 
-    public DefaultPackage( String name, InstallerSettings settings )
+    public DefaultPackage( String name, InstallerSettings settings, Logger logger )
     {
         this.settings = settings;
+        this.logger = logger;
+        metadata = new FragmentFile( logger );
         suffix = name.equals( "" ) ? "" : "-" + name;
     }
 
-    private final FragmentFile metadata = new FragmentFile();
+    private final FragmentFile metadata;
 
     class TargetFile
     {

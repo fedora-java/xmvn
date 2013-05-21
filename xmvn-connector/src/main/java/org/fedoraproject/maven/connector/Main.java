@@ -35,9 +35,6 @@ public class Main
 
         try
         {
-            LoggerProvider loggerProvider = container.lookup( LoggerProvider.class );
-            org.fedoraproject.maven.utils.Logger.setProvider( loggerProvider );
-
             Configurator configurator = container.lookup( Configurator.class );
             configurator.dumpConfiguration();
         }

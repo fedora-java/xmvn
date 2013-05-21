@@ -16,8 +16,6 @@
 package org.fedoraproject.rpmquery;
 
 import static org.fedoraproject.maven.utils.FileUtils.followSymlink;
-import static org.fedoraproject.maven.utils.Logger.error;
-import static org.fedoraproject.maven.utils.Logger.info;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,7 +62,6 @@ public class RpmDb
         }
         catch ( InterruptedException e )
         {
-            error( "Interrupted while reaping rpm" );
             throw new IOException( e );
         }
         if ( exitStatus != 0 )
@@ -88,12 +85,9 @@ public class RpmDb
                 String path = row.substring( splitPoint + 1 );
                 paths.put( path, name );
             }
-
         }
         catch ( IOException e )
         {
-            error( "Failed to build RPM database: ", e );
-            info( "RPM database will be empty." );
             paths.put( "dummy", "dummy" );
         }
         finally

@@ -15,9 +15,6 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import static org.fedoraproject.maven.utils.Logger.debug;
-import static org.fedoraproject.maven.utils.Logger.warn;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -36,6 +33,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.w3c.dom.Document;
@@ -49,17 +47,21 @@ import org.xml.sax.SAXException;
  */
 class DepmapReader
 {
-    private final DependencyMap depmap = new DependencyMap();
+    private final Logger logger;
+
+    private final DependencyMap depmap;
 
     private final CountDownLatch ready = new CountDownLatch( 1 );
 
     private static Map<File, DepmapReader> readers = new TreeMap<>();
 
-    DepmapReader()
+    DepmapReader( Logger logger )
     {
+        this.logger = logger;
+        depmap = new DependencyMap( logger );
     }
 
-    public static DependencyMap readArtifactMap( File root, ResolverSettings settings )
+    public static DependencyMap readArtifactMap( File root, ResolverSettings settings, Logger logger )
     {
         boolean notYetInitialized = false;
         DepmapReader reader = null;
@@ -69,7 +71,7 @@ class DepmapReader
             reader = readers.get( root );
             if ( reader == null )
             {
-                reader = new DepmapReader();
+                reader = new DepmapReader( logger );
                 readers.put( root, reader );
                 notYetInitialized = true;
             }
@@ -132,14 +134,14 @@ class DepmapReader
         }
         catch ( IOException e )
         {
-            warn( "Could not load depmap file ", fragment.getAbsolutePath(), ": ", e );
+            logger.warn( "Could not load depmap file " + fragment.getAbsolutePath() + ": ", e );
         }
     }
 
     private void loadDepmapFile( DependencyMap map, File file )
         throws IOException
     {
-        debug( "Loading depmap file: ", file );
+        logger.debug( "Loading depmap file: " + file );
         Document mapDocument = buildDepmapModel( file );
 
         NodeList depNodes = mapDocument.getElementsByTagName( "dependency" );

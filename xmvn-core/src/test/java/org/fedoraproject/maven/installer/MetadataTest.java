@@ -25,6 +25,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
+import org.fedoraproject.maven.util.BitBucketLogger;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,7 +46,7 @@ public class MetadataTest
 
         Path depmapFile = Files.createTempFile( "xmvn-test-", ".xml" );
 
-        FragmentFile fragmentFile = new FragmentFile();
+        FragmentFile fragmentFile = new FragmentFile( new BitBucketLogger() );
         fragmentFile.write( depmapFile, false, installerSettings );
 
         assertTrue( Files.exists( depmapFile ) );

@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import static org.fedoraproject.maven.utils.Logger.debug;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +24,7 @@ import java.util.TreeSet;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
@@ -33,11 +32,18 @@ import org.fedoraproject.maven.model.Artifact;
  */
 class DependencyMap
 {
+    private final Logger logger;
+
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     private final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
 
     private final Map<Artifact, Set<Artifact>> reverseMapping = new TreeMap<>();
+
+    public DependencyMap( Logger logger )
+    {
+        this.logger = logger;
+    }
 
     public boolean isEmpty()
     {
@@ -85,7 +91,7 @@ class DependencyMap
             lock.writeLock().unlock();
         }
 
-        debug( "Added mapping ", from, " => ", to );
+        logger.debug( "Added mapping " + from + " => " + to );
     }
 
     /**
@@ -96,8 +102,7 @@ class DependencyMap
      * @param resolved list of visited nodes
      * @param parent starting point
      */
-    private static void walk( Map<Artifact, Set<Artifact>> map, Set<Artifact> visited, List<Artifact> resolved,
-                              Artifact parent )
+    private void walk( Map<Artifact, Set<Artifact>> map, Set<Artifact> visited, List<Artifact> resolved, Artifact parent )
     {
         visited.add( parent );
 
@@ -108,7 +113,7 @@ class DependencyMap
                 if ( visited.contains( child ) )
                     continue;
 
-                debug( "Artifact ", parent, " was mapped to ", child );
+                logger.debug( "Artifact " + parent + " was mapped to " + child );
                 walk( map, visited, resolved, child );
             }
         }
@@ -143,13 +148,13 @@ class DependencyMap
      */
     public List<Artifact> translate( Artifact artifact )
     {
-        debug( "Trying to translate artifact ", artifact );
+        logger.debug( "Trying to translate artifact " + artifact );
 
         try
         {
             lock.readLock().lock();
             List<Artifact> resolved = depthFirstWalk( mapping, artifact );
-            debug( "Translation result is ", Artifact.collectionToString( resolved ) );
+            logger.debug( "Translation result is " + Artifact.collectionToString( resolved ) );
             return resolved;
         }
         finally

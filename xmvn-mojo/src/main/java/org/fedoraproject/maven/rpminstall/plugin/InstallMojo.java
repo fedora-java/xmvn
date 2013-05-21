@@ -124,10 +124,11 @@ public class InstallMojo
     {
         Configuration configuration = configurator.getConfiguration();
         settings = configuration.getInstallerSettings();
+        logger.setThreshold( settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
 
         Map<String, DefaultPackage> packages = new TreeMap<>();
 
-        DefaultPackage mainPackage = new DefaultPackage( DefaultPackage.MAIN, settings );
+        DefaultPackage mainPackage = new DefaultPackage( DefaultPackage.MAIN, settings, logger );
         packages.put( DefaultPackage.MAIN, mainPackage );
 
         try
@@ -157,7 +158,7 @@ public class InstallMojo
 
                 if ( pkg == null )
                 {
-                    pkg = new DefaultPackage( packageName, settings );
+                    pkg = new DefaultPackage( packageName, settings, logger );
                     packages.put( packageName, pkg );
                 }
 
