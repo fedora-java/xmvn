@@ -25,6 +25,7 @@ import java.util.TreeMap;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.StringSplitter;
@@ -53,7 +54,8 @@ public class ResolverCli
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
     public boolean debug = false;
 
-    @Parameter( names = { "-c", "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts" )
+    @Parameter( names = { "-c", "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts;"
+        + " assume default artifact type of 'jar'" )
     public boolean classpath = false;
 
     @DynamicParameter( names = "-D", description = "Define system property" )
@@ -121,9 +123,13 @@ public class ResolverCli
             for ( String s : parameters )
             {
                 String[] tok = StringSplitter.split( s, 4, ':' );
-                Artifact artifact = new Artifact( tok[0], tok[1], tok[2], tok[3] );
 
+                if ( classpath && StringUtils.isEmpty( tok[3] ) )
+                    tok[3] = "jar";
+
+                Artifact artifact = new Artifact( tok[0], tok[1], tok[2], tok[3] );
                 File file = resolver.resolve( artifact );
+
                 if ( file == null )
                 {
                     error = true;
