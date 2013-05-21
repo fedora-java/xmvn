@@ -40,12 +40,48 @@
       <directory>target/dependency/apache-maven-${mavenVersion}</directory>
       <outputDirectory>.</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>xmvn-tools/xmvn-bisect/target/dependency</directory>
+      <outputDirectory>lib/bisect</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>xmvn-tools/xmvn-bisect/target</directory>
+      <outputDirectory>lib/bisect</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>xmvn-tools/xmvn-resolve/target/dependency</directory>
+      <outputDirectory>lib/resolver</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>xmvn-tools/xmvn-resolve/target</directory>
+      <outputDirectory>lib/resolver</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
   </fileSets>
   <files>
     <file>
       <source>target/dependency/apache-maven-${mavenVersion}/bin/mvn</source>
       <outputDirectory>bin</outputDirectory>
       <destName>xmvn</destName>
+      <fileMode>0755</fileMode>
+      <lineEnding>unix</lineEnding>
+    </file>
+    <file>
+      <source>xmvn-tools/src/main/bin/tool-script</source>
+      <outputDirectory>bin</outputDirectory>
+      <destName>xmvn-bisect</destName>
+      <fileMode>0755</fileMode>
+      <lineEnding>unix</lineEnding>
+    </file>
+    <file>
+      <source>xmvn-tools/src/main/bin/tool-script</source>
+      <outputDirectory>bin</outputDirectory>
+      <destName>xmvn-resolve</destName>
       <fileMode>0755</fileMode>
       <lineEnding>unix</lineEnding>
     </file>
