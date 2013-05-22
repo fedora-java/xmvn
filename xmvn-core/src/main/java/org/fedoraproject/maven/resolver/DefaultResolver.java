@@ -90,7 +90,8 @@ public class DefaultResolver
         initializeBisect();
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        logger.setThreshold( settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
+        int loggerThreshold = settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
+        logger.setThreshold( Math.min( logger.getThreshold(), loggerThreshold ) );
 
         resolvers.add( new LocalResolver( settings ) );
 

@@ -124,7 +124,8 @@ public class InstallMojo
     {
         Configuration configuration = configurator.getConfiguration();
         settings = configuration.getInstallerSettings();
-        logger.setThreshold( settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
+        int loggerThreshold = settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
+        logger.setThreshold( Math.min( logger.getThreshold(), loggerThreshold ) );
 
         Map<String, DefaultPackage> packages = new TreeMap<>();
 

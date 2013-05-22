@@ -113,7 +113,8 @@ public class DefaultArtifactBlacklist
     {
         Set<Artifact> aliasBlacklist = new TreeSet<>();
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        logger.setThreshold( settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
+        int loggerThreshold = settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
+        logger.setThreshold( Math.min( logger.getThreshold(), loggerThreshold ) );
 
         for ( String prefix : settings.getPrefixes() )
         {
