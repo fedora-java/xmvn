@@ -114,7 +114,7 @@ public class ResolverCli
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
             container.getLoggerManager().setThresholds( debug ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
-            Logger logger = container.lookup( Logger.class );
+            Logger logger = container.getLoggerManager().getLoggerForComponent( Resolver.class.toString() );
             Resolver resolver = container.lookup( Resolver.class );
 
             boolean error = false;
