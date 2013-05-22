@@ -67,13 +67,6 @@
     <connection>scm:git:git://git.fedorahosted.org/xmvn.git</connection>
     <developerConnection>scm:git:ssh://git.fedorahosted.org/git/xmvn.git</developerConnection>
   </scm>
-  <distributionManagement>
-    <site>
-      <id>fedorapeople.org</id>
-      <name>XMvn Website</name>
-      <url>scp://192.168.18.1/home/kojan/site</url>
-    </site>
-  </distributionManagement>
   <issueManagement>
     <system>Bugzilla</system>
     <url>https://bugzilla.redhat.com/</url>
@@ -348,100 +341,11 @@
       </plugin>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ssh</artifactId>
-            <version>${mavenWagonVersion}</version>
-          </dependency>
-        </dependencies>
+        <configuration>
+          <skip>true</skip>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
       </plugin>
     </plugins>
   </build>
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>${projectInfoReportsPluginVersion}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>index</report>
-              <report>summary</report>
-            </reports>
-          </reportSet>
-          <reportSet>
-            <id>global</id>
-            <inherited>false</inherited>
-            <reports>
-              <report>project-team</report>
-              <report>license</report>
-              <report>mailing-list</report>
-              <report>issue-tracking</report>
-              <report>scm</report>
-              <report>distribution-management</report>
-            </reports>
-          </reportSet>
-          <reportSet>
-            <id>dependencies</id>
-            <reports>
-              <report>dependency-info</report>
-              <report>dependencies</report>
-              <report>plugins</report>
-            </reports>
-          </reportSet>
-          <reportSet>
-            <id>management</id>
-            <inherited>false</inherited>
-            <reports>
-              <report>dependency-management</report>
-              <report>plugin-management</report>
-              <report>dependency-convergence</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>${pmdPluginVersion}</version>
-        <configuration>
-          <sourceEncoding>US-ASCII</sourceEncoding>
-          <minimumTokens>100</minimumTokens>
-          <targetJdk>1.7</targetJdk>
-          <excludeRoots>
-            <excludeRoot>target/generated-sources</excludeRoot>
-          </excludeRoots>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${surefireVersion}</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-plugin-plugin</artifactId>
-        <version>${pluginToolsVersion}</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>${jxrPluginVersion}</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${javadocPluginVersion}</version>
-        <configuration>
-          <show>package</show>
-          <detectJavaApiLink>false</detectJavaApiLink>
-          <doclet>net.gleamynode.apiviz.APIviz</doclet>
-          <docletArtifact>
-            <groupId>org.jboss.apiviz</groupId>
-            <artifactId>apiviz</artifactId>
-            <version>${apivizVersion}</version>
-          </docletArtifact>
-          <doctitle>XMvn ${project.version}</doctitle>
-          <header>XMvn ${project.version}</header>
-          <footer>XMvn ${project.version}</footer>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>

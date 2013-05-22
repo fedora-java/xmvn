@@ -59,7 +59,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack</id>
+            <id>maven-binaries</id>
             <phase>package</phase>
             <goals>
               <goal>unpack</goal>
@@ -72,6 +72,35 @@
                   <version>${mavenVersion}</version>
                   <type>tar.gz</type>
                   <classifier>bin</classifier>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>config-documentation</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>xmvn-core</artifactId>
+                  <version>${project.version}</version>
+                  <type>xdoc</type>
+                  <classifier>config</classifier>
+                  <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
+                  <destFileName>config.xml</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>xmvn-core</artifactId>
+                  <version>${project.version}</version>
+                  <type>xsd</type>
+                  <classifier>config</classifier>
+                  <outputDirectory>${project.build.directory}/generated-site/xsd</outputDirectory>
+                  <destFileName>config-0.5.0.xsd</destFileName>
                 </artifactItem>
               </artifactItems>
             </configuration>
@@ -97,6 +126,52 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skip>false</skip>
+          <skipDeploy>false</skipDeploy>
+          <inputEncoding>UTF-8</inputEncoding>
+          <outputEncoding>UTF-8</outputEncoding>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${projectInfoReportsPluginVersion}</version>
+        <reportSets>
+          <reportSet>
+            <reports/>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${javadocPluginVersion}</version>
+        <configuration>
+          <show>package</show>
+          <detectJavaApiLink>false</detectJavaApiLink>
+          <doclet>net.gleamynode.apiviz.APIviz</doclet>
+          <docletArtifact>
+            <groupId>org.jboss.apiviz</groupId>
+            <artifactId>apiviz</artifactId>
+            <version>${apivizVersion}</version>
+          </docletArtifact>
+          <doctitle>XMvn ${project.version}</doctitle>
+          <header>XMvn ${project.version}</header>
+          <footer>XMvn ${project.version}</footer>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

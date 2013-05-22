@@ -71,7 +71,7 @@
         <executions>
           <execution>
             <id>site-docs</id>
-            <phase>pre-site</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>xdoc</goal>
               <goal>xsd</goal>
@@ -84,6 +84,33 @@
               <goal>xpp3-reader</goal>
               <goal>xpp3-writer</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-mdo</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/generated-site/xdoc/config.xml</file>
+                  <type>xdoc</type>
+                  <classifier>config</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.build.directory}/generated-site/xsd/config-0.5.0.xsd</file>
+                  <type>xsd</type>
+                  <classifier>config</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
           </execution>
         </executions>
       </plugin>
