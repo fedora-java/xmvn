@@ -8,7 +8,7 @@ submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
 http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 
-* Milestone 0.5.0
+* Milestone 0.6.0
 
 ** improved configuration
 
@@ -21,10 +21,6 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 *** singleton configurator
     configurator should generate configuration once and cache it
-
-*** implement clone() of configuration model
-    it should be possible to create a deep clone of full configuration
-    to play with it without affecting global settings
 
 *** in tests don't modify configuration directly
     clone it and customize the clone
@@ -57,15 +53,4 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 * Random ideas (no milestone assigned)
 
-** bail out if any rule (except default) is never successfully matched
-
-** eliminate warnings about missing plugins versions
-
-** build-classpath and build-jar-repository
-
-** better handle inter-subpackage dependencies
-   versioned deps, dependency graphs etc.
-
 ** add support for classifiers and stereotypes
-
-** add support for version ranges
