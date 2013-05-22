@@ -38,7 +38,7 @@
       <item name="Plexus" href="http://plexus.codehaus.org/" target="_blank"/>
     </links>
 
-    <menu name="Download XMvn" inherit="top">
+    <menu name="Download XMvn">
       <item name="Latest Stable Release (${project.version})"
             href="http://fedorahosted.org/released/xmvn/xmvn-${project.version}.tar.xz"/>
       <item name="Previous Stable Releases"
@@ -47,11 +47,13 @@
             href="http://git.fedorahosted.org/cgit/xmvn.git/snapshot/xmvn-master.tar.gz"/>
     </menu>
 
-    <menu name="Project Documentation" inherit="top">
+    <menu name="Project Documentation">
       <item name="Release notes" href="news.html"/>
       <item name="Contributing Patches" href="patches.html"/>
-      <item name="Configuration Reference" href="xmvn-core/config.html"/>
+      <item name="Configuration" href="configuration.html"/>
+      <item name="Configuration Reference" href="config.html"/>
       <item name="Tutorials" href="howto/index.html" collapse="true">
+        <item name="Using XMvn Bisect" href="howto/bisect.html"/>
         <item name="Embedding XMvn in your application" href="howto/embed.html"/>
         <!-- Not yet available
         <item name="Using XMvn from Maven plugin" href="howto/plugin.html"/>
@@ -59,18 +61,5 @@
         <item name="Creating extension for XMvn" href="howto/extend.html"/>
       </item>
     </menu>
-
-    <menu name="Modules" inherit="top">
-      <item name="XMvn Parent" href="index.html"/>
-      <item name="XMvn Core" href="xmvn-core/index.html"/>
-      <item name="XMvn Connector" href="xmvn-connector/index.html"/>
-      <item name="XMvn MOJO" href="xmvn-mojo/index.html"/>
-      <item name="XMvn Tools" href="xmvn-tools/index.html">
-        <item name="XMvn Bisect" href="xmvn-tools/xmvn-bisect/index.html"/>
-        <item name="XMvn Resolve" href="xmvn-tools/xmvn-resolve/index.html"/>
-      </item>
-    </menu>
-
-    <menu ref="reports" inherit="bottom"/>
   </body>
 </project>

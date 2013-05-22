@@ -8,6 +8,12 @@
 
 XMvn Tutorials
 
+* How to use XMvn Bisect
+
+  This document describes debugging builds using bisection method with
+  XMvn Bisect.  Here you can find step-by-step walkthrough running
+  XMvn Bisect with some examples.
+
 * How to embed XMvn in your application
 
   This short tutorial shows how you can use services offered by XMvn
