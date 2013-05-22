@@ -159,7 +159,7 @@
         <version>${plexusVersion}</version>
       </dependency>
       <dependency>
-        <groupId>sonatype.sisu</groupId>
+        <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-container-default</artifactId>
         <version>${plexusVersion}</version>
       </dependency>
