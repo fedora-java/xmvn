@@ -35,8 +35,8 @@ How to create an extension for XMvn
   </dependency>
 ------------------------------------------------------------------------
 
-  Now we can start wrting some code.  To create an installer for
-  Exlipse artifacts we need to provide implementation for interface
+  Now we can start writing some code.  To create an installer for
+  Eclipse artifacts we need to provide implementation for interface
   <<<org.fedoraproject.maven.installer.ProjectInstaller>>>.  In order
   for XMvn to be able to find and load our extension we need to
   implement is as a Plexus component.
@@ -77,7 +77,7 @@ public class EclipseInstaller
   to show how to obtain and use configuration objects) we'll query
   standard XMvn configurator to give us the directory path.  To obtain
   a reference to the configurator (or any other service provided by
-  XMvn) it's enough to create a field of appriopriate type (in this
+  XMvn) it's enough to create a field of appropriate type (in this
   case <<<org.fedoraproject.maven.config.Configurator>>>) and annotate
   it with <<<org.codehaus.plexus.component.annotations.Requirement>>>.
   This way Plexus container will inject the dependency automatically.
@@ -99,7 +99,7 @@ public class EclipseInstaller
         Path target = javaDir.resolve( project.getArtifactId() );
 ------------------------------------------------------------------------
 
-  In a simillar way we can decide where to place the symlink to the
+  In a similar way we can decide where to place the symlink to the
   bundle (either in <<<features>>> or <<<plugins>>> directory).  Of
   course this example is oversimplified, in real extension the path
   should not be hardcoded and there the code may a bit be more
@@ -134,7 +134,7 @@ public class EclipseInstaller
 
   To generate all the metadata necessary for XMvn to recognize our
   extension we must run <<<generate-metadata>>> goal of
-  <<<plexus-component-metadata>>> plugin.  This is done bt adding
+  <<<plexus-component-metadata>>> plugin.  This is done by adding
   appropriate entry in the POM.
 
 ------------------------------------------------------------------------
@@ -160,10 +160,10 @@ public class EclipseInstaller
   After building the extension with famous <<<mvn clean install>>> we
   can place it in <<<lib/ext/>>> directory of XMvn installation.  The
   extension will be automatically loaded by Plexus Classworlds during
-  XMvn bootup and implemented functionality will be available to
+  XMvn boot-up and implemented functionality will be available to
   packages built with XMvn out of the box.
 
-  Note that in this example I completely ignored POM instalation.
+  Note that in this example I completely ignored POM installation.
   This is because this tutorial is supposed to be just a starting
   point to creating extensions and not complete documentation on this
   subject and I wanted to keep this it short and simple.

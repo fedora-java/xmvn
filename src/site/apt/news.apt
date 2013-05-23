@@ -53,7 +53,7 @@ Release notes for XMvn
 
     * Better handling of inaccurate configuration
 
-      In previos versions any packaging rules that didn't match any
+      In previous versions any packaging rules that didn't match any
       artifact in the reactor were silently ignored.  Since version
       0.5.0 any non-optional packaging rule that is not used causes
       the build to fail.
@@ -103,7 +103,7 @@ Release notes for XMvn
 
       In previous versions configuration files were read in in the
       system default order.  This was causing unpredictable results in
-      cases where the order of configurationd did matter.
+      cases where the order of configuration did matter.
 
     * Correctly handle conflicts between explicit packaging rules and
       implicit singleton packaging rule
@@ -157,7 +157,7 @@ Release notes for XMvn
 
     * Improved support for Fedora Software Collections
 
-    * Enchanced artifact blacklist
+    * Enhanced artifact blacklist
 
     * Improved logging
 

@@ -21,7 +21,7 @@ How to embed XMvn in your application
   You can use API documentation and source cross-reference available
   on this website.
 
-  Don't rely on private APIs.  All interfecaes and classes being part
+  Don't rely on private APIs.  All interfaces and classes being part
   of public API of XMvn state so in their Javadocs.  Any non-public
   API may change without any notice, even in minor releases.  So it's
   best for you to make sure that the API you want to use is public.

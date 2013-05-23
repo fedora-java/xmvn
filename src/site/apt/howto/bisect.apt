@@ -16,14 +16,14 @@ Debugging builds using bisection method
 
   This command will first build your project in pure local and pure
   upstream modes and then try different combinations of upstream and
-  local artifacts.  It will point to two builds that dffer only by one
-  dependency.  Normally one of the builds will be successfull and the
+  local artifacts.  It will point to two builds that differ only by one
+  dependency.  Normally one of the builds will be successful and the
   other one failed.  Diff between these build logs can be very helpful
   when debugging build failure.
 
 * Requirements
 
-  To use <<<xmvn-bisect>>> tool to debug build fallure of a project
+  To use <<<xmvn-bisect>>> tool to debug build failure of a project
   the following conditions must be met (hard requirements):
 
   * the all project dependencies are available in both system
@@ -41,7 +41,7 @@ Debugging builds using bisection method
 
   * the build is stable (there is no hazard; random build failures
     will likely cause false positives and greatly reduce usefulness of
-    the reuslt),
+    the result),
 
   * only one dependency artifact is causing build failure in local
     mode (if there are multiple reasons of build failure then
@@ -63,7 +63,7 @@ Debugging builds using bisection method
   Doing this should reduce pollution of build logs (otherwise some
   logs might contain lines informing about artifacts being downloaded)
   and reduce hazard in general (for example upstream artifact being
-  accidently used instead of local one).
+  accidentally used instead of local one).
 
 * Running XMvn Bisect
 
@@ -78,7 +78,7 @@ Debugging builds using bisection method
 
 * Analyzing output
 
-  Upon successfull completion of the command there should be several
+  Upon successful completion of the command there should be several
   build logs in current working directory.  Name of the logs are
   prefixed with <<<bisect->>>.  Two builds, usually one failed and one
   successful, should be pointed to.  A command to see the diff between

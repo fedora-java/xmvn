@@ -6,7 +6,7 @@
                    2013-03-15
 
 
-~~ Derrived from patches.xml file from Apache Commons Site
+~~ Derived from patches.xml file from Apache Commons Site
 ~~ revision 1457052 (org.apache.commons:commons-site).
 ~~ svn co http://svn.apache.org/repos/asf/commons/cms-site/trunk/
 ~~ Mikolaj Izdebski changed this file.
@@ -31,7 +31,7 @@ Contributing Patches
 
 * Respect The Original Style
 
-  Please respect the style of the orginal file.  Make sure that your
+  Please respect the style of the original file.  Make sure that your
   additions fit in with that style.
 
   XMvn project has its coding conventions, which are based on
