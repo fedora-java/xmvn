@@ -1,0 +1,83 @@
+            --------------------
+                  Contact
+            --------------------
+              Mikolaj Izdebski
+            --------------------
+                 2013-05-23
+
+
+Preferred ways of contact
+
+  There are many ways to contact XMvn authors and maintainers.  The
+  choice of channel of comunication depends on purpose and topic
+  rather than your individual preference.
+
+*--------------------------*---------------*---------------*
+|                          |  <<Preferred  | <<Alternative |
+|  <<Purpose of contact>>  | communication | communication |
+|                          |   channel>>   |   channel>>   |
+*--------------------------+---------------*---------------*
+| Reporting bugs           | Bugzilla      |               |
+*--------------------------+---------------*---------------*
+| Requesting features      | Bugzilla      | Mailing list  |
+*--------------------------+---------------*---------------*
+| Asking quick questions   | IRC           | Mailing list  |
+*--------------------------+---------------*---------------*
+| Asking for support       | Mailing list  |               |
+*--------------------------+---------------*---------------*
+| Sending feedback         | Mailing list  | Private email |
+*--------------------------+---------------*---------------*
+| Discussing development   | Mailing list  | IRC           |
+*--------------------------+---------------*---------------*
+| Submitting patches       | Bugzilla      | Pull request  |
+*--------------------------+---------------*---------------*
+| Reporting security bugs  | Private email |               |
+*--------------------------*---------------*---------------*
+Preferred ways of contact
+
+
+Bugzilla
+
+  All security-insensitive bugs should be reported on
+  {{{http://bugzilla.redhat.com/}Red Hat Bugzilla}}.  The appropriate
+  product for XMvn is <<<Fedora>>>, component is <<<xmvn>>>.
+  Anonymous users have read-only access and can only browse bugs.  In
+  order to submit new bug report or comment on existing one you need
+  to have an account on Red Hat Bugzilla and log in with your
+  credinals.
+
+  Submitting patches is described in detail in a separate document.
+
+Mailing list
+
+  Topics related to usage and development of XMvn can be discussed on
+  {{{mailto:java-devel@fedoraproject.org}Fedora Java mailing list}}.
+  To get a reply tou need to
+  {{{http://lists.fedoraproject.org/mailman/listinfo/java-devel}subscribe}}
+  to the list.  Alternatively you can check
+  {{{http://lists.fedoraproject.org/pipermail/java-devel/}list
+  archives}}.
+
+  When positing to the mailing list please follow some basic rules.
+  Don't top-post, send mesaages in plain text (not HTML), don't CC the
+  sender when replying to a message, try to limit line lengths to 72
+  characters, avoid non-ASCII characters.
+
+IRC
+
+  Internet Relay Chat is the preferred way of asking quick questions
+  and other real-time comunication.  You can find XMvn developers and
+  maintainers hanging out on <<<#fedora-java>>> on Freenode.
+
+  If you don't get any response in reasonable then you can try
+  contacting <<<mizdebsk>>> directly.
+
+Private mail
+
+  As the last resort way of contacting XMvn authors you can send them
+  private email.  You can find their addresses in
+  {{{https://git.fedorahosted.org/cgit/xmvn.git/plain/AUTHORS}AUTHORS
+  file}}, which is available in source distribution.
+
+  Please do <<not>> send private emails asking for support.  The
+  mailing list is for such purposes.
