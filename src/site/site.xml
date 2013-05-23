@@ -38,19 +38,13 @@
       <item name="Plexus" href="http://plexus.codehaus.org/" target="_blank"/>
     </links>
 
-    <menu name="Download XMvn">
-      <item name="Latest Stable Release (${project.version})"
-            href="http://fedorahosted.org/released/xmvn/xmvn-${project.version}.tar.xz"/>
-      <item name="Previous Stable Releases"
-            href="http://fedorahosted.org/released/xmvn/"/>
-      <item name="Latest Development Snapshot"
-            href="http://git.fedorahosted.org/cgit/xmvn.git/snapshot/xmvn-master.tar.gz"/>
+    <menu>
+      <item name="About XMvn" href="about.html"/>
+      <item name="Download" href="download.html"/>
+      <item name="Release notes" href="news.html"/>
     </menu>
 
     <menu name="Project Documentation">
-      <item name="About XMvn" href="about.html"/>
-      <item name="Release notes" href="news.html"/>
-      <item name="Contributing Patches" href="patches.html"/>
       <item name="Configuration" href="configuration.html"/>
       <item name="Configuration Reference" href="config.html"/>
       <item name="Tutorials" href="howto/index.html" collapse="true">
@@ -61,6 +55,10 @@
         -->
         <item name="Creating extension for XMvn" href="howto/extend.html"/>
       </item>
+    </menu>
+
+    <menu name="Contribute">
+      <item name="Contributing Patches" href="patches.html"/>
     </menu>
   </body>
 </project>

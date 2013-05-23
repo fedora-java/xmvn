@@ -1,0 +1,92 @@
+            --------------------
+                  Download
+            --------------------
+              Mikolaj Izdebski
+            --------------------
+                 2013-05-23
+
+
+Getting XMvn
+
+  This page describes how to obtain source code of XMvn.  Currently
+  there are no binary releases available, so you'll have to build XMvn
+  on your own.  XMvn is intended to be used mostly by GNU/Linux, which
+  usually build all packages from source, the lack of binary releases
+  isn't considered a problem.
+
+  XMvn is hosted on Fedora Project infrastructure, but there is a
+  Github mirror available for convinience.  Github mirror may be
+  sometimes slightly out of date, but some people may still prefer it.
+  It also serves as a backup in case of outage at Fedora Hosted.
+
+Releases
+
+  The latest release of XMvn is ${project.version}.  If you are not
+  sure which version to download then you are recommended to get this
+  version.  You can get
+  {{{http://fedorahosted.org/released/xmvn/xmvn-${project.version}.tar.xz}source
+  tarball of version ${project.version}}} right now.
+
+  Source tarballs of previous releases can be found in
+  {{{http://fedorahosted.org/released/xmvn/}archives}}.  For
+  information how to obtain sources of development versions, continue
+  reading.
+
+Downloading source tarballs
+
+  * Fedora Hosted (primary repository)
+
+    * latest release:
+      {{{http://fedorahosted.org/released/xmvn/xmvn-${project.version}.tar.xz}xmvn-${project.version}.tar.xz}}
+
+    * latest development snapshot:
+      {{{http://git.fedorahosted.org/cgit/xmvn.git/snapshot/xmvn-master.tar.gz}xmvn-master.tar.gz}}
+
+  * Github (mirror)
+
+    * latest release:
+      {{{https://github.com/mizdebsk/xmvn/archive/${project.version}.tar.gz}xmvn-${project.version}.tar.gz}}
+      or
+      {{{https://github.com/mizdebsk/xmvn/archive/${project.version}.zip}xmvn-${project.version}.zip}}
+
+    * latest development snapshot:
+      {{{https://github.com/mizdebsk/xmvn/archive/master.tar.gz}xmvn-master.tar.gz}}
+      or
+      {{{https://github.com/mizdebsk/xmvn/archive/master.zip}xmvn-master.zip}}
+
+Checking sources from SCM
+
+  * Fedora Hosted (primary repository)
+
+    * anonymous access (read-only):
+
+---------------------------------------------
+git clone git://git.fedorahosted.org/xmvn.git
+---------------------------------------------
+
+    * developer access (for developers with commit rights):
+
+-------------------------------------------------
+git clone ssh://git.fedorahosted.org/git/xmvn.git
+-------------------------------------------------
+
+  * Github (mirror)
+
+    * anonymous access (read-only):
+
+--------------------------------------------
+git clone git://github.com/mizdebsk/xmvn.git
+--------------------------------------------
+
+    * developer access (for developers with commit rights):
+
+------------------------------------------
+git clone git@github.com:mizdebsk/xmvn.git
+------------------------------------------
+
+Browsing source code through Web
+
+  * {{{http://git.fedorahosted.org/cgit/xmvn.git}Fedora Hosted
+    (primary repository)}}
+
+  * {{{http://github.com/mizdebsk/xmvn/}Github (mirror)}}
