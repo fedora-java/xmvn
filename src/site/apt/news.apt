@@ -19,33 +19,6 @@ Release notes for XMvn
       corresponding files in system artifact repository.  It is also
       able to recursively process whole directories.
 
-  * Minor bugfixes
-
-    * Incorrect path to JPP artifacts
-
-      Paths to JPP artifacts containing more than one slash in groupId
-      were generated incorrectly.  This could cause dependency
-      resolution failures in some rare cases.  This bug was fixed in
-      version 0.5.0.
-
-    * Fixed exit code of XMvn Resolve
-
-      Now <<<xmvn-resolve>>> returns 0 when it successfully resolves
-      all artifacts, 1 on failure to resolve one or more artifacts and
-      2 when some other error occurs.  In the last case a stack trace
-      is printed too.
-
-    * Fixed installation of artifact marked as not installable
-
-      Before version 0.5.0 XMvn tried to find installers for all
-      artifacts in the reactor, even for those marked as not
-      installable.  As a result reactors that contained artifacts with
-      unsupported packaging types failed to build, even if instalation
-      of these artifacts was explicitly skipped.
-
-      This bug was fixed in XMvn 0.5.0, in which artifact packaging
-      type has to be supported only if the artifact is installable.
-
   * Minor features
 
     * Basic support for dependency version ranges
@@ -75,6 +48,33 @@ Release notes for XMvn
       artifact in the reactor were silently ignored.  Since version
       0.5.0 any non-optional packaging rule that is not used causes
       the build to fail.
+
+  * Minor bugfixes
+
+    * Incorrect path to JPP artifacts
+
+      Paths to JPP artifacts containing more than one slash in groupId
+      were generated incorrectly.  This could cause dependency
+      resolution failures in some rare cases.  This bug was fixed in
+      version 0.5.0.
+
+    * Fixed exit code of XMvn Resolve
+
+      Now <<<xmvn-resolve>>> returns 0 when it successfully resolves
+      all artifacts, 1 on failure to resolve one or more artifacts and
+      2 when some other error occurs.  In the last case a stack trace
+      is printed too.
+
+    * Fixed installation of artifact marked as not installable
+
+      Before version 0.5.0 XMvn tried to find installers for all
+      artifacts in the reactor, even for those marked as not
+      installable.  As a result reactors that contained artifacts with
+      unsupported packaging types failed to build, even if instalation
+      of these artifacts was explicitly skipped.
+
+      This bug was fixed in XMvn 0.5.0, in which artifact packaging
+      type has to be supported only if the artifact is installable.
 
 * What's new in XMvn 0.4.2
 
