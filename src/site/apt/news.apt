@@ -3,7 +3,7 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-05-21
+                    2013-05-23
 
 
 Release notes for XMvn
@@ -18,6 +18,15 @@ Release notes for XMvn
       to replace individual artifact files with symbolic links to
       corresponding files in system artifact repository.  It is also
       able to recursively process whole directories.
+
+    * XMvn Bisect
+
+      Since version 0.5.0 a new tool - XMvn Bisect - is available.
+      This tool helps automating debugging build failures using
+      bisection method.  It first builds project using dependencies
+      coming from system repository only, next only from remote
+      repositories, then halves dependency set recursively until it
+      finds differences which are causing build failure.
 
   * Minor features
 
