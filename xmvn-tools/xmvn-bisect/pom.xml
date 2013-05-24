@@ -22,7 +22,7 @@
   <parent>
     <artifactId>xmvn-tools</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
-    <version>0.5.0</version>
+    <version>0.5.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>xmvn-bisect</artifactId>
