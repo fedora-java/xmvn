@@ -44,6 +44,7 @@ import org.fedoraproject.maven.installer.DefaultPackage;
 import org.fedoraproject.maven.installer.Installer;
 import org.fedoraproject.maven.installer.ProjectInstallationException;
 import org.fedoraproject.maven.installer.ProjectInstaller;
+import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -124,8 +125,7 @@ public class InstallMojo
     {
         Configuration configuration = configurator.getConfiguration();
         settings = configuration.getInstallerSettings();
-        int loggerThreshold = settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
-        logger.setThreshold( Math.min( logger.getThreshold(), loggerThreshold ) );
+        LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         Map<String, DefaultPackage> packages = new TreeMap<>();
 

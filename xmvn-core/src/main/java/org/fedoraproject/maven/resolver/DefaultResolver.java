@@ -31,6 +31,7 @@ import org.fedoraproject.maven.repository.Layout;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.SingletonRepository;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
+import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -90,8 +91,7 @@ public class DefaultResolver
         initializeBisect();
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        int loggerThreshold = settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
-        logger.setThreshold( Math.min( logger.getThreshold(), loggerThreshold ) );
+        LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         resolvers.add( new LocalResolver( settings ) );
 

@@ -26,6 +26,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -113,8 +114,7 @@ public class DefaultArtifactBlacklist
     {
         Set<Artifact> aliasBlacklist = new TreeSet<>();
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        int loggerThreshold = settings.isDebug() ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
-        logger.setThreshold( Math.min( logger.getThreshold(), loggerThreshold ) );
+        LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         for ( String prefix : settings.getPrefixes() )
         {
