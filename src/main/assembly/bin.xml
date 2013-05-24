@@ -41,6 +41,9 @@
       <outputDirectory>.</outputDirectory>
       <includes>
         <include>bin/m2.conf</include>
+        <include>bin/mvn</include>
+        <include>bin/mvnDebug</include>
+        <include>bin/mvnyjp</include>
         <include>conf/settings.xml</include>
         <include>NOTICE.txt</include>
         <include>**/*.jar</include>
