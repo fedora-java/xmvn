@@ -62,7 +62,7 @@
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
         <configuration>
-          <version>0.6.0-SNAPSHOT</version>
+          <version>0.5.0</version>
           <useJava5>true</useJava5>
           <models>
             <model>src/main/mdo/config.mdo</model>
