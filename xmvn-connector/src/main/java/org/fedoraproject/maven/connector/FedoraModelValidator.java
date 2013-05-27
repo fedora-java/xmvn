@@ -123,7 +123,6 @@ public class FedoraModelValidator
 
             extension.setVersion( replaceVersion( groupId, artifactId, extension.getVersion() ) );
         }
-
     }
 
     private void customizePlugins( Model model )

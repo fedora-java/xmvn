@@ -17,6 +17,9 @@ package org.fedoraproject.maven.tests;
 
 import org.codehaus.plexus.util.interpolation.Interpolator;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 class XMvnBisectIntegrationTest
 {
     Interpolator interpolator;

@@ -30,8 +30,8 @@ public interface ConfigurationMerger
      * 
      * @param dominant the dominant configuration into which the recessive configuration will be merged (may be
      *            {@code null})
-     * @param recessive the recessive configuration from which the configuration will inherited (may not be
-     *            {@code null})
+     * @param recessive the recessive configuration from which the configuration will inherited (may not be {@code null}
+     *            )
      * @return merged configuration (not {@code null}, may be the same as dominant)
      */
     Configuration merge( Configuration dominant, Configuration recessive );

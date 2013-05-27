@@ -29,6 +29,9 @@ import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.util.BitBucketLogger;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DepmapTest
     extends PlexusTestCase
 {

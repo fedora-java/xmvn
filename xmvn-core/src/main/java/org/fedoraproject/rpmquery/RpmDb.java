@@ -30,6 +30,9 @@ import java.util.concurrent.CountDownLatch;
 
 import org.fedoraproject.maven.utils.FileUtils;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class RpmDb
 {
     private static final Map<String, String> paths = new TreeMap<>();

@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class EffectivePackagingTest
     extends PlexusTestCase
 {

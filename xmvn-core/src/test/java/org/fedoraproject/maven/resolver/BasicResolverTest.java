@@ -22,6 +22,9 @@ import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class BasicResolverTest
     extends PlexusTestCase
 {
