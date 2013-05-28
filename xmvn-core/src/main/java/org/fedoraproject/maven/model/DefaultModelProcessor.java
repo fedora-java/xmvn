@@ -115,8 +115,8 @@ public class DefaultModelProcessor
             {
                 Developer developer = developerIterator.next();
                 visitor.visitDeveloper( developer );
-                developer = visitor.replaceDeveloper( developer );
                 visitDeveloper( visitor, developer );
+                developer = visitor.replaceDeveloper( developer );
                 if ( developer == null )
                     developerIterator.remove();
                 else
@@ -132,8 +132,8 @@ public class DefaultModelProcessor
             {
                 Contributor contributor = contributorIterator.next();
                 visitor.visitContributor( contributor );
-                contributor = visitor.replaceContributor( contributor );
                 visitContributor( visitor, contributor );
+                contributor = visitor.replaceContributor( contributor );
                 if ( contributor == null )
                     contributorIterator.remove();
                 else
@@ -149,8 +149,8 @@ public class DefaultModelProcessor
             {
                 MailingList mailingList = mailingListIterator.next();
                 visitor.visitMailingList( mailingList );
-                mailingList = visitor.replaceMailingList( mailingList );
                 visitMailingList( visitor, mailingList );
+                mailingList = visitor.replaceMailingList( mailingList );
                 if ( mailingList == null )
                     mailingListIterator.remove();
                 else
@@ -202,8 +202,8 @@ public class DefaultModelProcessor
         if ( ciManagement != null )
         {
             visitor.visitCiManagement( ciManagement );
-            ciManagement = visitor.replaceCiManagement( ciManagement );
             visitCiManagement( visitor, ciManagement );
+            ciManagement = visitor.replaceCiManagement( ciManagement );
             model.setCiManagement( ciManagement );
         }
 
@@ -211,8 +211,8 @@ public class DefaultModelProcessor
         if ( distributionManagement != null )
         {
             visitor.visitDistributionManagement( distributionManagement );
-            distributionManagement = visitor.replaceDistributionManagement( distributionManagement );
             visitDistributionManagement( visitor, distributionManagement );
+            distributionManagement = visitor.replaceDistributionManagement( distributionManagement );
             model.setDistributionManagement( distributionManagement );
         }
 
@@ -238,8 +238,8 @@ public class DefaultModelProcessor
         if ( dependencyManagement != null )
         {
             visitor.visitDependencyManagement( dependencyManagement );
-            dependencyManagement = visitor.replaceDependencyManagement( dependencyManagement );
             visitDependencyManagement( visitor, dependencyManagement );
+            dependencyManagement = visitor.replaceDependencyManagement( dependencyManagement );
             model.setDependencyManagement( dependencyManagement );
         }
 
@@ -251,8 +251,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitDependency( dependency );
-                dependency = visitor.replaceDependency( dependency );
                 visitDependency( visitor, dependency );
+                dependency = visitor.replaceDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -268,8 +268,8 @@ public class DefaultModelProcessor
             {
                 Repository repository = repositoryIterator.next();
                 visitor.visitRepository( repository );
-                repository = visitor.replaceRepository( repository );
                 visitRepository( visitor, repository );
+                repository = visitor.replaceRepository( repository );
                 if ( repository == null )
                     repositoryIterator.remove();
                 else
@@ -285,8 +285,8 @@ public class DefaultModelProcessor
             {
                 Repository pluginRepository = pluginRepositoryIterator.next();
                 visitor.visitPluginRepository( pluginRepository );
-                pluginRepository = visitor.replacePluginRepository( pluginRepository );
                 visitPluginRepository( visitor, pluginRepository );
+                pluginRepository = visitor.replacePluginRepository( pluginRepository );
                 if ( pluginRepository == null )
                     pluginRepositoryIterator.remove();
                 else
@@ -298,8 +298,8 @@ public class DefaultModelProcessor
         if ( build != null )
         {
             visitor.visitBuild( build );
-            build = visitor.replaceBuild( build );
             visitBuild( visitor, build );
+            build = visitor.replaceBuild( build );
             model.setBuild( build );
         }
 
@@ -307,8 +307,8 @@ public class DefaultModelProcessor
         if ( reporting != null )
         {
             visitor.visitReporting( reporting );
-            reporting = visitor.replaceReporting( reporting );
             visitReporting( visitor, reporting );
+            reporting = visitor.replaceReporting( reporting );
             model.setReporting( reporting );
         }
 
@@ -320,8 +320,8 @@ public class DefaultModelProcessor
             {
                 Profile profile = profileIterator.next();
                 visitor.visitProfile( profile );
-                profile = visitor.replaceProfile( profile );
                 visitProfile( visitor, profile );
+                profile = visitor.replaceProfile( profile );
                 if ( profile == null )
                     profileIterator.remove();
                 else
@@ -356,8 +356,8 @@ public class DefaultModelProcessor
             {
                 Resource resource = resourceIterator.next();
                 visitor.visitBuildResource( resource );
-                resource = visitor.replaceBuildResource( resource );
                 visitBuildResource( visitor, resource );
+                resource = visitor.replaceBuildResource( resource );
                 if ( resource == null )
                     resourceIterator.remove();
                 else
@@ -373,8 +373,8 @@ public class DefaultModelProcessor
             {
                 Resource testResource = testResourceIterator.next();
                 visitor.visitBuildTestResource( testResource );
-                testResource = visitor.replaceBuildTestResource( testResource );
                 visitBuildTestResource( visitor, testResource );
+                testResource = visitor.replaceBuildTestResource( testResource );
                 if ( testResource == null )
                     testResourceIterator.remove();
                 else
@@ -402,8 +402,8 @@ public class DefaultModelProcessor
         if ( pluginManagement != null )
         {
             visitor.visitBuildPluginManagement( pluginManagement );
-            pluginManagement = visitor.replaceBuildPluginManagement( pluginManagement );
             visitBuildPluginManagement( visitor, pluginManagement );
+            pluginManagement = visitor.replaceBuildPluginManagement( pluginManagement );
             build.setPluginManagement( pluginManagement );
         }
 
@@ -415,8 +415,8 @@ public class DefaultModelProcessor
             {
                 Plugin plugin = pluginIterator.next();
                 visitor.visitBuildPlugin( plugin );
-                plugin = visitor.replaceBuildPlugin( plugin );
                 visitBuildPlugin( visitor, plugin );
+                plugin = visitor.replaceBuildPlugin( plugin );
                 if ( plugin == null )
                     pluginIterator.remove();
                 else
@@ -435,8 +435,8 @@ public class DefaultModelProcessor
             {
                 PluginExecution execution = executionIterator.next();
                 visitor.visitBuildPluginExecution( execution );
-                execution = visitor.replaceBuildPluginExecution( execution );
                 visitBuildPluginExecution( visitor, execution );
+                execution = visitor.replaceBuildPluginExecution( execution );
                 if ( execution == null )
                     executionIterator.remove();
                 else
@@ -452,8 +452,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitBuildPluginDependency( dependency );
-                dependency = visitor.replaceBuildPluginDependency( dependency );
                 visitBuildPluginDependency( visitor, dependency );
+                dependency = visitor.replaceBuildPluginDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -510,8 +510,8 @@ public class DefaultModelProcessor
             {
                 Plugin plugin = pluginIterator.next();
                 visitor.visitBuildPluginManagementPlugin( plugin );
-                plugin = visitor.replaceBuildPluginManagementPlugin( plugin );
                 visitBuildPluginManagementPlugin( visitor, plugin );
+                plugin = visitor.replaceBuildPluginManagementPlugin( plugin );
                 if ( plugin == null )
                     pluginIterator.remove();
                 else
@@ -530,8 +530,8 @@ public class DefaultModelProcessor
             {
                 PluginExecution execution = executionIterator.next();
                 visitor.visitBuildPluginManagementPluginExecution( execution );
-                execution = visitor.replaceBuildPluginManagementPluginExecution( execution );
                 visitBuildPluginManagementPluginExecution( visitor, execution );
+                execution = visitor.replaceBuildPluginManagementPluginExecution( execution );
                 if ( execution == null )
                     executionIterator.remove();
                 else
@@ -547,8 +547,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitBuildPluginManagementPluginDependency( dependency );
-                dependency = visitor.replaceBuildPluginManagementPluginDependency( dependency );
                 visitBuildPluginManagementPluginDependency( visitor, dependency );
+                dependency = visitor.replaceBuildPluginManagementPluginDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -675,8 +675,8 @@ public class DefaultModelProcessor
             {
                 Notifier notifier = notifierIterator.next();
                 visitor.visitCiManagementNotifier( notifier );
-                notifier = visitor.replaceCiManagementNotifier( notifier );
                 visitCiManagementNotifier( visitor, notifier );
+                notifier = visitor.replaceCiManagementNotifier( notifier );
                 if ( notifier == null )
                     notifierIterator.remove();
                 else
@@ -774,8 +774,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitDependencyManagementDependency( dependency );
-                dependency = visitor.replaceDependencyManagementDependency( dependency );
                 visitDependencyManagementDependency( visitor, dependency );
+                dependency = visitor.replaceDependencyManagementDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -846,8 +846,8 @@ public class DefaultModelProcessor
         if ( repository != null )
         {
             visitor.visitDistributionManagementRepository( repository );
-            repository = visitor.replaceDistributionManagementRepository( repository );
             visitDistributionManagementRepository( visitor, repository );
+            repository = visitor.replaceDistributionManagementRepository( repository );
             distributionManagement.setRepository( repository );
         }
 
@@ -855,8 +855,8 @@ public class DefaultModelProcessor
         if ( snapshotRepository != null )
         {
             visitor.visitDistributionManagementSnapshotRepository( snapshotRepository );
-            snapshotRepository = visitor.replaceDistributionManagementSnapshotRepository( snapshotRepository );
             visitDistributionManagementSnapshotRepository( visitor, snapshotRepository );
+            snapshotRepository = visitor.replaceDistributionManagementSnapshotRepository( snapshotRepository );
             distributionManagement.setSnapshotRepository( snapshotRepository );
         }
 
@@ -960,8 +960,8 @@ public class DefaultModelProcessor
         if ( activation != null )
         {
             visitor.visitProfileActivation( activation );
-            activation = visitor.replaceProfileActivation( activation );
             visitProfileActivation( visitor, activation );
+            activation = visitor.replaceProfileActivation( activation );
             profile.setActivation( activation );
         }
 
@@ -969,8 +969,8 @@ public class DefaultModelProcessor
         if ( build != null )
         {
             visitor.visitProfileBuild( build );
-            build = visitor.replaceProfileBuild( build );
             visitProfileBuild( visitor, build );
+            build = visitor.replaceProfileBuild( build );
             profile.setBuild( build );
         }
 
@@ -994,8 +994,8 @@ public class DefaultModelProcessor
         if ( distributionManagement != null )
         {
             visitor.visitProfileDistributionManagement( distributionManagement );
-            distributionManagement = visitor.replaceProfileDistributionManagement( distributionManagement );
             visitProfileDistributionManagement( visitor, distributionManagement );
+            distributionManagement = visitor.replaceProfileDistributionManagement( distributionManagement );
             profile.setDistributionManagement( distributionManagement );
         }
 
@@ -1021,8 +1021,8 @@ public class DefaultModelProcessor
         if ( dependencyManagement != null )
         {
             visitor.visitProfileDependencyManagement( dependencyManagement );
-            dependencyManagement = visitor.replaceProfileDependencyManagement( dependencyManagement );
             visitProfileDependencyManagement( visitor, dependencyManagement );
+            dependencyManagement = visitor.replaceProfileDependencyManagement( dependencyManagement );
             profile.setDependencyManagement( dependencyManagement );
         }
 
@@ -1034,8 +1034,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitProfileDependency( dependency );
-                dependency = visitor.replaceProfileDependency( dependency );
                 visitProfileDependency( visitor, dependency );
+                dependency = visitor.replaceProfileDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -1051,8 +1051,8 @@ public class DefaultModelProcessor
             {
                 Repository repository = repositoryIterator.next();
                 visitor.visitProfileRepository( repository );
-                repository = visitor.replaceProfileRepository( repository );
                 visitProfileRepository( visitor, repository );
+                repository = visitor.replaceProfileRepository( repository );
                 if ( repository == null )
                     repositoryIterator.remove();
                 else
@@ -1068,8 +1068,8 @@ public class DefaultModelProcessor
             {
                 Repository pluginRepository = pluginRepositoryIterator.next();
                 visitor.visitProfilePluginRepository( pluginRepository );
-                pluginRepository = visitor.replaceProfilePluginRepository( pluginRepository );
                 visitProfilePluginRepository( visitor, pluginRepository );
+                pluginRepository = visitor.replaceProfilePluginRepository( pluginRepository );
                 if ( pluginRepository == null )
                     pluginRepositoryIterator.remove();
                 else
@@ -1081,8 +1081,8 @@ public class DefaultModelProcessor
         if ( reporting != null )
         {
             visitor.visitProfileReporting( reporting );
-            reporting = visitor.replaceProfileReporting( reporting );
             visitProfileReporting( visitor, reporting );
+            reporting = visitor.replaceProfileReporting( reporting );
             profile.setReporting( reporting );
         }
     }
@@ -1124,8 +1124,8 @@ public class DefaultModelProcessor
             {
                 Resource resource = resourceIterator.next();
                 visitor.visitProfileBuildResource( resource );
-                resource = visitor.replaceProfileBuildResource( resource );
                 visitProfileBuildResource( visitor, resource );
+                resource = visitor.replaceProfileBuildResource( resource );
                 if ( resource == null )
                     resourceIterator.remove();
                 else
@@ -1141,8 +1141,8 @@ public class DefaultModelProcessor
             {
                 Resource testResource = testResourceIterator.next();
                 visitor.visitProfileBuildTestResource( testResource );
-                testResource = visitor.replaceProfileBuildTestResource( testResource );
                 visitProfileBuildTestResource( visitor, testResource );
+                testResource = visitor.replaceProfileBuildTestResource( testResource );
                 if ( testResource == null )
                     testResourceIterator.remove();
                 else
@@ -1170,8 +1170,8 @@ public class DefaultModelProcessor
         if ( pluginManagement != null )
         {
             visitor.visitProfileBuildPluginManagement( pluginManagement );
-            pluginManagement = visitor.replaceProfileBuildPluginManagement( pluginManagement );
             visitProfileBuildPluginManagement( visitor, pluginManagement );
+            pluginManagement = visitor.replaceProfileBuildPluginManagement( pluginManagement );
             buildBase.setPluginManagement( pluginManagement );
         }
 
@@ -1183,8 +1183,8 @@ public class DefaultModelProcessor
             {
                 Plugin plugin = pluginIterator.next();
                 visitor.visitProfileBuildPlugin( plugin );
-                plugin = visitor.replaceProfileBuildPlugin( plugin );
                 visitProfileBuildPlugin( visitor, plugin );
+                plugin = visitor.replaceProfileBuildPlugin( plugin );
                 if ( plugin == null )
                     pluginIterator.remove();
                 else
@@ -1203,8 +1203,8 @@ public class DefaultModelProcessor
             {
                 PluginExecution execution = executionIterator.next();
                 visitor.visitProfileBuildPluginExecution( execution );
-                execution = visitor.replaceProfileBuildPluginExecution( execution );
                 visitProfileBuildPluginExecution( visitor, execution );
+                execution = visitor.replaceProfileBuildPluginExecution( execution );
                 if ( execution == null )
                     executionIterator.remove();
                 else
@@ -1220,8 +1220,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitProfileBuildPluginDependency( dependency );
-                dependency = visitor.replaceProfileBuildPluginDependency( dependency );
                 visitProfileBuildPluginDependency( visitor, dependency );
+                dependency = visitor.replaceProfileBuildPluginDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -1278,8 +1278,8 @@ public class DefaultModelProcessor
             {
                 Plugin plugin = pluginIterator.next();
                 visitor.visitProfileBuildPluginManagementPlugin( plugin );
-                plugin = visitor.replaceProfileBuildPluginManagementPlugin( plugin );
                 visitProfileBuildPluginManagementPlugin( visitor, plugin );
+                plugin = visitor.replaceProfileBuildPluginManagementPlugin( plugin );
                 if ( plugin == null )
                     pluginIterator.remove();
                 else
@@ -1298,8 +1298,8 @@ public class DefaultModelProcessor
             {
                 PluginExecution execution = executionIterator.next();
                 visitor.visitProfileBuildPluginManagementPluginExecution( execution );
-                execution = visitor.replaceProfileBuildPluginManagementPluginExecution( execution );
                 visitProfileBuildPluginManagementPluginExecution( visitor, execution );
+                execution = visitor.replaceProfileBuildPluginManagementPluginExecution( execution );
                 if ( execution == null )
                     executionIterator.remove();
                 else
@@ -1315,8 +1315,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitProfileBuildPluginManagementPluginDependency( dependency );
-                dependency = visitor.replaceProfileBuildPluginManagementPluginDependency( dependency );
                 visitProfileBuildPluginManagementPluginDependency( visitor, dependency );
+                dependency = visitor.replaceProfileBuildPluginManagementPluginDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -1462,8 +1462,8 @@ public class DefaultModelProcessor
             {
                 Dependency dependency = dependencyIterator.next();
                 visitor.visitProfileDependencyManagementDependency( dependency );
-                dependency = visitor.replaceProfileDependencyManagementDependency( dependency );
                 visitProfileDependencyManagementDependency( visitor, dependency );
+                dependency = visitor.replaceProfileDependencyManagementDependency( dependency );
                 if ( dependency == null )
                     dependencyIterator.remove();
                 else
@@ -1497,8 +1497,8 @@ public class DefaultModelProcessor
         if ( repository != null )
         {
             visitor.visitProfileDistributionManagementRepository( repository );
-            repository = visitor.replaceProfileDistributionManagementRepository( repository );
             visitProfileDistributionManagementRepository( visitor, repository );
+            repository = visitor.replaceProfileDistributionManagementRepository( repository );
             distributionManagement.setRepository( repository );
         }
 
@@ -1506,8 +1506,8 @@ public class DefaultModelProcessor
         if ( snapshotRepository != null )
         {
             visitor.visitProfileDistributionManagementSnapshotRepository( snapshotRepository );
-            snapshotRepository = visitor.replaceProfileDistributionManagementSnapshotRepository( snapshotRepository );
             visitProfileDistributionManagementSnapshotRepository( visitor, snapshotRepository );
+            snapshotRepository = visitor.replaceProfileDistributionManagementSnapshotRepository( snapshotRepository );
             distributionManagement.setSnapshotRepository( snapshotRepository );
         }
 
@@ -1597,8 +1597,8 @@ public class DefaultModelProcessor
             {
                 ReportPlugin plugin = pluginIterator.next();
                 visitor.visitProfileReportingPlugin( plugin );
-                plugin = visitor.replaceProfileReportingPlugin( plugin );
                 visitProfileReportingPlugin( visitor, plugin );
+                plugin = visitor.replaceProfileReportingPlugin( plugin );
                 if ( plugin == null )
                     pluginIterator.remove();
                 else
@@ -1617,8 +1617,8 @@ public class DefaultModelProcessor
             {
                 ReportSet reportSet = reportSetIterator.next();
                 visitor.visitProfileReportingPluginReportSet( reportSet );
-                reportSet = visitor.replaceProfileReportingPluginReportSet( reportSet );
                 visitProfileReportingPluginReportSet( visitor, reportSet );
+                reportSet = visitor.replaceProfileReportingPluginReportSet( reportSet );
                 if ( reportSet == null )
                     reportSetIterator.remove();
                 else
@@ -1675,8 +1675,8 @@ public class DefaultModelProcessor
             {
                 ReportPlugin plugin = pluginIterator.next();
                 visitor.visitReportingPlugin( plugin );
-                plugin = visitor.replaceReportingPlugin( plugin );
                 visitReportingPlugin( visitor, plugin );
+                plugin = visitor.replaceReportingPlugin( plugin );
                 if ( plugin == null )
                     pluginIterator.remove();
                 else
@@ -1695,8 +1695,8 @@ public class DefaultModelProcessor
             {
                 ReportSet reportSet = reportSetIterator.next();
                 visitor.visitReportingPluginReportSet( reportSet );
-                reportSet = visitor.replaceReportingPluginReportSet( reportSet );
                 visitReportingPluginReportSet( visitor, reportSet );
+                reportSet = visitor.replaceReportingPluginReportSet( reportSet );
                 if ( reportSet == null )
                     reportSetIterator.remove();
                 else
