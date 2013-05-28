@@ -15,12 +15,19 @@
  */
 package org.fedoraproject.maven.model;
 
+import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
+import org.apache.maven.model.Build;
+import org.apache.maven.model.CiManagement;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Profile;
+import org.apache.maven.model.ReportPlugin;
+import org.apache.maven.model.Reporting;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
@@ -116,5 +123,86 @@ public class ModelProcessorTest
 
         assertEquals( 1, fooSemaphore.availablePermits() );
         assertEquals( 1, barSemaphore.availablePermits() );
+    }
+
+    /**
+     * Test if processor can apply transformations.
+     * 
+     * @throws Exception
+     */
+    public void testTransformations()
+        throws Exception
+    {
+        Model model = new Model();
+        model.addModule( "foo" );
+        model.addModule( "baz" );
+        model.addModule( "bar" );
+
+        Build build = new Build();
+        model.setBuild( build );
+
+        PluginManagement pluginManagement = new PluginManagement();
+        build.setPluginManagement( pluginManagement );
+
+        Plugin plugin = new Plugin();
+        plugin.setGroupId( "xyz" );
+        pluginManagement.addPlugin( plugin );
+
+        Reporting reporting = new Reporting();
+        model.setReporting( reporting );
+
+        ReportPlugin reportPlugin = new ReportPlugin();
+        reporting.addPlugin( reportPlugin );
+
+        model.setCiManagement( new CiManagement() );
+
+        ModelProcessor processor = lookup( ModelProcessor.class );
+        processor.processModel( model, new AbstractModelVisitor()
+        {
+            @Override
+            public String replaceModule( String module )
+            {
+                if ( module.equals( "baz" ) )
+                    return null;
+                return module.toUpperCase();
+            }
+
+            @Override
+            public void visitBuildPluginManagementPlugin( Plugin plugin )
+            {
+                plugin.setArtifactId( "ABC" );
+            }
+
+            @Override
+            public ReportPlugin replaceReportingPlugin( ReportPlugin plugin )
+            {
+                return null;
+            }
+
+            @Override
+            public CiManagement replaceCiManagement( CiManagement ciManagement )
+            {
+                return null;
+            }
+        } );
+
+        Iterator<String> moduleIterator = model.getModules().iterator();
+        assertEquals( "FOO", moduleIterator.next() );
+        assertEquals( "BAR", moduleIterator.next() );
+        assertFalse( moduleIterator.hasNext() );
+
+        assertNotNull( model.getBuild() );
+        assertNotNull( model.getBuild().getPluginManagement() );
+        Iterator<Plugin> pluginIterator = model.getBuild().getPluginManagement().getPlugins().iterator();
+        assertTrue( pluginIterator.hasNext() );
+        Plugin plugin1 = pluginIterator.next();
+        assertEquals( "ABC", plugin1.getArtifactId() );
+        assertEquals( plugin1, plugin );
+        assertFalse( pluginIterator.hasNext() );
+
+        assertNotNull( model.getReporting() );
+        assertTrue( model.getReporting().getPlugins().isEmpty() );
+
+        assertNull( model.getCiManagement() );
     }
 }
