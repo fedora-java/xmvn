@@ -17,6 +17,7 @@ package org.fedoraproject.maven.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -143,12 +144,48 @@ public class FileUtils
      * 
      * @param path path to file to change permissions of
      * @param mode permissions in integer format
-     * @throws IOException in an I/O exception occurs
+     * @throws IOException if an I/O exception occurs
      */
     public static void chmod( Path path, int mode )
         throws IOException
     {
         if ( !Files.isSymbolicLink( path ) )
             Files.setPosixFilePermissions( path, getPermissions( mode ) );
+    }
+
+    /**
+     * Try to atomically replace regular file with a symbolic link. If atomic replacement is not supported then try to
+     * replace the file anyways, hoping that race condition doesn't occur.
+     * 
+     * @param file file to be replaced
+     * @param target symbolic link target
+     * @throws IOException if an I/O exception occurs
+     */
+    public static void replaceFileWithSymlink( Path file, Path target )
+        throws IOException
+    {
+        Path tempDir = null;
+
+        try
+        {
+            Path baseDir = file.toAbsolutePath().getParent();
+            tempDir = Files.createTempDirectory( baseDir, "xmvn" );
+            Path symlink = tempDir.resolve( "symlink" );
+            Files.createSymbolicLink( symlink, target );
+
+            try
+            {
+                Files.move( symlink, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE );
+            }
+            catch ( AtomicMoveNotSupportedException exception )
+            {
+                Files.move( symlink, file, StandardCopyOption.REPLACE_EXISTING );
+            }
+        }
+        finally
+        {
+            if ( tempDir != null )
+                Files.deleteIfExists( tempDir );
+        }
     }
 }
