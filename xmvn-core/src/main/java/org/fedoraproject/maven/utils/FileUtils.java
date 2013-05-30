@@ -97,7 +97,7 @@ public class FileUtils
     }
 
     /**
-     * Create a temporary symbolic link pointing to specified target path
+     * Create a temporary symbolic link pointing to specified target path.
      * 
      * @param target target of the symbolic link
      * @return path to created symlink
@@ -106,12 +106,9 @@ public class FileUtils
     public static Path createAnonymousSymlink( Path target )
         throws IOException
     {
-        File symlinkFile = File.createTempFile( "xmvn", ".symlink" );
-        symlinkFile.delete();
-        // FIXME: there is a race condition
-        Path symlinkPath = symlinkFile.toPath();
-        Files.createSymbolicLink( symlinkPath, target );
-        return symlinkPath;
+        Path symlink = Files.createTempFile( "xmvn", ".symlink" );
+        replaceFileWithSymlink( symlink, target );
+        return symlink;
     }
 
     /**

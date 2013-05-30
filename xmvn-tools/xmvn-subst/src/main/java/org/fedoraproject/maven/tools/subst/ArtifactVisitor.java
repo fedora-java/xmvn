@@ -35,6 +35,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.resolver.Resolver;
+import org.fedoraproject.maven.utils.FileUtils;
 
 @Component( role = ArtifactVisitor.class )
 public class ArtifactVisitor
@@ -156,8 +157,7 @@ public class ArtifactVisitor
         }
 
         Path target = artifactFile.toPath();
-        Files.delete( path );
-        Files.createSymbolicLink( path, target );
+        FileUtils.replaceFileWithSymlink( path, target );
         logger.info( "Linked " + path + " to " + target );
     }
 }
