@@ -126,7 +126,11 @@ public class DefaultConfigurator
 
         if ( !Files.isRegularFile( file ) )
         {
-            logger.debug( "Skipping configuration file " + file + ": not a regular file" );
+            String reason = "not a regular file";
+            if ( !Files.exists( file ) )
+                reason = "no such file";
+
+            logger.debug( "Skipping configuration file " + file + ": " + reason );
             return;
         }
 
@@ -146,7 +150,11 @@ public class DefaultConfigurator
 
         if ( !Files.isDirectory( directory ) )
         {
-            logger.debug( "Skipping configuration directory " + directory + ": not a directory" );
+            String reason = "not a directory";
+            if ( !Files.exists( directory ) )
+                reason = "no such directory";
+
+            logger.debug( "Skipping configuration directory " + directory + ": " + reason );
             return;
         }
 
