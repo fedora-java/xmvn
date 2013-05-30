@@ -49,13 +49,9 @@ public class SingletonRepository
         if ( file.exists() )
         {
             file = followSymlink( file );
-            // FIXME
-            // debug( "Resolved ", artifact, " to ", file );
             return file;
         }
 
-        // FIXME
-        // debug( "File ", file, " was not found" );
         return null;
     }
 

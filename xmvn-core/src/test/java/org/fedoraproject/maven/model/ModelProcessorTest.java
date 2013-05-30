@@ -118,7 +118,6 @@ public class ModelProcessorTest
             {
                 fail();
             }
-
         } );
 
         assertEquals( 1, fooSemaphore.availablePermits() );
