@@ -92,13 +92,22 @@ public class SimpleLogger
 
     private void log( String message, Throwable exception )
     {
-        if ( !isDebugEnabled() )
-            message += ": " + exception;
-
-        System.err.println( me + ": " + message );
-
-        if ( isDebugEnabled() )
-            exception.printStackTrace( System.err );
+        if ( exception != null )
+        {
+            if ( isDebugEnabled() )
+            {
+                System.err.println( me + ": " + message );
+                exception.printStackTrace( System.err );
+            }
+            else
+            {
+                System.err.println( me + ": " + message + ": " + exception );
+            }
+        }
+        else
+        {
+            System.err.println( me + ": " + message );
+        }
     }
 
     @Override
