@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.CountDownLatch;
 
 import org.fedoraproject.maven.utils.FileUtils;
 
@@ -35,9 +34,9 @@ import org.fedoraproject.maven.utils.FileUtils;
  */
 public class RpmDb
 {
-    private static final Map<String, String> paths = new TreeMap<>();
+    private static Map<String, String> paths;
 
-    private static final CountDownLatch ready = new CountDownLatch( 1 );
+    private static final Object lock = new Object();
 
     private static Iterable<String> execQuery( String query )
         throws IOException
@@ -75,6 +74,8 @@ public class RpmDb
 
     private static void buildDatabase()
     {
+        paths = new TreeMap<>();
+
         try
         {
             String query = "[%{NAME}|%{FILENAMES}\n]";
@@ -91,26 +92,7 @@ public class RpmDb
         }
         catch ( IOException e )
         {
-            paths.put( "dummy", "dummy" );
         }
-        finally
-        {
-            ready.countDown();
-        }
-    }
-
-    static
-    {
-        Thread asyncInitializer = new Thread()
-        {
-            @Override
-            public void run()
-            {
-                buildDatabase();
-            }
-        };
-        asyncInitializer.setDaemon( true );
-        asyncInitializer.start();
     }
 
     public String lookupFile( String path )
@@ -120,15 +102,13 @@ public class RpmDb
 
     public String lookupFile( File file )
     {
-        try
+        file = followSymlink( file );
+
+        synchronized ( lock )
         {
-            file = followSymlink( file );
-            ready.await();
+            if ( paths == null )
+                buildDatabase();
             return paths.get( file.getPath() );
-        }
-        catch ( InterruptedException e )
-        {
-            throw new RuntimeException( e );
         }
     }
 }
