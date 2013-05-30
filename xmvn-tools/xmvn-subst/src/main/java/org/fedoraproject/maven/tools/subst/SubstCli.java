@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.utils.LoggingUtils;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -85,9 +85,7 @@ public class SubstCli
         try
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
-
-            int loggingThreshold = debug ? Logger.LEVEL_DEBUG : Logger.LEVEL_INFO;
-            container.getLoggerManager().setThresholds( loggingThreshold );
+            LoggingUtils.configureContainerLogging( container, "xmvn-subst", debug );
 
             ArtifactVisitor visitor = container.lookup( ArtifactVisitor.class );
             visitor.setTypes( types );

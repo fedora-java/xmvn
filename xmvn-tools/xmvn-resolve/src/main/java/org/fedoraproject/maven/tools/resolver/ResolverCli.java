@@ -28,6 +28,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.resolver.Resolver;
+import org.fedoraproject.maven.utils.LoggingUtils;
 import org.fedoraproject.maven.utils.StringSplitter;
 
 import com.beust.jcommander.DynamicParameter;
@@ -113,7 +114,7 @@ public class ResolverCli
         try
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
-            container.getLoggerManager().setThresholds( debug ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN );
+            LoggingUtils.configureContainerLogging( container, "xmvn-resolve", debug );
             Logger logger = container.getLoggerManager().getLoggerForComponent( Resolver.class.toString() );
             Resolver resolver = container.lookup( Resolver.class );
 

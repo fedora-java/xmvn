@@ -15,7 +15,9 @@
  */
 package org.fedoraproject.maven.utils;
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.LoggerManager;
 
 /**
  * @author Mikolaj Izdebski
@@ -26,5 +28,13 @@ public class LoggingUtils
     {
         int threshold = debugSetting != null && debugSetting ? Logger.LEVEL_DEBUG : Logger.LEVEL_WARN;
         logger.setThreshold( Math.min( logger.getThreshold(), threshold ) );
+    }
+
+    public static void configureContainerLogging( DefaultPlexusContainer container, String executable,
+                                                  boolean enableDebug )
+    {
+        int threshold = enableDebug ? Logger.LEVEL_DEBUG : Logger.LEVEL_INFO;
+        LoggerManager manager = new SimpleLoggerManager( executable, threshold );
+        container.setLoggerManager( manager );
     }
 }

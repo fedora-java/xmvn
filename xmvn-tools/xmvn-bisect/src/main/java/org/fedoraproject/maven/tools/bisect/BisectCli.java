@@ -19,11 +19,11 @@ import java.util.Map.Entry;
 
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
+import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -133,7 +133,8 @@ public class BisectCli
     {
         try
         {
-            PlexusContainer container = new DefaultPlexusContainer();
+            DefaultPlexusContainer container = new DefaultPlexusContainer();
+            LoggingUtils.configureContainerLogging( container, "xmvn-bisect", false );
             BisectCli cli = container.lookup( BisectCli.class );
             cli.run( args );
         }
