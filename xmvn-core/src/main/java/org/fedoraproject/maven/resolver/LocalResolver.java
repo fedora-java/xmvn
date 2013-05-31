@@ -43,15 +43,17 @@ class LocalResolver
     }
 
     @Override
-    public File resolve( Artifact artifact )
+    public ResolutionResult resolve( ResolutionRequest request )
     {
+        Artifact artifact = request.getArtifact();
+
         for ( Repository repo : repositories )
         {
             File artifactFile = repo.findArtifact( artifact, true );
             if ( artifactFile != null )
-                return artifactFile;
+                return new DefaultResolutionResult( artifactFile );
         }
 
-        return null;
+        return new DefaultResolutionResult();
     }
 }

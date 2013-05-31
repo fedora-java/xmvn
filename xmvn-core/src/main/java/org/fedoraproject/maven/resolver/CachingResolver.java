@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,7 +29,7 @@ class CachingResolver
 {
     private final Logger logger;
 
-    private final Map<Artifact, File> cache = new TreeMap<>();
+    private final Map<Artifact, ResolutionResult> cache = new TreeMap<>();
 
     private final Resolver provider;
 
@@ -41,20 +40,21 @@ class CachingResolver
     }
 
     @Override
-    public File resolve( Artifact artifact )
+    public ResolutionResult resolve( ResolutionRequest request )
     {
-        File file = cache.get( artifact );
+        Artifact artifact = request.getArtifact();
+        ResolutionResult result = cache.get( artifact );
 
-        if ( file != null )
+        if ( result != null )
         {
             logger.debug( "Artifact " + artifact + " was resolved from cache" );
         }
         else
         {
-            file = provider.resolve( artifact );
-            cache.put( artifact, file );
+            result = provider.resolve( request );
+            cache.put( artifact, result );
         }
 
-        return file;
+        return result;
     }
 }

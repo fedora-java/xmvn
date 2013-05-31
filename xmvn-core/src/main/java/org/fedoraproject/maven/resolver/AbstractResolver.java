@@ -26,6 +26,9 @@ abstract class AbstractResolver
     implements Resolver
 {
     @Override
+    public abstract ResolutionResult resolve( ResolutionRequest request );
+
+    @Override
     public File resolve( String groupId, String artifactId, String version, String extension )
     {
         Artifact artifact = new Artifact( groupId, artifactId, version, extension );
@@ -33,5 +36,10 @@ abstract class AbstractResolver
     }
 
     @Override
-    public abstract File resolve( Artifact artifact );
+    public File resolve( Artifact artifact )
+    {
+        ResolutionRequest request = new DefaultResolutionRequest( artifact );
+        ResolutionResult result = resolve( request );
+        return result.getArtifactFile();
+    }
 }

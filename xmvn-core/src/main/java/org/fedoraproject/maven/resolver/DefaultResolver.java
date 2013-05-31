@@ -125,27 +125,30 @@ public class DefaultResolver
     }
 
     @Override
-    public File resolve( Artifact artifact )
+    public ResolutionResult resolve( ResolutionRequest request )
     {
         if ( !initialized )
             initialize();
 
+        Artifact artifact = request.getArtifact();
+
         if ( resolveFromBisectRepo() )
         {
             logger.debug( "Resolving artifact " + artifact + " from bisection repository." );
-            return bisectRepo.findArtifact( artifact, true );
+            File artifactFile = bisectRepo.findArtifact( artifact, true );
+            return new DefaultResolutionResult( artifactFile );
         }
 
         logger.debug( "Trying to resolve artifact " + artifact );
 
         for ( Resolver resolver : resolvers )
         {
-            File file = resolver.resolve( artifact );
-            if ( file != null )
-                return file;
+            ResolutionResult result = resolver.resolve( request );
+            if ( result != null )
+                return result;
         }
 
         logger.debug( "Unresolved artifact " + artifact );
-        return null;
+        return new DefaultResolutionResult();
     }
 }

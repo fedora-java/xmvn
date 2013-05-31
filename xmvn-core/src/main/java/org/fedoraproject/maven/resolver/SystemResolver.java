@@ -54,8 +54,9 @@ class SystemResolver
     }
 
     @Override
-    public File resolve( Artifact artifact )
+    public ResolutionResult resolve( ResolutionRequest request )
     {
+        Artifact artifact = request.getArtifact();
         logger.debug( "Resolving " + artifact );
         List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
 
@@ -74,7 +75,7 @@ class SystemResolver
         if ( file == null )
         {
             logger.debug( "Failed to resolve artifact " + artifact );
-            return null;
+            return new DefaultResolutionResult();
         }
 
         logger.debug( "Artifact " + artifact + " was resolved to " + file );
@@ -93,7 +94,7 @@ class SystemResolver
             }
         }
 
-        return file;
+        return new DefaultResolutionResult( file );
     }
 
     public static void printInvolvedPackages( Logger logger )

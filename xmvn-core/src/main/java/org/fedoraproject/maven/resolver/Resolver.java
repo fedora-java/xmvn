@@ -24,7 +24,11 @@ import org.fedoraproject.maven.model.Artifact;
  */
 public interface Resolver
 {
+    ResolutionResult resolve( ResolutionRequest request );
+
+    @Deprecated
     File resolve( Artifact artifact );
 
+    @Deprecated
     File resolve( String groupId, String artifactId, String version, String extension );
 }
