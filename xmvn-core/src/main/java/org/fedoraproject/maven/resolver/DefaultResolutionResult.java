@@ -27,6 +27,8 @@ public class DefaultResolutionResult
 
     private String provider;
 
+    private String compatVersion;
+
     public DefaultResolutionResult()
     {
         this( null );
@@ -52,5 +54,16 @@ public class DefaultResolutionResult
     public void setProvider( String provider )
     {
         this.provider = provider;
+    }
+
+    @Override
+    public String getCompatVersion()
+    {
+        return compatVersion;
+    }
+
+    public void setCompatVersion( String compatVersion )
+    {
+        this.compatVersion = compatVersion;
     }
 }

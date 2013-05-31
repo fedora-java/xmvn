@@ -38,4 +38,14 @@ public interface ResolutionResult
      *         provider is not available
      */
     String getProvider();
+
+    /**
+     * Get compatibility version of resolved artifact.
+     * <p>
+     * Compatibility version is defined only when resolved artifact version is not default version of the artifact in
+     * the system.
+     * 
+     * @return compatibility version of resolved artifact or {@code null} if default artifact version was resolved
+     */
+    String getCompatVersion();
 }
