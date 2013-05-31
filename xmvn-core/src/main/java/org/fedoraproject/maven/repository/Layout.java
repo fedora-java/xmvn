@@ -105,9 +105,14 @@ public enum Layout
                 path.append( groupId.replace( '/', '.' ) );
                 path.append( '-' );
             }
-            else
+            else if ( deep )
             {
                 path.append( groupId.replace( '.', '/' ) );
+                path.append( '/' );
+            }
+            else
+            {
+                path.append( groupId );
                 path.append( '/' );
             }
         }
