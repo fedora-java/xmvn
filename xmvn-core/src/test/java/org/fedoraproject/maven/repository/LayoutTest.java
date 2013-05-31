@@ -42,9 +42,9 @@ public class LayoutTest
 
         assertEquals( "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
                       Layout.MAVEN.getArtifactPath( artifact ) );
-        assertEquals( "an-example/artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
+        assertEquals( "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
                       Layout.JPP.getArtifactPath( artifact ) );
-        assertEquals( "an-example/artifact/used-FOR42.testing.ext-ens.ion",
+        assertEquals( "an-example.artifact/used-FOR42.testing.ext-ens.ion",
                       Layout.JPP_VERSIONLESS.getArtifactPath( artifact ) );
         assertEquals( "an-example.artifact-used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
                       Layout.FLAT.getArtifactPath( artifact ) );
