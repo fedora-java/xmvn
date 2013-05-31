@@ -18,9 +18,24 @@ package org.fedoraproject.maven.resolver;
 import java.io.File;
 
 /**
+ * Provides access to results of artifact resolution.
+ * 
  * @author Mikolaj Izdebski
  */
 public interface ResolutionResult
 {
+    /**
+     * Get resolved artifact file.
+     * 
+     * @return artifact file or {@code null} if requested artifact could not be resolved
+     */
     File getArtifactFile();
+
+    /**
+     * Get name of system package providing requested artifact.
+     * 
+     * @return name of system package providing requested artifact or {@code null} if information about artifact
+     *         provider is not available
+     */
+    String getProvider();
 }

@@ -18,9 +18,25 @@ package org.fedoraproject.maven.resolver;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
+ * Specifies parameters of artifact resolution.
+ * 
  * @author Mikolaj Izdebski
  */
 public interface ResolutionRequest
 {
+    /**
+     * Get artifact which resolution is requested.
+     * 
+     * @return artifact which resolution is requested
+     */
     Artifact getArtifact();
+
+    /**
+     * Determine whether information about artifact provider should be included in resolution result.
+     * <p>
+     * Artifact provider is name of system package providing requested artifact.
+     * 
+     * @return whether information about artifact provider should be included in resolution result
+     */
+    boolean isProviderNeeded();
 }

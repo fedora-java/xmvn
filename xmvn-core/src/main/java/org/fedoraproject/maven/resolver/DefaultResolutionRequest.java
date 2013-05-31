@@ -18,12 +18,16 @@ package org.fedoraproject.maven.resolver;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
+ * Provides default POJO implementation of {@link ResolutionRequest} interface.
+ * 
  * @author Mikolaj Izdebski
  */
 public class DefaultResolutionRequest
     implements ResolutionRequest
 {
     private Artifact artifact;
+
+    private boolean isProviderNeeded;
 
     public DefaultResolutionRequest()
     {
@@ -46,8 +50,31 @@ public class DefaultResolutionRequest
         return artifact;
     }
 
+    /**
+     * Set artifact which resolution is requested.
+     * 
+     * @param artifact artifact which resolution is requested
+     */
     public void setArtifact( Artifact artifact )
     {
         this.artifact = artifact;
+    }
+
+    @Override
+    public boolean isProviderNeeded()
+    {
+        return isProviderNeeded;
+    }
+
+    /**
+     * Set whether information about artifact provider should be included in resolution result.
+     * <p>
+     * Artifact provider is name of system package providing requested artifact.
+     * 
+     * @param isProviderNeeded whether information about artifact provider should be included in resolution result
+     */
+    public void setProviderNeeded( boolean isProviderNeeded )
+    {
+        this.isProviderNeeded = isProviderNeeded;
     }
 }

@@ -40,4 +40,10 @@ public class DefaultResolutionResult
     {
         return artifactFile;
     }
+
+    @Override
+    public String getProvider()
+    {
+        return null;
+    }
 }
