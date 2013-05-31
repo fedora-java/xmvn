@@ -25,6 +25,8 @@ public class DefaultResolutionResult
 {
     private final File artifactFile;
 
+    private String provider;
+
     public DefaultResolutionResult()
     {
         this( null );
@@ -44,6 +46,11 @@ public class DefaultResolutionResult
     @Override
     public String getProvider()
     {
-        return null;
+        return provider;
+    }
+
+    public void setProvider( String provider )
+    {
+        this.provider = provider;
     }
 }

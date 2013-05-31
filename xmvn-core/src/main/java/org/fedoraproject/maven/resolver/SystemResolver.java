@@ -75,12 +75,14 @@ class SystemResolver
         }
 
         logger.debug( "Artifact " + artifact + " was resolved to " + file );
+        DefaultResolutionResult result = new DefaultResolutionResult( file );
 
-        if ( settings.isDebug() )
+        if ( request.isProviderNeeded() || settings.isDebug() )
         {
             String rpmPackage = rpmdb.lookupFile( file );
             if ( rpmPackage != null )
             {
+                result.setProvider( rpmPackage );
                 logger.debug( "Artifact " + artifact + " is provided by " + rpmPackage );
             }
             else
@@ -89,6 +91,6 @@ class SystemResolver
             }
         }
 
-        return new DefaultResolutionResult( file );
+        return result;
     }
 }
