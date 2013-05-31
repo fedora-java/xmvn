@@ -27,7 +27,7 @@ public interface ResolutionResult
     /**
      * Get resolved artifact file.
      * 
-     * @return artifact file or {@code null} if requested artifact could not be resolved
+     * @return resolved artifact file or {@code null} if requested artifact could not be resolved
      */
     File getArtifactFile();
 
