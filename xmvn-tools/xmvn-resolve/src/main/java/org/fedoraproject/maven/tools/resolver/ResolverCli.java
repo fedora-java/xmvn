@@ -27,6 +27,7 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.resolver.DefaultResolutionRequest;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.LoggingUtils;
 import org.fedoraproject.maven.utils.StringSplitter;
@@ -129,7 +130,7 @@ public class ResolverCli
                     tok[3] = "jar";
 
                 Artifact artifact = new Artifact( tok[0], tok[1], tok[2], tok[3] );
-                File file = resolver.resolve( artifact );
+                File file = resolver.resolve( new DefaultResolutionRequest( artifact ) ).getArtifactFile();
 
                 if ( file == null )
                 {

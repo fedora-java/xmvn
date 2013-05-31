@@ -67,6 +67,22 @@ public class BasicResolverTest
         throws Exception
     {
         Resolver resolver = lookup( Resolver.class );
+        ResolutionRequest request = new DefaultResolutionRequest( "some", "nonexistent", "artifact", "pom" );
+        ResolutionResult result = resolver.resolve( request );
+        assertNotNull( result );
+        assertNull( result.getArtifactFile() );
+    }
+
+    /**
+     * Test if resolver correctly fails to resolve nonexistent artifact using deprecated API.
+     * 
+     * @throws Exception
+     */
+    @Deprecated
+    public void testResolutionFailureDeprecatedAPI()
+        throws Exception
+    {
+        Resolver resolver = lookup( Resolver.class );
         File artifactFile = resolver.resolve( "some", "nonexistent", "artifact", "pom" );
         assertNull( artifactFile );
     }

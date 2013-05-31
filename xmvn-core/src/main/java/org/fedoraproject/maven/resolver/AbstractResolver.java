@@ -28,6 +28,7 @@ abstract class AbstractResolver
     @Override
     public abstract ResolutionResult resolve( ResolutionRequest request );
 
+    @Deprecated
     @Override
     public File resolve( String groupId, String artifactId, String version, String extension )
     {
@@ -35,6 +36,7 @@ abstract class AbstractResolver
         return resolve( artifact );
     }
 
+    @Deprecated
     @Override
     public File resolve( Artifact artifact )
     {

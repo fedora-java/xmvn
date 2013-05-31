@@ -34,6 +34,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.resolver.DefaultResolutionRequest;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.FileUtils;
 
@@ -149,7 +150,7 @@ public class ArtifactVisitor
         if ( artifact == null )
             return;
 
-        File artifactFile = resolver.resolve( artifact );
+        File artifactFile = resolver.resolve( new DefaultResolutionRequest( artifact ) ).getArtifactFile();
         if ( artifactFile == null )
         {
             logger.warn( "Skipping file " + path + ": Artifact " + artifact + " not found in repository" );

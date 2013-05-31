@@ -21,6 +21,9 @@ import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.fedoraproject.maven.resolver.DefaultResolutionRequest;
+import org.fedoraproject.maven.resolver.ResolutionRequest;
+import org.fedoraproject.maven.resolver.ResolutionResult;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.WorkspaceReader;
@@ -46,7 +49,9 @@ public class FedoraWorkspaceReader
         String version = artifact.getVersion();
         String extension = artifact.getExtension();
 
-        return resolver.resolve( groupId, artifactId, version, extension );
+        ResolutionRequest request = new DefaultResolutionRequest( groupId, artifactId, version, extension );
+        ResolutionResult result = resolver.resolve( request );
+        return result.getArtifactFile();
     }
 
     @Override
