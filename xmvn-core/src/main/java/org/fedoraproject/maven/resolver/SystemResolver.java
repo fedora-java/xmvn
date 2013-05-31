@@ -17,8 +17,6 @@ package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.ResolverSettings;
@@ -42,8 +40,6 @@ class SystemResolver
     private final DependencyMap depmap;
 
     private static final RpmDb rpmdb = new RpmDb();
-
-    private static final Set<String> usedRpmPackages = new TreeSet<>();
 
     public SystemResolver( File root, ResolverSettings settings, Logger logger )
     {
@@ -85,7 +81,6 @@ class SystemResolver
             String rpmPackage = rpmdb.lookupFile( file );
             if ( rpmPackage != null )
             {
-                usedRpmPackages.add( rpmPackage );
                 logger.debug( "Artifact " + artifact + " is provided by " + rpmPackage );
             }
             else
@@ -95,15 +90,5 @@ class SystemResolver
         }
 
         return new DefaultResolutionResult( file );
-    }
-
-    public static void printInvolvedPackages( Logger logger )
-    {
-        if ( !usedRpmPackages.isEmpty() )
-        {
-            logger.debug( "Packages involved in artifact resolution:" );
-            for ( String pkg : usedRpmPackages )
-                logger.debug( "  * " + pkg );
-        }
     }
 }
