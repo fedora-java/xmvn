@@ -57,10 +57,12 @@ class SystemResolver
         List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
 
         File file = null;
+        String compatVersion = null;
         outer: for ( boolean versioned : new Boolean[] { true, false } )
         {
             for ( Artifact jppArtifact : jppList )
             {
+                compatVersion = versioned ? artifact.getVersion() : null;
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
                 file = systemRepo.findArtifact( jppArtifact, versioned );
                 if ( file != null )
@@ -76,6 +78,7 @@ class SystemResolver
 
         logger.debug( "Artifact " + artifact + " was resolved to " + file );
         DefaultResolutionResult result = new DefaultResolutionResult( file );
+        result.setCompatVersion( compatVersion );
 
         if ( request.isProviderNeeded() || settings.isDebug() )
         {
