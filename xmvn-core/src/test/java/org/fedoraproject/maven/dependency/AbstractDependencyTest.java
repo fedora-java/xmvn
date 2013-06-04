@@ -27,6 +27,9 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.PlexusTestCase;
 import org.fedoraproject.maven.model.Artifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public abstract class AbstractDependencyTest
     extends PlexusTestCase
 {
@@ -87,6 +90,8 @@ public abstract class AbstractDependencyTest
     public void testDependencyExtraction()
         throws Exception
     {
+        configure();
+
         DependencyExtractionRequest request = new DependencyExtractionRequest( model );
         DependencyExtractor extractor = lookup( DependencyExtractor.class, DependencyExtractor.RUNTIME );
         DependencyExtractionResult result = extractor.extract( request );

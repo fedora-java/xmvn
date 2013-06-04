@@ -62,7 +62,7 @@ sed -i -n '
 sed -i '
     /^$/{
       n
-      s=^\(public \)*\(class\|interface\) =/**\
+      s=^\(public \)*\(abstract \)*\(final \)*\(class\|@*interface\) =/**\
  * @author '"$author"'\
  */\
 &=

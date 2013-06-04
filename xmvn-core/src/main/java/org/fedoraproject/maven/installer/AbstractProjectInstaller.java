@@ -21,6 +21,9 @@ import java.nio.file.Path;
 
 import org.apache.maven.project.MavenProject;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 abstract class AbstractProjectInstaller
     implements ProjectInstaller
 {
