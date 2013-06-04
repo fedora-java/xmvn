@@ -40,7 +40,7 @@ abstract class AbstractResolver
     @Override
     public File resolve( Artifact artifact )
     {
-        ResolutionRequest request = new DefaultResolutionRequest( artifact );
+        ResolutionRequest request = new ResolutionRequest( artifact );
         ResolutionResult result = resolve( request );
         return result.getArtifactFile();
     }

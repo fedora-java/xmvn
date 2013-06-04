@@ -22,14 +22,46 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-public interface ResolutionRequest
+public class ResolutionRequest
 {
+    private Artifact artifact;
+
+    private boolean isProviderNeeded;
+
+    public ResolutionRequest()
+    {
+    }
+
+    public ResolutionRequest( Artifact artifact )
+    {
+        this.artifact = artifact;
+    }
+
+    public ResolutionRequest( String groupId, String artifactId, String version, String extension )
+    {
+        Artifact artifact = new Artifact( groupId, artifactId, version, extension );
+        setArtifact( artifact );
+    }
+
     /**
      * Get artifact which resolution is requested.
      * 
      * @return artifact which resolution is requested
      */
-    Artifact getArtifact();
+    public Artifact getArtifact()
+    {
+        return artifact;
+    }
+
+    /**
+     * Set artifact which resolution is requested.
+     * 
+     * @param artifact artifact which resolution is requested
+     */
+    public void setArtifact( Artifact artifact )
+    {
+        this.artifact = artifact;
+    }
 
     /**
      * Determine whether information about artifact provider should be included in resolution result.
@@ -38,5 +70,20 @@ public interface ResolutionRequest
      * 
      * @return whether information about artifact provider should be included in resolution result
      */
-    boolean isProviderNeeded();
+    public boolean isProviderNeeded()
+    {
+        return isProviderNeeded;
+    }
+
+    /**
+     * Set whether information about artifact provider should be included in resolution result.
+     * <p>
+     * Artifact provider is name of system package providing requested artifact.
+     * 
+     * @param isProviderNeeded whether information about artifact provider should be included in resolution result
+     */
+    public void setProviderNeeded( boolean isProviderNeeded )
+    {
+        this.isProviderNeeded = isProviderNeeded;
+    }
 }

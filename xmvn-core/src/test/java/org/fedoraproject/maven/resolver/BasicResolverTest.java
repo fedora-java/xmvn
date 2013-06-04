@@ -67,7 +67,7 @@ public class BasicResolverTest
         throws Exception
     {
         Resolver resolver = lookup( Resolver.class );
-        ResolutionRequest request = new DefaultResolutionRequest( "some", "nonexistent", "artifact", "pom" );
+        ResolutionRequest request = new ResolutionRequest( "some", "nonexistent", "artifact", "pom" );
         ResolutionResult result = resolver.resolve( request );
         assertNotNull( result );
         assertNull( result.getArtifactFile() );
