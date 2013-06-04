@@ -95,6 +95,8 @@ public abstract class AbstractDependencyTest
         throws Exception
     {
         configure();
+        if ( model == null )
+            return;
 
         DependencyExtractionRequest request = new DependencyExtractionRequest( model );
         DependencyExtractor extractor = lookup( DependencyExtractor.class, DependencyExtractor.RUNTIME );

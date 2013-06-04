@@ -35,8 +35,8 @@ public class RuntimeDependencyExtractor
     public DependencyExtractionResult extract( DependencyExtractionRequest request )
     {
         DefaultDependencyExtractionResult result = new DefaultDependencyExtractionResult();
-        RuntimeDependencyVisitor visitor = new RuntimeDependencyVisitor( result );
-        modelProcessor.processModel( request.getProjectModel(), visitor );
+        modelProcessor.processModel( request.getProjectModel(), new RuntimeDependencyVisitor( result ) );
+        modelProcessor.processModel( request.getProjectModel(), new JavaVersionVisitor( result ) );
         return result;
     }
 }
