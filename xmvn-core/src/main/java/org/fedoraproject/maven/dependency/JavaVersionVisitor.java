@@ -67,35 +67,31 @@ public class JavaVersionVisitor
         this.result = result;
     }
 
+    private void visitSetting( Xpp3Dom child, Map<String, BigDecimal> versionMap )
+    {
+        BigDecimal version;
+        if ( child.getValue() != null && ( version = versionMap.get( child.getValue().trim() ) ) != null
+            && ( result.getJavaVersion() == null || version.compareTo( new BigDecimal( result.getJavaVersion() ) ) > 0 ) )
+        {
+            result.setJavaVersion( version.toString() );
+        }
+    }
+
     private void visitConfiguration( Object configObject )
     {
-        if ( plugin.getGroupId() != null && plugin.getGroupId().equals( "org.apache.maven.plugins" ) )
+        if ( plugin.getGroupId() != null && !plugin.getGroupId().equals( "org.apache.maven.plugins" ) )
             return;
-        if ( plugin.getArtifactId() == null || plugin.getArtifactId().equals( "maven-compiler-plugin" ) )
+        if ( plugin.getArtifactId() == null || !plugin.getArtifactId().equals( "maven-compiler-plugin" ) )
             return;
         if ( configObject == null || !( configObject instanceof Xpp3Dom ) )
             return;
         Xpp3Dom config = (Xpp3Dom) configObject;
 
-        BigDecimal currentVersion = null;
-        if ( result.getJavaVersion() != null )
-            new BigDecimal( result.getJavaVersion() );
-
         for ( Xpp3Dom child : config.getChildren( "source" ) )
-        {
-            BigDecimal version = sourceMap.get( child.getValue().trim() );
-            if ( version != null && version.compareTo( currentVersion ) > 0 )
-                currentVersion = version;
-        }
+            visitSetting( child, sourceMap );
 
         for ( Xpp3Dom child : config.getChildren( "target" ) )
-        {
-            BigDecimal version = targetMap.get( child.getValue().trim() );
-            if ( version != null && version.compareTo( currentVersion ) > 0 )
-                currentVersion = version;
-        }
-
-        result.setJavaVersion( currentVersion.toString() );
+            visitSetting( child, targetMap );
     }
 
     @Override
