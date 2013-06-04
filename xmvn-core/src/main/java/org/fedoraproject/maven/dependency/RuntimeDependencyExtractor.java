@@ -15,12 +15,18 @@
  */
 package org.fedoraproject.maven.dependency;
 
+import org.codehaus.plexus.component.annotations.Component;
+
 /**
  * @author Mikolaj Izdebski
  */
-public interface DependencyExtractor
+@Component( role = DependencyExtractor.class, hint = DependencyExtractor.RUNTIME )
+public class RuntimeDependencyExtractor
+    implements DependencyExtractor
 {
-    public static final String RUNTIME = "runtime";
-
-    public DependencyExtractionResult extract( DependencyExtractionRequest request );
+    @Override
+    public DependencyExtractionResult extract( DependencyExtractionRequest request )
+    {
+        return new DefaultDependencyExtractionResult();
+    }
 }
