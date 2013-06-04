@@ -85,7 +85,11 @@ public abstract class AbstractDependencyTest
         expect( new Artifact( groupId, artifactId, version ) );
     }
 
-    public abstract void configure();
+    public void configure()
+        throws Exception
+    {
+        // Nothing to do, but subclasses can override thsi method to provide additional configuration.
+    }
 
     public void testDependencyExtraction()
         throws Exception
