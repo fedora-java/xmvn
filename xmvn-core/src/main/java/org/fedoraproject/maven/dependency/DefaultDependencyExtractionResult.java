@@ -42,6 +42,11 @@ public class DefaultDependencyExtractionResult
         dependencyArtifacts.add( artifact );
     }
 
+    public void addDependencyArtifact( String groupId, String artifactId, String version )
+    {
+        dependencyArtifacts.add( new Artifact( groupId, artifactId, version ) );
+    }
+
     @Override
     public String getJavaVersion()
     {

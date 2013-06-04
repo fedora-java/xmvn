@@ -16,17 +16,27 @@
 package org.fedoraproject.maven.dependency;
 
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.fedoraproject.maven.model.AbstractModelVisitor;
+import org.fedoraproject.maven.model.ModelProcessor;
 
 /**
  * @author Mikolaj Izdebski
  */
 @Component( role = DependencyExtractor.class, hint = DependencyExtractor.RUNTIME )
 public class RuntimeDependencyExtractor
+    extends AbstractModelVisitor
     implements DependencyExtractor
 {
+    @Requirement
+    private ModelProcessor modelProcessor;
+
     @Override
     public DependencyExtractionResult extract( DependencyExtractionRequest request )
     {
-        return new DefaultDependencyExtractionResult();
+        DefaultDependencyExtractionResult result = new DefaultDependencyExtractionResult();
+        RuntimeDependencyVisitor visitor = new RuntimeDependencyVisitor( result );
+        modelProcessor.processModel( request.getProjectModel(), visitor );
+        return result;
     }
 }
