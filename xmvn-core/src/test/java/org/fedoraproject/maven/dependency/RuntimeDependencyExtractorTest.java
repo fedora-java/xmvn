@@ -24,14 +24,14 @@ public class RuntimeDependencyExtractorTest
     extends PlexusTestCase
 {
     /**
-     * Test if Plexus can load runtime dependency extractir component.
+     * Test if Plexus can load runtime dependency extractor component.
      * 
      * @throws Exception
      */
     public void testComponentLookup()
         throws Exception
     {
-        DependencyExtractor extractor = lookup( DependencyExtractor.class, "runtime" );
+        DependencyExtractor extractor = lookup( DependencyExtractor.class, DependencyExtractor.RUNTIME );
         assertNotNull( extractor );
     }
 }
