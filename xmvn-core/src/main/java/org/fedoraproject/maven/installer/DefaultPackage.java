@@ -41,8 +41,6 @@ import org.fedoraproject.maven.utils.FileUtils;
 public class DefaultPackage
     implements Package, Comparable<DefaultPackage>
 {
-    private final Logger logger;
-
     private final String suffix;
 
     public static final String MAIN = "";
@@ -56,7 +54,6 @@ public class DefaultPackage
     public DefaultPackage( String name, InstallerSettings settings, Logger logger )
     {
         this.settings = settings;
-        this.logger = logger;
         metadata = new FragmentFile( logger );
         suffix = name.equals( "" ) ? "" : "-" + name;
     }
