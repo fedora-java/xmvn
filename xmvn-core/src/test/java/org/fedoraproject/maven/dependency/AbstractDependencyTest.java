@@ -99,11 +99,13 @@ public abstract class AbstractDependencyTest
         assertEquals( expectedJavaVersion, result.getJavaVersion() );
 
         Set<Artifact> expectedButNotReturned = new TreeSet<>( expectedDependencyArtifacts );
-        expectedDependencyArtifacts.removeAll( result.getDependencyArtifacts() );
-        assertTrue( expectedButNotReturned.isEmpty() );
+        expectedButNotReturned.removeAll( result.getDependencyArtifacts() );
+        for ( Artifact artifact : expectedButNotReturned )
+            fail( "Dependency artifact " + artifact + " was expected but not returned" );
 
         Set<Artifact> notExpectedButReturned = new TreeSet<>( result.getDependencyArtifacts() );
         notExpectedButReturned.removeAll( expectedDependencyArtifacts );
-        assertTrue( notExpectedButReturned.isEmpty() );
+        for ( Artifact artifact : notExpectedButReturned )
+            fail( "Dependency artifact " + artifact + " not expected but returned" );
     }
 }
