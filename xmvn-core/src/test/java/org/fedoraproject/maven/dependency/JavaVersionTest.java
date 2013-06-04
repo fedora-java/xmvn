@@ -19,6 +19,7 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
+import org.apache.maven.model.PluginManagement;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
@@ -27,14 +28,23 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 public class JavaVersionTest
     extends AbstractDependencyTest
 {
-    public void testJavaVersionDependencies()
+    private void testJavaVersionDependencies( boolean managed )
         throws Exception
     {
         Plugin compilerPlugin = new Plugin();
         compilerPlugin.setArtifactId( "maven-compiler-plugin" );
         Model model = new Model();
         model.setBuild( new Build() );
-        model.getBuild().addPlugin( compilerPlugin );
+
+        if ( managed )
+        {
+            model.getBuild().setPluginManagement( new PluginManagement() );
+            model.getBuild().getPluginManagement().addPlugin( compilerPlugin );
+        }
+        else
+        {
+            model.getBuild().addPlugin( compilerPlugin );
+        }
 
         // No configuration.
         setModel( model );
@@ -93,5 +103,17 @@ public class JavaVersionTest
         expectJavaVersion( "1.4" );
         target.setValue( "cldc1.1" );
         expectJavaVersion( "1.1" );
+    }
+
+    public void testJavaVersionDependencies()
+        throws Exception
+    {
+        testJavaVersionDependencies( false );
+    }
+
+    public void testManagedJavaVersionDependencies()
+        throws Exception
+    {
+        testJavaVersionDependencies( true );
     }
 }
