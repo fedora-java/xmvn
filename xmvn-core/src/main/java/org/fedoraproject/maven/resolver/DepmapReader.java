@@ -107,7 +107,7 @@ class DepmapReader
     {
         for ( String path : settings.getMetadataRepositories() )
         {
-            File file = new File( path );
+            File file = root.toPath().resolve( path ).toFile();
 
             if ( file.isDirectory() )
             {

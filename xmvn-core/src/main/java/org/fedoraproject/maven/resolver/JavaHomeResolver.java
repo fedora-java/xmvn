@@ -21,6 +21,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
@@ -29,20 +31,30 @@ import org.fedoraproject.maven.model.Artifact;
 class JavaHomeResolver
     extends AbstractResolver
 {
+    private final DependencyMap depmap;
+
+    public JavaHomeResolver( File root, ResolverSettings settings, Logger logger )
+    {
+        depmap = DepmapReader.readArtifactMap( root, settings, logger );
+    }
+
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        Artifact artifact = request.getArtifact();
-        String javaHome = System.getProperty( "java.home" );
-
-        if ( artifact.getGroupId().equals( "JAVA_HOME" ) && javaHome != null )
+        for ( Artifact artifact : depmap.translate( request.getArtifact().clearVersionAndExtension() ) )
         {
-            Path javaHomeDir = followSymlink( new File( javaHome ) ).toPath();
-            Path artifactPath = Paths.get( artifact.getArtifactId() + "." + artifact.getExtension() );
-            File artifactFile = javaHomeDir.resolve( artifactPath ).toFile();
-            artifactFile = followSymlink( artifactFile );
-            if ( artifactFile.exists() )
-                return new DefaultResolutionResult( artifactFile );
+            artifact = artifact.copyMissing( request.getArtifact() );
+            String javaHome = System.getProperty( "java.home" );
+
+            if ( artifact.getGroupId().equals( "JAVA_HOME" ) && javaHome != null )
+            {
+                Path javaHomeDir = followSymlink( new File( javaHome ) ).toPath();
+                Path artifactPath = Paths.get( artifact.getArtifactId() + "." + artifact.getExtension() );
+                File artifactFile = javaHomeDir.resolve( artifactPath ).toFile();
+                artifactFile = followSymlink( artifactFile );
+                if ( artifactFile.exists() )
+                    return new DefaultResolutionResult( artifactFile );
+            }
         }
 
         return new DefaultResolutionResult();

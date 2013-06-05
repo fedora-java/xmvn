@@ -93,7 +93,6 @@ public class DefaultResolver
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
-        resolvers.add( new JavaHomeResolver() );
         resolvers.add( new LocalResolver( settings ) );
 
         for ( String prefix : settings.getPrefixes() )
@@ -101,6 +100,7 @@ public class DefaultResolver
             File root = new File( prefix );
             if ( root.isDirectory() )
             {
+                resolvers.add( new JavaHomeResolver( root, settings, logger ) );
                 Resolver resolver = new SystemResolver( root, settings, logger );
                 resolvers.add( new CachingResolver( resolver, logger ) );
             }
