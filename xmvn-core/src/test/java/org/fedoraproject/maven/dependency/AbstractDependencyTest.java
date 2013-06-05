@@ -85,21 +85,26 @@ public abstract class AbstractDependencyTest
         expect( new Artifact( groupId, artifactId, version ) );
     }
 
-    public void configure()
+    public void configureBuild()
         throws Exception
     {
-        // Nothing to do, but subclasses can override thsi method to provide additional configuration.
+        // Nothing to do, but subclasses can override this method to provide additional configuration.
     }
 
-    public void testDependencyExtraction()
+    public void configureRuntime()
         throws Exception
     {
-        configure();
+        // Nothing to do, but subclasses can override this method to provide additional configuration.
+    }
+
+    public void performTests( String roleHint )
+        throws Exception
+    {
         if ( model == null )
             return;
 
         DependencyExtractionRequest request = new DependencyExtractionRequest( model );
-        DependencyExtractor extractor = lookup( DependencyExtractor.class, DependencyExtractor.RUNTIME );
+        DependencyExtractor extractor = lookup( DependencyExtractor.class, roleHint );
         DependencyExtractionResult result = extractor.extract( request );
         assertNotNull( result );
         assertEquals( expectedJavaVersion, result.getJavaVersion() );
@@ -113,5 +118,19 @@ public abstract class AbstractDependencyTest
         notExpectedButReturned.removeAll( expectedDependencyArtifacts );
         for ( Artifact artifact : notExpectedButReturned )
             fail( "Dependency artifact " + artifact + " not expected but returned" );
+    }
+
+    public void testBuildDependencyExtraction()
+        throws Exception
+    {
+        configureBuild();
+        performTests( DependencyExtractor.BUILD );
+    }
+
+    public void testRuntimeDependencyExtraction()
+        throws Exception
+    {
+        configureRuntime();
+        performTests( DependencyExtractor.RUNTIME );
     }
 }

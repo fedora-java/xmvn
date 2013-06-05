@@ -28,7 +28,7 @@ public class DependencyScopesTest
     }
 
     @Override
-    public void configure()
+    public void configureRuntime()
     {
         expect( "group.default", "artifact-default", "1.2.3.default" );
         expect( "group.compile", "artifact-compile", "1.2.3.compile" );

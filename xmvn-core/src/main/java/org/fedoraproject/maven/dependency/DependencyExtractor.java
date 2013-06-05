@@ -20,6 +20,8 @@ package org.fedoraproject.maven.dependency;
  */
 public interface DependencyExtractor
 {
+    public static final String BUILD = "build";
+
     public static final String RUNTIME = "runtime";
 
     public DependencyExtractionResult extract( DependencyExtractionRequest request );

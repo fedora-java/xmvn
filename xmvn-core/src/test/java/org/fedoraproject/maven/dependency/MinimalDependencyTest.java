@@ -28,7 +28,7 @@ public class MinimalDependencyTest
     }
 
     @Override
-    public void configure()
+    public void configureRuntime()
     {
         // Don't expect any dependencies
     }
