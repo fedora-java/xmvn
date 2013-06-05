@@ -26,10 +26,4 @@ public class MinimalDependencyTest
     {
         super( "minimal.xml" );
     }
-
-    @Override
-    public void configureRuntime()
-    {
-        // Don't expect any dependencies
-    }
 }
