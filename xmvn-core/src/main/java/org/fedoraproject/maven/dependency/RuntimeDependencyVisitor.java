@@ -29,7 +29,7 @@ public class RuntimeDependencyVisitor
 {
     private final DefaultDependencyExtractionResult result;
 
-    private static final List<String> runtimeScopes = Arrays.asList( null, "compile", "runtime" );
+    private static final List<String> scopes = Arrays.asList( null, "compile", "runtime" );
 
     public RuntimeDependencyVisitor( DefaultDependencyExtractionResult result )
     {
@@ -39,7 +39,7 @@ public class RuntimeDependencyVisitor
     @Override
     public void visitDependency( Dependency dependency )
     {
-        if ( !runtimeScopes.contains( dependency.getScope() ) )
+        if ( !scopes.contains( dependency.getScope() ) )
             return;
 
         result.addDependencyArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
