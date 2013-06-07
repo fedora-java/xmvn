@@ -15,28 +15,33 @@
  */
 package org.fedoraproject.maven.dependency;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.maven.model.Dependency;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
-import org.fedoraproject.maven.model.ModelProcessor;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = DependencyExtractor.class, hint = DependencyExtractor.BUILD )
-public class BuildDependencyExtractor
+public class BuildDependencyVisitor
     extends AbstractModelVisitor
-    implements DependencyExtractor
 {
-    @Requirement
-    private ModelProcessor modelProcessor;
+    private final DefaultDependencyExtractionResult result;
+
+    private static final List<String> scopes = Arrays.asList( null, "compile", "provided", "test" );
+
+    public BuildDependencyVisitor( DefaultDependencyExtractionResult result )
+    {
+        this.result = result;
+    }
 
     @Override
-    public DependencyExtractionResult extract( DependencyExtractionRequest request )
+    public void visitDependency( Dependency dependency )
     {
-        DefaultDependencyExtractionResult result = new DefaultDependencyExtractionResult();
-        modelProcessor.processModel( request.getProjectModel(), new BuildDependencyVisitor( result ) );
-        modelProcessor.processModel( request.getProjectModel(), new JavaVersionVisitor( result ) );
-        return result;
+        if ( !scopes.contains( dependency.getScope() ) )
+            return;
+
+        result.addDependencyArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
     }
 }

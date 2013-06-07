@@ -32,8 +32,8 @@ public class DependencyScopesTest
     {
         expect( "group.default", "artifact-default", "1.2.3.default" );
         expect( "group.compile", "artifact-compile", "1.2.3.compile" );
-        expect( "group.provided", "artifact-provided", "1.2.3.test" );
-        expect( "group.test", "artifact-test", "1.2.3.provided" );
+        expect( "group.provided", "artifact-provided", "1.2.3.provided" );
+        expect( "group.test", "artifact-test", "1.2.3.test" );
     }
 
     @Override
