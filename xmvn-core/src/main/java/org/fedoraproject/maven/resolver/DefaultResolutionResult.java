@@ -17,6 +17,8 @@ package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 
+import org.fedoraproject.maven.repository.Repository;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -29,6 +31,8 @@ public class DefaultResolutionResult
 
     private String compatVersion;
 
+    private Repository repository;
+
     public DefaultResolutionResult()
     {
         this( null );
@@ -36,7 +40,13 @@ public class DefaultResolutionResult
 
     public DefaultResolutionResult( File artifactFile )
     {
+        this( artifactFile, null );
+    }
+
+    public DefaultResolutionResult( File artifactFile, Repository repository )
+    {
         this.artifactFile = artifactFile;
+        this.repository = repository;
     }
 
     @Override
@@ -65,5 +75,16 @@ public class DefaultResolutionResult
     public void setCompatVersion( String compatVersion )
     {
         this.compatVersion = compatVersion;
+    }
+
+    @Override
+    public Repository getRepository()
+    {
+        return repository;
+    }
+
+    public void setRepository( Repository repository )
+    {
+        this.repository = repository;
     }
 }

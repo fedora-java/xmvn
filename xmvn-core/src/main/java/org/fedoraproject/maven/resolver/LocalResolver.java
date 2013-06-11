@@ -51,7 +51,7 @@ class LocalResolver
         {
             File artifactFile = repo.findArtifact( artifact, true );
             if ( artifactFile != null )
-                return new DefaultResolutionResult( artifactFile );
+                return new DefaultResolutionResult( artifactFile, repo );
         }
 
         return new DefaultResolutionResult();

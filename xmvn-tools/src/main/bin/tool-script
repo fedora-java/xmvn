@@ -26,7 +26,7 @@ export LC_ALL=POSIX
 set -e
 
 # 1. Determine installation directory of XMvn
-case "${0}" in #((
+case "${0}" in
     *[\\/]*)
         home=$(dirname "${0}")/..
         ;;
@@ -50,7 +50,7 @@ esac
 
 # 2. Determine which tool was ran
 tool=$(basename "${0}")
-case "${tool}" in #((
+case "${tool}" in
     *bisect*)
         tool=bisect
         class=org.fedoraproject.maven.tools.bisect.BisectCli

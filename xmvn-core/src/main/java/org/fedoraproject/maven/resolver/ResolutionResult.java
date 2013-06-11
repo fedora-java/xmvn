@@ -17,6 +17,8 @@ package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 
+import org.fedoraproject.maven.repository.Repository;
+
 /**
  * Provides access to results of artifact resolution.
  * 
@@ -48,4 +50,12 @@ public interface ResolutionResult
      * @return compatibility version of resolved artifact or {@code null} if default artifact version was resolved
      */
     String getCompatVersion();
+
+    /**
+     * Get repository from which the artifact was resolved, if any.
+     * 
+     * @return repository from which the artifact was resolved or {@code null} if artifact was not resolved from any
+     *         repository.
+     */
+    Repository getRepository();
 }

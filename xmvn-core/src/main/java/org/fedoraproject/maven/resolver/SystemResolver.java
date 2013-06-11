@@ -79,6 +79,7 @@ class SystemResolver
         logger.debug( "Artifact " + artifact + " was resolved to " + file );
         DefaultResolutionResult result = new DefaultResolutionResult( file );
         result.setCompatVersion( compatVersion );
+        result.setRepository( systemRepo );
 
         if ( request.isProviderNeeded() || settings.isDebug() )
         {
