@@ -20,128 +20,24 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-public enum RepositoryType
+public interface RepositoryType
 {
-    /**
-     * Maven repository layout, as used by upstream Maven.
-     * <p>
-     * Example: {@code g/r/o/u/p/artifact/ver/artifact-ver.ext}
-     */
-    MAVEN( "Maven", false, true, true, false ),
+    @Deprecated
+    RepositoryType MAVEN = new MavenRepository();
 
-    /**
-     * Version-aware repository JPP layout.
-     * <p>
-     * Example: {@code g/r/o/u/p/artifact-ver.ext}
-     */
-    JPP( "version-aware JPP", false, false, true, true ),
+    @Deprecated
+    RepositoryType JPP = new JppRepository( true );
 
-    /**
-     * Version-unaware JPP repository layout.
-     * <p>
-     * Example: {@code g/r/o/u/p/artifact.ext}
-     */
-    JPP_VERSIONLESS( "versionless JPP", false, false, false, true ),
+    @Deprecated
+    RepositoryType JPP_VERSIONLESS = new JppRepository( false );
 
-    /**
-     * Version-aware flat repository layout.
-     * <p>
-     * Example: {@code g.r.o.u.p-artifact-ver.ext}
-     */
-    FLAT( "version-aware flat", true, false, true, false ),
+    @Deprecated
+    RepositoryType FLAT = new FlatRepository( true );
 
-    /**
-     * Version-unaware flat repository layout.
-     * <p>
-     * Example: {@code g.r.o.u.p-artifact.ext}
-     */
-    FLAT_VERSIONLESS( "versionless flat", true, false, false, false );
+    @Deprecated
+    RepositoryType FLAT_VERSIONLESS = new FlatRepository( false );
 
-    private final String name;
+    boolean isVersioned();
 
-    private final boolean flat;
-
-    private final boolean deep;
-
-    private final boolean versioned;
-
-    private final boolean skipJpp;
-
-    private RepositoryType( String name, boolean flat, boolean deep, boolean versioned, boolean skipJpp )
-    {
-        this.name = name;
-        this.flat = flat;
-        this.deep = deep;
-        this.versioned = versioned;
-        this.skipJpp = skipJpp;
-    }
-
-    public boolean isVersioned()
-    {
-        return versioned;
-    }
-
-    public String getArtifactPath( Artifact artifact )
-    {
-        StringBuilder path = new StringBuilder();
-
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
-        String extension = artifact.getExtension();
-
-        if ( skipJpp )
-        {
-            if ( groupId.startsWith( "JPP/" ) )
-                groupId = groupId.substring( 4 );
-            else if ( groupId.equals( "JPP" ) )
-                groupId = null;
-        }
-
-        if ( groupId != null )
-        {
-            if ( flat )
-            {
-                path.append( groupId.replace( '/', '.' ) );
-                path.append( '-' );
-            }
-            else if ( deep )
-            {
-                path.append( groupId.replace( '.', '/' ) );
-                path.append( '/' );
-            }
-            else
-            {
-                path.append( groupId );
-                path.append( '/' );
-            }
-        }
-
-        path.append( artifactId );
-
-        if ( deep )
-        {
-            path.append( '/' );
-            path.append( version );
-            path.append( '/' );
-            path.append( artifactId );
-        }
-
-        if ( versioned )
-        {
-            path.append( '-' );
-            path.append( version );
-        }
-
-        path.append( '.' );
-        path.append( extension );
-
-        return path.toString();
-    }
-
-    @Override
-    public String toString()
-    {
-        return name + " layout";
-    }
+    String getArtifactPath( Artifact artifact );
 }
