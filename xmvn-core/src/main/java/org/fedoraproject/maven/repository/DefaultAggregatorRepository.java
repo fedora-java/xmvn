@@ -25,7 +25,8 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-public class JppRepository
+@Deprecated
+public class DefaultAggregatorRepository
     implements Repository
 {
     private final Collection<Repository> jarRepos = new LinkedList<>();
@@ -34,7 +35,8 @@ public class JppRepository
 
     private final File root;
 
-    private void initRepos( Collection<Repository> repos, Iterable<String> dirs, RepositoryType layout1, RepositoryType layout2 )
+    private void initRepos( Collection<Repository> repos, Iterable<String> dirs, RepositoryType layout1,
+                            RepositoryType layout2 )
     {
         for ( RepositoryType layout : new RepositoryType[] { layout1, layout2 } )
         {
@@ -47,7 +49,7 @@ public class JppRepository
         }
     }
 
-    public JppRepository( File root, ResolverSettings settings )
+    public DefaultAggregatorRepository( File root, ResolverSettings settings )
     {
         this.root = root;
 
