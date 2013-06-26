@@ -17,9 +17,14 @@ package org.fedoraproject.maven.dependency;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Extension;
+import org.apache.maven.model.Plugin;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
+import org.fedoraproject.maven.model.Artifact;
 
 /**
  * @author Mikolaj Izdebski
@@ -27,9 +32,17 @@ import org.fedoraproject.maven.model.AbstractModelVisitor;
 public class BuildDependencyVisitor
     extends AbstractModelVisitor
 {
+    private static final Set<Artifact> commonPlugins = new TreeSet<>();
+    static
+    {
+        commonPlugins.add( new Artifact( "org.apache.maven.plugins", "maven-compiler-plugin" ) );
+    }
+
     private final DefaultDependencyExtractionResult result;
 
-    private static final List<String> scopes = Arrays.asList( null, "compile", "provided", "test" );
+    private static final List<String> buildScopes = Arrays.asList( null, "compile", "provided", "test" );
+
+    private static final List<String> runtimeScopes = Arrays.asList( null, "compile", "runtime" );
 
     public BuildDependencyVisitor( DefaultDependencyExtractionResult result )
     {
@@ -39,7 +52,34 @@ public class BuildDependencyVisitor
     @Override
     public void visitDependency( Dependency dependency )
     {
-        if ( !scopes.contains( dependency.getScope() ) )
+        if ( !buildScopes.contains( dependency.getScope() ) )
+            return;
+
+        result.addDependencyArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
+    }
+
+    @Override
+    public void visitBuildExtension( Extension extension )
+    {
+        result.addDependencyArtifact( extension.getGroupId(), extension.getArtifactId(), extension.getVersion() );
+    }
+
+    @Override
+    public void visitBuildPlugin( Plugin plugin )
+    {
+        String groupId = plugin.getGroupId();
+        String artifactId = plugin.getArtifactId();
+        String version = plugin.getVersion();
+        Artifact pluginArtifact = new Artifact( groupId, artifactId, version );
+
+        if ( !commonPlugins.contains( pluginArtifact ) )
+            result.addDependencyArtifact( plugin.getGroupId(), plugin.getArtifactId(), plugin.getVersion() );
+    }
+
+    @Override
+    public void visitBuildPluginDependency( Dependency dependency )
+    {
+        if ( !runtimeScopes.contains( dependency.getScope() ) )
             return;
 
         result.addDependencyArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
