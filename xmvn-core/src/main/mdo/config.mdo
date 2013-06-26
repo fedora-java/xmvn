@@ -103,6 +103,55 @@
       </fields>
     </class>
 
+    <class xml.tagName="repository" java.clone="deep">
+      <name>Repository</name>
+      <version>0.6.0+</version>
+      <description>Artifact repository.</description>
+      <fields>
+        <field>
+          <name>id</name>
+          <version>0.6.0+</version>
+          <description>Unique string identifying this repository.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>type</name>
+          <version>0.6.0+</version>
+          <description>
+            Role hint of Plexus component implementing the repository.
+          </description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>properties</name>
+          <version>0.6.0+</version>
+          <description>
+            Properties associated with this repository.  Properties
+            can be freely used by the implementation, so their exact
+            meaning depends on repository type.  See documentation for
+            repository types to see list of supported properties.
+          </description>
+          <type>Properties</type>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
+          <name>configuration</name>
+          <version>0.6.0+</version>
+          <description>
+            Arbitrary XML used to configure structure of the
+            repository.  Configuration can be freely used by the
+            implementation, so their exact meaning depends on
+            repository type.  See documentation for repository types
+            to see the format of supported configuration (if any).
+          </description>
+          <type>DOM</type>
+        </field>
+      </fields>
+    </class>
+
     <class xml.tagName="rule" java.clone="deep">
       <name>PackagingRule</name>
       <version>0.4.0+</version>
@@ -121,6 +170,14 @@
           <name>targetPackage</name>
           <version>0.4.0+</version>
           <description>Name of binary package into which artifacts are assigned.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>targetRepository</name>
+          <version>0.6.0+</version>
+          <description>
+            ID of repository into which artifacts are installed.
+          </description>
           <type>String</type>
         </field>
         <field>
@@ -447,6 +504,21 @@
           <type>Properties</type>
           <association>
             <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+
+        <field>
+          <name>repositories</name>
+          <version>0.6.0+</version>
+          <description>
+            List of repositories.  Repositories can be used by
+            resolvers as source of artifacts, by installers as target
+            where artifacts should be installed, or by any other
+            component.
+          </description>
+          <association>
+            <type>Repository</type>
             <multiplicity>*</multiplicity>
           </association>
         </field>
