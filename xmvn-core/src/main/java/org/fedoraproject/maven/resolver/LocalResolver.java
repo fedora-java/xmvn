@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.repository.Layout;
+import org.fedoraproject.maven.repository.RepositoryType;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.SingletonRepository;
 
@@ -37,7 +37,7 @@ class LocalResolver
     {
         for ( String localRepoDir : settings.getLocalRepositories() )
         {
-            Repository repo = new SingletonRepository( new File( localRepoDir ), Layout.MAVEN );
+            Repository repo = new SingletonRepository( new File( localRepoDir ), RepositoryType.MAVEN );
             repositories.add( repo );
         }
     }

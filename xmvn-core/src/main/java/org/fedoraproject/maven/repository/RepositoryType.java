@@ -20,7 +20,7 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-public enum Layout
+public enum RepositoryType
 {
     /**
      * Maven repository layout, as used by upstream Maven.
@@ -67,7 +67,7 @@ public enum Layout
 
     private final boolean skipJpp;
 
-    private Layout( String name, boolean flat, boolean deep, boolean versioned, boolean skipJpp )
+    private RepositoryType( String name, boolean flat, boolean deep, boolean versioned, boolean skipJpp )
     {
         this.name = name;
         this.flat = flat;

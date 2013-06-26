@@ -29,9 +29,9 @@ public class SingletonRepository
 {
     private final File root;
 
-    private final Layout layout;
+    private final RepositoryType layout;
 
-    public SingletonRepository( File root, Layout layout )
+    public SingletonRepository( File root, RepositoryType layout )
     {
         this.root = root;
         this.layout = layout;

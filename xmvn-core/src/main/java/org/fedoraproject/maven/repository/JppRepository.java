@@ -34,9 +34,9 @@ public class JppRepository
 
     private final File root;
 
-    private void initRepos( Collection<Repository> repos, Iterable<String> dirs, Layout layout1, Layout layout2 )
+    private void initRepos( Collection<Repository> repos, Iterable<String> dirs, RepositoryType layout1, RepositoryType layout2 )
     {
-        for ( Layout layout : new Layout[] { layout1, layout2 } )
+        for ( RepositoryType layout : new RepositoryType[] { layout1, layout2 } )
         {
             for ( String repoPath : dirs )
             {
@@ -51,8 +51,8 @@ public class JppRepository
     {
         this.root = root;
 
-        initRepos( jarRepos, settings.getJarRepositories(), Layout.JPP, Layout.JPP_VERSIONLESS );
-        initRepos( pomRepos, settings.getPomRepositories(), Layout.FLAT, Layout.FLAT_VERSIONLESS );
+        initRepos( jarRepos, settings.getJarRepositories(), RepositoryType.JPP, RepositoryType.JPP_VERSIONLESS );
+        initRepos( pomRepos, settings.getPomRepositories(), RepositoryType.FLAT, RepositoryType.FLAT_VERSIONLESS );
     }
 
     @Override
