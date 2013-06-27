@@ -29,11 +29,11 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = AggregatorRepository.ROLE_HINT )
-public class AggregatorRepository
+@Component( role = Repository.class, hint = CompoundRepository.ROLE_HINT )
+public class CompoundRepository
     implements Repository
 {
-    static final String ROLE_HINT = "aggregator";
+    static final String ROLE_HINT = "compound";
 
     @Requirement
     private RepositoryConfigurator configurator;
@@ -44,7 +44,7 @@ public class AggregatorRepository
     public void configure( Properties properties, Xpp3Dom configuration )
     {
         if ( configuration.getChildCount() != 1 || !configuration.getChild( 0 ).getName().equals( "repositories" ) )
-            throw new RuntimeException( "aggregator repository expects configuration "
+            throw new RuntimeException( "compound repository expects configuration "
                 + "with exactly one child element: <repositories>" );
         configuration = configuration.getChild( 0 );
 
