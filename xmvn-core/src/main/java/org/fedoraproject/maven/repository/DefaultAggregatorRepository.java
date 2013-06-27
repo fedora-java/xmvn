@@ -58,12 +58,12 @@ public class DefaultAggregatorRepository
     }
 
     @Override
-    public File findArtifact( Artifact artifact, boolean versioned )
+    public File findArtifact( Artifact artifact )
     {
         Iterable<Repository> repos = artifact.isPom() ? pomRepos : jarRepos;
         for ( Repository repo : repos )
         {
-            File file = repo.findArtifact( artifact, versioned );
+            File file = repo.findArtifact( artifact );
             if ( file != null )
                 return file;
         }

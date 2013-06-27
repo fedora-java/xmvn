@@ -120,6 +120,11 @@ public class Artifact
         return getExtension().equals( "pom" );
     }
 
+    public Artifact clearVersion()
+    {
+        return new Artifact( groupId, artifactId, null, extension );
+    }
+
     public Artifact clearExtension()
     {
         return new Artifact( groupId, artifactId, version );

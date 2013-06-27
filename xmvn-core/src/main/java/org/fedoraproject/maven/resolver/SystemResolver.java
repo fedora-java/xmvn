@@ -58,20 +58,29 @@ class SystemResolver
 
         File file = null;
         String compatVersion = null;
-        outer: for ( boolean versioned : new Boolean[] { true, false } )
+
+        // TODO: this loop needs to be simplified not to use goto...
+        notFound: for ( ;; )
         {
             for ( Artifact jppArtifact : jppList )
             {
-                compatVersion = versioned ? artifact.getVersion() : null;
+                compatVersion = artifact.getVersion();
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
-                file = systemRepo.findArtifact( jppArtifact, versioned );
+                file = systemRepo.findArtifact( jppArtifact );
                 if ( file != null )
-                    break outer;
+                    break notFound;
             }
-        }
 
-        if ( file == null )
-        {
+            compatVersion = null;
+            for ( Artifact jppArtifact : jppList )
+            {
+                jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
+                jppArtifact = jppArtifact.clearVersion();
+                file = systemRepo.findArtifact( jppArtifact );
+                if ( file != null )
+                    break notFound;
+            }
+
             logger.debug( "Failed to resolve artifact " + artifact );
             return new DefaultResolutionResult();
         }

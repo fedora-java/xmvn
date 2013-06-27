@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.repository.RepositoryType;
 import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.repository.RepositoryType;
 import org.fedoraproject.maven.repository.SingletonRepository;
 
 /**
@@ -49,7 +49,7 @@ class LocalResolver
 
         for ( Repository repo : repositories )
         {
-            File artifactFile = repo.findArtifact( artifact, true );
+            File artifactFile = repo.findArtifact( artifact );
             if ( artifactFile != null )
                 return new DefaultResolutionResult( artifactFile, repo );
         }

@@ -38,11 +38,8 @@ public class SingletonRepository
     }
 
     @Override
-    public File findArtifact( Artifact artifact, boolean versioned )
+    public File findArtifact( Artifact artifact )
     {
-        if ( layout.isVersioned() != versioned )
-            return null;
-
         String path = layout.getArtifactPath( artifact );
         File file = new File( root, path );
 
