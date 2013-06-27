@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven.repository;
 
+import java.io.File;
+
 import org.codehaus.plexus.component.annotations.Component;
 import org.fedoraproject.maven.model.Artifact;
 
@@ -27,25 +29,12 @@ import org.fedoraproject.maven.model.Artifact;
  */
 @Component( role = RepositoryType.class, hint = FlatRepository.ROLE_HINT )
 public class FlatRepository
-    implements RepositoryType
+    implements Repository
 {
     static final String ROLE_HINT = "flat";
 
-    public boolean versioned;
-
-    public FlatRepository( boolean versioned )
-    {
-        this.versioned = versioned;
-    }
-
     @Override
-    public boolean isVersioned()
-    {
-        return versioned;
-    }
-
-    @Override
-    public String getArtifactPath( Artifact artifact )
+    public File getArtifactPath( Artifact artifact )
     {
         StringBuilder path = new StringBuilder();
 
@@ -62,7 +51,7 @@ public class FlatRepository
 
         path.append( artifactId );
 
-        if ( isVersioned() )
+        if ( !artifact.isVersionless() )
         {
             path.append( '-' );
             path.append( version );
@@ -71,6 +60,6 @@ public class FlatRepository
         path.append( '.' );
         path.append( extension );
 
-        return path.toString();
+        return new File( path.toString() );
     }
 }

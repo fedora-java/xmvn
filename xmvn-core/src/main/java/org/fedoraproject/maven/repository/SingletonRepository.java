@@ -29,18 +29,18 @@ public class SingletonRepository
 {
     private final File root;
 
-    private final RepositoryType layout;
+    private final Repository layout;
 
-    public SingletonRepository( File root, RepositoryType layout )
+    public SingletonRepository( File root, Repository layout )
     {
         this.root = root;
         this.layout = layout;
     }
 
     @Override
-    public File findArtifact( Artifact artifact )
+    public File getArtifactPath( Artifact artifact )
     {
-        String path = layout.getArtifactPath( artifact );
+        String path = layout.getArtifactPath( artifact ).toString();
         File file = new File( root, path );
 
         if ( file.exists() )

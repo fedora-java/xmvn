@@ -66,7 +66,7 @@ class SystemResolver
             {
                 compatVersion = artifact.getVersion();
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
-                file = systemRepo.findArtifact( jppArtifact );
+                file = systemRepo.getArtifactPath( jppArtifact );
                 if ( file != null )
                     break notFound;
             }
@@ -76,7 +76,7 @@ class SystemResolver
             {
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
                 jppArtifact = jppArtifact.clearVersion();
-                file = systemRepo.findArtifact( jppArtifact );
+                file = systemRepo.getArtifactPath( jppArtifact );
                 if ( file != null )
                     break notFound;
             }

@@ -23,19 +23,13 @@ import org.fedoraproject.maven.model.Artifact;
 public interface RepositoryType
 {
     @Deprecated
-    RepositoryType MAVEN = new MavenRepository();
+    Repository MAVEN = new MavenRepository();
 
     @Deprecated
-    RepositoryType JPP = new JppRepository( true );
+    Repository JPP = new JppRepository();
 
     @Deprecated
-    RepositoryType JPP_VERSIONLESS = new JppRepository( false );
-
-    @Deprecated
-    RepositoryType FLAT = new FlatRepository( true );
-
-    @Deprecated
-    RepositoryType FLAT_VERSIONLESS = new FlatRepository( false );
+    Repository FLAT = new FlatRepository();
 
     boolean isVersioned();
 

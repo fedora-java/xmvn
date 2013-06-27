@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven.repository;
 
+import java.io.File;
+
 import org.codehaus.plexus.component.annotations.Component;
 import org.fedoraproject.maven.model.Artifact;
 
@@ -27,19 +29,16 @@ import org.fedoraproject.maven.model.Artifact;
  */
 @Component( role = RepositoryType.class, hint = MavenRepository.ROLE_HINT )
 public class MavenRepository
-    implements RepositoryType
+    implements Repository
 {
     static final String ROLE_HINT = "maven";
 
     @Override
-    public boolean isVersioned()
+    public File getArtifactPath( Artifact artifact )
     {
-        return true;
-    }
+        if ( artifact.isVersionless() )
+            return null;
 
-    @Override
-    public String getArtifactPath( Artifact artifact )
-    {
         StringBuilder path = new StringBuilder();
 
         String groupId = artifact.getGroupId();
@@ -66,6 +65,6 @@ public class MavenRepository
         path.append( '.' );
         path.append( extension );
 
-        return path.toString();
+        return new File( path.toString() );
     }
 }

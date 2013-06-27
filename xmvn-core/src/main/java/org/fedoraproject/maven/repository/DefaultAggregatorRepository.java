@@ -35,17 +35,13 @@ public class DefaultAggregatorRepository
 
     private final File root;
 
-    private void initRepos( Collection<Repository> repos, Iterable<String> dirs, RepositoryType layout1,
-                            RepositoryType layout2 )
+    private void initRepos( Collection<Repository> repos, Iterable<String> dirs, Repository layout )
     {
-        for ( RepositoryType layout : new RepositoryType[] { layout1, layout2 } )
+        for ( String repoPath : dirs )
         {
-            for ( String repoPath : dirs )
-            {
-                File repoRoot = new File( root, repoPath );
-                Repository repo = new SingletonRepository( repoRoot, layout );
-                repos.add( repo );
-            }
+            File repoRoot = new File( root, repoPath );
+            Repository repo = new SingletonRepository( repoRoot, layout );
+            repos.add( repo );
         }
     }
 
@@ -53,17 +49,24 @@ public class DefaultAggregatorRepository
     {
         this.root = root;
 
-        initRepos( jarRepos, settings.getJarRepositories(), RepositoryType.JPP, RepositoryType.JPP_VERSIONLESS );
-        initRepos( pomRepos, settings.getPomRepositories(), RepositoryType.FLAT, RepositoryType.FLAT_VERSIONLESS );
+        initRepos( jarRepos, settings.getJarRepositories(), RepositoryType.JPP );
+        initRepos( pomRepos, settings.getPomRepositories(), RepositoryType.FLAT );
     }
 
     @Override
-    public File findArtifact( Artifact artifact )
+    public File getArtifactPath( Artifact artifact )
     {
         Iterable<Repository> repos = artifact.isPom() ? pomRepos : jarRepos;
         for ( Repository repo : repos )
         {
-            File file = repo.findArtifact( artifact );
+            File file = repo.getArtifactPath( artifact );
+            if ( file != null )
+                return file;
+        }
+        artifact = artifact.clearVersion();
+        for ( Repository repo : repos )
+        {
+            File file = repo.getArtifactPath( artifact );
             if ( file != null )
                 return file;
         }

@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven.repository;
 
+import java.io.File;
+
 import org.codehaus.plexus.component.annotations.Component;
 import org.fedoraproject.maven.model.Artifact;
 
@@ -27,25 +29,12 @@ import org.fedoraproject.maven.model.Artifact;
  */
 @Component( role = RepositoryType.class, hint = JppRepository.ROLE_HINT )
 public class JppRepository
-    implements RepositoryType
+    implements Repository
 {
     static final String ROLE_HINT = "jpp";
 
-    public boolean versioned;
-
-    public JppRepository( boolean versioned )
-    {
-        this.versioned = versioned;
-    }
-
     @Override
-    public boolean isVersioned()
-    {
-        return versioned;
-    }
-
-    @Override
-    public String getArtifactPath( Artifact artifact )
+    public File getArtifactPath( Artifact artifact )
     {
         StringBuilder path = new StringBuilder();
 
@@ -67,7 +56,7 @@ public class JppRepository
 
         path.append( artifactId );
 
-        if ( isVersioned() )
+        if ( !artifact.isVersionless() )
         {
             path.append( '-' );
             path.append( version );
@@ -76,6 +65,6 @@ public class JppRepository
         path.append( '.' );
         path.append( extension );
 
-        return path.toString();
+        return new File( path.toString() );
     }
 }

@@ -32,24 +32,19 @@ public class LayoutTest
     public void testLayouts()
         throws Exception
     {
-        assertTrue( RepositoryType.MAVEN.isVersioned() );
-        assertTrue( RepositoryType.JPP.isVersioned() );
-        assertTrue( RepositoryType.FLAT.isVersioned() );
-        assertFalse( RepositoryType.JPP_VERSIONLESS.isVersioned() );
-        assertFalse( RepositoryType.FLAT_VERSIONLESS.isVersioned() );
-
         Artifact artifact = new Artifact( "an-example.artifact", "used-FOR42.testing", "blah-1.2.3-foo", "ext-ens.ion" );
 
         assertEquals( "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
-                      RepositoryType.MAVEN.getArtifactPath( artifact ) );
+                      RepositoryType.MAVEN.getArtifactPath( artifact ).toString() );
+        assertNull( RepositoryType.MAVEN.getArtifactPath( artifact.clearVersion() ) );
         assertEquals( "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
-                      RepositoryType.JPP.getArtifactPath( artifact ) );
+                      RepositoryType.JPP.getArtifactPath( artifact ).toString() );
         assertEquals( "an-example.artifact/used-FOR42.testing.ext-ens.ion",
-                      RepositoryType.JPP_VERSIONLESS.getArtifactPath( artifact ) );
+                      RepositoryType.JPP.getArtifactPath( artifact.clearVersion() ).toString() );
         assertEquals( "an-example.artifact-used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
-                      RepositoryType.FLAT.getArtifactPath( artifact ) );
+                      RepositoryType.FLAT.getArtifactPath( artifact ).toString() );
         assertEquals( "an-example.artifact-used-FOR42.testing.ext-ens.ion",
-                      RepositoryType.FLAT_VERSIONLESS.getArtifactPath( artifact ) );
+                      RepositoryType.FLAT.getArtifactPath( artifact.clearVersion() ).toString() );
     }
 
     /**
@@ -64,8 +59,8 @@ public class LayoutTest
         Artifact artifact2 = new Artifact( "JPP/group", "testing", "1.2.3", "abc" );
         Artifact artifact3 = new Artifact( "JPP-group", "testing", "1.2.3", "abc" );
 
-        assertEquals( "testing.abc", RepositoryType.JPP_VERSIONLESS.getArtifactPath( artifact1 ) );
-        assertEquals( "group/testing.abc", RepositoryType.JPP_VERSIONLESS.getArtifactPath( artifact2 ) );
-        assertEquals( "JPP-group/testing.abc", RepositoryType.JPP_VERSIONLESS.getArtifactPath( artifact3 ) );
+        assertEquals( "testing.abc", RepositoryType.JPP.getArtifactPath( artifact1.clearVersion() ).toString() );
+        assertEquals( "group/testing.abc", RepositoryType.JPP.getArtifactPath( artifact2.clearVersion() ).toString() );
+        assertEquals( "JPP-group/testing.abc", RepositoryType.JPP.getArtifactPath( artifact3.clearVersion() ).toString() );
     }
 }
