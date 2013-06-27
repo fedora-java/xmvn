@@ -66,7 +66,7 @@ class SystemResolver
             {
                 compatVersion = artifact.getVersion();
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
-                path = systemRepo.getArtifactPath( jppArtifact );
+                path = systemRepo.getArtifactPaths( jppArtifact ).iterator().next();
                 if ( path != null )
                     break notFound;
             }
@@ -76,7 +76,7 @@ class SystemResolver
             {
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
                 jppArtifact = jppArtifact.clearVersion();
-                path = systemRepo.getArtifactPath( jppArtifact );
+                path = systemRepo.getArtifactPaths( jppArtifact ).iterator().next();
                 if ( path != null )
                     break notFound;
             }

@@ -16,6 +16,7 @@
 package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -28,5 +29,7 @@ public interface Repository
 {
     void configure( Properties properties, Xpp3Dom configuration );
 
-    Path getArtifactPath( Artifact artifact );
+    Path getPrimaryArtifactPath( Artifact artifact );
+
+    List<Path> getArtifactPaths( Artifact artifact );
 }

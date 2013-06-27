@@ -17,6 +17,11 @@ package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -42,10 +47,20 @@ public class RootedRepository
     private Repository slave;
 
     @Override
-    public Path getArtifactPath( Artifact artifact )
+    public List<Path> getArtifactPaths( Artifact artifact )
     {
-        Path path = slave.getArtifactPath( artifact );
-        return root.resolve( path );
+        List<Path> list = new ArrayList<>( slave.getArtifactPaths( artifact ) );
+        ListIterator<Path> it = list.listIterator();
+        while ( it.hasNext() )
+            it.set( root.resolve( it.next() ) );
+        return Collections.unmodifiableList( list );
+    }
+
+    @Override
+    public Path getPrimaryArtifactPath( Artifact artifact )
+    {
+        Iterator<Path> it = getArtifactPaths( artifact ).iterator();
+        return it.hasNext() ? it.next() : null;
     }
 
     @Override

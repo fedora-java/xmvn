@@ -17,6 +17,8 @@ package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -59,9 +61,18 @@ public class CompoundRepository
     }
 
     @Override
-    public Path getArtifactPath( Artifact artifact )
+    public List<Path> getArtifactPaths( Artifact artifact )
     {
-        // FIXME
-        return null;
+        List<Path> paths = new ArrayList<>();
+        for ( Repository repository : slaveRepositories )
+            paths.addAll( repository.getArtifactPaths( artifact ) );
+        return Collections.unmodifiableList( paths );
+    }
+
+    @Override
+    public Path getPrimaryArtifactPath( Artifact artifact )
+    {
+        Iterator<Path> it = getArtifactPaths( artifact ).iterator();
+        return it.hasNext() ? it.next() : null;
     }
 }

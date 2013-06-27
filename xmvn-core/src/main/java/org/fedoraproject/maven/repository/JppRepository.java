@@ -17,6 +17,8 @@ package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -37,7 +39,7 @@ public class JppRepository
     static final String ROLE_HINT = "jpp";
 
     @Override
-    public Path getArtifactPath( Artifact artifact )
+    public Path getPrimaryArtifactPath( Artifact artifact )
     {
         StringBuilder path = new StringBuilder();
 
@@ -69,6 +71,12 @@ public class JppRepository
         path.append( extension );
 
         return Paths.get( path.toString() );
+    }
+
+    @Override
+    public List<Path> getArtifactPaths( Artifact artifact )
+    {
+        return Collections.singletonList( getPrimaryArtifactPath( artifact ) );
     }
 
     @Override

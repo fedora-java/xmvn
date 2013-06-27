@@ -15,6 +15,11 @@
  */
 package org.fedoraproject.maven.repository;
 
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.model.Artifact;
@@ -48,6 +53,18 @@ public class LayoutTest
         assertNull( defaultRepository );
     }
 
+    private void testPaths( Repository repository, Artifact artifact, String... result )
+    {
+        Set<String> expected = new TreeSet<>();
+        Set<String> actual = new TreeSet<>();
+
+        expected.addAll( Arrays.asList( result ) );
+        for ( Path path : repository.getArtifactPaths( artifact ) )
+            actual.add( path.toString() );
+
+        assertEquals( expected, actual );
+    }
+
     /**
      * Test layout objects.
      * 
@@ -58,17 +75,13 @@ public class LayoutTest
     {
         Artifact artifact = new Artifact( "an-example.artifact", "used-FOR42.testing", "blah-1.2.3-foo", "ext-ens.ion" );
 
-        assertEquals( "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
-                      mavenRepository.getArtifactPath( artifact ).toString() );
-        assertNull( mavenRepository.getArtifactPath( artifact.clearVersion() ) );
-        assertEquals( "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
-                      jppRepository.getArtifactPath( artifact ).toString() );
-        assertEquals( "an-example.artifact/used-FOR42.testing.ext-ens.ion",
-                      jppRepository.getArtifactPath( artifact.clearVersion() ).toString() );
-        assertEquals( "an-example.artifact-used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion",
-                      flatRepository.getArtifactPath( artifact ).toString() );
-        assertEquals( "an-example.artifact-used-FOR42.testing.ext-ens.ion",
-                      flatRepository.getArtifactPath( artifact.clearVersion() ).toString() );
+        testPaths( mavenRepository, artifact,
+                   "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
+        testPaths( mavenRepository, artifact.clearVersion() );
+        testPaths( jppRepository, artifact, "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
+        testPaths( jppRepository, artifact.clearVersion(), "an-example.artifact/used-FOR42.testing.ext-ens.ion" );
+        testPaths( flatRepository, artifact, "an-example.artifact-used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
+        testPaths( flatRepository, artifact.clearVersion(), "an-example.artifact-used-FOR42.testing.ext-ens.ion" );
     }
 
     /**
@@ -83,8 +96,8 @@ public class LayoutTest
         Artifact artifact2 = new Artifact( "JPP/group", "testing", "1.2.3", "abc" );
         Artifact artifact3 = new Artifact( "JPP-group", "testing", "1.2.3", "abc" );
 
-        assertEquals( "testing.abc", jppRepository.getArtifactPath( artifact1.clearVersion() ).toString() );
-        assertEquals( "group/testing.abc", jppRepository.getArtifactPath( artifact2.clearVersion() ).toString() );
-        assertEquals( "JPP-group/testing.abc", jppRepository.getArtifactPath( artifact3.clearVersion() ).toString() );
+        testPaths( jppRepository, artifact1.clearVersion(), "testing.abc" );
+        testPaths( jppRepository, artifact2.clearVersion(), "group/testing.abc" );
+        testPaths( jppRepository, artifact3.clearVersion(), "JPP-group/testing.abc" );
     }
 }
