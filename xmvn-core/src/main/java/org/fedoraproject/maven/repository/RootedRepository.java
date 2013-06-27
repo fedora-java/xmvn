@@ -19,11 +19,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
@@ -36,7 +35,7 @@ public class RootedRepository
     public static final String ROLE_HINT = "rooted";
 
     @Requirement
-    private PlexusContainer container;
+    private RepositoryConfigurator configurator;
 
     private Path root;
 
@@ -52,15 +51,8 @@ public class RootedRepository
     @Override
     public void configure( Properties properties, Xpp3Dom configuration )
     {
-        try
-        {
-            String slaveId = properties.getProperty( "slave" );
-            slave = container.lookup( Repository.class, slaveId != null ? slaveId : "default" );
-        }
-        catch ( ComponentLookupException e )
-        {
-            throw new RuntimeException( e );
-        }
+        String slaveId = properties.getProperty( "slave" );
+        slave = configurator.configureRepository( slaveId != null ? slaveId : "default" );
 
         String rootPath = properties.getProperty( "root" );
         root = Paths.get( rootPath != null ? rootPath : "" );

@@ -20,11 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
@@ -37,33 +36,25 @@ public class AggregatorRepository
     static final String ROLE_HINT = "aggregator";
 
     @Requirement
-    private PlexusContainer container;
+    private RepositoryConfigurator configurator;
 
     private final List<Repository> slaveRepositories = new ArrayList<>();
 
     @Override
     public void configure( Properties properties, Xpp3Dom configuration )
     {
-        try
-        {
-            if ( configuration.getChildCount() != 1 || !configuration.getChild( 0 ).getName().equals( "repositories" ) )
-                throw new RuntimeException( "aggregator repository expects configuration "
-                    + "with exactly one child element: <repositories>" );
-            configuration = configuration.getChild( 0 );
+        if ( configuration.getChildCount() != 1 || !configuration.getChild( 0 ).getName().equals( "repositories" ) )
+            throw new RuntimeException( "aggregator repository expects configuration "
+                + "with exactly one child element: <repositories>" );
+        configuration = configuration.getChild( 0 );
 
-            for ( Xpp3Dom child : configuration.getChildren() )
-            {
-                if ( child.getName().equals( "repository" ) || child.getChildCount() > 0 )
-                    throw new RuntimeException( "All childreen of <repositories> must be <repository> text nodes" );
-
-                // FIXME: slave needs to be configured
-                Repository slaveRepository = container.lookup( Repository.class, child.getValue().trim() );
-                slaveRepositories.add( slaveRepository );
-            }
-        }
-        catch ( ComponentLookupException e )
+        for ( Xpp3Dom child : configuration.getChildren() )
         {
-            throw new RuntimeException( e );
+            if ( child.getName().equals( "repository" ) || child.getChildCount() > 0 )
+                throw new RuntimeException( "All childreen of <repositories> must be <repository> text nodes" );
+
+            Repository slaveRepository = configurator.configureRepository( child.getValue().trim() );
+            slaveRepositories.add( slaveRepository );
         }
     }
 
