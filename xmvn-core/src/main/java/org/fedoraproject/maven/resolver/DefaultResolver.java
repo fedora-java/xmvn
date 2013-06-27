@@ -136,7 +136,7 @@ public class DefaultResolver
         if ( resolveFromBisectRepo() )
         {
             logger.debug( "Resolving artifact " + artifact + " from bisection repository." );
-            File artifactFile = bisectRepo.getArtifactPath( artifact );
+            File artifactFile = bisectRepo.getArtifactPath( artifact ).toFile();
             return new DefaultResolutionResult( artifactFile );
         }
 

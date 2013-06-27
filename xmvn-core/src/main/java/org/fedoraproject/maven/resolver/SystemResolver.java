@@ -16,6 +16,7 @@
 package org.fedoraproject.maven.resolver;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.codehaus.plexus.logging.Logger;
@@ -56,7 +57,7 @@ class SystemResolver
         logger.debug( "Resolving " + artifact );
         List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
 
-        File file = null;
+        Path path = null;
         String compatVersion = null;
 
         // TODO: this loop needs to be simplified not to use goto...
@@ -66,8 +67,8 @@ class SystemResolver
             {
                 compatVersion = artifact.getVersion();
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
-                file = systemRepo.getArtifactPath( jppArtifact );
-                if ( file != null )
+                path = systemRepo.getArtifactPath( jppArtifact );
+                if ( path != null )
                     break notFound;
             }
 
@@ -76,8 +77,8 @@ class SystemResolver
             {
                 jppArtifact = jppArtifact.clearVersionAndExtension().copyMissing( artifact );
                 jppArtifact = jppArtifact.clearVersion();
-                file = systemRepo.getArtifactPath( jppArtifact );
-                if ( file != null )
+                path = systemRepo.getArtifactPath( jppArtifact );
+                if ( path != null )
                     break notFound;
             }
 
@@ -85,14 +86,14 @@ class SystemResolver
             return new DefaultResolutionResult();
         }
 
-        logger.debug( "Artifact " + artifact + " was resolved to " + file );
-        DefaultResolutionResult result = new DefaultResolutionResult( file );
+        logger.debug( "Artifact " + artifact + " was resolved to " + path );
+        DefaultResolutionResult result = new DefaultResolutionResult( path.toFile() );
         result.setCompatVersion( compatVersion );
         result.setRepository( systemRepo );
 
         if ( request.isProviderNeeded() || settings.isDebug() )
         {
-            String rpmPackage = rpmdb.lookupFile( file );
+            String rpmPackage = rpmdb.lookupFile( path.toFile() );
             if ( rpmPackage != null )
             {
                 result.setProvider( rpmPackage );

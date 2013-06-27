@@ -15,7 +15,8 @@
  */
 package org.fedoraproject.maven.repository;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.fedoraproject.maven.model.Artifact;
@@ -34,7 +35,7 @@ public class FlatRepository
     static final String ROLE_HINT = "flat";
 
     @Override
-    public File getArtifactPath( Artifact artifact )
+    public Path getArtifactPath( Artifact artifact )
     {
         StringBuilder path = new StringBuilder();
 
@@ -60,6 +61,6 @@ public class FlatRepository
         path.append( '.' );
         path.append( extension );
 
-        return new File( path.toString() );
+        return Paths.get( path.toString() );
     }
 }

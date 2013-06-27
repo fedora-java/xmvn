@@ -16,6 +16,8 @@
 package org.fedoraproject.maven.repository;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -54,21 +56,21 @@ public class DefaultAggregatorRepository
     }
 
     @Override
-    public File getArtifactPath( Artifact artifact )
+    public Path getArtifactPath( Artifact artifact )
     {
         Iterable<Repository> repos = artifact.isPom() ? pomRepos : jarRepos;
         for ( Repository repo : repos )
         {
-            File file = repo.getArtifactPath( artifact );
-            if ( file != null )
-                return file;
+            Path path = repo.getArtifactPath( artifact );
+            if ( path != null && Files.exists( path ) )
+                return path;
         }
         artifact = artifact.clearVersion();
         for ( Repository repo : repos )
         {
-            File file = repo.getArtifactPath( artifact );
-            if ( file != null )
-                return file;
+            Path path = repo.getArtifactPath( artifact );
+            if ( path != null && Files.exists( path ) )
+                return path;
         }
 
         return null;

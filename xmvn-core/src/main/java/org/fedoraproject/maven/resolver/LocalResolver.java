@@ -49,7 +49,7 @@ class LocalResolver
 
         for ( Repository repo : repositories )
         {
-            File artifactFile = repo.getArtifactPath( artifact );
+            File artifactFile = repo.getArtifactPath( artifact ).toFile();
             if ( artifactFile != null )
                 return new DefaultResolutionResult( artifactFile, repo );
         }

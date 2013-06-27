@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.maven.repository;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import org.fedoraproject.maven.model.Artifact;
 
@@ -24,5 +24,5 @@ import org.fedoraproject.maven.model.Artifact;
  */
 public interface Repository
 {
-    File getArtifactPath( Artifact artifact );
+    Path getArtifactPath( Artifact artifact );
 }

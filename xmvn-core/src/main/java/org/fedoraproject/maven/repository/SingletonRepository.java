@@ -18,6 +18,7 @@ package org.fedoraproject.maven.repository;
 import static org.fedoraproject.maven.utils.FileUtils.followSymlink;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.fedoraproject.maven.model.Artifact;
 
@@ -38,7 +39,7 @@ public class SingletonRepository
     }
 
     @Override
-    public File getArtifactPath( Artifact artifact )
+    public Path getArtifactPath( Artifact artifact )
     {
         String path = layout.getArtifactPath( artifact ).toString();
         File file = new File( root, path );
@@ -46,7 +47,7 @@ public class SingletonRepository
         if ( file.exists() )
         {
             file = followSymlink( file );
-            return file;
+            return file.toPath();
         }
 
         return null;
