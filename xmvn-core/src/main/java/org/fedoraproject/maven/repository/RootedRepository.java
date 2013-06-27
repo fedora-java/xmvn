@@ -16,29 +16,53 @@
 package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Properties;
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
  * @author Mikolaj Izdebski
  */
+@Component( role = Repository.class, hint = RootedRepository.ROLE_HINT )
 public class RootedRepository
     implements Repository
 {
-    private final Path root;
+    public static final String ROLE_HINT = "rooted";
 
-    private final Repository other;
+    @Requirement
+    private PlexusContainer container;
 
-    public RootedRepository( Path root, Repository other )
-    {
-        this.root = root;
-        this.other = other;
-    }
+    private Path root;
+
+    private Repository slave;
 
     @Override
     public Path getArtifactPath( Artifact artifact )
     {
-        Path path = other.getArtifactPath( artifact );
+        Path path = slave.getArtifactPath( artifact );
         return root.resolve( path );
+    }
+
+    @Override
+    public void configure( Properties properties, Xpp3Dom configuration )
+    {
+        try
+        {
+            String slaveId = properties.getProperty( "slave" );
+            slave = container.lookup( Repository.class, slaveId != null ? slaveId : "default" );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new RuntimeException( e );
+        }
+
+        String rootPath = properties.getProperty( "root" );
+        root = Paths.get( rootPath != null ? rootPath : "" );
     }
 }

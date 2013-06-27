@@ -20,7 +20,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Properties;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 
@@ -41,9 +43,7 @@ public class DefaultAggregatorRepository
     {
         for ( String repoPath : dirs )
         {
-            File repoRoot = new File( root, repoPath );
-            Repository repo = new RootedRepository( repoRoot.toPath(), layout );
-            repos.add( repo );
+            // This is delibaretly broken, but will be removed...
         }
     }
 
@@ -74,5 +74,11 @@ public class DefaultAggregatorRepository
         }
 
         return null;
+    }
+
+    @Override
+    public void configure( Properties properties, Xpp3Dom configuration )
+    {
+        // COnfiguration is ignored. This class is deprecated.
     }
 }

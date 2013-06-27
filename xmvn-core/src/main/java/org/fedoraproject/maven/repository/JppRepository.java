@@ -17,8 +17,10 @@ package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
@@ -67,5 +69,11 @@ public class JppRepository
         path.append( extension );
 
         return Paths.get( path.toString() );
+    }
+
+    @Override
+    public void configure( Properties properties, Xpp3Dom configuration )
+    {
+        // TODO Auto-generated method stub
     }
 }
