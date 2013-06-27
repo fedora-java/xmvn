@@ -28,7 +28,7 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = RepositoryType.class, hint = JppRepository.ROLE_HINT )
+@Component( role = Repository.class, hint = JppRepository.ROLE_HINT )
 public class JppRepository
     implements Repository
 {

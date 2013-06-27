@@ -27,8 +27,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.repository.MavenRepository;
 import org.fedoraproject.maven.repository.Repository;
-import org.fedoraproject.maven.repository.RepositoryType;
 import org.fedoraproject.maven.repository.SingletonRepository;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
@@ -45,6 +45,9 @@ public class DefaultResolver
 
     @Requirement
     private Configurator configurator;
+
+    @Requirement( hint = MavenRepository.ROLE_HINT )
+    private Repository mavenRepository;
 
     private AtomicFileCounter bisectCounter;
 
@@ -74,7 +77,7 @@ public class DefaultResolver
                 throw new RuntimeException( "xmvn.bisect.repository is not a directory" );
             }
 
-            bisectRepo = new SingletonRepository( bisectRepoRoot, RepositoryType.MAVEN );
+            bisectRepo = new SingletonRepository( bisectRepoRoot, mavenRepository );
             bisectCounter = new AtomicFileCounter( bisectCounterPath );
 
             logger.info( "Enabled XMvn bisection build" );

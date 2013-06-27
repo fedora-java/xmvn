@@ -51,8 +51,8 @@ public class DefaultAggregatorRepository
     {
         this.root = root;
 
-        initRepos( jarRepos, settings.getJarRepositories(), RepositoryType.JPP );
-        initRepos( pomRepos, settings.getPomRepositories(), RepositoryType.FLAT );
+        initRepos( jarRepos, settings.getJarRepositories(), new JppRepository() );
+        initRepos( pomRepos, settings.getPomRepositories(), new FlatRepository() );
     }
 
     @Override

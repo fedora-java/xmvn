@@ -28,11 +28,11 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = RepositoryType.class, hint = MavenRepository.ROLE_HINT )
+@Component( role = Repository.class, hint = MavenRepository.ROLE_HINT )
 public class MavenRepository
     implements Repository
 {
-    static final String ROLE_HINT = "maven";
+    public static final String ROLE_HINT = "maven";
 
     @Override
     public Path getArtifactPath( Artifact artifact )
