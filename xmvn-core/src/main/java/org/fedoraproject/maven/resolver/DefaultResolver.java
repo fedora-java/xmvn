@@ -98,7 +98,7 @@ public class DefaultResolver
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
-        resolvers.add( new LocalResolver( settings ) );
+        // resolvers.add( new LocalResolver( settings ) );
 
         for ( String prefix : settings.getPrefixes() )
         {
