@@ -22,7 +22,6 @@ import java.util.List;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.repository.DefaultAggregatorRepository;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.rpmquery.RpmDb;
 
@@ -46,7 +45,7 @@ class SystemResolver
     {
         this.settings = settings;
         this.logger = logger;
-        systemRepo = new DefaultAggregatorRepository( root, settings );
+        systemRepo = null; // FIXME
         depmap = DepmapReader.readArtifactMap( root, settings, logger );
     }
 
