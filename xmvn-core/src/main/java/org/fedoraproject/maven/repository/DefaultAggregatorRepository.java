@@ -42,7 +42,7 @@ public class DefaultAggregatorRepository
         for ( String repoPath : dirs )
         {
             File repoRoot = new File( root, repoPath );
-            Repository repo = new SingletonRepository( repoRoot, layout );
+            Repository repo = new RootedRepository( repoRoot.toPath(), layout );
             repos.add( repo );
         }
     }

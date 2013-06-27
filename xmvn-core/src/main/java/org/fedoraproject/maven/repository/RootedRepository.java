@@ -15,9 +15,6 @@
  */
 package org.fedoraproject.maven.repository;
 
-import static org.fedoraproject.maven.utils.FileUtils.followSymlink;
-
-import java.io.File;
 import java.nio.file.Path;
 
 import org.fedoraproject.maven.model.Artifact;
@@ -25,37 +22,23 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-public class SingletonRepository
+public class RootedRepository
     implements Repository
 {
-    private final File root;
+    private final Path root;
 
-    private final Repository layout;
+    private final Repository other;
 
-    public SingletonRepository( File root, Repository layout )
+    public RootedRepository( Path root, Repository other )
     {
         this.root = root;
-        this.layout = layout;
+        this.other = other;
     }
 
     @Override
     public Path getArtifactPath( Artifact artifact )
     {
-        String path = layout.getArtifactPath( artifact ).toString();
-        File file = new File( root, path );
-
-        if ( file.exists() )
-        {
-            file = followSymlink( file );
-            return file.toPath();
-        }
-
-        return null;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "repository at " + root + " with " + layout;
+        Path path = other.getArtifactPath( artifact );
+        return root.resolve( path );
     }
 }
