@@ -73,6 +73,10 @@ public class LayoutTest
     public void testLayouts()
         throws Exception
     {
+        assertNotNull( mavenRepository );
+        assertNotNull( jppRepository );
+        assertNotNull( flatRepository );
+
         Artifact artifact = new Artifact( "an-example.artifact", "used-FOR42.testing", "blah-1.2.3-foo", "ext-ens.ion" );
 
         testPaths( mavenRepository, artifact,
@@ -92,6 +96,8 @@ public class LayoutTest
     public void testJppPrefixes()
         throws Exception
     {
+        assertNotNull( jppRepository );
+
         Artifact artifact1 = new Artifact( "JPP", "testing", "1.2.3", "abc" );
         Artifact artifact2 = new Artifact( "JPP/group", "testing", "1.2.3", "abc" );
         Artifact artifact3 = new Artifact( "JPP-group", "testing", "1.2.3", "abc" );
