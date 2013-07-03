@@ -18,6 +18,8 @@ package org.fedoraproject.maven.resolver;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
+ * A container structure holding artifacts.
+ * 
  * @author Mikolaj Izdebski
  */
 public interface ArtifactBlacklist

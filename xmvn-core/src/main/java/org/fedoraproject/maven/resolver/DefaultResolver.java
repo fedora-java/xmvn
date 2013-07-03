@@ -34,6 +34,8 @@ import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
+ * Default implementation of XMvn {@code Resolver} interface.
+ * 
  * @author Mikolaj Izdebski
  */
 @Component( role = Resolver.class )

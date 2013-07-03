@@ -29,6 +29,13 @@ import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
+ * Compound repository.
+ * <p>
+ * This repository aggregates zero or more other repositories. The repositories are ordered by preference.
+ * <p>
+ * All requests are forwarded to repositories backing this compound repository. If no repositories are aggregated then
+ * this repository is equivalent to empty repository.
+ * 
  * @author Mikolaj Izdebski
  */
 @Component( role = Repository.class, hint = CompoundRepository.ROLE_HINT )

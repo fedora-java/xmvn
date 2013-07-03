@@ -20,6 +20,8 @@ import java.io.File;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
+ * Base class for several resolves implemented in this package.
+ * 
  * @author Mikolaj Izdebski
  */
 abstract class AbstractResolver

@@ -31,6 +31,9 @@ import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
+ * A wrapper repository which prepends a prefix path to the slave repository. This repository forwards all requests to
+ * one slave repository.
+ * 
  * @author Mikolaj Izdebski
  */
 @Component( role = Repository.class, hint = RootedRepository.ROLE_HINT )

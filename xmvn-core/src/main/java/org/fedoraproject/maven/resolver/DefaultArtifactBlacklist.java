@@ -29,6 +29,8 @@ import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
+ * Default implementation of {@code ArtifactBlacklist} container.
+ * 
  * @author Mikolaj Izdebski
  */
 @Component( role = ArtifactBlacklist.class )

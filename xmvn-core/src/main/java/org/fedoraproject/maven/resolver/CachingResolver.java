@@ -22,6 +22,13 @@ import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
+ * A caching resolver.
+ * <p>
+ * This resolver which forwards resolution request to other repository and caches all resolution results. The main
+ * advantage of {@code CachingResolver} is faster average resolution time -- if one artifact is requested to be resolved
+ * multiple times only the first request is forwarded to the backing repository -- all subsequent resolutions are
+ * handled from the cache.
+ * 
  * @author Mikolaj Izdebski
  */
 class CachingResolver
