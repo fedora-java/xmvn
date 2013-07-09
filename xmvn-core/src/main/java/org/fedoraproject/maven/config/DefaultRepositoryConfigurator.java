@@ -40,8 +40,9 @@ public class DefaultRepositoryConfigurator
     @Override
     public Repository configureRepository( String repoId )
     {
-        Properties properties = new Properties();
-        Xpp3Dom configurationXml = new Xpp3Dom( "configuration" );
+        Properties properties = null;
+        Xpp3Dom configurationXml = null;
+        String type = null;
 
         for ( org.fedoraproject.maven.config.Repository repository : configurator.getConfiguration().getRepositories() )
         {
@@ -49,13 +50,21 @@ public class DefaultRepositoryConfigurator
             {
                 properties = repository.getProperties();
                 configurationXml = (Xpp3Dom) repository.getConfiguration();
+                type = repository.getType();
                 break;
             }
         }
 
+        if ( properties == null )
+            properties = new Properties();
+        if ( configurationXml == null )
+            configurationXml = new Xpp3Dom( "configuration" );
+        if ( type == null )
+            type = repoId;
+
         try
         {
-            Repository repository = container.lookup( Repository.class, repoId );
+            Repository repository = container.lookup( Repository.class, type );
             repository.configure( properties, configurationXml );
             return repository;
         }
