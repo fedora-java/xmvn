@@ -36,6 +36,7 @@ public class JavaVersionVisitor
 
     static
     {
+        // TODO: extract this as configuration
         sourceMap.put( "1.1", new BigDecimal( "1.1" ) );
         sourceMap.put( "1.2", new BigDecimal( "1.2" ) );
         sourceMap.put( "1.3", new BigDecimal( "1.3" ) );
