@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.model.Artifact;
 
 /**
@@ -30,18 +29,6 @@ import org.fedoraproject.maven.model.Artifact;
 public class LayoutTest
     extends PlexusTestCase
 {
-    @Requirement
-    private Repository defaultRepository;
-
-    @Requirement( hint = MavenRepository.ROLE_HINT )
-    private Repository mavenRepository;
-
-    @Requirement( hint = JppRepository.ROLE_HINT )
-    private Repository jppRepository;
-
-    @Requirement( hint = FlatRepository.ROLE_HINT )
-    private Repository flatRepository;
-
     /**
      * Make sure there is no default repository.
      * 
@@ -50,6 +37,8 @@ public class LayoutTest
     public void defaultRepositoryTest()
         throws Exception
     {
+        Repository defaultRepository = lookup( Repository.class );
+
         assertNull( defaultRepository );
     }
 
@@ -60,7 +49,10 @@ public class LayoutTest
 
         expected.addAll( Arrays.asList( result ) );
         for ( Path path : repository.getArtifactPaths( artifact ) )
+        {
+            assertNotNull( path );
             actual.add( path.toString() );
+        }
 
         assertEquals( expected, actual );
     }
@@ -73,6 +65,9 @@ public class LayoutTest
     public void testLayouts()
         throws Exception
     {
+        Repository mavenRepository = lookup( Repository.class, MavenRepository.ROLE_HINT );
+        Repository jppRepository = lookup( Repository.class, JppRepository.ROLE_HINT );
+        Repository flatRepository = lookup( Repository.class, FlatRepository.ROLE_HINT );
         assertNotNull( mavenRepository );
         assertNotNull( jppRepository );
         assertNotNull( flatRepository );
@@ -96,6 +91,7 @@ public class LayoutTest
     public void testJppPrefixes()
         throws Exception
     {
+        Repository jppRepository = lookup( Repository.class, JppRepository.ROLE_HINT );
         assertNotNull( jppRepository );
 
         Artifact artifact1 = new Artifact( "JPP", "testing", "1.2.3", "abc" );

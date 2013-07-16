@@ -76,7 +76,8 @@ public class MavenRepository
     @Override
     public List<Path> getArtifactPaths( Artifact artifact )
     {
-        return Collections.singletonList( getPrimaryArtifactPath( artifact ) );
+        Path path = getPrimaryArtifactPath( artifact );
+        return path != null ? Collections.singletonList( path ) : Collections.<Path> emptyList();
     }
 
     @Override

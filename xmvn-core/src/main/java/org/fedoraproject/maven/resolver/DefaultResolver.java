@@ -29,6 +29,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.RootedRepository;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
@@ -49,7 +50,7 @@ public class DefaultResolver
     private Configurator configurator;
 
     @Requirement( hint = RootedRepository.ROLE_HINT )
-    private RootedRepository bisectRepo;
+    private Repository bisectRepo;
 
     private AtomicFileCounter bisectCounter;
 
