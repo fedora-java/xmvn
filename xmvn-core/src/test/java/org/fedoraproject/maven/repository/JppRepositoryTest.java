@@ -27,7 +27,7 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-public class FlatRepositoryTest
+public class JppRepositoryTest
     extends PlexusTestCase
 {
     public void testJppRepository()
@@ -38,16 +38,15 @@ public class FlatRepositoryTest
 
         Repository repository = new Repository();
         repository.setId( "test123" );
-        repository.setType( "flat" );
+        repository.setType( "jpp" );
         configuration.addRepository( repository );
 
         RepositoryConfigurator repoConfigurator = lookup( RepositoryConfigurator.class );
         org.fedoraproject.maven.repository.Repository repo = repoConfigurator.configureRepository( "test123" );
         assertNotNull( repo );
 
-        Artifact artifact = new Artifact( "JPP/foo.bar-bazz", "the-artifact", "1.2.3", "baz" );
-        assertEquals( Paths.get( "JPP.foo.bar-bazz-the-artifact-1.2.3.baz" ), repo.getPrimaryArtifactPath( artifact ) );
-        assertEquals( Paths.get( "JPP.foo.bar-bazz-the-artifact.baz" ),
-                      repo.getPrimaryArtifactPath( artifact.clearVersion() ) );
+        Artifact artifact = new Artifact( "JPP/foo.bar", "the-artifact", "1.2.3", "baz" );
+        assertEquals( Paths.get( "foo.bar/the-artifact-1.2.3.baz" ), repo.getPrimaryArtifactPath( artifact ) );
+        assertEquals( Paths.get( "foo.bar/the-artifact.baz" ), repo.getPrimaryArtifactPath( artifact.clearVersion() ) );
     }
 }
