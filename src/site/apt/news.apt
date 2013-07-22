@@ -8,6 +8,13 @@
 
 Release notes for XMvn
 
+* What's new in XMvn 0.5.1
+
+  * Minor features
+
+    XMvn 0.5.1 adds support for Apache Maven 3.1.0 and Eclipse Aether.
+    It will not work with Maven 3.0.x any longer.
+
 * What's new in XMvn 0.5.0
 
   * Major features
