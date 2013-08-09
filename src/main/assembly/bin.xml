@@ -45,6 +45,7 @@
         <include>bin/mvnDebug</include>
         <include>bin/mvnyjp</include>
         <include>conf/settings.xml</include>
+        <include>conf/logging/simplelogger.properties</include>
         <include>NOTICE.txt</include>
         <include>**/*.jar</include>
       </includes>
