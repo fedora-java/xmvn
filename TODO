@@ -25,6 +25,18 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 *** in tests don't modify configuration directly
     clone it and customize the clone
 
+** XMvn Subst improvements
+
+*** dry run
+    don't actually replace any JARs, but report what would have been
+    replaced
+
+*** strict mode
+    if any JAR can't be substituted, bail out
+
+*** check run
+    verify correctness of existing symlinks
+
 
 * Milestone 1.0.0
 
@@ -50,7 +62,8 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 ** improve compat package resolver
    maybe version ranges, maybe number of matching components
 
+** add support for classifiers and stereotype
+
 
 * Random ideas (no milestone assigned)
 
-** add support for classifiers and stereotypes
