@@ -82,6 +82,7 @@
     <plexusUtilsVersion>3.0.10</plexusUtilsVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
+    <sisuVersion>0.0.0.M5</sisuVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
@@ -152,9 +153,9 @@
         <version>${plexusVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-container-default</artifactId>
-        <version>${plexusVersion}</version>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.plexus</artifactId>
+        <version>${sisuVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
