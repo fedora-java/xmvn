@@ -74,11 +74,11 @@
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
-    <aetherVersion>0.9.0.M2</aetherVersion>
+    <aetherVersion>0.9.0.M3</aetherVersion>
     <jcommanderVersion>1.30</jcommanderVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
     <mavenVersion>3.1.0</mavenVersion>
-    <plexusUtilsVersion>3.0.10</plexusUtilsVersion>
+    <plexusUtilsVersion>3.0.14</plexusUtilsVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
     <sisuVersion>0.0.0.M5</sisuVersion>
@@ -88,12 +88,12 @@
     <assemblyPluginVersion>2.4</assemblyPluginVersion>
     <buildHelperPluginVersion>1.8</buildHelperPluginVersion>
     <cleanPluginVersion>2.5</cleanPluginVersion>
-    <compilerPluginVersion>3.0</compilerPluginVersion>
-    <dependencyPluginVersion>2.7</dependencyPluginVersion>
+    <compilerPluginVersion>3.1</compilerPluginVersion>
+    <dependencyPluginVersion>2.8</dependencyPluginVersion>
     <deployPluginVersion>2.7</deployPluginVersion>
     <installPluginVersion>2.4</installPluginVersion>
     <jarPluginVersion>2.4</jarPluginVersion>
-    <javadocPluginVersion>2.9</javadocPluginVersion>
+    <javadocPluginVersion>2.9.1</javadocPluginVersion>
     <junitVersion>4.11</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
@@ -101,8 +101,8 @@
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>2.7</projectInfoReportsPluginVersion>
     <resourcesPluginVersion>2.6</resourcesPluginVersion>
-    <sitePluginVersion>3.2</sitePluginVersion>
-    <surefireVersion>2.14.1</surefireVersion>
+    <sitePluginVersion>3.3</sitePluginVersion>
+    <surefireVersion>2.15</surefireVersion>
 
   </properties>
   <dependencyManagement>
