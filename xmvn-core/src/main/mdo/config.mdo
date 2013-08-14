@@ -123,6 +123,19 @@
           <type>String</type>
         </field>
         <field>
+          <name>artifactTypes</name>
+          <version>0.6.0+</version>
+          <description>
+            List of artifact types that can be stored in this
+            repository.  Empty list means that this repository can
+            store any artifact type.
+          </description>
+          <association xml.tagName="type">
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
           <name>properties</name>
           <version>0.6.0+</version>
           <description>
