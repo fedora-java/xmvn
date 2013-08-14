@@ -34,4 +34,10 @@
     Core.  The primary intended use case of XMvn Resolver is debugging
     local artifact repositories.
   </description>
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+  </dependencies>
 </project>
