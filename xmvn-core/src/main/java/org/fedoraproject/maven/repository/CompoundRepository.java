@@ -16,6 +16,7 @@
 package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -47,11 +48,16 @@ public class CompoundRepository
     @Requirement
     private RepositoryConfigurator configurator;
 
+    private Path prefix;
+
     private final List<Repository> slaveRepositories = new ArrayList<>();
 
     @Override
     public void configure( Properties properties, Xpp3Dom configuration )
     {
+        if ( properties.containsKey( "prefix" ) )
+            prefix = Paths.get( properties.getProperty( "prefix" ) );
+
         if ( configuration.getChildCount() != 1 || !configuration.getChild( 0 ).getName().equals( "repositories" ) )
             throw new RuntimeException( "compound repository expects configuration "
                 + "with exactly one child element: <repositories>" );
@@ -72,7 +78,10 @@ public class CompoundRepository
     {
         List<Path> paths = new ArrayList<>();
         for ( Repository repository : slaveRepositories )
-            paths.addAll( repository.getArtifactPaths( artifact ) );
+        {
+            for ( Path path : repository.getArtifactPaths( artifact ) )
+                paths.add( prefix != null ? prefix.resolve( path ) : path );
+        }
         return Collections.unmodifiableList( paths );
     }
 
