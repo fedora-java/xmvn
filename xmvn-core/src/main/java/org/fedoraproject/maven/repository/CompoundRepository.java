@@ -42,7 +42,7 @@ import org.fedoraproject.maven.model.Artifact;
 public class CompoundRepository
     implements Repository
 {
-    static final String ROLE_HINT = "compound";
+    public static final String ROLE_HINT = "compound";
 
     @Requirement
     private RepositoryConfigurator configurator;
