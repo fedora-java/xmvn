@@ -71,7 +71,7 @@ public class DepmapTest
         DependencyMap depmap = readDepmap( "" );
         assertTrue( depmap.isEmpty() );
         Artifact fooBar = new Artifact( "foo", "bar" );
-        List<Artifact> translationResult = depmap.translate( fooBar );
+        List<Artifact> translationResult = depmap.translate( null, fooBar );
         assertEquals( translationResult.size(), 1 );
         assertTrue( translationResult.contains( fooBar ) );
     }
@@ -123,8 +123,32 @@ public class DepmapTest
             Artifact commonsIo = new Artifact( "commons-io", "commons-io" );
             Artifact apacheCommonsIo = new Artifact( "org.apache.commons", "commons-io" );
             Artifact jppCommonsIo = new Artifact( "JPP", "commons-io" );
-            assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
-            assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
+            assertTrue( depmap.translate( null, commonsIo ).contains( jppCommonsIo ) );
+            assertTrue( depmap.translate( null, apacheCommonsIo ).contains( jppCommonsIo ) );
         }
+    }
+
+    /**
+     * Test if namespaces work and if artifacts in different namespaces are not matched.
+     * 
+     * @throws Exception
+     */
+    public void testNamespaceMatching()
+        throws Exception
+    {
+        Path path = Paths.get( "src/test/resources/namespaced-depmap.xml" );
+        DependencyMap depmap = readDepmap( path );
+        assertFalse( depmap.isEmpty() );
+        Artifact commonsIo = new Artifact( "commons-io", "commons-io" );
+        Artifact apacheCommonsIo = new Artifact( "org.apache.commons", "commons-io" );
+        Artifact jppCommonsIo = new Artifact( "JPP", "commons-io" );
+        assertFalse( depmap.translate( null, commonsIo ).contains( jppCommonsIo ) );
+        assertFalse( depmap.translate( null, apacheCommonsIo ).contains( jppCommonsIo ) );
+        assertFalse( depmap.translate( "foo", commonsIo ).contains( jppCommonsIo ) );
+        assertFalse( depmap.translate( "foo", apacheCommonsIo ).contains( jppCommonsIo ) );
+        assertTrue( depmap.translate( "my-ns", commonsIo ).contains( jppCommonsIo ) );
+        assertFalse( depmap.translate( "my-ns", apacheCommonsIo ).contains( jppCommonsIo ) );
+        assertFalse( depmap.translate( "some-other-namespace", commonsIo ).contains( jppCommonsIo ) );
+        assertTrue( depmap.translate( "some-other-namespace", apacheCommonsIo ).contains( jppCommonsIo ) );
     }
 }
