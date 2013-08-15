@@ -17,14 +17,8 @@ package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.model.Artifact;
 
 /**
  * Maven repository layout, as used by upstream Maven.
@@ -35,27 +29,18 @@ import org.fedoraproject.maven.model.Artifact;
  */
 @Component( role = Repository.class, hint = MavenRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class MavenRepository
-    implements Repository
+    extends SimpleRepository
 {
     public static final String ROLE_HINT = "maven";
 
-    private final List<String> artifactTypes = new ArrayList<>();
-
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact )
+    protected Path getArtifactPath( String groupId, String artifactId, String version, String extension,
+                                    boolean versionless )
     {
-        if ( artifact.isVersionless() )
+        if ( versionless )
             return null;
 
         StringBuilder path = new StringBuilder();
-
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
-        String extension = artifact.getExtension();
-
-        if ( !artifactTypes.isEmpty() && !artifactTypes.contains( extension ) )
-            return null;
 
         if ( groupId != null )
         {
@@ -77,19 +62,5 @@ public class MavenRepository
         path.append( extension );
 
         return Paths.get( path.toString() );
-    }
-
-    @Override
-    public List<Path> getArtifactPaths( Artifact artifact )
-    {
-        Path path = getPrimaryArtifactPath( artifact );
-        return path != null ? Collections.singletonList( path ) : Collections.<Path> emptyList();
-    }
-
-    @Override
-    public void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration )
-    {
-        this.artifactTypes.clear();
-        this.artifactTypes.addAll( artifactTypes );
     }
 }

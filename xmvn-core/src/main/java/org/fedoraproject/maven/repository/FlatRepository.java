@@ -17,14 +17,8 @@ package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.model.Artifact;
 
 /**
  * Flat repository layout, either versioned or versionless, depending on properties.
@@ -35,26 +29,15 @@ import org.fedoraproject.maven.model.Artifact;
  */
 @Component( role = Repository.class, hint = FlatRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class FlatRepository
-    implements Repository
+    extends SimpleRepository
 {
     static final String ROLE_HINT = "flat";
 
-    private Path root;
-
-    private final List<String> artifactTypes = new ArrayList<>();
-
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact )
+    protected Path getArtifactPath( String groupId, String artifactId, String version, String extension,
+                                    boolean versionless )
     {
         StringBuilder path = new StringBuilder();
-
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
-        String extension = artifact.getExtension();
-
-        if ( !artifactTypes.isEmpty() && !artifactTypes.contains( extension ) )
-            return null;
 
         if ( groupId != null )
         {
@@ -64,7 +47,7 @@ public class FlatRepository
 
         path.append( artifactId );
 
-        if ( !artifact.isVersionless() )
+        if ( !versionless )
         {
             path.append( '-' );
             path.append( version );
@@ -73,26 +56,6 @@ public class FlatRepository
         path.append( '.' );
         path.append( extension );
 
-        Path thePath = Paths.get( path.toString() );
-        if ( root != null )
-            thePath = root.resolve( thePath );
-
-        return thePath;
-    }
-
-    @Override
-    public List<Path> getArtifactPaths( Artifact artifact )
-    {
-        Path path = getPrimaryArtifactPath( artifact );
-        return path != null ? Collections.singletonList( path ) : Collections.<Path> emptyList();
-    }
-
-    @Override
-    public void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration )
-    {
-        String rootProperty = properties.getProperty( "root" );
-        root = rootProperty != null ? Paths.get( rootProperty ) : null;
-        this.artifactTypes.clear();
-        this.artifactTypes.addAll( artifactTypes );
+        return Paths.get( path.toString() );
     }
 }

@@ -54,4 +54,11 @@ public class MyRepository
         fail( "getArtifactPaths() was not expected to be called" );
         throw null;
     }
+
+    @Override
+    public List<Path> getArtifactPaths( List<Artifact> artifact )
+    {
+        fail( "getArtifactPaths() was not expected to be called" );
+        throw null;
+    }
 }

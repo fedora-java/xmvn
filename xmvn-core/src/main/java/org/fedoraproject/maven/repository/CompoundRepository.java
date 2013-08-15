@@ -76,10 +76,16 @@ public class CompoundRepository
     @Override
     public List<Path> getArtifactPaths( Artifact artifact )
     {
+        return getArtifactPaths( Collections.singletonList( artifact ) );
+    }
+
+    @Override
+    public List<Path> getArtifactPaths( List<Artifact> artifacts )
+    {
         List<Path> paths = new ArrayList<>();
         for ( Repository repository : slaveRepositories )
         {
-            for ( Path path : repository.getArtifactPaths( artifact ) )
+            for ( Path path : repository.getArtifactPaths( artifacts ) )
                 paths.add( prefix != null ? prefix.resolve( path ) : path );
         }
         return Collections.unmodifiableList( paths );
