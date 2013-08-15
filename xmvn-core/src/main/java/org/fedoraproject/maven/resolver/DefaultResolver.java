@@ -31,7 +31,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.repository.CompoundRepository;
+import org.fedoraproject.maven.repository.MavenRepository;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
@@ -51,8 +51,8 @@ public class DefaultResolver
     @Requirement
     private Configurator configurator;
 
-    // FIXME
-    @Requirement( hint = CompoundRepository.ROLE_HINT )
+    // FIXME: bisect should be configured through XML config, not system properties
+    @Requirement( hint = MavenRepository.ROLE_HINT )
     private Repository bisectRepo;
 
     private AtomicFileCounter bisectCounter;
@@ -82,7 +82,6 @@ public class DefaultResolver
             }
 
             Properties properties = new Properties();
-            properties.setProperty( "slave", "maven" );
             properties.setProperty( "root", bisectRepoRoot.toString() );
             List<String> artifactTypes = Collections.emptyList();
             bisectRepo.configure( artifactTypes, properties, new Xpp3Dom( "configuration" ) );
@@ -149,8 +148,8 @@ public class DefaultResolver
         if ( resolveFromBisectRepo() )
         {
             logger.debug( "Resolving artifact " + artifact + " from bisection repository." );
-            File artifactFile = bisectRepo.getArtifactPaths( artifact ).iterator().next().toFile();
-            return new DefaultResolutionResult( artifactFile );
+            File artifactFile = bisectRepo.getPrimaryArtifactPath( artifact ).toFile();
+            return new DefaultResolutionResult( artifactFile, bisectRepo );
         }
 
         logger.debug( "Trying to resolve artifact " + artifact );
