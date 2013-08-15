@@ -32,7 +32,7 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = MavenRepository.ROLE_HINT )
+@Component( role = Repository.class, hint = MavenRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class MavenRepository
     implements Repository
 {

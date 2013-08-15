@@ -32,11 +32,13 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = JppRepository.ROLE_HINT )
+@Component( role = Repository.class, hint = JppRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class JppRepository
     implements Repository
 {
     static final String ROLE_HINT = "jpp";
+
+    private Path root;
 
     @Override
     public Path getPrimaryArtifactPath( Artifact artifact )
@@ -70,7 +72,11 @@ public class JppRepository
         path.append( '.' );
         path.append( extension );
 
-        return Paths.get( path.toString() );
+        Path thePath = Paths.get( path.toString() );
+        if ( root != null )
+            thePath = root.resolve( thePath );
+
+        return thePath;
     }
 
     @Override
@@ -83,6 +89,7 @@ public class JppRepository
     @Override
     public void configure( Properties properties, Xpp3Dom configuration )
     {
-        // TODO Auto-generated method stub
+        String rootProperty = properties.getProperty( "root" );
+        root = rootProperty != null ? Paths.get( rootProperty ) : null;
     }
 }

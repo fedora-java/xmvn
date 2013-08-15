@@ -21,6 +21,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.repository.Repository;
 
@@ -36,6 +37,9 @@ public class DefaultRepositoryConfigurator
 
     @Requirement
     private PlexusContainer container;
+
+    @Requirement
+    private Logger logger;
 
     @Override
     public Repository configureRepository( String repoId )
@@ -70,7 +74,7 @@ public class DefaultRepositoryConfigurator
         }
         catch ( ComponentLookupException e )
         {
-            throw new RuntimeException( e );
+            throw new RuntimeException( "Unable to lookup implementation for repository type '" + type + "'", e );
         }
     }
 }

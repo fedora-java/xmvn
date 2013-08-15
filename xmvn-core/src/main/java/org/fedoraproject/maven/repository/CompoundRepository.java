@@ -39,7 +39,7 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = CompoundRepository.ROLE_HINT )
+@Component( role = Repository.class, hint = CompoundRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class CompoundRepository
     implements Repository
 {
@@ -65,7 +65,7 @@ public class CompoundRepository
 
         for ( Xpp3Dom child : configuration.getChildren() )
         {
-            if ( child.getName().equals( "repository" ) || child.getChildCount() > 0 )
+            if ( !child.getName().equals( "repository" ) || child.getChildCount() > 0 )
                 throw new RuntimeException( "All childreen of <repositories> must be <repository> text nodes" );
 
             Repository slaveRepository = configurator.configureRepository( child.getValue().trim() );

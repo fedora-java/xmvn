@@ -32,11 +32,13 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = FlatRepository.ROLE_HINT )
+@Component( role = Repository.class, hint = FlatRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
 public class FlatRepository
     implements Repository
 {
     static final String ROLE_HINT = "flat";
+
+    private Path root;
 
     @Override
     public Path getPrimaryArtifactPath( Artifact artifact )
@@ -65,7 +67,11 @@ public class FlatRepository
         path.append( '.' );
         path.append( extension );
 
-        return Paths.get( path.toString() );
+        Path thePath = Paths.get( path.toString() );
+        if ( root != null )
+            thePath = root.resolve( thePath );
+
+        return thePath;
     }
 
     @Override
@@ -78,6 +84,7 @@ public class FlatRepository
     @Override
     public void configure( Properties properties, Xpp3Dom configuration )
     {
-        // TODO Auto-generated method stub
+        String rootProperty = properties.getProperty( "root" );
+        root = rootProperty != null ? Paths.get( rootProperty ) : null;
     }
 }
