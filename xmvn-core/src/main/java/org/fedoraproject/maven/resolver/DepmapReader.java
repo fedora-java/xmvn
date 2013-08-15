@@ -155,7 +155,15 @@ class DepmapReader
                 throw new IOException();
 
             Artifact to = getArtifactDefinition( depNode, "jpp" );
-            map.addMapping( from.clearVersionAndExtension(), to.clearVersionAndExtension() );
+
+            NodeList nodes = depNode.getElementsByTagName( "namespace" );
+            if ( nodes.getLength() > 1 )
+                throw new IOException();
+            String namespace = null;
+            if ( nodes.getLength() != 0 )
+                namespace = nodes.item( 0 ).getTextContent().trim();
+
+            map.addMapping( namespace, from.clearVersionAndExtension(), to.clearVersionAndExtension() );
         }
     }
 
