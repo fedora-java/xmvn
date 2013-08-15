@@ -18,7 +18,9 @@ package org.fedoraproject.maven.resolver;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -82,7 +84,8 @@ public class DefaultResolver
             Properties properties = new Properties();
             properties.setProperty( "slave", "maven" );
             properties.setProperty( "root", bisectRepoRoot.toString() );
-            bisectRepo.configure( properties, new Xpp3Dom( "configuration" ) );
+            List<String> artifactTypes = Collections.emptyList();
+            bisectRepo.configure( artifactTypes, properties, new Xpp3Dom( "configuration" ) );
 
             bisectCounter = new AtomicFileCounter( bisectCounterPath );
 

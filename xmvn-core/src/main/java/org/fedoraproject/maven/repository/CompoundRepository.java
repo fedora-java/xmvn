@@ -53,7 +53,7 @@ public class CompoundRepository
     private final List<Repository> slaveRepositories = new ArrayList<>();
 
     @Override
-    public void configure( Properties properties, Xpp3Dom configuration )
+    public void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration )
     {
         if ( properties.containsKey( "prefix" ) )
             prefix = Paths.get( properties.getProperty( "prefix" ) );

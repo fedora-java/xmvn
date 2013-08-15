@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.maven.config;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.PlexusContainer;
@@ -47,6 +49,7 @@ public class DefaultRepositoryConfigurator
         Properties properties = null;
         Xpp3Dom configurationXml = null;
         String type = null;
+        List<String> artifactTypes = null;
 
         for ( org.fedoraproject.maven.config.Repository repository : configurator.getConfiguration().getRepositories() )
         {
@@ -55,6 +58,7 @@ public class DefaultRepositoryConfigurator
                 properties = repository.getProperties();
                 configurationXml = (Xpp3Dom) repository.getConfiguration();
                 type = repository.getType();
+                artifactTypes = repository.getArtifactTypes();
                 break;
             }
         }
@@ -65,11 +69,13 @@ public class DefaultRepositoryConfigurator
             configurationXml = new Xpp3Dom( "configuration" );
         if ( type == null )
             type = repoId;
+        if ( artifactTypes == null )
+            artifactTypes = Collections.emptyList();
 
         try
         {
             Repository repository = container.lookup( Repository.class, type );
-            repository.configure( properties, configurationXml );
+            repository.configure( artifactTypes, properties, configurationXml );
             return repository;
         }
         catch ( ComponentLookupException e )

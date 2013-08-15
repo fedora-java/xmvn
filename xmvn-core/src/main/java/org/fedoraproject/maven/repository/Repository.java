@@ -41,7 +41,7 @@ public interface Repository
      * @param properties
      * @param configuration
      */
-    void configure( Properties properties, Xpp3Dom configuration );
+    void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration );
 
     /**
      * Obtain the preferred path to given artifact in this repository.

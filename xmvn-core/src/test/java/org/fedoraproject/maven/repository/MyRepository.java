@@ -27,14 +27,13 @@ import java.util.Properties;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.repository.Repository;
 
 @Component( role = Repository.class, hint = "my-type" )
 public class MyRepository
     implements Repository
 {
     @Override
-    public void configure( Properties properties, Xpp3Dom configuration )
+    public void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration )
     {
         assertNotNull( properties );
         assertNotNull( configuration );

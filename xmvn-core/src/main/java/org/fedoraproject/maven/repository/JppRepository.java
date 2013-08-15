@@ -17,6 +17,7 @@ package org.fedoraproject.maven.repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -40,6 +41,8 @@ public class JppRepository
 
     private Path root;
 
+    private final List<String> artifactTypes = new ArrayList<>();
+
     @Override
     public Path getPrimaryArtifactPath( Artifact artifact )
     {
@@ -49,6 +52,9 @@ public class JppRepository
         String artifactId = artifact.getArtifactId();
         String version = artifact.getVersion();
         String extension = artifact.getExtension();
+
+        if ( !artifactTypes.isEmpty() && !artifactTypes.contains( extension ) )
+            return null;
 
         if ( groupId.startsWith( "JPP/" ) )
             groupId = groupId.substring( 4 );
@@ -87,9 +93,11 @@ public class JppRepository
     }
 
     @Override
-    public void configure( Properties properties, Xpp3Dom configuration )
+    public void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration )
     {
         String rootProperty = properties.getProperty( "root" );
         root = rootProperty != null ? Paths.get( rootProperty ) : null;
+        this.artifactTypes.clear();
+        this.artifactTypes.addAll( artifactTypes );
     }
 }
