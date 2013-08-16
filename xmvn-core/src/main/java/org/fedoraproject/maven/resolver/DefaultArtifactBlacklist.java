@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
@@ -118,17 +117,21 @@ public class DefaultArtifactBlacklist
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
-        for ( String prefix : settings.getPrefixes() )
+        // FIXME
+        if ( Boolean.valueOf( false ) )
         {
-            File root = new File( prefix );
-            // FIXME
-            DependencyMap depmap = null;
-
-            for ( Artifact artifact : blacklist )
+            for ( String prefix : settings.getPrefixes() )
             {
-                Set<Artifact> relatives = depmap.relativesOf( artifact );
-                aliasBlacklist.addAll( relatives );
-                logger.debug( "Blacklisted relatives of " + artifact + ": " + Artifact.collectionToString( relatives ) );
+                // FIXME
+                DependencyMap depmap = null;
+
+                for ( Artifact artifact : blacklist )
+                {
+                    Set<Artifact> relatives = depmap.relativesOf( artifact );
+                    aliasBlacklist.addAll( relatives );
+                    logger.debug( "Blacklisted relatives of " + artifact + ": "
+                        + Artifact.collectionToString( relatives ) );
+                }
             }
         }
 
