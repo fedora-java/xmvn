@@ -19,6 +19,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.DefaultConfigurator;
+import org.fedoraproject.maven.config.Repository;
 
 /**
  * @author Mikolaj Izdebski
@@ -30,6 +31,14 @@ public class TestConfigurator
     @Override
     public Configuration getConfiguration()
     {
-        return getDefaultConfiguration();
+        Configuration configuration = getDefaultConfiguration();
+
+        Repository repository = new Repository();
+        repository.setId( "resolve" );
+        repository.setType( "maven" );
+        repository.addProperty( "root", "/some/nonexistent/path" );
+        configuration.addRepository( repository );
+
+        return configuration;
     }
 }

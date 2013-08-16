@@ -17,9 +17,9 @@ package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -33,6 +33,7 @@ import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
+import org.fedoraproject.rpmquery.RpmDb;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
@@ -62,7 +63,9 @@ public class DefaultResolver
 
     private boolean initialized;
 
-    private final Collection<Resolver> resolvers = new LinkedList<>();
+    private ResolverSettings settings;
+
+    private static final RpmDb rpmdb = new RpmDb();
 
     private void initializeBisect()
     {
@@ -91,11 +94,10 @@ public class DefaultResolver
     {
         initializeBisect();
 
-        ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
+        settings = configurator.getConfiguration().getResolverSettings();
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
-        // FIXME: this needs to be implemented
-        // resolvers.add( new LocalResolver( settings ) );
+        systemRepo = repositoryConfigurator.configureRepository( "resolve" );
 
         List<String> metadataDirs = new ArrayList<>();
         for ( String prefix : settings.getPrefixes() )
@@ -148,14 +150,63 @@ public class DefaultResolver
 
         logger.debug( "Trying to resolve artifact " + artifact );
 
-        for ( Resolver resolver : resolvers )
+        List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
+
+        Path path = null;
+        String compatVersion = null;
+
+        // TODO: this loop needs to be simplified not to use goto...
+        notFound: for ( ;; )
         {
-            ResolutionResult result = resolver.resolve( request );
-            if ( result != null )
-                return result;
+            List<Artifact> tempList = new ArrayList<>();
+            compatVersion = artifact.getVersion();
+            for ( Artifact jppArtifact : jppList )
+                tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ) );
+            for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
+            {
+                if ( Files.exists( pp ) )
+                {
+                    path = pp;
+                    break notFound;
+                }
+            }
+
+            compatVersion = null;
+            for ( Artifact jppArtifact : jppList )
+                tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ).clearVersion() );
+            for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
+            {
+                if ( Files.exists( pp ) )
+                {
+                    path = pp;
+                    break notFound;
+                }
+            }
+
+            logger.debug( "Failed to resolve artifact " + artifact );
+            return new DefaultResolutionResult();
+        }
+
+        logger.debug( "Artifact " + artifact + " was resolved to " + path );
+        DefaultResolutionResult result = new DefaultResolutionResult( path.toFile() );
+        result.setCompatVersion( compatVersion );
+        result.setRepository( systemRepo );
+
+        if ( request.isProviderNeeded() || settings.isDebug() )
+        {
+            String rpmPackage = rpmdb.lookupFile( path.toFile() );
+            if ( rpmPackage != null )
+            {
+                result.setProvider( rpmPackage );
+                logger.debug( "Artifact " + artifact + " is provided by " + rpmPackage );
+            }
+            else
+            {
+                logger.debug( "Artifact " + artifact + " is not provided by any package" );
+            }
         }
 
         logger.debug( "Unresolved artifact " + artifact );
-        return new DefaultResolutionResult();
+        return result;
     }
 }

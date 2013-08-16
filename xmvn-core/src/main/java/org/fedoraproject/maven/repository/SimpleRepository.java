@@ -50,7 +50,7 @@ abstract class SimpleRepository
         String extension = artifact.getExtension();
 
         Path path = getArtifactPath( groupId, artifactId, version, extension, artifact.isVersionless() );
-        if ( root != null )
+        if ( path != null && root != null )
             path = root.resolve( path );
 
         return path;
