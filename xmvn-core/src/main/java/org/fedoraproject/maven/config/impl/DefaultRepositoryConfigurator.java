@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.config;
+package org.fedoraproject.maven.config.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +25,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.fedoraproject.maven.config.Configurator;
+import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.repository.Repository;
 
 /**

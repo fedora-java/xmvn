@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.config;
+package org.fedoraproject.maven.config.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.fedoraproject.maven.config.Artifact;
+import org.fedoraproject.maven.config.PackagingRule;
 import org.fedoraproject.maven.utils.GlobUtils;
 
 /**
@@ -38,7 +40,7 @@ import org.fedoraproject.maven.utils.GlobUtils;
  * 
  * @author Mikolaj Izdebski
  */
-class EffectivePackagingRule
+public class EffectivePackagingRule
     extends PackagingRule
 {
     private static final long serialVersionUID = 1L;

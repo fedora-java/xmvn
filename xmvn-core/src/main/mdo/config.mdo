@@ -596,7 +596,8 @@
      */
     public PackagingRule createEffectivePackagingRule( String groupId, String artifactId, String version )
     {
-        return new EffectivePackagingRule( artifactManagement, groupId, artifactId, version );
+        return new org.fedoraproject.maven.config.impl.EffectivePackagingRule
+            ( artifactManagement, groupId, artifactId, version );
     }
             ]]>
           </code>

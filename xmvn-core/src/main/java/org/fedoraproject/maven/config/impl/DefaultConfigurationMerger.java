@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.config;
+package org.fedoraproject.maven.config.impl;
 
 import java.util.List;
 import java.util.Properties;
@@ -21,6 +21,13 @@ import java.util.Set;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.StringUtils;
+import org.fedoraproject.maven.config.BuildSettings;
+import org.fedoraproject.maven.config.Configuration;
+import org.fedoraproject.maven.config.ConfigurationMerger;
+import org.fedoraproject.maven.config.InstallerSettings;
+import org.fedoraproject.maven.config.PackagingRule;
+import org.fedoraproject.maven.config.Repository;
+import org.fedoraproject.maven.config.ResolverSettings;
 
 /**
  * Default implementation of configuration merger.

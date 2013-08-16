@@ -18,8 +18,8 @@ package org.fedoraproject.maven.resolver;
 import org.codehaus.plexus.component.annotations.Component;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
-import org.fedoraproject.maven.config.DefaultConfigurator;
 import org.fedoraproject.maven.config.Repository;
+import org.fedoraproject.maven.config.impl.DefaultConfigurator;
 
 /**
  * @author Mikolaj Izdebski

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.config;
+package org.fedoraproject.maven.config.impl;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,6 +34,9 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.fedoraproject.maven.config.Configuration;
+import org.fedoraproject.maven.config.ConfigurationMerger;
+import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Reader;
 import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
 
