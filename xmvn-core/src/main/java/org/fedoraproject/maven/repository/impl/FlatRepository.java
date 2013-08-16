@@ -13,41 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.repository;
+package org.fedoraproject.maven.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.codehaus.plexus.component.annotations.Component;
+import org.fedoraproject.maven.repository.Repository;
 
 /**
- * JPP-style repository JPP layout, either versioned or versionless, depending on properties.
+ * Flat repository layout, either versioned or versionless, depending on properties.
  * <p>
- * Example: {@code g/r/o/u/p/artifact-ver.ext} or {@code g/r/o/u/p/artifact.ext}
+ * Example: {@code g.r.o.u.p-artifact-ver.ext} or {@code g.r.o.u.p-artifact.ext}
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = JppRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
-public class JppRepository
+@Component( role = Repository.class, hint = "flat", instantiationStrategy = "per-lookup" )
+public class FlatRepository
     extends SimpleRepository
 {
-    static final String ROLE_HINT = "jpp";
-
     @Override
     protected Path getArtifactPath( String groupId, String artifactId, String version, String extension,
                                     boolean versionless )
     {
         StringBuilder path = new StringBuilder();
 
-        if ( groupId.startsWith( "JPP/" ) )
-            groupId = groupId.substring( 4 );
-        else if ( groupId.equals( "JPP" ) )
-            groupId = null;
-
         if ( groupId != null )
         {
-            path.append( groupId );
-            path.append( '/' );
+            path.append( groupId.replace( '/', '.' ) );
+            path.append( '-' );
         }
 
         path.append( artifactId );

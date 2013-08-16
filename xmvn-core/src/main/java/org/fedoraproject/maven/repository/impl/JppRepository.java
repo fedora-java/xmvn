@@ -13,50 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.repository;
+package org.fedoraproject.maven.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.codehaus.plexus.component.annotations.Component;
+import org.fedoraproject.maven.repository.Repository;
 
 /**
- * Maven repository layout, as used by upstream Maven.
+ * JPP-style repository JPP layout, either versioned or versionless, depending on properties.
  * <p>
- * Example: {@code g/r/o/u/p/artifact/ver/artifact-ver.ext}
+ * Example: {@code g/r/o/u/p/artifact-ver.ext} or {@code g/r/o/u/p/artifact.ext}
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = MavenRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
-public class MavenRepository
+@Component( role = Repository.class, hint = "jpp", instantiationStrategy = "per-lookup" )
+public class JppRepository
     extends SimpleRepository
 {
-    public static final String ROLE_HINT = "maven";
-
     @Override
     protected Path getArtifactPath( String groupId, String artifactId, String version, String extension,
                                     boolean versionless )
     {
-        if ( versionless )
-            return null;
-
         StringBuilder path = new StringBuilder();
+
+        if ( groupId.startsWith( "JPP/" ) )
+            groupId = groupId.substring( 4 );
+        else if ( groupId.equals( "JPP" ) )
+            groupId = null;
 
         if ( groupId != null )
         {
-            path.append( groupId.replace( '.', '/' ) );
+            path.append( groupId );
             path.append( '/' );
         }
 
         path.append( artifactId );
 
-        path.append( '/' );
-        path.append( version );
-        path.append( '/' );
-        path.append( artifactId );
-
-        path.append( '-' );
-        path.append( version );
+        if ( !versionless )
+        {
+            path.append( '-' );
+            path.append( version );
+        }
 
         path.append( '.' );
         path.append( extension );

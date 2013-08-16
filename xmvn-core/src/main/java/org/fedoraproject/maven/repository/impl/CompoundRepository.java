@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.repository;
+package org.fedoraproject.maven.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +28,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.repository.Repository;
 
 /**
  * Compound repository.
@@ -39,12 +40,10 @@ import org.fedoraproject.maven.model.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = CompoundRepository.ROLE_HINT, instantiationStrategy = "per-lookup" )
+@Component( role = Repository.class, hint = "compound", instantiationStrategy = "per-lookup" )
 public class CompoundRepository
     implements Repository
 {
-    public static final String ROLE_HINT = "compound";
-
     @Requirement
     private RepositoryConfigurator configurator;
 

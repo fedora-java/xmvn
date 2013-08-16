@@ -65,9 +65,9 @@ public class LayoutTest
     public void testLayouts()
         throws Exception
     {
-        Repository mavenRepository = lookup( Repository.class, MavenRepository.ROLE_HINT );
-        Repository jppRepository = lookup( Repository.class, JppRepository.ROLE_HINT );
-        Repository flatRepository = lookup( Repository.class, FlatRepository.ROLE_HINT );
+        Repository mavenRepository = lookup( Repository.class, "maven" );
+        Repository jppRepository = lookup( Repository.class, "jpp" );
+        Repository flatRepository = lookup( Repository.class, "flat" );
         assertNotNull( mavenRepository );
         assertNotNull( jppRepository );
         assertNotNull( flatRepository );
@@ -91,7 +91,7 @@ public class LayoutTest
     public void testJppPrefixes()
         throws Exception
     {
-        Repository jppRepository = lookup( Repository.class, JppRepository.ROLE_HINT );
+        Repository jppRepository = lookup( Repository.class, "jpp" );
         assertNotNull( jppRepository );
 
         Artifact artifact1 = new Artifact( "JPP", "testing", "1.2.3", "abc" );

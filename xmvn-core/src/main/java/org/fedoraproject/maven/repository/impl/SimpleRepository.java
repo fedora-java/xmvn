@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.repository;
+package org.fedoraproject.maven.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.repository.Repository;
 
 /**
  * @author Mikolaj Izdebski
