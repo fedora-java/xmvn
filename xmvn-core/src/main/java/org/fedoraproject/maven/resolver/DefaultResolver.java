@@ -28,6 +28,7 @@ import java.util.List;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
@@ -46,6 +47,7 @@ import org.fedoraproject.rpmquery.RpmDb;
 @Component( role = Resolver.class )
 public class DefaultResolver
     extends AbstractResolver
+    implements Initializable
 {
     @Requirement
     private Logger logger;
@@ -64,8 +66,6 @@ public class DefaultResolver
     private DependencyMap depmap;
 
     private AtomicFileCounter bisectCounter;
-
-    private boolean initialized;
 
     private ResolverSettings settings;
 
@@ -94,7 +94,8 @@ public class DefaultResolver
         }
     }
 
-    private void initialize()
+    @Override
+    public void initialize()
     {
         initializeBisect();
 
@@ -102,8 +103,6 @@ public class DefaultResolver
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         systemRepo = repositoryConfigurator.configureRepository( "resolve" );
-
-        initialized = true;
     }
 
     private boolean resolveFromBisectRepo()
@@ -125,9 +124,6 @@ public class DefaultResolver
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        if ( !initialized )
-            initialize();
-
         Artifact artifact = request.getArtifact();
 
         if ( resolveFromBisectRepo() )
