@@ -15,19 +15,14 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import java.io.File;
-
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.logging.Logger;
+import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.utils.FileUtils;
-import org.junit.Ignore;
 
 /**
  * @author Mikolaj Izdebski
  */
-// FIXME
-@Ignore
 public class JavaHomeResolverTest
     extends PlexusTestCase
 {
@@ -39,15 +34,14 @@ public class JavaHomeResolverTest
     public void testJavaHomeResolver()
         throws Exception
     {
-        ResolverSettings settings = new ResolverSettings();
+        Configurator configurator = lookup( Configurator.class );
+        ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         assertTrue( settings.getPrefixes().isEmpty() );
         assertTrue( settings.getMetadataRepositories().isEmpty() );
         settings.addPrefix( FileUtils.CWD.getAbsolutePath() );
         settings.addMetadataRepository( "src/test/resources/java-home-resolver-depmaps" );
 
-        File root = new File( settings.getPrefixes().iterator().next() );
-        assertTrue( root.isDirectory() );
-        JavaHomeResolver javaHomeResolver = new JavaHomeResolver( root, settings, lookup( Logger.class ) );
+        Resolver javaHomeResolver = lookup( Resolver.class );
 
         ResolutionRequest comSunToolsRequest = new ResolutionRequest( "com.sun", "tools", "SYSTEM", "jar" );
         ResolutionResult comSunToolsResult = javaHomeResolver.resolve( comSunToolsRequest );

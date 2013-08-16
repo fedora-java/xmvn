@@ -15,10 +15,13 @@
  */
 package org.fedoraproject.maven.resolver;
 
+import static org.fedoraproject.maven.utils.FileUtils.followSymlink;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,6 +154,21 @@ public class DefaultResolver
         logger.debug( "Trying to resolve artifact " + artifact );
 
         List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
+
+        String javaHome = System.getProperty( "java.home" );
+        Path javaHomeDir = followSymlink( new File( javaHome != null ? javaHome : "." ) ).toPath();
+
+        for ( Artifact aa : jppList )
+        {
+            if ( aa.getGroupId().equals( "JAVA_HOME" ) && javaHome != null )
+            {
+                Path artifactPath = Paths.get( aa.getArtifactId() + "." + artifact.getExtension() );
+                File artifactFile = javaHomeDir.resolve( artifactPath ).toFile();
+                artifactFile = followSymlink( artifactFile );
+                if ( artifactFile.exists() )
+                    return new DefaultResolutionResult( artifactFile );
+            }
+        }
 
         Path path = null;
         String compatVersion = null;
