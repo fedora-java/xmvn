@@ -18,20 +18,16 @@ package org.fedoraproject.maven.resolver;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.Configurator;
+import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.repository.MavenRepository;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
@@ -51,8 +47,9 @@ public class DefaultResolver
     @Requirement
     private Configurator configurator;
 
-    // FIXME: bisect should be configured through XML config, not system properties
-    @Requirement( hint = MavenRepository.ROLE_HINT )
+    @Requirement
+    private RepositoryConfigurator repositoryConfigurator;
+
     private Repository bisectRepo;
 
     private AtomicFileCounter bisectCounter;
@@ -66,27 +63,14 @@ public class DefaultResolver
         try
         {
             String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
-            String bisectRepoPath = System.getProperty( "xmvn.bisect.repository" );
-
-            if ( StringUtils.isEmpty( bisectRepoPath ) || StringUtils.isEmpty( bisectCounterPath ) )
+            if ( StringUtils.isEmpty( bisectCounterPath ) )
             {
                 logger.debug( "Bisection build is not enabled" );
                 return;
             }
-
-            File bisectRepoRoot = new File( bisectRepoPath );
-            if ( !bisectRepoRoot.isDirectory() )
-            {
-                logger.fatalError( "xmvn.bisect.repository is not a directory" );
-                throw new RuntimeException( "xmvn.bisect.repository is not a directory" );
-            }
-
-            Properties properties = new Properties();
-            properties.setProperty( "root", bisectRepoRoot.toString() );
-            List<String> artifactTypes = Collections.emptyList();
-            bisectRepo.configure( artifactTypes, properties, new Xpp3Dom( "configuration" ) );
-
             bisectCounter = new AtomicFileCounter( bisectCounterPath );
+
+            bisectRepo = repositoryConfigurator.configureRepository( "bisect" );
 
             logger.info( "Enabled XMvn bisection build" );
         }
