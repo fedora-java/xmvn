@@ -29,7 +29,7 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-public class BuildDependencyVisitor
+class BuildDependencyVisitor
     extends AbstractModelVisitor
 {
     private static final Set<Artifact> commonPlugins = new TreeSet<>();

@@ -23,7 +23,7 @@ import org.fedoraproject.maven.resolver.ResolutionResult;
 /**
  * @author Mikolaj Izdebski
  */
-public class DefaultResolutionResult
+class DefaultResolutionResult
     implements ResolutionResult
 {
     private final File artifactFile;

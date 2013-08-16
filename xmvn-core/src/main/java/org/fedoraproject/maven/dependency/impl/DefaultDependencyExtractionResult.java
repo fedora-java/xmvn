@@ -25,7 +25,7 @@ import org.fedoraproject.maven.model.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-public class DefaultDependencyExtractionResult
+class DefaultDependencyExtractionResult
     implements DependencyExtractionResult
 {
     private final Set<Artifact> dependencyArtifacts = new TreeSet<>();

@@ -27,7 +27,7 @@ import org.fedoraproject.maven.model.AbstractModelVisitor;
 /**
  * @author Mikolaj Izdebski
  */
-public class JavaVersionVisitor
+class JavaVersionVisitor
     extends AbstractModelVisitor
 {
     private static final Map<String, BigDecimal> sourceMap = new TreeMap<>();

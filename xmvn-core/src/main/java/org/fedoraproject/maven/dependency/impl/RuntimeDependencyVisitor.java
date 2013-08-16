@@ -24,7 +24,7 @@ import org.fedoraproject.maven.model.AbstractModelVisitor;
 /**
  * @author Mikolaj Izdebski
  */
-public class RuntimeDependencyVisitor
+class RuntimeDependencyVisitor
     extends AbstractModelVisitor
 {
     private final DefaultDependencyExtractionResult result;
