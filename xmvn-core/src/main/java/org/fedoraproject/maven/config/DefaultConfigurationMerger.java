@@ -39,6 +39,11 @@ public class DefaultConfigurationMerger
                 dominant.put( key, recessive.get( key ) );
     }
 
+    private void mergeRepositories( List<Repository> dominant, List<Repository> recessive )
+    {
+        dominant.addAll( recessive );
+    }
+
     private void mergeBuildSettings( BuildSettings dominant, BuildSettings recessive )
     {
         if ( dominant.isDebug() == null )
@@ -128,6 +133,7 @@ public class DefaultConfigurationMerger
     private void mergeConfiguration( Configuration dominant, Configuration recessive )
     {
         mergeProperties( dominant.getProperties(), recessive.getProperties() );
+        mergeRepositories( dominant.getRepositories(), recessive.getRepositories() );
 
         if ( dominant.getBuildSettings() == null )
             dominant.setBuildSettings( new BuildSettings() );
