@@ -49,8 +49,7 @@ import org.fedoraproject.maven.utils.LoggingUtils;
  */
 @Component( role = Resolver.class )
 public class DefaultResolver
-    extends AbstractResolver
-    implements Initializable
+    implements Resolver, Initializable
 {
     @Requirement
     private Logger logger;
@@ -218,5 +217,22 @@ public class DefaultResolver
         }
 
         return result;
+    }
+
+    @Deprecated
+    @Override
+    public File resolve( String groupId, String artifactId, String version, String extension )
+    {
+        Artifact artifact = new Artifact( groupId, artifactId, version, extension );
+        return resolve( artifact );
+    }
+
+    @Deprecated
+    @Override
+    public File resolve( Artifact artifact )
+    {
+        ResolutionRequest request = new ResolutionRequest( artifact );
+        ResolutionResult result = resolve( request );
+        return result.getArtifactFile();
     }
 }
