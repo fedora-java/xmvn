@@ -61,7 +61,7 @@ class DepmapReader
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue );
     }
 
-    public void readMappings( DefaultDependencyMap depmap, List<String> depmapLocations )
+    public void readMappings( DependencyMap depmap, List<String> depmapLocations )
     {
         List<Future<List<Mapping>>> futures = new ArrayList<>();
 
@@ -118,7 +118,7 @@ class DepmapReader
             this.to = new Artifact( to.clearVersionAndExtension(), namespace );
         }
 
-        public void addToDepmap( DefaultDependencyMap depmap )
+        public void addToDepmap( DependencyMap depmap )
         {
             depmap.addMapping( from, to );
         }

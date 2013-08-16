@@ -42,6 +42,9 @@ public class DefaultArtifactBlacklist
     @Requirement
     private Configurator configurator;
 
+    @Requirement
+    private DependencyMap depmap;
+
     private boolean initialized;
 
     private final Set<Artifact> blacklist = new TreeSet<>();
@@ -117,22 +120,11 @@ public class DefaultArtifactBlacklist
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
-        // FIXME
-        if ( Boolean.valueOf( false ) )
+        for ( Artifact artifact : blacklist )
         {
-            for ( String prefix : settings.getPrefixes() )
-            {
-                // FIXME
-                DefaultDependencyMap depmap = null;
-
-                for ( Artifact artifact : blacklist )
-                {
-                    Set<Artifact> relatives = depmap.relativesOf( artifact );
-                    aliasBlacklist.addAll( relatives );
-                    logger.debug( "Blacklisted relatives of " + artifact + ": "
-                        + Artifact.collectionToString( relatives ) );
-                }
-            }
+            Set<Artifact> relatives = depmap.relativesOf( artifact );
+            aliasBlacklist.addAll( relatives );
+            logger.debug( "Blacklisted relatives of " + artifact + ": " + Artifact.collectionToString( relatives ) );
         }
 
         blacklist.addAll( aliasBlacklist );
