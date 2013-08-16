@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.rpmquery;
+package org.fedoraproject.maven.resolver.impl;
 
 import static org.fedoraproject.maven.utils.FileUtils.followSymlink;
 
@@ -32,7 +32,7 @@ import org.fedoraproject.maven.utils.FileUtils;
 /**
  * @author Mikolaj Izdebski
  */
-public class RpmDb
+class RpmDb
 {
     private static Map<String, String> paths;
 

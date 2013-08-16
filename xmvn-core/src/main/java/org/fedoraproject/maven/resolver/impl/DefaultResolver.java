@@ -41,7 +41,6 @@ import org.fedoraproject.maven.resolver.ResolutionResult;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
-import org.fedoraproject.rpmquery.RpmDb;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
