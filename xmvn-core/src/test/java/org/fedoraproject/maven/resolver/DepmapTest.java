@@ -15,17 +15,15 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.fedoraproject.maven.config.Configurator;
-import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.fedoraproject.maven.util.BitBucketLogger;
 
@@ -38,12 +36,9 @@ public class DepmapTest
     private DependencyMap readDepmap( Path fragment )
         throws Exception
     {
-        Configurator configurator = lookup( Configurator.class );
-        ResolverSettings settings = configurator.getDefaultConfiguration().getResolverSettings().clone();
-        DepmapReader reader = new DepmapReader( new BitBucketLogger() );
+        DepmapReader reader = new DepmapReader();
         DependencyMap depmap = new DependencyMap( new BitBucketLogger() );
-        settings.addMetadataRepository( fragment.toAbsolutePath().toString() );
-        reader.readArtifactMap( new File( "/" ), depmap, settings );
+        reader.readMappings( depmap, Collections.singletonList( fragment.toString() ) );
         assertNotNull( depmap );
         return depmap;
     }

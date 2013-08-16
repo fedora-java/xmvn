@@ -24,17 +24,22 @@ import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.CountDownLatch;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.codehaus.plexus.logging.Logger;
-import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,67 +52,22 @@ import org.xml.sax.SAXException;
  */
 class DepmapReader
 {
-    private final Logger logger;
+    private final ThreadPoolExecutor executor;
 
-    private final DependencyMap depmap;
-
-    private final CountDownLatch ready = new CountDownLatch( 1 );
-
-    private static Map<File, DepmapReader> readers = new TreeMap<>();
-
-    DepmapReader( Logger logger )
+    public DepmapReader()
     {
-        this.logger = logger;
-        depmap = new DependencyMap( logger );
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
+        int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
+        executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue );
     }
 
-    public static DependencyMap readArtifactMap( File root, ResolverSettings settings, Logger logger )
+    public void readMappings( DependencyMap depmap, List<String> depmapLocations )
     {
-        boolean notYetInitialized = false;
-        DepmapReader reader = null;
+        List<Future<List<Mapping>>> futures = new ArrayList<>();
 
-        synchronized ( readers )
+        for ( String path : depmapLocations )
         {
-            reader = readers.get( root );
-            if ( reader == null )
-            {
-                reader = new DepmapReader( logger );
-                readers.put( root, reader );
-                notYetInitialized = true;
-            }
-        }
-
-        if ( notYetInitialized )
-        {
-            try
-            {
-                reader.readArtifactMap( root, reader.depmap, settings );
-            }
-            finally
-            {
-                reader.ready.countDown();
-            }
-        }
-        else
-        {
-            try
-            {
-                reader.ready.await();
-            }
-            catch ( InterruptedException e )
-            {
-                return null;
-            }
-        }
-
-        return reader.depmap;
-    }
-
-    void readArtifactMap( File root, DependencyMap map, ResolverSettings settings )
-    {
-        for ( String path : settings.getMetadataRepositories() )
-        {
-            File file = root.toPath().resolve( path ).toFile();
+            File file = Paths.get( path ).toFile();
 
             if ( file.isDirectory() )
             {
@@ -116,139 +76,182 @@ class DepmapReader
                 {
                     Arrays.sort( flist );
                     for ( String fragFilename : flist )
-                        tryLoadDepmapFile( map, new File( file, fragFilename ) );
+                        futures.add( executor.submit( new Task( new File( file, fragFilename ) ) ) );
                 }
             }
             else
             {
-                tryLoadDepmapFile( map, file );
+                futures.add( executor.submit( new Task( file ) ) );
             }
         }
-    }
 
-    private void tryLoadDepmapFile( DependencyMap map, File fragment )
-    {
         try
         {
-            loadDepmapFile( map, fragment );
+            for ( Future<List<Mapping>> future : futures )
+            {
+                try
+                {
+                    for ( Mapping mapping : future.get() )
+                        mapping.addToDepmap( depmap );
+                }
+                catch ( ExecutionException e )
+                {
+                    // Ignore
+                }
+            }
         }
-        catch ( IOException e )
+        catch ( InterruptedException e )
         {
-            logger.warn( "Could not load depmap file " + fragment.getAbsolutePath() + ": ", e );
+            throw new RuntimeException( e );
         }
     }
 
-    private void loadDepmapFile( DependencyMap map, File file )
-        throws IOException
+    class Mapping
     {
-        logger.debug( "Loading depmap file: " + file );
-        Document mapDocument = buildDepmapModel( file );
+        private final String namespace;
 
-        NodeList depNodes = mapDocument.getElementsByTagName( "dependency" );
+        private final Artifact from;
 
-        for ( int i = 0; i < depNodes.getLength(); i++ )
+        private final Artifact to;
+
+        public Mapping( String namespace, Artifact from, Artifact to )
         {
-            Element depNode = (Element) depNodes.item( i );
+            this.namespace = namespace;
+            this.from = from.clearVersionAndExtension();
+            this.to = to.clearVersionAndExtension();
+        }
 
-            Artifact from = getArtifactDefinition( depNode, "maven" );
-            if ( from == Artifact.DUMMY )
+        public void addToDepmap( DependencyMap depmap )
+        {
+            depmap.addMapping( namespace, from, to );
+        }
+    }
+
+    class Task
+        implements Callable<List<Mapping>>
+    {
+        private final File file;
+
+        public Task( File file )
+        {
+            this.file = file;
+        }
+
+        @Override
+        public List<Mapping> call()
+            throws Exception
+        {
+            Document mapDocument = buildDepmapModel( file );
+            List<Mapping> mappings = new ArrayList<>();
+
+            NodeList depNodes = mapDocument.getElementsByTagName( "dependency" );
+
+            for ( int i = 0; i < depNodes.getLength(); i++ )
+            {
+                Element depNode = (Element) depNodes.item( i );
+
+                Artifact from = getArtifactDefinition( depNode, "maven" );
+                if ( from == Artifact.DUMMY )
+                    throw new IOException();
+
+                Artifact to = getArtifactDefinition( depNode, "jpp" );
+
+                NodeList nodes = depNode.getElementsByTagName( "namespace" );
+                if ( nodes.getLength() > 1 )
+                    throw new IOException();
+                String namespace = null;
+                if ( nodes.getLength() != 0 )
+                    namespace = nodes.item( 0 ).getTextContent().trim();
+
+                mappings.add( new Mapping( namespace, from, to ) );
+            }
+
+            return mappings;
+        }
+
+        private Document buildDepmapModel( File file )
+            throws IOException
+        {
+            try
+            {
+                DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+                fact.setNamespaceAware( true );
+                DocumentBuilder builder = fact.newDocumentBuilder();
+                String contents = wrapFragment( file );
+                try (Reader reader = new StringReader( contents ))
+                {
+                    InputSource source = new InputSource( reader );
+                    return builder.parse( source );
+                }
+            }
+            catch ( ParserConfigurationException e )
+            {
+                throw new IOException( e );
+            }
+            catch ( SAXException e )
+            {
+                throw new IOException( e );
+            }
+        }
+
+        private String wrapFragment( File fragmentFile )
+            throws IOException
+        {
+            CharBuffer contents = readFile( fragmentFile );
+
+            if ( contents.length() >= 5 && contents.subSequence( 0, 5 ).toString().equalsIgnoreCase( "<?xml" ) )
+            {
+                return contents.toString();
+            }
+
+            StringBuilder buffer = new StringBuilder();
+            buffer.append( "<dependencies>" );
+            buffer.append( contents );
+            buffer.append( "</dependencies>" );
+            return buffer.toString();
+        }
+
+        private CharBuffer readFile( File file )
+            throws IOException
+        {
+            try (FileInputStream fragmentStream = new FileInputStream( file ))
+            {
+                try (FileChannel channel = fragmentStream.getChannel())
+                {
+                    MappedByteBuffer buffer = channel.map( FileChannel.MapMode.READ_ONLY, 0, channel.size() );
+                    return Charset.defaultCharset().decode( buffer );
+                }
+            }
+        }
+
+        private Artifact getArtifactDefinition( Element root, String childTag )
+            throws IOException
+        {
+            NodeList jppNodeList = root.getElementsByTagName( childTag );
+
+            if ( jppNodeList.getLength() == 0 )
+                return Artifact.DUMMY;
+
+            Element element = (Element) jppNodeList.item( 0 );
+
+            NodeList nodes = element.getElementsByTagName( "groupId" );
+            if ( nodes.getLength() != 1 )
                 throw new IOException();
+            String groupId = nodes.item( 0 ).getTextContent().trim();
 
-            Artifact to = getArtifactDefinition( depNode, "jpp" );
+            nodes = element.getElementsByTagName( "artifactId" );
+            if ( nodes.getLength() != 1 )
+                throw new IOException();
+            String artifactId = nodes.item( 0 ).getTextContent().trim();
 
-            NodeList nodes = depNode.getElementsByTagName( "namespace" );
+            nodes = element.getElementsByTagName( "version" );
             if ( nodes.getLength() > 1 )
                 throw new IOException();
-            String namespace = null;
+            String version = null;
             if ( nodes.getLength() != 0 )
-                namespace = nodes.item( 0 ).getTextContent().trim();
+                version = nodes.item( 0 ).getTextContent().trim();
 
-            map.addMapping( namespace, from.clearVersionAndExtension(), to.clearVersionAndExtension() );
+            return new Artifact( groupId, artifactId, version );
         }
-    }
-
-    private Document buildDepmapModel( File file )
-        throws IOException
-    {
-        try
-        {
-            DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
-            fact.setNamespaceAware( true );
-            DocumentBuilder builder = fact.newDocumentBuilder();
-            String contents = wrapFragment( file );
-            try (Reader reader = new StringReader( contents ))
-            {
-                InputSource source = new InputSource( reader );
-                return builder.parse( source );
-            }
-        }
-        catch ( ParserConfigurationException e )
-        {
-            throw new IOException( e );
-        }
-        catch ( SAXException e )
-        {
-            throw new IOException( e );
-        }
-    }
-
-    private String wrapFragment( File fragmentFile )
-        throws IOException
-    {
-        CharBuffer contents = readFile( fragmentFile );
-
-        if ( contents.length() >= 5 && contents.subSequence( 0, 5 ).toString().equalsIgnoreCase( "<?xml" ) )
-        {
-            return contents.toString();
-        }
-
-        StringBuilder buffer = new StringBuilder();
-        buffer.append( "<dependencies>" );
-        buffer.append( contents );
-        buffer.append( "</dependencies>" );
-        return buffer.toString();
-    }
-
-    private CharBuffer readFile( File file )
-        throws IOException
-    {
-        try (FileInputStream fragmentStream = new FileInputStream( file ))
-        {
-            try (FileChannel channel = fragmentStream.getChannel())
-            {
-                MappedByteBuffer buffer = channel.map( FileChannel.MapMode.READ_ONLY, 0, channel.size() );
-                return Charset.defaultCharset().decode( buffer );
-            }
-        }
-    }
-
-    private Artifact getArtifactDefinition( Element root, String childTag )
-        throws IOException
-    {
-        NodeList jppNodeList = root.getElementsByTagName( childTag );
-
-        if ( jppNodeList.getLength() == 0 )
-            return Artifact.DUMMY;
-
-        Element element = (Element) jppNodeList.item( 0 );
-
-        NodeList nodes = element.getElementsByTagName( "groupId" );
-        if ( nodes.getLength() != 1 )
-            throw new IOException();
-        String groupId = nodes.item( 0 ).getTextContent().trim();
-
-        nodes = element.getElementsByTagName( "artifactId" );
-        if ( nodes.getLength() != 1 )
-            throw new IOException();
-        String artifactId = nodes.item( 0 ).getTextContent().trim();
-
-        nodes = element.getElementsByTagName( "version" );
-        if ( nodes.getLength() > 1 )
-            throw new IOException();
-        String version = null;
-        if ( nodes.getLength() != 0 )
-            version = nodes.item( 0 ).getTextContent().trim();
-
-        return new Artifact( groupId, artifactId, version );
     }
 }

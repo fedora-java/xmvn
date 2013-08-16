@@ -121,7 +121,8 @@ public class DefaultArtifactBlacklist
         for ( String prefix : settings.getPrefixes() )
         {
             File root = new File( prefix );
-            DependencyMap depmap = DepmapReader.readArtifactMap( root, settings, logger );
+            // FIXME
+            DependencyMap depmap = null;
 
             for ( Artifact artifact : blacklist )
             {

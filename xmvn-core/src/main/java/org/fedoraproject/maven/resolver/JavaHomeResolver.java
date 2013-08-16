@@ -35,7 +35,8 @@ class JavaHomeResolver
 
     public JavaHomeResolver( File root, ResolverSettings settings, Logger logger )
     {
-        depmap = DepmapReader.readArtifactMap( root, settings, logger );
+        // FIXME
+        depmap = null;
     }
 
     @Override

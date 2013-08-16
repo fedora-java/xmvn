@@ -46,7 +46,8 @@ class SystemResolver
         this.settings = settings;
         this.logger = logger;
         systemRepo = null; // FIXME
-        depmap = DepmapReader.readArtifactMap( root, settings, logger );
+        // FIXME
+        depmap = null;
     }
 
     @Override
