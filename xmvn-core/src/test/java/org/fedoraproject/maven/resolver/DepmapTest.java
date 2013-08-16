@@ -15,17 +15,18 @@
  */
 package org.fedoraproject.maven.resolver;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.fedoraproject.maven.config.Configurator;
+import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
-import org.fedoraproject.maven.util.BitBucketLogger;
 
 /**
  * @author Mikolaj Izdebski
@@ -36,11 +37,13 @@ public class DepmapTest
     private DependencyMap readDepmap( Path fragment )
         throws Exception
     {
-        DepmapReader reader = new DepmapReader();
-        DependencyMap depmap = new DependencyMap( new BitBucketLogger() );
-        reader.readMappings( depmap, Collections.singletonList( fragment.toString() ) );
-        assertNotNull( depmap );
-        return depmap;
+        Configurator configurator = lookup( Configurator.class );
+        ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
+        settings.getPrefixes().clear();
+        settings.addPrefix( new File( "." ).getAbsolutePath() );
+        settings.getMetadataRepositories().clear();
+        settings.addMetadataRepository( fragment.toString() );
+        return lookup( DependencyMap.class );
     }
 
     private DependencyMap readDepmap( String xml )
@@ -93,6 +96,7 @@ public class DepmapTest
     {
         DependencyMap depmap = readDepmap( Paths.get( "/this/should/not/exist" ) );
         assertTrue( depmap.isEmpty() );
+        release( depmap );
     }
 
     /**
@@ -120,6 +124,7 @@ public class DepmapTest
             Artifact jppCommonsIo = new Artifact( "JPP", "commons-io" );
             assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
             assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
+            release( depmap );
         }
     }
 
@@ -139,5 +144,6 @@ public class DepmapTest
         Artifact jppCommonsIo = new Artifact( "JPP", "commons-io" );
         assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
         assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
+        release( depmap );
     }
 }

@@ -60,6 +60,7 @@ public class DefaultResolver
 
     private Repository systemRepo;
 
+    @Requirement
     private DependencyMap depmap;
 
     private AtomicFileCounter bisectCounter;
@@ -101,21 +102,6 @@ public class DefaultResolver
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         systemRepo = repositoryConfigurator.configureRepository( "resolve" );
-
-        List<String> metadataDirs = new ArrayList<>();
-        for ( String prefix : settings.getPrefixes() )
-        {
-            File root = new File( prefix );
-            if ( root.isDirectory() )
-            {
-                for ( String dir : settings.getMetadataRepositories() )
-                    metadataDirs.add( new File( root, dir ).toString() );
-            }
-        }
-
-        depmap = new DependencyMap( logger );
-        DepmapReader reader = new DepmapReader();
-        reader.readMappings( depmap, metadataDirs );
 
         initialized = true;
     }

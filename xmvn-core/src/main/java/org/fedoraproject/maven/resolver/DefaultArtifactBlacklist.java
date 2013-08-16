@@ -123,7 +123,7 @@ public class DefaultArtifactBlacklist
             for ( String prefix : settings.getPrefixes() )
             {
                 // FIXME
-                DependencyMap depmap = null;
+                DefaultDependencyMap depmap = null;
 
                 for ( Artifact artifact : blacklist )
                 {
