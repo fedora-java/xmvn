@@ -17,8 +17,10 @@ package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
@@ -51,6 +53,10 @@ public class DefaultResolver
     private RepositoryConfigurator repositoryConfigurator;
 
     private Repository bisectRepo;
+
+    private Repository systemRepo;
+
+    private DependencyMap depmap;
 
     private AtomicFileCounter bisectCounter;
 
@@ -91,16 +97,20 @@ public class DefaultResolver
         // FIXME: this needs to be implemented
         // resolvers.add( new LocalResolver( settings ) );
 
+        List<String> metadataDirs = new ArrayList<>();
         for ( String prefix : settings.getPrefixes() )
         {
             File root = new File( prefix );
             if ( root.isDirectory() )
             {
-                resolvers.add( new JavaHomeResolver( root, settings, logger ) );
-                Resolver resolver = new SystemResolver( root, settings, logger );
-                resolvers.add( new CachingResolver( resolver, logger ) );
+                for ( String dir : settings.getMetadataRepositories() )
+                    metadataDirs.add( new File( root, dir ).toString() );
             }
         }
+
+        depmap = new DependencyMap( logger );
+        DepmapReader reader = new DepmapReader();
+        reader.readMappings( depmap, metadataDirs );
 
         initialized = true;
     }
