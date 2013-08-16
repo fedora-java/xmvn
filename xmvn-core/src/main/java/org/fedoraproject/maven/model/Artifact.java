@@ -34,6 +34,8 @@ public class Artifact
 
     private final String extension;
 
+    private final String scope;
+
     /**
      * Dummy artifact. Any dependencies on this artifact will be removed during model validation.
      */
@@ -66,6 +68,16 @@ public class Artifact
         this.artifactId = artifactId;
         this.version = version;
         this.extension = extension;
+        this.scope = null;
+    }
+
+    public Artifact( Artifact artifact, String scope )
+    {
+        this.groupId = artifact.groupId;
+        this.artifactId = artifact.artifactId;
+        this.version = artifact.version;
+        this.extension = artifact.extension;
+        this.scope = scope;
     }
 
     @Override
@@ -108,6 +120,11 @@ public class Artifact
         if ( extension == null )
             return "pom";
         return extension;
+    }
+
+    public String getScope()
+    {
+        return scope;
     }
 
     public boolean isJppArtifact()
