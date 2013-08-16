@@ -108,22 +108,19 @@ class DepmapReader
 
     class Mapping
     {
-        private final String namespace;
-
         private final Artifact from;
 
         private final Artifact to;
 
         public Mapping( String namespace, Artifact from, Artifact to )
         {
-            this.namespace = namespace;
-            this.from = from.clearVersionAndExtension();
-            this.to = to.clearVersionAndExtension();
+            this.from = new Artifact( from.clearVersionAndExtension(), namespace );
+            this.to = new Artifact( to.clearVersionAndExtension(), namespace );
         }
 
         public void addToDepmap( DependencyMap depmap )
         {
-            depmap.addMapping( namespace, from, to );
+            depmap.addMapping( from, to );
         }
     }
 
