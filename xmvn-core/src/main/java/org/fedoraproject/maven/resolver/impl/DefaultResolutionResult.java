@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.resolver;
+package org.fedoraproject.maven.resolver.impl;
 
 import java.io.File;
 
 import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.resolver.ResolutionResult;
 
 /**
  * @author Mikolaj Izdebski

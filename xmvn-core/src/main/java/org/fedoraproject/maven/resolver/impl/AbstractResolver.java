@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.resolver;
+package org.fedoraproject.maven.resolver.impl;
 
 import java.io.File;
 
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.resolver.ResolutionRequest;
+import org.fedoraproject.maven.resolver.ResolutionResult;
+import org.fedoraproject.maven.resolver.Resolver;
 
 /**
  * Base class for several resolves implemented in this package.

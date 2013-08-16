@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.resolver;
+package org.fedoraproject.maven.resolver.impl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationExce
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.resolver.DependencyMap;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
