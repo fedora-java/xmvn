@@ -158,28 +158,36 @@ public class DefaultResolver
         // TODO: this loop needs to be simplified not to use goto...
         notFound: for ( ;; )
         {
-            List<Artifact> tempList = new ArrayList<>();
-            compatVersion = artifact.getVersion();
-            for ( Artifact jppArtifact : jppList )
-                tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ) );
-            for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
+            if ( !artifact.isVersionless() )
             {
-                if ( Files.exists( pp ) )
+                List<Artifact> tempList = new ArrayList<>();
+                compatVersion = artifact.getVersion();
+                for ( Artifact jppArtifact : jppList )
+                    tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ) );
+                for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
-                    path = pp;
-                    break notFound;
+                    logger.debug( "Checking artifact path: " + pp );
+                    if ( Files.exists( pp ) )
+                    {
+                        path = pp;
+                        break notFound;
+                    }
                 }
             }
 
-            compatVersion = null;
-            for ( Artifact jppArtifact : jppList )
-                tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ).clearVersion() );
-            for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
             {
-                if ( Files.exists( pp ) )
+                List<Artifact> tempList = new ArrayList<>();
+                compatVersion = null;
+                for ( Artifact jppArtifact : jppList )
+                    tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ).clearVersion() );
+                for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
-                    path = pp;
-                    break notFound;
+                    logger.debug( "Checking artifact path: " + pp );
+                    if ( Files.exists( pp ) )
+                    {
+                        path = pp;
+                        break notFound;
+                    }
                 }
             }
 
@@ -206,7 +214,6 @@ public class DefaultResolver
             }
         }
 
-        logger.debug( "Unresolved artifact " + artifact );
         return result;
     }
 }
