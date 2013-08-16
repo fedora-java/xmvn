@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.dependency;
+package org.fedoraproject.maven.dependency.impl;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.fedoraproject.maven.dependency.DependencyExtractionResult;
 import org.fedoraproject.maven.model.Artifact;
 
 /**

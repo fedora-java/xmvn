@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.dependency;
+package org.fedoraproject.maven.dependency.impl;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.fedoraproject.maven.dependency.DependencyExtractionRequest;
+import org.fedoraproject.maven.dependency.DependencyExtractionResult;
+import org.fedoraproject.maven.dependency.DependencyExtractor;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
 import org.fedoraproject.maven.model.ModelProcessor;
 
