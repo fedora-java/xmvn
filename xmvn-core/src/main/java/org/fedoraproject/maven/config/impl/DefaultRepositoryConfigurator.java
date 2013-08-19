@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.config.impl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,6 +44,15 @@ public class DefaultRepositoryConfigurator
     @Requirement
     private Logger logger;
 
+    private org.fedoraproject.maven.config.Repository findDescriptor( String repoId )
+    {
+        for ( org.fedoraproject.maven.config.Repository repository : configurator.getConfiguration().getRepositories() )
+            if ( repository.getId() != null && repository.getId().equals( repoId ) )
+                return repository;
+
+        return null;
+    }
+
     @Override
     public Repository configureRepository( String repoId )
     {
@@ -53,26 +61,19 @@ public class DefaultRepositoryConfigurator
         String type = null;
         List<String> artifactTypes = null;
 
-        for ( org.fedoraproject.maven.config.Repository repository : configurator.getConfiguration().getRepositories() )
-        {
-            if ( repository.getId() != null && repository.getId().equals( repoId ) )
-            {
-                properties = repository.getProperties();
-                configurationXml = (Xpp3Dom) repository.getConfiguration();
-                type = repository.getType();
-                artifactTypes = repository.getArtifactTypes();
-                break;
-            }
-        }
+        org.fedoraproject.maven.config.Repository desc = findDescriptor( repoId );
+        if ( desc == null )
+            throw new RuntimeException( "Repository '" + repoId + "' is not configured." );
 
-        if ( properties == null )
-            properties = new Properties();
+        properties = desc.getProperties();
+        configurationXml = (Xpp3Dom) desc.getConfiguration();
+        type = desc.getType();
+        artifactTypes = desc.getArtifactTypes();
+
+        if ( type == null )
+            throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
         if ( configurationXml == null )
             configurationXml = new Xpp3Dom( "configuration" );
-        if ( type == null )
-            type = repoId;
-        if ( artifactTypes == null )
-            artifactTypes = Collections.emptyList();
 
         try
         {
@@ -82,7 +83,7 @@ public class DefaultRepositoryConfigurator
         }
         catch ( ComponentLookupException e )
         {
-            throw new RuntimeException( "Unable to lookup implementation for repository type '" + type + "'", e );
+            throw new RuntimeException( "Unable to load implementation for repository type '" + type + "'", e );
         }
     }
 }
