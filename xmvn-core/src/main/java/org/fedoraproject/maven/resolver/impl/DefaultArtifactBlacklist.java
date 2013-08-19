@@ -22,6 +22,7 @@ import java.util.TreeSet;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.Artifact;
@@ -36,7 +37,7 @@ import org.fedoraproject.maven.utils.LoggingUtils;
  */
 @Component( role = ArtifactBlacklist.class )
 public class DefaultArtifactBlacklist
-    implements ArtifactBlacklist
+    implements ArtifactBlacklist, Initializable
 {
     @Requirement
     private Logger logger;
@@ -47,8 +48,6 @@ public class DefaultArtifactBlacklist
     @Requirement
     private DependencyMap depmap;
 
-    private boolean initialized;
-
     private final Set<Artifact> blacklist = new TreeSet<>();
 
     @Override
@@ -58,15 +57,15 @@ public class DefaultArtifactBlacklist
     }
 
     @Override
+    public void initialize()
+    {
+        createInitialBlacklist();
+        blacklistAliases();
+    }
+
+    @Override
     public synchronized boolean contains( Artifact artifact )
     {
-        if ( !initialized )
-        {
-            initialized = true;
-            createInitialBlacklist();
-            blacklistAliases();
-        }
-
         return blacklist.contains( artifact.clearVersionAndExtension() );
     }
 
@@ -79,13 +78,6 @@ public class DefaultArtifactBlacklist
     @Override
     public synchronized void add( Artifact artifact )
     {
-        if ( !initialized )
-        {
-            initialized = true;
-            createInitialBlacklist();
-            blacklistAliases();
-        }
-
         blacklist.add( artifact.clearVersionAndExtension() );
     }
 
