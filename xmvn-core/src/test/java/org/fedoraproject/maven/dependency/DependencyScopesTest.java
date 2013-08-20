@@ -30,17 +30,17 @@ public class DependencyScopesTest
     @Override
     public void configureBuild()
     {
-        expect( "group.default", "artifact-default", "1.2.3.default" );
-        expect( "group.compile", "artifact-compile", "1.2.3.compile" );
-        expect( "group.provided", "artifact-provided", "1.2.3.provided" );
-        expect( "group.test", "artifact-test", "1.2.3.test" );
+        expect( "group.default:artifact-default:1.2.3.default" );
+        expect( "group.compile:artifact-compile:1.2.3.compile" );
+        expect( "group.provided:artifact-provided:1.2.3.provided" );
+        expect( "group.test:artifact-test:1.2.3.test" );
     }
 
     @Override
     public void configureRuntime()
     {
-        expect( "group.default", "artifact-default", "1.2.3.default" );
-        expect( "group.compile", "artifact-compile", "1.2.3.compile" );
-        expect( "group.runtime", "artifact-runtime", "1.2.3.runtime" );
+        expect( "group.default:artifact-default:1.2.3.default" );
+        expect( "group.compile:artifact-compile:1.2.3.compile" );
+        expect( "group.runtime:artifact-runtime:1.2.3.runtime" );
     }
 }

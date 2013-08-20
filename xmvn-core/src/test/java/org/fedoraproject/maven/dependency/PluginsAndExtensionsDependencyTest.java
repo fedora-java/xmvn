@@ -30,11 +30,11 @@ public class PluginsAndExtensionsDependencyTest
     @Override
     public void configureBuild()
     {
-        expect( "plG1", "plA1", "plV1" );
-        expect( "plG2", "plA2", "plV2" );
-        expect( "pdpG", "pdpA", "pdpV" );
-        expect( "pdpG-r", "pdpA-r", "pdpV-r" );
-        expect( "pdpG-opt", "pdpA-opt", "pdpV-opt" );
-        expect( "extG", "extA", "extV" );
+        expect( "plG1:plA1:plV1" );
+        expect( "plG2:plA2:plV2" );
+        expect( "pdpG:pdpA:pdpV" );
+        expect( "pdpG-r:pdpA-r:pdpV-r" );
+        expect( "pdpG-opt:pdpA-opt:pdpV-opt" );
+        expect( "extG:extA:extV" );
     }
 }

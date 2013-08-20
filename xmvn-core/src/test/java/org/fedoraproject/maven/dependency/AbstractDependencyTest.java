@@ -26,7 +26,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * @author Mikolaj Izdebski
@@ -71,19 +71,9 @@ public abstract class AbstractDependencyTest
         this.expectedJavaVersion = expectedJavaVersion;
     }
 
-    public void expect( ArtifactImpl artifact )
+    public void expect( String artifactCoords )
     {
-        expectedDependencyArtifacts.add( artifact );
-    }
-
-    public void expect( String groupId, String artifactId )
-    {
-        expect( new ArtifactImpl( groupId, artifactId ) );
-    }
-
-    public void expect( String groupId, String artifactId, String version )
-    {
-        expect( new ArtifactImpl( groupId, artifactId, version ) );
+        expectedDependencyArtifacts.add( new DefaultArtifact( artifactCoords ) );
     }
 
     public void configureBuild()
