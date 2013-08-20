@@ -16,15 +16,17 @@
 package org.fedoraproject.maven.dependency.impl;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.Plugin;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -32,10 +34,10 @@ import org.fedoraproject.maven.model.ArtifactImpl;
 class BuildDependencyVisitor
     extends AbstractModelVisitor
 {
-    private static final Set<ArtifactImpl> commonPlugins = new HashSet<>();
+    private static final Set<Artifact> commonPlugins = new HashSet<>();
     static
     {
-        commonPlugins.add( new ArtifactImpl( "org.apache.maven.plugins", "maven-compiler-plugin" ) );
+        commonPlugins.add( new DefaultArtifact( "org.apache.maven.plugins:maven-compiler-plugin:SYSTEM" ) );
     }
 
     private final DefaultDependencyExtractionResult result;
@@ -69,11 +71,10 @@ class BuildDependencyVisitor
     {
         String groupId = plugin.getGroupId();
         String artifactId = plugin.getArtifactId();
-        String version = plugin.getVersion();
-        ArtifactImpl pluginArtifact = new ArtifactImpl( groupId, artifactId, version );
+        Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
 
         if ( !commonPlugins.contains( pluginArtifact ) )
-            result.addDependencyArtifact( plugin.getGroupId(), plugin.getArtifactId(), plugin.getVersion() );
+            result.addDependencyArtifact( groupId, artifactId, plugin.getVersion() );
     }
 
     @Override

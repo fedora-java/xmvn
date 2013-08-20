@@ -16,19 +16,20 @@
 package org.fedoraproject.maven.resolver.impl;
 
 import java.util.Collections;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
-import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.resolver.ArtifactBlacklist;
 import org.fedoraproject.maven.resolver.DependencyMap;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
@@ -54,7 +55,7 @@ public class DefaultArtifactBlacklist
     @Override
     public boolean contains( String groupId, String artifactId )
     {
-        return contains( new ArtifactImpl( groupId, artifactId ) );
+        return contains( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
@@ -67,19 +68,21 @@ public class DefaultArtifactBlacklist
     @Override
     public synchronized boolean contains( Artifact artifact )
     {
-        return blacklist.contains( new ArtifactImpl( artifact ).clearVersionAndExtension() );
+        return blacklist.contains( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                                        ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
     public void add( String groupId, String artifactId )
     {
-        add( new ArtifactImpl( groupId, artifactId ) );
+        add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
     public synchronized void add( Artifact artifact )
     {
-        blacklist.add( new ArtifactImpl( artifact ).clearVersionAndExtension() );
+        blacklist.add( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                            ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     /**
@@ -97,13 +100,13 @@ public class DefaultArtifactBlacklist
      */
     private void createInitialBlacklist()
     {
-        add( ArtifactImpl.DUMMY );
-        add( ArtifactImpl.DUMMY_JPP );
+        add( ArtifactUtils.DUMMY );
+        add( ArtifactUtils.DUMMY_JPP );
 
         for ( org.fedoraproject.maven.config.Artifact artifact : configurator.getConfiguration().getResolverSettings().getBlacklist() )
             add( artifact.getGroupId(), artifact.getArtifactId() );
 
-        logger.debug( "Initial artifact blacklist is: " + ArtifactImpl.collectionToString( blacklist, true ) );
+        logger.debug( "Initial artifact blacklist is: " + ArtifactUtils.collectionToString( blacklist, true ) );
     }
 
     /**
@@ -119,10 +122,10 @@ public class DefaultArtifactBlacklist
         {
             Set<Artifact> relatives = depmap.relativesOf( artifact );
             aliasBlacklist.addAll( relatives );
-            logger.debug( "Blacklisted relatives of " + artifact + ": " + ArtifactImpl.collectionToString( relatives ) );
+            logger.debug( "Blacklisted relatives of " + artifact + ": " + ArtifactUtils.collectionToString( relatives ) );
         }
 
         blacklist.addAll( aliasBlacklist );
-        logger.debug( "Final artifact blacklist is: " + ArtifactImpl.collectionToString( blacklist, true ) );
+        logger.debug( "Final artifact blacklist is: " + ArtifactUtils.collectionToString( blacklist, true ) );
     }
 }

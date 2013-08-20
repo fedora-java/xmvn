@@ -21,12 +21,13 @@ import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.fedoraproject.maven.resolver.ResolutionRequest;
-import org.fedoraproject.maven.resolver.ResolutionResult;
-import org.fedoraproject.maven.resolver.Resolver;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
+import org.fedoraproject.maven.resolver.ResolutionRequest;
+import org.fedoraproject.maven.resolver.ResolutionResult;
+import org.fedoraproject.maven.resolver.Resolver;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -56,7 +57,7 @@ public class FedoraWorkspaceReader
     @Override
     public List<String> findVersions( Artifact artifact )
     {
-        return Collections.singletonList( "SYSTEM" );
+        return Collections.singletonList( ArtifactUtils.DEFAULT_VERSION );
     }
 
     @Override

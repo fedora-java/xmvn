@@ -25,13 +25,11 @@ import java.util.TreeMap;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.LoggingUtils;
-import org.fedoraproject.maven.utils.StringSplitter;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -125,11 +123,6 @@ public class ResolverCli
 
             for ( String s : parameters )
             {
-                String[] tok = StringSplitter.split( s, 5, ':' );
-
-                if ( classpath && StringUtils.isEmpty( tok[3] ) )
-                    tok[3] = "jar";
-
                 Artifact artifact = new DefaultArtifact( s );
                 File file = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactFile();
 

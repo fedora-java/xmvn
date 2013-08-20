@@ -24,8 +24,8 @@ import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
-import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -53,7 +53,7 @@ abstract class SimpleRepository
 
         Path path =
             getArtifactPath( groupId, artifactId, version, extension,
-                             artifact.getVersion().equals( ArtifactImpl.DEFAULT_VERSION ) );
+                             artifact.getVersion().equals( ArtifactUtils.DEFAULT_VERSION ) );
         if ( path != null && root != null )
             path = root.resolve( path );
 

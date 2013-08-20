@@ -20,17 +20,19 @@ import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
-import java.util.HashSet;
 
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.InstallerSettings;
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -40,11 +42,11 @@ public class FragmentFile
 {
     private final Logger logger;
 
-    private final Map<ArtifactImpl, Set<ArtifactImpl>> mapping = new HashMap<>();
+    private final Map<Artifact, Set<Artifact>> mapping = new HashMap<>();
 
-    private final Set<ArtifactImpl> dependencies = new HashSet<>();
+    private final Set<Artifact> dependencies = new HashSet<>();
 
-    private final Set<ArtifactImpl> develDependencies = new HashSet<>();
+    private final Set<Artifact> develDependencies = new HashSet<>();
 
     private BigDecimal javaVersionRequirement;
 
@@ -59,9 +61,9 @@ public class FragmentFile
             && javaVersionRequirement == null;
     }
 
-    private static void addMapping( Map<ArtifactImpl, Set<ArtifactImpl>> map, ArtifactImpl from, ArtifactImpl to )
+    private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
     {
-        Set<ArtifactImpl> set = map.get( from );
+        Set<Artifact> set = map.get( from );
         if ( set == null )
         {
             set = new HashSet<>();
@@ -71,7 +73,7 @@ public class FragmentFile
         set.add( to );
     }
 
-    public void addMapping( ArtifactImpl from, ArtifactImpl to )
+    public void addMapping( Artifact from, Artifact to )
     {
         addMapping( mapping, from, to );
 
@@ -81,13 +83,13 @@ public class FragmentFile
     @Override
     public void visitRuntimeDependency( String groupId, String artifactId )
     {
-        dependencies.add( new ArtifactImpl( groupId, artifactId ) );
+        dependencies.add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
     public void visitBuildDependency( String groupId, String artifactId )
     {
-        develDependencies.add( new ArtifactImpl( groupId, artifactId ) );
+        develDependencies.add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
@@ -99,20 +101,21 @@ public class FragmentFile
 
     public void optimize()
     {
-        Set<ArtifactImpl> versionlessArtifacts = new HashSet<>();
-        for ( ArtifactImpl artifact : mapping.keySet() )
-            versionlessArtifacts.add( artifact.clearVersionAndExtension() );
+        Set<Artifact> versionlessArtifacts = new HashSet<>();
+        for ( Artifact artifact : mapping.keySet() )
+            versionlessArtifacts.add( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                                           ArtifactUtils.DEFAULT_VERSION ) );
 
-        for ( Iterator<ArtifactImpl> iter = dependencies.iterator(); iter.hasNext(); )
+        for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )
         {
-            ArtifactImpl dependency = iter.next();
+            Artifact dependency = iter.next();
             if ( versionlessArtifacts.contains( dependency ) )
                 iter.remove();
         }
 
-        for ( Iterator<ArtifactImpl> iter = develDependencies.iterator(); iter.hasNext(); )
+        for ( Iterator<Artifact> iter = develDependencies.iterator(); iter.hasNext(); )
         {
-            ArtifactImpl dependency = iter.next();
+            Artifact dependency = iter.next();
             if ( versionlessArtifacts.contains( dependency ) )
                 iter.remove();
         }
@@ -138,9 +141,9 @@ public class FragmentFile
             if ( javaVersionRequirement != null && !settings.isSkipRequires() )
                 s.startTag( ns, "requiresJava" ).text( javaVersionRequirement.toString() ).endTag( ns, "requiresJava" );
 
-            for ( ArtifactImpl mavenArtifact : mapping.keySet() )
+            for ( Artifact mavenArtifact : mapping.keySet() )
             {
-                for ( ArtifactImpl jppArtifact : mapping.get( mavenArtifact ) )
+                for ( Artifact jppArtifact : mapping.get( mavenArtifact ) )
                 {
                     s.startTag( ns, "dependency" ).startTag( ns, "maven" );
                     s.startTag( ns, "groupId" ).text( mavenArtifact.getGroupId() ).endTag( ns, "groupId" );
@@ -156,11 +159,11 @@ public class FragmentFile
 
             if ( !settings.isSkipRequires() )
             {
-                Set<ArtifactImpl> combinedDependencies = new HashSet<>( dependencies );
+                Set<Artifact> combinedDependencies = new HashSet<>( dependencies );
                 if ( writeDevel )
                     combinedDependencies.addAll( develDependencies );
 
-                for ( ArtifactImpl dependency : combinedDependencies )
+                for ( Artifact dependency : combinedDependencies )
                 {
                     s.startTag( ns, "autoRequires" );
                     s.startTag( ns, "groupId" ).text( dependency.getGroupId() ).endTag( ns, "groupId" );

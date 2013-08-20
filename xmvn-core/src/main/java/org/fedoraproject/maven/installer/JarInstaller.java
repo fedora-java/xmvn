@@ -29,11 +29,12 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = ProjectInstaller.class, hint = "jar" )
+@Component( role = ProjectInstaller.class, hint = ArtifactUtils.DEFAULT_EXTENSION )
 public class JarInstaller
     extends AbstractProjectInstaller
 {
@@ -43,7 +44,7 @@ public class JarInstaller
     @Override
     public List<String> getSupportedPackagingTypes()
     {
-        return Arrays.asList( "bundle", "ejb", "jar", "maven-plugin" );
+        return Arrays.asList( "bundle", "ejb", ArtifactUtils.DEFAULT_EXTENSION, "maven-plugin" );
     }
 
     @Override

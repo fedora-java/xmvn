@@ -35,12 +35,12 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.config.ResolverSettings;
-import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.resolver.DependencyMap;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
 import org.fedoraproject.maven.resolver.ResolutionResult;
 import org.fedoraproject.maven.resolver.Resolver;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
@@ -128,7 +128,7 @@ public class DefaultResolver
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        ArtifactImpl artifact = new ArtifactImpl( request.getArtifact() );
+        Artifact artifact = request.getArtifact();
 
         if ( resolveFromBisectRepo() )
         {
@@ -139,7 +139,9 @@ public class DefaultResolver
 
         logger.debug( "Trying to resolve artifact " + artifact );
 
-        List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
+        List<Artifact> jppList =
+            depmap.translate( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                                   ArtifactUtils.DEFAULT_VERSION ) );
 
         String javaHome = System.getProperty( "java.home" );
         Path javaHomeDir = followSymlink( new File( javaHome != null ? javaHome : "." ) ).toPath();
@@ -162,7 +164,7 @@ public class DefaultResolver
         // TODO: this loop needs to be simplified not to use goto...
         notFound: for ( ;; )
         {
-            if ( !artifact.getVersion().equals( ArtifactImpl.DEFAULT_VERSION ) )
+            if ( !artifact.getVersion().equals( ArtifactUtils.DEFAULT_VERSION ) )
             {
                 List<Artifact> tempList = new ArrayList<>();
                 compatVersion = artifact.getVersion();
@@ -187,7 +189,7 @@ public class DefaultResolver
                 for ( Artifact jppArtifact : jppList )
                     tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
                                                        artifact.getExtension(), jppArtifact.getClassifier(),
-                                                       ArtifactImpl.DEFAULT_VERSION ) );
+                                                       ArtifactUtils.DEFAULT_VERSION ) );
                 for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
                     logger.debug( "Checking artifact path: " + pp );
@@ -229,7 +231,7 @@ public class DefaultResolver
     @Override
     public File resolve( String groupId, String artifactId, String version, String extension )
     {
-        ArtifactImpl artifact = new ArtifactImpl( groupId, artifactId, version, extension );
+        Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, version );
         return resolve( artifact );
     }
 

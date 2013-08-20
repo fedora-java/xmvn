@@ -40,8 +40,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.resolver.DependencyMap;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -109,14 +111,16 @@ class DepmapReader
 
     class Mapping
     {
-        private final ArtifactImpl from;
+        private final Artifact from;
 
-        private final ArtifactImpl to;
+        private final Artifact to;
 
-        public Mapping( String namespace, ArtifactImpl from, ArtifactImpl to )
+        public Mapping( String namespace, Artifact from, Artifact to )
         {
-            this.from = new ArtifactImpl( from.clearVersionAndExtension().setScope( namespace ) );
-            this.to = new ArtifactImpl( to.clearVersionAndExtension().setScope( namespace ) );
+            from = new DefaultArtifact( from.getGroupId(), from.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+            to = new DefaultArtifact( to.getGroupId(), to.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+            this.from = ArtifactUtils.setScope( from, namespace );
+            this.to = ArtifactUtils.setScope( to, namespace );
         }
 
         public void addToDepmap( DependencyMap depmap )
@@ -148,11 +152,11 @@ class DepmapReader
             {
                 Element depNode = (Element) depNodes.item( i );
 
-                ArtifactImpl from = getArtifactDefinition( depNode, "maven" );
-                if ( from == ArtifactImpl.DUMMY )
+                Artifact from = getArtifactDefinition( depNode, "maven" );
+                if ( from.equals( ArtifactUtils.DUMMY ) )
                     throw new IOException();
 
-                ArtifactImpl to = getArtifactDefinition( depNode, "jpp" );
+                Artifact to = getArtifactDefinition( depNode, "jpp" );
 
                 NodeList nodes = depNode.getElementsByTagName( "namespace" );
                 if ( nodes.getLength() > 1 )
@@ -222,13 +226,13 @@ class DepmapReader
             }
         }
 
-        private ArtifactImpl getArtifactDefinition( Element root, String childTag )
+        private Artifact getArtifactDefinition( Element root, String childTag )
             throws IOException
         {
             NodeList jppNodeList = root.getElementsByTagName( childTag );
 
             if ( jppNodeList.getLength() == 0 )
-                return ArtifactImpl.DUMMY;
+                return ArtifactUtils.DUMMY;
 
             Element element = (Element) jppNodeList.item( 0 );
 
@@ -249,7 +253,7 @@ class DepmapReader
             if ( nodes.getLength() != 0 )
                 version = nodes.item( 0 ).getTextContent().trim();
 
-            return new ArtifactImpl( groupId, artifactId, version );
+            return new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version );
         }
     }
 }

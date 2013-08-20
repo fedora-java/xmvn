@@ -30,9 +30,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.logging.Logger;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.FileUtils;
 
 /**
@@ -165,14 +167,17 @@ public class DefaultPackage
     public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
                                PackagingRule rule )
     {
-        ArtifactImpl artifact = new ArtifactImpl( groupId, artifactId, version );
-        ArtifactImpl jppArtifact = new ArtifactImpl( jppGroup.toString(), jppName.toString(), version );
+        Artifact artifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version );
+        Artifact jppArtifact =
+            new DefaultArtifact( jppGroup.toString(), jppName.toString(), ArtifactUtils.DEFAULT_EXTENSION, version );
 
         getMetadata().addMapping( artifact, jppArtifact );
 
         for ( org.fedoraproject.maven.config.Artifact alias2 : rule.getAliases() )
         {
-            ArtifactImpl alias = new ArtifactImpl( alias2.getGroupId(), alias2.getArtifactId(), alias2.getVersion() );
+            Artifact alias =
+                new DefaultArtifact( alias2.getGroupId(), alias2.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                     alias2.getVersion() );
             getMetadata().addMapping( alias, jppArtifact );
         }
     }

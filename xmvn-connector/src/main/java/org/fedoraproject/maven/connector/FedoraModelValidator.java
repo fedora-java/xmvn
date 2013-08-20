@@ -40,6 +40,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.resolver.ArtifactBlacklist;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
@@ -158,7 +159,7 @@ public class FedoraModelValidator
         if ( StringUtils.isEmpty( version ) )
         {
             logger.debug( "Missing version of dependency " + id + ", using SYSTEM." );
-            return "SYSTEM";
+            return ArtifactUtils.DEFAULT_VERSION;
         }
 
         try
@@ -166,13 +167,13 @@ public class FedoraModelValidator
             if ( VersionRange.createFromVersionSpec( version ).getRecommendedVersion() == null )
             {
                 logger.debug( "Dependency " + id + " has no recommended version, falling back to SYSTEM." );
-                return "SYSTEM";
+                return ArtifactUtils.DEFAULT_VERSION;
             }
         }
         catch ( InvalidVersionSpecificationException e )
         {
             logger.debug( "Dependency " + id + " is using invalid version range, falling back to SYSTEM." );
-            return "SYSTEM";
+            return ArtifactUtils.DEFAULT_VERSION;
         }
 
         return version;

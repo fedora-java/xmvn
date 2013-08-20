@@ -20,8 +20,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.dependency.DependencyExtractionResult;
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -39,14 +40,14 @@ class DefaultDependencyExtractionResult
         return Collections.unmodifiableSet( dependencyArtifacts );
     }
 
-    public void addDependencyArtifact( ArtifactImpl artifact )
+    public void addDependencyArtifact( Artifact artifact )
     {
         dependencyArtifacts.add( artifact );
     }
 
     public void addDependencyArtifact( String groupId, String artifactId, String version )
     {
-        dependencyArtifacts.add( new ArtifactImpl( groupId, artifactId, version ) );
+        dependencyArtifacts.add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version ) );
     }
 
     @Override

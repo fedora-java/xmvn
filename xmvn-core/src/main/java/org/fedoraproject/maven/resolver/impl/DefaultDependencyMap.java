@@ -32,10 +32,11 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
-import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.resolver.DependencyMap;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
@@ -74,8 +75,8 @@ public class DefaultDependencyMap
     @Override
     public void addMapping( String groupId, String artifactId, String version, String jppGroupId, String jppArtifactId )
     {
-        ArtifactImpl mavenArtifact = new ArtifactImpl( groupId, artifactId );
-        ArtifactImpl jppArtifact = new ArtifactImpl( jppGroupId, jppArtifactId );
+        Artifact mavenArtifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+        Artifact jppArtifact = new DefaultArtifact( jppGroupId, jppArtifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
 
         addMapping( mavenArtifact, jppArtifact );
     }
@@ -95,8 +96,8 @@ public class DefaultDependencyMap
     @Override
     public void addMapping( Artifact from, Artifact to )
     {
-        from = new ArtifactImpl( from.getGroupId(), from.getArtifactId() );
-        to = new ArtifactImpl( to.getGroupId(), to.getArtifactId() );
+        from = new DefaultArtifact( from.getGroupId(), from.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+        to = new DefaultArtifact( to.getGroupId(), to.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
 
         try
         {
@@ -160,14 +161,15 @@ public class DefaultDependencyMap
     @Override
     public List<Artifact> translate( Artifact artifact )
     {
-        artifact = new ArtifactImpl( artifact.getGroupId(), artifact.getArtifactId() );
+        artifact =
+            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
         logger.debug( "Trying to translate artifact " + artifact );
 
         try
         {
             lock.readLock().lock();
             List<Artifact> resolved = depthFirstWalk( mapping, artifact );
-            logger.debug( "Translation result is " + ArtifactImpl.collectionToString( resolved ) );
+            logger.debug( "Translation result is " + ArtifactUtils.collectionToString( resolved ) );
             return resolved;
         }
         finally
@@ -179,7 +181,8 @@ public class DefaultDependencyMap
     @Override
     public Set<Artifact> relativesOf( Artifact artifact )
     {
-        artifact = new ArtifactImpl( artifact.getGroupId(), artifact.getArtifactId() );
+        artifact =
+            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
 
         try
         {

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * This is a simple Maven plugin validator that pretends that all plugins have valid descriptors.
@@ -43,7 +44,7 @@ public class MavenPluginValidator
     public void validate( PluginDescriptor pluginDescriptor )
     {
         if ( pluginDescriptor.getVersion() == null )
-            pluginDescriptor.setVersion( "SYSTEM" );
+            pluginDescriptor.setVersion( ArtifactUtils.DEFAULT_VERSION );
     }
 
     public boolean hasErrors()

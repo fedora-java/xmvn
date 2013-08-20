@@ -22,6 +22,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.ArtifactRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -48,7 +49,7 @@ public class FedoraPluginVersionResolver
             @Override
             public String getVersion()
             {
-                return "SYSTEM";
+                return ArtifactUtils.DEFAULT_VERSION;
             }
         };
     }

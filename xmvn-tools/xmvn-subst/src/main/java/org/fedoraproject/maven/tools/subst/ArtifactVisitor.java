@@ -24,16 +24,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.FileUtils;
@@ -113,7 +114,7 @@ public class ArtifactVisitor
         return FileVisitResult.CONTINUE;
     }
 
-    private ArtifactImpl readArtifactDefinition( Path path, String extension )
+    private Artifact readArtifactDefinition( Path path, String extension )
     {
         try (ZipInputStream zis = new ZipInputStream( new FileInputStream( path.toFile() ) ))
         {
@@ -129,7 +130,7 @@ public class ArtifactVisitor
                     String groupId = properties.getProperty( "groupId" );
                     String artifactId = properties.getProperty( "artifactId" );
                     String version = properties.getProperty( "version" );
-                    return new ArtifactImpl( groupId, artifactId, version, extension );
+                    return new DefaultArtifact( groupId, artifactId, extension, version );
                 }
             }
 
@@ -146,7 +147,7 @@ public class ArtifactVisitor
     private void substituteArtifact( Path path, String type )
         throws IOException
     {
-        ArtifactImpl artifact = readArtifactDefinition( path, type );
+        Artifact artifact = readArtifactDefinition( path, type );
         if ( artifact == null )
             return;
 
