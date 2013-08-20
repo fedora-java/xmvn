@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.model;
+package org.fedoraproject.maven.model.impl;
 
 import java.util.Iterator;
 import java.util.List;
@@ -58,6 +58,8 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Site;
 import org.codehaus.plexus.component.annotations.Component;
+import org.fedoraproject.maven.model.ModelProcessor;
+import org.fedoraproject.maven.model.ModelVisitor;
 
 /**
  * @author Mikolaj Izdebski
