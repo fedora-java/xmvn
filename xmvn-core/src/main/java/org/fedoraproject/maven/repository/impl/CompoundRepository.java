@@ -26,8 +26,8 @@ import java.util.Properties;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
-import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.repository.Repository;
 
 /**
@@ -73,13 +73,13 @@ public class CompoundRepository
     }
 
     @Override
-    public List<Path> getArtifactPaths( ArtifactImpl artifact )
+    public List<Path> getArtifactPaths( Artifact artifact )
     {
         return getArtifactPaths( Collections.singletonList( artifact ) );
     }
 
     @Override
-    public List<Path> getArtifactPaths( List<ArtifactImpl> artifacts )
+    public List<Path> getArtifactPaths( List<Artifact> artifacts )
     {
         List<Path> paths = new ArrayList<>();
         for ( Repository repository : slaveRepositories )
@@ -91,7 +91,7 @@ public class CompoundRepository
     }
 
     @Override
-    public Path getPrimaryArtifactPath( ArtifactImpl artifact )
+    public Path getPrimaryArtifactPath( Artifact artifact )
     {
         Iterator<Path> it = getArtifactPaths( artifact ).iterator();
         return it.hasNext() ? it.next() : null;

@@ -26,7 +26,7 @@ import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.eclipse.aether.artifact.Artifact;
 
 @Component( role = Repository.class, hint = "my-type" )
 public class MyRepository
@@ -42,21 +42,21 @@ public class MyRepository
     }
 
     @Override
-    public Path getPrimaryArtifactPath( ArtifactImpl artifact )
+    public Path getPrimaryArtifactPath( Artifact artifact )
     {
         fail( "getPrimaryArtifactPath() was not expected to be called" );
         throw null;
     }
 
     @Override
-    public List<Path> getArtifactPaths( ArtifactImpl artifact )
+    public List<Path> getArtifactPaths( Artifact artifact )
     {
         fail( "getArtifactPaths() was not expected to be called" );
         throw null;
     }
 
     @Override
-    public List<Path> getArtifactPaths( List<ArtifactImpl> artifact )
+    public List<Path> getArtifactPaths( List<Artifact> artifact )
     {
         fail( "getArtifactPaths() was not expected to be called" );
         throw null;

@@ -26,7 +26,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -42,7 +42,7 @@ import org.fedoraproject.maven.utils.FileUtils;
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
-    private final Set<String> types = new TreeSet<>();
+    private final Set<String> types = new HashSet<>();
 
     @Requirement
     private Logger logger;

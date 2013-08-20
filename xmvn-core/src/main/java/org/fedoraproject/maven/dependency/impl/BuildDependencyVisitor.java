@@ -18,7 +18,7 @@ package org.fedoraproject.maven.dependency.impl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
@@ -32,7 +32,7 @@ import org.fedoraproject.maven.model.ArtifactImpl;
 class BuildDependencyVisitor
     extends AbstractModelVisitor
 {
-    private static final Set<ArtifactImpl> commonPlugins = new TreeSet<>();
+    private static final Set<ArtifactImpl> commonPlugins = new HashSet<>();
     static
     {
         commonPlugins.add( new ArtifactImpl( "org.apache.maven.plugins", "maven-compiler-plugin" ) );

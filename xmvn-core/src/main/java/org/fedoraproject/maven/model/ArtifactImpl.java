@@ -30,9 +30,8 @@ import org.eclipse.aether.artifact.Artifact;
  */
 public class ArtifactImpl
     extends AbstractArtifact
-    implements Comparable<Artifact>
 {
-    private static final String DEFAULT_VERSION = "SYSTEM";
+    public static final String DEFAULT_VERSION = "SYSTEM";
 
     private final String groupId;
 
@@ -77,26 +76,29 @@ public class ArtifactImpl
             throw new IllegalArgumentException( "groupId may not be null" );
         if ( artifactId == null )
             throw new IllegalArgumentException( "artifactId may not be null" );
+        if ( extension == null )
+            extension = "jar";
+        if ( version == null )
+            version = DEFAULT_VERSION;
 
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.extension = extension;
-        this.classifier = null;
+        this.classifier = "";
         this.version = version;
         this.file = null;
         this.properties = Collections.emptyMap();
     }
 
-    @Override
-    public int compareTo( Artifact rhs )
+    public ArtifactImpl( Artifact artifact )
     {
-        if ( !getGroupId().equals( rhs.getGroupId() ) )
-            return getGroupId().compareTo( rhs.getGroupId() );
-        if ( !getArtifactId().equals( rhs.getArtifactId() ) )
-            return getArtifactId().compareTo( rhs.getArtifactId() );
-        if ( !getVersion().equals( rhs.getVersion() ) )
-            return getVersion().compareTo( rhs.getVersion() );
-        return getExtension().compareTo( rhs.getExtension() );
+        this.groupId = artifact.getGroupId();
+        this.artifactId = artifact.getArtifactId();
+        this.extension = artifact.getExtension();
+        this.classifier = artifact.getClassifier();
+        this.version = artifact.getVersion();
+        this.file = artifact.getFile();
+        this.properties = copyProperties( artifact.getProperties() );
     }
 
     @Override
@@ -114,8 +116,6 @@ public class ArtifactImpl
     @Override
     public String getExtension()
     {
-        if ( extension == null )
-            return "pom";
         return extension;
     }
 
@@ -128,8 +128,6 @@ public class ArtifactImpl
     @Override
     public String getVersion()
     {
-        if ( version == null )
-            return DEFAULT_VERSION;
         return version;
     }
 
@@ -167,32 +165,14 @@ public class ArtifactImpl
         return getExtension().equals( "pom" );
     }
 
-    public boolean isVersionless()
-    {
-        return version == null;
-    }
-
     public ArtifactImpl clearVersion()
     {
         return new ArtifactImpl( groupId, artifactId, null, extension );
     }
 
-    public ArtifactImpl clearExtension()
-    {
-        return new ArtifactImpl( groupId, artifactId, version );
-    }
-
     public ArtifactImpl clearVersionAndExtension()
     {
         return new ArtifactImpl( groupId, artifactId );
-    }
-
-    public ArtifactImpl copyMissing( ArtifactImpl rhs )
-    {
-        String version = this.version != null ? this.version : rhs.version;
-        String extension = this.extension != null ? this.extension : rhs.extension;
-
-        return new ArtifactImpl( groupId, artifactId, version, extension );
     }
 
     /**
@@ -201,7 +181,7 @@ public class ArtifactImpl
      * @param collection collection of artifacts
      * @return string representation of given collection of artifacts
      */
-    public static String collectionToString( Collection<ArtifactImpl> set )
+    public static String collectionToString( Collection<Artifact> set )
     {
         return collectionToString( set, false );
     }
@@ -213,7 +193,7 @@ public class ArtifactImpl
      * @param multiLine if multi-line representation should be used instead of single-line
      * @return string representation of given collection of artifacts
      */
-    public static String collectionToString( Collection<ArtifactImpl> collection, boolean multiLine )
+    public static String collectionToString( Collection<Artifact> collection, boolean multiLine )
     {
         if ( collection.isEmpty() )
             return "[]";
@@ -224,7 +204,7 @@ public class ArtifactImpl
         StringBuilder sb = new StringBuilder();
         sb.append( "[" + separator );
 
-        Iterator<ArtifactImpl> iter = collection.iterator();
+        Iterator<Artifact> iter = collection.iterator();
         sb.append( indent + iter.next() );
 
         while ( iter.hasNext() )

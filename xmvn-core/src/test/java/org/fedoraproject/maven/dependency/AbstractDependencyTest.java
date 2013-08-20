@@ -19,12 +19,13 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
@@ -37,7 +38,7 @@ public abstract class AbstractDependencyTest
 
     private String expectedJavaVersion;
 
-    private final Set<ArtifactImpl> expectedDependencyArtifacts = new TreeSet<>();
+    private final Set<Artifact> expectedDependencyArtifacts = new HashSet<>();
 
     public AbstractDependencyTest()
     {
@@ -109,14 +110,14 @@ public abstract class AbstractDependencyTest
         assertNotNull( result );
         assertEquals( expectedJavaVersion, result.getJavaVersion() );
 
-        Set<ArtifactImpl> expectedButNotReturned = new TreeSet<>( expectedDependencyArtifacts );
+        Set<Artifact> expectedButNotReturned = new HashSet<>( expectedDependencyArtifacts );
         expectedButNotReturned.removeAll( result.getDependencyArtifacts() );
-        for ( ArtifactImpl artifact : expectedButNotReturned )
+        for ( Artifact artifact : expectedButNotReturned )
             fail( "Dependency artifact " + artifact + " was expected but not returned" );
 
-        Set<ArtifactImpl> notExpectedButReturned = new TreeSet<>( result.getDependencyArtifacts() );
+        Set<Artifact> notExpectedButReturned = new HashSet<>( result.getDependencyArtifacts() );
         notExpectedButReturned.removeAll( expectedDependencyArtifacts );
-        for ( ArtifactImpl artifact : notExpectedButReturned )
+        for ( Artifact artifact : notExpectedButReturned )
             fail( "Dependency artifact " + artifact + " not expected but returned" );
     }
 

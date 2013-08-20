@@ -16,9 +16,10 @@
 package org.fedoraproject.maven.dependency.impl;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.dependency.DependencyExtractionResult;
 import org.fedoraproject.maven.model.ArtifactImpl;
 
@@ -28,12 +29,12 @@ import org.fedoraproject.maven.model.ArtifactImpl;
 class DefaultDependencyExtractionResult
     implements DependencyExtractionResult
 {
-    private final Set<ArtifactImpl> dependencyArtifacts = new TreeSet<>();
+    private final Set<Artifact> dependencyArtifacts = new HashSet<>();
 
     private String javaVersion;
 
     @Override
-    public Set<ArtifactImpl> getDependencyArtifacts()
+    public Set<Artifact> getDependencyArtifacts()
     {
         return Collections.unmodifiableSet( dependencyArtifacts );
     }

@@ -17,14 +17,14 @@ package org.fedoraproject.maven.dependency;
 
 import java.util.Set;
 
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.eclipse.aether.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski
  */
 public interface DependencyExtractionResult
 {
-    Set<ArtifactImpl> getDependencyArtifacts();
+    Set<Artifact> getDependencyArtifacts();
 
     String getJavaVersion();
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.ArtifactImpl;
@@ -69,7 +70,7 @@ public class DepmapTest
         DependencyMap depmap = readDepmap( "" );
         assertTrue( depmap.isEmpty() );
         ArtifactImpl fooBar = new ArtifactImpl( "foo", "bar" );
-        List<ArtifactImpl> translationResult = depmap.translate( fooBar );
+        List<Artifact> translationResult = depmap.translate( fooBar );
         assertEquals( translationResult.size(), 1 );
         assertTrue( translationResult.contains( fooBar ) );
     }

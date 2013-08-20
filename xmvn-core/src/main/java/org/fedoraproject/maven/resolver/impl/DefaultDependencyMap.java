@@ -17,12 +17,12 @@ package org.fedoraproject.maven.resolver.impl;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -31,6 +31,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.ArtifactImpl;
@@ -52,9 +53,9 @@ public class DefaultDependencyMap
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final Map<ArtifactImpl, Set<ArtifactImpl>> mapping = new TreeMap<>();
+    private final Map<Artifact, Set<Artifact>> mapping = new HashMap<>();
 
-    private final Map<ArtifactImpl, Set<ArtifactImpl>> reverseMapping = new TreeMap<>();
+    private final Map<Artifact, Set<Artifact>> reverseMapping = new HashMap<>();
 
     @Override
     public boolean isEmpty()
@@ -73,18 +74,18 @@ public class DefaultDependencyMap
     @Override
     public void addMapping( String groupId, String artifactId, String version, String jppGroupId, String jppArtifactId )
     {
-        ArtifactImpl mavenArtifact = new ArtifactImpl( groupId, artifactId, version );
-        ArtifactImpl jppArtifact = new ArtifactImpl( jppGroupId, jppArtifactId, version );
+        ArtifactImpl mavenArtifact = new ArtifactImpl( groupId, artifactId );
+        ArtifactImpl jppArtifact = new ArtifactImpl( jppGroupId, jppArtifactId );
 
         addMapping( mavenArtifact, jppArtifact );
     }
 
-    private static void addMapping( Map<ArtifactImpl, Set<ArtifactImpl>> map, ArtifactImpl from, ArtifactImpl to )
+    private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
     {
-        Set<ArtifactImpl> set = map.get( from );
+        Set<Artifact> set = map.get( from );
         if ( set == null )
         {
-            set = new TreeSet<>();
+            set = new HashSet<>();
             map.put( from, set );
         }
 
@@ -92,8 +93,11 @@ public class DefaultDependencyMap
     }
 
     @Override
-    public void addMapping( ArtifactImpl from, ArtifactImpl to )
+    public void addMapping( Artifact from, Artifact to )
     {
+        from = new ArtifactImpl( from.getGroupId(), from.getArtifactId() );
+        to = new ArtifactImpl( to.getGroupId(), to.getArtifactId() );
+
         try
         {
             lock.writeLock().lock();
@@ -116,13 +120,13 @@ public class DefaultDependencyMap
      * @param resolved list of visited nodes
      * @param parent starting point
      */
-    private void walk( Map<ArtifactImpl, Set<ArtifactImpl>> map, Set<ArtifactImpl> visited, List<ArtifactImpl> resolved, ArtifactImpl parent )
+    private void walk( Map<Artifact, Set<Artifact>> map, Set<Artifact> visited, List<Artifact> resolved, Artifact parent )
     {
         visited.add( parent );
 
         if ( map.containsKey( parent ) )
         {
-            for ( ArtifactImpl child : map.get( parent ) )
+            for ( Artifact child : map.get( parent ) )
             {
                 if ( visited.contains( child ) )
                     continue;
@@ -143,10 +147,10 @@ public class DefaultDependencyMap
      * @param current starting point of the search
      * @return list of all nodes in depth-first order
      */
-    private List<ArtifactImpl> depthFirstWalk( Map<ArtifactImpl, Set<ArtifactImpl>> map, ArtifactImpl current )
+    private List<Artifact> depthFirstWalk( Map<Artifact, Set<Artifact>> map, Artifact current )
     {
-        Set<ArtifactImpl> visited = new TreeSet<>();
-        List<ArtifactImpl> result = new LinkedList<>();
+        Set<Artifact> visited = new HashSet<>();
+        List<Artifact> result = new LinkedList<>();
 
         walk( map, visited, result, current );
 
@@ -154,14 +158,15 @@ public class DefaultDependencyMap
     }
 
     @Override
-    public List<ArtifactImpl> translate( ArtifactImpl artifact )
+    public List<Artifact> translate( Artifact artifact )
     {
+        artifact = new ArtifactImpl( artifact.getGroupId(), artifact.getArtifactId() );
         logger.debug( "Trying to translate artifact " + artifact );
 
         try
         {
             lock.readLock().lock();
-            List<ArtifactImpl> resolved = depthFirstWalk( mapping, artifact );
+            List<Artifact> resolved = depthFirstWalk( mapping, artifact );
             logger.debug( "Translation result is " + ArtifactImpl.collectionToString( resolved ) );
             return resolved;
         }
@@ -172,13 +177,15 @@ public class DefaultDependencyMap
     }
 
     @Override
-    public Set<ArtifactImpl> relativesOf( ArtifactImpl artifact )
+    public Set<Artifact> relativesOf( Artifact artifact )
     {
+        artifact = new ArtifactImpl( artifact.getGroupId(), artifact.getArtifactId() );
+
         try
         {
             lock.readLock().lock();
-            Set<ArtifactImpl> resultSet = new TreeSet<>();
-            for ( ArtifactImpl aa : depthFirstWalk( reverseMapping, artifact ) )
+            Set<Artifact> resultSet = new HashSet<>();
+            for ( Artifact aa : depthFirstWalk( reverseMapping, artifact ) )
                 resultSet.addAll( depthFirstWalk( mapping, aa ) );
             return resultSet;
         }

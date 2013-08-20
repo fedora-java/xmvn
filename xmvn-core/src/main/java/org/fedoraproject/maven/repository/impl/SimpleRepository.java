@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.repository.Repository;
 
@@ -40,7 +41,7 @@ abstract class SimpleRepository
                                              boolean versionless );
 
     @Override
-    public Path getPrimaryArtifactPath( ArtifactImpl artifact )
+    public Path getPrimaryArtifactPath( Artifact artifact )
     {
         if ( !artifactTypes.isEmpty() && !artifactTypes.contains( artifact.getExtension() ) )
             return null;
@@ -50,7 +51,9 @@ abstract class SimpleRepository
         String version = artifact.getVersion();
         String extension = artifact.getExtension();
 
-        Path path = getArtifactPath( groupId, artifactId, version, extension, artifact.isVersionless() );
+        Path path =
+            getArtifactPath( groupId, artifactId, version, extension,
+                             artifact.getVersion().equals( ArtifactImpl.DEFAULT_VERSION ) );
         if ( path != null && root != null )
             path = root.resolve( path );
 
@@ -58,17 +61,17 @@ abstract class SimpleRepository
     }
 
     @Override
-    public List<Path> getArtifactPaths( ArtifactImpl artifact )
+    public List<Path> getArtifactPaths( Artifact artifact )
     {
         return getArtifactPaths( Collections.singletonList( artifact ) );
     }
 
     @Override
-    public List<Path> getArtifactPaths( List<ArtifactImpl> artifacts )
+    public List<Path> getArtifactPaths( List<Artifact> artifacts )
     {
         List<Path> paths = new ArrayList<>();
 
-        for ( ArtifactImpl artifact : artifacts )
+        for ( Artifact artifact : artifacts )
         {
             Path path = getPrimaryArtifactPath( artifact );
             if ( path != null )

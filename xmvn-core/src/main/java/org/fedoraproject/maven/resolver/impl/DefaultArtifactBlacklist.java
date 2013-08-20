@@ -17,12 +17,13 @@ package org.fedoraproject.maven.resolver.impl;
 
 import java.util.Collections;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.model.ArtifactImpl;
@@ -48,7 +49,7 @@ public class DefaultArtifactBlacklist
     @Requirement
     private DependencyMap depmap;
 
-    private final Set<ArtifactImpl> blacklist = new TreeSet<>();
+    private final Set<Artifact> blacklist = new HashSet<>();
 
     @Override
     public boolean contains( String groupId, String artifactId )
@@ -64,9 +65,9 @@ public class DefaultArtifactBlacklist
     }
 
     @Override
-    public synchronized boolean contains( ArtifactImpl artifact )
+    public synchronized boolean contains( Artifact artifact )
     {
-        return blacklist.contains( artifact.clearVersionAndExtension() );
+        return blacklist.contains( new ArtifactImpl( artifact ).clearVersionAndExtension() );
     }
 
     @Override
@@ -76,9 +77,9 @@ public class DefaultArtifactBlacklist
     }
 
     @Override
-    public synchronized void add( ArtifactImpl artifact )
+    public synchronized void add( Artifact artifact )
     {
-        blacklist.add( artifact.clearVersionAndExtension() );
+        blacklist.add( new ArtifactImpl( artifact ).clearVersionAndExtension() );
     }
 
     /**
@@ -86,7 +87,7 @@ public class DefaultArtifactBlacklist
      * 
      * @return set view of artifact blacklist
      */
-    public Set<ArtifactImpl> setView()
+    public Set<Artifact> setView()
     {
         return Collections.unmodifiableSet( blacklist );
     }
@@ -110,13 +111,13 @@ public class DefaultArtifactBlacklist
      */
     private void blacklistAliases()
     {
-        Set<ArtifactImpl> aliasBlacklist = new TreeSet<>();
+        Set<Artifact> aliasBlacklist = new HashSet<>();
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
-        for ( ArtifactImpl artifact : blacklist )
+        for ( Artifact artifact : blacklist )
         {
-            Set<ArtifactImpl> relatives = depmap.relativesOf( artifact );
+            Set<Artifact> relatives = depmap.relativesOf( artifact );
             aliasBlacklist.addAll( relatives );
             logger.debug( "Blacklisted relatives of " + artifact + ": " + ArtifactImpl.collectionToString( relatives ) );
         }

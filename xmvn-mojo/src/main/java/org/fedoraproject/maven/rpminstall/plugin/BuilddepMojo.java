@@ -20,7 +20,7 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
@@ -52,9 +52,9 @@ public class BuilddepMojo
     @Requirement
     private Configurator configurator;
 
-    private final Set<String> buildDeps = new TreeSet<>();
+    private final Set<String> buildDeps = new HashSet<>();
 
-    private final Set<String> reactorArtifacts = new TreeSet<>();
+    private final Set<String> reactorArtifacts = new HashSet<>();
 
     private static BigDecimal MIN_SUPPORTED_JAVA_VERSION = new BigDecimal( "1.5" );
 

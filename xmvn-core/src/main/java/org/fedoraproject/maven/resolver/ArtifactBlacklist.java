@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.eclipse.aether.artifact.Artifact;
 
 /**
  * A container structure holding artifacts.
@@ -26,9 +26,9 @@ public interface ArtifactBlacklist
 {
     boolean contains( String groupId, String artifactId );
 
-    boolean contains( ArtifactImpl artifact );
+    boolean contains( Artifact artifact );
 
     void add( String groupId, String artifactId );
 
-    void add( ArtifactImpl artifact );
+    void add( Artifact artifact );
 }

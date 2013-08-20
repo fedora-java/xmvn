@@ -23,8 +23,8 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
@@ -40,11 +40,11 @@ public class FragmentFile
 {
     private final Logger logger;
 
-    private final Map<ArtifactImpl, Set<ArtifactImpl>> mapping = new TreeMap<>();
+    private final Map<ArtifactImpl, Set<ArtifactImpl>> mapping = new HashMap<>();
 
-    private final Set<ArtifactImpl> dependencies = new TreeSet<>();
+    private final Set<ArtifactImpl> dependencies = new HashSet<>();
 
-    private final Set<ArtifactImpl> develDependencies = new TreeSet<>();
+    private final Set<ArtifactImpl> develDependencies = new HashSet<>();
 
     private BigDecimal javaVersionRequirement;
 
@@ -64,7 +64,7 @@ public class FragmentFile
         Set<ArtifactImpl> set = map.get( from );
         if ( set == null )
         {
-            set = new TreeSet<>();
+            set = new HashSet<>();
             map.put( from, set );
         }
 
@@ -99,7 +99,7 @@ public class FragmentFile
 
     public void optimize()
     {
-        Set<ArtifactImpl> versionlessArtifacts = new TreeSet<>();
+        Set<ArtifactImpl> versionlessArtifacts = new HashSet<>();
         for ( ArtifactImpl artifact : mapping.keySet() )
             versionlessArtifacts.add( artifact.clearVersionAndExtension() );
 
@@ -156,7 +156,7 @@ public class FragmentFile
 
             if ( !settings.isSkipRequires() )
             {
-                Set<ArtifactImpl> combinedDependencies = new TreeSet<>( dependencies );
+                Set<ArtifactImpl> combinedDependencies = new HashSet<>( dependencies );
                 if ( writeDevel )
                     combinedDependencies.addAll( develDependencies );
 

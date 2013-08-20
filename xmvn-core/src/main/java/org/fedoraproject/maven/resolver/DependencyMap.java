@@ -18,7 +18,7 @@ package org.fedoraproject.maven.resolver;
 import java.util.List;
 import java.util.Set;
 
-import org.fedoraproject.maven.model.ArtifactImpl;
+import org.eclipse.aether.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski
@@ -29,7 +29,7 @@ public interface DependencyMap
 
     void addMapping( String groupId, String artifactId, String version, String jppGroupId, String jppArtifactId );
 
-    void addMapping( ArtifactImpl from, ArtifactImpl to );
+    void addMapping( Artifact from, Artifact to );
 
     /**
      * Compute a list of artifacts reachable from given start artifact in a reflective transitive closure of dependency
@@ -38,7 +38,7 @@ public interface DependencyMap
      * @param artifact start point of depth-first search
      * @return list of artifacts to which given artifact can be mapped
      */
-    List<ArtifactImpl> translate( ArtifactImpl artifact );
+    List<Artifact> translate( Artifact artifact );
 
     /**
      * Find all artifacts somehow related to given artifact.
@@ -47,5 +47,5 @@ public interface DependencyMap
      * @return related set containing all artifacts reachable from given artifact and artifacts from which given
      *         artifact is reachable
      */
-    Set<ArtifactImpl> relativesOf( ArtifactImpl artifact );
+    Set<Artifact> relativesOf( Artifact artifact );
 }

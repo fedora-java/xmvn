@@ -30,6 +30,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.config.ResolverSettings;
@@ -126,7 +128,7 @@ public class DefaultResolver
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        ArtifactImpl artifact = request.getArtifact();
+        ArtifactImpl artifact = new ArtifactImpl( request.getArtifact() );
 
         if ( resolveFromBisectRepo() )
         {
@@ -137,12 +139,12 @@ public class DefaultResolver
 
         logger.debug( "Trying to resolve artifact " + artifact );
 
-        List<ArtifactImpl> jppList = depmap.translate( artifact.clearVersionAndExtension() );
+        List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
 
         String javaHome = System.getProperty( "java.home" );
         Path javaHomeDir = followSymlink( new File( javaHome != null ? javaHome : "." ) ).toPath();
 
-        for ( ArtifactImpl aa : jppList )
+        for ( Artifact aa : jppList )
         {
             if ( aa.getGroupId().equals( "JAVA_HOME" ) && javaHome != null )
             {
@@ -160,12 +162,14 @@ public class DefaultResolver
         // TODO: this loop needs to be simplified not to use goto...
         notFound: for ( ;; )
         {
-            if ( !artifact.isVersionless() )
+            if ( !artifact.getVersion().equals( ArtifactImpl.DEFAULT_VERSION ) )
             {
-                List<ArtifactImpl> tempList = new ArrayList<>();
+                List<Artifact> tempList = new ArrayList<>();
                 compatVersion = artifact.getVersion();
-                for ( ArtifactImpl jppArtifact : jppList )
-                    tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ) );
+                for ( Artifact jppArtifact : jppList )
+                    tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
+                                                       artifact.getExtension(), jppArtifact.getClassifier(),
+                                                       artifact.getVersion() ) );
                 for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
                     logger.debug( "Checking artifact path: " + pp );
@@ -178,10 +182,12 @@ public class DefaultResolver
             }
 
             {
-                List<ArtifactImpl> tempList = new ArrayList<>();
+                List<Artifact> tempList = new ArrayList<>();
                 compatVersion = null;
-                for ( ArtifactImpl jppArtifact : jppList )
-                    tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ).clearVersion() );
+                for ( Artifact jppArtifact : jppList )
+                    tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
+                                                       artifact.getExtension(), jppArtifact.getClassifier(),
+                                                       ArtifactImpl.DEFAULT_VERSION ) );
                 for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
                     logger.debug( "Checking artifact path: " + pp );
@@ -229,7 +235,7 @@ public class DefaultResolver
 
     @Deprecated
     @Override
-    public File resolve( ArtifactImpl artifact )
+    public File resolve( Artifact artifact )
     {
         ResolutionRequest request = new ResolutionRequest( artifact );
         ResolutionResult result = resolve( request );
