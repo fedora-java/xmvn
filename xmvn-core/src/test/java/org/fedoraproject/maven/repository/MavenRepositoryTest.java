@@ -18,11 +18,12 @@ package org.fedoraproject.maven.repository;
 import java.nio.file.Paths;
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.Repository;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
-import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,9 +46,9 @@ public class MavenRepositoryTest
         org.fedoraproject.maven.repository.Repository repo = repoConfigurator.configureRepository( "test123" );
         assertNotNull( repo );
 
-        ArtifactImpl artifact = new ArtifactImpl( "foo.bar", "the-artifact", "1.2.3", "baz" );
+        Artifact artifact = new DefaultArtifact( "foo.bar:the-artifact:baz:1.2.3" );
         assertEquals( Paths.get( "foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz" ),
                       repo.getPrimaryArtifactPath( artifact ) );
-        assertNull( repo.getPrimaryArtifactPath( artifact.clearVersion() ) );
+        assertNull( repo.getPrimaryArtifactPath( artifact.setVersion( "SYSTEM" ) ) );
     }
 }

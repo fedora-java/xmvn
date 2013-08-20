@@ -23,11 +23,11 @@ import java.util.Iterator;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.Repository;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
-import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -35,13 +35,13 @@ import org.fedoraproject.maven.model.ArtifactImpl;
 public class NestedRepositoriesTest
     extends PlexusTestCase
 {
-    private final ArtifactImpl POM = new ArtifactImpl( "JPP/sisu", "sisu-plexus", "1.2.3", "pom" );
+    private final Artifact POM = new DefaultArtifact( "JPP/sisu:sisu-plexus:pom:1.2.3" );
 
-    private final ArtifactImpl POM2 = new ArtifactImpl( "JPP/plexus", "utils", "3.0.14", "pom" );
+    private final Artifact POM2 = new DefaultArtifact( "JPP/plexus:utils:pom:3.0.14" );
 
-    private final ArtifactImpl JAR = new ArtifactImpl( "JPP/sisu", "sisu-plexus", "1.2.3", "jar" );;
+    private final Artifact JAR = new DefaultArtifact( "JPP/sisu:sisu-plexus:1.2.3" );
 
-    private final ArtifactImpl JAR2 = new ArtifactImpl( "JPP/plexus", "utils", "3.0.14", "jar" );;
+    private final Artifact JAR2 = new DefaultArtifact( "JPP/plexus:utils:3.0.14" );
 
     private org.fedoraproject.maven.repository.Repository base;
 
@@ -193,7 +193,7 @@ public class NestedRepositoriesTest
     public void testBasePomVersionless()
         throws Exception
     {
-        Iterator<Path> it = base.getArtifactPaths( POM.clearVersion() ).iterator();
+        Iterator<Path> it = base.getArtifactPaths( POM.setVersion( "SYSTEM" ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "usr/share/maven-effective-poms/JPP.sisu-sisu-plexus.pom" ), it.next() );
         assertTrue( it.hasNext() );
@@ -225,7 +225,7 @@ public class NestedRepositoriesTest
     public void testBaseJarVersionless()
         throws Exception
     {
-        Iterator<Path> it = base.getArtifactPaths( JAR.clearVersion() ).iterator();
+        Iterator<Path> it = base.getArtifactPaths( JAR.setVersion( "SYSTEM" ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "usr/lib/java/sisu/sisu-plexus.jar" ), it.next() );
         assertTrue( it.hasNext() );
@@ -262,7 +262,7 @@ public class NestedRepositoriesTest
     public void testAddonPomVersionless()
         throws Exception
     {
-        Iterator<Path> it = addon.getArtifactPaths( POM.clearVersion() ).iterator();
+        Iterator<Path> it = addon.getArtifactPaths( POM.setVersion( "SYSTEM" ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "opt/rh/addon/usr/share/maven-effective-poms/JPP.sisu-sisu-plexus.pom" ), it.next() );
         assertTrue( it.hasNext() );
@@ -302,7 +302,7 @@ public class NestedRepositoriesTest
     public void testAddonJarVersionless()
         throws Exception
     {
-        Iterator<Path> it = addon.getArtifactPaths( JAR.clearVersion() ).iterator();
+        Iterator<Path> it = addon.getArtifactPaths( JAR.setVersion( "SYSTEM" ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "opt/rh/addon/usr/lib/java/sisu/sisu-plexus.jar" ), it.next() );
         assertTrue( it.hasNext() );
@@ -322,7 +322,7 @@ public class NestedRepositoriesTest
     public void testAlternativeBasePomVersioned()
         throws Exception
     {
-        Iterator<Path> it = base.getArtifactPaths( Arrays.asList( (Artifact) POM, POM2 ) ).iterator();
+        Iterator<Path> it = base.getArtifactPaths( Arrays.asList( POM, POM2 ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "usr/share/maven-effective-poms/JPP.sisu-sisu-plexus-1.2.3.pom" ), it.next() );
         assertTrue( it.hasNext() );
@@ -343,7 +343,7 @@ public class NestedRepositoriesTest
         throws Exception
     {
         Iterator<Path> it =
-            base.getArtifactPaths( Arrays.asList( (Artifact) POM.clearVersion(), POM2.clearVersion() ) ).iterator();
+            base.getArtifactPaths( Arrays.asList( POM.setVersion( "SYSTEM" ), POM2.setVersion( "SYSTEM" ) ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "usr/share/maven-effective-poms/JPP.sisu-sisu-plexus.pom" ), it.next() );
         assertTrue( it.hasNext() );
@@ -363,7 +363,7 @@ public class NestedRepositoriesTest
     public void testAlternativeBaseJarVersioned()
         throws Exception
     {
-        Iterator<Path> it = base.getArtifactPaths( Arrays.asList( (Artifact) JAR, JAR2 ) ).iterator();
+        Iterator<Path> it = base.getArtifactPaths( Arrays.asList( JAR, JAR2 ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "usr/lib/java/sisu/sisu-plexus-1.2.3.jar" ), it.next() );
         assertTrue( it.hasNext() );
@@ -384,7 +384,7 @@ public class NestedRepositoriesTest
         throws Exception
     {
         Iterator<Path> it =
-            base.getArtifactPaths( Arrays.asList( (Artifact) JAR.clearVersion(), JAR2.clearVersion() ) ).iterator();
+            base.getArtifactPaths( Arrays.asList( JAR.setVersion( "SYSTEM" ), JAR2.setVersion( "SYSTEM" ) ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "usr/lib/java/sisu/sisu-plexus.jar" ), it.next() );
         assertTrue( it.hasNext() );
@@ -404,7 +404,7 @@ public class NestedRepositoriesTest
     public void testAlternativeAddonPomVersioned()
         throws Exception
     {
-        Iterator<Path> it = addon.getArtifactPaths( Arrays.asList( (Artifact) POM, POM2 ) ).iterator();
+        Iterator<Path> it = addon.getArtifactPaths( Arrays.asList( POM, POM2 ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "opt/rh/addon/usr/share/maven-effective-poms/JPP.sisu-sisu-plexus-1.2.3.pom" ),
                       it.next() );
@@ -434,7 +434,7 @@ public class NestedRepositoriesTest
         throws Exception
     {
         Iterator<Path> it =
-            addon.getArtifactPaths( Arrays.asList( (Artifact) POM.clearVersion(), POM2.clearVersion() ) ).iterator();
+            addon.getArtifactPaths( Arrays.asList( POM.setVersion( "SYSTEM" ), POM2.setVersion( "SYSTEM" ) ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "opt/rh/addon/usr/share/maven-effective-poms/JPP.sisu-sisu-plexus.pom" ), it.next() );
         assertTrue( it.hasNext() );
@@ -462,7 +462,7 @@ public class NestedRepositoriesTest
     public void testAlternativeAddonJarVersioned()
         throws Exception
     {
-        Iterator<Path> it = addon.getArtifactPaths( Arrays.asList( (Artifact) JAR, JAR2 ) ).iterator();
+        Iterator<Path> it = addon.getArtifactPaths( Arrays.asList( JAR, JAR2 ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "opt/rh/addon/usr/lib/java/sisu/sisu-plexus-1.2.3.jar" ), it.next() );
         assertTrue( it.hasNext() );
@@ -491,7 +491,7 @@ public class NestedRepositoriesTest
         throws Exception
     {
         Iterator<Path> it =
-            addon.getArtifactPaths( Arrays.asList( (Artifact) JAR.clearVersion(), JAR2.clearVersion() ) ).iterator();
+            addon.getArtifactPaths( Arrays.asList( JAR.setVersion( "SYSTEM" ), JAR2.setVersion( "SYSTEM" ) ) ).iterator();
         assertTrue( it.hasNext() );
         assertEquals( Paths.get( "opt/rh/addon/usr/lib/java/sisu/sisu-plexus.jar" ), it.next() );
         assertTrue( it.hasNext() );
