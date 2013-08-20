@@ -15,14 +15,21 @@
  */
 package org.fedoraproject.maven.model;
 
+import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
+
+import org.eclipse.aether.artifact.AbstractArtifact;
+import org.eclipse.aether.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class ArtifactImpl
-    implements Comparable<ArtifactImpl>
+    extends AbstractArtifact
+    implements Comparable<Artifact>
 {
     private static final String DEFAULT_VERSION = "SYSTEM";
 
@@ -30,9 +37,15 @@ public class ArtifactImpl
 
     private final String artifactId;
 
+    private final String extension;
+
+    private final String classifier;
+
     private final String version;
 
-    private final String extension;
+    private final File file;
+
+    private final Map<String, String> properties;
 
     private final String scope;
 
@@ -66,8 +79,11 @@ public class ArtifactImpl
 
         this.groupId = groupId;
         this.artifactId = artifactId;
-        this.version = version;
         this.extension = extension;
+        this.classifier = null;
+        this.version = version;
+        this.file = null;
+        this.properties = Collections.emptyMap();
         this.scope = null;
     }
 
@@ -75,39 +91,53 @@ public class ArtifactImpl
     {
         this.groupId = artifact.groupId;
         this.artifactId = artifact.artifactId;
-        this.version = artifact.version;
         this.extension = artifact.extension;
+        this.classifier = null;
+        this.version = artifact.version;
+        this.file = null;
+        this.properties = Collections.emptyMap();
         this.scope = scope;
     }
 
     @Override
-    public int compareTo( ArtifactImpl rhs )
+    public int compareTo( Artifact rhs )
     {
-        if ( !groupId.equals( rhs.groupId ) )
-            return groupId.compareTo( rhs.groupId );
-        if ( !artifactId.equals( rhs.artifactId ) )
-            return artifactId.compareTo( rhs.artifactId );
+        if ( !getGroupId().equals( rhs.getGroupId() ) )
+            return getGroupId().compareTo( rhs.getGroupId() );
+        if ( !getArtifactId().equals( rhs.getArtifactId() ) )
+            return getArtifactId().compareTo( rhs.getArtifactId() );
         if ( !getVersion().equals( rhs.getVersion() ) )
             return getVersion().compareTo( rhs.getVersion() );
         return getExtension().compareTo( rhs.getExtension() );
     }
 
     @Override
-    public boolean equals( Object rhs )
-    {
-        return rhs != null && rhs instanceof ArtifactImpl && compareTo( (ArtifactImpl) rhs ) == 0;
-    }
-
     public String getGroupId()
     {
         return groupId;
     }
 
+    @Override
     public String getArtifactId()
     {
         return artifactId;
     }
 
+    @Override
+    public String getExtension()
+    {
+        if ( extension == null )
+            return "pom";
+        return extension;
+    }
+
+    @Override
+    public String getClassifier()
+    {
+        return classifier;
+    }
+
+    @Override
     public String getVersion()
     {
         if ( version == null )
@@ -115,11 +145,16 @@ public class ArtifactImpl
         return version;
     }
 
-    public String getExtension()
+    @Override
+    public File getFile()
     {
-        if ( extension == null )
-            return "pom";
-        return extension;
+        return file;
+    }
+
+    @Override
+    public Map<String, String> getProperties()
+    {
+        return properties;
     }
 
     public String getScope()
@@ -163,43 +198,6 @@ public class ArtifactImpl
         String extension = this.extension != null ? this.extension : rhs.extension;
 
         return new ArtifactImpl( groupId, artifactId, version, extension );
-    }
-
-    /**
-     * Convert this artifact into human-readable string.
-     * 
-     * @return string representation this artifact
-     */
-    @Override
-    public String toString()
-    {
-        StringBuilder result = new StringBuilder();
-        result.append( '[' );
-
-        result.append( groupId );
-        result.append( ':' );
-        result.append( artifactId );
-
-        if ( version != null )
-        {
-            result.append( ':' );
-            result.append( version );
-        }
-
-        if ( extension != null )
-        {
-            result.append( ':' );
-            result.append( extension );
-        }
-
-        result.append( ']' );
-        return result.toString();
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return 42;
     }
 
     /**
