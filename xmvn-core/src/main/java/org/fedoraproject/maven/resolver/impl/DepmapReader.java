@@ -115,8 +115,9 @@ class DepmapReader
 
         public Mapping( String namespace, ArtifactImpl from, ArtifactImpl to )
         {
-            this.from = new ArtifactImpl( from.clearVersionAndExtension(), namespace );
-            this.to = new ArtifactImpl( to.clearVersionAndExtension(), namespace );
+            // FIXME
+            this.from = (ArtifactImpl) from.clearVersionAndExtension().setScope( namespace );
+            this.to = (ArtifactImpl) to.clearVersionAndExtension().setScope( namespace );
         }
 
         public void addToDepmap( DependencyMap depmap )

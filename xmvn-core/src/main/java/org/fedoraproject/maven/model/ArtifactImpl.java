@@ -18,6 +18,7 @@ package org.fedoraproject.maven.model;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -47,8 +48,6 @@ public class ArtifactImpl
 
     private final Map<String, String> properties;
 
-    private final String scope;
-
     /**
      * Dummy artifact. Any dependencies on this artifact will be removed during model validation.
      */
@@ -59,6 +58,8 @@ public class ArtifactImpl
      * validation.
      */
     public static final ArtifactImpl DUMMY_JPP = new ArtifactImpl( "JPP/maven", "empty-dep" );
+
+    private static final String KEY_SCOPE = "xmvn.artifact.scope";
 
     public ArtifactImpl( String groupId, String artifactId )
     {
@@ -84,19 +85,6 @@ public class ArtifactImpl
         this.version = version;
         this.file = null;
         this.properties = Collections.emptyMap();
-        this.scope = null;
-    }
-
-    public ArtifactImpl( ArtifactImpl artifact, String scope )
-    {
-        this.groupId = artifact.groupId;
-        this.artifactId = artifact.artifactId;
-        this.extension = artifact.extension;
-        this.classifier = null;
-        this.version = artifact.version;
-        this.file = null;
-        this.properties = Collections.emptyMap();
-        this.scope = scope;
     }
 
     @Override
@@ -159,7 +147,14 @@ public class ArtifactImpl
 
     public String getScope()
     {
-        return scope;
+        return getProperty( KEY_SCOPE, "" );
+    }
+
+    public Artifact setScope( String scope )
+    {
+        Map<String, String> properties = new HashMap<>( getProperties() );
+        properties.put( KEY_SCOPE, scope );
+        return setProperties( properties );
     }
 
     public boolean isJppArtifact()
