@@ -17,7 +17,7 @@ package org.fedoraproject.maven.resolver;
 
 import java.io.File;
 
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * Resolves artifacts from system repositories configured in {@code <resolverSettings>} in XMvn configuration.
@@ -43,7 +43,7 @@ public interface Resolver
      * @return resolved artifact file or {@code null} if requested artifact could not be resolved
      */
     @Deprecated
-    File resolve( Artifact artifact );
+    File resolve( ArtifactImpl artifact );
 
     /**
      * Resolve artifacts from system repositories configured in {@code <resolverSettings>} in XMvn configuration.

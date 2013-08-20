@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.repository.Repository;
 
 /**
@@ -40,7 +40,7 @@ abstract class SimpleRepository
                                              boolean versionless );
 
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact )
+    public Path getPrimaryArtifactPath( ArtifactImpl artifact )
     {
         if ( !artifactTypes.isEmpty() && !artifactTypes.contains( artifact.getExtension() ) )
             return null;
@@ -58,17 +58,17 @@ abstract class SimpleRepository
     }
 
     @Override
-    public List<Path> getArtifactPaths( Artifact artifact )
+    public List<Path> getArtifactPaths( ArtifactImpl artifact )
     {
         return getArtifactPaths( Collections.singletonList( artifact ) );
     }
 
     @Override
-    public List<Path> getArtifactPaths( List<Artifact> artifacts )
+    public List<Path> getArtifactPaths( List<ArtifactImpl> artifacts )
     {
         List<Path> paths = new ArrayList<>();
 
-        for ( Artifact artifact : artifacts )
+        for ( ArtifactImpl artifact : artifacts )
         {
             Path path = getPrimaryArtifactPath( artifact );
             if ( path != null )

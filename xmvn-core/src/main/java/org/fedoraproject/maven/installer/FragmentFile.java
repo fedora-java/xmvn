@@ -30,7 +30,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.fedoraproject.maven.config.InstallerSettings;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -40,11 +40,11 @@ public class FragmentFile
 {
     private final Logger logger;
 
-    private final Map<Artifact, Set<Artifact>> mapping = new TreeMap<>();
+    private final Map<ArtifactImpl, Set<ArtifactImpl>> mapping = new TreeMap<>();
 
-    private final Set<Artifact> dependencies = new TreeSet<>();
+    private final Set<ArtifactImpl> dependencies = new TreeSet<>();
 
-    private final Set<Artifact> develDependencies = new TreeSet<>();
+    private final Set<ArtifactImpl> develDependencies = new TreeSet<>();
 
     private BigDecimal javaVersionRequirement;
 
@@ -59,9 +59,9 @@ public class FragmentFile
             && javaVersionRequirement == null;
     }
 
-    private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
+    private static void addMapping( Map<ArtifactImpl, Set<ArtifactImpl>> map, ArtifactImpl from, ArtifactImpl to )
     {
-        Set<Artifact> set = map.get( from );
+        Set<ArtifactImpl> set = map.get( from );
         if ( set == null )
         {
             set = new TreeSet<>();
@@ -71,7 +71,7 @@ public class FragmentFile
         set.add( to );
     }
 
-    public void addMapping( Artifact from, Artifact to )
+    public void addMapping( ArtifactImpl from, ArtifactImpl to )
     {
         addMapping( mapping, from, to );
 
@@ -81,13 +81,13 @@ public class FragmentFile
     @Override
     public void visitRuntimeDependency( String groupId, String artifactId )
     {
-        dependencies.add( new Artifact( groupId, artifactId ) );
+        dependencies.add( new ArtifactImpl( groupId, artifactId ) );
     }
 
     @Override
     public void visitBuildDependency( String groupId, String artifactId )
     {
-        develDependencies.add( new Artifact( groupId, artifactId ) );
+        develDependencies.add( new ArtifactImpl( groupId, artifactId ) );
     }
 
     @Override
@@ -99,20 +99,20 @@ public class FragmentFile
 
     public void optimize()
     {
-        Set<Artifact> versionlessArtifacts = new TreeSet<>();
-        for ( Artifact artifact : mapping.keySet() )
+        Set<ArtifactImpl> versionlessArtifacts = new TreeSet<>();
+        for ( ArtifactImpl artifact : mapping.keySet() )
             versionlessArtifacts.add( artifact.clearVersionAndExtension() );
 
-        for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )
+        for ( Iterator<ArtifactImpl> iter = dependencies.iterator(); iter.hasNext(); )
         {
-            Artifact dependency = iter.next();
+            ArtifactImpl dependency = iter.next();
             if ( versionlessArtifacts.contains( dependency ) )
                 iter.remove();
         }
 
-        for ( Iterator<Artifact> iter = develDependencies.iterator(); iter.hasNext(); )
+        for ( Iterator<ArtifactImpl> iter = develDependencies.iterator(); iter.hasNext(); )
         {
-            Artifact dependency = iter.next();
+            ArtifactImpl dependency = iter.next();
             if ( versionlessArtifacts.contains( dependency ) )
                 iter.remove();
         }
@@ -138,9 +138,9 @@ public class FragmentFile
             if ( javaVersionRequirement != null && !settings.isSkipRequires() )
                 s.startTag( ns, "requiresJava" ).text( javaVersionRequirement.toString() ).endTag( ns, "requiresJava" );
 
-            for ( Artifact mavenArtifact : mapping.keySet() )
+            for ( ArtifactImpl mavenArtifact : mapping.keySet() )
             {
-                for ( Artifact jppArtifact : mapping.get( mavenArtifact ) )
+                for ( ArtifactImpl jppArtifact : mapping.get( mavenArtifact ) )
                 {
                     s.startTag( ns, "dependency" ).startTag( ns, "maven" );
                     s.startTag( ns, "groupId" ).text( mavenArtifact.getGroupId() ).endTag( ns, "groupId" );
@@ -156,11 +156,11 @@ public class FragmentFile
 
             if ( !settings.isSkipRequires() )
             {
-                Set<Artifact> combinedDependencies = new TreeSet<>( dependencies );
+                Set<ArtifactImpl> combinedDependencies = new TreeSet<>( dependencies );
                 if ( writeDevel )
                     combinedDependencies.addAll( develDependencies );
 
-                for ( Artifact dependency : combinedDependencies )
+                for ( ArtifactImpl dependency : combinedDependencies )
                 {
                     s.startTag( ns, "autoRequires" );
                     s.startTag( ns, "groupId" ).text( dependency.getGroupId() ).endTag( ns, "groupId" );

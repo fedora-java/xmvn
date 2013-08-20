@@ -32,7 +32,7 @@ import java.util.zip.ZipInputStream;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.utils.FileUtils;
 
 /**
@@ -165,14 +165,14 @@ public class DefaultPackage
     public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
                                PackagingRule rule )
     {
-        Artifact artifact = new Artifact( groupId, artifactId, version );
-        Artifact jppArtifact = new Artifact( jppGroup.toString(), jppName.toString(), version );
+        ArtifactImpl artifact = new ArtifactImpl( groupId, artifactId, version );
+        ArtifactImpl jppArtifact = new ArtifactImpl( jppGroup.toString(), jppName.toString(), version );
 
         getMetadata().addMapping( artifact, jppArtifact );
 
         for ( org.fedoraproject.maven.config.Artifact alias2 : rule.getAliases() )
         {
-            Artifact alias = new Artifact( alias2.getGroupId(), alias2.getArtifactId(), alias2.getVersion() );
+            ArtifactImpl alias = new ArtifactImpl( alias2.getGroupId(), alias2.getArtifactId(), alias2.getVersion() );
             getMetadata().addMapping( alias, jppArtifact );
         }
     }

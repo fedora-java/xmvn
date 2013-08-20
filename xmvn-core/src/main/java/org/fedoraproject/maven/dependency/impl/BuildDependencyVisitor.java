@@ -24,7 +24,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.Plugin;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -32,10 +32,10 @@ import org.fedoraproject.maven.model.Artifact;
 class BuildDependencyVisitor
     extends AbstractModelVisitor
 {
-    private static final Set<Artifact> commonPlugins = new TreeSet<>();
+    private static final Set<ArtifactImpl> commonPlugins = new TreeSet<>();
     static
     {
-        commonPlugins.add( new Artifact( "org.apache.maven.plugins", "maven-compiler-plugin" ) );
+        commonPlugins.add( new ArtifactImpl( "org.apache.maven.plugins", "maven-compiler-plugin" ) );
     }
 
     private final DefaultDependencyExtractionResult result;
@@ -70,7 +70,7 @@ class BuildDependencyVisitor
         String groupId = plugin.getGroupId();
         String artifactId = plugin.getArtifactId();
         String version = plugin.getVersion();
-        Artifact pluginArtifact = new Artifact( groupId, artifactId, version );
+        ArtifactImpl pluginArtifact = new ArtifactImpl( groupId, artifactId, version );
 
         if ( !commonPlugins.contains( pluginArtifact ) )
             result.addDependencyArtifact( plugin.getGroupId(), plugin.getArtifactId(), plugin.getVersion() );

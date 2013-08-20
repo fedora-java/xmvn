@@ -22,7 +22,7 @@ import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.Repository;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,7 +45,7 @@ public class MavenRepositoryTest
         org.fedoraproject.maven.repository.Repository repo = repoConfigurator.configureRepository( "test123" );
         assertNotNull( repo );
 
-        Artifact artifact = new Artifact( "foo.bar", "the-artifact", "1.2.3", "baz" );
+        ArtifactImpl artifact = new ArtifactImpl( "foo.bar", "the-artifact", "1.2.3", "baz" );
         assertEquals( Paths.get( "foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz" ),
                       repo.getPrimaryArtifactPath( artifact ) );
         assertNull( repo.getPrimaryArtifactPath( artifact.clearVersion() ) );

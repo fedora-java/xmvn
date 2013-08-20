@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -42,7 +42,7 @@ public class LayoutTest
         assertNull( defaultRepository );
     }
 
-    private void testPaths( Repository repository, Artifact artifact, String... result )
+    private void testPaths( Repository repository, ArtifactImpl artifact, String... result )
     {
         Set<String> expected = new TreeSet<>();
         Set<String> actual = new TreeSet<>();
@@ -72,7 +72,7 @@ public class LayoutTest
         assertNotNull( jppRepository );
         assertNotNull( flatRepository );
 
-        Artifact artifact = new Artifact( "an-example.artifact", "used-FOR42.testing", "blah-1.2.3-foo", "ext-ens.ion" );
+        ArtifactImpl artifact = new ArtifactImpl( "an-example.artifact", "used-FOR42.testing", "blah-1.2.3-foo", "ext-ens.ion" );
 
         testPaths( mavenRepository, artifact,
                    "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
@@ -94,9 +94,9 @@ public class LayoutTest
         Repository jppRepository = lookup( Repository.class, "jpp" );
         assertNotNull( jppRepository );
 
-        Artifact artifact1 = new Artifact( "JPP", "testing", "1.2.3", "abc" );
-        Artifact artifact2 = new Artifact( "JPP/group", "testing", "1.2.3", "abc" );
-        Artifact artifact3 = new Artifact( "JPP-group", "testing", "1.2.3", "abc" );
+        ArtifactImpl artifact1 = new ArtifactImpl( "JPP", "testing", "1.2.3", "abc" );
+        ArtifactImpl artifact2 = new ArtifactImpl( "JPP/group", "testing", "1.2.3", "abc" );
+        ArtifactImpl artifact3 = new ArtifactImpl( "JPP-group", "testing", "1.2.3", "abc" );
 
         testPaths( jppRepository, artifact1.clearVersion(), "testing.abc" );
         testPaths( jppRepository, artifact2.clearVersion(), "group/testing.abc" );

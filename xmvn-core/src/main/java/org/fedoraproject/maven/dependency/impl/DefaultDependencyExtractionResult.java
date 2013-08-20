@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.fedoraproject.maven.dependency.DependencyExtractionResult;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -28,24 +28,24 @@ import org.fedoraproject.maven.model.Artifact;
 class DefaultDependencyExtractionResult
     implements DependencyExtractionResult
 {
-    private final Set<Artifact> dependencyArtifacts = new TreeSet<>();
+    private final Set<ArtifactImpl> dependencyArtifacts = new TreeSet<>();
 
     private String javaVersion;
 
     @Override
-    public Set<Artifact> getDependencyArtifacts()
+    public Set<ArtifactImpl> getDependencyArtifacts()
     {
         return Collections.unmodifiableSet( dependencyArtifacts );
     }
 
-    public void addDependencyArtifact( Artifact artifact )
+    public void addDependencyArtifact( ArtifactImpl artifact )
     {
         dependencyArtifacts.add( artifact );
     }
 
     public void addDependencyArtifact( String groupId, String artifactId, String version )
     {
-        dependencyArtifacts.add( new Artifact( groupId, artifactId, version ) );
+        dependencyArtifacts.add( new ArtifactImpl( groupId, artifactId, version ) );
     }
 
     @Override

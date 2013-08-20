@@ -33,7 +33,7 @@ import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.config.ResolverSettings;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.resolver.DependencyMap;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
@@ -126,7 +126,7 @@ public class DefaultResolver
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        Artifact artifact = request.getArtifact();
+        ArtifactImpl artifact = request.getArtifact();
 
         if ( resolveFromBisectRepo() )
         {
@@ -137,12 +137,12 @@ public class DefaultResolver
 
         logger.debug( "Trying to resolve artifact " + artifact );
 
-        List<Artifact> jppList = depmap.translate( artifact.clearVersionAndExtension() );
+        List<ArtifactImpl> jppList = depmap.translate( artifact.clearVersionAndExtension() );
 
         String javaHome = System.getProperty( "java.home" );
         Path javaHomeDir = followSymlink( new File( javaHome != null ? javaHome : "." ) ).toPath();
 
-        for ( Artifact aa : jppList )
+        for ( ArtifactImpl aa : jppList )
         {
             if ( aa.getGroupId().equals( "JAVA_HOME" ) && javaHome != null )
             {
@@ -162,9 +162,9 @@ public class DefaultResolver
         {
             if ( !artifact.isVersionless() )
             {
-                List<Artifact> tempList = new ArrayList<>();
+                List<ArtifactImpl> tempList = new ArrayList<>();
                 compatVersion = artifact.getVersion();
-                for ( Artifact jppArtifact : jppList )
+                for ( ArtifactImpl jppArtifact : jppList )
                     tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ) );
                 for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
@@ -178,9 +178,9 @@ public class DefaultResolver
             }
 
             {
-                List<Artifact> tempList = new ArrayList<>();
+                List<ArtifactImpl> tempList = new ArrayList<>();
                 compatVersion = null;
-                for ( Artifact jppArtifact : jppList )
+                for ( ArtifactImpl jppArtifact : jppList )
                     tempList.add( jppArtifact.clearVersionAndExtension().copyMissing( artifact ).clearVersion() );
                 for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
@@ -223,13 +223,13 @@ public class DefaultResolver
     @Override
     public File resolve( String groupId, String artifactId, String version, String extension )
     {
-        Artifact artifact = new Artifact( groupId, artifactId, version, extension );
+        ArtifactImpl artifact = new ArtifactImpl( groupId, artifactId, version, extension );
         return resolve( artifact );
     }
 
     @Deprecated
     @Override
-    public File resolve( Artifact artifact )
+    public File resolve( ArtifactImpl artifact )
     {
         ResolutionRequest request = new ResolutionRequest( artifact );
         ResolutionResult result = resolve( request );

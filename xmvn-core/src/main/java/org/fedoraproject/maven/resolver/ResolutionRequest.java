@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * Specifies parameters of artifact resolution.
@@ -24,7 +24,7 @@ import org.fedoraproject.maven.model.Artifact;
  */
 public class ResolutionRequest
 {
-    private Artifact artifact;
+    private ArtifactImpl artifact;
 
     private boolean isProviderNeeded;
 
@@ -32,14 +32,14 @@ public class ResolutionRequest
     {
     }
 
-    public ResolutionRequest( Artifact artifact )
+    public ResolutionRequest( ArtifactImpl artifact )
     {
         this.artifact = artifact;
     }
 
     public ResolutionRequest( String groupId, String artifactId, String version, String extension )
     {
-        Artifact artifact = new Artifact( groupId, artifactId, version, extension );
+        ArtifactImpl artifact = new ArtifactImpl( groupId, artifactId, version, extension );
         setArtifact( artifact );
     }
 
@@ -48,7 +48,7 @@ public class ResolutionRequest
      * 
      * @return artifact which resolution is requested
      */
-    public Artifact getArtifact()
+    public ArtifactImpl getArtifact()
     {
         return artifact;
     }
@@ -58,7 +58,7 @@ public class ResolutionRequest
      * 
      * @param artifact artifact which resolution is requested
      */
-    public void setArtifact( Artifact artifact )
+    public void setArtifact( ArtifactImpl artifact )
     {
         this.artifact = artifact;
     }

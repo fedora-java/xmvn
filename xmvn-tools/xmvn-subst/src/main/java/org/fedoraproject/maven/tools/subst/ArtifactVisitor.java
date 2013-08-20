@@ -33,7 +33,7 @@ import java.util.zip.ZipInputStream;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.FileUtils;
@@ -113,7 +113,7 @@ public class ArtifactVisitor
         return FileVisitResult.CONTINUE;
     }
 
-    private Artifact readArtifactDefinition( Path path, String extension )
+    private ArtifactImpl readArtifactDefinition( Path path, String extension )
     {
         try (ZipInputStream zis = new ZipInputStream( new FileInputStream( path.toFile() ) ))
         {
@@ -129,7 +129,7 @@ public class ArtifactVisitor
                     String groupId = properties.getProperty( "groupId" );
                     String artifactId = properties.getProperty( "artifactId" );
                     String version = properties.getProperty( "version" );
-                    return new Artifact( groupId, artifactId, version, extension );
+                    return new ArtifactImpl( groupId, artifactId, version, extension );
                 }
             }
 
@@ -146,7 +146,7 @@ public class ArtifactVisitor
     private void substituteArtifact( Path path, String type )
         throws IOException
     {
-        Artifact artifact = readArtifactDefinition( path, type );
+        ArtifactImpl artifact = readArtifactDefinition( path, type );
         if ( artifact == null )
             return;
 

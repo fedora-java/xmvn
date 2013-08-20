@@ -26,7 +26,7 @@ import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.Repository;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -34,13 +34,13 @@ import org.fedoraproject.maven.model.Artifact;
 public class NestedRepositoriesTest
     extends PlexusTestCase
 {
-    private final Artifact POM = new Artifact( "JPP/sisu", "sisu-plexus", "1.2.3", "pom" );
+    private final ArtifactImpl POM = new ArtifactImpl( "JPP/sisu", "sisu-plexus", "1.2.3", "pom" );
 
-    private final Artifact POM2 = new Artifact( "JPP/plexus", "utils", "3.0.14", "pom" );
+    private final ArtifactImpl POM2 = new ArtifactImpl( "JPP/plexus", "utils", "3.0.14", "pom" );
 
-    private final Artifact JAR = new Artifact( "JPP/sisu", "sisu-plexus", "1.2.3", "jar" );;
+    private final ArtifactImpl JAR = new ArtifactImpl( "JPP/sisu", "sisu-plexus", "1.2.3", "jar" );;
 
-    private final Artifact JAR2 = new Artifact( "JPP/plexus", "utils", "3.0.14", "jar" );;
+    private final ArtifactImpl JAR2 = new ArtifactImpl( "JPP/plexus", "utils", "3.0.14", "jar" );;
 
     private org.fedoraproject.maven.repository.Repository base;
 

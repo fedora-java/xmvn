@@ -25,7 +25,7 @@ import java.util.TreeSet;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.PlexusTestCase;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -37,7 +37,7 @@ public abstract class AbstractDependencyTest
 
     private String expectedJavaVersion;
 
-    private final Set<Artifact> expectedDependencyArtifacts = new TreeSet<>();
+    private final Set<ArtifactImpl> expectedDependencyArtifacts = new TreeSet<>();
 
     public AbstractDependencyTest()
     {
@@ -70,19 +70,19 @@ public abstract class AbstractDependencyTest
         this.expectedJavaVersion = expectedJavaVersion;
     }
 
-    public void expect( Artifact artifact )
+    public void expect( ArtifactImpl artifact )
     {
         expectedDependencyArtifacts.add( artifact );
     }
 
     public void expect( String groupId, String artifactId )
     {
-        expect( new Artifact( groupId, artifactId ) );
+        expect( new ArtifactImpl( groupId, artifactId ) );
     }
 
     public void expect( String groupId, String artifactId, String version )
     {
-        expect( new Artifact( groupId, artifactId, version ) );
+        expect( new ArtifactImpl( groupId, artifactId, version ) );
     }
 
     public void configureBuild()
@@ -109,14 +109,14 @@ public abstract class AbstractDependencyTest
         assertNotNull( result );
         assertEquals( expectedJavaVersion, result.getJavaVersion() );
 
-        Set<Artifact> expectedButNotReturned = new TreeSet<>( expectedDependencyArtifacts );
+        Set<ArtifactImpl> expectedButNotReturned = new TreeSet<>( expectedDependencyArtifacts );
         expectedButNotReturned.removeAll( result.getDependencyArtifacts() );
-        for ( Artifact artifact : expectedButNotReturned )
+        for ( ArtifactImpl artifact : expectedButNotReturned )
             fail( "Dependency artifact " + artifact + " was expected but not returned" );
 
-        Set<Artifact> notExpectedButReturned = new TreeSet<>( result.getDependencyArtifacts() );
+        Set<ArtifactImpl> notExpectedButReturned = new TreeSet<>( result.getDependencyArtifacts() );
         notExpectedButReturned.removeAll( expectedDependencyArtifacts );
-        for ( Artifact artifact : notExpectedButReturned )
+        for ( ArtifactImpl artifact : notExpectedButReturned )
             fail( "Dependency artifact " + artifact + " not expected but returned" );
     }
 

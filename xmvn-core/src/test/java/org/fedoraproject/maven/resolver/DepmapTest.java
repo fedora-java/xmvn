@@ -26,7 +26,7 @@ import java.util.List;
 import org.codehaus.plexus.PlexusTestCase;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.ResolverSettings;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * @author Mikolaj Izdebski
@@ -68,8 +68,8 @@ public class DepmapTest
     {
         DependencyMap depmap = readDepmap( "" );
         assertTrue( depmap.isEmpty() );
-        Artifact fooBar = new Artifact( "foo", "bar" );
-        List<Artifact> translationResult = depmap.translate( fooBar );
+        ArtifactImpl fooBar = new ArtifactImpl( "foo", "bar" );
+        List<ArtifactImpl> translationResult = depmap.translate( fooBar );
         assertEquals( translationResult.size(), 1 );
         assertTrue( translationResult.contains( fooBar ) );
     }
@@ -119,9 +119,9 @@ public class DepmapTest
             Path path = Paths.get( "src/test/resources" ).resolve( file );
             DependencyMap depmap = readDepmap( path );
             assertFalse( depmap.isEmpty() );
-            Artifact commonsIo = new Artifact( "commons-io", "commons-io" );
-            Artifact apacheCommonsIo = new Artifact( "org.apache.commons", "commons-io" );
-            Artifact jppCommonsIo = new Artifact( "JPP", "commons-io" );
+            ArtifactImpl commonsIo = new ArtifactImpl( "commons-io", "commons-io" );
+            ArtifactImpl apacheCommonsIo = new ArtifactImpl( "org.apache.commons", "commons-io" );
+            ArtifactImpl jppCommonsIo = new ArtifactImpl( "JPP", "commons-io" );
             assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
             assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
             release( depmap );
@@ -139,9 +139,9 @@ public class DepmapTest
         Path path = Paths.get( "src/test/resources/namespaced-depmap.xml" );
         DependencyMap depmap = readDepmap( path );
         assertFalse( depmap.isEmpty() );
-        Artifact commonsIo = new Artifact( "commons-io", "commons-io" );
-        Artifact apacheCommonsIo = new Artifact( "org.apache.commons", "commons-io" );
-        Artifact jppCommonsIo = new Artifact( "JPP", "commons-io" );
+        ArtifactImpl commonsIo = new ArtifactImpl( "commons-io", "commons-io" );
+        ArtifactImpl apacheCommonsIo = new ArtifactImpl( "org.apache.commons", "commons-io" );
+        ArtifactImpl jppCommonsIo = new ArtifactImpl( "JPP", "commons-io" );
         assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
         assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
         release( depmap );

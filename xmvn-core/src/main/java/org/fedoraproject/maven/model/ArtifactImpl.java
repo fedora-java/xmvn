@@ -21,8 +21,8 @@ import java.util.Iterator;
 /**
  * @author Mikolaj Izdebski
  */
-public class Artifact
-    implements Comparable<Artifact>
+public class ArtifactImpl
+    implements Comparable<ArtifactImpl>
 {
     private static final String DEFAULT_VERSION = "SYSTEM";
 
@@ -39,25 +39,25 @@ public class Artifact
     /**
      * Dummy artifact. Any dependencies on this artifact will be removed during model validation.
      */
-    public static final Artifact DUMMY = new Artifact( "org.fedoraproject.xmvn", "xmvn-void" );
+    public static final ArtifactImpl DUMMY = new ArtifactImpl( "org.fedoraproject.xmvn", "xmvn-void" );
 
     /**
      * The same as {@code DUMMY}, but in JPP style. Any dependencies on this artifact will be removed during model
      * validation.
      */
-    public static final Artifact DUMMY_JPP = new Artifact( "JPP/maven", "empty-dep" );
+    public static final ArtifactImpl DUMMY_JPP = new ArtifactImpl( "JPP/maven", "empty-dep" );
 
-    public Artifact( String groupId, String artifactId )
+    public ArtifactImpl( String groupId, String artifactId )
     {
         this( groupId, artifactId, null );
     }
 
-    public Artifact( String groupId, String artifactId, String version )
+    public ArtifactImpl( String groupId, String artifactId, String version )
     {
         this( groupId, artifactId, version, null );
     }
 
-    public Artifact( String groupId, String artifactId, String version, String extension )
+    public ArtifactImpl( String groupId, String artifactId, String version, String extension )
     {
         if ( groupId == null )
             throw new IllegalArgumentException( "groupId may not be null" );
@@ -71,7 +71,7 @@ public class Artifact
         this.scope = null;
     }
 
-    public Artifact( Artifact artifact, String scope )
+    public ArtifactImpl( ArtifactImpl artifact, String scope )
     {
         this.groupId = artifact.groupId;
         this.artifactId = artifact.artifactId;
@@ -81,7 +81,7 @@ public class Artifact
     }
 
     @Override
-    public int compareTo( Artifact rhs )
+    public int compareTo( ArtifactImpl rhs )
     {
         if ( !groupId.equals( rhs.groupId ) )
             return groupId.compareTo( rhs.groupId );
@@ -95,7 +95,7 @@ public class Artifact
     @Override
     public boolean equals( Object rhs )
     {
-        return rhs != null && rhs instanceof Artifact && compareTo( (Artifact) rhs ) == 0;
+        return rhs != null && rhs instanceof ArtifactImpl && compareTo( (ArtifactImpl) rhs ) == 0;
     }
 
     public String getGroupId()
@@ -142,27 +142,27 @@ public class Artifact
         return version == null;
     }
 
-    public Artifact clearVersion()
+    public ArtifactImpl clearVersion()
     {
-        return new Artifact( groupId, artifactId, null, extension );
+        return new ArtifactImpl( groupId, artifactId, null, extension );
     }
 
-    public Artifact clearExtension()
+    public ArtifactImpl clearExtension()
     {
-        return new Artifact( groupId, artifactId, version );
+        return new ArtifactImpl( groupId, artifactId, version );
     }
 
-    public Artifact clearVersionAndExtension()
+    public ArtifactImpl clearVersionAndExtension()
     {
-        return new Artifact( groupId, artifactId );
+        return new ArtifactImpl( groupId, artifactId );
     }
 
-    public Artifact copyMissing( Artifact rhs )
+    public ArtifactImpl copyMissing( ArtifactImpl rhs )
     {
         String version = this.version != null ? this.version : rhs.version;
         String extension = this.extension != null ? this.extension : rhs.extension;
 
-        return new Artifact( groupId, artifactId, version, extension );
+        return new ArtifactImpl( groupId, artifactId, version, extension );
     }
 
     /**
@@ -208,7 +208,7 @@ public class Artifact
      * @param collection collection of artifacts
      * @return string representation of given collection of artifacts
      */
-    public static String collectionToString( Collection<Artifact> set )
+    public static String collectionToString( Collection<ArtifactImpl> set )
     {
         return collectionToString( set, false );
     }
@@ -220,7 +220,7 @@ public class Artifact
      * @param multiLine if multi-line representation should be used instead of single-line
      * @return string representation of given collection of artifacts
      */
-    public static String collectionToString( Collection<Artifact> collection, boolean multiLine )
+    public static String collectionToString( Collection<ArtifactImpl> collection, boolean multiLine )
     {
         if ( collection.isEmpty() )
             return "[]";
@@ -231,7 +231,7 @@ public class Artifact
         StringBuilder sb = new StringBuilder();
         sb.append( "[" + separator );
 
-        Iterator<Artifact> iter = collection.iterator();
+        Iterator<ArtifactImpl> iter = collection.iterator();
         sb.append( indent + iter.next() );
 
         while ( iter.hasNext() )

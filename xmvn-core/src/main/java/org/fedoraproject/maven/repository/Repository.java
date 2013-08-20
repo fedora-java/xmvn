@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.maven.model.Artifact;
+import org.fedoraproject.maven.model.ArtifactImpl;
 
 /**
  * Repository of artifacts.
@@ -51,7 +51,7 @@ public interface Repository
      * @param artifact
      * @return preferred artifact path
      */
-    Path getPrimaryArtifactPath( Artifact artifact );
+    Path getPrimaryArtifactPath( ArtifactImpl artifact );
 
     /**
      * Get list of possible paths to given artifact in this repository. The returned list is ordered by decreasing
@@ -62,7 +62,7 @@ public interface Repository
      * @param artifact
      * @return list of possible artifact paths
      */
-    List<Path> getArtifactPaths( Artifact artifact );
+    List<Path> getArtifactPaths( ArtifactImpl artifact );
 
     /**
      * Get list of possible paths to given artifacts in this repository. The returned list is ordered by decreasing
@@ -73,5 +73,5 @@ public interface Repository
      * @param artifacts list of artifacts to lookup
      * @return list of possible artifact paths
      */
-    List<Path> getArtifactPaths( List<Artifact> artifact );
+    List<Path> getArtifactPaths( List<ArtifactImpl> artifact );
 }
