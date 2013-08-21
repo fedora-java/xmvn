@@ -33,32 +33,29 @@ public class MavenRepository
     extends SimpleRepository
 {
     @Override
-    protected Path getArtifactPath( String groupId, String artifactId, String version, String extension,
-                                    boolean versionless )
+    protected Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
+                                    String version )
     {
-        if ( versionless )
+        if ( version == null )
             return null;
 
         StringBuilder path = new StringBuilder();
 
-        if ( groupId != null )
-        {
-            path.append( groupId.replace( '.', '/' ) );
-            path.append( '/' );
-        }
+        path.append( groupId.replace( '.', '/' ) ).append( '/' );
 
         path.append( artifactId );
 
-        path.append( '/' );
-        path.append( version );
-        path.append( '/' );
-        path.append( artifactId );
+        path.append( '/' ).append( version );
 
-        path.append( '-' );
-        path.append( version );
+        path.append( '/' ).append( artifactId );
 
-        path.append( '.' );
-        path.append( extension );
+        path.append( '-' ).append( version );
+
+        if ( !classifier.isEmpty() )
+            path.append( '-' ).append( classifier );
+
+        if ( !extension.isEmpty() )
+            path.append( '.' ).append( extension );
 
         return Paths.get( path.toString() );
     }

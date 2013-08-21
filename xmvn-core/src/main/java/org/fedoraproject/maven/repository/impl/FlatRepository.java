@@ -33,27 +33,23 @@ public class FlatRepository
     extends SimpleRepository
 {
     @Override
-    protected Path getArtifactPath( String groupId, String artifactId, String version, String extension,
-                                    boolean versionless )
+    protected Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
+                                    String version )
     {
         StringBuilder path = new StringBuilder();
 
-        if ( groupId != null )
-        {
-            path.append( groupId.replace( '/', '.' ) );
-            path.append( '-' );
-        }
+        path.append( groupId.replace( '/', '.' ) );
 
-        path.append( artifactId );
+        path.append( '-' ).append( artifactId );
 
-        if ( !versionless )
-        {
-            path.append( '-' );
-            path.append( version );
-        }
+        if ( version != null )
+            path.append( '-' ).append( version );
 
-        path.append( '.' );
-        path.append( extension );
+        if ( !classifier.isEmpty() )
+            path.append( '-' ).append( classifier );
+
+        if ( !extension.isEmpty() )
+            path.append( '.' ).append( extension );
 
         return Paths.get( path.toString() );
     }

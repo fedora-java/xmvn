@@ -33,32 +33,26 @@ public class JppRepository
     extends SimpleRepository
 {
     @Override
-    protected Path getArtifactPath( String groupId, String artifactId, String version, String extension,
-                                    boolean versionless )
+    protected Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
+                                    String version )
     {
         StringBuilder path = new StringBuilder();
 
         if ( groupId.startsWith( "JPP/" ) )
-            groupId = groupId.substring( 4 );
-        else if ( groupId.equals( "JPP" ) )
-            groupId = null;
-
-        if ( groupId != null )
-        {
-            path.append( groupId );
-            path.append( '/' );
-        }
+            path.append( groupId.substring( 4 ) ).append( '/' );
+        else if ( !groupId.equals( "JPP" ) )
+            path.append( groupId ).append( '/' );
 
         path.append( artifactId );
 
-        if ( !versionless )
-        {
-            path.append( '-' );
-            path.append( version );
-        }
+        if ( version != null )
+            path.append( '-' ).append( version );
 
-        path.append( '.' );
-        path.append( extension );
+        if ( !classifier.isEmpty() )
+            path.append( '-' ).append( classifier );
+
+        if ( !extension.isEmpty() )
+            path.append( '.' ).append( extension );
 
         return Paths.get( path.toString() );
     }

@@ -37,8 +37,8 @@ abstract class SimpleRepository
 
     private final List<String> artifactTypes = new ArrayList<>();
 
-    protected abstract Path getArtifactPath( String groupId, String artifactId, String version, String extension,
-                                             boolean versionless );
+    protected abstract Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
+                                             String version );
 
     @Override
     public Path getPrimaryArtifactPath( Artifact artifact )
@@ -48,12 +48,13 @@ abstract class SimpleRepository
 
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
         String extension = artifact.getExtension();
+        String classifier = artifact.getClassifier();
+        String version = artifact.getVersion();
+        if ( version.equals( ArtifactUtils.DEFAULT_VERSION ) )
+            version = null;
 
-        Path path =
-            getArtifactPath( groupId, artifactId, version, extension,
-                             artifact.getVersion().equals( ArtifactUtils.DEFAULT_VERSION ) );
+        Path path = getArtifactPath( groupId, artifactId, extension, classifier, version );
         if ( path != null && root != null )
             path = root.resolve( path );
 
