@@ -73,10 +73,14 @@ public class DefaultDependencyMap
     }
 
     @Override
+    @Deprecated
     public void addMapping( String groupId, String artifactId, String version, String jppGroupId, String jppArtifactId )
     {
-        Artifact mavenArtifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
-        Artifact jppArtifact = new DefaultArtifact( jppGroupId, jppArtifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+        Artifact mavenArtifact =
+            new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+        Artifact jppArtifact =
+            new DefaultArtifact( jppGroupId, jppArtifactId, ArtifactUtils.DEFAULT_EXTENSION,
+                                 ArtifactUtils.DEFAULT_VERSION );
 
         addMapping( mavenArtifact, jppArtifact );
     }
@@ -96,8 +100,12 @@ public class DefaultDependencyMap
     @Override
     public void addMapping( Artifact from, Artifact to )
     {
-        from = new DefaultArtifact( from.getGroupId(), from.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
-        to = new DefaultArtifact( to.getGroupId(), to.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+        from =
+            new DefaultArtifact( from.getGroupId(), from.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                 ArtifactUtils.DEFAULT_VERSION );
+        to =
+            new DefaultArtifact( to.getGroupId(), to.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                 ArtifactUtils.DEFAULT_VERSION );
 
         try
         {
@@ -162,7 +170,8 @@ public class DefaultDependencyMap
     public List<Artifact> translate( Artifact artifact )
     {
         artifact =
-            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                 ArtifactUtils.DEFAULT_VERSION );
         logger.debug( "Trying to translate artifact " + artifact );
 
         try
@@ -182,7 +191,8 @@ public class DefaultDependencyMap
     public Set<Artifact> relativesOf( Artifact artifact )
     {
         artifact =
-            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                 ArtifactUtils.DEFAULT_VERSION );
 
         try
         {

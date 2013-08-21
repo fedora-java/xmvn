@@ -55,7 +55,8 @@ public class DefaultArtifactBlacklist
     @Override
     public boolean contains( String groupId, String artifactId )
     {
-        return contains( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
+        return contains( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION,
+                                              ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
@@ -68,8 +69,8 @@ public class DefaultArtifactBlacklist
     @Override
     public synchronized boolean contains( Artifact artifact )
     {
-        return blacklist.contains( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
-                                                        ArtifactUtils.DEFAULT_VERSION ) );
+        return blacklist.contains( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
+                                                        ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
@@ -81,8 +82,8 @@ public class DefaultArtifactBlacklist
     @Override
     public synchronized void add( Artifact artifact )
     {
-        blacklist.add( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
-                                            ArtifactUtils.DEFAULT_VERSION ) );
+        blacklist.add( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
+                                            ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     /**

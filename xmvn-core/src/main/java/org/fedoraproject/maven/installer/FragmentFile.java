@@ -83,13 +83,15 @@ public class FragmentFile
     @Override
     public void visitRuntimeDependency( String groupId, String artifactId )
     {
-        dependencies.add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
+        dependencies.add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION,
+                                               ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
     public void visitBuildDependency( String groupId, String artifactId )
     {
-        develDependencies.add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
+        develDependencies.add( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION,
+                                                    ArtifactUtils.DEFAULT_VERSION ) );
     }
 
     @Override
@@ -103,7 +105,8 @@ public class FragmentFile
     {
         Set<Artifact> versionlessArtifacts = new HashSet<>();
         for ( Artifact artifact : mapping.keySet() )
-            versionlessArtifacts.add( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+            versionlessArtifacts.add( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
+                                                           ArtifactUtils.DEFAULT_EXTENSION,
                                                            ArtifactUtils.DEFAULT_VERSION ) );
 
         for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )

@@ -27,6 +27,7 @@ public interface DependencyMap
 {
     boolean isEmpty();
 
+    @Deprecated
     void addMapping( String groupId, String artifactId, String version, String jppGroupId, String jppArtifactId );
 
     void addMapping( Artifact from, Artifact to );

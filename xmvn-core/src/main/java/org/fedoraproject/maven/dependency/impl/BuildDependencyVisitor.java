@@ -71,7 +71,8 @@ class BuildDependencyVisitor
     {
         String groupId = plugin.getGroupId();
         String artifactId = plugin.getArtifactId();
-        Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+        Artifact pluginArtifact =
+            new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
 
         if ( !commonPlugins.contains( pluginArtifact ) )
             result.addDependencyArtifact( groupId, artifactId, plugin.getVersion() );
