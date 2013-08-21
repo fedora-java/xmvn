@@ -28,6 +28,7 @@ import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.Repository;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
+import org.fedoraproject.maven.config.Stereotype;
 
 /**
  * @author Mikolaj Izdebski
@@ -52,7 +53,9 @@ public class NestedRepositoriesTest
         Repository repo = new Repository();
         repo.setId( "base-effective-pom" );
         repo.setType( "flat" );
-        repo.addArtifactType( "pom" );
+        Stereotype stereotype = new Stereotype();
+        stereotype.setExtension( "pom" );
+        repo.addStereotype( stereotype );
         repo.addProperty( "root", "usr/share/maven-effective-poms" );
         configuration.addRepository( repo );
     }
@@ -62,7 +65,9 @@ public class NestedRepositoriesTest
         Repository repo = new Repository();
         repo.setId( "base-pom" );
         repo.setType( "flat" );
-        repo.addArtifactType( "pom" );
+        Stereotype stereotype = new Stereotype();
+        stereotype.setExtension( "pom" );
+        repo.addStereotype( stereotype );
         repo.addProperty( "root", "usr/share/maven-poms" );
         configuration.addRepository( repo );
     }
@@ -72,7 +77,9 @@ public class NestedRepositoriesTest
         Repository repo = new Repository();
         repo.setId( "base-jni" );
         repo.setType( "jpp" );
-        repo.addArtifactType( "jar" );
+        Stereotype stereotype = new Stereotype();
+        stereotype.setExtension( "jar" );
+        repo.addStereotype( stereotype );
         repo.addProperty( "root", "usr/lib/java" );
         configuration.addRepository( repo );
     }
@@ -82,7 +89,9 @@ public class NestedRepositoriesTest
         Repository repo = new Repository();
         repo.setId( "base-jar" );
         repo.setType( "jpp" );
-        repo.addArtifactType( "jar" );
+        Stereotype stereotype = new Stereotype();
+        stereotype.setExtension( "jar" );
+        repo.addStereotype( stereotype );
         repo.addProperty( "root", "usr/share/java" );
         configuration.addRepository( repo );
     }
