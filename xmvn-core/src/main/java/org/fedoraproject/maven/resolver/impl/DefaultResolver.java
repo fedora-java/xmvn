@@ -140,8 +140,8 @@ public class DefaultResolver
         logger.debug( "Trying to resolve artifact " + artifact );
 
         List<Artifact> jppList =
-            depmap.translate( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
-                                                   ArtifactUtils.DEFAULT_VERSION ) );
+            depmap.translate( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
+                                                   ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
 
         String javaHome = System.getProperty( "java.home" );
         Path javaHomeDir = followSymlink( new File( javaHome != null ? javaHome : "." ) ).toPath();
@@ -170,7 +170,7 @@ public class DefaultResolver
                 compatVersion = artifact.getVersion();
                 for ( Artifact jppArtifact : jppList )
                     tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
-                                                       artifact.getExtension(), jppArtifact.getClassifier(),
+                                                       jppArtifact.getClassifier(), artifact.getExtension(),
                                                        artifact.getVersion() ) );
                 for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
@@ -188,7 +188,7 @@ public class DefaultResolver
                 compatVersion = null;
                 for ( Artifact jppArtifact : jppList )
                     tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
-                                                       artifact.getExtension(), jppArtifact.getClassifier(),
+                                                       jppArtifact.getClassifier(), artifact.getExtension(),
                                                        ArtifactUtils.DEFAULT_VERSION ) );
                 for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
                 {
