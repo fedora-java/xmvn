@@ -33,6 +33,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -57,11 +58,24 @@ class DepmapReader
 {
     private final ThreadPoolExecutor executor;
 
+    private static class DaemonFactory
+        implements ThreadFactory
+    {
+        @Override
+        public Thread newThread( Runnable runnable )
+        {
+            Thread thread = new Thread( runnable );
+            thread.setName( DepmapReader.class.getCanonicalName() + ".worker" );
+            thread.setDaemon( true );
+            return thread;
+        }
+    }
+
     public DepmapReader()
     {
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
-        executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue );
+        executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, new DaemonFactory() );
     }
 
     public void readMappings( DependencyMap depmap, List<String> depmapLocations )
@@ -117,8 +131,12 @@ class DepmapReader
 
         public Mapping( String namespace, Artifact from, Artifact to )
         {
-            from = new DefaultArtifact( from.getGroupId(), from.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
-            to = new DefaultArtifact( to.getGroupId(), to.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+            from =
+                new DefaultArtifact( from.getGroupId(), from.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                     ArtifactUtils.DEFAULT_VERSION );
+            to =
+                new DefaultArtifact( to.getGroupId(), to.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
+                                     ArtifactUtils.DEFAULT_VERSION );
             this.from = ArtifactUtils.setScope( from, namespace );
             this.to = ArtifactUtils.setScope( to, namespace );
         }
