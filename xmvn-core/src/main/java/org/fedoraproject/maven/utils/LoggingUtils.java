@@ -16,8 +16,10 @@
 package org.fedoraproject.maven.utils;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
+import org.fedoraproject.maven.config.Configurator;
 
 /**
  * @author Mikolaj Izdebski
@@ -36,5 +38,15 @@ public class LoggingUtils
         int threshold = enableDebug ? Logger.LEVEL_DEBUG : Logger.LEVEL_INFO;
         LoggerManager manager = new SimpleLoggerManager( executable, threshold );
         container.setLoggerManager( manager );
+
+        try
+        {
+            Configurator configurator = container.lookup( Configurator.class );
+            configurator.getConfiguration().getResolverSettings().setDebug( enableDebug );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 }

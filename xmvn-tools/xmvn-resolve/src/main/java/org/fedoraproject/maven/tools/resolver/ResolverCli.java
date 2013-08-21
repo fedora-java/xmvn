@@ -55,8 +55,7 @@ public class ResolverCli
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
     public boolean debug = false;
 
-    @Parameter( names = { "-c", "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts;"
-        + " assume default artifact type of 'jar'" )
+    @Parameter( names = { "-c", "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts" )
     public boolean classpath = false;
 
     @DynamicParameter( names = "-D", description = "Define system property" )
@@ -79,8 +78,6 @@ public class ResolverCli
 
             for ( String param : defines.keySet() )
                 System.setProperty( param, defines.get( param ) );
-            if ( debug )
-                System.setProperty( "xmvn.debug", "true" );
         }
         catch ( ParameterException e )
         {
@@ -118,32 +115,45 @@ public class ResolverCli
             Logger logger = container.getLoggerManager().getLoggerForComponent( Resolver.class.toString() );
             Resolver resolver = container.lookup( Resolver.class );
 
-            boolean error = false;
-            List<File> result = new ArrayList<>();
-
-            for ( String s : parameters )
+            try
             {
-                Artifact artifact = new DefaultArtifact( s );
-                File file = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactFile();
+                boolean error = false;
+                List<File> result = new ArrayList<>();
 
-                if ( file == null )
+                for ( String s : parameters )
                 {
-                    error = true;
-                    logger.error( "Unable to resolve artifact " + artifact );
+                    if ( s.indexOf( ':' ) > 0 && s.indexOf( ':' ) == s.lastIndexOf( ':' ) )
+                        s += ":";
+                    if ( s.endsWith( ":" ) )
+                        s += "SYSTEM";
+
+                    Artifact artifact = new DefaultArtifact( s );
+                    File file = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactFile();
+
+                    if ( file == null )
+                    {
+                        error = true;
+                        logger.error( "Unable to resolve artifact " + artifact );
+                    }
+                    else
+                    {
+                        result.add( file );
+                    }
                 }
-                else
-                {
-                    result.add( file );
-                }
+
+                if ( error )
+                    System.exit( 1 );
+
+                if ( !result.isEmpty() )
+                    printResult( result );
+
+                System.exit( 0 );
             }
-
-            if ( error )
+            catch ( IllegalArgumentException e )
+            {
+                logger.error( e.getMessage() );
                 System.exit( 1 );
-
-            if ( !result.isEmpty() )
-                printResult( result );
-
-            System.exit( 0 );
+            }
         }
         catch ( Throwable e )
         {
