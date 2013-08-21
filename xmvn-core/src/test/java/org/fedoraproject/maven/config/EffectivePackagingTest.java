@@ -38,8 +38,11 @@ public class EffectivePackagingTest
         assertTrue( artifactManagement.isEmpty() );
 
         Artifact glob = new Artifact();
+        glob.setStereotype( "stereo" );
         glob.setGroupId( "foo" );
         glob.setArtifactId( "bar" );
+        glob.setExtension( "the=ext" );
+        glob.setClassifier( "_my_clasfr" );
         glob.setVersion( "baz" );
 
         PackagingRule rule1 = new PackagingRule();
@@ -52,7 +55,8 @@ public class EffectivePackagingTest
         rule2.addFile( "file2" );
         artifactManagement.add( rule2 );
 
-        PackagingRule effectiveRule = configuration.createEffectivePackagingRule( "foo", "bar", "baz" );
+        PackagingRule effectiveRule =
+            configuration.createEffectivePackagingRule( "stereo", "foo", "bar", "the=ext", "_my_clasfr", "baz" );
         assertTrue( effectiveRule.getFiles().get( 0 ).equals( "file1" ) );
         assertTrue( effectiveRule.getFiles().get( 1 ).equals( "file2" ) );
         assertEquals( effectiveRule.getFiles().size(), 2 );
@@ -80,15 +84,18 @@ public class EffectivePackagingTest
         rule.setTargetPackage( "pkgX" );
         artifactManagement.add( rule );
 
-        PackagingRule effRule1 = configuration.createEffectivePackagingRule( "foo-test-bar", "ipsum-dolor", "1.2.3" );
+        PackagingRule effRule1 =
+            configuration.createEffectivePackagingRule( "", "foo-test-bar", "ipsum-dolor", "jar", "", "1.2.3" );
         assertNotNull( effRule1.getTargetPackage() );
         assertTrue( effRule1.getTargetPackage().equals( "pkgX" ) );
 
-        PackagingRule effRule2 = configuration.createEffectivePackagingRule( "foobar", "lorem-dolor", "1.2.3" );
+        PackagingRule effRule2 =
+            configuration.createEffectivePackagingRule( "", "foobar", "lorem-dolor", "jar", "", "1.2.3" );
         assertNotNull( effRule2.getTargetPackage() );
         assertTrue( effRule2.getTargetPackage().equals( "pkgX" ) );
 
-        PackagingRule effRule3 = configuration.createEffectivePackagingRule( "foobar", "lorem-dolor", "1.253" );
+        PackagingRule effRule3 =
+            configuration.createEffectivePackagingRule( "", "foobar", "lorem-dolor", "jar", "", "1.253" );
         assertNull( effRule3.getTargetPackage() );
     }
 
@@ -109,7 +116,9 @@ public class EffectivePackagingTest
         rule.setTargetPackage( "somePackage" );
         artifactManagement.add( rule );
 
-        PackagingRule effRule1 = configuration.createEffectivePackagingRule( "com.example", "some-test", "0.42" );
+        PackagingRule effRule1 =
+            configuration.createEffectivePackagingRule( "maven-plugin", "com.example", "jar", "funny", "some-test",
+                                                        "0.42" );
         assertNotNull( effRule1.getTargetPackage() );
         assertTrue( effRule1.getTargetPackage().equals( "somePackage" ) );
     }
@@ -127,8 +136,11 @@ public class EffectivePackagingTest
         assertTrue( artifactManagement.isEmpty() );
 
         Artifact glob = new Artifact();
+        glob.setStereotype( "" );
         glob.setGroupId( "" );
         glob.setArtifactId( "" );
+        glob.setExtension( "" );
+        glob.setClassifier( "" );
         glob.setVersion( "" );
 
         PackagingRule rule = new PackagingRule();
@@ -136,7 +148,8 @@ public class EffectivePackagingTest
         rule.setTargetPackage( "fooBar" );
         artifactManagement.add( rule );
 
-        PackagingRule effectiveRule = configuration.createEffectivePackagingRule( "foo", "bar", "baz" );
+        PackagingRule effectiveRule =
+            configuration.createEffectivePackagingRule( "foo", "bar", "baz", "xy", "zzy", "1.2.3" );
         assertNotNull( effectiveRule );
         assertNotNull( effectiveRule.getTargetPackage() );
         assertTrue( effectiveRule.getTargetPackage().equals( "fooBar" ) );
@@ -173,7 +186,7 @@ public class EffectivePackagingTest
         artifactManagement.add( rule2 );
 
         PackagingRule effRule =
-            configuration.createEffectivePackagingRule( "org.sonatype.sisu", "sisu-parent", "2.3.0" );
+            configuration.createEffectivePackagingRule( "", "org.sonatype.sisu", "sisu-parent", "pom", "", "2.3.0" );
         assertNotNull( effRule.getTargetPackage() );
         assertTrue( effRule.getTargetPackage().equals( "parent" ) );
     }
@@ -191,13 +204,19 @@ public class EffectivePackagingTest
         assertTrue( artifactManagement.isEmpty() );
 
         Artifact glob = new Artifact();
+        glob.setStereotype( "" );
         glob.setGroupId( "" );
         glob.setArtifactId( "{*}" );
+        glob.setExtension( "" );
+        glob.setClassifier( "" );
         glob.setVersion( "" );
 
         Artifact alias = new Artifact();
+        alias.setStereotype( "" );
         alias.setGroupId( "" );
         alias.setArtifactId( "@1-test" );
+        alias.setExtension( "" );
+        alias.setClassifier( "" );
         alias.setVersion( "" );
 
         PackagingRule rule = new PackagingRule();
@@ -205,7 +224,7 @@ public class EffectivePackagingTest
         rule.addAlias( alias );
         artifactManagement.add( rule );
 
-        PackagingRule effRule = configuration.createEffectivePackagingRule( "foo", "bar", "1.2.3" );
+        PackagingRule effRule = configuration.createEffectivePackagingRule( "", "foo", "bar", "jar", "", "1.2.3" );
 
         assertEquals( effRule.getAliases().size(), 1 );
         Artifact effAlias = effRule.getAliases().iterator().next();
