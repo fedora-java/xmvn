@@ -114,7 +114,7 @@
                   <classifier>config</classifier>
                 </artifact>
                 <artifact>
-                  <file>${project.build.directory}/generated-site/xsd/config-0.5.0.xsd</file>
+                  <file>${project.build.directory}/generated-site/xsd/config-0.6.0.xsd</file>
                   <type>xsd</type>
                   <classifier>config</classifier>
                 </artifact>

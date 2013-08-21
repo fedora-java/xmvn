@@ -61,8 +61,11 @@ public class EffectivePackagingRule
                                                                                  org.fedoraproject.maven.config.Artifact source )
     {
         org.fedoraproject.maven.config.Artifact target = new org.fedoraproject.maven.config.Artifact();
+        target.setStereotype( source.getStereotype() );
         target.setGroupId( source.getGroupId() );
         target.setArtifactId( source.getArtifactId() );
+        target.setExtension( source.getExtension() );
+        target.setClassifier( source.getClassifier() );
         target.setVersion( source.getVersion() );
 
         int group = 1;
@@ -72,8 +75,11 @@ public class EffectivePackagingRule
             {
                 Pattern pattern = Pattern.compile( "@" + group );
                 String replacement = matcher.group( i );
+                target.setStereotype( pattern.matcher( target.getStereotype() ).replaceAll( replacement ) );
                 target.setGroupId( pattern.matcher( target.getGroupId() ).replaceAll( replacement ) );
                 target.setArtifactId( pattern.matcher( target.getArtifactId() ).replaceAll( replacement ) );
+                target.setExtension( pattern.matcher( target.getExtension() ).replaceAll( replacement ) );
+                target.setClassifier( pattern.matcher( target.getClassifier() ).replaceAll( replacement ) );
                 target.setVersion( pattern.matcher( target.getVersion() ).replaceAll( replacement ) );
             }
         }
@@ -84,16 +90,25 @@ public class EffectivePackagingRule
     private void applyRule( PackagingRule rule )
     {
         Artifact glob = rule.getArtifactGlob();
+        Pattern stereotypePattern = GlobUtils.glob2pattern( glob.getStereotype() );
         Pattern groupIdPattern = GlobUtils.glob2pattern( glob.getGroupId() );
         Pattern artifactIdPattern = GlobUtils.glob2pattern( glob.getArtifactId() );
+        Pattern extensionPattern = GlobUtils.glob2pattern( glob.getExtension() );
+        Pattern classifierPattern = GlobUtils.glob2pattern( glob.getClassifier() );
         Pattern versionPattern = GlobUtils.glob2pattern( glob.getVersion() );
 
         Artifact artifact = getArtifactGlob();
         List<Matcher> matchers = new ArrayList<>( 3 );
+        if ( stereotypePattern != null )
+            matchers.add( stereotypePattern.matcher( artifact.getStereotype() ) );
         if ( groupIdPattern != null )
             matchers.add( groupIdPattern.matcher( artifact.getGroupId() ) );
         if ( artifactIdPattern != null )
             matchers.add( artifactIdPattern.matcher( artifact.getArtifactId() ) );
+        if ( extensionPattern != null )
+            matchers.add( extensionPattern.matcher( artifact.getExtension() ) );
+        if ( classifierPattern != null )
+            matchers.add( classifierPattern.matcher( artifact.getClassifier() ) );
         if ( versionPattern != null )
             matchers.add( versionPattern.matcher( artifact.getVersion() ) );
 
@@ -110,10 +125,16 @@ public class EffectivePackagingRule
         {
             alias = expandBackreferences( matchers, alias );
 
+            if ( StringUtils.isEmpty( alias.getStereotype() ) )
+                alias.setStereotype( artifact.getStereotype() );
             if ( StringUtils.isEmpty( alias.getGroupId() ) )
                 alias.setGroupId( artifact.getGroupId() );
             if ( StringUtils.isEmpty( alias.getArtifactId() ) )
                 alias.setArtifactId( artifact.getArtifactId() );
+            if ( StringUtils.isEmpty( alias.getExtension() ) )
+                alias.setExtension( artifact.getExtension() );
+            if ( StringUtils.isEmpty( alias.getClassifier() ) )
+                alias.setClassifier( artifact.getClassifier() );
             if ( StringUtils.isEmpty( alias.getVersion() ) )
                 alias.setVersion( artifact.getVersion() );
 
@@ -133,16 +154,22 @@ public class EffectivePackagingRule
      * Create effective packaging rule for given artifact.
      * 
      * @param artifactManagement list of raw packaging rules that are foundation of newly constructed effective rule
+     * @param stereotype stereotype of artifact for which effective rule is to be created
      * @param groupId groupId of artifact for which effective rule is to be created
      * @param artifactId artifactId of artifact for which effective rule is to be created
+     * @param extension extension of artifact for which effective rule is to be created
+     * @param classifier classifier of artifact for which effective rule is to be created
      * @param version version of artifact for which effective rule is to be created
      */
-    public EffectivePackagingRule( List<PackagingRule> artifactManagement, String groupId, String artifactId,
-                                   String version )
+    public EffectivePackagingRule( List<PackagingRule> artifactManagement, String stereotype, String groupId,
+                                   String artifactId, String extension, String classifier, String version )
     {
         Artifact artifact = new Artifact();
+        artifact.setStereotype( stereotype );
         artifact.setGroupId( groupId );
         artifact.setArtifactId( artifactId );
+        artifact.setExtension( extension );
+        artifact.setClassifier( classifier );
         artifact.setVersion( version );
         setArtifactGlob( artifact );
         setOptional( false );

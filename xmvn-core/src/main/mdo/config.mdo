@@ -93,12 +93,23 @@
           <description>Version of the artifact.</description>
           <type>String</type>
         </field>
-        <field xml.transient="true">
+        <field>
+          <name>classifier</name>
+          <version>0.6.0+</version>
+          <description>Classifier of the artifact.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>stereotype</name>
+          <version>0.6.0+</version>
+          <description>Maven stereotype of the artifact.</description>
+          <type>String</type>
+        </field>
+        <field>
           <name>extension</name>
-          <version>0.4.0+</version>
+          <version>0.6.0+</version>
           <description>Extension of the artifact.</description>
           <type>String</type>
-          <defaultValue>pom</defaultValue>
         </field>
       </fields>
     </class>
@@ -594,10 +605,10 @@
      * @param artifactId
      * @param verson
      */
-    public PackagingRule createEffectivePackagingRule( String groupId, String artifactId, String version )
+    public PackagingRule createEffectivePackagingRule( String stereotype, String groupId, String artifactId, String extension, String classifier, String version )
     {
         return new org.fedoraproject.maven.config.impl.EffectivePackagingRule
-            ( artifactManagement, groupId, artifactId, version );
+            ( artifactManagement, stereotype, groupId, artifactId, extension, classifier, version );
     }
             ]]>
           </code>
