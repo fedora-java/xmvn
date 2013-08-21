@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.maven.config.Stereotype;
 
 /**
  * Repository of artifacts.
@@ -38,10 +39,11 @@ public interface Repository
      * <p>
      * The meaning of properties and XML configuration is dependent on particular repository implementation.
      * 
+     * @param stereotypes
      * @param properties
      * @param configuration
      */
-    void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration );
+    void configure( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration );
 
     /**
      * Obtain the preferred path to given artifact in this repository.

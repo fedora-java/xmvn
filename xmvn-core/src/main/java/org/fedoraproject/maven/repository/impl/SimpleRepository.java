@@ -22,8 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.maven.config.Stereotype;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
@@ -35,15 +37,32 @@ abstract class SimpleRepository
 {
     private Path root;
 
-    private final List<String> artifactTypes = new ArrayList<>();
+    private final List<Stereotype> stereotypes = new ArrayList<>();
 
     protected abstract Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
                                              String version );
 
+    private boolean matchesStereotypes( Artifact artifact )
+    {
+        for ( Stereotype stereotype : stereotypes )
+        {
+            String type = ArtifactUtils.getStereotype( artifact );
+
+            if ( ( stereotype.getExtension() == null || stereotype.getExtension().equals( artifact.getExtension() ) )
+                && ( stereotype.getClassifier() == null || stereotype.getClassifier().equals( artifact.getClassifier() ) )
+                && ( StringUtils.isEmpty( type ) || stereotype.getType() == null || stereotype.getType().equals( type ) ) )
+            {
+                return true;
+            }
+        }
+
+        return stereotypes.isEmpty();
+    }
+
     @Override
     public Path getPrimaryArtifactPath( Artifact artifact )
     {
-        if ( !artifactTypes.isEmpty() && !artifactTypes.contains( artifact.getExtension() ) )
+        if ( !matchesStereotypes( artifact ) )
             return null;
 
         String groupId = artifact.getGroupId();
@@ -83,11 +102,11 @@ abstract class SimpleRepository
     }
 
     @Override
-    public void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration )
+    public void configure( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
     {
         String rootProperty = properties.getProperty( "root" );
         root = rootProperty != null ? Paths.get( rootProperty ) : null;
-        this.artifactTypes.clear();
-        this.artifactTypes.addAll( artifactTypes );
+        this.stereotypes.clear();
+        this.stereotypes.addAll( stereotypes );
     }
 }

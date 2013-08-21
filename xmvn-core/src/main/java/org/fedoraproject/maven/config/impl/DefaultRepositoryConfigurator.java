@@ -26,6 +26,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
+import org.fedoraproject.maven.config.Stereotype;
 import org.fedoraproject.maven.repository.Repository;
 
 /**
@@ -59,7 +60,7 @@ public class DefaultRepositoryConfigurator
         Properties properties = null;
         Xpp3Dom configurationXml = null;
         String type = null;
-        List<String> artifactTypes = null;
+        List<Stereotype> stereotypes = null;
 
         org.fedoraproject.maven.config.Repository desc = findDescriptor( repoId );
         if ( desc == null )
@@ -68,7 +69,7 @@ public class DefaultRepositoryConfigurator
         properties = desc.getProperties();
         configurationXml = (Xpp3Dom) desc.getConfiguration();
         type = desc.getType();
-        artifactTypes = desc.getArtifactTypes();
+        stereotypes = desc.getStereotypes();
 
         if ( type == null )
             throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
@@ -78,7 +79,7 @@ public class DefaultRepositoryConfigurator
         try
         {
             Repository repository = container.lookup( Repository.class, type );
-            repository.configure( artifactTypes, properties, configurationXml );
+            repository.configure( stereotypes, properties, configurationXml );
             return repository;
         }
         catch ( ComponentLookupException e )

@@ -28,6 +28,7 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
+import org.fedoraproject.maven.config.Stereotype;
 import org.fedoraproject.maven.repository.Repository;
 
 /**
@@ -52,7 +53,7 @@ public class CompoundRepository
     private final List<Repository> slaveRepositories = new ArrayList<>();
 
     @Override
-    public void configure( List<String> artifactTypes, Properties properties, Xpp3Dom configuration )
+    public void configure( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
     {
         if ( properties.containsKey( "prefix" ) )
             prefix = Paths.get( properties.getProperty( "prefix" ) );

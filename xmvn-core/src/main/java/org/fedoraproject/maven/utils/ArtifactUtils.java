@@ -16,9 +16,8 @@
 package org.fedoraproject.maven.utils;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -45,6 +44,8 @@ public class ArtifactUtils
 
     private static final String KEY_SCOPE = "xmvn.artifact.scope";
 
+    private static final String KEY_STEREOTYPE = "xmvn.artifact.stereotype";
+
     public static String getScope( Artifact artifact )
     {
         return artifact.getProperty( KEY_SCOPE, "" );
@@ -52,9 +53,17 @@ public class ArtifactUtils
 
     public static Artifact setScope( Artifact artifact, String scope )
     {
-        Map<String, String> properties = new HashMap<>( artifact.getProperties() );
-        properties.put( KEY_SCOPE, scope );
-        return artifact.setProperties( properties );
+        return artifact.setProperties( Collections.singletonMap( KEY_SCOPE, scope ) );
+    }
+
+    public static String getStereotype( Artifact artifact )
+    {
+        return artifact.getProperty( KEY_STEREOTYPE, "" );
+    }
+
+    public static Artifact setStereotype( Artifact artifact, String stereotype )
+    {
+        return artifact.setProperties( Collections.singletonMap( KEY_STEREOTYPE, stereotype ) );
     }
 
     /**

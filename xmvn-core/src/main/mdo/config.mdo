@@ -79,36 +79,67 @@
           <version>0.4.0+</version>
           <description>Group ID of the artifact.</description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
         <field>
           <name>artifactId</name>
           <version>0.4.0+</version>
-          <required>true</required>
           <description>Artifact ID of the artifact.</description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
         <field>
           <name>version</name>
           <version>0.4.0+</version>
           <description>Version of the artifact.</description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
         <field>
           <name>classifier</name>
           <version>0.6.0+</version>
           <description>Classifier of the artifact.</description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
         <field>
           <name>stereotype</name>
           <version>0.6.0+</version>
           <description>Maven stereotype of the artifact.</description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
         <field>
           <name>extension</name>
           <version>0.6.0+</version>
           <description>Extension of the artifact.</description>
+          <type>String</type>
+          <defaultValue></defaultValue>
+        </field>
+      </fields>
+    </class>
+
+    <class xml.tagName="stereotype" java.clone="deep">
+      <name>Stereotype</name>
+      <version>0.6.0+</version>
+      <description>Stereotype of Maven artifact.</description>
+      <fields>
+        <field>
+          <name>type</name>
+          <version>0.6.0+</version>
+          <description>Type ID of the stereotype.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>extension</name>
+          <version>0.6.0+</version>
+          <description>Extension of the artifact.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>classifier</name>
+          <version>0.6.0+</version>
+          <description>Classifier of the artifact.</description>
           <type>String</type>
         </field>
       </fields>
@@ -134,15 +165,15 @@
           <type>String</type>
         </field>
         <field>
-          <name>artifactTypes</name>
+          <name>stereotypes</name>
           <version>0.6.0+</version>
           <description>
             List of artifact types that can be stored in this
             repository.  Empty list means that this repository can
             store any artifact type.
           </description>
-          <association xml.tagName="type">
-            <type>String</type>
+          <association xml.tagName="stereotype">
+            <type>Stereotype</type>
             <multiplicity>*</multiplicity>
           </association>
         </field>
