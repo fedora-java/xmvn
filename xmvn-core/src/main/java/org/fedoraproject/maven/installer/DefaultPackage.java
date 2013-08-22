@@ -21,7 +21,6 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +48,7 @@ public class DefaultPackage
 
     private static final String NOINSTALL_SUFFIX = "__noinstall";
 
-    private boolean pureDevelPackage = true;
+    private final boolean pureDevelPackage = true;
 
     private final InstallerSettings settings;
 
@@ -90,23 +89,7 @@ public class DefaultPackage
         addFile( file, target.getParent(), target.getFileName(), mode );
     }
 
-    @Override
-    public void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
-    {
-        Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
-        Path pomDir = Paths.get( settings.getPomDir() );
-        addFile( file, pomDir, pomName, 0644 );
-    }
-
-    @Override
-    public void addEffectivePomFile( Path file, Path jppGroupId, Path jppArtifactId )
-    {
-        Path pomName = Paths.get( jppGroupId.toString().replace( '/', '.' ) + "-" + jppArtifactId + ".pom" );
-        Path effectvePomDir = Paths.get( settings.getEffectivePomDir() );
-        addFile( file, effectvePomDir, pomName, 0644 );
-    }
-
-    private static boolean containsNativeCode( Path jar )
+    public static boolean containsNativeCode( Path jar )
         throws IOException
     {
         // From /usr/include/linux/elf.h
@@ -130,28 +113,12 @@ public class DefaultPackage
         return false;
     }
 
-    @Override
-    public void addJarFile( Path file, Path baseName, Collection<Path> symlinks )
+    public void addSymlink( Path symlink, Path target )
         throws IOException
     {
-        pureDevelPackage = false;
-
-        Path jarDir = Paths.get( containsNativeCode( file ) ? settings.getJniDir() : settings.getJarDir() );
-        Path jarFile = jarDir.resolve( Paths.get( baseName + ".jar" ) );
-        addFile( file, jarFile, 0644 );
-
-        for ( Path symlink : symlinks )
-        {
-            symlink = Paths.get( symlink + ".jar" );
-            if ( symlink.isAbsolute() )
-                symlink = Paths.get( "/" ).relativize( symlink );
-            else
-                symlink = jarDir.resolve( symlink );
-
-            Path symlinkTarget = symlink.getParent().relativize( jarFile );
-            Path symlinkFile = FileUtils.createAnonymousSymlink( symlinkTarget );
-            addFile( symlinkFile, symlink, 0644 );
-        }
+        Path symlinkTarget = symlink.getParent().relativize( target );
+        Path symlinkFile = FileUtils.createAnonymousSymlink( symlinkTarget );
+        addFile( symlinkFile, symlink, 0644 );
     }
 
     private void installFiles( Installer installer )

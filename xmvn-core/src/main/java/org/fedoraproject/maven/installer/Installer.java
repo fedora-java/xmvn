@@ -42,7 +42,6 @@ public class Installer
         throws IOException
     {
         Path dir = root.resolve( target );
-        dir.equals( root );
         return Files.createDirectories( dir );
     }
 

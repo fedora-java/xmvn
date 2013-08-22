@@ -16,9 +16,8 @@
 package org.fedoraproject.maven.installer;
 
 import java.io.IOException;
-import java.util.List;
 
-import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.PackagingRule;
 
 /**
@@ -33,27 +32,21 @@ import org.fedoraproject.maven.config.PackagingRule;
  * 
  * @author Mikolaj Izdebski
  */
-public interface ProjectInstaller
+public interface ArtifactInstaller
 {
-    /**
-     * Get list of supported packaging types.
-     * 
-     * @return list of packaging types supported by this object
-     */
-    List<String> getSupportedPackagingTypes();
-
     /**
      * Install Maven project into binary package.
      * <p>
      * This method can be called only if project packaging type is on the list of supported packaging types, as returned
      * by {@code getSupportedPackagingTypes()} method.
      * 
-     * @param project Maven project to be installed
+     * @param artifact Maven artifact to be installed
      * @param targetPackage binary package into which project should be installed
      * @param rule effective packaging rule to use
-     * @throws ProjectInstallationException if project cannot be installed for some reason
+     * @return true iff installation was possible
+     * @throws ArtifactInstallationException if project cannot be installed for some reason
      * @throws IOException if I/O error occurs when installing package files
      */
-    void installProject( MavenProject project, Package targetPackage, PackagingRule rule )
-        throws ProjectInstallationException, IOException;
+    boolean install( Artifact artifact, Package targetPackage, PackagingRule rule )
+        throws ArtifactInstallationException;
 }

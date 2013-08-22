@@ -36,7 +36,12 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.BuildSettings;
+import org.fedoraproject.maven.resolver.ResolutionRequest;
+import org.fedoraproject.maven.resolver.ResolutionResult;
+import org.fedoraproject.maven.resolver.Resolver;
 
 /**
  * @author Mikolaj Izdebski
@@ -88,28 +93,40 @@ public class DependencyExtractor
         }
     }
 
-    private static void generateEffectiveRequires( Model model, DependencyVisitor visitor, String[] scopes )
+    private static void generateEffectiveRequires( Resolver resolver, Model model, DependencyVisitor visitor,
+                                                   String[] scopes )
     {
         for ( Dependency dep : model.getDependencies() )
         {
             String scope = dep.getScope();
             if ( Arrays.binarySearch( scopes, scope ) >= 0 )
-                visitor.visitRuntimeDependency( dep.getGroupId(), dep.getArtifactId() );
+            {
+                Artifact artifact =
+                    new DefaultArtifact( dep.getGroupId(), dep.getArtifactId(), dep.getClassifier(), dep.getType(),
+                                         dep.getVersion() );
+                ResolutionResult result = resolver.resolve( new ResolutionRequest( artifact ) );
+                if ( result.getArtifactFile() == null )
+                    throw new RuntimeException( "Unresolved artifact during dependency generation:" + artifact );
+                String resolvedVersion = result.getCompatVersion() != null ? result.getCompatVersion() : "SYSTEM";
+                artifact = artifact.setVersion( resolvedVersion );
+                visitor.visitRuntimeDependency( artifact );
+            }
         }
     }
 
-    public static void generateEffectiveRuntimeRequires( Model model, DependencyVisitor visitor )
+    public static void generateEffectiveRuntimeRequires( Resolver resolver, Model model, DependencyVisitor visitor )
     {
-        generateEffectiveRequires( model, visitor, runtimeScopes );
+        generateEffectiveRequires( resolver, model, visitor, runtimeScopes );
     }
 
-    public static void generateEffectiveBuildRequires( Model model, DependencyVisitor visitor, BuildSettings settings )
+    public static void generateEffectiveBuildRequires( Resolver resolver, Model model, DependencyVisitor visitor,
+                                                       BuildSettings settings )
     {
         String[] scopes = settings.isSkipTests() ? buildOnlyScopes : buildAndTestScopes;
-        generateEffectiveRequires( model, visitor, scopes );
+        generateEffectiveRequires( resolver, model, visitor, scopes );
     }
 
-    public static void generateRawRequires( Model model, DependencyVisitor visitor )
+    public static void generateRawRequires( Resolver resolver, Model model, DependencyVisitor visitor )
     {
         Parent parent = model.getParent();
         if ( parent != null )
@@ -117,7 +134,14 @@ public class DependencyExtractor
             String groupId = parent.getGroupId();
             if ( groupId == null )
                 groupId = model.getGroupId();
-            visitor.visitBuildDependency( groupId, parent.getArtifactId() );
+
+            Artifact artifact = new DefaultArtifact( groupId, parent.getArtifactId(), "pom", parent.getVersion() );
+            ResolutionResult result = resolver.resolve( new ResolutionRequest( artifact ) );
+            if ( result.getArtifactFile() == null )
+                throw new RuntimeException( "Unresolved artifact during dependency generation:" + artifact );
+            String resolvedVersion = result.getCompatVersion() != null ? result.getCompatVersion() : "SYSTEM";
+            artifact = artifact.setVersion( resolvedVersion );
+            visitor.visitBuildDependency( artifact );
         }
 
         if ( model.getPackaging().equals( "pom" ) && model.getBuild() != null )
@@ -127,7 +151,15 @@ public class DependencyExtractor
                 String groupId = plugin.getGroupId();
                 if ( groupId == null )
                     groupId = "org.apache.maven.plugins";
-                visitor.visitBuildDependency( groupId, plugin.getArtifactId() );
+
+                Artifact artifact =
+                    new DefaultArtifact( plugin.getGroupId(), plugin.getArtifactId(), "jar", plugin.getVersion() );
+                ResolutionResult result = resolver.resolve( new ResolutionRequest( artifact ) );
+                if ( result.getArtifactFile() == null )
+                    throw new RuntimeException( "Unresolved artifact during dependency generation:" + artifact );
+                String resolvedVersion = result.getCompatVersion() != null ? result.getCompatVersion() : "SYSTEM";
+                artifact = artifact.setVersion( resolvedVersion );
+                visitor.visitBuildDependency( artifact );
             }
         }
     }

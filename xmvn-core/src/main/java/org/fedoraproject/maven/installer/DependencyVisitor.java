@@ -17,14 +17,16 @@ package org.fedoraproject.maven.installer;
 
 import java.math.BigDecimal;
 
+import org.eclipse.aether.artifact.Artifact;
+
 /**
  * @author Mikolaj Izdebski
  */
 public interface DependencyVisitor
 {
-    void visitBuildDependency( String groupId, String artifactId );
+    void visitBuildDependency( Artifact dependencyArtifact );
 
-    void visitRuntimeDependency( String groupId, String artifactId );
+    void visitRuntimeDependency( Artifact dependencyArtifact );
 
     void visitJavaVersionDependency( BigDecimal javaVersion );
 }

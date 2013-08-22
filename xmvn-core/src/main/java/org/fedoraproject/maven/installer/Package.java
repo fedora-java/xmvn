@@ -17,7 +17,6 @@ package org.fedoraproject.maven.installer;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
 
 import org.fedoraproject.maven.config.PackagingRule;
 
@@ -28,16 +27,7 @@ public interface Package
 {
     FragmentFile getMetadata();
 
-    void addPomFile( Path file, Path jppGroupId, Path jppArtifactId )
-        throws IOException;
-
-    void addEffectivePomFile( Path file, Path jppGroupId, Path jppArtifactId )
-        throws IOException;
-
     void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
                         PackagingRule rule )
-        throws IOException;
-
-    void addJarFile( Path file, Path baseName, Collection<Path> symlinks )
         throws IOException;
 }

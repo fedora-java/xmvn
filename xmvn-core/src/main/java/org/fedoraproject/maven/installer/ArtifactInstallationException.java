@@ -18,32 +18,32 @@ package org.fedoraproject.maven.installer;
 /**
  * @author Mikolaj Izdebski
  */
-public class ProjectInstallationException
+public class ArtifactInstallationException
     extends Exception
 {
     private static final long serialVersionUID = 1;
 
-    public ProjectInstallationException()
+    public ArtifactInstallationException()
     {
     }
 
-    public ProjectInstallationException( String message )
+    public ArtifactInstallationException( String message )
     {
         super( message );
     }
 
-    public ProjectInstallationException( Throwable cause )
+    public ArtifactInstallationException( Throwable cause )
     {
         super( cause );
     }
 
-    public ProjectInstallationException( String message, Throwable cause )
+    public ArtifactInstallationException( String message, Throwable cause )
     {
         super( message, cause );
     }
 
-    public ProjectInstallationException( String message, Throwable cause, boolean enableSuppression,
-                                         boolean writableStackTrace )
+    public ArtifactInstallationException( String message, Throwable cause, boolean enableSuppression,
+                                          boolean writableStackTrace )
     {
         super( message, cause, enableSuppression, writableStackTrace );
     }
