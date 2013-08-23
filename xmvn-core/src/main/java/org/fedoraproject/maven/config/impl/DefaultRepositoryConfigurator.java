@@ -57,24 +57,21 @@ public class DefaultRepositoryConfigurator
     @Override
     public Repository configureRepository( String repoId )
     {
-        Properties properties = null;
-        Xpp3Dom configurationXml = null;
-        String type = null;
-        List<Stereotype> stereotypes = null;
-
         org.fedoraproject.maven.config.Repository desc = findDescriptor( repoId );
         if ( desc == null )
             throw new RuntimeException( "Repository '" + repoId + "' is not configured." );
 
-        properties = desc.getProperties();
-        configurationXml = (Xpp3Dom) desc.getConfiguration();
-        type = desc.getType();
-        stereotypes = desc.getStereotypes();
+        Properties properties = desc.getProperties();
 
-        if ( type == null )
-            throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
+        Xpp3Dom configurationXml = (Xpp3Dom) desc.getConfiguration();
         if ( configurationXml == null )
             configurationXml = new Xpp3Dom( "configuration" );
+
+        String type = desc.getType();
+        if ( type == null )
+            throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
+
+        List<Stereotype> stereotypes = desc.getStereotypes();
 
         try
         {

@@ -53,6 +53,7 @@ import org.fedoraproject.maven.installer.DefaultPackage;
 import org.fedoraproject.maven.installer.DependencyExtractor;
 import org.fedoraproject.maven.installer.Installer;
 import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.repository.RepositoryPath;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.LoggingUtils;
@@ -203,10 +204,11 @@ public class InstallMojo
                 new DefaultArtifact( jppGroup.toString(), jppName.toString(), artifact.getClassifier(),
                                      artifact.getExtension(), "SYSTEM" );
 
-            Path jppArtifactPath = installRepo.getPrimaryArtifactPath( jppArtifact );
+            RepositoryPath jppArtifactPath = installRepo.getPrimaryArtifactPath( jppArtifact );
             if ( jppArtifactPath == null )
                 return null;
-            jppArtifact = jppArtifact.setFile( jppArtifactPath.toFile() );
+            jppArtifact = jppArtifact.setFile( jppArtifactPath.getPath().toFile() );
+            jppArtifact = ArtifactUtils.setScope( jppArtifact, jppArtifactPath.getRepository().getNamespace() );
 
             jppArtifacts.add( jppArtifact );
         }
@@ -225,7 +227,8 @@ public class InstallMojo
         logger.info( "  extension: " + artifact.getExtension() );
         logger.info( " classifier: " + artifact.getClassifier() );
         logger.info( "    version: " + artifact.getVersion() );
-        logger.info( " stereotype: " + artifact.getProperty( "xmvn.stereotype", "" ) );
+        logger.info( " stereotype: " + ArtifactUtils.getStereotype( artifact ) );
+        logger.info( "  namespace: " + ArtifactUtils.getScope( artifact ) );
         logger.info( "       file: " + artifact.getFile() );
         for ( Artifact jppArtifact : jppArtifacts )
         {
@@ -235,7 +238,8 @@ public class InstallMojo
             logger.info( "  extension: " + jppArtifact.getExtension() );
             logger.info( " classifier: " + jppArtifact.getClassifier() );
             logger.info( "    version: " + jppArtifact.getVersion() );
-            logger.info( " stereotype: " + jppArtifact.getProperty( "xmvn.stereotype", "" ) );
+            logger.info( " stereotype: " + ArtifactUtils.getStereotype( jppArtifact ) );
+            logger.info( "  namespace: " + ArtifactUtils.getScope( jppArtifact ) );
             logger.info( "       file: " + jppArtifact.getFile() );
         }
         logger.info( "===============================================" );
@@ -244,9 +248,10 @@ public class InstallMojo
         Artifact primaryJppArtifact = jppIterator.next();
         pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );
 
-        pkg.getMetadata().addMapping( artifact, primaryJppArtifact );
+        String namespace = ArtifactUtils.getScope( primaryJppArtifact );
+        pkg.getMetadata().addMapping( ArtifactUtils.setScope( artifact, namespace ), primaryJppArtifact );
         for ( Artifact alias : aliases )
-            pkg.getMetadata().addMapping( alias, primaryJppArtifact );
+            pkg.getMetadata().addMapping( ArtifactUtils.setScope( alias, namespace ), primaryJppArtifact );
 
         while ( jppIterator.hasNext() )
         {
@@ -269,7 +274,7 @@ public class InstallMojo
 
     private void installRawPom( DefaultPackage pkg, Path source, Artifact jppArtifact )
     {
-        Path target = rawPomRepo.getPrimaryArtifactPath( jppArtifact );
+        Path target = rawPomRepo.getPrimaryArtifactPath( jppArtifact ).getPath();
         pkg.addFile( source, target, 0644 );
     }
 
@@ -280,7 +285,7 @@ public class InstallMojo
         DependencyExtractor.simplifyEffectiveModel( model );
         DependencyExtractor.writeModel( model, source );
 
-        Path target = effectivePomRepo.getPrimaryArtifactPath( jppArtifact );
+        Path target = effectivePomRepo.getPrimaryArtifactPath( jppArtifact ).getPath();
         pkg.addFile( source, target, 0644 );
     }
 

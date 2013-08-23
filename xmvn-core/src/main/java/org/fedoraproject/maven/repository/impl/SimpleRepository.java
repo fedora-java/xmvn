@@ -27,6 +27,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.Stereotype;
 import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.repository.RepositoryPath;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
@@ -36,6 +37,8 @@ abstract class SimpleRepository
     implements Repository
 {
     private Path root;
+
+    private String namespace;
 
     private final List<Stereotype> stereotypes = new ArrayList<>();
 
@@ -60,7 +63,7 @@ abstract class SimpleRepository
     }
 
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
     {
         if ( !matchesStereotypes( artifact ) )
             return null;
@@ -74,26 +77,29 @@ abstract class SimpleRepository
             version = null;
 
         Path path = getArtifactPath( groupId, artifactId, extension, classifier, version );
-        if ( path != null && root != null )
+        if ( path == null )
+            return null;
+
+        if ( root != null )
             path = root.resolve( path );
 
-        return path;
+        return new DefaultRepositoryPath( path, this );
     }
 
     @Override
-    public List<Path> getArtifactPaths( Artifact artifact )
+    public List<RepositoryPath> getArtifactPaths( Artifact artifact )
     {
         return getArtifactPaths( Collections.singletonList( artifact ) );
     }
 
     @Override
-    public List<Path> getArtifactPaths( List<Artifact> artifacts )
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
     {
-        List<Path> paths = new ArrayList<>();
+        List<RepositoryPath> paths = new ArrayList<>();
 
         for ( Artifact artifact : artifacts )
         {
-            Path path = getPrimaryArtifactPath( artifact );
+            RepositoryPath path = getPrimaryArtifactPath( artifact );
             if ( path != null )
                 paths.add( path );
         }
@@ -106,7 +112,22 @@ abstract class SimpleRepository
     {
         String rootProperty = properties.getProperty( "root" );
         root = rootProperty != null ? Paths.get( rootProperty ) : null;
+
+        namespace = properties.getProperty( "namespace", "" );
+
         this.stereotypes.clear();
         this.stereotypes.addAll( stereotypes );
+    }
+
+    @Override
+    public String getNamespace()
+    {
+        return namespace;
+    }
+
+    @Override
+    public void setNamespace( String namespace )
+    {
+        this.namespace = namespace;
     }
 }

@@ -25,11 +25,13 @@ import java.util.Properties;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.config.Stereotype;
 import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.repository.RepositoryPath;
 
 /**
  * Compound repository.
@@ -49,6 +51,8 @@ public class CompoundRepository
     private RepositoryConfigurator configurator;
 
     private Path prefix;
+
+    private String namespace;
 
     private final List<Repository> slaveRepositories = new ArrayList<>();
 
@@ -71,30 +75,55 @@ public class CompoundRepository
             Repository slaveRepository = configurator.configureRepository( child.getValue().trim() );
             slaveRepositories.add( slaveRepository );
         }
+
+        setNamespace( properties.getProperty( "namespace", "" ) );
     }
 
     @Override
-    public List<Path> getArtifactPaths( Artifact artifact )
+    public List<RepositoryPath> getArtifactPaths( Artifact artifact )
     {
         return getArtifactPaths( Collections.singletonList( artifact ) );
     }
 
     @Override
-    public List<Path> getArtifactPaths( List<Artifact> artifacts )
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
     {
-        List<Path> paths = new ArrayList<>();
+        List<RepositoryPath> paths = new ArrayList<>();
         for ( Repository repository : slaveRepositories )
         {
-            for ( Path path : repository.getArtifactPaths( artifacts ) )
-                paths.add( prefix != null ? prefix.resolve( path ) : path );
+            for ( RepositoryPath path : repository.getArtifactPaths( artifacts ) )
+            {
+                DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
+                if ( prefix != null )
+                    newPath.setPath( prefix.resolve( path.getPath() ) );
+                paths.add( newPath );
+            }
         }
         return Collections.unmodifiableList( paths );
     }
 
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
     {
-        Iterator<Path> it = getArtifactPaths( artifact ).iterator();
+        Iterator<RepositoryPath> it = getArtifactPaths( artifact ).iterator();
         return it.hasNext() ? it.next() : null;
+    }
+
+    @Override
+    public String getNamespace()
+    {
+        return namespace;
+    }
+
+    @Override
+    public void setNamespace( String namespace )
+    {
+        this.namespace = namespace;
+
+        if ( StringUtils.isNotEmpty( namespace ) )
+        {
+            for ( Repository slave : slaveRepositories )
+                slave.setNamespace( namespace );
+        }
     }
 }

@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 
@@ -43,23 +42,37 @@ public class MyRepository
     }
 
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
     {
         fail( "getPrimaryArtifactPath() was not expected to be called" );
         throw null;
     }
 
     @Override
-    public List<Path> getArtifactPaths( Artifact artifact )
+    public List<RepositoryPath> getArtifactPaths( Artifact artifact )
     {
         fail( "getArtifactPaths() was not expected to be called" );
         throw null;
     }
 
     @Override
-    public List<Path> getArtifactPaths( List<Artifact> artifact )
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifact )
     {
         fail( "getArtifactPaths() was not expected to be called" );
+        throw null;
+    }
+
+    @Override
+    public String getNamespace()
+    {
+        fail( "getNamespace was not expected to be called" );
+        throw null;
+    }
+
+    @Override
+    public void setNamespace( String namespace )
+    {
+        fail( "setNamespace was not expected to be called" );
         throw null;
     }
 }

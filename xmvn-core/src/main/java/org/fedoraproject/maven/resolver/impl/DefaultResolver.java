@@ -36,6 +36,7 @@ import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.config.ResolverSettings;
 import org.fedoraproject.maven.repository.Repository;
+import org.fedoraproject.maven.repository.RepositoryPath;
 import org.fedoraproject.maven.resolver.DependencyMap;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
 import org.fedoraproject.maven.resolver.ResolutionResult;
@@ -133,7 +134,7 @@ public class DefaultResolver
         if ( resolveFromBisectRepo() )
         {
             logger.debug( "Resolving artifact " + artifact + " from bisection repository." );
-            File artifactFile = bisectRepo.getPrimaryArtifactPath( artifact ).toFile();
+            File artifactFile = bisectRepo.getPrimaryArtifactPath( artifact ).getPath().toFile();
             return new DefaultResolutionResult( artifactFile, bisectRepo );
         }
 
@@ -158,7 +159,7 @@ public class DefaultResolver
             }
         }
 
-        Path path = null;
+        RepositoryPath path = null;
         String compatVersion = null;
 
         // TODO: this loop needs to be simplified not to use goto...
@@ -172,12 +173,12 @@ public class DefaultResolver
                     tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
                                                        jppArtifact.getClassifier(), artifact.getExtension(),
                                                        artifact.getVersion() ) );
-                for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
+                for ( RepositoryPath rp : systemRepo.getArtifactPaths( tempList ) )
                 {
-                    logger.debug( "Checking artifact path: " + pp );
-                    if ( Files.exists( pp ) )
+                    logger.debug( "Checking artifact path: " + rp.getPath() );
+                    if ( Files.exists( rp.getPath() ) )
                     {
-                        path = pp;
+                        path = rp;
                         break notFound;
                     }
                 }
@@ -190,12 +191,12 @@ public class DefaultResolver
                     tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
                                                        jppArtifact.getClassifier(), artifact.getExtension(),
                                                        ArtifactUtils.DEFAULT_VERSION ) );
-                for ( Path pp : systemRepo.getArtifactPaths( tempList ) )
+                for ( RepositoryPath rp : systemRepo.getArtifactPaths( tempList ) )
                 {
-                    logger.debug( "Checking artifact path: " + pp );
-                    if ( Files.exists( pp ) )
+                    logger.debug( "Checking artifact path: " + rp );
+                    if ( Files.exists( rp.getPath() ) )
                     {
-                        path = pp;
+                        path = rp;
                         break notFound;
                     }
                 }
@@ -206,13 +207,13 @@ public class DefaultResolver
         }
 
         logger.debug( "Artifact " + artifact + " was resolved to " + path );
-        DefaultResolutionResult result = new DefaultResolutionResult( path.toFile() );
+        DefaultResolutionResult result = new DefaultResolutionResult( path.getPath().toFile() );
         result.setCompatVersion( compatVersion );
-        result.setRepository( systemRepo );
+        result.setRepository( path.getRepository() );
 
         if ( request.isProviderNeeded() || settings.isDebug() )
         {
-            String rpmPackage = rpmdb.lookupFile( path.toFile() );
+            String rpmPackage = rpmdb.lookupFile( path.getPath().toFile() );
             if ( rpmPackage != null )
             {
                 result.setProvider( rpmPackage );

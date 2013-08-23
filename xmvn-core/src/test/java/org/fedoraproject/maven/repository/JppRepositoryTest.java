@@ -47,8 +47,8 @@ public class JppRepositoryTest
         assertNotNull( repo );
 
         Artifact artifact = new DefaultArtifact( "JPP/foo.bar:the-artifact:baz:1.2.3" );
-        assertEquals( Paths.get( "foo.bar/the-artifact-1.2.3.baz" ), repo.getPrimaryArtifactPath( artifact ) );
+        assertEquals( Paths.get( "foo.bar/the-artifact-1.2.3.baz" ), repo.getPrimaryArtifactPath( artifact ).getPath() );
         assertEquals( Paths.get( "foo.bar/the-artifact.baz" ),
-                      repo.getPrimaryArtifactPath( artifact.setVersion( "SYSTEM" ) ) );
+                      repo.getPrimaryArtifactPath( artifact.setVersion( "SYSTEM" ) ).getPath() );
     }
 }

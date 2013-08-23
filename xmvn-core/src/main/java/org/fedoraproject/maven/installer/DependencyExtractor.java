@@ -42,6 +42,7 @@ import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
 import org.fedoraproject.maven.resolver.ResolutionResult;
 import org.fedoraproject.maven.resolver.Resolver;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -109,6 +110,7 @@ public class DependencyExtractor
                     throw new RuntimeException( "Unresolved artifact during dependency generation:" + artifact );
                 String resolvedVersion = result.getCompatVersion() != null ? result.getCompatVersion() : "SYSTEM";
                 artifact = artifact.setVersion( resolvedVersion );
+                artifact = ArtifactUtils.setScope( artifact, result.getRepository().getNamespace() );
                 visitor.visitRuntimeDependency( artifact );
             }
         }
@@ -141,6 +143,7 @@ public class DependencyExtractor
                 throw new RuntimeException( "Unresolved artifact during dependency generation:" + artifact );
             String resolvedVersion = result.getCompatVersion() != null ? result.getCompatVersion() : "SYSTEM";
             artifact = artifact.setVersion( resolvedVersion );
+            artifact = ArtifactUtils.setScope( artifact, result.getRepository().getNamespace() );
             visitor.visitBuildDependency( artifact );
         }
 
@@ -159,6 +162,7 @@ public class DependencyExtractor
                     throw new RuntimeException( "Unresolved artifact during dependency generation:" + artifact );
                 String resolvedVersion = result.getCompatVersion() != null ? result.getCompatVersion() : "SYSTEM";
                 artifact = artifact.setVersion( resolvedVersion );
+                artifact = ArtifactUtils.setScope( artifact, result.getRepository().getNamespace() );
                 visitor.visitBuildDependency( artifact );
             }
         }

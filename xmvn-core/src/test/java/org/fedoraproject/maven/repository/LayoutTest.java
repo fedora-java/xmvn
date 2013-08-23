@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.repository;
 
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
@@ -49,10 +48,10 @@ public class LayoutTest
         Set<String> actual = new TreeSet<>();
 
         expected.addAll( Arrays.asList( result ) );
-        for ( Path path : repository.getArtifactPaths( artifact ) )
+        for ( RepositoryPath path : repository.getArtifactPaths( artifact ) )
         {
             assertNotNull( path );
-            actual.add( path.toString() );
+            actual.add( path.getPath().toString() );
         }
 
         assertEquals( expected, actual );

@@ -48,7 +48,7 @@ public class MavenRepositoryTest
 
         Artifact artifact = new DefaultArtifact( "foo.bar:the-artifact:baz:1.2.3" );
         assertEquals( Paths.get( "foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz" ),
-                      repo.getPrimaryArtifactPath( artifact ) );
+                      repo.getPrimaryArtifactPath( artifact ).getPath() );
         assertNull( repo.getPrimaryArtifactPath( artifact.setVersion( "SYSTEM" ) ) );
     }
 }
