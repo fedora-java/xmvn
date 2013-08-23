@@ -86,7 +86,7 @@
   </fileSets>
   <files>
     <file>
-      <source>target/dependency/apache-maven-${mavenVersion}/bin/mvn</source>
+      <source>src/main/bin/xmvn</source>
       <outputDirectory>bin</outputDirectory>
       <destName>xmvn</destName>
       <fileMode>0755</fileMode>
