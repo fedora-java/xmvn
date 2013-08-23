@@ -1,0 +1,4 @@
+This project won't compile with upstream Maven -- it uses generics,
+but declares source 1.4 (generics are supported since 1.5).  This
+project should however compile successfully with XMvn as it overrides
+default source setting.
