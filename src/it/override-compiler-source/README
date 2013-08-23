@@ -1,0 +1,4 @@
+This test uses `enum' as identifier, which is not supported in Java
+1.5.  This project is expected to fail with upstream Maven (as
+compiler source is set to 1.6) and succeed with XMvn (as special
+configuration sets source to 1.4).
