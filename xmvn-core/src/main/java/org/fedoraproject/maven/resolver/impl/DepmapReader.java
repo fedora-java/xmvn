@@ -129,16 +129,10 @@ class DepmapReader
 
         private final Artifact to;
 
-        public Mapping( String namespace, Artifact from, Artifact to )
+        public Mapping( Artifact from, Artifact to )
         {
-            from =
-                new DefaultArtifact( from.getGroupId(), from.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
-                                     ArtifactUtils.DEFAULT_VERSION );
-            to =
-                new DefaultArtifact( to.getGroupId(), to.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
-                                     ArtifactUtils.DEFAULT_VERSION );
-            this.from = ArtifactUtils.setScope( from, namespace );
-            this.to = ArtifactUtils.setScope( to, namespace );
+            this.from = from;
+            this.to = to;
         }
 
         public void addToDepmap( DependencyMap depmap )
@@ -176,14 +170,7 @@ class DepmapReader
 
                 Artifact to = getArtifactDefinition( depNode, "jpp" );
 
-                NodeList nodes = depNode.getElementsByTagName( "namespace" );
-                if ( nodes.getLength() > 1 )
-                    throw new IOException();
-                String namespace = null;
-                if ( nodes.getLength() != 0 )
-                    namespace = nodes.item( 0 ).getTextContent().trim();
-
-                mappings.add( new Mapping( namespace, from, to ) );
+                mappings.add( new Mapping( from, to ) );
             }
 
             return mappings;
@@ -248,30 +235,34 @@ class DepmapReader
             throws IOException
         {
             NodeList jppNodeList = root.getElementsByTagName( childTag );
-
             if ( jppNodeList.getLength() == 0 )
                 return ArtifactUtils.DUMMY;
 
             Element element = (Element) jppNodeList.item( 0 );
 
-            NodeList nodes = element.getElementsByTagName( "groupId" );
-            if ( nodes.getLength() != 1 )
-                throw new IOException();
-            String groupId = nodes.item( 0 ).getTextContent().trim();
+            String groupId = getValue( element, "groupId", null );
+            String artifactId = getValue( element, "artifactId", null );
+            String extension = getValue( element, "extension", "jar" );
+            String classifier = getValue( element, "classifier", "" );
+            String verision = "SYSTEM";
 
-            nodes = element.getElementsByTagName( "artifactId" );
-            if ( nodes.getLength() != 1 )
-                throw new IOException();
-            String artifactId = nodes.item( 0 ).getTextContent().trim();
+            return new DefaultArtifact( groupId, artifactId, classifier, extension, verision );
+        }
 
-            nodes = element.getElementsByTagName( "version" );
+        private String getValue( Element parent, String tag, String defaultValue )
+            throws IOException
+        {
+            NodeList nodes = parent.getElementsByTagName( tag );
             if ( nodes.getLength() > 1 )
-                throw new IOException();
-            String version = null;
-            if ( nodes.getLength() != 0 )
-                version = nodes.item( 0 ).getTextContent().trim();
+                throw new IOException( "At most one <" + tag + "> element is allowed" );
 
-            return new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version );
+            String value = defaultValue;
+            if ( nodes.getLength() > 0 )
+                value = nodes.item( 0 ).getTextContent().trim();
+            if ( value == null )
+                throw new IOException( "Exactly one <" + tag + "> element is required" );
+
+            return value;
         }
     }
 }

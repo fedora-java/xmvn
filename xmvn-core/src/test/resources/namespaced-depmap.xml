@@ -2,26 +2,28 @@
 <dependencyMap>
   <requiresJava>1.6</requiresJava>
   <dependency>
-    <namespace>my-ns</namespace>
     <maven>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
+      <namespace>my-ns</namespace>
     </maven>
     <jpp>
       <groupId>JPP</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
+      <namespace>my-ns</namespace>
     </jpp>
   </dependency>
   <dependency>
-    <namespace>some-other-namespace</namespace>
     <maven>
+      <namespace>some-other-namespace</namespace>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
     </maven>
     <jpp>
+      <namespace>some-other-namespace</namespace>
       <groupId>JPP</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.4</version>
