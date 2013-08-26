@@ -104,7 +104,7 @@ public class DefaultDependencyMap
             new DefaultArtifact( from.getGroupId(), from.getArtifactId(), from.getClassifier(), from.getExtension(),
                                  ArtifactUtils.DEFAULT_VERSION );
         to =
-            new DefaultArtifact( to.getGroupId(), to.getArtifactId(), from.getClassifier(), from.getExtension(),
+            new DefaultArtifact( to.getGroupId(), to.getArtifactId(), to.getClassifier(), to.getExtension(),
                                  ArtifactUtils.DEFAULT_VERSION );
 
         try

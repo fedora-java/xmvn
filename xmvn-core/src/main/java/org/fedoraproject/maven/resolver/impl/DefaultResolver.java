@@ -19,11 +19,14 @@ import static org.fedoraproject.maven.utils.FileUtils.followSymlink;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
@@ -110,48 +113,70 @@ public class DefaultResolver
         systemRepo = repositoryConfigurator.configureRepository( "resolve" );
     }
 
-    private boolean resolveFromBisectRepo()
+    private DefaultResolutionResult tryResolveFromBisectRepo( Artifact artifact )
     {
-        if ( bisectCounter == null || bisectRepo == null )
-            return false;
-
         try
         {
-            return bisectCounter.tryDecrement() > 0;
+            if ( bisectCounter == null || bisectRepo == null || bisectCounter.tryDecrement() == 0 )
+                return null;
+
+            File artifactFile = bisectRepo.getPrimaryArtifactPath( artifact ).getPath().toFile();
+            if ( artifactFile.exists() )
+                return new DefaultResolutionResult( artifactFile, bisectRepo );
+
+            return new DefaultResolutionResult();
         }
         catch ( IOException e )
         {
-            logger.fatalError( "Failed to decrement bisection counter", e );
             throw new RuntimeException( e );
         }
     }
 
-    @Override
-    public ResolutionResult resolve( ResolutionRequest request )
+    /**
+     * Translate artifact to list of JPP artifacts (there may be more than one JPP artifacts if there are multiple
+     * depmap entries for the same artifact, like when two packages install the same artifact, but different version).
+     * Depmaps are always versionless, so use versionless artifact. Returned JPP artifacts are also versionless.
+     * 
+     * @param artifact Maven artifact to translate
+     * @return list of versionless JPP artifacts corresponding to given artifact
+     */
+    private List<Artifact> getJppArtifactList( Artifact artifact )
     {
-        Artifact artifact = request.getArtifact();
+        Artifact versionlessArtifact = artifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+        Set<Artifact> jppArtifacts = new LinkedHashSet<>( depmap.translate( versionlessArtifact ) );
 
-        if ( resolveFromBisectRepo() )
+        // For POM artifacts besides standard mapping we need to use backwards-compatible mappings too. We set extension
+        // to "jar", translate the artifact using depmaps and set extensions back to "pom".
+        if ( artifact.getExtension().equals( "pom" ) )
         {
-            logger.debug( "Resolving artifact " + artifact + " from bisection repository." );
-            File artifactFile = bisectRepo.getPrimaryArtifactPath( artifact ).getPath().toFile();
-            return new DefaultResolutionResult( artifactFile, bisectRepo );
+            Artifact jarArtifact =
+                new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(), "jar",
+                                     ArtifactUtils.DEFAULT_VERSION );
+            for ( Artifact jppJarArtifact : depmap.translate( jarArtifact ) )
+            {
+                Artifact jppPomArtifact =
+                    new DefaultArtifact( jppJarArtifact.getGroupId(), jppJarArtifact.getArtifactId(),
+                                         jppJarArtifact.getClassifier(), "pom", ArtifactUtils.DEFAULT_VERSION );
+                jppArtifacts.add( jppPomArtifact );
+            }
         }
 
-        logger.debug( "Trying to resolve artifact " + artifact );
+        return new ArrayList<>( jppArtifacts );
+    }
 
-        List<Artifact> jppList =
-            depmap.translate( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
-                                                   ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION ) );
-
+    private DefaultResolutionResult tryResolveFromJavaHome( List<Artifact> jppArtifacts )
+    {
         String javaHome = System.getProperty( "java.home" );
-        Path javaHomeDir = followSymlink( new File( javaHome != null ? javaHome : "." ) ).toPath();
+        if ( javaHome == null )
+            return null;
 
-        for ( Artifact aa : jppList )
+        Path javaHomeDir = followSymlink( new File( javaHome ) ).toPath();
+
+        for ( Artifact jppArtifact : jppArtifacts )
         {
-            if ( aa.getGroupId().equals( "JAVA_HOME" ) && javaHome != null )
+            if ( jppArtifact.getGroupId().equals( "JAVA_HOME" ) )
             {
-                Path artifactPath = Paths.get( aa.getArtifactId() + "." + artifact.getExtension() );
+                Path artifactPath = Paths.get( jppArtifact.getArtifactId() + "." + jppArtifact.getExtension() );
                 File artifactFile = javaHomeDir.resolve( artifactPath ).toFile();
                 artifactFile = followSymlink( artifactFile );
                 if ( artifactFile.exists() )
@@ -159,71 +184,61 @@ public class DefaultResolver
             }
         }
 
-        RepositoryPath path = null;
-        String compatVersion = null;
+        return null;
+    }
 
-        // TODO: this loop needs to be simplified not to use goto...
-        notFound: for ( ;; )
+    private DefaultResolutionResult tryResolveFromConfiguredRepos( List<Artifact> jppArtifacts, String requestedVersion )
+    {
+        List<String> versionList = Arrays.asList( requestedVersion, ArtifactUtils.DEFAULT_VERSION );
+        Set<String> orderedVersionSet = new LinkedHashSet<>( versionList );
+
+        for ( String version : orderedVersionSet )
         {
-            if ( !artifact.getVersion().equals( ArtifactUtils.DEFAULT_VERSION ) )
+            for ( ListIterator<Artifact> it = jppArtifacts.listIterator(); it.hasNext(); )
+                it.set( it.next().setVersion( version ) );
+
+            for ( RepositoryPath repoPath : systemRepo.getArtifactPaths( jppArtifacts ) )
             {
-                List<Artifact> tempList = new ArrayList<>();
-                compatVersion = artifact.getVersion();
-                for ( Artifact jppArtifact : jppList )
-                    tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
-                                                       jppArtifact.getClassifier(), artifact.getExtension(),
-                                                       artifact.getVersion() ) );
-                for ( RepositoryPath rp : systemRepo.getArtifactPaths( tempList ) )
+                File artifactFile = repoPath.getPath().toFile();
+                logger.debug( "Checking artifact path: " + artifactFile );
+                if ( artifactFile.exists() )
                 {
-                    logger.debug( "Checking artifact path: " + rp.getPath() );
-                    if ( Files.exists( rp.getPath() ) )
-                    {
-                        path = rp;
-                        break notFound;
-                    }
+                    DefaultResolutionResult result = new DefaultResolutionResult( artifactFile );
+                    result.setCompatVersion( version );
+                    result.setRepository( repoPath.getRepository() );
+                    return result;
                 }
             }
+        }
 
-            {
-                List<Artifact> tempList = new ArrayList<>();
-                compatVersion = null;
-                for ( Artifact jppArtifact : jppList )
-                    tempList.add( new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
-                                                       jppArtifact.getClassifier(), artifact.getExtension(),
-                                                       ArtifactUtils.DEFAULT_VERSION ) );
-                for ( RepositoryPath rp : systemRepo.getArtifactPaths( tempList ) )
-                {
-                    logger.debug( "Checking artifact path: " + rp );
-                    if ( Files.exists( rp.getPath() ) )
-                    {
-                        path = rp;
-                        break notFound;
-                    }
-                }
-            }
+        return null;
+    }
 
-            logger.debug( "Failed to resolve artifact " + artifact );
+    @Override
+    public ResolutionResult resolve( ResolutionRequest request )
+    {
+        Artifact artifact = request.getArtifact();
+        logger.debug( "Trying to resolve artifact " + artifact );
+
+        List<Artifact> jppArtifacts = getJppArtifactList( artifact );
+        logger.debug( "JPP artifacts considered during resolution: " + ArtifactUtils.collectionToString( jppArtifacts ) );
+
+        DefaultResolutionResult result = tryResolveFromBisectRepo( artifact );
+        if ( result == null )
+            result = tryResolveFromJavaHome( jppArtifacts );
+        if ( result == null )
+            result = tryResolveFromConfiguredRepos( jppArtifacts, artifact.getVersion() );
+
+        if ( result == null )
+        {
+            logger.warn( "Failed to resolve artifact: " + artifact );
             return new DefaultResolutionResult();
         }
 
-        logger.debug( "Artifact " + artifact + " was resolved to " + path );
-        DefaultResolutionResult result = new DefaultResolutionResult( path.getPath().toFile() );
-        result.setCompatVersion( compatVersion );
-        result.setRepository( path.getRepository() );
-
-        if ( request.isProviderNeeded() || settings.isDebug() )
-        {
-            String rpmPackage = rpmdb.lookupFile( path.getPath().toFile() );
-            if ( rpmPackage != null )
-            {
-                result.setProvider( rpmPackage );
-                logger.debug( "Artifact " + artifact + " is provided by " + rpmPackage );
-            }
-            else
-            {
-                logger.debug( "Artifact " + artifact + " is not provided by any package" );
-            }
-        }
+        File artifactFile = result.getArtifactFile();
+        logger.debug( "Artifact " + artifact + " was resolved to " + artifactFile );
+        if ( request.isProviderNeeded() )
+            result.setProvider( rpmdb.lookupFile( artifactFile ) );
 
         return result;
     }
