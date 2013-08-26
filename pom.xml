@@ -150,8 +150,8 @@
           <settingsFile>src/it/settings.xml</settingsFile>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <postBuildHookScript>verify</postBuildHookScript>
-	  <mavenHome>${project.build.directory}/dependency/${project.artifactId}-${project.version}</mavenHome>
-	  <mavenExecutable>xmvn</mavenExecutable>
+          <mavenHome>${project.build.directory}/dependency/${project.artifactId}-${project.version}</mavenHome>
+          <mavenExecutable>xmvn</mavenExecutable>
         </configuration>
         <executions>
           <execution>
