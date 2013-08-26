@@ -142,10 +142,10 @@ public class DefaultDependencyMap
 
                 logger.debug( "Artifact " + parent + " was mapped to " + child );
                 walk( map, visited, resolved, child );
+                resolved.add( child );
             }
         }
 
-        resolved.add( parent );
         visited.remove( parent );
     }
 

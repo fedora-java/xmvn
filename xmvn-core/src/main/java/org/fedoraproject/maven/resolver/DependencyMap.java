@@ -33,8 +33,8 @@ public interface DependencyMap
     void addMapping( Artifact from, Artifact to );
 
     /**
-     * Compute a list of artifacts reachable from given start artifact in a reflective transitive closure of dependency
-     * graph. The list is in depth-first order. The list is never empty because it always contains the given artifact.
+     * Compute a list of artifacts reachable from given start artifact in a transitive closure of dependency graph. The
+     * list is in depth-first order.
      * 
      * @param artifact start point of depth-first search
      * @return list of artifacts to which given artifact can be mapped

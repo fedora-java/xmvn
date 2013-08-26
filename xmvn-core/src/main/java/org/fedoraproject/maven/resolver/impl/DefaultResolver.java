@@ -222,6 +222,7 @@ public class DefaultResolver
 
         List<Artifact> jppArtifacts = getJppArtifactList( artifact );
         logger.debug( "JPP artifacts considered during resolution: " + ArtifactUtils.collectionToString( jppArtifacts ) );
+        jppArtifacts.add( artifact );
 
         DefaultResolutionResult result = tryResolveFromBisectRepo( artifact );
         if ( result == null )

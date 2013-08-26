@@ -71,8 +71,7 @@ public class DepmapTest
         assertTrue( depmap.isEmpty() );
         Artifact fooBar = new DefaultArtifact( "foo:bar:SYSTEM" );
         List<Artifact> translationResult = depmap.translate( fooBar );
-        assertEquals( translationResult.size(), 1 );
-        assertTrue( translationResult.contains( fooBar ) );
+        assertTrue( translationResult.isEmpty() );
     }
 
     /**
