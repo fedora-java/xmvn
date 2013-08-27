@@ -78,7 +78,7 @@
     <jcommanderVersion>1.30</jcommanderVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
     <mavenVersion>3.1.0</mavenVersion>
-    <plexusUtilsVersion>3.0.14</plexusUtilsVersion>
+    <plexusUtilsVersion>3.0.15</plexusUtilsVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
     <sisuVersion>0.0.0.M5</sisuVersion>
