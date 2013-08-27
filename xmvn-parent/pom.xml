@@ -92,6 +92,7 @@
     <dependencyPluginVersion>2.8</dependencyPluginVersion>
     <deployPluginVersion>2.7</deployPluginVersion>
     <installPluginVersion>2.4</installPluginVersion>
+    <invokerPluginVersion>1.8</invokerPluginVersion>
     <jarPluginVersion>2.4</jarPluginVersion>
     <javadocPluginVersion>2.9.1</javadocPluginVersion>
     <junitVersion>4.11</junitVersion>
@@ -252,6 +253,10 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefireVersion}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-invoker-plugin</artifactId>
+          <version>${invokerPluginVersion}</version>
         </plugin>
         <!-- This plugin's configuration is used to store Eclipse m2e settings
              only. It has no influence on the Maven build itself. -->
