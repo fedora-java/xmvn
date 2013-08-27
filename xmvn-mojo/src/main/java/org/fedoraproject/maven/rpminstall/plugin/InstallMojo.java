@@ -23,8 +23,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
@@ -183,34 +185,41 @@ public class InstallMojo
 
     private List<Artifact> getJppArtifacts( Artifact artifact, PackagingRule rule )
     {
-        List<Path> extraList = new ArrayList<>( rule.getFiles().size() );
+        Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
-            extraList.add( Paths.get( fileName ) );
+            basePaths.add( Paths.get( fileName ) );
+        if ( basePaths.isEmpty() )
+            basePaths.add( Paths.get( settings.getPackageName() + "/" + artifact.getArtifactId() ) );
 
-        if ( extraList.isEmpty() )
-            extraList.add( Paths.get( settings.getPackageName() + "/" + artifact.getArtifactId() ) );
+        Set<String> versions = new LinkedHashSet<>();
+        for ( String version : rule.getVersions() )
+            versions.add( version );
+        if ( versions.isEmpty() )
+            versions.add( "SYSTEM" );
 
         List<Artifact> jppArtifacts = new ArrayList<>();
 
-        for ( Path basePath : extraList )
+        for ( Path basePath : basePaths )
         {
             Path jppName = basePath.getFileName();
             Path jppGroup = Paths.get( "JPP" );
             if ( basePath.getParent() != null )
                 jppGroup = jppGroup.resolve( basePath.getParent() );
 
-            // TODO: if compat package then set version to real version, not SYSTEM
-            Artifact jppArtifact =
-                new DefaultArtifact( jppGroup.toString(), jppName.toString(), artifact.getClassifier(),
-                                     artifact.getExtension(), "SYSTEM" );
+            for ( String version : versions )
+            {
+                Artifact jppArtifact =
+                    new DefaultArtifact( jppGroup.toString(), jppName.toString(), artifact.getClassifier(),
+                                         artifact.getExtension(), version );
 
-            RepositoryPath jppArtifactPath = installRepo.getPrimaryArtifactPath( jppArtifact );
-            if ( jppArtifactPath == null )
-                return null;
-            jppArtifact = jppArtifact.setFile( jppArtifactPath.getPath().toFile() );
-            jppArtifact = ArtifactUtils.setScope( jppArtifact, jppArtifactPath.getRepository().getNamespace() );
+                RepositoryPath jppArtifactPath = installRepo.getPrimaryArtifactPath( jppArtifact );
+                if ( jppArtifactPath == null )
+                    return null;
+                jppArtifact = jppArtifact.setFile( jppArtifactPath.getPath().toFile() );
+                jppArtifact = ArtifactUtils.setScope( jppArtifact, jppArtifactPath.getRepository().getNamespace() );
 
-            jppArtifacts.add( jppArtifact );
+                jppArtifacts.add( jppArtifact );
+            }
         }
 
         return jppArtifacts;
@@ -248,15 +257,18 @@ public class InstallMojo
         Artifact primaryJppArtifact = jppIterator.next();
         pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );
 
-        String namespace = ArtifactUtils.getScope( primaryJppArtifact );
-        pkg.getMetadata().addMapping( ArtifactUtils.setScope( artifact, namespace ), primaryJppArtifact );
-        for ( Artifact alias : aliases )
-            pkg.getMetadata().addMapping( ArtifactUtils.setScope( alias, namespace ), primaryJppArtifact );
-
         while ( jppIterator.hasNext() )
         {
             Artifact jppSymlinkArtifact = jppIterator.next();
             pkg.addSymlink( jppSymlinkArtifact.getFile().toPath(), primaryJppArtifact.getFile().toPath() );
+        }
+
+        for ( Artifact jppArtifact : jppArtifacts )
+        {
+            String namespace = ArtifactUtils.getScope( jppArtifact );
+            pkg.getMetadata().addMapping( ArtifactUtils.setScope( artifact, namespace ), jppArtifact );
+            for ( Artifact alias : aliases )
+                pkg.getMetadata().addMapping( ArtifactUtils.setScope( alias, namespace ), jppArtifact );
         }
     }
 

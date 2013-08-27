@@ -148,6 +148,13 @@ public class EffectivePackagingRule
             if ( !getFiles().contains( file ) )
                 addFile( file );
         }
+
+        for ( String version : rule.getVersions() )
+        {
+            version = expandBackreferences( matchers, version );
+            if ( !getVersions().contains( version ) )
+                addVersion( version );
+        }
     }
 
     /**

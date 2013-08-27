@@ -245,6 +245,15 @@
           </association>
         </field>
         <field>
+          <name>versions</name>
+          <version>0.6.0+</version>
+          <description>Compatibility versions of the artifact.</description>
+          <association xml.tagName="version">
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
+        <field>
           <name>aliases</name>
           <version>0.4.0+</version>
           <description>Alternative identifiers of artifacts.</description>
