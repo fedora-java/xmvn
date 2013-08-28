@@ -48,7 +48,7 @@ public class DefaultPackage
 
     private static final String NOINSTALL_SUFFIX = "__noinstall";
 
-    private final boolean pureDevelPackage = true;
+    private boolean pureDevelPackage = true;
 
     private final InstallerSettings settings;
 
@@ -202,5 +202,10 @@ public class DefaultPackage
     public int compareTo( DefaultPackage rhs )
     {
         return suffix.compareTo( rhs.suffix );
+    }
+
+    public void setPureDevelPackage( boolean pureDevelPackage )
+    {
+        this.pureDevelPackage = pureDevelPackage;
     }
 }

@@ -353,6 +353,7 @@ public class InstallMojo
 
         if ( !isPomArtifact )
         {
+            pkg.setPureDevelPackage( false );
             installPomFiles( pkg, project, jppArtifacts );
             generateUserRequires( pkg, project );
         }
