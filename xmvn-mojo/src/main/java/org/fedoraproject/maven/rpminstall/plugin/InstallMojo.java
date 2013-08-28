@@ -201,6 +201,10 @@ public class InstallMojo
 
         for ( Path basePath : basePaths )
         {
+            if ( basePath.isAbsolute() )
+                throw new RuntimeException( "Absolute JPP artifact paths are not supported: artifact: " + artifact
+                    + ", path: " + basePath );
+
             Path jppName = basePath.getFileName();
             Path jppGroup = Paths.get( "JPP" );
             if ( basePath.getParent() != null )
@@ -241,6 +245,7 @@ public class InstallMojo
         logger.info( "       file: " + artifact.getFile() );
         for ( Artifact jppArtifact : jppArtifacts )
         {
+            logger.info( "-----------------------------------------------" );
             logger.info( "TARGET ARTIFACT:" );
             logger.info( "    groupId: " + jppArtifact.getGroupId() );
             logger.info( " artifactId: " + jppArtifact.getArtifactId() );
@@ -260,7 +265,8 @@ public class InstallMojo
         while ( jppIterator.hasNext() )
         {
             Artifact jppSymlinkArtifact = jppIterator.next();
-            pkg.addSymlink( jppSymlinkArtifact.getFile().toPath(), primaryJppArtifact.getFile().toPath() );
+            Path symlink = jppSymlinkArtifact.getFile().toPath();
+            pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
         }
 
         for ( Artifact jppArtifact : jppArtifacts )
