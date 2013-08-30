@@ -120,7 +120,7 @@ public class BuilddepMojo
                 String artifactId = project.getArtifactId();
                 reactorArtifacts.add( "mvn(" + groupId + ":" + artifactId + ")" );
 
-                Model rawModel = DependencyExtractor.getRawModel( project );
+                Model rawModel = DependencyExtractor.getRawModel( project.getFile().toPath() );
                 DependencyExtractor.generateRawRequires( resolver, rawModel, this );
                 DependencyExtractor.generateEffectiveBuildRequires( resolver, project.getModel(), this, settings );
 

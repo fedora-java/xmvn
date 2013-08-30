@@ -63,12 +63,12 @@ public class DependencyExtractor
      * @return raw model
      * @throws IOException if parsing XML file fails
      */
-    public static Model getRawModel( MavenProject project )
+    public static Model getRawModel( Path modelPath )
         throws IOException
     {
         try
         {
-            try (Reader reader = new FileReader( project.getFile() ))
+            try (Reader reader = new FileReader( modelPath.toFile() ))
             {
                 return new MavenXpp3Reader().read( reader );
             }
