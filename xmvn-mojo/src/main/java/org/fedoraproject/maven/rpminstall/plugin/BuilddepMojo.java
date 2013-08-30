@@ -36,8 +36,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.config.Configurator;
-import org.fedoraproject.maven.installer.DependencyExtractor;
-import org.fedoraproject.maven.installer.DependencyVisitor;
+import org.fedoraproject.maven.installer.old.DependencyExtractor;
+import org.fedoraproject.maven.installer.old.DependencyVisitor;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 

@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2012-2013 Red Hat, Inc.
+ * Copyright (c) 2013 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.installer;
+package org.fedoraproject.maven.installer.old;
 
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.nio.file.Path;
 
-import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.maven.config.PackagingRule;
 
 /**
  * @author Mikolaj Izdebski
  */
-public interface DependencyVisitor
+public interface Package
 {
-    void visitBuildDependency( Artifact dependencyArtifact );
+    FragmentFile getMetadata();
 
-    void visitRuntimeDependency( Artifact dependencyArtifact );
-
-    void visitJavaVersionDependency( BigDecimal javaVersion );
+    void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
+                        PackagingRule rule )
+        throws IOException;
 }

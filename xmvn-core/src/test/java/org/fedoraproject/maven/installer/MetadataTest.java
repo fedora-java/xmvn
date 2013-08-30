@@ -25,6 +25,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParser;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
+import org.fedoraproject.maven.installer.old.FragmentFile;
 import org.fedoraproject.maven.util.BitBucketLogger;
 
 /**
