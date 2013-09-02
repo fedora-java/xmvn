@@ -88,7 +88,7 @@ class BuildDependencyVisitor
         if ( StringUtils.isEmpty( groupId ) )
             groupId = "org.apache.maven.plugins";
         if ( StringUtils.isEmpty( version ) )
-            groupId = ArtifactUtils.DEFAULT_VERSION;
+            version = ArtifactUtils.DEFAULT_VERSION;
 
         Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version );
         Artifact versionlessPluginArtifact = pluginArtifact.setVersion( ArtifactUtils.DEFAULT_VERSION );

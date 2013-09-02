@@ -107,8 +107,16 @@ public class BuilddepMojo
                 request.setArtifact( dependencyArtifact );
                 ResolutionResult result = resolver.resolve( request );
 
-                dependencyArtifact = dependencyArtifact.setVersion( result.getCompatVersion() );
-                dependencyArtifact = dependencyArtifact.setFile( result.getArtifactFile() );
+                if ( result.getArtifactFile() != null )
+                {
+                    dependencyArtifact = dependencyArtifact.setFile( result.getArtifactFile() );
+                    dependencyArtifact = dependencyArtifact.setVersion( result.getCompatVersion() );
+                }
+                else
+                {
+                    dependencyArtifact = dependencyArtifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+                }
+
                 resolvedDependencies.add( dependencyArtifact );
             }
 

@@ -25,8 +25,8 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>org.apache.maven.plugins</artifactId>
-        <groupId>maven-compiler-plugin</groupId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
           <source>1.3</source>
@@ -37,9 +37,7 @@
             <id>test-execution</id>
             <phase>some-dummy-phase</phase>
             <configuration>
-              <configuration>
-                <source>8</source>
-              </configuration>
+              <source>8</source>
             </configuration>
           </execution>
         </executions>

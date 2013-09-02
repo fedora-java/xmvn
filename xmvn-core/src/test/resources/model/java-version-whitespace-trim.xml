@@ -25,11 +25,11 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>
+        <artifactId>
         
         maven-compiler-plugin
         
-        </groupId>
+        </artifactId>
         <configuration>
           <source>
 
