@@ -15,15 +15,11 @@
  */
 package org.fedoraproject.maven.dependency;
 
-import java.io.FileReader;
-import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -34,7 +30,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 public abstract class AbstractDependencyTest
     extends PlexusTestCase
 {
-    private Model model;
+    private Path modelPath;
 
     private String expectedJavaVersion;
 
@@ -50,20 +46,16 @@ public abstract class AbstractDependencyTest
         setModel( modelName );
     }
 
-    public void setModel( Model model )
+    public void setModelPath( Path modelPath )
     {
-        this.model = model;
+        this.modelPath = modelPath;
     }
 
     public void setModel( String name )
         throws Exception
     {
         Path path = Paths.get( "src/test/resources/model" ).resolve( name );
-
-        try (Reader reader = new FileReader( path.toFile() ))
-        {
-            setModel( new MavenXpp3Reader().read( reader ) );
-        }
+        setModelPath( path );
     }
 
     public void expectJavaVersion( String expectedJavaVersion )
@@ -91,10 +83,10 @@ public abstract class AbstractDependencyTest
     public void performTests( String roleHint )
         throws Exception
     {
-        if ( model == null )
+        if ( modelPath == null )
             return;
 
-        DependencyExtractionRequest request = new DependencyExtractionRequest( model );
+        DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
         DependencyExtractor extractor = lookup( DependencyExtractor.class, roleHint );
         DependencyExtractionResult result = extractor.extract( request );
         assertNotNull( result );

@@ -15,31 +15,31 @@
  */
 package org.fedoraproject.maven.dependency;
 
-import org.apache.maven.model.Model;
+import java.nio.file.Path;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class DependencyExtractionRequest
 {
-    private Model projectModel;
+    private Path modelPath;
 
     public DependencyExtractionRequest()
     {
     }
 
-    public DependencyExtractionRequest( Model projectModel )
+    public DependencyExtractionRequest( Path modelPath )
     {
-        this.projectModel = projectModel;
+        this.modelPath = modelPath;
     }
 
-    public Model getProjectModel()
+    public Path getModelPath()
     {
-        return projectModel;
+        return modelPath;
     }
 
-    public void setProjectModel( Model projectModel )
+    public void setModelPath( Path modelPath )
     {
-        this.projectModel = projectModel;
+        this.modelPath = modelPath;
     }
 }

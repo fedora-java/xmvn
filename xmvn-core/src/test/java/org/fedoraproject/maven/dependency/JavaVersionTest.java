@@ -15,12 +15,6 @@
  */
 package org.fedoraproject.maven.dependency;
 
-import org.apache.maven.model.Build;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.model.PluginExecution;
-import org.apache.maven.model.PluginManagement;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * @author Mikolaj Izdebski
@@ -31,77 +25,50 @@ public class JavaVersionTest
     private void testJavaVersionDependencies( String roleHint, boolean managed )
         throws Exception
     {
-        Plugin compilerPlugin = new Plugin();
-        compilerPlugin.setArtifactId( "maven-compiler-plugin" );
-        Model model = new Model();
-        model.setBuild( new Build() );
-
-        if ( managed )
-        {
-            model.getBuild().setPluginManagement( new PluginManagement() );
-            model.getBuild().getPluginManagement().addPlugin( compilerPlugin );
-        }
-        else
-        {
-            model.getBuild().addPlugin( compilerPlugin );
-        }
-
         // No configuration.
-        setModel( model );
+        setModel( "java-version-unspecified.xml" );
         performTests( roleHint );
 
         // Empty configuration.
-        Xpp3Dom config = new Xpp3Dom( "configuration" );
-        compilerPlugin.setConfiguration( config );
+        setModel( "java-version-empty.xml" );
         performTests( roleHint );
 
         // Source with no value.
-        Xpp3Dom source = new Xpp3Dom( "source" );
-        config.addChild( source );
+        setModel( "java-version-source-empty.xml" );
         performTests( roleHint );
 
         // Incorrect values should not cause any exception.
-        source.setValue( "foo-bar" );
+        setModel( "java-version-source-incorrect.xml" );
         performTests( roleHint );
 
         // Values like 7 and 7.0 need to be supported in addition to 1.7.
-        source.setValue( "1.7" );
+        setModel( "java-version-source-1.7.xml" );
         expectJavaVersion( "1.7" );
         performTests( roleHint );
-        source.setValue( "7.0" );
+        setModel( "java-version-source-7.0.xml" );
         performTests( roleHint );
-        source.setValue( "7" );
+        setModel( "java-version-source-7.xml" );
         performTests( roleHint );
 
         // XML values ought to be trimmed.
-        source.setValue( " \r 1.3   \n\t" );
+        setModel( "java-version-whitespace-trim.xml" );
         expectJavaVersion( "1.3" );
         performTests( roleHint );
 
         // Source 1.3 but target 1.6.
-        Xpp3Dom target = new Xpp3Dom( "target" );
-        config.addChild( target );
-        target.setValue( "1.6" );
+        setModel( "java-version-source-1.3-target-1.6.xml" );
         expectJavaVersion( "1.6" );
         performTests( roleHint );
 
         // Main configuration specifies source 1.3 target 1.6, but there is plugin execution that specifies source 8.
-        PluginExecution execution = new PluginExecution();
-        compilerPlugin.addExecution( execution );
-        Xpp3Dom execConfig = new Xpp3Dom( "configuration" );
-        execution.setConfiguration( execConfig );
-        Xpp3Dom execSource = new Xpp3Dom( "source" );
-        execSource.setValue( "8" );
-        execConfig.addChild( execSource );
+        setModel( "java-version-execution-1.8.xml" );
         expectJavaVersion( "1.8" );
         performTests( roleHint );
 
         // Special targets jsr14 and jsr14 should be handled correctly.
-        config = new Xpp3Dom( "configuration" );
-        config.addChild( target );
-        target.setValue( "jsr14" );
+        setModel( "java-version-jsr14.xml" );
         expectJavaVersion( "1.4" );
-        target.setValue( "cldc1.1" );
+        setModel( "java-version-cldc1.1.xml" );
         expectJavaVersion( "1.1" );
     }
 

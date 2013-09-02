@@ -15,6 +15,10 @@
  */
 package org.fedoraproject.maven.dependency;
 
+import java.io.IOException;
+
+import org.fedoraproject.maven.model.ModelFormatException;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -24,5 +28,6 @@ public interface DependencyExtractor
 
     public static final String RUNTIME = "runtime";
 
-    public DependencyExtractionResult extract( DependencyExtractionRequest request );
+    public DependencyExtractionResult extract( DependencyExtractionRequest request )
+        throws IOException, ModelFormatException;
 }

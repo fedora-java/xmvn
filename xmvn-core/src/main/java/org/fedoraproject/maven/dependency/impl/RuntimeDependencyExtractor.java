@@ -15,12 +15,15 @@
  */
 package org.fedoraproject.maven.dependency.impl;
 
+import java.io.IOException;
+
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.dependency.DependencyExtractionRequest;
 import org.fedoraproject.maven.dependency.DependencyExtractionResult;
 import org.fedoraproject.maven.dependency.DependencyExtractor;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
+import org.fedoraproject.maven.model.ModelFormatException;
 import org.fedoraproject.maven.model.ModelProcessor;
 
 /**
@@ -36,10 +39,11 @@ public class RuntimeDependencyExtractor
 
     @Override
     public DependencyExtractionResult extract( DependencyExtractionRequest request )
+        throws IOException, ModelFormatException
     {
         DefaultDependencyExtractionResult result = new DefaultDependencyExtractionResult();
-        modelProcessor.processModel( request.getProjectModel(), new RuntimeDependencyVisitor( result ) );
-        modelProcessor.processModel( request.getProjectModel(), new JavaVersionVisitor( result ) );
+        modelProcessor.processModel( request.getModelPath(), new RuntimeDependencyVisitor( result ) );
+        modelProcessor.processModel( request.getModelPath(), new JavaVersionVisitor( result ) );
         return result;
     }
 }
