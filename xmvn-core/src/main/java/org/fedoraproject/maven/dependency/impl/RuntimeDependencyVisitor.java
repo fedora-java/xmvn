@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.model.Dependency;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
 
 /**
@@ -42,6 +43,8 @@ class RuntimeDependencyVisitor
         if ( !scopes.contains( dependency.getScope() ) )
             return;
 
-        result.addDependencyArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
+        result.addDependencyArtifact( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+                                                           dependency.getClassifier(), dependency.getType(),
+                                                           dependency.getVersion() ) );
     }
 }

@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.Plugin;
+import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.model.AbstractModelVisitor;
@@ -37,7 +38,16 @@ class BuildDependencyVisitor
     private static final Set<Artifact> commonPlugins = new HashSet<>();
     static
     {
-        commonPlugins.add( new DefaultArtifact( "org.apache.maven.plugins:maven-compiler-plugin:SYSTEM" ) );
+        // FIXME: don't hardcode this
+
+        // Default lifecycle mappings for packaging "jar"
+        commonPlugins.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-resources-plugin", "jar", "SYSTEM" ) );
+        commonPlugins.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-compiler-plugin", "jar", "SYSTEM" ) );
+        commonPlugins.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-surefire-plugin", "jar", "SYSTEM" ) );
+        commonPlugins.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-jar-plugin", "jar", "SYSTEM" ) );
+
+        // Called by XMvn directly
+        commonPlugins.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-javadoc-plugin", "jar", "SYSTEM" ) );
     }
 
     private final DefaultDependencyExtractionResult result;
@@ -57,13 +67,16 @@ class BuildDependencyVisitor
         if ( !buildScopes.contains( dependency.getScope() ) )
             return;
 
-        result.addDependencyArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
+        result.addDependencyArtifact( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+                                                           dependency.getClassifier(), dependency.getType(),
+                                                           dependency.getVersion() ) );
     }
 
     @Override
     public void visitBuildExtension( Extension extension )
     {
-        result.addDependencyArtifact( extension.getGroupId(), extension.getArtifactId(), extension.getVersion() );
+        result.addDependencyArtifact( new DefaultArtifact( extension.getGroupId(), extension.getArtifactId(),
+                                                           ArtifactUtils.DEFAULT_EXTENSION, extension.getVersion() ) );
     }
 
     @Override
@@ -71,11 +84,17 @@ class BuildDependencyVisitor
     {
         String groupId = plugin.getGroupId();
         String artifactId = plugin.getArtifactId();
-        Artifact pluginArtifact =
-            new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
+        String version = plugin.getVersion();
+        if ( StringUtils.isEmpty( groupId ) )
+            groupId = "org.apache.maven.plugins";
+        if ( StringUtils.isEmpty( version ) )
+            groupId = ArtifactUtils.DEFAULT_VERSION;
 
-        if ( !commonPlugins.contains( pluginArtifact ) )
-            result.addDependencyArtifact( groupId, artifactId, plugin.getVersion() );
+        Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version );
+        Artifact versionlessPluginArtifact = pluginArtifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+
+        if ( !commonPlugins.contains( versionlessPluginArtifact ) )
+            result.addDependencyArtifact( pluginArtifact );
     }
 
     @Override
@@ -84,6 +103,8 @@ class BuildDependencyVisitor
         if ( !runtimeScopes.contains( dependency.getScope() ) )
             return;
 
-        result.addDependencyArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion() );
+        result.addDependencyArtifact( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+                                                           dependency.getClassifier(), dependency.getType(),
+                                                           dependency.getVersion() ) );
     }
 }

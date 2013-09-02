@@ -24,10 +24,10 @@ import org.fedoraproject.maven.model.ModelFormatException;
  */
 public interface DependencyExtractor
 {
-    public static final String BUILD = "build";
+    static final String BUILD = "build";
 
-    public static final String RUNTIME = "runtime";
+    static final String RUNTIME = "runtime";
 
-    public DependencyExtractionResult extract( DependencyExtractionRequest request )
+    DependencyExtractionResult extract( DependencyExtractionRequest request )
         throws IOException, ModelFormatException;
 }
