@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.maven.model.Model;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
@@ -46,7 +45,7 @@ import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
 import org.fedoraproject.maven.installer.InstallationRequest;
 import org.fedoraproject.maven.installer.InstallationResult;
 import org.fedoraproject.maven.installer.Installer;
-import org.fedoraproject.maven.installer.old.DependencyExtractor;
+import org.fedoraproject.maven.model.ModelFormatException;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.RepositoryPath;
 import org.fedoraproject.maven.resolver.Resolver;
@@ -188,8 +187,7 @@ public class DefaultInstaller
         return jppArtifacts;
     }
 
-    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases,
-                                  List<Artifact> jppArtifacts )
+    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
         throws IOException
     {
         logger.info( "===============================================" );
@@ -238,19 +236,15 @@ public class DefaultInstaller
     }
 
     private void generateDevelRequires( Package pkg, Artifact artifact )
-        throws IOException
+        throws IOException, ModelFormatException
     {
-        String rawModelPath = artifact.getProperty( "xmvn.installer.rawModelPath", null );
-        Model rawModel = DependencyExtractor.getRawModel( Paths.get( rawModelPath ) );
-        DependencyExtractor.generateRawRequires( resolver, rawModel, pkg.getMetadata() );
+        // TODO implement
     }
 
     private void generateUserRequires( Package pkg, Artifact artifact )
         throws IOException
     {
-        String effectiveModelPath = artifact.getProperty( "xmvn.installer.rawModelPath", null );
-        Model effectiveModel = DependencyExtractor.getRawModel( Paths.get( effectiveModelPath ) );
-        DependencyExtractor.generateEffectiveRuntimeRequires( resolver, effectiveModel, pkg.getMetadata() );
+        // TODO implement
     }
 
     private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
@@ -276,7 +270,7 @@ public class DefaultInstaller
     }
 
     private void installArtifact( Artifact artifact )
-        throws IOException
+        throws IOException, ModelFormatException
     {
         String rawModelPath = artifact.getProperty( "xmvn.installer.rawModelpath", null );
         boolean isAttachedArtifact = rawModelPath == null;
@@ -365,7 +359,8 @@ public class DefaultInstaller
             for ( Artifact artifact : artifactSet )
                 installArtifact( artifact );
 
-            checkForUnmatchedRules( configuration.getArtifactManagement() );
+            if ( request.isCheckForUnmatchedRules() )
+                checkForUnmatchedRules( configuration.getArtifactManagement() );
 
             Path installRoot = Paths.get( settings.getInstallRoot() );
             org.fedoraproject.maven.installer.impl.Installer installer =
@@ -376,6 +371,10 @@ public class DefaultInstaller
                     pkg.install( installer );
         }
         catch ( IOException e )
+        {
+            throw new RuntimeException( "Failed to install project", e );
+        }
+        catch ( ModelFormatException e )
         {
             throw new RuntimeException( "Failed to install project", e );
         }

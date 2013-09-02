@@ -15,12 +15,13 @@
  */
 package org.fedoraproject.maven.rpminstall.plugin;
 
+import static org.fedoraproject.maven.rpminstall.plugin.Utils.aetherArtifact;
+import static org.fedoraproject.maven.rpminstall.plugin.Utils.saveEffectivePom;
+
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -33,7 +34,6 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.installer.InstallationRequest;
-import org.fedoraproject.maven.installer.old.DependencyExtractor;
 
 /**
  * @author Mikolaj Izdebski
@@ -52,42 +52,35 @@ public class InstallMojo
     @Requirement
     private Logger logger;
 
-    private Path saveEffectivePom( Model model )
-        throws MojoExecutionException
-    {
-        try
-        {
-            DependencyExtractor.simplifyEffectiveModel( model );
-            Path source = Files.createTempFile( "xmvn", ".pom.xml" );
-            DependencyExtractor.writeModel( model, source );
-            return source;
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Unable to write POM file: ", e );
-        }
-    }
-
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        InstallationRequest request = new InstallationRequest();
-
-        for ( MavenProject project : reactorProjects )
+        try
         {
-            Artifact mainArtifact = Utils.aetherArtifact( project.getArtifact() );
-            mainArtifact = mainArtifact.setFile( project.getArtifact().getFile() );
-            Path rawPom = project.getFile().toPath();
-            Path effectivePom = saveEffectivePom( project.getModel() );
-            request.addArtifact( mainArtifact, rawPom, effectivePom );
+            InstallationRequest request = new InstallationRequest();
 
-            for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
+            for ( MavenProject project : reactorProjects )
             {
-                Artifact attachedArtifact = Utils.aetherArtifact( mavenArtifact );
-                attachedArtifact.setFile( mavenArtifact.getFile() );
-                request.addArtifact( mainArtifact, null, null );
+                Artifact mainArtifact = aetherArtifact( project.getArtifact() );
+                mainArtifact = mainArtifact.setFile( project.getArtifact().getFile() );
+                Path rawPom = project.getFile().toPath();
+                Path effectivePom = saveEffectivePom( project.getModel() );
+
+                request.addArtifact( mainArtifact, rawPom, effectivePom );
+
+                for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
+                {
+                    Artifact attachedArtifact = aetherArtifact( mavenArtifact );
+                    attachedArtifact = attachedArtifact.setFile( mavenArtifact.getFile() );
+                    request.addArtifact( attachedArtifact, null, null );
+                }
             }
+        }
+        catch ( IOException e )
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }

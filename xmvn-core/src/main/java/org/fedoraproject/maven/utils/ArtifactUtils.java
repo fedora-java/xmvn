@@ -140,6 +140,5 @@ public class ArtifactUtils
     {
         Xpp3Dom dom = toXpp3Dom( artifact, tag );
         dom.writeToSerializer( namespace, serializer );
-
     }
 }

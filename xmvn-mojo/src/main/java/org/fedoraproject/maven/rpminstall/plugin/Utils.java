@@ -16,8 +16,15 @@
 package org.fedoraproject.maven.rpminstall.plugin;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -47,5 +54,29 @@ class Utils
         artifact = ArtifactUtils.setStereotype( artifact, stereotype );
         artifact = artifact.setFile( artifactFile );
         return artifact;
+    }
+
+    private static void simplifyEffectiveModel( Model model )
+    {
+        model.setParent( null );
+    }
+
+    private static void writeModel( Model model, Path path )
+        throws IOException
+    {
+        try (Writer writer = new FileWriter( path.toFile() ))
+        {
+            MavenXpp3Writer pomWriter = new MavenXpp3Writer();
+            pomWriter.write( writer, model );
+        }
+    }
+
+    public static Path saveEffectivePom( Model model )
+        throws IOException
+    {
+        Path source = Files.createTempFile( "xmvn", ".pom.xml" );
+        simplifyEffectiveModel( model );
+        writeModel( model, source );
+        return source;
     }
 }

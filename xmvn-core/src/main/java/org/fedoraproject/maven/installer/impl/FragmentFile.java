@@ -32,15 +32,12 @@ import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.InstallerSettings;
-import org.fedoraproject.maven.installer.old.DependencyVisitor;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
-// TODO: make this class non-public (currently tests reference it)
 /**
  * @author Mikolaj Izdebski
  */
-public class FragmentFile
-    implements DependencyVisitor
+class FragmentFile
 {
     private final Logger logger;
 
@@ -82,23 +79,22 @@ public class FragmentFile
         logger.debug( "Added mapping " + from + " => " + to );
     }
 
-    @Override
-    public void visitRuntimeDependency( Artifact dependencyArtifact )
+    public void addRuntimeDependency( Artifact dependencyArtifact )
     {
         dependencies.add( dependencyArtifact );
     }
 
-    @Override
-    public void visitBuildDependency( Artifact dependencyArtifact )
+    public void addBuildDependency( Artifact dependencyArtifact )
     {
         develDependencies.add( dependencyArtifact );
     }
 
-    @Override
-    public void visitJavaVersionDependency( BigDecimal version )
+    public void addJavaVersionDependency( String version )
     {
-        if ( javaVersionRequirement == null || javaVersionRequirement.compareTo( version ) < 0 )
-            javaVersionRequirement = version;
+        BigDecimal versionNumber = new BigDecimal( version );
+
+        if ( javaVersionRequirement == null || javaVersionRequirement.compareTo( versionNumber ) < 0 )
+            javaVersionRequirement = versionNumber;
     }
 
     public void optimize()
