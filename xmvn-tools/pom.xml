@@ -36,6 +36,7 @@
     <module>xmvn-resolve</module>
     <module>xmvn-bisect</module>
     <module>xmvn-subst</module>
+    <module>xmvn-install</module>
   </modules>
   <dependencies>
     <dependency>

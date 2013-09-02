@@ -46,8 +46,10 @@ public class InstallationRequest
     public void addArtifact( Artifact artifact, Path rawModelPath, Path effectiveModelPath )
     {
         Map<String, String> properties = new HashMap<>();
-        properties.put( "xmvn.install.rawModelPath", rawModelPath.toString() );
-        properties.put( "xmvn.install.effectiveModelPath", effectiveModelPath.toString() );
+        if ( rawModelPath != null )
+            properties.put( "xmvn.installer.rawModelPath", rawModelPath.toString() );
+        if ( effectiveModelPath != null )
+            properties.put( "xmvn.installer.effectiveModelPath", effectiveModelPath.toString() );
         artifacts.add( artifact.setProperties( properties ) );
     }
 

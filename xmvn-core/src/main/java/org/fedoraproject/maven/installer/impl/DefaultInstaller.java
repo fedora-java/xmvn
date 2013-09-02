@@ -15,10 +15,6 @@
  */
 package org.fedoraproject.maven.installer.impl;
 
-/**
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference it directly.
- * @author Mikolaj Izdebski
- */
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Path;
@@ -53,6 +49,13 @@ import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
+/**
+ * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
+ * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
+ * it directly.
+ * 
+ * @author Mikolaj Izdebski
+ */
 @Component( role = Installer.class )
 public class DefaultInstaller
     implements Installer
@@ -273,7 +276,7 @@ public class DefaultInstaller
     private void installArtifact( Artifact artifact )
         throws IOException, ModelFormatException
     {
-        String rawModelPath = artifact.getProperty( "xmvn.installer.rawModelpath", null );
+        String rawModelPath = artifact.getProperty( "xmvn.installer.rawModelPath", null );
         boolean isAttachedArtifact = rawModelPath == null;
         boolean isPomArtifact = artifact.getFile() == null;
         if ( isAttachedArtifact && isPomArtifact )
@@ -326,7 +329,9 @@ public class DefaultInstaller
             {
                 unmatchedRuleFound = true;
                 org.fedoraproject.maven.config.Artifact glob = rule.getArtifactGlob();
-                String globString = glob.getGroupId() + ":" + glob.getArtifactId() + ":" + glob.getVersion();
+                String globString =
+                    glob.getGroupId() + ":" + glob.getArtifactId() + ":" + glob.getExtension() + ":"
+                        + glob.getClassifier() + ":" + glob.getVersion();
                 logger.error( "Unmatched packaging rule: " + globString );
             }
         }

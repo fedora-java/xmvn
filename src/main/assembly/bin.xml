@@ -62,6 +62,17 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>xmvn-tools/xmvn-install/target/dependency</directory>
+      <outputDirectory>lib/installer</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>xmvn-tools/xmvn-install/target</directory>
+      <outputDirectory>lib/installer</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>xmvn-tools/xmvn-resolve/target/dependency</directory>
       <outputDirectory>lib/resolver</outputDirectory>
     </fileSet>
@@ -96,6 +107,13 @@
       <source>xmvn-tools/src/main/bin/tool-script</source>
       <outputDirectory>bin</outputDirectory>
       <destName>xmvn-bisect</destName>
+      <fileMode>0755</fileMode>
+      <lineEnding>unix</lineEnding>
+    </file>
+    <file>
+      <source>xmvn-tools/src/main/bin/tool-script</source>
+      <outputDirectory>bin</outputDirectory>
+      <destName>xmvn-install</destName>
       <fileMode>0755</fileMode>
       <lineEnding>unix</lineEnding>
     </file>
