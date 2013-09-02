@@ -124,30 +124,6 @@ public class FragmentFile
         }
     }
 
-    private void writeOptionalTag( XmlSerializer s, String tag, String value, String deflt )
-        throws IOException
-    {
-        if ( deflt == null || !value.equals( deflt ) )
-        {
-            s.startTag( null, tag );
-            s.text( value );
-            s.endTag( null, tag );
-        }
-    }
-
-    private void writeArtifact( XmlSerializer s, Artifact artifact, String tagName )
-        throws IOException
-    {
-        s.startTag( null, tagName );
-        writeOptionalTag( s, "namespace", ArtifactUtils.getScope( artifact ), "" );
-        writeOptionalTag( s, "groupId", artifact.getGroupId(), null );
-        writeOptionalTag( s, "artifactId", artifact.getArtifactId(), null );
-        writeOptionalTag( s, "extension", artifact.getExtension(), "jar" );
-        writeOptionalTag( s, "classifier", artifact.getClassifier(), "" );
-        writeOptionalTag( s, "version", artifact.getVersion(), "SYSTEM" );
-        s.endTag( null, tagName );
-    }
-
     public void write( Path path, boolean writeDevel, InstallerSettings settings )
         throws IOException
     {
@@ -174,8 +150,8 @@ public class FragmentFile
                 for ( Artifact jppArtifact : mapping.get( mavenArtifact ) )
                 {
                     s.startTag( null, "dependency" );
-                    writeArtifact( s, mavenArtifact, "maven" );
-                    writeArtifact( s, jppArtifact, "jpp" );
+                    ArtifactUtils.serialize( mavenArtifact, s, null, "maven" );
+                    ArtifactUtils.serialize( jppArtifact, s, null, "jpp" );
                     s.endTag( null, "dependency" );
                 }
             }
@@ -187,7 +163,7 @@ public class FragmentFile
                     combinedDependencies.addAll( develDependencies );
 
                 for ( Artifact dependency : combinedDependencies )
-                    writeArtifact( s, dependency, "autoRequires" );
+                    ArtifactUtils.serialize( dependency, s, null, "autoRequires" );
             }
 
             s.endTag( null, "dependencyMap" );
