@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.StringUtils;
@@ -56,9 +57,31 @@ class Utils
         return artifact;
     }
 
-    private static void simplifyEffectiveModel( Model model )
+    private static Model simplifyEffectiveModel( Model model )
     {
-        model.setParent( null );
+        Model m = new Model();
+        m.setModelEncoding( model.getModelEncoding() );
+        m.setModelVersion( model.getModelVersion() );
+        m.setGroupId( model.getGroupId() );
+        m.setArtifactId( model.getArtifactId() );
+        m.setVersion( model.getVersion() );
+
+        for ( Dependency dep : model.getDependencies() )
+        {
+            String scope = dep.getScope();
+            if ( scope != null )
+            {
+                if ( scope.equals( "system" ) )
+                    throw new RuntimeException( "Dependencies with scope \"system\" should not be used !!!" );
+                if ( scope.equals( "provided" ) || scope.equals( "test" ) )
+                    continue;
+                if ( scope.equals( "compile" ) )
+                    dep.setScope( null );
+            }
+            m.addDependency( dep );
+        }
+
+        return m;
     }
 
     private static void writeModel( Model model, Path path )
@@ -75,8 +98,7 @@ class Utils
         throws IOException
     {
         Path source = Files.createTempFile( "xmvn", ".pom.xml" );
-        simplifyEffectiveModel( model );
-        writeModel( model, source );
+        writeModel( simplifyEffectiveModel( model ), source );
         return source;
     }
 }
