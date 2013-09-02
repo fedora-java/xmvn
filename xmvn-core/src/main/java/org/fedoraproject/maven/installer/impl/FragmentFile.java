@@ -30,7 +30,6 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
@@ -49,6 +48,8 @@ class FragmentFile
 
     private BigDecimal javaVersionRequirement;
 
+    private BigDecimal javaVersionDevelRequirement;
+
     public FragmentFile( Logger logger )
     {
         this.logger = logger;
@@ -57,7 +58,7 @@ class FragmentFile
     public boolean isEmpty()
     {
         return mapping.isEmpty() && dependencies.isEmpty() && develDependencies.isEmpty()
-            && javaVersionRequirement == null;
+            && javaVersionRequirement == null && javaVersionDevelRequirement == null;
     }
 
     private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
@@ -89,7 +90,7 @@ class FragmentFile
         develDependencies.add( dependencyArtifact );
     }
 
-    public void addJavaVersionDependency( String version )
+    public void addJavaVersionRuntimeDependency( String version )
     {
         BigDecimal versionNumber = new BigDecimal( version );
 
@@ -97,27 +98,27 @@ class FragmentFile
             javaVersionRequirement = versionNumber;
     }
 
+    public void addJavaVersionBuildDependency( String version )
+    {
+        BigDecimal versionNumber = new BigDecimal( version );
+
+        if ( javaVersionDevelRequirement == null || javaVersionDevelRequirement.compareTo( versionNumber ) < 0 )
+            javaVersionDevelRequirement = versionNumber;
+    }
+
     public void optimize()
     {
         Set<Artifact> versionlessArtifacts = new HashSet<>();
         for ( Artifact artifact : mapping.keySet() )
-            versionlessArtifacts.add( new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
-                                                           ArtifactUtils.DEFAULT_EXTENSION,
-                                                           ArtifactUtils.DEFAULT_VERSION ) );
+            versionlessArtifacts.add( artifact.setVersion( ArtifactUtils.DEFAULT_VERSION ) );
 
         for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )
-        {
-            Artifact dependency = iter.next();
-            if ( versionlessArtifacts.contains( dependency ) )
+            if ( versionlessArtifacts.contains( iter.next() ) )
                 iter.remove();
-        }
 
         for ( Iterator<Artifact> iter = develDependencies.iterator(); iter.hasNext(); )
-        {
-            Artifact dependency = iter.next();
-            if ( versionlessArtifacts.contains( dependency ) )
+            if ( versionlessArtifacts.contains( iter.next() ) )
                 iter.remove();
-        }
     }
 
     public void write( Path path, boolean writeDevel, InstallerSettings settings )
@@ -138,8 +139,18 @@ class FragmentFile
                 s.startTag( null, "skipProvides" ).endTag( null, "skipProvides" );
 
             if ( javaVersionRequirement != null && !settings.isSkipRequires() )
-                s.startTag( null, "requiresJava" ).text( javaVersionRequirement.toString() ).endTag( null,
-                                                                                                     "requiresJava" );
+            {
+                s.startTag( null, "requiresJava" );
+                s.text( javaVersionRequirement.toString() );
+                s.endTag( null, "requiresJava" );
+            }
+
+            if ( writeDevel && javaVersionDevelRequirement != null && !settings.isSkipRequires() )
+            {
+                s.startTag( null, "requiresJavaDevel" );
+                s.text( javaVersionDevelRequirement.toString() );
+                s.endTag( null, "requiresJavaDevel" );
+            }
 
             for ( Artifact mavenArtifact : mapping.keySet() )
             {

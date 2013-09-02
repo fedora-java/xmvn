@@ -39,6 +39,9 @@ import org.fedoraproject.maven.config.InstallerSettings;
 import org.fedoraproject.maven.config.PackagingRule;
 import org.fedoraproject.maven.config.RepositoryConfigurator;
 import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
+import org.fedoraproject.maven.dependency.DependencyExtractionRequest;
+import org.fedoraproject.maven.dependency.DependencyExtractionResult;
+import org.fedoraproject.maven.dependency.DependencyExtractor;
 import org.fedoraproject.maven.installer.InstallationRequest;
 import org.fedoraproject.maven.installer.InstallationResult;
 import org.fedoraproject.maven.installer.Installer;
@@ -71,6 +74,12 @@ public class DefaultInstaller
 
     @Requirement
     private Resolver resolver;
+
+    @Requirement( hint = DependencyExtractor.BUILD )
+    private DependencyExtractor buildDependencyExtractor;
+
+    @Requirement( hint = DependencyExtractor.RUNTIME )
+    private DependencyExtractor runtimeDependencyExtractor;
 
     private Repository installRepo;
 
@@ -242,13 +251,25 @@ public class DefaultInstaller
     private void generateDevelRequires( Package pkg, Artifact artifact )
         throws IOException, ModelFormatException
     {
-        // TODO implement
+        Path modelPath = ArtifactUtils.getRawModelPath( artifact );
+        DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
+        DependencyExtractionResult result = buildDependencyExtractor.extract( request );
+        FragmentFile metadata = pkg.getMetadata();
+        for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
+            metadata.addBuildDependency( dependencyArtifact );
+        metadata.addJavaVersionBuildDependency( result.getJavaVersion() );
     }
 
     private void generateUserRequires( Package pkg, Artifact artifact )
-        throws IOException
+        throws IOException, ModelFormatException
     {
-        // TODO implement
+        Path modelPath = ArtifactUtils.getEffectiveModelPath( artifact );
+        DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
+        DependencyExtractionResult result = runtimeDependencyExtractor.extract( request );
+        FragmentFile metadata = pkg.getMetadata();
+        for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
+            metadata.addRuntimeDependency( dependencyArtifact );
+        metadata.addJavaVersionRuntimeDependency( result.getJavaVersion() );
     }
 
     private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
