@@ -15,14 +15,14 @@
  */
 package org.fedoraproject.maven.rpminstall.plugin;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -32,12 +32,16 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.pull.MXSerializer;
+import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
-import org.fedoraproject.maven.config.BuildSettings;
 import org.fedoraproject.maven.config.Configurator;
-import org.fedoraproject.maven.installer.old.DependencyExtractor;
-import org.fedoraproject.maven.installer.old.DependencyVisitor;
+import org.fedoraproject.maven.dependency.DependencyExtractionRequest;
+import org.fedoraproject.maven.dependency.DependencyExtractionResult;
+import org.fedoraproject.maven.dependency.DependencyExtractor;
+import org.fedoraproject.maven.model.ModelFormatException;
+import org.fedoraproject.maven.resolver.ResolutionRequest;
+import org.fedoraproject.maven.resolver.ResolutionResult;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
@@ -48,7 +52,6 @@ import org.fedoraproject.maven.utils.ArtifactUtils;
 @Component( role = BuilddepMojo.class )
 public class BuilddepMojo
     extends AbstractMojo
-    implements DependencyVisitor
 {
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
@@ -59,90 +62,78 @@ public class BuilddepMojo
     @Requirement
     private Resolver resolver;
 
-    private final Set<String> buildDeps = new HashSet<>();
-
-    private final Set<String> reactorArtifacts = new HashSet<>();
-
-    private static BigDecimal MIN_SUPPORTED_JAVA_VERSION = new BigDecimal( "1.5" );
-
-    private BigDecimal javaVersion = null;
-
-    // FIXME: quick & dirty version
-    // In future we're going to generate XML and let system-specific tools generate requires strings.
-    private static String artifactToString( Artifact artifact )
-    {
-        String[] s =
-            new String[] { artifact.getGroupId(), artifact.getArtifactId(),
-                artifact.getExtension().equals( "jar" ) ? "" : artifact.getExtension(), artifact.getClassifier(),
-                artifact.getVersion().equals( "SYSTEM" ) ? "" : artifact.getVersion() };
-
-        int n =
-            Math.max( Math.max( 1, s[4].isEmpty() ? 0 : 2 ), Math.max( s[2].isEmpty() ? 0 : 3, s[3].isEmpty() ? 0 : 4 ) );
-        s[Math.max( n, 2 )] = s[4];
-        while ( n-- > 0 )
-            s[n] += ":" + s[n + 1];
-
-        String scope = ArtifactUtils.getScope( artifact );
-        return ( StringUtils.isNotEmpty( scope ) ? scope + "-" : "" ) + "mvn(" + s[0] + ")";
-    }
-
-    @Override
-    public void visitBuildDependency( Artifact dependencyArtifact )
-    {
-        // FIXME: print properly formatted requires!
-        buildDeps.add( artifactToString( dependencyArtifact ) );
-    }
-
-    @Override
-    public void visitRuntimeDependency( Artifact dependencyArtifact )
-    {
-        visitBuildDependency( dependencyArtifact );
-    }
-
-    @Override
-    public void visitJavaVersionDependency( BigDecimal version )
-    {
-        if ( javaVersion == null || javaVersion.compareTo( version ) < 0 )
-            javaVersion = version;
-    }
+    @Requirement( hint = DependencyExtractor.BUILD )
+    private DependencyExtractor buildDependencyExtractor;
 
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        BuildSettings settings = configurator.getConfiguration().getBuildSettings();
-
         try
         {
+            Set<Artifact> reactorArtifacts = new HashSet<>();
+            Set<Artifact> dependencies = new HashSet<>();
+            Set<Artifact> resolvedDependencies = new HashSet<>();
+            BigDecimal javaVersion = null;
+
             for ( MavenProject project : reactorProjects )
             {
-                String groupId = project.getGroupId();
-                String artifactId = project.getArtifactId();
-                reactorArtifacts.add( "mvn(" + groupId + ":" + artifactId + ")" );
+                Artifact projectArtifact = Utils.aetherArtifact( project.getArtifact() );
+                projectArtifact = projectArtifact.setFile( project.getFile() );
 
-                Model rawModel = DependencyExtractor.getRawModel( project.getFile().toPath() );
-                DependencyExtractor.generateRawRequires( resolver, rawModel, this );
-                DependencyExtractor.generateEffectiveBuildRequires( resolver, project.getModel(), this, settings );
+                DependencyExtractionRequest request = new DependencyExtractionRequest();
+                request.setModelPath( projectArtifact.getFile().toPath() );
+                DependencyExtractionResult result = buildDependencyExtractor.extract( request );
 
-                if ( !project.getPackaging().equals( "pom" ) )
-                    DependencyExtractor.getJavaCompilerTarget( project, this );
-            }
+                dependencies.addAll( result.getDependencyArtifacts() );
 
-            try (PrintStream ps = new PrintStream( ".xmvn-builddep" ))
-            {
-                ps.println( "BuildRequires:  maven-local" );
-
-                if ( javaVersion != null && javaVersion.compareTo( MIN_SUPPORTED_JAVA_VERSION ) > 0 )
+                if ( result.getJavaVersion() != null )
                 {
-                    ps.println( "BuildRequires:  java-devel >= 1:" + javaVersion );
+                    BigDecimal thisVersion = new BigDecimal( result.getJavaVersion() );
+                    if ( javaVersion == null || javaVersion.compareTo( thisVersion ) < 0 )
+                        javaVersion = thisVersion;
                 }
 
-                buildDeps.removeAll( reactorArtifacts );
-                for ( String dep : buildDeps )
-                    ps.println( "BuildRequires:  " + dep );
+                reactorArtifacts.add( projectArtifact );
+                for ( org.apache.maven.artifact.Artifact attachedArtifact : project.getAttachedArtifacts() )
+                    reactorArtifacts.add( Utils.aetherArtifact( attachedArtifact ) );
+            }
+
+            dependencies.removeAll( reactorArtifacts );
+
+            for ( Artifact dependencyArtifact : dependencies )
+            {
+                ResolutionRequest request = new ResolutionRequest();
+                request.setArtifact( dependencyArtifact );
+                ResolutionResult result = resolver.resolve( request );
+
+                dependencyArtifact = dependencyArtifact.setVersion( result.getCompatVersion() );
+                dependencyArtifact = dependencyArtifact.setFile( result.getArtifactFile() );
+                resolvedDependencies.add( dependencyArtifact );
+            }
+
+            try (Writer writer = new FileWriter( ".xmvn-builddep" ))
+            {
+                XmlSerializer s = new MXSerializer();
+                s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );
+                s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-line-separator", "\n" );
+                s.setOutput( writer );
+                s.startDocument( "US-ASCII", null );
+                s.comment( " Build dependencies generated by XMvn " );
+                s.text( "\n" );
+                s.startTag( null, "dependencies" );
+
+                for ( Artifact dependencyArtifact : resolvedDependencies )
+                    ArtifactUtils.serialize( dependencyArtifact, s, null, "dependency" );
+
+                s.endTag( null, "dependencies" );
             }
         }
         catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Failed to generate build dependencies", e );
+        }
+        catch ( ModelFormatException e )
         {
             throw new MojoExecutionException( "Failed to generate build dependencies", e );
         }
