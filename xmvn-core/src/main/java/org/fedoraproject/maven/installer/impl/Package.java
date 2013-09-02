@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.installer.impl;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -25,8 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.artifact.Artifact;
@@ -87,30 +84,6 @@ class Package
     public void addFile( Path file, Path target, int mode )
     {
         addFile( file, target.getParent(), target.getFileName(), mode );
-    }
-
-    public static boolean containsNativeCode( Path jar )
-        throws IOException
-    {
-        // From /usr/include/linux/elf.h
-        final int ELFMAG0 = 0x7F;
-        final int ELFMAG1 = 'E';
-        final int ELFMAG2 = 'L';
-        final int ELFMAG3 = 'F';
-
-        try (ZipInputStream jis = new ZipInputStream( new FileInputStream( jar.toFile() ) ))
-        {
-            ZipEntry ent;
-            while ( ( ent = jis.getNextEntry() ) != null )
-            {
-                if ( ent.isDirectory() )
-                    continue;
-                if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2 && jis.read() == ELFMAG3 )
-                    return true;
-            }
-        }
-
-        return false;
     }
 
     public void addSymlink( Path symlink, Path target )

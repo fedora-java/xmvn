@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.maven.installer.impl;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
@@ -295,6 +298,34 @@ public class DefaultInstaller
         }
     }
 
+    private boolean containsNativeCode( Artifact artifact )
+        throws IOException
+    {
+        // From /usr/include/linux/elf.h
+        final int ELFMAG0 = 0x7F;
+        final int ELFMAG1 = 'E';
+        final int ELFMAG2 = 'L';
+        final int ELFMAG3 = 'F';
+
+        try (ZipInputStream jis = new ZipInputStream( new FileInputStream( artifact.getFile() ) ))
+        {
+            ZipEntry ent;
+            while ( ( ent = jis.getNextEntry() ) != null )
+            {
+                if ( ent.isDirectory() )
+                    continue;
+                if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2 && jis.read() == ELFMAG3 )
+                    return true;
+            }
+
+            return false;
+        }
+        catch ( IOException e )
+        {
+            return false;
+        }
+    }
+
     private void installArtifact( Artifact artifact )
         throws IOException, ModelFormatException
     {
@@ -305,6 +336,9 @@ public class DefaultInstaller
             throw new RuntimeException( "Attached artifact cannot be POM artifact: " + artifact );
         if ( isPomArtifact && !artifact.getExtension().equals( "pom" ) )
             throw new RuntimeException( "POM artifact has extension different from 'pom': " + artifact.getExtension() );
+
+        if ( !isPomArtifact && containsNativeCode( artifact ) )
+            artifact = ArtifactUtils.setStereotype( artifact, "native" );
 
         PackagingRule rule = ruleForArtifact( artifact );
 
