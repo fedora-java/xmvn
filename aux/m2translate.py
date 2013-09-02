@@ -21,7 +21,6 @@
 import os
 import re
 import random
-from shutil import copyfile
 
 
 class Artifact:
@@ -57,37 +56,36 @@ def create_depmap(artifact, compat, subdir):
 
     version = ''
     if compat:
-        version = "\n%s<version>%s</version>" % (' ' * 8, artifact.version)
+        version = "\n%s<version>%s</version>" % (' ' * 6, artifact.version)
 
     classifier = ''
     if artifact.classifier != '':
-        classifier = "\n%s<classifier>%s</classifier>" % (' ' * 8, artifact.classifier)
+        classifier = "\n%s<classifier>%s</classifier>" % (' ' * 6, artifact.classifier)
 
     extension = ''
     if artifact.extension not in ['', 'pom', 'jar']:
-        extension = "\n%s<extension>%s</extension>" % (' ' * 8, artifact.extension)
+        extension = "\n%s<extension>%s</extension>" % (' ' * 6, artifact.extension)
 
     if len(subdir) > 0:
         subdir = "/%s" % subdir
 
-    depmap="""
-<dependency>
+    depmap="""  <dependency>
     <maven>
-        <groupId>%s</groupId>
-        <artifactId>%s</artifactId>%s%s%s
+      <groupId>%s</groupId>
+      <artifactId>%s</artifactId>%s%s%s
     </maven>
     <jpp>
-        <groupId>JPP%s</groupId>
-        <artifactId>%s</artifactId>%s%s%s
+      <groupId>JPP%s</groupId>
+      <artifactId>%s</artifactId>%s%s%s
     </jpp>
-</dependency>\n"""
+  </dependency>\n"""
 
     return depmap % (artifact.gid, artifact.aid, version, classifier,\
                      extension, subdir, artifact.aid, version,\
                      classifier, extension)
 
 
-def copy_jar(artifact, compat, subdir):
+def get_jar_path(artifact, compat, subdir):
 
     filename = artifact.aid
 
@@ -97,17 +95,12 @@ def copy_jar(artifact, compat, subdir):
     if len(artifact.classifier) != 0:
         filename = "%s-%s" % (filename, artifact.classifier)
 
-    if len(subdir) > 0:
-        create_dir(os.path.join(JAVADIR, subdir))
-
     filename = "%s.%s" % (filename, artifact.extension)
-
-    copyfile(artifact.path, os.path.join(JAVADIR, subdir, filename))
 
     return filename
 
 
-def copy_pom(artifact, compat, subdir):
+def get_pom_path(artifact, compat, subdir):
 
     if len(subdir) > 0:
         subdir = ".%s-" % subdir
@@ -120,41 +113,7 @@ def copy_pom(artifact, compat, subdir):
         root, exp = os.path.splitext(filename)
         filename = "%s-%s%s" % (root, artifact.version, exp)
 
-    copyfile(artifact.path, os.path.join(JAVAPOMS, filename))
-
     return filename
-
-
-def create_dir(dirpath):
-    try:
-        os.makedirs(dirpath)
-    except OSError:
-        pass
-
-
-config_header = """
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-dependency-plugin</artifactId>
-  <version>2.8</version>
-  <executions>
-    <execution>
-      <id>copy</id>
-      <phase>package</phase>
-      <goals>
-        <goal>copy</goal>
-      </goals>
-      <configuration>
-        <artifactItems>
-"""
-
-config_footer = """
-        </artifactItems>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
-"""
 
 
 def create_config_entry(artifact, filename, subdir):
@@ -170,39 +129,27 @@ def create_config_entry(artifact, filename, subdir):
     else:
         dest = os.path.join(JAVADIR, subdir)
 
-    return """
-          <artifactItem>
-            <groupId>%s</groupId>
-            <artifactId>%s</artifactId>
-            <version>%s</version>
-            <type>%s</type>%s
-            <outputDirectory>%s</outputDirectory>
-            <destFileName>%s</destFileName>
-          </artifactItem>""" % (artifact.gid, artifact.aid, artifact.version,\
-                                artifact.extension, classifier_conf, dest, filename)
+    return """                <artifactItem>
+                  <groupId>%s</groupId>
+                  <artifactId>%s</artifactId>
+                  <version>%s</version>
+                  <type>%s</type>%s
+                  <outputDirectory>%s</outputDirectory>
+                  <destFileName>%s</destFileName>
+                </artifactItem>""" % (artifact.gid, artifact.aid, artifact.version,\
+                                      artifact.extension, classifier_conf, dest, filename)
 
 
-M2DIR=os.environ['HOME'] + "/.m2"
+M2DIR="repo"
 PATH_PREFIX=os.path.join(M2DIR, "repository/")
-JAVADIR="./java"
-JAVAFRAGMENTSDIR="./maven-fragments"
-JAVAPOMS="./maven-poms"
-JAVAFRAGMENTFILE="maven-fragments"
+JAVADIR="${project.build.directory}/root/usr/share/java"
+JAVAPOMS="${project.build.directory}/root/usr/share/maven-poms"
 
 
 if __name__ == "__main__":
 
     artifacts=dict()
     used_versions=list()
-
-    create_dir(JAVADIR)
-    create_dir(JAVAFRAGMENTSDIR)
-    create_dir(JAVAPOMS)
-
-    try:
-        os.remove(os.path.join(JAVAFRAGMENTSDIR, JAVAFRAGMENTFILE))
-    except (OSError):
-       pass
 
     for dirname, dirnames, filenames in os.walk(M2DIR):
     
@@ -218,7 +165,8 @@ if __name__ == "__main__":
                     artifacts[key] = list()
                 artifacts[key].append(artifact)
 
-    print config_header
+    with open("depmap.xml", "a") as fragmentfile:
+        fragmentfile.write("<dependencyMap>\n")
 
     #process artifacts
     for key in artifacts:
@@ -238,15 +186,15 @@ if __name__ == "__main__":
 
         for artifact in values:
             if artifact.extension == "pom":
-                filename = copy_pom(artifact, compat, subdir)
+                filename = get_pom_path(artifact, compat, subdir)
             else:
-                filename = copy_jar(artifact, compat, subdir)
+                filename = get_jar_path(artifact, compat, subdir)
 
             print create_config_entry(artifact, filename, subdir)
     
             depmap = create_depmap(artifact, compat, subdir)
-            with open(os.path.join(JAVAFRAGMENTSDIR, JAVAFRAGMENTFILE), "a") as fragmentfile:
+            with open("depmap.xml", "a") as fragmentfile:
                 fragmentfile.write(depmap)
-    
-    print config_footer
 
+    with open("depmap.xml", "a") as fragmentfile:
+        fragmentfile.write("</dependencyMap>\n")
