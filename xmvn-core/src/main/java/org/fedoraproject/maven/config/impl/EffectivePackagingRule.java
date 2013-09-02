@@ -40,6 +40,7 @@ import org.fedoraproject.maven.utils.GlobUtils;
  * 
  * @author Mikolaj Izdebski
  */
+// XXX this should be private, or documented as such
 public class EffectivePackagingRule
     extends PackagingRule
 {

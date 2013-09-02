@@ -40,6 +40,10 @@ import org.fedoraproject.maven.repository.RepositoryPath;
  * <p>
  * All requests are forwarded to repositories backing this compound repository. If no repositories are aggregated then
  * this repository is equivalent to empty repository.
+ * <p>
+ * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
+ * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
+ * it directly.
  * 
  * @author Mikolaj Izdebski
  */

@@ -30,6 +30,10 @@ import org.fedoraproject.maven.config.Stereotype;
 import org.fedoraproject.maven.repository.Repository;
 
 /**
+ * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
+ * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
+ * it directly.
+ * 
  * @author Mikolaj Izdebski
  */
 @Component( role = RepositoryConfigurator.class )

@@ -23,7 +23,7 @@ import org.fedoraproject.maven.repository.RepositoryPath;
 /**
  * @author Mikolaj Izdebski
  */
-public class DefaultRepositoryPath
+class DefaultRepositoryPath
     implements RepositoryPath
 {
     private Path path;
