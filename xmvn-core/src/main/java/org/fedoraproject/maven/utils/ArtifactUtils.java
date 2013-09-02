@@ -19,8 +19,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
@@ -55,6 +56,13 @@ public class ArtifactUtils
 
     private static final String KEY_EFFECTIVE_MODEL = "xmvn.artifact.effectiveModel";
 
+    public static Artifact setProperty( Artifact artifact, String key, String value )
+    {
+        Map<String, String> properties = new HashMap<>( artifact.getProperties() );
+        properties.put( key, value );
+        return artifact.setProperties( properties );
+    }
+
     public static String getScope( Artifact artifact )
     {
         return artifact.getProperty( KEY_SCOPE, "" );
@@ -62,7 +70,7 @@ public class ArtifactUtils
 
     public static Artifact setScope( Artifact artifact, String scope )
     {
-        return artifact.setProperties( Collections.singletonMap( KEY_SCOPE, scope ) );
+        return setProperty( artifact, KEY_SCOPE, scope );
     }
 
     public static String getStereotype( Artifact artifact )
@@ -72,7 +80,7 @@ public class ArtifactUtils
 
     public static Artifact setStereotype( Artifact artifact, String stereotype )
     {
-        return artifact.setProperties( Collections.singletonMap( KEY_STEREOTYPE, stereotype ) );
+        return setProperty( artifact, KEY_STEREOTYPE, stereotype );
     }
 
     public static Path getRawModelPath( Artifact artifact )
@@ -84,7 +92,7 @@ public class ArtifactUtils
     public static Artifact setRawModelPath( Artifact artifact, Path rawModelPath )
     {
         String path = rawModelPath != null ? rawModelPath.toString() : null;
-        return artifact.setProperties( Collections.singletonMap( KEY_RAW_MODEL, path ) );
+        return setProperty( artifact, KEY_RAW_MODEL, path );
     }
 
     public static Path getEffectiveModelPath( Artifact artifact )
@@ -96,7 +104,7 @@ public class ArtifactUtils
     public static Artifact setEffectiveModelPath( Artifact artifact, Path effectiveModelPath )
     {
         String path = effectiveModelPath != null ? effectiveModelPath.toString() : null;
-        return artifact.setProperties( Collections.singletonMap( KEY_EFFECTIVE_MODEL, path ) );
+        return setProperty( artifact, KEY_EFFECTIVE_MODEL, path );
     }
 
     /**
