@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.installer.old;
+package org.fedoraproject.maven.installer.impl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +24,7 @@ import org.fedoraproject.maven.utils.FileUtils;
 /**
  * @author Mikolaj Izdebski
  */
-public class Installer
+class Installer
 {
     private final Path root;
 

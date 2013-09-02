@@ -46,7 +46,6 @@ import org.fedoraproject.maven.config.io.xpp3.ConfigurationXpp3Writer;
 import org.fedoraproject.maven.installer.InstallationRequest;
 import org.fedoraproject.maven.installer.InstallationResult;
 import org.fedoraproject.maven.installer.Installer;
-import org.fedoraproject.maven.installer.old.DefaultPackage;
 import org.fedoraproject.maven.installer.old.DependencyExtractor;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.RepositoryPath;
@@ -80,7 +79,7 @@ public class DefaultInstaller
 
     private Configuration configuration;
 
-    private Map<String, DefaultPackage> packages;
+    private Map<String, Package> packages;
 
     private PackagingRule ruleForArtifact( Artifact artifact )
     {
@@ -111,17 +110,17 @@ public class DefaultInstaller
         return aliasArtifacts;
     }
 
-    private DefaultPackage getTargetPackageForArtifact( Artifact artifact, PackagingRule rule )
+    private Package getTargetPackageForArtifact( Artifact artifact, PackagingRule rule )
         throws IOException
     {
         String packageName = rule.getTargetPackage();
         if ( StringUtils.isEmpty( packageName ) )
-            packageName = DefaultPackage.MAIN;
-        DefaultPackage pkg = packages.get( packageName );
+            packageName = Package.MAIN;
+        Package pkg = packages.get( packageName );
 
         if ( pkg == null )
         {
-            pkg = new DefaultPackage( packageName, settings, logger );
+            pkg = new Package( packageName, settings, logger );
             packages.put( packageName, pkg );
         }
 
@@ -189,7 +188,7 @@ public class DefaultInstaller
         return jppArtifacts;
     }
 
-    private void installArtifact( DefaultPackage pkg, Artifact artifact, List<Artifact> aliases,
+    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases,
                                   List<Artifact> jppArtifacts )
         throws IOException
     {
@@ -238,7 +237,7 @@ public class DefaultInstaller
         }
     }
 
-    private void generateDevelRequires( DefaultPackage pkg, Artifact artifact )
+    private void generateDevelRequires( Package pkg, Artifact artifact )
         throws IOException
     {
         String rawModelPath = artifact.getProperty( "xmvn.installer.rawModelPath", null );
@@ -246,7 +245,7 @@ public class DefaultInstaller
         DependencyExtractor.generateRawRequires( resolver, rawModel, pkg.getMetadata() );
     }
 
-    private void generateUserRequires( DefaultPackage pkg, Artifact artifact )
+    private void generateUserRequires( Package pkg, Artifact artifact )
         throws IOException
     {
         String effectiveModelPath = artifact.getProperty( "xmvn.installer.rawModelPath", null );
@@ -254,7 +253,7 @@ public class DefaultInstaller
         DependencyExtractor.generateEffectiveRuntimeRequires( resolver, effectiveModel, pkg.getMetadata() );
     }
 
-    private void installPomFiles( DefaultPackage pkg, Artifact artifact, List<Artifact> jppArtifacts )
+    private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
     {
         Artifact jppArtifact = jppArtifacts.iterator().next();
         Artifact jppPomArtifact =
@@ -289,7 +288,7 @@ public class DefaultInstaller
 
         PackagingRule rule = ruleForArtifact( artifact );
 
-        DefaultPackage pkg = getTargetPackageForArtifact( artifact, rule );
+        Package pkg = getTargetPackageForArtifact( artifact, rule );
         if ( pkg == null )
             return;
 
@@ -356,8 +355,8 @@ public class DefaultInstaller
 
         packages = new TreeMap<>();
 
-        DefaultPackage mainPackage = new DefaultPackage( DefaultPackage.MAIN, settings, logger );
-        packages.put( DefaultPackage.MAIN, mainPackage );
+        Package mainPackage = new Package( Package.MAIN, settings, logger );
+        packages.put( Package.MAIN, mainPackage );
 
         Set<Artifact> artifactSet = request.getArtifacts();
 
@@ -369,10 +368,10 @@ public class DefaultInstaller
             checkForUnmatchedRules( configuration.getArtifactManagement() );
 
             Path installRoot = Paths.get( settings.getInstallRoot() );
-            org.fedoraproject.maven.installer.old.Installer installer =
-                new org.fedoraproject.maven.installer.old.Installer( installRoot );
+            org.fedoraproject.maven.installer.impl.Installer installer =
+                new org.fedoraproject.maven.installer.impl.Installer( installRoot );
 
-            for ( DefaultPackage pkg : packages.values() )
+            for ( Package pkg : packages.values() )
                 if ( pkg.isInstallable() )
                     pkg.install( installer );
         }

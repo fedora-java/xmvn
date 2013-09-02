@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.installer.old;
+package org.fedoraproject.maven.installer.impl;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,8 +39,8 @@ import org.fedoraproject.maven.utils.FileUtils;
 /**
  * @author Mikolaj Izdebski
  */
-public class DefaultPackage
-    implements Comparable<DefaultPackage>
+class Package
+    implements Comparable<Package>
 {
     private final String suffix;
 
@@ -52,7 +52,7 @@ public class DefaultPackage
 
     private final InstallerSettings settings;
 
-    public DefaultPackage( String name, InstallerSettings settings, Logger logger )
+    public Package( String name, InstallerSettings settings, Logger logger )
     {
         this.settings = settings;
         metadata = new FragmentFile( logger );
@@ -197,7 +197,7 @@ public class DefaultPackage
     }
 
     @Override
-    public int compareTo( DefaultPackage rhs )
+    public int compareTo( Package rhs )
     {
         return suffix.compareTo( rhs.suffix );
     }

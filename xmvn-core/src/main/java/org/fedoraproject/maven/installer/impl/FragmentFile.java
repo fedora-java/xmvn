@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.installer.old;
+package org.fedoraproject.maven.installer.impl;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,8 +32,10 @@ import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.config.InstallerSettings;
+import org.fedoraproject.maven.installer.old.DependencyVisitor;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
+// TODO: make this class non-public (currently tests reference it)
 /**
  * @author Mikolaj Izdebski
  */
