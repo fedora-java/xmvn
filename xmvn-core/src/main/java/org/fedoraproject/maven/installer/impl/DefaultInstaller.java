@@ -17,6 +17,7 @@ package org.fedoraproject.maven.installer.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -389,13 +390,16 @@ public class DefaultInstaller
             if ( request.isCheckForUnmatchedRules() )
                 checkForUnmatchedRules( configuration.getArtifactManagement() );
 
-            Path installRoot = Paths.get( settings.getInstallRoot() );
-            org.fedoraproject.maven.installer.impl.Installer installer =
-                new org.fedoraproject.maven.installer.impl.Installer( installRoot );
+            Path root = Paths.get( settings.getInstallRoot() );
+
+            if ( Files.exists( root ) && !Files.isDirectory( root ) )
+                throw new IOException( root + " is not a directory" );
+
+            Files.createDirectories( root );
 
             for ( Package pkg : packages.values() )
                 if ( pkg.isInstallable() )
-                    pkg.install( installer );
+                    pkg.install( root );
         }
         catch ( IOException e )
         {

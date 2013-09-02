@@ -121,13 +121,30 @@ class Package
         addFile( symlinkFile, symlink, 0644 );
     }
 
-    private void installFiles( Installer installer )
+    private Path installDirectory( Path root, Path target )
+        throws IOException
+    {
+        Path dir = root.resolve( target );
+        return Files.createDirectories( dir );
+    }
+
+    private Path installFile( Path root, Path source, Path targetDir, Path targetName, int mode )
+        throws IOException
+    {
+        Path dir = installDirectory( root, targetDir );
+
+        Path target = dir.resolve( targetName );
+        FileUtils.linkOrCopy( source, target );
+        FileUtils.chmod( target, mode );
+
+        return target;
+    }
+
+    private void installFiles( Path root )
         throws IOException
     {
         for ( TargetFile target : targetFiles )
-        {
-            installer.installFile( target.sourceFile, target.dirPath, target.targetName, target.mode );
-        }
+            installFile( root, target.sourceFile, target.dirPath, target.targetName, target.mode );
     }
 
     public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
@@ -178,11 +195,11 @@ class Package
         }
     }
 
-    public void install( Installer installer )
+    public void install( Path root )
         throws IOException
     {
         installMetadata();
-        installFiles( installer );
+        installFiles( root );
         createFileList();
     }
 
