@@ -52,6 +52,8 @@ import org.fedoraproject.maven.installer.Installer;
 import org.fedoraproject.maven.model.ModelFormatException;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.RepositoryPath;
+import org.fedoraproject.maven.resolver.ResolutionRequest;
+import org.fedoraproject.maven.resolver.ResolutionResult;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.LoggingUtils;
@@ -259,9 +261,18 @@ public class DefaultInstaller
         DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
         DependencyExtractionResult result = buildDependencyExtractor.extract( request );
         FragmentFile metadata = pkg.getMetadata();
+
         for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
+        {
+            ResolutionRequest req = new ResolutionRequest( dependencyArtifact );
+            ResolutionResult res = resolver.resolve( req );
+            String version = res.getCompatVersion() != null ? res.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
+            dependencyArtifact = dependencyArtifact.setVersion( version );
             metadata.addBuildDependency( dependencyArtifact );
-        metadata.addJavaVersionBuildDependency( result.getJavaVersion() );
+        }
+
+        if ( result.getJavaVersion() != null )
+            metadata.addJavaVersionBuildDependency( result.getJavaVersion() );
     }
 
     private void generateUserRequires( Package pkg, Artifact artifact )
@@ -271,9 +282,18 @@ public class DefaultInstaller
         DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
         DependencyExtractionResult result = runtimeDependencyExtractor.extract( request );
         FragmentFile metadata = pkg.getMetadata();
+
         for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
+        {
+            ResolutionRequest req = new ResolutionRequest( dependencyArtifact );
+            ResolutionResult res = resolver.resolve( req );
+            String version = res.getCompatVersion() != null ? res.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
+            dependencyArtifact = dependencyArtifact.setVersion( version );
             metadata.addRuntimeDependency( dependencyArtifact );
-        metadata.addJavaVersionRuntimeDependency( result.getJavaVersion() );
+        }
+
+        if ( result.getJavaVersion() != null )
+            metadata.addJavaVersionRuntimeDependency( result.getJavaVersion() );
     }
 
     private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )

@@ -174,7 +174,6 @@ class FragmentFile
             }
 
             s.endTag( null, "dependencyMap" );
-            s.text( "\n" );
             s.endDocument();
         }
     }
