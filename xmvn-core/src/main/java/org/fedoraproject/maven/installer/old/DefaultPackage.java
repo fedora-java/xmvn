@@ -40,7 +40,7 @@ import org.fedoraproject.maven.utils.FileUtils;
  * @author Mikolaj Izdebski
  */
 public class DefaultPackage
-    implements Package, Comparable<DefaultPackage>
+    implements Comparable<DefaultPackage>
 {
     private final String suffix;
 
@@ -130,7 +130,6 @@ public class DefaultPackage
         }
     }
 
-    @Override
     public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
                                PackagingRule rule )
     {
@@ -192,7 +191,6 @@ public class DefaultPackage
         return !suffix.endsWith( NOINSTALL_SUFFIX );
     }
 
-    @Override
     public FragmentFile getMetadata()
     {
         return metadata;
