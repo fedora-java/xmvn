@@ -258,25 +258,25 @@ public class DefaultInstaller
             new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(), jppArtifact.getClassifier(),
                                  "pom", jppArtifact.getVersion() );
 
-        String rawModelPath = artifact.getProperty( "xmvn.installer.rawModelPath", null );
+        Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
         if ( rawModelPath != null && settings.isEnableRawPoms() )
         {
             Path target = rawPomRepo.getPrimaryArtifactPath( jppPomArtifact ).getPath();
-            pkg.addFile( Paths.get( rawModelPath ), target, 0644 );
+            pkg.addFile( rawModelPath, target, 0644 );
         }
 
-        String effectiveModelPath = artifact.getProperty( "xmvn.installer.effectiveModelPath", null );
+        Path effectiveModelPath = ArtifactUtils.getEffectiveModelPath( artifact );
         if ( effectiveModelPath != null && settings.isEnableEffectivePoms() )
         {
             Path target = effectivePomRepo.getPrimaryArtifactPath( jppPomArtifact ).getPath();
-            pkg.addFile( Paths.get( effectiveModelPath ), target, 0644 );
+            pkg.addFile( effectiveModelPath, target, 0644 );
         }
     }
 
     private void installArtifact( Artifact artifact )
         throws IOException, ModelFormatException
     {
-        String rawModelPath = artifact.getProperty( "xmvn.installer.rawModelPath", null );
+        Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
         boolean isAttachedArtifact = rawModelPath == null;
         boolean isPomArtifact = artifact.getFile() == null;
         if ( isAttachedArtifact && isPomArtifact )
@@ -292,7 +292,7 @@ public class DefaultInstaller
 
         if ( isPomArtifact )
         {
-            artifact = artifact.setFile( Paths.get( rawModelPath ).toFile() );
+            artifact = artifact.setFile( rawModelPath.toFile() );
             artifact = ArtifactUtils.setStereotype( artifact, "pom" );
         }
 

@@ -36,6 +36,7 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.installer.InstallationRequest;
 import org.fedoraproject.maven.installer.Installer;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
 import com.beust.jcommander.DynamicParameter;
@@ -159,7 +160,9 @@ public class InstallerCli
                 String effectivePom = readValue( artifactDom, "effectivePomPath", null, true );
                 Path effectiveModelPath = effectivePom != null ? Paths.get( effectivePom ) : null;
 
-                request.addArtifact( artifact, rawModelPath, effectiveModelPath );
+                artifact = ArtifactUtils.setRawModelPath( artifact, rawModelPath );
+                artifact = ArtifactUtils.setEffectiveModelPath( artifact, effectiveModelPath );
+                request.addArtifact( artifact );
             }
 
             Installer installer = container.lookup( Installer.class );

@@ -15,11 +15,8 @@
  */
 package org.fedoraproject.maven.installer;
 
-import java.nio.file.Path;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.aether.artifact.Artifact;
@@ -43,14 +40,9 @@ public class InstallationRequest
         this.checkForUnmatchedRules = checkForUnmatchedRules;
     }
 
-    public void addArtifact( Artifact artifact, Path rawModelPath, Path effectiveModelPath )
+    public void addArtifact( Artifact artifact )
     {
-        Map<String, String> properties = new HashMap<>();
-        if ( rawModelPath != null )
-            properties.put( "xmvn.installer.rawModelPath", rawModelPath.toString() );
-        if ( effectiveModelPath != null )
-            properties.put( "xmvn.installer.effectiveModelPath", effectiveModelPath.toString() );
-        artifacts.add( artifact.setProperties( properties ) );
+        artifacts.add( artifact );
     }
 
     public Set<Artifact> getArtifacts()
