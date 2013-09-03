@@ -1078,7 +1078,7 @@
       <extension>signature</extension>
     </maven>
     <jpp>
-      <groupId>JPP/java15</groupId>
+      <groupId>JPP</groupId>
       <artifactId>java15</artifactId>
       <extension>signature</extension>
     </jpp>

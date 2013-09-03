@@ -64,6 +64,7 @@
 		    <include>depmap.xml</include>
 		    <include>configuration.xml</include>
 		  </includes>
+		  <filtering>true</filtering>
 		</resource>
 	      </resources>
 	    </configuration>
@@ -906,7 +907,7 @@
                   <artifactId>java15</artifactId>
                   <version>1.0</version>
                   <type>signature</type>
-                  <outputDirectory>${project.build.directory}/root/usr/share/java/java15</outputDirectory>
+                  <outputDirectory>${project.build.directory}/root/usr/share/mojo-signatures</outputDirectory>
                   <destFileName>java15.signature</destFileName>
                 </artifactItem>
                 <artifactItem>

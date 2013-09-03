@@ -68,7 +68,6 @@
       <stereotypes>
         <stereotype>
           <extension>jar</extension>
-          <extension>signature</extension>
         </stereotype>
       </stereotypes>
     </repository>
@@ -81,6 +80,18 @@
       <stereotypes>
         <stereotype>
           <extension>jar</extension>
+        </stereotype>
+      </stereotypes>
+    </repository>
+    <repository>
+      <id>mojo-signatures</id>
+      <type>jpp</type>
+      <properties>
+        <root>usr/share/mojo-signatures</root>
+      </properties>
+      <stereotypes>
+        <stereotype>
+          <extension>signature</extension>
         </stereotype>
       </stereotypes>
     </repository>
