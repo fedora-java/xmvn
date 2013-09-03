@@ -19,9 +19,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.fedoraproject.xmvn.it</groupId>
+  <parent>
+    <groupId>org.fedoraproject.xmvn.it</groupId>
+    <artifactId>it-parent</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
   <artifactId>maven31</artifactId>
-  <version>0.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <build>
     <plugins>
@@ -31,7 +35,7 @@
           <settingsFile>src/it/settings.xml</settingsFile>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <postBuildHookScript>verify</postBuildHookScript>
-          <mavenHome>/home/kojan/git/xmvn/it/maven31/xmvn-0.6.0-SNAPSHOT</mavenHome>
+          <mavenHome>${project.build.directory}/xmvn-${project.version}</mavenHome>
           <mavenExecutable>xmvn</mavenExecutable>
           <pom>${project.build.directory}/apache-maven-3.1.0/pom.xml</pom>
         </configuration>
@@ -58,18 +62,18 @@
             <configuration>
               <outputDirectory>${project.build.directory}/root/etc/xdg/xmvn</outputDirectory>
               <resources>
-		<resource>
-		  <directory>src/it</directory>
-		  <includes>
-		    <include>depmap.xml</include>
-		    <include>configuration.xml</include>
-		  </includes>
-		  <filtering>true</filtering>
-		</resource>
-	      </resources>
-	    </configuration>
-	  </execution>
-	</executions>
+                <resource>
+                  <directory>src/it</directory>
+                  <includes>
+                    <include>depmap.xml</include>
+                    <include>configuration.xml</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -82,6 +86,13 @@
             </goals>
             <configuration>
               <artifactItems>
+                <artifactItem>
+                  <groupId>org.fedoraproject.xmvn</groupId>
+                  <artifactId>xmvn</artifactId>
+                  <version>${project.version}</version>
+                  <type>tar.bz2</type>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.maven</groupId>
                   <artifactId>apache-maven</artifactId>

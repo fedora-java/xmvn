@@ -104,6 +104,7 @@
           <repository>base-raw-pom</repository>
           <repository>base-jar</repository>
           <repository>base-jni</repository>
+          <repository>mojo-signatures</repository>
         </repositories>
       </configuration>
     </repository>
