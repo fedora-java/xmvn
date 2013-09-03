@@ -97,21 +97,21 @@
         </field>
         <field>
           <name>classifier</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Classifier of the artifact.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
         <field>
           <name>stereotype</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Maven stereotype of the artifact.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
         <field>
           <name>extension</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Extension of the artifact.</description>
           <type>String</type>
           <defaultValue></defaultValue>
@@ -121,24 +121,24 @@
 
     <class xml.tagName="stereotype" java.clone="deep">
       <name>Stereotype</name>
-      <version>0.6.0+</version>
+      <version>1.0.0+</version>
       <description>Stereotype of Maven artifact.</description>
       <fields>
         <field>
           <name>type</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Type ID of the stereotype.</description>
           <type>String</type>
         </field>
         <field>
           <name>extension</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Extension of the artifact.</description>
           <type>String</type>
         </field>
         <field>
           <name>classifier</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Classifier of the artifact.</description>
           <type>String</type>
         </field>
@@ -147,18 +147,18 @@
 
     <class xml.tagName="repository" java.clone="deep">
       <name>Repository</name>
-      <version>0.6.0+</version>
+      <version>1.0.0+</version>
       <description>Artifact repository.</description>
       <fields>
         <field>
           <name>id</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Unique string identifying this repository.</description>
           <type>String</type>
         </field>
         <field>
           <name>type</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>
             Role hint of Plexus component implementing the repository.
           </description>
@@ -166,7 +166,7 @@
         </field>
         <field>
           <name>stereotypes</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>
             List of artifact types that can be stored in this
             repository.  Empty list means that this repository can
@@ -179,7 +179,7 @@
         </field>
         <field>
           <name>properties</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>
             Properties associated with this repository.  Properties
             can be freely used by the implementation, so their exact
@@ -194,7 +194,7 @@
         </field>
         <field>
           <name>configuration</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>
             Arbitrary XML used to configure structure of the
             repository.  Configuration can be freely used by the
@@ -229,7 +229,7 @@
         </field>
         <field>
           <name>targetRepository</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>
             ID of repository into which artifacts are installed.
           </description>
@@ -246,7 +246,7 @@
         </field>
         <field>
           <name>versions</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>Compatibility versions of the artifact.</description>
           <association xml.tagName="version">
             <type>String</type>
@@ -574,7 +574,7 @@
 
         <field>
           <name>repositories</name>
-          <version>0.6.0+</version>
+          <version>1.0.0+</version>
           <description>
             List of repositories.  Repositories can be used by
             resolvers as source of artifacts, by installers as target
