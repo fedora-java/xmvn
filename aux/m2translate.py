@@ -122,7 +122,7 @@ def create_config_entry(artifact, filename, subdir):
     classifier_conf = ''
     if len(classifier) > 0:
         classifier = '-' + classifier
-        classifier_conf = '\n%s<classifier>%s</classifier>' % (' ' * 12, artifact.classifier)
+        classifier_conf = '\n%s<classifier>%s</classifier>' % (' ' * 18, artifact.classifier)
 
     if artifact.extension == 'pom':
         dest = JAVAPOMS
@@ -140,23 +140,24 @@ def create_config_entry(artifact, filename, subdir):
                                       artifact.extension, classifier_conf, dest, filename)
 
 
-M2DIR="repo"
-PATH_PREFIX=os.path.join(M2DIR, "repository/")
+PATH_PREFIX="repo"
 JAVADIR="${project.build.directory}/root/usr/share/java"
 JAVAPOMS="${project.build.directory}/root/usr/share/maven-poms"
 
 
 if __name__ == "__main__":
 
+    random.seed(7541)
+
     artifacts=dict()
     used_versions=list()
 
-    for dirname, dirnames, filenames in os.walk(M2DIR):
+    for dirname, dirnames, filenames in os.walk(PATH_PREFIX):
     
         # gather information about artifacts in M2 directory
         for filename in filenames:
             fullpath = os.path.join(PATH_PREFIX, dirname, filename)
-            repopath = os.path.join(dirname, filename)[len(PATH_PREFIX):]
+            repopath = os.path.join(dirname, filename)[len(PATH_PREFIX)+1:]
 
             artifact = parse_path(repopath)
             if artifact:
@@ -165,7 +166,7 @@ if __name__ == "__main__":
                     artifacts[key] = list()
                 artifacts[key].append(artifact)
 
-    with open("depmap.xml", "a") as fragmentfile:
+    with open("depmap.xml", "w") as fragmentfile:
         fragmentfile.write("<dependencyMap>\n")
 
     #process artifacts

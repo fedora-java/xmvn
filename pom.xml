@@ -211,4 +211,12 @@
       </plugin>
     </plugins>
   </reporting>
+  <profiles>
+    <profile>
+      <id>it</id>
+      <modules>
+        <module>it</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

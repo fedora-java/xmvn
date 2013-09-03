@@ -44,12 +44,7 @@ public class FedoraWorkspaceReader
     @Override
     public File findArtifact( Artifact artifact )
     {
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String version = artifact.getVersion();
-        String extension = artifact.getExtension();
-
-        ResolutionRequest request = new ResolutionRequest( groupId, artifactId, version, extension );
+        ResolutionRequest request = new ResolutionRequest( artifact );
         ResolutionResult result = resolver.resolve( request );
         return result.getArtifactFile();
     }
