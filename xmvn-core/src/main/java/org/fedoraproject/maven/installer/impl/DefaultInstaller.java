@@ -160,13 +160,13 @@ public class DefaultInstaller
         return pkg;
     }
 
-    private List<Artifact> getJppArtifacts( Artifact artifact, PackagingRule rule )
+    private List<Artifact> getJppArtifacts( Artifact artifact, PackagingRule rule, String packageName )
     {
         Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
             basePaths.add( Paths.get( fileName ) );
         if ( basePaths.isEmpty() )
-            basePaths.add( Paths.get( settings.getPackageName() + "/" + artifact.getArtifactId() ) );
+            basePaths.add( Paths.get( packageName + "/" + artifact.getArtifactId() ) );
 
         Set<String> versions = new LinkedHashSet<>();
         for ( String version : rule.getVersions() )
@@ -319,7 +319,6 @@ public class DefaultInstaller
     }
 
     private boolean containsNativeCode( Artifact artifact )
-        throws IOException
     {
         // From /usr/include/linux/elf.h
         final int ELFMAG0 = 0x7F;
@@ -346,7 +345,7 @@ public class DefaultInstaller
         }
     }
 
-    private void installArtifact( Artifact artifact )
+    private void installArtifact( Artifact artifact, String packageName )
         throws IOException, ModelFormatException
     {
         Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
@@ -372,7 +371,7 @@ public class DefaultInstaller
             artifact = ArtifactUtils.setStereotype( artifact, "pom" );
         }
 
-        List<Artifact> jppArtifacts = getJppArtifacts( artifact, rule );
+        List<Artifact> jppArtifacts = getJppArtifacts( artifact, rule, packageName );
         if ( jppArtifacts == null )
         {
             logger.warn( "Skipping installation of artifact " + artifact
@@ -439,12 +438,12 @@ public class DefaultInstaller
         try
         {
             for ( Artifact artifact : artifactSet )
-                installArtifact( artifact );
+                installArtifact( artifact, request.getBasePackageName() );
 
             if ( request.isCheckForUnmatchedRules() )
                 checkForUnmatchedRules( configuration.getArtifactManagement() );
 
-            Path root = Paths.get( settings.getInstallRoot() );
+            Path root = request.getInstallRoot();
 
             if ( Files.exists( root ) && !Files.isDirectory( root ) )
                 throw new IOException( root + " is not a directory" );
@@ -453,7 +452,7 @@ public class DefaultInstaller
 
             for ( Package pkg : packages.values() )
                 if ( pkg.isInstallable() )
-                    pkg.install( root );
+                    pkg.install( request.getBasePackageName(), root );
         }
         catch ( IOException e )
         {

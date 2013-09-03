@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.maven.installer;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -29,6 +30,10 @@ public class InstallationRequest
     private boolean checkForUnmatchedRules;
 
     private final Set<Artifact> artifacts = new LinkedHashSet<>();
+
+    private String basePackageName;
+
+    private Path installRoot;
 
     public boolean isCheckForUnmatchedRules()
     {
@@ -48,5 +53,25 @@ public class InstallationRequest
     public Set<Artifact> getArtifacts()
     {
         return Collections.unmodifiableSet( artifacts );
+    }
+
+    public String getBasePackageName()
+    {
+        return basePackageName;
+    }
+
+    public void setBasePackageName( String basePackageName )
+    {
+        this.basePackageName = basePackageName;
+    }
+
+    public Path getInstallRoot()
+    {
+        return installRoot;
+    }
+
+    public void setInstallRoot( Path installRoot )
+    {
+        this.installRoot = installRoot;
     }
 }

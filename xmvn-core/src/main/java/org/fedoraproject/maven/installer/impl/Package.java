@@ -138,7 +138,7 @@ class Package
         }
     }
 
-    private void installMetadata()
+    private void installMetadata( String packageName )
         throws IOException
     {
         getMetadata().optimize();
@@ -147,7 +147,6 @@ class Package
         {
             Path file = Files.createTempFile( "xmvn", ".xml" );
             getMetadata().write( file, pureDevelPackage, settings );
-            String packageName = settings.getPackageName();
             Path depmapName = Paths.get( packageName + suffix + ".xml" );
             Path depmapDir = Paths.get( settings.getMetadataDir() );
             addFile( file, depmapDir, depmapName, 0644 );
@@ -168,10 +167,10 @@ class Package
         }
     }
 
-    public void install( Path root )
+    public void install( String packageName, Path root )
         throws IOException
     {
-        installMetadata();
+        installMetadata( packageName );
         installFiles( root );
         createFileList();
     }

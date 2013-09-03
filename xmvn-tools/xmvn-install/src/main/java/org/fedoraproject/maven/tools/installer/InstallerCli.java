@@ -64,6 +64,9 @@ public class InstallerCli
     @Parameter( names = { "-R", "--reactor" }, description = "Path to reactor descriptor" )
     public String planPath = ".xmvn/reactor.xml";
 
+    @Parameter( names = { "-n", "--name" }, description = "Base package name" )
+    public String packageName = "pkgname";
+
     @Parameter( names = { "-d", "--destination" }, description = "Destination directory" )
     public String destDir = ".xmvn/root";
 
@@ -148,6 +151,8 @@ public class InstallerCli
 
             InstallationRequest request = new InstallationRequest();
             request.setCheckForUnmatchedRules( !relaxed );
+            request.setBasePackageName( packageName );
+            request.setInstallRoot( Paths.get( destDir ) );
 
             Xpp3Dom dom = readInstallationPlan();
 
