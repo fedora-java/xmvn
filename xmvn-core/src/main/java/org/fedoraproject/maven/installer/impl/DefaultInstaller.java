@@ -297,24 +297,43 @@ public class DefaultInstaller
     }
 
     private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
+        throws IOException
     {
-        Artifact jppArtifact = jppArtifacts.iterator().next();
-        Artifact jppPomArtifact =
-            new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(), jppArtifact.getClassifier(),
-                                 "pom", jppArtifact.getVersion() );
+        Set<Artifact> jppPomArtifacts = new LinkedHashSet<>();
+        for ( Artifact jppArtifact : jppArtifacts )
+        {
+            Artifact jppPomArtifact =
+                new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
+                                     jppArtifact.getClassifier(), "pom", jppArtifact.getVersion() );
+            jppPomArtifacts.add( jppPomArtifact );
+        }
 
         Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
         if ( rawModelPath != null && settings.isEnableRawPoms() )
         {
-            Path target = rawPomRepo.getPrimaryArtifactPath( jppPomArtifact ).getPath();
+            Iterator<Artifact> it = jppPomArtifacts.iterator();
+            Path target = rawPomRepo.getPrimaryArtifactPath( it.next() ).getPath();
             pkg.addFile( rawModelPath, target, 0644 );
+
+            while ( it.hasNext() )
+            {
+                Path symlink = rawPomRepo.getPrimaryArtifactPath( it.next() ).getPath();
+                pkg.addSymlink( symlink, target );
+            }
         }
 
         Path effectiveModelPath = ArtifactUtils.getEffectiveModelPath( artifact );
         if ( effectiveModelPath != null && settings.isEnableEffectivePoms() )
         {
-            Path target = effectivePomRepo.getPrimaryArtifactPath( jppPomArtifact ).getPath();
+            Iterator<Artifact> it = jppPomArtifacts.iterator();
+            Path target = effectivePomRepo.getPrimaryArtifactPath( it.next() ).getPath();
             pkg.addFile( effectiveModelPath, target, 0644 );
+
+            while ( it.hasNext() )
+            {
+                Path symlink = effectivePomRepo.getPrimaryArtifactPath( it.next() ).getPath();
+                pkg.addSymlink( symlink, target );
+            }
         }
     }
 
