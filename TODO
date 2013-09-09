@@ -8,7 +8,24 @@ submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
 http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 
-* Milestone 0.6.0
+* Random ideas (no milestone assigned)
+
+** plugin API
+
+** XMvn Subst improvements
+
+*** dry run
+    don't actually replace any JARs, but report what would have been
+    replaced
+
+*** strict mode
+    if any JAR can't be substituted, bail out
+
+*** check run
+    verify correctness of existing symlinks
+
+
+* Deferred features
 
 ** improved configuration
 
@@ -25,45 +42,5 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 *** in tests don't modify configuration directly
     clone it and customize the clone
 
-** XMvn Subst improvements
-
-*** dry run
-    don't actually replace any JARs, but report what would have been
-    replaced
-
-*** strict mode
-    if any JAR can't be substituted, bail out
-
-*** check run
-    verify correctness of existing symlinks
-
-
-* Milestone 1.0.0
-
-** distinguish between public API and private implementation
-
-** plugin API
-
-** allow installing artifacts without building them
-   like package is built with ant, pom.xml cannot be used to build it,
-   but still pom.xml and jar files should be installable
-
-** SCL support
-   wrt auto requires generator
-
-** usability in Debian
-   working basic debhelper or CDBS integration
-
-** fix builddep MOJO
-   verify if generated BuildRequires are correct and complete; make
-   builddep mojo print the list BuildRequires on stdout (so it gets
-   included in mock build.log).  Especially verify profile activation.
-
 ** improve compat package resolver
    maybe version ranges, maybe number of matching components
-
-** add support for classifiers and stereotype
-
-
-* Random ideas (no milestone assigned)
-
