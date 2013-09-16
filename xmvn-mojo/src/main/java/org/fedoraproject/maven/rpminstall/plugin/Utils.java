@@ -57,6 +57,7 @@ class Utils
         return artifact;
     }
 
+    // TODO: <mgoldmann> mizdebsk: btw, the error msg could list the deps with system scope, if possibe
     private static Model simplifyEffectiveModel( Model model )
     {
         Model m = new Model();
