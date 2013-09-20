@@ -3,10 +3,27 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-09-09
+                    2013-09-20
 
 
 Release notes for XMvn
+
+* What's new in XMvn 1.0.2
+
+  * Major bugfixes
+
+    * Missing requires on parent POM artifacts
+
+      Version 1.0.0 introduced a regression -- automatic dependencies
+      on parent POM packages were no longer generated.  Version 1.0.2
+      fixes this regression.
+
+  * Minor bugfixes
+
+    * Missing sanity checks for missing models
+
+      In version 1.0.2 more strict sanity checks were added for cases
+      when artifacts were installed with missing model (POM) files.
 
 * What's new in XMvn 1.0.0
 
