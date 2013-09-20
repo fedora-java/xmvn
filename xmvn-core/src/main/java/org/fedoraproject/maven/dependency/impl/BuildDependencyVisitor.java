@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
+import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
@@ -59,6 +60,13 @@ class BuildDependencyVisitor
     public BuildDependencyVisitor( DefaultDependencyExtractionResult result )
     {
         this.result = result;
+    }
+
+    @Override
+    public void visitParent( Parent parent )
+    {
+        result.addDependencyArtifact( new DefaultArtifact( parent.getGroupId(), parent.getArtifactId(), "pom",
+                                                           parent.getVersion() ) );
     }
 
     @Override
