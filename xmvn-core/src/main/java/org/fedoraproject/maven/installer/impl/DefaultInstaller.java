@@ -258,6 +258,13 @@ public class DefaultInstaller
         throws IOException, ModelFormatException
     {
         Path modelPath = ArtifactUtils.getRawModelPath( artifact );
+        if ( modelPath == null )
+        {
+            logger.warn( "Skipping generation of devel requires for artifact " + artifact
+                + ": raw model path is not specified" );
+            return;
+        }
+
         DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
         DependencyExtractionResult result = buildDependencyExtractor.extract( request );
         FragmentFile metadata = pkg.getMetadata();
@@ -279,6 +286,13 @@ public class DefaultInstaller
         throws IOException, ModelFormatException
     {
         Path modelPath = ArtifactUtils.getEffectiveModelPath( artifact );
+        if ( modelPath == null )
+        {
+            logger.warn( "Skipping generation of user requires for artifact " + artifact
+                + ": effective model path is not specified" );
+            return;
+        }
+
         DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
         DependencyExtractionResult result = runtimeDependencyExtractor.extract( request );
         FragmentFile metadata = pkg.getMetadata();
