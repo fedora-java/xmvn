@@ -46,6 +46,7 @@ import org.fedoraproject.maven.resolver.ResolutionResult;
 import org.fedoraproject.maven.resolver.Resolver;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.AtomicFileCounter;
+import org.fedoraproject.maven.utils.FileUtils;
 import org.fedoraproject.maven.utils.LoggingUtils;
 
 /**
@@ -241,6 +242,7 @@ public class DefaultResolver
         }
 
         File artifactFile = result.getArtifactFile();
+        artifactFile = FileUtils.followSymlink( artifactFile );
         logger.debug( "Artifact " + artifact + " was resolved to " + artifactFile );
         if ( request.isProviderNeeded() )
             result.setProvider( rpmdb.lookupFile( artifactFile ) );
