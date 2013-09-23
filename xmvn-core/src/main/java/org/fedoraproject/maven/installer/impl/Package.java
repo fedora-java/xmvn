@@ -89,8 +89,7 @@ class Package
     public void addSymlink( Path symlink, Path target )
         throws IOException
     {
-        Path symlinkTarget = symlink.getParent().relativize( target );
-        Path symlinkFile = FileUtils.createAnonymousSymlink( symlinkTarget );
+        Path symlinkFile = FileUtils.createAnonymousSymlink( target );
         addFile( symlinkFile, symlink, 0644 );
     }
 
