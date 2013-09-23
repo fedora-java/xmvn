@@ -86,11 +86,21 @@ class Package
         addFile( file, target.getParent(), target.getFileName(), mode );
     }
 
-    public void addSymlink( Path symlink, Path target )
+    public void addSymlink( Path symlinkFile, Path symlinkTarget )
         throws IOException
     {
-        Path symlinkFile = FileUtils.createAnonymousSymlink( target );
-        addFile( symlinkFile, symlink, 0644 );
+        if ( symlinkFile.isAbsolute() )
+            throw new IllegalArgumentException( "symlinkFile is absolute path: " + symlinkFile );
+        if ( symlinkTarget.isAbsolute() )
+            throw new IllegalArgumentException( "symlinkTarget is absolute path: " + symlinkTarget );
+
+        symlinkFile = symlinkFile.normalize();
+        symlinkTarget = symlinkTarget.normalize();
+        if ( symlinkFile.getParent() != null )
+            symlinkTarget = symlinkFile.getParent().relativize( symlinkTarget );
+
+        Path symlinkTempFile = FileUtils.createAnonymousSymlink( symlinkTarget );
+        addFile( symlinkTempFile, symlinkFile, 0644 );
     }
 
     private Path installDirectory( Path root, Path target )
