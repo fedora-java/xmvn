@@ -63,7 +63,7 @@ public class InstallMojo
     private Logger logger;
 
     private Xpp3Dom readInstallationPlan()
-        throws XmlPullParserException, IOException
+        throws IOException, MojoExecutionException
     {
         try (Reader reader = new FileReader( ".xmvn-reactor" ))
         {
@@ -72,6 +72,10 @@ public class InstallMojo
         catch ( FileNotFoundException e )
         {
             return new Xpp3Dom( "reactorInstallationPlan" );
+        }
+        catch ( XmlPullParserException e )
+        {
+            throw new MojoExecutionException( "Failed to parse existing reactor installation plan", e );
         }
     }
 
@@ -127,8 +131,13 @@ public class InstallMojo
             {
                 Artifact mainArtifact = aetherArtifact( project.getArtifact() );
                 mainArtifact = mainArtifact.setFile( project.getArtifact().getFile() );
+                logger.debug( "Installing main artifact " + mainArtifact );
+                logger.debug( "Artifact file is " + mainArtifact.getFile() );
+
                 Path rawPom = project.getFile().toPath();
                 Path effectivePom = saveEffectivePom( project.getModel() );
+                logger.debug( "Raw POM path: " + rawPom );
+                logger.debug( "Effective POM path: " + effectivePom );
 
                 addArtifact( dom, mainArtifact, rawPom, effectivePom );
 
@@ -136,6 +145,8 @@ public class InstallMojo
                 {
                     Artifact attachedArtifact = aetherArtifact( mavenArtifact );
                     attachedArtifact = attachedArtifact.setFile( mavenArtifact.getFile() );
+                    logger.debug( "Installing attached artifact " + attachedArtifact );
+
                     addArtifact( dom, attachedArtifact, null, null );
                 }
             }
@@ -143,10 +154,6 @@ public class InstallMojo
             writeInstallationPlan( dom );
         }
         catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Failed to install project", e );
-        }
-        catch ( XmlPullParserException e )
         {
             throw new MojoExecutionException( "Failed to install project", e );
         }
