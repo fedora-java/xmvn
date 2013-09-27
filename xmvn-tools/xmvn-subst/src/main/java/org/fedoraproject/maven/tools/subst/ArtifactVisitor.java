@@ -53,6 +53,8 @@ public class ArtifactVisitor
 
     private boolean followSymlinks;
 
+    private boolean dryRun;
+
     private int failureCount;
 
     public void setTypes( Collection<String> types )
@@ -63,6 +65,11 @@ public class ArtifactVisitor
     public void setFollowSymlinks( boolean followSymlinks )
     {
         this.followSymlinks = followSymlinks;
+    }
+
+    public void setDryRun( boolean dryRun )
+    {
+        this.dryRun = dryRun;
     }
 
     public int getFailureCount()
@@ -170,7 +177,8 @@ public class ArtifactVisitor
         }
 
         Path target = artifactFile.toPath();
-        FileUtils.replaceFileWithSymlink( path, target );
+        if ( !dryRun )
+            FileUtils.replaceFileWithSymlink( path, target );
         logger.info( "Linked " + path + " to " + target );
     }
 }

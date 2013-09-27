@@ -49,6 +49,9 @@ public class SubstCli
     @Parameter( names = { "-s", "--strict" }, description = "Fail if any artifact cannot be symlinked" )
     public boolean strict = false;
 
+    @Parameter( names = { "-d", "--dry-run" }, description = "Do not symlink anything but report what would have been symlinked" )
+    public boolean dryRun = false;
+
     @Parameter( names = { "-L", "--follow-symlinks" }, description = "Follow symbolic links when traversing directory structure" )
     public boolean followSymlinks = false;
 
@@ -93,6 +96,7 @@ public class SubstCli
             ArtifactVisitor visitor = container.lookup( ArtifactVisitor.class );
             visitor.setTypes( types );
             visitor.setFollowSymlinks( followSymlinks );
+            visitor.setDryRun( dryRun );
 
             for ( String path : parameters )
             {

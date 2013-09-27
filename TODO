@@ -14,10 +14,6 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 ** XMvn Subst improvements
 
-*** dry run
-    don't actually replace any JARs, but report what would have been
-    replaced
-
 *** check run
     verify correctness of existing symlinks
 
