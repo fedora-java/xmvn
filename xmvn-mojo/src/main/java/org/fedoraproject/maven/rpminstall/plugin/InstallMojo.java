@@ -25,8 +25,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -43,6 +46,7 @@ import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
 /**
@@ -61,6 +65,46 @@ public class InstallMojo
 
     @Requirement
     private Logger logger;
+
+    /**
+     * Dump project dependencies with "system" scope and fail if there are any such dependencies are found.
+     */
+    private void handleSystemDependencies()
+        throws MojoFailureException
+    {
+        boolean systemDepsFound = false;
+
+        for ( MavenProject project : reactorProjects )
+        {
+            Set<Artifact> systemDeps = new LinkedHashSet<>();
+
+            for ( Dependency dependency : project.getModel().getDependencies() )
+            {
+                if ( dependency.getScope() != null && dependency.getScope().equals( "system" ) )
+                {
+                    systemDeps.add( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+                                                         dependency.getType(), dependency.getClassifier(),
+                                                         dependency.getVersion() ) );
+                }
+            }
+
+            if ( !systemDeps.isEmpty() )
+            {
+                systemDepsFound = true;
+
+                logger.error( "Reactor project " + aetherArtifact( project.getArtifact() )
+                    + " has system-scoped dependencies: " + ArtifactUtils.collectionToString( systemDeps, true ) );
+            }
+        }
+
+        if ( systemDepsFound )
+        {
+            throw new MojoFailureException( "Some reactor artifacts have dependencies with scope \"system\"."
+                + " Such dependencies are not supported by XMvn installer."
+                + " You should either remove any dependencies with scope \"system\""
+                + " before the build or not run XMvn instaler." );
+        }
+    }
 
     private Xpp3Dom readInstallationPlan()
         throws IOException, MojoExecutionException
@@ -123,6 +167,8 @@ public class InstallMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        handleSystemDependencies();
+
         try
         {
             Xpp3Dom dom = readInstallationPlan();

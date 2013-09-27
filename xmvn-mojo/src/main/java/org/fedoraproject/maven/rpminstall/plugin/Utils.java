@@ -57,7 +57,6 @@ class Utils
         return artifact;
     }
 
-    // TODO: <mgoldmann> mizdebsk: btw, the error msg could list the deps with system scope, if possibe
     private static Model simplifyEffectiveModel( Model model )
     {
         Model m = new Model();
@@ -73,7 +72,7 @@ class Utils
             if ( scope != null )
             {
                 if ( scope.equals( "system" ) )
-                    throw new RuntimeException( "Dependencies with scope \"system\" should not be used !!!" );
+                    throw new IllegalStateException( "Unexpected system-scoped dependency" );
                 if ( scope.equals( "provided" ) || scope.equals( "test" ) )
                     continue;
                 if ( scope.equals( "compile" ) )
