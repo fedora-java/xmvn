@@ -18,11 +18,23 @@ package org.fedoraproject.maven.repository;
 import java.nio.file.Path;
 
 /**
+ * Artifact path within repository.
+ * 
  * @author Mikolaj Izdebski
  */
 public interface RepositoryPath
 {
+    /**
+     * Return artifact path relative to highest-level repository root. Returned path includes all repository prefixes.
+     * 
+     * @return artifact path
+     */
     Path getPath();
 
+    /**
+     * Get lowest-level repository that this path belongs to.
+     * 
+     * @return repository this path belongs to
+     */
     Repository getRepository();
 }
