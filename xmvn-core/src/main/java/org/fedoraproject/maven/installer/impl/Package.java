@@ -43,6 +43,8 @@ class Package
 
     public static final String MAIN = "";
 
+    private static final String DEFAULT_SUFFIX = "__default";
+
     private static final String NOINSTALL_SUFFIX = "__noinstall";
 
     private boolean pureDevelPackage = true;
@@ -53,7 +55,7 @@ class Package
     {
         this.settings = settings;
         metadata = new FragmentFile( logger );
-        suffix = name.equals( "" ) ? "" : "-" + name;
+        suffix = ( name.equals( "" ) || name.equals( DEFAULT_SUFFIX ) ) ? "" : "-" + name;
     }
 
     private final FragmentFile metadata;
