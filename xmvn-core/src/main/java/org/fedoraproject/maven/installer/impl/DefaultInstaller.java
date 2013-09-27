@@ -142,9 +142,6 @@ public class DefaultInstaller
             packages.put( packageName, pkg );
         }
 
-        if ( !pkg.isInstallable() )
-            return null;
-
         if ( logger.isDebugEnabled() )
         {
             try (StringWriter buffer = new StringWriter())
@@ -156,6 +153,9 @@ public class DefaultInstaller
                 logger.debug( "Effective packaging rule for " + artifact + ":\n" + buffer );
             }
         }
+
+        if ( !pkg.isInstallable() )
+            return null;
 
         return pkg;
     }
