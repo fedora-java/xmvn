@@ -46,6 +46,9 @@ public class SubstCli
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
     public boolean debug = false;
 
+    @Parameter( names = { "-s", "--strict" }, description = "Fail if any artifact cannot be symlinked" )
+    public boolean strict = false;
+
     @Parameter( names = { "-L", "--follow-symlinks" }, description = "Follow symbolic links when traversing directory structure" )
     public boolean followSymlinks = false;
 
@@ -95,6 +98,9 @@ public class SubstCli
             {
                 Files.walkFileTree( Paths.get( path ), visitor );
             }
+
+            if ( strict && visitor.getFailureCount() > 0 )
+                System.exit( 1 );
         }
         catch ( Throwable e )
         {

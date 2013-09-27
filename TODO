@@ -18,9 +18,6 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
     don't actually replace any JARs, but report what would have been
     replaced
 
-*** strict mode
-    if any JAR can't be substituted, bail out
-
 *** check run
     verify correctness of existing symlinks
 

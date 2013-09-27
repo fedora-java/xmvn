@@ -53,6 +53,8 @@ public class ArtifactVisitor
 
     private boolean followSymlinks;
 
+    private int failureCount;
+
     public void setTypes( Collection<String> types )
     {
         this.types.addAll( types );
@@ -61,6 +63,11 @@ public class ArtifactVisitor
     public void setFollowSymlinks( boolean followSymlinks )
     {
         this.followSymlinks = followSymlinks;
+    }
+
+    public int getFailureCount()
+    {
+        return failureCount;
     }
 
     @Override
@@ -149,12 +156,16 @@ public class ArtifactVisitor
     {
         Artifact artifact = readArtifactDefinition( path, type );
         if ( artifact == null )
+        {
+            failureCount++;
             return;
+        }
 
         File artifactFile = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactFile();
         if ( artifactFile == null )
         {
             logger.warn( "Skipping file " + path + ": Artifact " + artifact + " not found in repository" );
+            failureCount++;
             return;
         }
 
