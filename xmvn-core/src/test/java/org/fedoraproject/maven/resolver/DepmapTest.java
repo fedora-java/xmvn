@@ -20,7 +20,6 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
@@ -99,33 +98,77 @@ public class DepmapTest
         release( depmap );
     }
 
+    private void testDepmapSample( String file )
+        throws Exception
+    {
+        Path path = Paths.get( "src/test/resources" ).resolve( file );
+        DependencyMap depmap = readDepmap( path );
+        assertFalse( depmap.isEmpty() );
+        Artifact commonsIo = new DefaultArtifact( "commons-io:commons-io:SYSTEM" );
+        Artifact apacheCommonsIo = new DefaultArtifact( "org.apache.commons:commons-io:SYSTEM" );
+        Artifact jppCommonsIo = new DefaultArtifact( "JPP:commons-io:SYSTEM" );
+        assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
+        assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
+        release( depmap );
+    }
+
     /**
-     * Test parsing of some fragment files.
+     * Test parsing of old style depmap (multiple concatenated fragments, not valid XML).
      * 
      * @throws Exception
      */
-    public void testSampleDepmaps()
+    public void testOldStyleDepmap()
         throws Exception
     {
-        List<String> depmaps = new ArrayList<>();
-        depmaps.add( "old-style-depmap" );
-        depmaps.add( "new-style-depmap.xml" );
-        depmaps.add( "indirect-depmap.xml" );
-        depmaps.add( "cyclic-depmap.xml" );
-        depmaps.add( "xml-depmap.xml" );
+        testDepmapSample( "old-style-depmap" );
+    }
 
-        for ( String file : depmaps )
-        {
-            Path path = Paths.get( "src/test/resources" ).resolve( file );
-            DependencyMap depmap = readDepmap( path );
-            assertFalse( depmap.isEmpty() );
-            Artifact commonsIo = new DefaultArtifact( "commons-io:commons-io:SYSTEM" );
-            Artifact apacheCommonsIo = new DefaultArtifact( "org.apache.commons:commons-io:SYSTEM" );
-            Artifact jppCommonsIo = new DefaultArtifact( "JPP:commons-io:SYSTEM" );
-            assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
-            assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
-            release( depmap );
-        }
+    /**
+     * Test parsing of new style depmap (proper XML).
+     * 
+     * @throws Exception
+     */
+    public void testNewStyleDepmap()
+        throws Exception
+    {
+        testDepmapSample( "new-style-depmap.xml" );
+    }
+
+    /**
+     * Test parsing of depmap containing indirect mappings.
+     * <p>
+     * Effective depmap should be a transitive closure of mappings.
+     * 
+     * @throws Exception
+     */
+    public void testIndirectDepmap()
+        throws Exception
+    {
+        testDepmapSample( "indirect-depmap.xml" );
+    }
+
+    /**
+     * Test parsing of depmap containing cyclic mapping.
+     * <p>
+     * Depmap reader shouldn't bail on cyclic mappings (there should be no stack overflow).
+     * 
+     * @throws Exception
+     */
+    public void testCyclicDepmap()
+        throws Exception
+    {
+        testDepmapSample( "cyclic-depmap.xml" );
+    }
+
+    /**
+     * Test parsing of depmap containing XML document declaration.
+     * 
+     * @throws Exception
+     */
+    public void testXmlDepmap()
+        throws Exception
+    {
+        testDepmapSample( "xml-depmap.xml" );
     }
 
     /**
