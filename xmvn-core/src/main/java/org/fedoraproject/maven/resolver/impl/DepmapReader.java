@@ -15,14 +15,16 @@
  */
 package org.fedoraproject.maven.resolver.impl;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.CharBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.GZIPInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -204,11 +207,14 @@ class DepmapReader
         private String wrapFragment( File fragmentFile )
             throws IOException
         {
-            CharBuffer contents = readFile( fragmentFile );
+            FileInputStream fis = new FileInputStream( fragmentFile );
+            BufferedInputStream bis = new BufferedInputStream( fis, 128 );
+            InputStream is = isCompressed( bis ) ? new GZIPInputStream( bis ) : bis;
+            String contents = streamAsString( is );
 
-            if ( contents.length() >= 5 && contents.subSequence( 0, 5 ).toString().equalsIgnoreCase( "<?xml" ) )
+            if ( contents.length() >= 5 && contents.substring( 0, 5 ).equalsIgnoreCase( "<?xml" ) )
             {
-                return contents.toString();
+                return contents;
             }
 
             StringBuilder buffer = new StringBuilder();
@@ -218,16 +224,40 @@ class DepmapReader
             return buffer.toString();
         }
 
-        private CharBuffer readFile( File file )
+        private String streamAsString( InputStream is )
             throws IOException
         {
-            try (FileInputStream fragmentStream = new FileInputStream( file ))
+            StringBuilder sb = new StringBuilder();
+            Charset charset = Charset.defaultCharset();
+            ByteBuffer buffer = ByteBuffer.allocate( 128 );
+
+            int sz;
+            while ( ( sz = is.read( buffer.array() ) ) > 0 )
             {
-                try (FileChannel channel = fragmentStream.getChannel())
-                {
-                    MappedByteBuffer buffer = channel.map( FileChannel.MapMode.READ_ONLY, 0, channel.size() );
-                    return Charset.defaultCharset().decode( buffer );
-                }
+                buffer.position( 0 ).limit( sz );
+                sb.append( charset.decode( buffer ) );
+            }
+
+            return sb.toString();
+        }
+
+        private boolean isCompressed( BufferedInputStream bis )
+            throws IOException
+        {
+            try
+            {
+                bis.mark( 2 );
+                DataInputStream ois = new DataInputStream( bis );
+                int magic = Short.reverseBytes( ois.readShort() ) & 0xFFFF;
+                return magic == GZIPInputStream.GZIP_MAGIC;
+            }
+            catch ( EOFException e )
+            {
+                return false;
+            }
+            finally
+            {
+                bis.reset();
             }
         }
 
