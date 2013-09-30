@@ -172,6 +172,17 @@ public class DepmapTest
     }
 
     /**
+     * Test parsing of depmap compressed with GNU Zip.
+     * 
+     * @throws Exception
+     */
+    public void testCompressedDepmap()
+        throws Exception
+    {
+        testDepmapSample( "compressed-depmap.gz" );
+    }
+
+    /**
      * Test if namespaces work and if artifacts in different namespaces are matched.
      * 
      * @throws Exception
