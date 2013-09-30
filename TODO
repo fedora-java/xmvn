@@ -12,10 +12,7 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 ** plugin API
 
-** XMvn Subst improvements
-
-*** check run
-    verify correctness of existing symlinks
+** support for compressed files
 
 
 * Deferred features
