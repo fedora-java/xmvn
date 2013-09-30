@@ -188,7 +188,7 @@ class Package
 
     public boolean isInstallable()
     {
-        return !suffix.endsWith( NOINSTALL_SUFFIX );
+        return !suffix.equals( "-" + NOINSTALL_SUFFIX );
     }
 
     public FragmentFile getMetadata()

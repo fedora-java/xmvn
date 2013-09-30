@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -99,6 +100,8 @@ public class DefaultInstaller
 
     private Map<Package, Package> packages;
 
+    private Set<Artifact> skippedArtifacts;
+
     private PackagingRule ruleForArtifact( Artifact artifact )
     {
         String stereotype = ArtifactUtils.getStereotype( artifact );
@@ -152,9 +155,6 @@ public class DefaultInstaller
                 logger.debug( "Effective packaging rule for " + artifact + ":\n" + buffer );
             }
         }
-
-        if ( !pkg.isInstallable() )
-            return null;
 
         return pkg;
     }
@@ -394,8 +394,11 @@ public class DefaultInstaller
         PackagingRule rule = ruleForArtifact( artifact );
 
         Package pkg = getTargetPackageForArtifact( artifact, rule );
-        if ( pkg == null )
+        if ( !pkg.isInstallable() )
+        {
+            skippedArtifacts.add( artifact );
             return;
+        }
 
         if ( isPomArtifact )
         {
@@ -424,6 +427,16 @@ public class DefaultInstaller
             installPomFiles( pkg, artifact, jppArtifacts );
             generateUserRequires( pkg, artifact );
         }
+    }
+
+    private void addSkippedArtifactsInfo()
+    {
+        Iterator<Package> it = packages.values().iterator();
+        Package pkg = it.next();
+        while ( !pkg.isInstallable() && it.hasNext() )
+            pkg = it.next();
+
+        pkg.getMetadata().addSkippedArtifacts( skippedArtifacts );
     }
 
     private void checkForUnmatchedRules( List<PackagingRule> artifactManagement )
@@ -461,6 +474,7 @@ public class DefaultInstaller
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         packages = new TreeMap<>();
+        skippedArtifacts = new HashSet<>();
 
         Package mainPackage = new Package( Package.MAIN, settings, logger );
         packages.put( mainPackage, mainPackage );
@@ -471,6 +485,8 @@ public class DefaultInstaller
         {
             for ( Artifact artifact : artifactSet )
                 installArtifact( artifact, request.getBasePackageName() );
+
+            addSkippedArtifactsInfo();
 
             if ( request.isCheckForUnmatchedRules() )
                 checkForUnmatchedRules( configuration.getArtifactManagement() );

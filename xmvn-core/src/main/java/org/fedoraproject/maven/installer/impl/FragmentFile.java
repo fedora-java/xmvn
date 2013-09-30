@@ -46,6 +46,8 @@ class FragmentFile
 
     private final Set<Artifact> develDependencies = new HashSet<>();
 
+    private final Set<Artifact> skippedArtifacts = new HashSet<>();
+
     private BigDecimal javaVersionRequirement;
 
     private BigDecimal javaVersionDevelRequirement;
@@ -104,6 +106,11 @@ class FragmentFile
 
         if ( javaVersionDevelRequirement == null || javaVersionDevelRequirement.compareTo( versionNumber ) < 0 )
             javaVersionDevelRequirement = versionNumber;
+    }
+
+    public void addSkippedArtifacts( Set<Artifact> skippedArtifacts )
+    {
+        this.skippedArtifacts.addAll( skippedArtifacts );
     }
 
     public void optimize()
@@ -172,6 +179,9 @@ class FragmentFile
                 for ( Artifact dependency : combinedDependencies )
                     ArtifactUtils.serialize( dependency, s, null, "autoRequires" );
             }
+
+            for ( Artifact skippedArtifact : skippedArtifacts )
+                ArtifactUtils.serialize( skippedArtifact, s, null, "skippedArtifact" );
 
             s.endTag( null, "dependencyMap" );
             s.endDocument();
