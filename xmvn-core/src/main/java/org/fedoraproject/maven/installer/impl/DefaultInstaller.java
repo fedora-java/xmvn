@@ -97,7 +97,7 @@ public class DefaultInstaller
 
     private Configuration configuration;
 
-    private Map<String, Package> packages;
+    private Map<Package, Package> packages;
 
     private PackagingRule ruleForArtifact( Artifact artifact )
     {
@@ -134,13 +134,12 @@ public class DefaultInstaller
         String packageName = rule.getTargetPackage();
         if ( StringUtils.isEmpty( packageName ) )
             packageName = Package.MAIN;
-        Package pkg = packages.get( packageName );
 
-        if ( pkg == null )
-        {
-            pkg = new Package( packageName, settings, logger );
-            packages.put( packageName, pkg );
-        }
+        Package pkg = new Package( packageName, settings, logger );
+        if ( packages.containsKey( pkg ) )
+            pkg = packages.get( pkg );
+        else
+            packages.put( pkg, pkg );
 
         if ( logger.isDebugEnabled() )
         {
@@ -464,7 +463,7 @@ public class DefaultInstaller
         packages = new TreeMap<>();
 
         Package mainPackage = new Package( Package.MAIN, settings, logger );
-        packages.put( Package.MAIN, mainPackage );
+        packages.put( mainPackage, mainPackage );
 
         Set<Artifact> artifactSet = request.getArtifacts();
 
