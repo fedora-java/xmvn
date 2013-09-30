@@ -200,4 +200,17 @@ public class DepmapTest
         assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
         release( depmap );
     }
+
+    /**
+     * Test if corrupt compressed depmap files don't cause problems.
+     * 
+     * @throws Exception
+     */
+    public void testCorruptCompressedDepmap()
+        throws Exception
+    {
+        DependencyMap depmap = readDepmap( Paths.get( "src/test/resources" ).resolve( "corrupt-compressed-dempap.gz" ) );
+        assertTrue( depmap.isEmpty() );
+        release( depmap );
+    }
 }
