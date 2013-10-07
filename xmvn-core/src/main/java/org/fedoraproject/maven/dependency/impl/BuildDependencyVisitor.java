@@ -75,9 +75,11 @@ class BuildDependencyVisitor
         if ( !buildScopes.contains( dependency.getScope() ) )
             return;
 
-        result.addDependencyArtifact( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                           dependency.getClassifier(), dependency.getType(),
-                                                           dependency.getVersion() ) );
+        result.addDependencyArtifact( ArtifactUtils.createTypedArtifact( dependency.getGroupId(),
+                                                                         dependency.getArtifactId(),
+                                                                         dependency.getType(),
+                                                                         dependency.getClassifier(),
+                                                                         dependency.getVersion() ) );
     }
 
     @Override
@@ -111,8 +113,10 @@ class BuildDependencyVisitor
         if ( !runtimeScopes.contains( dependency.getScope() ) )
             return;
 
-        result.addDependencyArtifact( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                           dependency.getClassifier(), dependency.getType(),
-                                                           dependency.getVersion() ) );
+        result.addDependencyArtifact( ArtifactUtils.createTypedArtifact( dependency.getGroupId(),
+                                                                         dependency.getArtifactId(),
+                                                                         dependency.getType(),
+                                                                         dependency.getClassifier(),
+                                                                         dependency.getVersion() ) );
     }
 }

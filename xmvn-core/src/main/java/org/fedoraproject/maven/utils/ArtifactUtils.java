@@ -23,10 +23,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.ArtifactType;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.DefaultArtifactType;
 
 /**
  * @author Mikolaj Izdebski
@@ -178,5 +181,39 @@ public class ArtifactUtils
     {
         Xpp3Dom dom = toXpp3Dom( artifact, tag );
         dom.writeToSerializer( namespace, serializer );
+    }
+
+    private static final Map<String, ArtifactType> stereotypes = new HashMap<>();
+
+    private static void addStereotype( String type, String extension, String classifier )
+    {
+        stereotypes.put( type, new DefaultArtifactType( type, extension, classifier, "java" ) );
+    }
+
+    // The list was taken from MavenRepositorySystemUtils in maven-aether-provider.
+    static
+    {
+        addStereotype( "maven-plugin", "jar", "" );
+        addStereotype( "ejb", "jar", "" );
+        addStereotype( "ejb-client", "jar", "client" );
+        addStereotype( "test-jar", "jar", "tests" );
+        addStereotype( "javadoc", "jar", "javadoc" );
+        addStereotype( "java-source", "jar", "sources" );
+    }
+
+    public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
+                                                String version )
+    {
+        String extension = type;
+
+        ArtifactType artifactType = stereotypes.get( type );
+        if ( artifactType != null )
+        {
+            extension = artifactType.getExtension();
+            if ( StringUtils.isEmpty( classifier ) )
+                classifier = artifactType.getClassifier();
+        }
+
+        return new DefaultArtifact( groupId, artifactId, classifier, extension, version );
     }
 }
