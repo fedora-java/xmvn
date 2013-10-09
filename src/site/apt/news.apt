@@ -3,10 +3,23 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-09-30
+                    2013-10-09
 
 
 Release notes for XMvn
+
+* What's new in XMvn 1.2.0
+
+  * Major bugfixes
+
+    * Stereotype support in auto-requires
+
+      XMvn Installer did not take into account artifact stereotypes.
+      This caused generated auto-requires to be incorrect in some
+      cases.  This bug was partially fixed by embedding default Maven
+      artifact type mappings.  This means that any non-standard
+      stereotypes may still be handled incorrectly and produce
+      unsatisfiable dependencies.
 
 * What's new in XMvn 1.1.0
 
