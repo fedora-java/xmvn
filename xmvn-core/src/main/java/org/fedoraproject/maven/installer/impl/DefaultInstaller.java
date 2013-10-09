@@ -253,6 +253,20 @@ public class DefaultInstaller
         }
     }
 
+    private Artifact resolveDependencyArtifact( Artifact artifact )
+    {
+        ResolutionRequest request = new ResolutionRequest( artifact );
+        ResolutionResult result = resolver.resolve( request );
+
+        String version = result.getCompatVersion() != null ? result.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
+        artifact = artifact.setVersion( version );
+
+        String namespace = result.getRepository() != null ? result.getRepository().getNamespace() : null;
+        artifact = ArtifactUtils.setScope( artifact, namespace );
+
+        return artifact;
+    }
+
     private void generateDevelRequires( Package pkg, Artifact artifact )
         throws IOException, ModelFormatException
     {
@@ -270,11 +284,7 @@ public class DefaultInstaller
 
         for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
         {
-            ResolutionRequest req = new ResolutionRequest( dependencyArtifact );
-            ResolutionResult res = resolver.resolve( req );
-            String version = res.getCompatVersion() != null ? res.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
-            dependencyArtifact = dependencyArtifact.setVersion( version );
-            metadata.addBuildDependency( dependencyArtifact );
+            metadata.addBuildDependency( resolveDependencyArtifact( dependencyArtifact ) );
         }
 
         if ( result.getJavaVersion() != null )
@@ -298,11 +308,7 @@ public class DefaultInstaller
 
         for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
         {
-            ResolutionRequest req = new ResolutionRequest( dependencyArtifact );
-            ResolutionResult res = resolver.resolve( req );
-            String version = res.getCompatVersion() != null ? res.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
-            dependencyArtifact = dependencyArtifact.setVersion( version );
-            metadata.addRuntimeDependency( dependencyArtifact );
+            metadata.addRuntimeDependency( resolveDependencyArtifact( dependencyArtifact ) );
         }
 
         if ( result.getJavaVersion() != null )
