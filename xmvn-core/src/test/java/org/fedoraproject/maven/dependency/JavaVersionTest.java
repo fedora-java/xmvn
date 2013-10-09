@@ -21,7 +21,7 @@ package org.fedoraproject.maven.dependency;
 public class JavaVersionTest
     extends AbstractDependencyTest
 {
-    private void testJavaVersionDependencies( String roleHint, boolean managed )
+    private void testJavaVersionDependencies( String roleHint )
         throws Exception
     {
         // No configuration.
@@ -74,24 +74,12 @@ public class JavaVersionTest
     public void testBuildJavaVersionDependencies()
         throws Exception
     {
-        testJavaVersionDependencies( DependencyExtractor.BUILD, false );
-    }
-
-    public void testBuildManagedJavaVersionDependencies()
-        throws Exception
-    {
-        testJavaVersionDependencies( DependencyExtractor.BUILD, true );
+        testJavaVersionDependencies( DependencyExtractor.BUILD );
     }
 
     public void testRuntimeJavaVersionDependencies()
         throws Exception
     {
-        testJavaVersionDependencies( DependencyExtractor.RUNTIME, false );
-    }
-
-    public void testRuntimeManagedJavaVersionDependencies()
-        throws Exception
-    {
-        testJavaVersionDependencies( DependencyExtractor.RUNTIME, true );
+        testJavaVersionDependencies( DependencyExtractor.RUNTIME );
     }
 }
