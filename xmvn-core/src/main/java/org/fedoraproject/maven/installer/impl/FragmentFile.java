@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.codehaus.plexus.logging.Logger;
@@ -113,18 +114,29 @@ class FragmentFile
         this.skippedArtifacts.addAll( skippedArtifacts );
     }
 
+    /**
+     * Optimize fragment file by removing self-satisfiable dependencies (dependencies on artifacts provided by the same
+     * package).
+     */
     public void optimize()
     {
-        Set<Artifact> versionlessArtifacts = new HashSet<>();
-        for ( Artifact artifact : mapping.keySet() )
-            versionlessArtifacts.add( artifact.setVersion( ArtifactUtils.DEFAULT_VERSION ) );
+        Set<Artifact> providedArtifacts = new HashSet<>();
+        for ( Entry<Artifact, Set<Artifact>> entry : mapping.entrySet() )
+        {
+            Artifact mavenArtifact = entry.getKey();
+            for ( Artifact jppaArtifact : entry.getValue() )
+            {
+                Artifact providedArtifact = mavenArtifact.setVersion( jppaArtifact.getVersion() );
+                providedArtifacts.add( providedArtifact );
+            }
+        }
 
         for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )
-            if ( versionlessArtifacts.contains( iter.next() ) )
+            if ( providedArtifacts.contains( iter.next() ) )
                 iter.remove();
 
         for ( Iterator<Artifact> iter = develDependencies.iterator(); iter.hasNext(); )
-            if ( versionlessArtifacts.contains( iter.next() ) )
+            if ( providedArtifacts.contains( iter.next() ) )
                 iter.remove();
     }
 
