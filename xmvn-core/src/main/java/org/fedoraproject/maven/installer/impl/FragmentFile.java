@@ -124,9 +124,9 @@ class FragmentFile
         for ( Entry<Artifact, Set<Artifact>> entry : mapping.entrySet() )
         {
             Artifact mavenArtifact = entry.getKey();
-            for ( Artifact jppaArtifact : entry.getValue() )
+            for ( Artifact jppArtifact : entry.getValue() )
             {
-                Artifact providedArtifact = mavenArtifact.setVersion( jppaArtifact.getVersion() );
+                Artifact providedArtifact = mavenArtifact.setVersion( jppArtifact.getVersion() );
                 providedArtifacts.add( providedArtifact );
             }
         }
