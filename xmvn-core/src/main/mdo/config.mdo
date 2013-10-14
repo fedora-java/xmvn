@@ -648,7 +648,7 @@
     public PackagingRule createEffectivePackagingRule( String stereotype, String groupId, String artifactId, String extension, String classifier, String version )
     {
         return new org.fedoraproject.maven.config.impl.EffectivePackagingRule
-            ( artifactManagement, stereotype, groupId, artifactId, extension, classifier, version );
+            ( getArtifactManagement(), stereotype, groupId, artifactId, extension, classifier, version );
     }
             ]]>
           </code>
