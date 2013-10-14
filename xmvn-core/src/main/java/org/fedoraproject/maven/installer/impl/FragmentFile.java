@@ -22,9 +22,7 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.codehaus.plexus.logging.Logger;
@@ -112,32 +110,6 @@ class FragmentFile
     public void addSkippedArtifacts( Set<Artifact> skippedArtifacts )
     {
         this.skippedArtifacts.addAll( skippedArtifacts );
-    }
-
-    /**
-     * Optimize fragment file by removing self-satisfiable dependencies (dependencies on artifacts provided by the same
-     * package).
-     */
-    public void optimize()
-    {
-        Set<Artifact> providedArtifacts = new HashSet<>();
-        for ( Entry<Artifact, Set<Artifact>> entry : mapping.entrySet() )
-        {
-            Artifact mavenArtifact = entry.getKey();
-            for ( Artifact jppArtifact : entry.getValue() )
-            {
-                Artifact providedArtifact = mavenArtifact.setVersion( jppArtifact.getVersion() );
-                providedArtifacts.add( providedArtifact );
-            }
-        }
-
-        for ( Iterator<Artifact> iter = dependencies.iterator(); iter.hasNext(); )
-            if ( providedArtifacts.contains( iter.next() ) )
-                iter.remove();
-
-        for ( Iterator<Artifact> iter = develDependencies.iterator(); iter.hasNext(); )
-            if ( providedArtifacts.contains( iter.next() ) )
-                iter.remove();
     }
 
     public void write( Path path, boolean writeDevel, InstallerSettings settings )

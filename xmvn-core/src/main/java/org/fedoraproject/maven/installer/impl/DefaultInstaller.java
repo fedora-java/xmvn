@@ -22,11 +22,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
@@ -99,6 +101,18 @@ public class DefaultInstaller
     private Configuration configuration;
 
     private Map<Package, Package> packages;
+
+    /** map package => installed devel artifacts (no aliases) */
+    private Map<Package, Set<Artifact>> packageDevelArtifacts;
+
+    /** map package => installed user artifacts (no aliases) */
+    private Map<Package, Set<Artifact>> packageUserArtifacts;
+
+    /** map package => provided artifacts and aliases */
+    private Map<Package, Set<Artifact>> packagedArtifacts;
+
+    /** map generic artifact => provided artifact */
+    private Map<Artifact, Artifact> providedArtifacts;
 
     private Set<Artifact> skippedArtifacts;
 
@@ -244,19 +258,51 @@ public class DefaultInstaller
             pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
         }
 
+        Set<Artifact> packaged = packagedArtifacts.get( pkg );
+        if ( packaged == null )
+        {
+            packaged = new HashSet<>();
+            packagedArtifacts.put( pkg, packaged );
+        }
+
         for ( Artifact jppArtifact : jppArtifacts )
         {
             String namespace = ArtifactUtils.getScope( jppArtifact );
+            packaged.add( artifact.setVersion( jppArtifact.getVersion() ) );
+            providedArtifacts.put( artifact.setVersion( jppArtifact.getVersion() ),
+                                   ArtifactUtils.setScope( artifact.setVersion( jppArtifact.getVersion() ), namespace ) );
             pkg.getMetadata().addMapping( ArtifactUtils.setScope( artifact, namespace ), jppArtifact );
             for ( Artifact alias : aliases )
+            {
+                packaged.add( alias.setVersion( jppArtifact.getVersion() ) );
+                providedArtifacts.put( alias.setVersion( jppArtifact.getVersion() ),
+                                       ArtifactUtils.setScope( alias.setVersion( jppArtifact.getVersion() ), namespace ) );
                 pkg.getMetadata().addMapping( ArtifactUtils.setScope( alias, namespace ), jppArtifact );
+            }
         }
     }
 
-    private Artifact resolveDependencyArtifact( Artifact artifact )
+    private Artifact resolveDependencyArtifact( Package pkg, Artifact artifact )
     {
+        Artifact versionlessArtifact = artifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+        Set<Artifact> packaged = packagedArtifacts.get( pkg );
+        if ( packaged.contains( artifact ) || packaged.contains( versionlessArtifact ) )
+            return null;
+
+        Artifact providedArtifact = providedArtifacts.get( artifact );
+        if ( providedArtifact == null )
+            providedArtifact = providedArtifacts.get( versionlessArtifact );
+        if ( providedArtifact != null )
+            return providedArtifact;
+
         ResolutionRequest request = new ResolutionRequest( artifact );
         ResolutionResult result = resolver.resolve( request );
+
+        if ( result.getArtifactFile() == null )
+        {
+            logger.warn( "Unable to resolve dependency artifact " + artifact
+                + ", generating dependencies with version " + ArtifactUtils.DEFAULT_VERSION + " and no namespace." );
+        }
 
         String version = result.getCompatVersion() != null ? result.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
         artifact = artifact.setVersion( version );
@@ -284,7 +330,9 @@ public class DefaultInstaller
 
         for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
         {
-            metadata.addBuildDependency( resolveDependencyArtifact( dependencyArtifact ) );
+            Artifact resolvedDependencyArtifact = resolveDependencyArtifact( pkg, dependencyArtifact );
+            if ( resolvedDependencyArtifact != null )
+                metadata.addBuildDependency( resolvedDependencyArtifact );
         }
 
         if ( result.getJavaVersion() != null )
@@ -308,7 +356,9 @@ public class DefaultInstaller
 
         for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
         {
-            metadata.addRuntimeDependency( resolveDependencyArtifact( dependencyArtifact ) );
+            Artifact resolvedDependencyArtifact = resolveDependencyArtifact( pkg, dependencyArtifact );
+            if ( resolvedDependencyArtifact != null )
+                metadata.addRuntimeDependency( resolvedDependencyArtifact );
         }
 
         if ( result.getJavaVersion() != null )
@@ -384,7 +434,7 @@ public class DefaultInstaller
     }
 
     private void installArtifact( Artifact artifact, String packageName )
-        throws IOException, ModelFormatException
+        throws IOException
     {
         Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
         boolean isAttachedArtifact = rawModelPath == null;
@@ -425,13 +475,46 @@ public class DefaultInstaller
 
         if ( isPomArtifact )
         {
-            generateDevelRequires( pkg, artifact );
+            Set<Artifact> develArtifacts = packageDevelArtifacts.get( pkg );
+            if ( develArtifacts == null )
+            {
+                develArtifacts = new HashSet<>();
+                packageDevelArtifacts.put( pkg, develArtifacts );
+            }
+
+            develArtifacts.add( artifact );
         }
         else if ( !isAttachedArtifact )
         {
             pkg.setPureDevelPackage( false );
             installPomFiles( pkg, artifact, jppArtifacts );
-            generateUserRequires( pkg, artifact );
+
+            Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
+            if ( userArtifacts == null )
+            {
+                userArtifacts = new HashSet<>();
+                packageUserArtifacts.put( pkg, userArtifacts );
+            }
+
+            userArtifacts.add( artifact );
+        }
+    }
+
+    private void generateRequires()
+        throws IOException, ModelFormatException
+    {
+        for ( Entry<Package, Set<Artifact>> entry : packageDevelArtifacts.entrySet() )
+        {
+            Package pkg = entry.getKey();
+            for ( Artifact artifact : entry.getValue() )
+                generateDevelRequires( pkg, artifact );
+        }
+
+        for ( Entry<Package, Set<Artifact>> entry : packageUserArtifacts.entrySet() )
+        {
+            Package pkg = entry.getKey();
+            for ( Artifact artifact : entry.getValue() )
+                generateUserRequires( pkg, artifact );
         }
     }
 
@@ -480,6 +563,10 @@ public class DefaultInstaller
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         packages = new TreeMap<>();
+        packageDevelArtifacts = new HashMap<>();
+        packageUserArtifacts = new HashMap<>();
+        packagedArtifacts = new HashMap<>();
+        providedArtifacts = new HashMap<>();
         skippedArtifacts = new HashSet<>();
 
         Package mainPackage = new Package( Package.MAIN, settings, logger );
@@ -498,6 +585,8 @@ public class DefaultInstaller
                 checkForUnmatchedRules( configuration.getArtifactManagement() );
 
             Path root = request.getInstallRoot();
+
+            generateRequires();
 
             if ( Files.exists( root ) && !Files.isDirectory( root ) )
                 throw new IOException( root + " is not a directory" );

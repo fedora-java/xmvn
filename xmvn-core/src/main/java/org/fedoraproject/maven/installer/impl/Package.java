@@ -152,8 +152,6 @@ class Package
     private void installMetadata( String packageName )
         throws IOException
     {
-        getMetadata().optimize();
-
         if ( !getMetadata().isEmpty() )
         {
             Path file = Files.createTempFile( "xmvn", ".xml" );
