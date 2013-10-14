@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
@@ -313,58 +312,6 @@ public class DefaultInstaller
         return artifact;
     }
 
-    private void generateDevelRequires( Package pkg, Artifact artifact )
-        throws IOException, ModelFormatException
-    {
-        Path modelPath = ArtifactUtils.getRawModelPath( artifact );
-        if ( modelPath == null )
-        {
-            logger.warn( "Skipping generation of devel requires for artifact " + artifact
-                + ": raw model path is not specified" );
-            return;
-        }
-
-        DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
-        DependencyExtractionResult result = buildDependencyExtractor.extract( request );
-        FragmentFile metadata = pkg.getMetadata();
-
-        for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
-        {
-            Artifact resolvedDependencyArtifact = resolveDependencyArtifact( pkg, dependencyArtifact );
-            if ( resolvedDependencyArtifact != null )
-                metadata.addBuildDependency( resolvedDependencyArtifact );
-        }
-
-        if ( result.getJavaVersion() != null )
-            metadata.addJavaVersionBuildDependency( result.getJavaVersion() );
-    }
-
-    private void generateUserRequires( Package pkg, Artifact artifact )
-        throws IOException, ModelFormatException
-    {
-        Path modelPath = ArtifactUtils.getEffectiveModelPath( artifact );
-        if ( modelPath == null )
-        {
-            logger.warn( "Skipping generation of user requires for artifact " + artifact
-                + ": effective model path is not specified" );
-            return;
-        }
-
-        DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
-        DependencyExtractionResult result = runtimeDependencyExtractor.extract( request );
-        FragmentFile metadata = pkg.getMetadata();
-
-        for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
-        {
-            Artifact resolvedDependencyArtifact = resolveDependencyArtifact( pkg, dependencyArtifact );
-            if ( resolvedDependencyArtifact != null )
-                metadata.addRuntimeDependency( resolvedDependencyArtifact );
-        }
-
-        if ( result.getJavaVersion() != null )
-            metadata.addJavaVersionRuntimeDependency( result.getJavaVersion() );
-    }
-
     private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
         throws IOException
     {
@@ -486,7 +433,6 @@ public class DefaultInstaller
         }
         else if ( !isAttachedArtifact )
         {
-            pkg.setPureDevelPackage( false );
             installPomFiles( pkg, artifact, jppArtifacts );
 
             Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
@@ -500,21 +446,67 @@ public class DefaultInstaller
         }
     }
 
-    private void generateRequires()
+    private void generateRequires( Package pkg )
         throws IOException, ModelFormatException
     {
-        for ( Entry<Package, Set<Artifact>> entry : packageDevelArtifacts.entrySet() )
+        boolean pureDevelPackage = false;
+        Set<Artifact> artifacts = packageUserArtifacts.get( pkg );
+        DependencyExtractor dependencyExtractor = runtimeDependencyExtractor;
+
+        if ( artifacts == null )
         {
-            Package pkg = entry.getKey();
-            for ( Artifact artifact : entry.getValue() )
-                generateDevelRequires( pkg, artifact );
+            pureDevelPackage = true;
+            artifacts = packageDevelArtifacts.get( pkg );
+            dependencyExtractor = buildDependencyExtractor;
         }
 
-        for ( Entry<Package, Set<Artifact>> entry : packageUserArtifacts.entrySet() )
+        if ( artifacts == null )
+            return;
+
+        for ( Artifact artifact : artifacts )
         {
-            Package pkg = entry.getKey();
-            for ( Artifact artifact : entry.getValue() )
-                generateUserRequires( pkg, artifact );
+            Path modelPath;
+
+            if ( pureDevelPackage )
+            {
+                modelPath = ArtifactUtils.getRawModelPath( artifact );
+                if ( modelPath == null )
+                {
+                    logger.warn( "Skipping generation of devel requires for artifact " + artifact
+                        + ": raw model path is not specified" );
+                    return;
+                }
+            }
+            else
+            {
+                modelPath = ArtifactUtils.getEffectiveModelPath( artifact );
+                if ( modelPath == null )
+                {
+                    logger.warn( "Skipping generation of user requires for artifact " + artifact
+                        + ": effective model path is not specified" );
+                    return;
+                }
+            }
+
+            DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
+            DependencyExtractionResult result = dependencyExtractor.extract( request );
+            FragmentFile metadata = pkg.getMetadata();
+
+            for ( Artifact dependencyArtifact : result.getDependencyArtifacts() )
+            {
+                Artifact resolvedDependencyArtifact = resolveDependencyArtifact( pkg, dependencyArtifact );
+                if ( resolvedDependencyArtifact != null )
+                    metadata.addDependency( resolvedDependencyArtifact );
+            }
+
+            String javaVersion = result.getJavaVersion();
+            if ( javaVersion != null )
+            {
+                if ( pureDevelPackage )
+                    metadata.addJavaVersionBuildDependency( javaVersion );
+                else
+                    metadata.addJavaVersionRuntimeDependency( javaVersion );
+            }
         }
     }
 
@@ -586,7 +578,8 @@ public class DefaultInstaller
 
             Path root = request.getInstallRoot();
 
-            generateRequires();
+            for ( Package pkg : packages.values() )
+                generateRequires( pkg );
 
             if ( Files.exists( root ) && !Files.isDirectory( root ) )
                 throw new IOException( root + " is not a directory" );

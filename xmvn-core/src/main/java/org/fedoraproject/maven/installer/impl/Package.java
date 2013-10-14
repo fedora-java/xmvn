@@ -47,8 +47,6 @@ class Package
 
     private static final String NOINSTALL_SUFFIX = "__noinstall";
 
-    private boolean pureDevelPackage = true;
-
     private final InstallerSettings settings;
 
     public Package( String name, InstallerSettings settings, Logger logger )
@@ -155,7 +153,7 @@ class Package
         if ( !getMetadata().isEmpty() )
         {
             Path file = Files.createTempFile( "xmvn", ".xml" );
-            getMetadata().write( file, pureDevelPackage, settings );
+            getMetadata().write( file, settings );
             Path depmapName = Paths.get( packageName + suffix + ".xml" );
             Path depmapDir = Paths.get( settings.getMetadataDir() );
             addFile( file, depmapDir, depmapName, 0644 );
@@ -198,10 +196,5 @@ class Package
     public int compareTo( Package rhs )
     {
         return suffix.compareTo( rhs.suffix );
-    }
-
-    public void setPureDevelPackage( boolean pureDevelPackage )
-    {
-        this.pureDevelPackage = pureDevelPackage;
     }
 }

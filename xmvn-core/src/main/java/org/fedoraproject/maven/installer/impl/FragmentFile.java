@@ -43,8 +43,6 @@ class FragmentFile
 
     private final Set<Artifact> dependencies = new HashSet<>();
 
-    private final Set<Artifact> develDependencies = new HashSet<>();
-
     private final Set<Artifact> skippedArtifacts = new HashSet<>();
 
     private BigDecimal javaVersionRequirement;
@@ -58,8 +56,8 @@ class FragmentFile
 
     public boolean isEmpty()
     {
-        return mapping.isEmpty() && dependencies.isEmpty() && develDependencies.isEmpty()
-            && javaVersionRequirement == null && javaVersionDevelRequirement == null;
+        return mapping.isEmpty() && dependencies.isEmpty() && javaVersionRequirement == null
+            && javaVersionDevelRequirement == null;
     }
 
     private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
@@ -81,14 +79,9 @@ class FragmentFile
         logger.debug( "Added mapping " + from + " => " + to );
     }
 
-    public void addRuntimeDependency( Artifact dependencyArtifact )
+    public void addDependency( Artifact dependencyArtifact )
     {
         dependencies.add( dependencyArtifact );
-    }
-
-    public void addBuildDependency( Artifact dependencyArtifact )
-    {
-        develDependencies.add( dependencyArtifact );
     }
 
     public void addJavaVersionRuntimeDependency( String version )
@@ -112,7 +105,7 @@ class FragmentFile
         this.skippedArtifacts.addAll( skippedArtifacts );
     }
 
-    public void write( Path path, boolean writeDevel, InstallerSettings settings )
+    public void write( Path path, InstallerSettings settings )
         throws IOException
     {
         try (Writer writer = new FileWriter( path.toFile() ))
@@ -136,7 +129,7 @@ class FragmentFile
                 s.endTag( null, "requiresJava" );
             }
 
-            if ( writeDevel && javaVersionDevelRequirement != null && !settings.isSkipRequires() )
+            if ( javaVersionDevelRequirement != null && !settings.isSkipRequires() )
             {
                 s.startTag( null, "requiresJavaDevel" );
                 s.text( javaVersionDevelRequirement.toString() );
@@ -156,11 +149,7 @@ class FragmentFile
 
             if ( !settings.isSkipRequires() )
             {
-                Set<Artifact> combinedDependencies = new HashSet<>( dependencies );
-                if ( writeDevel )
-                    combinedDependencies.addAll( develDependencies );
-
-                for ( Artifact dependency : combinedDependencies )
+                for ( Artifact dependency : dependencies )
                     ArtifactUtils.serialize( dependency, s, null, "autoRequires" );
             }
 
