@@ -32,6 +32,7 @@
       <plugin>
         <artifactId>maven-invoker-plugin</artifactId>
         <configuration>
+          <debug>true</debug>
           <settingsFile>src/it/settings.xml</settingsFile>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <postBuildHookScript>verify</postBuildHookScript>
