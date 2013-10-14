@@ -267,7 +267,7 @@ public class DefaultInstaller
         for ( Artifact jppArtifact : jppArtifacts )
         {
             String providedVersion = jppArtifact.getVersion();
-            Artifact providedArtifact = artifact.setVersion( providedVersion );
+            Artifact providedArtifact = artifact.setVersion( providedVersion ).setFile( null ).setProperties( null );
 
             String scope = ArtifactUtils.getScope( jppArtifact );
             Artifact scopedArtifact = ArtifactUtils.setScope( artifact, scope );
@@ -279,7 +279,7 @@ public class DefaultInstaller
 
             for ( Artifact alias : aliases )
             {
-                Artifact providedAlias = alias.setVersion( providedVersion );
+                Artifact providedAlias = alias.setVersion( providedVersion ).setProperties( null );
                 Artifact scopedAlias = ArtifactUtils.setScope( alias, scope );
                 Artifact scopedProvidedAlias = ArtifactUtils.setScope( providedAlias, scope );
 
