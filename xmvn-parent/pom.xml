@@ -104,6 +104,7 @@
     <resourcesPluginVersion>2.6</resourcesPluginVersion>
     <sitePluginVersion>3.3</sitePluginVersion>
     <surefireVersion>2.15</surefireVersion>
+    <xmlunitVersion>1.5</xmlunitVersion>
 
   </properties>
   <dependencyManagement>
@@ -174,6 +175,11 @@
         <version>${junitVersion}</version>
       </dependency>
       <dependency>
+        <groupId>xmlunit</groupId>
+        <artifactId>xmlunit</artifactId>
+        <version>${xmlunitVersion}</version>
+      </dependency>
+      <dependency>
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
         <version>${jcommanderVersion}</version>
@@ -189,6 +195,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
