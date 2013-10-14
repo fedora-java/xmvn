@@ -75,7 +75,7 @@
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
     <aetherVersion>0.9.0.M3</aetherVersion>
-    <jcommanderVersion>1.30</jcommanderVersion>
+    <jcommanderVersion>1.32</jcommanderVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
     <mavenVersion>3.1.1</mavenVersion>
     <plexusUtilsVersion>3.0.15</plexusUtilsVersion>
