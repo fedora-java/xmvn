@@ -266,17 +266,26 @@ public class DefaultInstaller
 
         for ( Artifact jppArtifact : jppArtifacts )
         {
-            String namespace = ArtifactUtils.getScope( jppArtifact );
-            packaged.add( artifact.setVersion( jppArtifact.getVersion() ) );
-            providedArtifacts.put( artifact.setVersion( jppArtifact.getVersion() ),
-                                   ArtifactUtils.setScope( artifact.setVersion( jppArtifact.getVersion() ), namespace ) );
-            pkg.getMetadata().addMapping( ArtifactUtils.setScope( artifact, namespace ), jppArtifact );
+            String providedVersion = jppArtifact.getVersion();
+            Artifact providedArtifact = artifact.setVersion( providedVersion );
+
+            String scope = ArtifactUtils.getScope( jppArtifact );
+            Artifact scopedArtifact = ArtifactUtils.setScope( artifact, scope );
+            Artifact scopedProvidedArtifact = ArtifactUtils.setScope( providedArtifact, scope );
+
+            packaged.add( providedArtifact );
+            providedArtifacts.put( providedArtifact, scopedProvidedArtifact );
+            pkg.getMetadata().addMapping( scopedArtifact, jppArtifact );
+
             for ( Artifact alias : aliases )
             {
-                packaged.add( alias.setVersion( jppArtifact.getVersion() ) );
-                providedArtifacts.put( alias.setVersion( jppArtifact.getVersion() ),
-                                       ArtifactUtils.setScope( alias.setVersion( jppArtifact.getVersion() ), namespace ) );
-                pkg.getMetadata().addMapping( ArtifactUtils.setScope( alias, namespace ), jppArtifact );
+                Artifact providedAlias = alias.setVersion( providedVersion );
+                Artifact scopedAlias = ArtifactUtils.setScope( alias, scope );
+                Artifact scopedProvidedAlias = ArtifactUtils.setScope( providedAlias, scope );
+
+                packaged.add( providedAlias );
+                providedArtifacts.put( providedAlias, scopedProvidedAlias );
+                pkg.getMetadata().addMapping( scopedAlias, jppArtifact );
             }
         }
     }
