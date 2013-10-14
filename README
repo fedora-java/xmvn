@@ -1,3 +1,12 @@
+___  ___ __  __
+\  \/  /|  \/  |__ __ ___
+ \    / | |\/| |\ V /| ' \
+ /    \ |_|  |_| \_/ |_||_|  v. 1.2.0-SNAPSHOT
+/__/\  \
+     \_/   ~ intelligent packaging ~
+
+http://mizdebsk.fedorapeople.org/xmvn/
+
 XMvn is a set of extensions for Apache Maven that can be used to
 manage system artifact repository and use it to resolve Maven
 artifacts in offline mode. It also provides Maven plugins to help with
