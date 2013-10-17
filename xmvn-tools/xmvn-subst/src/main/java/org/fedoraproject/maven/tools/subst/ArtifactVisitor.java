@@ -27,6 +27,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -37,6 +40,7 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
 import org.fedoraproject.maven.resolver.Resolver;
+import org.fedoraproject.maven.utils.ArtifactUtils;
 import org.fedoraproject.maven.utils.FileUtils;
 
 @Component( role = ArtifactVisitor.class )
@@ -128,7 +132,37 @@ public class ArtifactVisitor
         return FileVisitResult.CONTINUE;
     }
 
-    private Artifact readArtifactDefinition( Path path, String extension )
+    private String getManifestValue( Manifest manifest, String key, String defaultValue )
+    {
+        Attributes attributes = manifest.getMainAttributes();
+        String value = attributes.getValue( key );
+        return value != null ? value : defaultValue;
+    }
+
+    private Artifact getArtifactFromManifest( Path path )
+        throws IOException
+    {
+        try (JarFile jarFile = new JarFile( path.toFile() ))
+        {
+            Manifest manifest = jarFile.getManifest();
+            if ( manifest == null )
+                return null;
+
+            String groupId = getManifestValue( manifest, "JavaPackages-GroupId", null );
+            String artifactId = getManifestValue( manifest, "JavaPackages-ArtifactId", null );
+            String extension = getManifestValue( manifest, "JavaPackages-Extension", ArtifactUtils.DEFAULT_EXTENSION );
+            String classifier = getManifestValue( manifest, "JavaPackages-Classifier", "" );
+            String version = getManifestValue( manifest, "JavaPackages-Version", ArtifactUtils.DEFAULT_VERSION );
+
+            if ( groupId == null || artifactId == null )
+                return null;
+
+            return new DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        }
+    }
+
+    private Artifact getArtifactFromPomProperties( Path path, String extension )
+        throws IOException
     {
         try (ZipInputStream zis = new ZipInputStream( new FileInputStream( path.toFile() ) ))
         {
@@ -148,7 +182,22 @@ public class ArtifactVisitor
                 }
             }
 
-            logger.info( "Skipping file " + path + ": No artifact definition found" );
+            return null;
+        }
+    }
+
+    private Artifact readArtifactDefinition( Path path, String extension )
+    {
+        try
+        {
+            Artifact artifact = getArtifactFromManifest( path );
+            if ( artifact != null )
+                return artifact;
+
+            artifact = getArtifactFromPomProperties( path, extension );
+            if ( artifact != null )
+                return artifact;
+
             return null;
         }
         catch ( IOException e )
@@ -164,6 +213,7 @@ public class ArtifactVisitor
         Artifact artifact = readArtifactDefinition( path, type );
         if ( artifact == null )
         {
+            logger.info( "Skipping file " + path + ": No artifact definition found" );
             failureCount++;
             return;
         }
