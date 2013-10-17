@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.Stereotype;
@@ -47,13 +46,13 @@ abstract class SimpleRepository
 
     private boolean matchesStereotypes( Artifact artifact )
     {
+        String type = ArtifactUtils.getStereotype( artifact );
+
         for ( Stereotype stereotype : stereotypes )
         {
-            String type = ArtifactUtils.getStereotype( artifact );
-
             if ( ( stereotype.getExtension() == null || stereotype.getExtension().equals( artifact.getExtension() ) )
                 && ( stereotype.getClassifier() == null || stereotype.getClassifier().equals( artifact.getClassifier() ) )
-                && ( StringUtils.isEmpty( type ) || stereotype.getType() == null || stereotype.getType().equals( type ) ) )
+                && ( stereotype.getType() == null || ( stereotype.getType().equals( type ) ) ) )
             {
                 return true;
             }
