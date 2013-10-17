@@ -208,6 +208,7 @@ public class DefaultInstaller
                 Artifact jppArtifact =
                     new DefaultArtifact( jppGroup.toString(), jppName.toString(), artifact.getClassifier(),
                                          artifact.getExtension(), version );
+                jppArtifact = ArtifactUtils.copyStereotype( jppArtifact, artifact );
 
                 RepositoryPath jppArtifactPath = installRepo.getPrimaryArtifactPath( jppArtifact );
                 if ( jppArtifactPath == null )
