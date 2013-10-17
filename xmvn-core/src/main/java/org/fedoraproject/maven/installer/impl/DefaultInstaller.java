@@ -407,7 +407,7 @@ public class DefaultInstaller
             ZipEntry ent;
             while ( ( ent = jis.getNextEntry() ) != null )
             {
-                if ( ent.isDirectory() )
+                if ( ent.isDirectory() || !ent.getName().endsWith( ".class" ) )
                     continue;
 
                 final boolean[] usesNativeCode = new boolean[1];
