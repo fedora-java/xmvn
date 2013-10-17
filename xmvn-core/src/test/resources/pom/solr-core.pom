@@ -1,0 +1,13 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.solr</groupId>
+  <artifactId>solr-core</artifactId>
+  <version>3.6.2</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <version>3.6.2</version>
+    </dependency>
+  </dependencies>
+</project>
