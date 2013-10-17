@@ -44,7 +44,7 @@ public class CompatVersionSelfDependencyTest
         assertNotNull( configurator );
         Configuration configuration = configurator.getConfiguration();
 
-        // %mvn_compat_version : 3
+        // %mvn_compat_version : 3.6.2 3
         PackagingRule rule = new PackagingRule();
         rule.setArtifactGlob( new Artifact() );
         rule.addVersion( "3.6.2" );
