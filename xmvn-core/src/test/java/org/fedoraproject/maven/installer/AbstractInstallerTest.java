@@ -78,7 +78,13 @@ abstract class AbstractInstallerTest
     protected void addJarArtifact( String pom )
         throws Exception
     {
-        Path artifactPath = Paths.get( "src/test/resources/jar/empty.jar" );
+        addJarArtifact( pom, "empty" );
+    }
+
+    protected void addJarArtifact( String pom, String jar )
+        throws Exception
+    {
+        Path artifactPath = Paths.get( "src/test/resources/jar/" + jar + ".jar" );
         Path modelPath = Paths.get( "src/test/resources/pom/" + pom + ".pom" );
 
         Model model;
