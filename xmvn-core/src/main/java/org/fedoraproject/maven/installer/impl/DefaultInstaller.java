@@ -309,7 +309,12 @@ public class DefaultInstaller
         if ( result.getArtifactFile() == null )
         {
             logger.warn( "Unable to resolve dependency artifact " + artifact
-                + ", generating dependencies with version " + ArtifactUtils.DEFAULT_VERSION + " and no namespace." );
+                + ", generating dependencies with unknown version and namespace." );
+
+            artifact = artifact.setVersion( ArtifactUtils.UNKNOWN_VERSION );
+            artifact = ArtifactUtils.setScope( artifact, ArtifactUtils.UNKNOWN_NAMESPACE );
+
+            return artifact;
         }
 
         String version = result.getCompatVersion() != null ? result.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;

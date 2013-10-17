@@ -40,6 +40,10 @@ public class ArtifactUtils
 
     public static final String DEFAULT_VERSION = "SYSTEM";
 
+    public static final String UNKNOWN_VERSION = "UNKNOWN";
+
+    public static final String UNKNOWN_NAMESPACE = "UNKNOWN";
+
     /**
      * Dummy artifact. Any dependencies on this artifact will be removed during model validation.
      */
