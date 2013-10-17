@@ -39,6 +39,10 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.space.asm.ClassReader;
+import org.eclipse.sisu.space.asm.ClassVisitor;
+import org.eclipse.sisu.space.asm.MethodVisitor;
+import org.eclipse.sisu.space.asm.Opcodes;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
 import org.fedoraproject.maven.config.InstallerSettings;
@@ -394,6 +398,37 @@ public class DefaultInstaller
         }
     }
 
+    private boolean usesNativeCode( Artifact artifact )
+        throws IOException
+    {
+        try (ZipInputStream jis = new ZipInputStream( new FileInputStream( artifact.getFile() ) ))
+        {
+            ZipEntry ent;
+            while ( ( ent = jis.getNextEntry() ) != null )
+            {
+                if ( ent.isDirectory() )
+                    continue;
+
+                final boolean[] usesNativeCode = new boolean[1];
+
+                new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM4 )
+                {
+                    @Override
+                    public MethodVisitor visitMethod( int flags, String name, String desc, String sig, String[] exc )
+                    {
+                        usesNativeCode[0] = ( flags & Opcodes.ACC_NATIVE ) != 0;
+                        return super.visitMethod( flags, name, desc, sig, exc );
+                    }
+                }, ClassReader.SKIP_CODE );
+
+                if ( usesNativeCode[0] )
+                    return true;
+            }
+
+            return false;
+        }
+    }
+
     private void installArtifact( Artifact artifact, String packageName )
         throws IOException
     {
@@ -405,7 +440,7 @@ public class DefaultInstaller
         if ( isPomArtifact && !artifact.getExtension().equals( "pom" ) )
             throw new RuntimeException( "POM artifact has extension different from 'pom': " + artifact.getExtension() );
 
-        if ( !isPomArtifact && containsNativeCode( artifact ) )
+        if ( !isPomArtifact && ( containsNativeCode( artifact ) || usesNativeCode( artifact ) ) )
             artifact = ArtifactUtils.setStereotype( artifact, "native" );
 
         PackagingRule rule = ruleForArtifact( artifact );
