@@ -80,6 +80,11 @@ public class ArtifactUtils
         return setProperty( artifact, KEY_SCOPE, scope );
     }
 
+    public static Artifact copyScope( Artifact artifact, Artifact referenceArtifact )
+    {
+        return setScope( artifact, getScope( referenceArtifact ) );
+    }
+
     public static String getStereotype( Artifact artifact )
     {
         return artifact.getProperty( KEY_STEREOTYPE, "" );
@@ -88,6 +93,11 @@ public class ArtifactUtils
     public static Artifact setStereotype( Artifact artifact, String stereotype )
     {
         return setProperty( artifact, KEY_STEREOTYPE, stereotype );
+    }
+
+    public static Artifact copyStereotype( Artifact artifact, Artifact referenceArtifact )
+    {
+        return setStereotype( artifact, getStereotype( referenceArtifact ) );
     }
 
     public static Path getRawModelPath( Artifact artifact )
