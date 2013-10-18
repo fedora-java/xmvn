@@ -15,7 +15,9 @@
  */
 package org.fedoraproject.maven.installer.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -30,6 +32,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -118,6 +125,49 @@ public class DefaultInstaller
     private Map<Artifact, Artifact> providedArtifacts;
 
     private Set<Artifact> skippedArtifacts;
+
+    private void putAttribute( Manifest manifest, String key, String value, String defaultValue )
+    {
+        if ( defaultValue == null || !value.equals( defaultValue ) )
+        {
+            Attributes attributes = manifest.getMainAttributes();
+            attributes.putValue( key, value );
+        }
+    }
+
+    private Artifact injectManifest( Artifact artifact )
+        throws IOException
+    {
+        File targetJar = Files.createTempFile( "xmvn", ".jar" ).toFile();
+        targetJar.deleteOnExit();
+
+        try (JarInputStream jis = new JarInputStream( new FileInputStream( artifact.getFile() ) ))
+        {
+            Manifest mf = jis.getManifest();
+
+            putAttribute( mf, ArtifactUtils.MF_KEY_GROUPID, artifact.getGroupId(), null );
+            putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
+            putAttribute( mf, ArtifactUtils.MF_KEY_EXTENSION, artifact.getExtension(), ArtifactUtils.DEFAULT_EXTENSION );
+            putAttribute( mf, ArtifactUtils.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
+            putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, artifact.getVersion(), ArtifactUtils.DEFAULT_VERSION );
+
+            try (JarOutputStream jos = new JarOutputStream( new FileOutputStream( targetJar ), mf ))
+            {
+                byte[] buf = new byte[512];
+                JarEntry entry;
+                while ( ( entry = jis.getNextJarEntry() ) != null )
+                {
+                    jos.putNextEntry( entry );
+
+                    int sz;
+                    while ( ( sz = jis.read( buf ) ) > 0 )
+                        jos.write( buf, 0, sz );
+                }
+            }
+        }
+
+        return artifact.setFile( targetJar );
+    }
 
     private PackagingRule ruleForArtifact( Artifact artifact )
     {
@@ -250,6 +300,8 @@ public class DefaultInstaller
             logger.info( "       file: " + jppArtifact.getFile() );
         }
         logger.info( "===============================================" );
+
+        artifact = injectManifest( artifact );
 
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();
         Artifact primaryJppArtifact = jppIterator.next();
