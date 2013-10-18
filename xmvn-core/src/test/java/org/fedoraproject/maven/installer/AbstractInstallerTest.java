@@ -66,7 +66,7 @@ abstract class AbstractInstallerTest
         assertNotNull( installer );
 
         installRoot = Files.createTempDirectory( "xmvn-installer-test" ).toAbsolutePath();
-        // installRoot.toFile().deleteOnExit();
+        installRoot.toFile().deleteOnExit();
 
         request.setBasePackageName( "package" );
         request.setCheckForUnmatchedRules( true );
