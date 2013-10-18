@@ -134,7 +134,7 @@ public class DefaultInstaller
         }
     }
 
-    private Artifact injectManifest( Artifact artifact )
+    private Artifact injectManifest( Artifact artifact, String version )
         throws IOException
     {
         File targetJar = Files.createTempFile( "xmvn", ".jar" ).toFile();
@@ -148,7 +148,7 @@ public class DefaultInstaller
             putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
             putAttribute( mf, ArtifactUtils.MF_KEY_EXTENSION, artifact.getExtension(), ArtifactUtils.DEFAULT_EXTENSION );
             putAttribute( mf, ArtifactUtils.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
-            putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, artifact.getVersion(), ArtifactUtils.DEFAULT_VERSION );
+            putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, version, ArtifactUtils.DEFAULT_VERSION );
 
             try (JarOutputStream jos = new JarOutputStream( new FileOutputStream( targetJar ), mf ))
             {
@@ -300,10 +300,9 @@ public class DefaultInstaller
         }
         logger.info( "===============================================" );
 
-        artifact = injectManifest( artifact );
-
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();
         Artifact primaryJppArtifact = jppIterator.next();
+        artifact = injectManifest( artifact, primaryJppArtifact.getVersion() );
         pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );
 
         while ( jppIterator.hasNext() )
