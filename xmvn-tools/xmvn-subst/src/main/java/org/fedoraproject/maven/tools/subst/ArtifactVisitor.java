@@ -144,15 +144,15 @@ public class ArtifactVisitor
     {
         try (JarFile jarFile = new JarFile( path.toFile() ))
         {
-            Manifest manifest = jarFile.getManifest();
-            if ( manifest == null )
+            Manifest mf = jarFile.getManifest();
+            if ( mf == null )
                 return null;
 
-            String groupId = getManifestValue( manifest, "JavaPackages-GroupId", null );
-            String artifactId = getManifestValue( manifest, "JavaPackages-ArtifactId", null );
-            String extension = getManifestValue( manifest, "JavaPackages-Extension", ArtifactUtils.DEFAULT_EXTENSION );
-            String classifier = getManifestValue( manifest, "JavaPackages-Classifier", "" );
-            String version = getManifestValue( manifest, "JavaPackages-Version", ArtifactUtils.DEFAULT_VERSION );
+            String groupId = getManifestValue( mf, ArtifactUtils.MF_KEY_GROUPID, null );
+            String artifactId = getManifestValue( mf, ArtifactUtils.MF_KEY_ARTIFACTID, null );
+            String extension = getManifestValue( mf, ArtifactUtils.MF_KEY_EXTENSION, ArtifactUtils.DEFAULT_EXTENSION );
+            String classifier = getManifestValue( mf, ArtifactUtils.MF_KEY_CLASSIFIER, "" );
+            String version = getManifestValue( mf, ArtifactUtils.MF_KEY_VERSION, ArtifactUtils.DEFAULT_VERSION );
 
             if ( groupId == null || artifactId == null )
                 return null;

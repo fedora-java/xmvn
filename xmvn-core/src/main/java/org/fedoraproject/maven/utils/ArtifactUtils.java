@@ -44,6 +44,16 @@ public class ArtifactUtils
 
     public static final String UNKNOWN_NAMESPACE = "UNKNOWN";
 
+    public static final String MF_KEY_GROUPID = "JavaPackages-GroupId";
+
+    public static final String MF_KEY_ARTIFACTID = "JavaPackages-ArtifactId";
+
+    public static final String MF_KEY_EXTENSION = "JavaPackages-Extension";
+
+    public static final String MF_KEY_CLASSIFIER = "JavaPackages-Classifier";
+
+    public static final String MF_KEY_VERSION = "JavaPackages-Version";
+
     /**
      * Dummy artifact. Any dependencies on this artifact will be removed during model validation.
      */
