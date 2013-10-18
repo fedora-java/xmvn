@@ -14,10 +14,11 @@ Release notes for XMvn
 
     * Artifact information in manifests
 
-      Since version 1.2.0 XMvn Subst can read artifact coordinates
-      from JAR manifest.  This way artifacts that do not contain
-      pom.properties can still be correctly replaced with symbolic
-      links by XMvn Subst.
+      Since version 1.2.0 XMvn injects artifact coordinates to
+      manifests of artifact files it installs.  XMvn Subst can read
+      this information and use it to locate artifacts in the system.
+      This way artifacts that do not contain pom.properties can still
+      be correctly replaced with symbolic links by XMvn Subst.
 
     * Artifacts using native code
 
