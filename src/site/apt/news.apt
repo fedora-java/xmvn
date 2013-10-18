@@ -3,12 +3,29 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-10-09
+                    2013-10-18
 
 
 Release notes for XMvn
 
 * What's new in XMvn 1.2.0
+
+  * Minor features
+
+    * Artifact information in manifests
+
+      Since version 1.2.0 XMvn Subst can read artifact coordinates
+      from JAR manifest.  This way artifacts that do not contain
+      pom.properties can still be correctly replaced with symbolic
+      links by XMvn Subst.
+
+    * Artifacts using native code
+
+      Previous versions only tried to detect artifacts containing
+      native code.  In addition to that XMvn version 1.2.0 also
+      attempts to detect JAR files using native code.  This means that
+      such JARs can be installed to a different location than JARs not
+      containing and not using native code.
 
   * Major bugfixes
 
@@ -20,6 +37,13 @@ Release notes for XMvn
       artifact type mappings.  This means that any non-standard
       stereotypes may still be handled incorrectly and produce
       unsatisfiable dependencies.
+
+    * Generated self-requires
+
+      Auto-requires generator was corrected to generate correct
+      auto-requires in complex cases involving compatibility versions,
+      namespaces and dependencies on artifacts provided by the same
+      package.
 
 * What's new in XMvn 1.1.0
 
