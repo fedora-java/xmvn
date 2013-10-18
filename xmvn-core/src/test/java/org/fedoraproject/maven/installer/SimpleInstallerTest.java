@@ -18,6 +18,9 @@ package org.fedoraproject.maven.installer;
 import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * @author Mikolaj Izdebski
@@ -57,5 +60,32 @@ public class SimpleInstallerTest
         depmap.append( "  </dependency>" );
         depmap.append( "</dependencyMap>" );
         assertXmlEqual( depmap, "depmaps/package.xml" );
+    }
+
+    /**
+     * Test if injection of manifest works even if JAR previously contained no manifest.
+     * 
+     * @throws Exception
+     */
+    public void testNewManifestInjection()
+        throws Exception
+    {
+        addJarArtifact( "aether-api", "no-manifest" );
+        performInstallation();
+
+        Path jarPath = installRoot.resolve( "repo/jar/aether-api.jar" );
+        assertTrue( Files.isRegularFile( jarPath ) );
+
+        try (JarFile jarFile = new JarFile( jarPath.toFile() ))
+        {
+            Manifest mf = jarFile.getManifest();
+            assertNotNull( mf );
+
+            assertEquals( "org.eclipse.aether", mf.getMainAttributes().getValue( "JavaPackages-GroupId" ) );
+            assertEquals( "aether-api", mf.getMainAttributes().getValue( "JavaPackages-ArtifactId" ) );
+            assertEquals( null, mf.getMainAttributes().getValue( "JavaPackages-Extension" ) );
+            assertEquals( null, mf.getMainAttributes().getValue( "JavaPackages-Classifier" ) );
+            assertEquals( null, mf.getMainAttributes().getValue( "JavaPackages-Version" ) );
+        }
     }
 }

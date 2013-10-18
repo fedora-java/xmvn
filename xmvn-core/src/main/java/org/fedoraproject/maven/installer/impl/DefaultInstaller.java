@@ -143,6 +143,11 @@ public class DefaultInstaller
         try (JarInputStream jis = new JarInputStream( new FileInputStream( artifact.getFile() ) ))
         {
             Manifest mf = jis.getManifest();
+            if ( mf == null )
+            {
+                mf = new Manifest();
+                mf.getMainAttributes().putValue( "Manifest-Version", "1.0" );
+            }
 
             putAttribute( mf, ArtifactUtils.MF_KEY_GROUPID, artifact.getGroupId(), null );
             putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
