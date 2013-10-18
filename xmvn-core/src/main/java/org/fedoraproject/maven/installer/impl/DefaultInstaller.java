@@ -24,9 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -317,7 +316,7 @@ public class DefaultInstaller
         Set<Artifact> packaged = packagedArtifacts.get( pkg );
         if ( packaged == null )
         {
-            packaged = new HashSet<>();
+            packaged = new LinkedHashSet<>();
             packagedArtifacts.put( pkg, packaged );
         }
 
@@ -527,7 +526,7 @@ public class DefaultInstaller
             Set<Artifact> develArtifacts = packageDevelArtifacts.get( pkg );
             if ( develArtifacts == null )
             {
-                develArtifacts = new HashSet<>();
+                develArtifacts = new LinkedHashSet<>();
                 packageDevelArtifacts.put( pkg, develArtifacts );
             }
 
@@ -540,7 +539,7 @@ public class DefaultInstaller
             Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
             if ( userArtifacts == null )
             {
-                userArtifacts = new HashSet<>();
+                userArtifacts = new LinkedHashSet<>();
                 packageUserArtifacts.put( pkg, userArtifacts );
             }
 
@@ -657,11 +656,11 @@ public class DefaultInstaller
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         packages = new TreeMap<>();
-        packageDevelArtifacts = new HashMap<>();
-        packageUserArtifacts = new HashMap<>();
-        packagedArtifacts = new HashMap<>();
-        providedArtifacts = new HashMap<>();
-        skippedArtifacts = new HashSet<>();
+        packageDevelArtifacts = new LinkedHashMap<>();
+        packageUserArtifacts = new LinkedHashMap<>();
+        packagedArtifacts = new LinkedHashMap<>();
+        providedArtifacts = new LinkedHashMap<>();
+        skippedArtifacts = new LinkedHashSet<>();
 
         Package mainPackage = new Package( Package.MAIN, settings, logger );
         packages.put( mainPackage, mainPackage );

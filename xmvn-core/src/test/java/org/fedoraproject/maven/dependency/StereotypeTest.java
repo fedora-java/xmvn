@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.dependency;
 
-
 /**
  * @author Mikolaj Izdebski
  */

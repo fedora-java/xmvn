@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.codehaus.plexus.util.StringUtils;
@@ -75,7 +75,7 @@ public class ArtifactUtils
 
     public static Artifact setProperty( Artifact artifact, String key, String value )
     {
-        Map<String, String> properties = new HashMap<>( artifact.getProperties() );
+        Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
         properties.put( key, value );
         return artifact.setProperties( properties );
     }
@@ -207,7 +207,7 @@ public class ArtifactUtils
         dom.writeToSerializer( namespace, serializer );
     }
 
-    private static final Map<String, ArtifactType> stereotypes = new HashMap<>();
+    private static final Map<String, ArtifactType> stereotypes = new LinkedHashMap<>();
 
     private static void addStereotype( String type, String extension, String classifier )
     {

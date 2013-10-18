@@ -19,7 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -71,9 +71,9 @@ public class BuilddepMojo
     {
         try
         {
-            Set<Artifact> reactorArtifacts = new HashSet<>();
-            Set<Artifact> dependencies = new HashSet<>();
-            Set<Artifact> resolvedDependencies = new HashSet<>();
+            Set<Artifact> reactorArtifacts = new LinkedHashSet<>();
+            Set<Artifact> dependencies = new LinkedHashSet<>();
+            Set<Artifact> resolvedDependencies = new LinkedHashSet<>();
             BigDecimal javaVersion = null;
 
             for ( MavenProject project : reactorProjects )

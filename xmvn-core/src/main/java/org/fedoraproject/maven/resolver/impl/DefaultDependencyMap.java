@@ -17,8 +17,8 @@ package org.fedoraproject.maven.resolver.impl;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -58,9 +58,9 @@ public class DefaultDependencyMap
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final Map<Artifact, Set<Artifact>> mapping = new HashMap<>();
+    private final Map<Artifact, Set<Artifact>> mapping = new LinkedHashMap<>();
 
-    private final Map<Artifact, Set<Artifact>> reverseMapping = new HashMap<>();
+    private final Map<Artifact, Set<Artifact>> reverseMapping = new LinkedHashMap<>();
 
     @Override
     public boolean isEmpty()
@@ -94,7 +94,7 @@ public class DefaultDependencyMap
         Set<Artifact> set = map.get( from );
         if ( set == null )
         {
-            set = new HashSet<>();
+            set = new LinkedHashSet<>();
             map.put( from, set );
         }
 
@@ -162,7 +162,7 @@ public class DefaultDependencyMap
      */
     private List<Artifact> depthFirstWalk( Map<Artifact, Set<Artifact>> map, Artifact current )
     {
-        Set<Artifact> visited = new HashSet<>();
+        Set<Artifact> visited = new LinkedHashSet<>();
         List<Artifact> result = new LinkedList<>();
 
         walk( map, visited, result, current );
@@ -201,7 +201,7 @@ public class DefaultDependencyMap
         try
         {
             lock.readLock().lock();
-            Set<Artifact> resultSet = new HashSet<>();
+            Set<Artifact> resultSet = new LinkedHashSet<>();
             for ( Artifact aa : depthFirstWalk( reverseMapping, artifact ) )
                 resultSet.addAll( depthFirstWalk( mapping, aa ) );
             return resultSet;

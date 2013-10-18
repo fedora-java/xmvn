@@ -24,7 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -47,7 +47,7 @@ import org.fedoraproject.maven.utils.FileUtils;
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
-    private final Set<String> types = new HashSet<>();
+    private final Set<String> types = new LinkedHashSet<>();
 
     @Requirement
     private Logger logger;

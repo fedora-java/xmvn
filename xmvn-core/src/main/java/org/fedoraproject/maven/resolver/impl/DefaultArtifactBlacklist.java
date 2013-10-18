@@ -16,7 +16,7 @@
 package org.fedoraproject.maven.resolver.impl;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -54,7 +54,7 @@ public class DefaultArtifactBlacklist
     @Requirement
     private DependencyMap depmap;
 
-    private final Set<Artifact> blacklist = new HashSet<>();
+    private final Set<Artifact> blacklist = new LinkedHashSet<>();
 
     @Override
     public boolean contains( String groupId, String artifactId )
@@ -119,7 +119,7 @@ public class DefaultArtifactBlacklist
      */
     private void blacklistAliases()
     {
-        Set<Artifact> aliasBlacklist = new HashSet<>();
+        Set<Artifact> aliasBlacklist = new LinkedHashSet<>();
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 

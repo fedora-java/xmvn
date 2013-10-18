@@ -16,7 +16,7 @@
 package org.fedoraproject.maven.dependency.impl;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.aether.artifact.Artifact;
@@ -28,7 +28,7 @@ import org.fedoraproject.maven.dependency.DependencyExtractionResult;
 class DefaultDependencyExtractionResult
     implements DependencyExtractionResult
 {
-    private final Set<Artifact> dependencyArtifacts = new HashSet<>();
+    private final Set<Artifact> dependencyArtifacts = new LinkedHashSet<>();
 
     private String javaVersion;
 

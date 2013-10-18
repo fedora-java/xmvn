@@ -16,7 +16,7 @@
 package org.fedoraproject.maven.dependency.impl;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +36,7 @@ import org.fedoraproject.maven.utils.ArtifactUtils;
 class BuildDependencyVisitor
     extends AbstractModelVisitor
 {
-    private static final Set<Artifact> commonPlugins = new HashSet<>();
+    private static final Set<Artifact> commonPlugins = new LinkedHashSet<>();
     static
     {
         // FIXME: don't hardcode this

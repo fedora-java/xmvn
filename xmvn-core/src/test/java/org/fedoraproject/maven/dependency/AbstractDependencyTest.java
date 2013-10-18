@@ -17,7 +17,7 @@ package org.fedoraproject.maven.dependency;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.codehaus.plexus.PlexusTestCase;
@@ -34,7 +34,7 @@ public abstract class AbstractDependencyTest
 
     private String expectedJavaVersion;
 
-    private final Set<Artifact> expectedDependencyArtifacts = new HashSet<>();
+    private final Set<Artifact> expectedDependencyArtifacts = new LinkedHashSet<>();
 
     public AbstractDependencyTest()
     {
@@ -92,12 +92,12 @@ public abstract class AbstractDependencyTest
         assertNotNull( result );
         assertEquals( expectedJavaVersion, result.getJavaVersion() );
 
-        Set<Artifact> expectedButNotReturned = new HashSet<>( expectedDependencyArtifacts );
+        Set<Artifact> expectedButNotReturned = new LinkedHashSet<>( expectedDependencyArtifacts );
         expectedButNotReturned.removeAll( result.getDependencyArtifacts() );
         for ( Artifact artifact : expectedButNotReturned )
             fail( "Dependency artifact " + artifact + " was expected but not returned" );
 
-        Set<Artifact> notExpectedButReturned = new HashSet<>( result.getDependencyArtifacts() );
+        Set<Artifact> notExpectedButReturned = new LinkedHashSet<>( result.getDependencyArtifacts() );
         notExpectedButReturned.removeAll( expectedDependencyArtifacts );
         for ( Artifact artifact : notExpectedButReturned )
             fail( "Dependency artifact " + artifact + " not expected but returned" );

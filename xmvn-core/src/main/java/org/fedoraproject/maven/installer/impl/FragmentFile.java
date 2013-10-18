@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,11 +39,11 @@ class FragmentFile
 {
     private final Logger logger;
 
-    private final Map<Artifact, Set<Artifact>> mapping = new HashMap<>();
+    private final Map<Artifact, Set<Artifact>> mapping = new LinkedHashMap<>();
 
-    private final Set<Artifact> dependencies = new HashSet<>();
+    private final Set<Artifact> dependencies = new LinkedHashSet<>();
 
-    private final Set<Artifact> skippedArtifacts = new HashSet<>();
+    private final Set<Artifact> skippedArtifacts = new LinkedHashSet<>();
 
     private BigDecimal javaVersionRequirement;
 
@@ -65,7 +65,7 @@ class FragmentFile
         Set<Artifact> set = map.get( from );
         if ( set == null )
         {
-            set = new HashSet<>();
+            set = new LinkedHashSet<>();
             map.put( from, set );
         }
 
