@@ -144,10 +144,7 @@ public class DefaultInstaller
         {
             Manifest mf = jis.getManifest();
             if ( mf == null )
-            {
-                mf = new Manifest();
-                mf.getMainAttributes().putValue( "Manifest-Version", "1.0" );
-            }
+                return artifact;
 
             putAttribute( mf, ArtifactUtils.MF_KEY_GROUPID, artifact.getGroupId(), null );
             putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
