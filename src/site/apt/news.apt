@@ -10,6 +10,9 @@ Release notes for XMvn
 
 * What's new in XMvn 1.2.0
 
+  XMvn 1.2.0 was released on 2013-10-18.  Most important changes
+  include:
+
   * Minor features
 
     * Artifact information in manifests
@@ -47,6 +50,9 @@ Release notes for XMvn
       package.
 
 * What's new in XMvn 1.1.0
+
+  XMvn 1.1.0 was released on 2013-09-30.  Most important changes
+  include:
 
   * Major bugfixes
 
@@ -93,6 +99,9 @@ Release notes for XMvn
 
 * What's new in XMvn 1.0.2
 
+  XMvn 1.0.2 was released on 2013-09-20.  Most important changes
+  include:
+
   * Major bugfixes
 
     * Missing requires on parent POM artifacts
@@ -109,6 +118,9 @@ Release notes for XMvn
       when artifacts were installed with missing model (POM) files.
 
 * What's new in XMvn 1.0.0
+
+  XMvn 1.0.0 was released on 2013-09-09.  Most important changes
+  include:
 
   * Major features
 
@@ -191,6 +203,9 @@ Release notes for XMvn
 
 * What's new in XMvn 0.5.0
 
+  XMvn 0.5.0 was released on 2013-05-24.  Most important changes
+  include:
+
   * Major features
 
     * XMvn Subst
@@ -268,6 +283,9 @@ Release notes for XMvn
 
 * What's new in XMvn 0.4.2
 
+  XMvn 0.4.2 was released on 2013-04-09.  Most important changes
+  include:
+
   * Minor bugfixes
 
     * Empty fields in artifact aliases
@@ -277,6 +295,9 @@ Release notes for XMvn
       artifact.  This bug was fixed in version 0.4.2.
 
 * What's new in XMvn 0.4.1
+
+  XMvn 0.4.1 was released on 2013-03-21.  Most important changes
+  include:
 
   * Minor bugfixes
 
@@ -301,6 +322,9 @@ Release notes for XMvn
       release.
 
 * What's new in XMvn 0.4.0
+
+  XMvn 0.4.0 was released on 2013-03-15.  Most important changes
+  include:
 
   * Major features
 
