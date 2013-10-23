@@ -63,7 +63,7 @@ public class SimpleInstallerTest
     }
 
     /**
-     * Test if injection of manifest works even if JAR previously contained no manifest.
+     * Test if manifests are not injection unless the JAR previously contained a manifest.
      * 
      * @throws Exception
      */
@@ -79,13 +79,7 @@ public class SimpleInstallerTest
         try (JarFile jarFile = new JarFile( jarPath.toFile() ))
         {
             Manifest mf = jarFile.getManifest();
-            assertNotNull( mf );
-
-            assertEquals( "org.eclipse.aether", mf.getMainAttributes().getValue( "JavaPackages-GroupId" ) );
-            assertEquals( "aether-api", mf.getMainAttributes().getValue( "JavaPackages-ArtifactId" ) );
-            assertEquals( null, mf.getMainAttributes().getValue( "JavaPackages-Extension" ) );
-            assertEquals( null, mf.getMainAttributes().getValue( "JavaPackages-Classifier" ) );
-            assertEquals( null, mf.getMainAttributes().getValue( "JavaPackages-Version" ) );
+            assertNull( mf );
         }
     }
 }
