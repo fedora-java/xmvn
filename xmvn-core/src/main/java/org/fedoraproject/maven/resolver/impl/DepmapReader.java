@@ -158,7 +158,7 @@ class DepmapReader
         public List<Mapping> call()
             throws Exception
         {
-            Document mapDocument = buildDepmapModel( file );
+            Document mapDocument = buildDepmapModel();
             List<Mapping> mappings = new ArrayList<>();
 
             NodeList depNodes = mapDocument.getElementsByTagName( "dependency" );
@@ -179,7 +179,7 @@ class DepmapReader
             return mappings;
         }
 
-        private Document buildDepmapModel( File file )
+        private Document buildDepmapModel()
             throws IOException
         {
             try
