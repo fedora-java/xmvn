@@ -81,9 +81,8 @@ public class DefaultModelProcessor
     private Model readModel( Path path )
         throws IOException, ModelFormatException
     {
-        try
+        try (FileReader modelFileReader = new FileReader( path.toString() ))
         {
-            FileReader modelFileReader = new FileReader( path.toString() );
             MavenXpp3Reader mavenModelReader = new MavenXpp3Reader();
             Model model = mavenModelReader.read( modelFileReader );
             return model;

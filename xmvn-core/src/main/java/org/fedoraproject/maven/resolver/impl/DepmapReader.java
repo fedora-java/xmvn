@@ -207,21 +207,27 @@ class DepmapReader
         private String wrapFragment( File fragmentFile )
             throws IOException
         {
-            FileInputStream fis = new FileInputStream( fragmentFile );
-            BufferedInputStream bis = new BufferedInputStream( fis, 128 );
-            InputStream is = isCompressed( bis ) ? new GZIPInputStream( bis ) : bis;
-            String contents = streamAsString( is );
-
-            if ( contents.length() >= 5 && contents.substring( 0, 5 ).equalsIgnoreCase( "<?xml" ) )
+            try (FileInputStream fis = new FileInputStream( fragmentFile ))
             {
-                return contents;
-            }
+                try (BufferedInputStream bis = new BufferedInputStream( fis, 128 ))
+                {
+                    try (InputStream is = isCompressed( bis ) ? new GZIPInputStream( bis ) : bis)
+                    {
+                        String contents = streamAsString( is );
 
-            StringBuilder buffer = new StringBuilder();
-            buffer.append( "<dependencies>" );
-            buffer.append( contents );
-            buffer.append( "</dependencies>" );
-            return buffer.toString();
+                        if ( contents.length() >= 5 && contents.substring( 0, 5 ).equalsIgnoreCase( "<?xml" ) )
+                        {
+                            return contents;
+                        }
+
+                        StringBuilder buffer = new StringBuilder();
+                        buffer.append( "<dependencies>" );
+                        buffer.append( contents );
+                        buffer.append( "</dependencies>" );
+                        return buffer.toString();
+                    }
+                }
+            }
         }
 
         private String streamAsString( InputStream is )
