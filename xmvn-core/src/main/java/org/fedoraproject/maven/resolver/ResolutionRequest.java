@@ -40,8 +40,7 @@ public class ResolutionRequest
 
     public ResolutionRequest( String groupId, String artifactId, String version, String extension )
     {
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, version );
-        setArtifact( artifact );
+        this.artifact = new DefaultArtifact( groupId, artifactId, extension, version );
     }
 
     /**
