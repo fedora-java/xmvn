@@ -54,6 +54,12 @@ abstract class AbstractInstallerTest
     protected Path installRoot;
 
     @Override
+    protected String getCustomConfigurationName()
+    {
+        return "src/test/resources/plexus/installer-components.xml";
+    }
+
+    @Override
     protected void setUp()
         throws Exception
     {
