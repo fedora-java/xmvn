@@ -66,9 +66,8 @@ public class InstallerTestConfigurator
     }
 
     @Override
-    public Configuration getConfiguration()
+    public synchronized Configuration getConfiguration()
     {
-
         Configuration configuration = getDefaultConfiguration();
 
         InstallerSettings installerSettings = configuration.getInstallerSettings();

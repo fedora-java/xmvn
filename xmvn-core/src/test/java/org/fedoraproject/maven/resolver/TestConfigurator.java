@@ -29,7 +29,7 @@ public class TestConfigurator
     extends DefaultConfigurator
 {
     @Override
-    public Configuration getConfiguration()
+    public synchronized Configuration getConfiguration()
     {
         Configuration configuration = getDefaultConfiguration();
 
