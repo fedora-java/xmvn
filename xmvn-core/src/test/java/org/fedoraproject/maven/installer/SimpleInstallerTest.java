@@ -63,7 +63,7 @@ public class SimpleInstallerTest
     }
 
     /**
-     * Test if manifests are not injection unless the JAR previously contained a manifest.
+     * Test if manifests are not injected unless the JAR previously contained a manifest.
      * 
      * @throws Exception
      */
