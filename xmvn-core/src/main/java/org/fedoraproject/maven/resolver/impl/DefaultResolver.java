@@ -202,7 +202,7 @@ public class DefaultResolver
             for ( ListIterator<Artifact> it = jppArtifacts.listIterator(); it.hasNext(); )
                 it.set( it.next().setVersion( version ) );
 
-            for ( RepositoryPath repoPath : systemRepo.getArtifactPaths( jppArtifacts ) )
+            for ( RepositoryPath repoPath : systemRepo.getArtifactPaths( jppArtifacts, true ) )
             {
                 File artifactFile = repoPath.getPath().toFile();
                 logger.debug( "Checking artifact path: " + artifactFile );
