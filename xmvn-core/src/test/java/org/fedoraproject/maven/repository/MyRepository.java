@@ -49,6 +49,13 @@ public class MyRepository
     }
 
     @Override
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
+    {
+        fail( "getPrimaryArtifactPath() was not expected to be called" );
+        throw null;
+    }
+
+    @Override
     public List<RepositoryPath> getArtifactPaths( Artifact artifact )
     {
         fail( "getArtifactPaths() was not expected to be called" );
@@ -56,7 +63,21 @@ public class MyRepository
     }
 
     @Override
+    public List<RepositoryPath> getArtifactPaths( Artifact artifact, boolean ignoreType )
+    {
+        fail( "getArtifactPaths() was not expected to be called" );
+        throw null;
+    }
+
+    @Override
     public List<RepositoryPath> getArtifactPaths( List<Artifact> artifact )
+    {
+        fail( "getArtifactPaths() was not expected to be called" );
+        throw null;
+    }
+
+    @Override
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifact, boolean ignoreType )
     {
         fail( "getArtifactPaths() was not expected to be called" );
         throw null;

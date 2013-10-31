@@ -49,14 +49,12 @@ import org.fedoraproject.maven.repository.RepositoryPath;
  */
 @Component( role = Repository.class, hint = "compound", instantiationStrategy = "per-lookup" )
 public class CompoundRepository
-    implements Repository
+    extends AbstractRepository
 {
     @Requirement
     private RepositoryConfigurator configurator;
 
     private Path prefix;
-
-    private String namespace;
 
     private final List<Repository> slaveRepositories = new ArrayList<>();
 
@@ -84,18 +82,12 @@ public class CompoundRepository
     }
 
     @Override
-    public List<RepositoryPath> getArtifactPaths( Artifact artifact )
-    {
-        return getArtifactPaths( Collections.singletonList( artifact ) );
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts, boolean ignoreType )
     {
         List<RepositoryPath> paths = new ArrayList<>();
         for ( Repository repository : slaveRepositories )
         {
-            for ( RepositoryPath path : repository.getArtifactPaths( artifacts ) )
+            for ( RepositoryPath path : repository.getArtifactPaths( artifacts, ignoreType ) )
             {
                 DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
                 if ( prefix != null )
@@ -107,22 +99,16 @@ public class CompoundRepository
     }
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
     {
-        Iterator<RepositoryPath> it = getArtifactPaths( artifact ).iterator();
+        Iterator<RepositoryPath> it = getArtifactPaths( artifact, ignoreType ).iterator();
         return it.hasNext() ? it.next() : null;
-    }
-
-    @Override
-    public String getNamespace()
-    {
-        return namespace;
     }
 
     @Override
     public void setNamespace( String namespace )
     {
-        this.namespace = namespace;
+        super.setNamespace( namespace );
 
         if ( StringUtils.isNotEmpty( namespace ) )
         {

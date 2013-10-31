@@ -55,6 +55,17 @@ public interface Repository
     RepositoryPath getPrimaryArtifactPath( Artifact artifact );
 
     /**
+     * Obtain the preferred path to given artifact in this repository.
+     * <p>
+     * Returned path is relative to the repository base.
+     * 
+     * @param artifact
+     * @param ignoreType whether repository artifact type should be ignored
+     * @return preferred artifact path
+     */
+    RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType );
+
+    /**
      * Get list of possible paths to given artifact in this repository. The returned list is ordered by decreasing
      * preference - the first path on the returned list is the most preferred one.
      * <p>
@@ -66,6 +77,18 @@ public interface Repository
     List<RepositoryPath> getArtifactPaths( Artifact artifact );
 
     /**
+     * Get list of possible paths to given artifact in this repository. The returned list is ordered by decreasing
+     * preference - the first path on the returned list is the most preferred one.
+     * <p>
+     * All returned paths are relative to the repository base.
+     * 
+     * @param artifact
+     * @param ignoreType whether repository artifact type should be ignored
+     * @return list of possible artifact paths
+     */
+    List<RepositoryPath> getArtifactPaths( Artifact artifact, boolean ignoreType );
+
+    /**
      * Get list of possible paths to given artifacts in this repository. The returned list is ordered by decreasing
      * preference - the first path on the returned list is the most preferred one.
      * <p>
@@ -75,6 +98,18 @@ public interface Repository
      * @return list of possible artifact paths
      */
     List<RepositoryPath> getArtifactPaths( List<Artifact> artifact );
+
+    /**
+     * Get list of possible paths to given artifacts in this repository. The returned list is ordered by decreasing
+     * preference - the first path on the returned list is the most preferred one.
+     * <p>
+     * All returned paths are relative to the repository base.
+     * 
+     * @param artifacts list of artifacts to lookup
+     * @param ignoreType whether repository artifact type should be ignored
+     * @return list of possible artifact paths
+     */
+    List<RepositoryPath> getArtifactPaths( List<Artifact> artifact, boolean ignoreType );
 
     String getNamespace();
 

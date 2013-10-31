@@ -25,7 +25,6 @@ import java.util.Properties;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.maven.config.Stereotype;
-import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.RepositoryPath;
 import org.fedoraproject.maven.utils.ArtifactUtils;
 
@@ -33,18 +32,16 @@ import org.fedoraproject.maven.utils.ArtifactUtils;
  * @author Mikolaj Izdebski
  */
 abstract class SimpleRepository
-    implements Repository
+    extends AbstractRepository
 {
     private Path root;
-
-    private String namespace;
 
     private final List<Stereotype> stereotypes = new ArrayList<>();
 
     protected abstract Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
                                              String version );
 
-    private boolean matchesStereotypes( Artifact artifact )
+    private boolean matchesStereotypes( Artifact artifact, boolean ignoreType )
     {
         String type = ArtifactUtils.getStereotype( artifact );
 
@@ -52,7 +49,7 @@ abstract class SimpleRepository
         {
             if ( ( stereotype.getExtension() == null || stereotype.getExtension().equals( artifact.getExtension() ) )
                 && ( stereotype.getClassifier() == null || stereotype.getClassifier().equals( artifact.getClassifier() ) )
-                && ( stereotype.getType() == null || ( stereotype.getType().equals( type ) ) ) )
+                && ( ignoreType || stereotype.getType() == null || ( stereotype.getType().equals( type ) ) ) )
             {
                 return true;
             }
@@ -62,9 +59,9 @@ abstract class SimpleRepository
     }
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
     {
-        if ( !matchesStereotypes( artifact ) )
+        if ( !matchesStereotypes( artifact, ignoreType ) )
             return null;
 
         String groupId = artifact.getGroupId();
@@ -86,19 +83,13 @@ abstract class SimpleRepository
     }
 
     @Override
-    public List<RepositoryPath> getArtifactPaths( Artifact artifact )
-    {
-        return getArtifactPaths( Collections.singletonList( artifact ) );
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts, boolean ignoreType )
     {
         List<RepositoryPath> paths = new ArrayList<>();
 
         for ( Artifact artifact : artifacts )
         {
-            RepositoryPath path = getPrimaryArtifactPath( artifact );
+            RepositoryPath path = getPrimaryArtifactPath( artifact, ignoreType );
             if ( path != null )
                 paths.add( path );
         }
@@ -112,21 +103,9 @@ abstract class SimpleRepository
         String rootProperty = properties.getProperty( "root" );
         root = rootProperty != null ? Paths.get( rootProperty ) : null;
 
-        namespace = properties.getProperty( "namespace", "" );
+        setNamespace( properties.getProperty( "namespace", "" ) );
 
         this.stereotypes.clear();
         this.stereotypes.addAll( stereotypes );
-    }
-
-    @Override
-    public String getNamespace()
-    {
-        return namespace;
-    }
-
-    @Override
-    public void setNamespace( String namespace )
-    {
-        this.namespace = namespace;
     }
 }
