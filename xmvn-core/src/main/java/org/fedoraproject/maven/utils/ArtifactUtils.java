@@ -228,7 +228,7 @@ public class ArtifactUtils
     public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
                                                 String version )
     {
-        String extension = type;
+        String extension = type != null ? type : ArtifactUtils.DEFAULT_EXTENSION;
 
         ArtifactType artifactType = stereotypes.get( type );
         if ( artifactType != null )

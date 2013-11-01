@@ -78,7 +78,6 @@ public class IvyInstallerExclusionTest
         depmap.append( "    <namespace>UNKNOWN</namespace>" );
         depmap.append( "    <groupId>junit</groupId>" );
         depmap.append( "    <artifactId>junit</artifactId>" );
-        depmap.append( "    <extension></extension>" );
         depmap.append( "    <version>UNKNOWN</version>" );
         depmap.append( "  </autoRequires>" );
 
