@@ -18,10 +18,8 @@ package org.fedoraproject.maven.installer.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -45,13 +43,11 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.sisu.space.asm.ClassReader;
@@ -71,6 +67,7 @@ import org.fedoraproject.maven.installer.InstallationRequest;
 import org.fedoraproject.maven.installer.InstallationResult;
 import org.fedoraproject.maven.installer.Installer;
 import org.fedoraproject.maven.model.ModelFormatException;
+import org.fedoraproject.maven.model.ModelReader;
 import org.fedoraproject.maven.repository.Repository;
 import org.fedoraproject.maven.repository.RepositoryPath;
 import org.fedoraproject.maven.resolver.ResolutionRequest;
@@ -107,6 +104,9 @@ public class DefaultInstaller
 
     @Requirement( hint = DependencyExtractor.RUNTIME )
     private DependencyExtractor runtimeDependencyExtractor;
+
+    @Requirement
+    private ModelReader modelReader;
 
     private Repository installRepo;
 
@@ -392,20 +392,6 @@ public class DefaultInstaller
         return artifact;
     }
 
-    private Model readModel( Path modelPath )
-        throws IOException
-    {
-        try (Reader fileReader = new FileReader( modelPath.toFile() ))
-        {
-            MavenXpp3Reader modelReader = new MavenXpp3Reader();
-            return modelReader.read( fileReader );
-        }
-        catch ( XmlPullParserException e )
-        {
-            throw new IOException( "Unable to parse effective POM", e );
-        }
-    }
-
     private Path writeModel( Model model )
         throws IOException
     {
@@ -447,7 +433,7 @@ public class DefaultInstaller
     }
 
     private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
-        throws IOException
+        throws IOException, ModelFormatException
     {
         Set<Artifact> jppPomArtifacts = new LinkedHashSet<>();
         for ( Artifact jppArtifact : jppArtifacts )
@@ -478,7 +464,7 @@ public class DefaultInstaller
             Iterator<Artifact> it = jppPomArtifacts.iterator();
             Path target = effectivePomRepo.getPrimaryArtifactPath( it.next() ).getPath();
 
-            Model effectiveModel = readModel( effectiveModelPath );
+            Model effectiveModel = modelReader.readModel( effectiveModelPath );
             Model simplifiedEffectiveModel = simplifyEffectiveModel( effectiveModel );
             Path simplifiedEffectivePomPath = writeModel( simplifiedEffectiveModel );
             pkg.addFile( simplifiedEffectivePomPath, target, 0644 );
@@ -550,7 +536,7 @@ public class DefaultInstaller
     }
 
     private void installArtifact( Artifact artifact, String packageName )
-        throws IOException
+        throws IOException, ModelFormatException
     {
         Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
         boolean isAttachedArtifact = rawModelPath == null;

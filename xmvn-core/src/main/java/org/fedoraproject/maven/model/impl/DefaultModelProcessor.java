@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.maven.model.impl;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -60,11 +59,11 @@ import org.apache.maven.model.RepositoryPolicy;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Site;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.maven.model.ModelFormatException;
 import org.fedoraproject.maven.model.ModelProcessor;
+import org.fedoraproject.maven.model.ModelReader;
 import org.fedoraproject.maven.model.ModelVisitor;
 
 /**
@@ -78,26 +77,14 @@ import org.fedoraproject.maven.model.ModelVisitor;
 public class DefaultModelProcessor
     implements ModelProcessor
 {
-    private Model readModel( Path path )
-        throws IOException, ModelFormatException
-    {
-        try (FileReader modelFileReader = new FileReader( path.toString() ))
-        {
-            MavenXpp3Reader mavenModelReader = new MavenXpp3Reader();
-            Model model = mavenModelReader.read( modelFileReader );
-            return model;
-        }
-        catch ( XmlPullParserException e )
-        {
-            throw new ModelFormatException( "Model \"" + path + "\" has invalid format", e );
-        }
-    }
+    @Requirement
+    private ModelReader modelReader;
 
     @Override
     public void processModel( Path modelPath, ModelVisitor visitor )
         throws IOException, ModelFormatException
     {
-        Model model = readModel( modelPath );
+        Model model = modelReader.readModel( modelPath );
         visitor.visitProject( model );
         visit( visitor, model );
     }
