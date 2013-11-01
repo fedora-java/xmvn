@@ -127,7 +127,7 @@ public class IvyModelReader
                 dependency.setType( entry.getValue() );
                 dependency.setClassifier( entry.getKey() );
                 dependency.setScope( scope );
-                dependency.setExclusions( exclusions );
+                dependency.setExclusions( new ArrayList<>( exclusions ) );
             }
         }
 
