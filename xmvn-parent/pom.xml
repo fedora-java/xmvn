@@ -75,6 +75,7 @@
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
     <aetherVersion>0.9.0.M3</aetherVersion>
+    <ivyVersion>2.3.0</ivyVersion>
     <jcommanderVersion>1.32</jcommanderVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
     <mavenVersion>3.1.1</mavenVersion>
@@ -188,6 +189,11 @@
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-invoker</artifactId>
         <version>${mavenInvokerVersion}</version>
+      </dependency>
+      <dependency>
+	<groupId>org.apache.ivy</groupId>
+	<artifactId>ivy</artifactId>
+	<version>${ivyVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
