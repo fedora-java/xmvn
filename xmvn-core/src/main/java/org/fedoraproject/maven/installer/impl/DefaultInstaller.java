@@ -18,8 +18,12 @@ package org.fedoraproject.maven.installer.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,10 +43,15 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.sisu.space.asm.ClassReader;
@@ -383,6 +392,60 @@ public class DefaultInstaller
         return artifact;
     }
 
+    private Model readModel( Path modelPath )
+        throws IOException
+    {
+        try (Reader fileReader = new FileReader( modelPath.toFile() ))
+        {
+            MavenXpp3Reader modelReader = new MavenXpp3Reader();
+            return modelReader.read( fileReader );
+        }
+        catch ( XmlPullParserException e )
+        {
+            throw new IOException( "Unable to parse effective POM", e );
+        }
+    }
+
+    private Path writeModel( Model model )
+        throws IOException
+    {
+        Path modelPath = Files.createTempFile( "xmvn", ".pom" );
+
+        try (Writer fileWriter = new FileWriter( modelPath.toFile() ))
+        {
+            MavenXpp3Writer modelWriter = new MavenXpp3Writer();
+            modelWriter.write( fileWriter, model );
+            return modelPath;
+        }
+    }
+
+    private Model simplifyEffectiveModel( Model model )
+    {
+        Model m = new Model();
+        m.setModelEncoding( model.getModelEncoding() );
+        m.setModelVersion( model.getModelVersion() );
+        m.setGroupId( model.getGroupId() );
+        m.setArtifactId( model.getArtifactId() );
+        m.setVersion( model.getVersion() );
+
+        for ( Dependency dep : model.getDependencies() )
+        {
+            String scope = dep.getScope();
+            if ( scope != null )
+            {
+                if ( scope.equals( "system" ) )
+                    throw new RuntimeException( "Unsupported system-scoped dependency found" );
+                if ( scope.equals( "provided" ) || scope.equals( "test" ) )
+                    continue;
+                if ( scope.equals( "compile" ) )
+                    dep.setScope( null );
+            }
+            m.addDependency( dep );
+        }
+
+        return m;
+    }
+
     private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
         throws IOException
     {
@@ -414,7 +477,11 @@ public class DefaultInstaller
         {
             Iterator<Artifact> it = jppPomArtifacts.iterator();
             Path target = effectivePomRepo.getPrimaryArtifactPath( it.next() ).getPath();
-            pkg.addFile( effectiveModelPath, target, 0644 );
+
+            Model effectiveModel = readModel( effectiveModelPath );
+            Model simplifiedEffectiveModel = simplifyEffectiveModel( effectiveModel );
+            Path simplifiedEffectivePomPath = writeModel( simplifiedEffectiveModel );
+            pkg.addFile( simplifiedEffectivePomPath, target, 0644 );
 
             while ( it.hasNext() )
             {
