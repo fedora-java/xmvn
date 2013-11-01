@@ -42,6 +42,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.maven.model.ModelFormatException;
 import org.fedoraproject.maven.model.ModelReader;
 
@@ -71,6 +72,14 @@ public class IvyModelReader
         {
             throw new RuntimeException( e );
         }
+    }
+
+    private String nullify( String value, String defaultValue )
+    {
+        if ( StringUtils.isEmpty( value ) || value.equals( defaultValue ) )
+            return null;
+
+        return value;
     }
 
     private Model getModuleModel( ModuleDescriptor module )
@@ -123,10 +132,10 @@ public class IvyModelReader
                 ModuleRevisionId dependencyRevision = dependencyModule.getDependencyRevisionId();
                 dependency.setGroupId( dependencyRevision.getOrganisation() );
                 dependency.setArtifactId( dependencyRevision.getName() );
-                dependency.setVersion( dependencyRevision.getRevision() );
-                dependency.setType( entry.getValue() );
-                dependency.setClassifier( entry.getKey() );
-                dependency.setScope( scope );
+                dependency.setVersion( nullify( dependencyRevision.getRevision(), "SYSTEM" ) );
+                dependency.setType( nullify( entry.getValue(), "jar" ) );
+                dependency.setClassifier( nullify( entry.getKey(), "" ) );
+                dependency.setScope( nullify( scope, "compile" ) );
                 dependency.setExclusions( new ArrayList<>( exclusions ) );
             }
         }
