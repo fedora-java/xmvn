@@ -1,0 +1,3 @@
+<ivy-module version="2.0">
+  <info organisation="org.apache" module="hello-ivy" revision="1.2.3"/>
+</ivy-module>
