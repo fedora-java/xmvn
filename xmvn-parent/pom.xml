@@ -77,12 +77,13 @@
     <aetherVersion>0.9.0.M3</aetherVersion>
     <ivyVersion>2.3.0</ivyVersion>
     <jcommanderVersion>1.32</jcommanderVersion>
+    <guiceVersion>3.1.8</guiceVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
     <mavenVersion>3.1.1</mavenVersion>
     <plexusUtilsVersion>3.0.15</plexusUtilsVersion>
     <plexusVersion>1.5.5</plexusVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
-    <sisuVersion>0.0.0.M5</sisuVersion>
+    <sisuVersion>0.1.0</sisuVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
@@ -154,6 +155,12 @@
         <groupId>org.eclipse.sisu</groupId>
         <artifactId>org.eclipse.sisu.plexus</artifactId>
         <version>${sisuVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
+        <version>${guiceVersion}</version>
+	<classifier>no_aop</classifier>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
