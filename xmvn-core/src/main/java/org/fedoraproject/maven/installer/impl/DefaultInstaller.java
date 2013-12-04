@@ -280,7 +280,7 @@ public class DefaultInstaller
         }
 
         if ( jppArtifacts.isEmpty() )
-            throw new RuntimeException( "At least non-absolute file must be specified for artifact " + artifact );
+            throw new RuntimeException( "At least one non-absolute file must be specified for artifact " + artifact );
 
         return jppArtifacts;
     }
