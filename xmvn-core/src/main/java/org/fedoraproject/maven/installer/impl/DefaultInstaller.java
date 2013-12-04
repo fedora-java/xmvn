@@ -255,8 +255,7 @@ public class DefaultInstaller
         for ( Path basePath : basePaths )
         {
             if ( basePath.isAbsolute() )
-                throw new RuntimeException( "Absolute JPP artifact paths are not supported: artifact: " + artifact
-                    + ", path: " + basePath );
+                continue;
 
             Path jppName = basePath.getFileName();
             Path jppGroup = Paths.get( "JPP" );
@@ -280,7 +279,33 @@ public class DefaultInstaller
             }
         }
 
+        if ( jppArtifacts.isEmpty() )
+            throw new RuntimeException( "At least non-absolute file must be specified for artifact " + artifact );
+
         return jppArtifacts;
+    }
+
+    private void installAbsoluteSymlinks( Package pkg, Artifact artifact, PackagingRule rule, Path symlinkTarget )
+        throws IOException
+    {
+        List<String> versionSuffixes = new ArrayList<>();
+        for ( String version : rule.getVersions() )
+            versionSuffixes.add( "-" + version );
+        if ( rule.getVersions().isEmpty() )
+            versionSuffixes.add( "" );
+
+        for ( String filePath : rule.getFiles() )
+        {
+            String classifierSuffix = artifact.getClassifier().isEmpty() ? "" : artifact.getClassifier();
+            String extensionSuffix = artifact.getExtension().isEmpty() ? "" : artifact.getExtension();
+
+            for ( String versionSuffix : versionSuffixes )
+            {
+                Path symlink = Paths.get( filePath + versionSuffix + classifierSuffix + extensionSuffix );
+                if ( symlink.isAbsolute() )
+                    pkg.addSymlink( Paths.get( "/" ).relativize( symlink ), symlinkTarget );
+            }
+        }
     }
 
     private void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
@@ -586,18 +611,24 @@ public class DefaultInstaller
 
             develArtifacts.add( artifact );
         }
-        else if ( !isAttachedArtifact )
+        else
         {
-            installPomFiles( pkg, artifact, jppArtifacts );
+            Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
+            installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
 
-            Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
-            if ( userArtifacts == null )
+            if ( !isAttachedArtifact )
             {
-                userArtifacts = new LinkedHashSet<>();
-                packageUserArtifacts.put( pkg, userArtifacts );
-            }
+                installPomFiles( pkg, artifact, jppArtifacts );
 
-            userArtifacts.add( artifact );
+                Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
+                if ( userArtifacts == null )
+                {
+                    userArtifacts = new LinkedHashSet<>();
+                    packageUserArtifacts.put( pkg, userArtifacts );
+                }
+
+                userArtifacts.add( artifact );
+            }
         }
     }
 
