@@ -296,8 +296,8 @@ public class DefaultInstaller
 
         for ( String filePath : rule.getFiles() )
         {
-            String classifierSuffix = artifact.getClassifier().isEmpty() ? "" : artifact.getClassifier();
-            String extensionSuffix = artifact.getExtension().isEmpty() ? "" : artifact.getExtension();
+            String classifierSuffix = artifact.getClassifier().isEmpty() ? "" : "-" + artifact.getClassifier();
+            String extensionSuffix = artifact.getExtension().isEmpty() ? "" : "." + artifact.getExtension();
 
             for ( String versionSuffix : versionSuffixes )
             {
