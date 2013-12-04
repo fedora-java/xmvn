@@ -83,7 +83,11 @@ class Package
 
     public void addFile( Path file, Path target, int mode )
     {
-        addFile( file, target.getParent(), target.getFileName(), mode );
+        Path parent = target.getParent();
+        if ( parent == null )
+            parent = Paths.get( "." );
+
+        addFile( file, parent, target.getFileName(), mode );
     }
 
     public void addSymlink( Path symlinkFile, Path symlinkTarget )
