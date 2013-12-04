@@ -242,10 +242,13 @@ public class DefaultResolver
         }
 
         File artifactFile = result.getArtifactFile();
-        artifactFile = FileUtils.followSymlink( artifactFile );
-        logger.debug( "Artifact " + artifact + " was resolved to " + artifactFile );
-        if ( request.isProviderNeeded() )
-            result.setProvider( rpmdb.lookupFile( artifactFile ) );
+        if ( artifactFile != null )
+        {
+            artifactFile = FileUtils.followSymlink( artifactFile );
+            logger.debug( "Artifact " + artifact + " was resolved to " + artifactFile );
+            if ( request.isProviderNeeded() )
+                result.setProvider( rpmdb.lookupFile( artifactFile ) );
+        }
 
         return result;
     }
