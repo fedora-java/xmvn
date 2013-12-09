@@ -3,10 +3,44 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-10-18
+                    2013-12-09
 
 
 Release notes for XMvn
+
+* What's new in XMvn 1.4.0
+
+  XMvn 1.4.0 was released on 2013-12-09.  Most important changes
+  include:
+
+  * Minor features
+
+    * Limited support for absolute JPP artifact files
+
+      Artifact files specified as absolute paths pointing to arbitrary
+      locations are now allowed.  They are implemented as symbolic
+      links which are pointing to the primary artifact file, which
+      must be explicitly specified as non-absolute file.
+
+      Appropriate suffixes are added depending on artifact version,
+      classifier and extension.  As absolute symlinks can be placed at
+      any location, configured repositories are not taken into account
+      and flat repository layout is always assumed.
+
+      Absolute symlinks are only created for artifact files and
+      attached artifacts, but not for POM files.  Absolute files for
+      artifacts with no files (i.e. POM artifacts) are silently
+      ignored.
+
+  * Minor bugfixes
+
+    * Fix NullPointerException bug in installer code
+
+    * Allow file installation in root directory
+
+      XMvn was unable to install files in root directory because of
+      false assumption that every directory has a parent.  This was
+      fixed in version 1.4.0.
 
 * What's new in XMvn 1.3.0
 
