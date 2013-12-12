@@ -237,7 +237,7 @@ public class DefaultResolver
 
         if ( result == null )
         {
-            logger.warn( "Failed to resolve artifact: " + artifact );
+            logger.info( "Failed to resolve artifact: " + artifact );
             return new DefaultResolutionResult();
         }
 
