@@ -67,6 +67,7 @@ public class IvyResolver
         try
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
+            container.setLoggerManager( new IvyLoggerManager() );
             resolver = container.lookup( Resolver.class );
         }
         catch ( PlexusContainerException | ComponentLookupException e )
