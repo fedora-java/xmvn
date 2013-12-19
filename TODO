@@ -8,9 +8,118 @@ submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
 http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 
+* Planned for XMvn 2.0.0
+
+   2.0.0 is next major release and it can break backwards
+   compatibility where it makes sense.
+
+** cleanup namespaces
+
+   org.fedoraproject.maven namespace was used before XMvn name chosen.
+   This namespace was OK as long as XMvn was Maven-specific.  Now it
+   can be used from other build systems too, so switching to
+   org.fedoraproject.xmvn makes sense.
+
+** remove deprecated code
+
+   All code marked with @Deprecated will be removed.
+
+** artifact deployment
+
+   Running native deployment functions of different build systems
+   (like "mvn deploy" or "sbt publish") should result in installing
+   artifacts into temporary location from where they can be installed
+   with %mvn_install.
+
+** migrate from Plexus to JSR-330 and SLF4J
+
+   Pros for JSR-330:
+     * @Inject is standardized while Plexus is deprecated
+     * Sisu-Inject has fewer dependencies than Sisu-Plexus
+     * It would be possible to use XMvn from other frameworks that
+       support JSR-330
+     * Guice works with non-public classes while classes implementing
+       Plexus components must be public, which leads to problems with
+       third-parties using private implementation code, which is
+       marked as public only for technical reasons
+
+   Pros for SLF4J:
+     * simplifies combination of incompatible logging frameworks
+     * eases logging management (enable per-class debug output etc.)
+     * Plexus logging support in Sisu-Plexus is incomplete
+     * SLF4J is de facto Java standard
+
+   Cons:
+     * extra work needed for no immediate gains
+     * possibility to cause regressions
+     * backporting stuff to older versions of Maven (RHEL 7 uses
+       Maven 3.0.5) could become more difficult
+
+** separate API from implementation
+
+   XMvn Core would be split into two modules - API and implementation.
+   This could help clients using XMvn Core functionality to make sure
+   they are not using internal code directly.
+
+** split connector
+
+   Currently there is a single XMvn Connector module, but it makes
+   sense to split it into two or more more modules - one for each
+   build system (Maven, Gradle) or resolver library (Aether, Ivy).
+
+
 * Random ideas (no milestone assigned)
 
 ** plugin API
+
+** improve and standardize fragment file format
+
+*** keep support for reading old fragment format
+
+    Both new and old fragment formats need to be supported for now,
+    until all packages using the old format are rebuilt.  All new
+    fragments should be generated in the new format.
+
+*** break compatibility with JPP
+
+    There is no need to retain compatibility with fragment format used
+    at JPackage.
+
+*** direct references to JAR and POM files
+
+    If fragment files had direct references (paths) to artifact files
+    installed in the system then artifacts could be resolved without
+    traversing file system.  POM files would no longer need to use the
+    JPP prefix in the name and so on.
+
+    Simplification of resolver algorithm would let people understand
+    it more easily.  Debugging problems related to artifact resolution
+    would be easier as it wouldn't require following the algorithm and
+    checking every possible artifact file location.
+
+    This would also simplify the resolver algorithm a lot, allowing it
+    to be easily implemented in other languages like Python.
+
+*** more readable, limited redundancy
+
+    Current fragment files are very verbose, which in some cases makes
+    them unreadable.  The new format should be simple, better designed
+    and human-readable.
+
+*** custom metadata
+
+    The new format should be extensible, allowing extending it in
+    future and storing custom metadata.  Some tools may need that
+    metadata to function properly (Maven plugin metadata, OSGi bundle
+    symbolic name etc.).
+
+*** dynamic effective model generation
+
+    Fragment files already store some limited dependency information
+    for use in RPM dependency generators.  If there was full
+    dependency information included then it would be possible to
+    generate effective POMs and ivy.xml files on demand directly from
+    fragment files.
 
 
 * Deferred features
