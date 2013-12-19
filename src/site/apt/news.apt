@@ -8,6 +8,23 @@
 
 Release notes for XMvn
 
+* What's new in XMvn 1.5.0
+
+  XMvn 1.5.0 was released on YYYY-MM-DD.  Most important changes
+  include:
+
+  * Major features
+
+    * Ivy resolver
+
+      Starting with verison 1.5.0 XMvn provides a connector for Apache
+      Ivy which enables Ivy or its clients to have access to XMvn
+      resolver.
+
+      This feature enables Ant build scripts using Ivy tasks or other
+      build systems that use Ivy to use local system artifact
+      repository to resolve dependencies.
+
 * What's new in XMvn 1.4.0
 
   XMvn 1.4.0 was released on 2013-12-09.  Most important changes
