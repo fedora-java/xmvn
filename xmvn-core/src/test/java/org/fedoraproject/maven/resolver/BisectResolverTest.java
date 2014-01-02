@@ -16,6 +16,10 @@
 package org.fedoraproject.maven.resolver;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -34,8 +38,10 @@ public class BisectResolverTest
     public void setUp()
         throws IOException
     {
-        System.setProperty( "xmvn.bisect.counter", "bisect-counter" );
-        AtomicFileCounter counter = new AtomicFileCounter( "bisect-counter", 1000 );
+        Path counterPath = Paths.get( "target/test-work/bisect-counter" );
+        Files.createDirectories( counterPath.getParent() );
+        System.setProperty( "xmvn.bisect.counter", counterPath.toString() );
+        AtomicFileCounter counter = new AtomicFileCounter( counterPath.toString(), 1000 );
     }
 
     @Override
