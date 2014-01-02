@@ -34,6 +34,8 @@ import org.fedoraproject.maven.utils.AtomicFileCounter;
 public class BisectResolverTest
     extends PlexusTestCase
 {
+    private AtomicFileCounter counter;
+
     @Override
     public void setUp()
         throws IOException
@@ -41,7 +43,7 @@ public class BisectResolverTest
         Path counterPath = Paths.get( "target/test-work/bisect-counter" );
         Files.createDirectories( counterPath.getParent() );
         System.setProperty( "xmvn.bisect.counter", counterPath.toString() );
-        AtomicFileCounter counter = new AtomicFileCounter( counterPath.toString(), 1000 );
+        counter = new AtomicFileCounter( counterPath.toString(), 1000 );
     }
 
     @Override
@@ -51,7 +53,7 @@ public class BisectResolverTest
     }
 
     /**
-     * Test bisection resolution of artifact with no corresponding file
+     * Test bisection resolution of artifact with no corresponding file.
      * 
      * @throws Exception
      */
@@ -74,5 +76,6 @@ public class BisectResolverTest
 
         assertNotNull( result );
         assertNull( result.getArtifactFile() );
+        assertEquals( 999, counter.getValue() );
     }
 }
