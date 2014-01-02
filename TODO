@@ -8,6 +8,16 @@ submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
 http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 
+* Internal features
+
+** Test cases for Ivy support
+
+** Test cases for XMvn Bisect
+
+** Regression tests for fixed bugs
+
+   Bugs in Bugzilla marked with NeedsTestCase keyword.
+
 * Planned for XMvn 2.0.0
 
    2.0.0 is next major release and it can break backwards
