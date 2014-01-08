@@ -160,7 +160,7 @@
         <groupId>org.sonatype.sisu</groupId>
         <artifactId>sisu-guice</artifactId>
         <version>${guiceVersion}</version>
-	<classifier>no_aop</classifier>
+        <classifier>no_aop</classifier>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -198,9 +198,9 @@
         <version>${mavenInvokerVersion}</version>
       </dependency>
       <dependency>
-	<groupId>org.apache.ivy</groupId>
-	<artifactId>ivy</artifactId>
-	<version>${ivyVersion}</version>
+        <groupId>org.apache.ivy</groupId>
+        <artifactId>ivy</artifactId>
+        <version>${ivyVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
