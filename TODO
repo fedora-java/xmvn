@@ -43,6 +43,8 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 ** migrate from Plexus to JSR-330 and SLF4J
 
+   Useful link: http://wiki.eclipse.org/Sisu/PlexusMigration
+
    Pros for JSR-330:
      * @Inject is standardized while Plexus is deprecated
      * Sisu-Inject has fewer dependencies than Sisu-Plexus
