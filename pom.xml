@@ -36,6 +36,7 @@
   </description>
   <modules>
     <module>xmvn-parent</module>
+    <module>xmvn-api</module>
     <module>xmvn-core</module>
     <module>xmvn-connector</module>
     <module>xmvn-mojo</module>

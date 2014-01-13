@@ -170,6 +170,11 @@
       </dependency>
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedoraproject.xmvn</groupId>
         <artifactId>xmvn-core</artifactId>
         <version>${project.version}</version>
       </dependency>
