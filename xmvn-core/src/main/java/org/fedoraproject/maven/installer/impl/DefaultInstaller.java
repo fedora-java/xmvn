@@ -411,7 +411,7 @@ public class DefaultInstaller
         String version = result.getCompatVersion() != null ? result.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
         artifact = artifact.setVersion( version );
 
-        String namespace = result.getRepository() != null ? result.getRepository().getNamespace() : null;
+        String namespace = result.getNamespace();
         artifact = ArtifactUtils.setScope( artifact, namespace );
 
         return artifact;

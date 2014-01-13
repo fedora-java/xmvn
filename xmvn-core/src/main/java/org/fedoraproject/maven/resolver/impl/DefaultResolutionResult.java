@@ -79,9 +79,9 @@ class DefaultResolutionResult
     }
 
     @Override
-    public Repository getRepository()
+    public String getNamespace()
     {
-        return repository;
+        return repository != null ? repository.getNamespace() : null;
     }
 
     public void setRepository( Repository repository )
