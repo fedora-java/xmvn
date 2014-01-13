@@ -84,6 +84,7 @@
     <plexusVersion>1.5.5</plexusVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
     <sisuVersion>0.2.0.M1</sisuVersion>
+    <slf4jVersion>1.7.5</slf4jVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
@@ -201,6 +202,11 @@
         <groupId>org.apache.ivy</groupId>
         <artifactId>ivy</artifactId>
         <version>${ivyVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4jVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
