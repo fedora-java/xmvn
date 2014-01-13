@@ -76,19 +76,6 @@ public class DefaultDependencyMap
         }
     }
 
-    @Override
-    @Deprecated
-    public void addMapping( String groupId, String artifactId, String version, String jppGroupId, String jppArtifactId )
-    {
-        Artifact mavenArtifact =
-            new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, ArtifactUtils.DEFAULT_VERSION );
-        Artifact jppArtifact =
-            new DefaultArtifact( jppGroupId, jppArtifactId, ArtifactUtils.DEFAULT_EXTENSION,
-                                 ArtifactUtils.DEFAULT_VERSION );
-
-        addMapping( mavenArtifact, jppArtifact );
-    }
-
     private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
     {
         Set<Artifact> set = map.get( from );

@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.maven.resolver;
 
-import java.io.File;
-
 import org.codehaus.plexus.PlexusTestCase;
 import org.fedoraproject.maven.config.Configuration;
 import org.fedoraproject.maven.config.Configurator;
@@ -71,19 +69,5 @@ public class BasicResolverTest
         ResolutionResult result = resolver.resolve( request );
         assertNotNull( result );
         assertNull( result.getArtifactFile() );
-    }
-
-    /**
-     * Test if resolver correctly fails to resolve nonexistent artifact using deprecated API.
-     * 
-     * @throws Exception
-     */
-    @Deprecated
-    public void testResolutionFailureDeprecatedAPI()
-        throws Exception
-    {
-        Resolver resolver = lookup( Resolver.class );
-        File artifactFile = resolver.resolve( "some", "nonexistent", "artifact", "pom" );
-        assertNull( artifactFile );
     }
 }

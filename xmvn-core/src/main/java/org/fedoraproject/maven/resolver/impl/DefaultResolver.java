@@ -252,21 +252,4 @@ public class DefaultResolver
 
         return result;
     }
-
-    @Deprecated
-    @Override
-    public File resolve( String groupId, String artifactId, String version, String extension )
-    {
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, version );
-        return resolve( artifact );
-    }
-
-    @Deprecated
-    @Override
-    public File resolve( Artifact artifact )
-    {
-        ResolutionRequest request = new ResolutionRequest( artifact );
-        ResolutionResult result = resolve( request );
-        return result.getArtifactFile();
-    }
 }
