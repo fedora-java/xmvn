@@ -34,6 +34,10 @@
   </description>
   <dependencies>
     <dependency>
+      <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.aether</groupId>
       <artifactId>aether-api</artifactId>
     </dependency>
