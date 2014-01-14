@@ -53,19 +53,19 @@ tool=$(basename "${0}")
 case "${tool}" in
     *bisect*)
         tool=bisect
-        class=org.fedoraproject.maven.tools.bisect.BisectCli
+        class=org.fedoraproject.xmvn.tools.bisect.BisectCli
         ;;
     *install*)
         tool=installer
-        class=org.fedoraproject.maven.tools.installer.InstallerCli
+        class=org.fedoraproject.xmvn.tools.install.InstallerCli
         ;;
     *resolve*)
         tool=resolver
-        class=org.fedoraproject.maven.tools.resolver.ResolverCli
+        class=org.fedoraproject.xmvn.tools.resolve.ResolverCli
         ;;
     *subst*)
         tool=subst
-        class=org.fedoraproject.maven.tools.subst.SubstCli
+        class=org.fedoraproject.xmvn.tools.subst.SubstCli
         ;;
     *)
         class="${tool}"

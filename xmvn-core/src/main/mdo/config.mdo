@@ -29,7 +29,7 @@
   <defaults>
     <default>
       <key>package</key>
-      <value>org.fedoraproject.maven.config</value>
+      <value>org.fedoraproject.xmvn.config</value>
     </default>
   </defaults>
   <classes>
@@ -647,7 +647,7 @@
      */
     public PackagingRule createEffectivePackagingRule( String stereotype, String groupId, String artifactId, String extension, String classifier, String version )
     {
-        return new org.fedoraproject.maven.config.impl.EffectivePackagingRule
+        return new org.fedoraproject.xmvn.config.impl.EffectivePackagingRule
             ( getArtifactManagement(), stereotype, groupId, artifactId, extension, classifier, version );
     }
             ]]>

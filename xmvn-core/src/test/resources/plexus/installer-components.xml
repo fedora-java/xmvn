@@ -17,9 +17,9 @@
 <component-set>
   <components>
     <component>
-      <role>org.fedoraproject.maven.config.Configurator</role>
+      <role>org.fedoraproject.xmvn.config.Configurator</role>
       <role-hint>default</role-hint>
-      <implementation>org.fedoraproject.maven.installer.InstallerTestConfigurator</implementation>
+      <implementation>org.fedoraproject.xmvn.installer.InstallerTestConfigurator</implementation>
     </component>
   </components>
 </component-set>

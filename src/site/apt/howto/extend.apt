@@ -37,7 +37,7 @@ How to create an extension for XMvn
 
   Now we can start writing some code.  To create an installer for
   Eclipse artifacts we need to provide implementation for interface
-  <<<org.fedoraproject.maven.installer.ProjectInstaller>>>.  In order
+  <<<org.fedoraproject.xmvn.installer.ProjectInstaller>>>.  In order
   for XMvn to be able to find and load our extension we need to
   implement is as a Plexus component.
 
@@ -78,7 +78,7 @@ public class EclipseInstaller
   standard XMvn configurator to give us the directory path.  To obtain
   a reference to the configurator (or any other service provided by
   XMvn) it's enough to create a field of appropriate type (in this
-  case <<<org.fedoraproject.maven.config.Configurator>>>) and annotate
+  case <<<org.fedoraproject.xmvn.config.Configurator>>>) and annotate
   it with <<<org.codehaus.plexus.component.annotations.Requirement>>>.
   This way Plexus container will inject the dependency automatically.
 
@@ -229,11 +229,11 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.fedoraproject.maven.config.Configurator;
-import org.fedoraproject.maven.config.PackagingRule;
-import org.fedoraproject.maven.installer.Package;
-import org.fedoraproject.maven.installer.ProjectInstallationException;
-import org.fedoraproject.maven.installer.ProjectInstaller;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.PackagingRule;
+import org.fedoraproject.xmvn.installer.Package;
+import org.fedoraproject.xmvn.installer.ProjectInstallationException;
+import org.fedoraproject.xmvn.installer.ProjectInstaller;
 
 @Component( role = ProjectInstaller.class )
 public class EclipseInstaller

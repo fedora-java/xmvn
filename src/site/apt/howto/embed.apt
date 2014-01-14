@@ -77,7 +77,7 @@ File commonsIoJar = resolver.resolve( "org.apache.commons", "commons-io", "SYSTE
 ------------------------------------------------------------------------
 import java.io.*;
 import org.codehaus.plexus.*;
-import org.fedoraproject.maven.resolver.*;
+import org.fedoraproject.xmvn.resolver.*;
 
 public class Example
 {

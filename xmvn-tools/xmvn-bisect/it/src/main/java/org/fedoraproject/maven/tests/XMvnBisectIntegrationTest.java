@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.maven.tests;
+package org.fedoraproject.xmvn.tests;
 
 import org.codehaus.plexus.util.interpolation.Interpolator;
 

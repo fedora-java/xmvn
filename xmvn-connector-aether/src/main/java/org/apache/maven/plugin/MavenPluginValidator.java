@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.fedoraproject.maven.utils.ArtifactUtils;
+import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * This is a simple Maven plugin validator that pretends that all plugins have valid descriptors.
