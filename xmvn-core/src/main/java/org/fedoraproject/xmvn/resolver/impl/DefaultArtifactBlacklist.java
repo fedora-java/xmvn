@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -29,6 +28,8 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
 import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of {@code ArtifactBlacklist} container.
@@ -43,8 +44,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class DefaultArtifactBlacklist
     implements ArtifactBlacklist, Initializable
 {
-    @Requirement
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( DefaultArtifactBlacklist.class );
 
     @Requirement
     private Configurator configurator;
@@ -109,7 +109,7 @@ public class DefaultArtifactBlacklist
         for ( org.fedoraproject.xmvn.config.Artifact artifact : configurator.getConfiguration().getResolverSettings().getBlacklist() )
             add( artifact.getGroupId(), artifact.getArtifactId() );
 
-        logger.debug( "Initial artifact blacklist is: " + ArtifactUtils.collectionToString( blacklist, true ) );
+        logger.debug( "Initial artifact blacklist is: {}", ArtifactUtils.collectionToString( blacklist, true ) );
     }
 
     /**
@@ -123,10 +123,10 @@ public class DefaultArtifactBlacklist
         {
             Set<Artifact> relatives = depmap.relativesOf( artifact );
             aliasBlacklist.addAll( relatives );
-            logger.debug( "Blacklisted relatives of " + artifact + ": " + ArtifactUtils.collectionToString( relatives ) );
+            logger.debug( "Blacklisted relatives of {}: {}", artifact, ArtifactUtils.collectionToString( relatives ) );
         }
 
         blacklist.addAll( aliasBlacklist );
-        logger.debug( "Final artifact blacklist is: " + ArtifactUtils.collectionToString( blacklist, true ) );
+        logger.debug( "Final artifact blacklist is: {}", ArtifactUtils.collectionToString( blacklist, true ) );
     }
 }

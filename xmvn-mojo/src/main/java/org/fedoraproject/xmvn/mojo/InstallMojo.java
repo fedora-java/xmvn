@@ -34,13 +34,14 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -50,14 +51,13 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class InstallMojo
     extends AbstractMojo
 {
+    private final Logger logger = LoggerFactory.getLogger( InstallMojo.class );
+
     @Parameter( defaultValue = "${project}", readonly = true, required = true )
     private MavenProject rootProject;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
-
-    @Requirement
-    private Logger logger;
 
     @Requirement
     private Deployer deployer;
@@ -88,8 +88,9 @@ public class InstallMojo
             {
                 systemDepsFound = true;
 
-                logger.error( "Reactor project " + aetherArtifact( project.getArtifact() )
-                    + " has system-scoped dependencies: " + ArtifactUtils.collectionToString( systemDeps, true ) );
+                logger.error( "Reactor project {} has system-scoped dependencies: {}",
+                              aetherArtifact( project.getArtifact() ),
+                              ArtifactUtils.collectionToString( systemDeps, true ) );
             }
         }
 
@@ -127,13 +128,13 @@ public class InstallMojo
             {
                 Artifact mainArtifact = aetherArtifact( project.getArtifact() );
                 mainArtifact = mainArtifact.setFile( project.getArtifact().getFile() );
-                logger.debug( "Installing main artifact " + mainArtifact );
-                logger.debug( "Artifact file is " + mainArtifact.getFile() );
+                logger.debug( "Installing main artifact {}", mainArtifact );
+                logger.debug( "Artifact file is {}", mainArtifact.getFile() );
 
                 Path rawPom = project.getFile().toPath();
                 Path effectivePom = saveEffectivePom( project.getModel() );
-                logger.debug( "Raw POM path: " + rawPom );
-                logger.debug( "Effective POM path: " + effectivePom );
+                logger.debug( "Raw POM path: {}", rawPom );
+                logger.debug( "Effective POM path: {}", effectivePom );
 
                 deployArtifact( mainArtifact, rawPom, effectivePom );
 
@@ -141,7 +142,7 @@ public class InstallMojo
                 {
                     Artifact attachedArtifact = aetherArtifact( mavenArtifact );
                     attachedArtifact = attachedArtifact.setFile( mavenArtifact.getFile() );
-                    logger.debug( "Installing attached artifact " + attachedArtifact );
+                    logger.debug( "Installing attached artifact {}", attachedArtifact );
 
                     deployArtifact( attachedArtifact, null, null );
                 }

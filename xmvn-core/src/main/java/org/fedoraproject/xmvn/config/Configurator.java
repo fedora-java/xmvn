@@ -49,7 +49,7 @@ public interface Configurator
     /**
      * Dump the master configuration.
      * <p>
-     * Configuration dumps are written through Plexus container default logger.
+     * Configuration dumps are written through Plexus container default loggerX.
      */
     void dumpConfiguration();
 }

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.InstallerSettings;
@@ -49,10 +48,10 @@ class Package
 
     private final InstallerSettings settings;
 
-    public Package( String name, InstallerSettings settings, Logger logger )
+    public Package( String name, InstallerSettings settings )
     {
         this.settings = settings;
-        metadata = new FragmentFile( logger );
+        metadata = new FragmentFile();
         suffix = ( name.equals( "" ) || name.equals( DEFAULT_SUFFIX ) ) ? "" : "-" + name;
     }
 

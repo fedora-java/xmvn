@@ -28,7 +28,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.eclipse.aether.artifact.Artifact;
@@ -37,6 +36,8 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -49,8 +50,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class DefaultDependencyMap
     implements DependencyMap, Initializable
 {
-    @Requirement
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( DefaultDependencyMap.class );
 
     @Requirement
     private Configurator configurator;
@@ -108,7 +108,7 @@ public class DefaultDependencyMap
             lock.writeLock().unlock();
         }
 
-        logger.debug( "Added mapping " + from + " => " + to );
+        logger.debug( "Added mapping {} => {}", from, to );
     }
 
     /**
@@ -130,7 +130,7 @@ public class DefaultDependencyMap
                 if ( visited.contains( child ) )
                     continue;
 
-                logger.debug( "Artifact " + parent + " was mapped to " + child );
+                logger.debug( "Artifact {} was mapped to {}", parent, child );
                 walk( map, visited, resolved, child );
                 resolved.add( child );
             }
@@ -162,13 +162,13 @@ public class DefaultDependencyMap
         artifact =
             new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(),
                                  artifact.getExtension(), ArtifactUtils.DEFAULT_VERSION );
-        logger.debug( "Trying to translate artifact " + artifact );
+        logger.debug( "Trying to translate artifact {}", artifact );
 
         try
         {
             lock.readLock().lock();
             List<Artifact> resolved = depthFirstWalk( mapping, artifact );
-            logger.debug( "Translation result is " + ArtifactUtils.collectionToString( resolved ) );
+            logger.debug( "Translation result is {}", ArtifactUtils.collectionToString( resolved ) );
             return resolved;
         }
         finally

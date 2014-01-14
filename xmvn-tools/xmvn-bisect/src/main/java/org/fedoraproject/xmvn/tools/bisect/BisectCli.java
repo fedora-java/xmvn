@@ -21,8 +21,9 @@ import org.apache.maven.shared.invoker.InvocationRequest;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -30,8 +31,7 @@ import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 @Component( role = BisectCli.class )
 public class BisectCli
 {
-    @Requirement
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( BisectCli.class );
 
     @Requirement
     private CommandLineParser commandLineParser;
@@ -75,8 +75,8 @@ public class BisectCli
             boolean success = buildExecutor.executeBuild( request, getBuildLogName( 0 ), verbose );
             if ( success )
             {
-                logger.fatalError( "Standard local build was successfull, expected failure." );
-                logger.info( "Build log is available in " + getBuildLogName( 0 ) );
+                logger.error( "Standard local build was successfull, expected failure." );
+                logger.info( "Build log is available in {}", getBuildLogName( 0 ) );
                 System.exit( 1 );
             }
         }
@@ -88,8 +88,8 @@ public class BisectCli
         int goodId = counterInitialValue - counter.getValue();
         if ( !success )
         {
-            logger.fatalError( "Build failed even when resolving artifacts completely from bisection repository" );
-            logger.info( "Build log is available in " + getInitialBuildName() );
+            logger.error( "Build failed even when resolving artifacts completely from bisection repository" );
+            logger.info( "Build log is available in {}", getInitialBuildName() );
             System.exit( 1 );
         }
 
@@ -101,12 +101,11 @@ public class BisectCli
             else
                 tryId = badId + 1;
 
-            logger.info( "Bisection iteration: current range is [" + ( badId + 1 ) + "," + ( goodId - 1 )
-                + "], trying " + tryId );
+            logger.info( "Bisection iteration: current range is [{},{}], trying {}", badId + 1, goodId - 1, tryId );
             counter.setValue( tryId );
 
             success = buildExecutor.executeBuild( request, getBuildLogName( tryId ), commandLineParser.isVerbose() );
-            logger.info( "Bisection build number " + tryId + " " + ( success ? "succeeded" : "failed" ) );
+            logger.info( "Bisection build number {} {}", tryId, success ? "succeeded" : "failed" );
 
             if ( success )
                 goodId = tryId;
@@ -122,10 +121,10 @@ public class BisectCli
             badLog = "default.log";
 
         logger.info( "Bisection build finished" );
-        logger.info( "Failed build:     " + badId + ", see " + badLog );
-        logger.info( "Successful build: " + goodId + ", see " + goodLog );
+        logger.info( "Failed build:     {}, see ", badId, badLog );
+        logger.info( "Successful build: {}, see ", goodId, goodLog );
         logger.info( "Try:" );
-        logger.info( "  $ git diff --no-index --color " + badLog + " " + goodLog );
+        logger.info( "  $ git diff --no-index --color {} {}", badLog, goodLog );
     }
 
     public static void main( String[] args )

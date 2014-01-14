@@ -46,7 +46,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -74,6 +73,8 @@ import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -86,8 +87,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class DefaultInstaller
     implements Installer
 {
-    @Requirement
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( DefaultInstaller.class );
 
     @Requirement
     private Configurator configurator;
@@ -214,7 +214,7 @@ public class DefaultInstaller
         if ( StringUtils.isEmpty( packageName ) )
             packageName = Package.MAIN;
 
-        Package pkg = new Package( packageName, settings, logger );
+        Package pkg = new Package( packageName, settings );
         if ( packages.containsKey( pkg ) )
             pkg = packages.get( pkg );
         else
@@ -228,7 +228,7 @@ public class DefaultInstaller
                 wrapperConfiguration.addArtifactManagement( rule );
                 ConfigurationXpp3Writer configurationWriter = new ConfigurationXpp3Writer();
                 configurationWriter.write( buffer, wrapperConfiguration );
-                logger.debug( "Effective packaging rule for " + artifact + ":\n" + buffer );
+                logger.debug( "Effective packaging rule for {}:\n", artifact, buffer );
             }
         }
 
@@ -312,26 +312,26 @@ public class DefaultInstaller
     {
         logger.info( "===============================================" );
         logger.info( "SOURCE ARTIFACT:" );
-        logger.info( "    groupId: " + artifact.getGroupId() );
-        logger.info( " artifactId: " + artifact.getArtifactId() );
-        logger.info( "  extension: " + artifact.getExtension() );
-        logger.info( " classifier: " + artifact.getClassifier() );
-        logger.info( "    version: " + artifact.getVersion() );
-        logger.info( " stereotype: " + ArtifactUtils.getStereotype( artifact ) );
-        logger.info( "  namespace: " + ArtifactUtils.getScope( artifact ) );
-        logger.info( "       file: " + artifact.getFile() );
+        logger.info( "    groupId: {}", artifact.getGroupId() );
+        logger.info( " artifactId: {}", artifact.getArtifactId() );
+        logger.info( "  extension: {}", artifact.getExtension() );
+        logger.info( " classifier: {}", artifact.getClassifier() );
+        logger.info( "    version: {}", artifact.getVersion() );
+        logger.info( " stereotype: {}", ArtifactUtils.getStereotype( artifact ) );
+        logger.info( "  namespace: {}", ArtifactUtils.getScope( artifact ) );
+        logger.info( "       file: {}", artifact.getFile() );
         for ( Artifact jppArtifact : jppArtifacts )
         {
             logger.info( "-----------------------------------------------" );
             logger.info( "TARGET ARTIFACT:" );
-            logger.info( "    groupId: " + jppArtifact.getGroupId() );
-            logger.info( " artifactId: " + jppArtifact.getArtifactId() );
-            logger.info( "  extension: " + jppArtifact.getExtension() );
-            logger.info( " classifier: " + jppArtifact.getClassifier() );
-            logger.info( "    version: " + jppArtifact.getVersion() );
-            logger.info( " stereotype: " + ArtifactUtils.getStereotype( jppArtifact ) );
-            logger.info( "  namespace: " + ArtifactUtils.getScope( jppArtifact ) );
-            logger.info( "       file: " + jppArtifact.getFile() );
+            logger.info( "    groupId: {}", jppArtifact.getGroupId() );
+            logger.info( " artifactId: {}", jppArtifact.getArtifactId() );
+            logger.info( "  extension: {}", jppArtifact.getExtension() );
+            logger.info( " classifier: {}", jppArtifact.getClassifier() );
+            logger.info( "    version: {}", jppArtifact.getVersion() );
+            logger.info( " stereotype: {}", ArtifactUtils.getStereotype( jppArtifact ) );
+            logger.info( "  namespace: {}", ArtifactUtils.getScope( jppArtifact ) );
+            logger.info( "       file: {}", jppArtifact.getFile() );
         }
         logger.info( "===============================================" );
 
@@ -398,8 +398,8 @@ public class DefaultInstaller
 
         if ( result.getArtifactFile() == null )
         {
-            logger.warn( "Unable to resolve dependency artifact " + artifact
-                + ", generating dependencies with unknown version and namespace." );
+            logger.warn( "Unable to resolve dependency artifact {}, generating dependencies with unknown version and namespace.",
+                         artifact );
 
             artifact = artifact.setVersion( ArtifactUtils.UNKNOWN_VERSION );
             artifact = ArtifactUtils.setScope( artifact, ArtifactUtils.UNKNOWN_NAMESPACE );
@@ -591,8 +591,8 @@ public class DefaultInstaller
         List<Artifact> jppArtifacts = getJppArtifacts( artifact, rule, packageName );
         if ( jppArtifacts == null )
         {
-            logger.warn( "Skipping installation of artifact " + artifact
-                + ": No suitable repository found to store the artifact in." );
+            logger.warn( "Skipping installation of artifact {}: No suitable repository found to store the artifact in.",
+                         artifact );
             return;
         }
 
@@ -657,8 +657,8 @@ public class DefaultInstaller
                 modelPath = ArtifactUtils.getRawModelPath( artifact );
                 if ( modelPath == null )
                 {
-                    logger.warn( "Skipping generation of devel requires for artifact " + artifact
-                        + ": raw model path is not specified" );
+                    logger.warn( "Skipping generation of devel requires for artifact {}: raw model path is not specified",
+                                 artifact );
                     return;
                 }
             }
@@ -667,8 +667,8 @@ public class DefaultInstaller
                 modelPath = ArtifactUtils.getEffectiveModelPath( artifact );
                 if ( modelPath == null )
                 {
-                    logger.warn( "Skipping generation of user requires for artifact " + artifact
-                        + ": effective model path is not specified" );
+                    logger.warn( "Skipping generation of user requires for artifact {}: effective model path is not specified",
+                                 artifact );
                     return;
                 }
             }
@@ -718,7 +718,7 @@ public class DefaultInstaller
                 String globString =
                     glob.getGroupId() + ":" + glob.getArtifactId() + ":" + glob.getExtension() + ":"
                         + glob.getClassifier() + ":" + glob.getVersion();
-                logger.error( "Unmatched packaging rule: " + globString );
+                logger.error( "Unmatched packaging rule: {}", globString );
             }
         }
 
@@ -745,7 +745,7 @@ public class DefaultInstaller
         providedArtifacts = new LinkedHashMap<>();
         skippedArtifacts = new LinkedHashSet<>();
 
-        Package mainPackage = new Package( Package.MAIN, settings, logger );
+        Package mainPackage = new Package( Package.MAIN, settings );
         packages.put( mainPackage, mainPackage );
 
         Set<Artifact> artifactSet = request.getArtifacts();

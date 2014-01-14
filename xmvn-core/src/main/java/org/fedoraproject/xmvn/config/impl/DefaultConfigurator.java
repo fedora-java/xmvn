@@ -31,14 +31,15 @@ import java.util.TreeSet;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Reader;
-import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Writer;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;
 import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Reader;
+import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Writer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of XMvn configurator.
@@ -53,8 +54,7 @@ import org.fedoraproject.xmvn.config.Configurator;
 public class DefaultConfigurator
     implements Configurator
 {
-    @Requirement
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( DefaultConfigurator.class );
 
     @Requirement
     private ConfigurationMerger merger;
@@ -114,7 +114,7 @@ public class DefaultConfigurator
         String value = System.getenv( key );
         if ( !StringUtils.isNotEmpty( value ) )
         {
-            logger.debug( "Environmental variable $" + key + " is unset or empty, using default value: " + defaultValue );
+            logger.debug( "Environmental variable ${} is unset or empty, using default value: {}", key, defaultValue );
             return defaultValue.toString();
         }
 
@@ -137,7 +137,7 @@ public class DefaultConfigurator
             if ( !Files.exists( file ) )
                 reason = "no such file";
 
-            logger.debug( "Skipping configuration file " + file + ": " + reason );
+            logger.debug( "Skipping configuration file {}: {}", file, reason );
             return;
         }
 
@@ -161,7 +161,7 @@ public class DefaultConfigurator
             if ( !Files.exists( directory ) )
                 reason = "no such directory";
 
-            logger.debug( "Skipping configuration directory " + directory + ": " + reason );
+            logger.debug( "Skipping configuration directory {}: {}", directory, reason );
             return;
         }
 
@@ -182,7 +182,7 @@ public class DefaultConfigurator
         Path base = Paths.get( location );
         if ( !base.isAbsolute() )
         {
-            logger.debug( "Skipping XDG configuration directory " + base + ": path is not absolute" );
+            logger.debug( "Skipping XDG configuration directory {}: path is not absolute", base );
             return;
         }
 
@@ -235,7 +235,7 @@ public class DefaultConfigurator
             {
                 logger.debug( "XMvn configuration files used:" );
                 for ( Path file : configFiles )
-                    logger.debug( "  * " + file.toString() );
+                    logger.debug( "  * {}", file.toString() );
             }
 
             List<Path> reversedConfigFiles = new ArrayList<>( configFiles );
@@ -278,7 +278,7 @@ public class DefaultConfigurator
         {
             ConfigurationXpp3Writer dumper = new ConfigurationXpp3Writer();
             dumper.write( writer, configuration );
-            logger.debug( "XMvn configuration:\n" + writer.toString() );
+            logger.debug( "XMvn configuration:\n{}", writer.toString() );
         }
         catch ( IOException e )
         {

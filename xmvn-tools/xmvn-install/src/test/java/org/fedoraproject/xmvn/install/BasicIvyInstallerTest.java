@@ -24,6 +24,8 @@ import java.nio.file.Paths;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -31,6 +33,8 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class BasicIvyInstallerTest
     extends AbstractInstallerTest
 {
+    private final Logger logger = LoggerFactory.getLogger( BasicIvyInstallerTest.class );
+
     /**
      * Test installation of Ivy modules.
      * 
@@ -49,9 +53,9 @@ public class BasicIvyInstallerTest
 
         request.addArtifact( artifact );
 
-        logger.info( "Added arrifact " + artifact );
-        logger.info( "  POM path: " + modelPath.toAbsolutePath() );
-        logger.info( "  JAR path: " + artifactPath.toAbsolutePath() );
+        logger.info( "Added arrifact {}", artifact );
+        logger.info( "  POM path: {}", modelPath.toAbsolutePath() );
+        logger.info( "  JAR path: {}", artifactPath.toAbsolutePath() );
 
         performInstallation();
 

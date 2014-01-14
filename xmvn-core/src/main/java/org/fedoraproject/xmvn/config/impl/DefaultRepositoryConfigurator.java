@@ -22,11 +22,10 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
+import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
 
 /**
@@ -45,9 +44,6 @@ public class DefaultRepositoryConfigurator
 
     @Requirement
     private PlexusContainer container;
-
-    @Requirement
-    private Logger logger;
 
     private org.fedoraproject.xmvn.config.Repository findDescriptor( String repoId )
     {

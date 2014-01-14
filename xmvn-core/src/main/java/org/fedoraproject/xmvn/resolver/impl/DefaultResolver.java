@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
@@ -46,6 +45,8 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 import org.fedoraproject.xmvn.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
@@ -60,8 +61,7 @@ import org.fedoraproject.xmvn.utils.FileUtils;
 public class DefaultResolver
     implements Resolver, Initializable
 {
-    @Requirement
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( DefaultResolver.class );
 
     @Requirement
     private Configurator configurator;
@@ -98,7 +98,7 @@ public class DefaultResolver
         }
         catch ( IOException e )
         {
-            logger.fatalError( "Unable to initialize XMvn bisection build", e );
+            logger.error( "Unable to initialize XMvn bisection build: {}", e );
             throw new RuntimeException( e );
         }
     }
@@ -198,7 +198,7 @@ public class DefaultResolver
             for ( RepositoryPath repoPath : systemRepo.getArtifactPaths( jppArtifacts, true ) )
             {
                 File artifactFile = repoPath.getPath().toFile();
-                logger.debug( "Checking artifact path: " + artifactFile );
+                logger.debug( "Checking artifact path: {}", artifactFile );
                 if ( artifactFile.exists() )
                 {
                     DefaultResolutionResult result = new DefaultResolutionResult( artifactFile );
@@ -216,10 +216,10 @@ public class DefaultResolver
     public ResolutionResult resolve( ResolutionRequest request )
     {
         Artifact artifact = request.getArtifact();
-        logger.debug( "Trying to resolve artifact " + artifact );
+        logger.debug( "Trying to resolve artifact {}", artifact );
 
         List<Artifact> jppArtifacts = getJppArtifactList( artifact );
-        logger.debug( "JPP artifacts considered during resolution: " + ArtifactUtils.collectionToString( jppArtifacts ) );
+        logger.debug( "JPP artifacts considered during resolution: {}", ArtifactUtils.collectionToString( jppArtifacts ) );
         jppArtifacts.add( artifact );
 
         DefaultResolutionResult result = tryResolveFromBisectRepo( artifact );
@@ -230,7 +230,7 @@ public class DefaultResolver
 
         if ( result == null )
         {
-            logger.info( "Failed to resolve artifact: " + artifact );
+            logger.info( "Failed to resolve artifact: {}", artifact );
             return new DefaultResolutionResult();
         }
 
@@ -238,7 +238,7 @@ public class DefaultResolver
         if ( artifactFile != null )
         {
             artifactFile = FileUtils.followSymlink( artifactFile );
-            logger.debug( "Artifact " + artifact + " was resolved to " + artifactFile );
+            logger.debug( "Artifact {} was resolved to {}", artifact, artifactFile );
             if ( request.isProviderNeeded() )
                 result.setProvider( rpmdb.lookupFile( artifactFile ) );
         }

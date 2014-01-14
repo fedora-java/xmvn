@@ -35,22 +35,22 @@ import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.fedoraproject.xmvn.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component( role = ArtifactVisitor.class )
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
-    private final Set<String> types = new LinkedHashSet<>();
+    private final Logger logger = LoggerFactory.getLogger( ArtifactVisitor.class );
 
-    @Requirement
-    private Logger logger;
+    private final Set<String> types = new LinkedHashSet<>();
 
     @Requirement
     private Resolver resolver;
@@ -94,7 +94,7 @@ public class ArtifactVisitor
     {
         if ( Files.isSymbolicLink( path ) && !followSymlinks )
         {
-            logger.debug( "Skipping symlink to directory: " + path );
+            logger.debug( "Skipping symlink to directory: {}", path );
             return FileVisitResult.SKIP_SUBTREE;
         }
 
@@ -107,7 +107,7 @@ public class ArtifactVisitor
     {
         if ( !Files.isRegularFile( path ) )
         {
-            logger.debug( "Skipping " + path + ": not a regular file" );
+            logger.debug( "Skipping {}: not a regular file", path );
             return FileVisitResult.CONTINUE;
         }
 
@@ -128,7 +128,7 @@ public class ArtifactVisitor
     public FileVisitResult visitFileFailed( Path path, IOException e )
         throws IOException
     {
-        logger.warn( "Failed to access file: ", e );
+        logger.warn( "Failed to access file: {}", e );
         return FileVisitResult.CONTINUE;
     }
 
@@ -202,7 +202,7 @@ public class ArtifactVisitor
         }
         catch ( IOException e )
         {
-            logger.error( "Failed to get artifact definition from file " + path, e );
+            logger.error( "Failed to get artifact definition from file {}: {}", path, e );
             return null;
         }
     }
@@ -213,7 +213,7 @@ public class ArtifactVisitor
         Artifact artifact = readArtifactDefinition( path, type );
         if ( artifact == null )
         {
-            logger.info( "Skipping file " + path + ": No artifact definition found" );
+            logger.info( "Skipping file {}: No artifact definition found", path );
             failureCount++;
             return;
         }
@@ -221,7 +221,7 @@ public class ArtifactVisitor
         File artifactFile = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactFile();
         if ( artifactFile == null )
         {
-            logger.warn( "Skipping file " + path + ": Artifact " + artifact + " not found in repository" );
+            logger.warn( "Skipping file {}: Artifact {} not found in repository", path, artifact );
             failureCount++;
             return;
         }
@@ -229,6 +229,6 @@ public class ArtifactVisitor
         Path target = artifactFile.toPath();
         if ( !dryRun )
             FileUtils.replaceFileWithSymlink( path, target );
-        logger.info( "Linked " + path + " to " + target );
+        logger.info( "Linked {} to {}", path, target );
     }
 }

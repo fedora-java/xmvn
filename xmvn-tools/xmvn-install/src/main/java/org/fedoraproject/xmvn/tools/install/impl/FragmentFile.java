@@ -25,19 +25,20 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
  */
 class FragmentFile
 {
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( FragmentFile.class );
 
     private final Map<Artifact, Set<Artifact>> mapping = new LinkedHashMap<>();
 
@@ -48,11 +49,6 @@ class FragmentFile
     private BigDecimal javaVersionRequirement;
 
     private BigDecimal javaVersionDevelRequirement;
-
-    public FragmentFile( Logger logger )
-    {
-        this.logger = logger;
-    }
 
     public boolean isEmpty()
     {
@@ -76,7 +72,7 @@ class FragmentFile
     {
         addMapping( mapping, from, to );
 
-        logger.debug( "Added mapping " + from + " => " + to );
+        logger.debug( "Added mapping {} => {}", from, to );
     }
 
     public void addDependency( Artifact dependencyArtifact )

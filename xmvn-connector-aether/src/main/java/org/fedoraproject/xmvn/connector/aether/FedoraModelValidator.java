@@ -34,13 +34,14 @@ import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
@@ -51,8 +52,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class FedoraModelValidator
     extends DefaultModelValidator
 {
-    @Requirement
-    private Logger logger;
+    private final Logger logger = LoggerFactory.getLogger( FedoraModelValidator.class );
 
     @Requirement
     private Configurator configurator;
@@ -87,14 +87,14 @@ public class FedoraModelValidator
 
             if ( blacklist.contains( groupId, artifactId ) )
             {
-                logger.debug( "Removed dependency " + groupId + ":" + artifactId + " because it was blacklisted." );
+                logger.debug( "Removed dependency {}:{} because it was blacklisted.", groupId, artifactId );
                 iter.remove();
                 continue;
             }
 
             if ( settings.isSkipTests() && scope != null && scope.equals( "test" ) )
             {
-                logger.debug( "Dropped dependency on " + groupId + ":" + artifactId + " because tests are skipped." );
+                logger.debug( "Dropped dependency on {}:{} because tests are skipped.", groupId, artifactId );
                 iter.remove();
                 continue;
             }
@@ -117,7 +117,7 @@ public class FedoraModelValidator
 
             if ( blacklist.contains( groupId, artifactId ) )
             {
-                logger.debug( "Removed extension " + groupId + ":" + artifactId + " because it was blacklisted." );
+                logger.debug( "Removed extension {}:{} because it was blacklisted.", groupId, artifactId );
                 iter.remove();
                 continue;
             }
@@ -140,7 +140,7 @@ public class FedoraModelValidator
 
             if ( blacklist.contains( groupId, artifactId ) )
             {
-                logger.debug( "Removed plugin " + groupId + ":" + artifactId + " because it was blacklisted." );
+                logger.debug( "Removed plugin {}:{} because it was blacklisted.", groupId, artifactId );
                 iter.remove();
                 continue;
             }
@@ -158,7 +158,7 @@ public class FedoraModelValidator
 
         if ( StringUtils.isEmpty( version ) )
         {
-            logger.debug( "Missing version of dependency " + id + ", using SYSTEM." );
+            logger.debug( "Missing version of dependency {}, using SYSTEM.", id );
             return ArtifactUtils.DEFAULT_VERSION;
         }
 
@@ -166,13 +166,13 @@ public class FedoraModelValidator
         {
             if ( VersionRange.createFromVersionSpec( version ).getRecommendedVersion() == null )
             {
-                logger.debug( "Dependency " + id + " has no recommended version, falling back to SYSTEM." );
+                logger.debug( "Dependency {} has no recommended version, falling back to SYSTEM.", id );
                 return ArtifactUtils.DEFAULT_VERSION;
             }
         }
         catch ( InvalidVersionSpecificationException e )
         {
-            logger.debug( "Dependency " + id + " is using invalid version range, falling back to SYSTEM." );
+            logger.debug( "Dependency {} is using invalid version range, falling back to SYSTEM.", id );
             return ArtifactUtils.DEFAULT_VERSION;
         }
 

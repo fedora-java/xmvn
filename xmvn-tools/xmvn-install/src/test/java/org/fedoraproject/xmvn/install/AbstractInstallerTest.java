@@ -30,13 +30,14 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -44,7 +45,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 abstract class AbstractInstallerTest
     extends PlexusTestCase
 {
-    protected Logger logger;
+    private Logger logger = LoggerFactory.getLogger( AbstractInstallerTest.class );
 
     protected Installer installer;
 
@@ -81,7 +82,7 @@ abstract class AbstractInstallerTest
         request.setCheckForUnmatchedRules( true );
         request.setInstallRoot( installRoot );
 
-        logger.info( "Installation root is " + installRoot );
+        logger.info( "Installation root is {}", installRoot );
     }
 
     protected void addJarArtifact( String pom )
@@ -119,9 +120,9 @@ abstract class AbstractInstallerTest
 
         request.addArtifact( artifact );
 
-        logger.info( "Added arrifact " + artifact );
-        logger.info( "  POM path: " + modelPath.toAbsolutePath() );
-        logger.info( "  JAR path: " + artifactPath.toAbsolutePath() );
+        logger.info( "Added arrifact {}", artifact );
+        logger.info( "  POM path: {}", modelPath.toAbsolutePath() );
+        logger.info( "  JAR path: {}", artifactPath.toAbsolutePath() );
     }
 
     protected void performInstallation()

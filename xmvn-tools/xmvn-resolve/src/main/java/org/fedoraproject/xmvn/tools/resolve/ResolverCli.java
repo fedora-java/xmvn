@@ -24,11 +24,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -45,6 +46,8 @@ import com.beust.jcommander.ParameterException;
  */
 public class ResolverCli
 {
+    private final Logger logger = LoggerFactory.getLogger( ResolverCli.class );
+
     @Parameter
     public List<String> parameters = new LinkedList<>();
 
@@ -110,7 +113,6 @@ public class ResolverCli
         try
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
-            Logger logger = container.getLoggerManager().getLoggerForComponent( Resolver.class.toString() );
             Resolver resolver = container.lookup( Resolver.class );
 
             try
@@ -131,7 +133,7 @@ public class ResolverCli
                     if ( file == null )
                     {
                         error = true;
-                        logger.error( "Unable to resolve artifact " + artifact );
+                        logger.error( "Unable to resolve artifact {}", artifact );
                     }
                     else
                     {
@@ -149,7 +151,7 @@ public class ResolverCli
             }
             catch ( IllegalArgumentException e )
             {
-                logger.error( e.getMessage() );
+                logger.error( "{}", e );
                 System.exit( 1 );
             }
         }
