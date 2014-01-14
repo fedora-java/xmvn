@@ -38,7 +38,8 @@
     <module>xmvn-parent</module>
     <module>xmvn-api</module>
     <module>xmvn-core</module>
-    <module>xmvn-connector</module>
+    <module>xmvn-connector-aether</module>
+    <module>xmvn-connector-ivy</module>
     <module>xmvn-mojo</module>
     <module>xmvn-tools</module>
   </modules>
@@ -55,7 +56,7 @@
     </dependency>
     <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
-      <artifactId>xmvn-connector</artifactId>
+      <artifactId>xmvn-connector-aether</artifactId>
       <scope>runtime</scope>
     </dependency>
   </dependencies>

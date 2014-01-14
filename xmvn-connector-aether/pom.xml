@@ -25,14 +25,12 @@
     <version>2.0.0-SNAPSHOT</version>
     <relativePath>../xmvn-parent</relativePath>
   </parent>
-  <artifactId>xmvn-connector</artifactId>
-  <name>XMvn Connector</name>
+  <artifactId>xmvn-connector-aether</artifactId>
+  <name>XMvn Connector for Eclipse Aether</name>
   <description>
-    XMvn Connector is a set of Plexus components that override a few
-    default components provided by Maven.  These components rely on
-    other XMvn modules (most notably XMvn Core) to do the hard work.
-    This way XMvn Connector effectively connects Apache Maven with
-    XMvn.
+    XMvn Connector for Eclipse Aether provides integration of Eclipse
+    Aether with XMvn.  It provides an adapter which allows XMvn
+    resolver to be used as Aether workspace reader.
   </description>
   <dependencies>
     <dependency>

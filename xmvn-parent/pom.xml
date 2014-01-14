@@ -180,7 +180,12 @@
       </dependency>
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
-        <artifactId>xmvn-connector</artifactId>
+        <artifactId>xmvn-connector-aether</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-connector-ivy</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
