@@ -25,12 +25,10 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
 import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.fedoraproject.xmvn.utils.LoggingUtils;
 
 /**
  * Default implementation of {@code ArtifactBlacklist} container.
@@ -120,8 +118,6 @@ public class DefaultArtifactBlacklist
     private void blacklistAliases()
     {
         Set<Artifact> aliasBlacklist = new LinkedHashSet<>();
-        ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         for ( Artifact artifact : blacklist )
         {

@@ -23,7 +23,6 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
-import org.fedoraproject.xmvn.utils.LoggingUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -134,7 +133,6 @@ public class BisectCli
         try
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
-            LoggingUtils.configureContainerLogging( container, "xmvn-bisect", false );
             BisectCli cli = container.lookup( BisectCli.class );
             cli.run( args );
         }

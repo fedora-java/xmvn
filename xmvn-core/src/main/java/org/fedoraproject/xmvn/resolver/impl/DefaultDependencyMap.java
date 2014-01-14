@@ -33,11 +33,10 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.fedoraproject.xmvn.utils.LoggingUtils;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -204,7 +203,6 @@ public class DefaultDependencyMap
         throws InitializationException
     {
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         List<String> metadataDirs = new ArrayList<>();
         for ( String prefix : settings.getPrefixes() )

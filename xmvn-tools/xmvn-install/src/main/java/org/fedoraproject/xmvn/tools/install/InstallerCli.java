@@ -35,7 +35,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.fedoraproject.xmvn.utils.LoggingUtils;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -145,7 +144,6 @@ public class InstallerCli
         try
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
-            LoggingUtils.configureContainerLogging( container, "xmvn-install", debug );
 
             InstallationRequest request = new InstallationRequest();
             request.setCheckForUnmatchedRules( !relaxed );

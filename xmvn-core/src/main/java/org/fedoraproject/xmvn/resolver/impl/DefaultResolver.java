@@ -35,7 +35,6 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.Repository;
@@ -47,7 +46,6 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 import org.fedoraproject.xmvn.utils.FileUtils;
-import org.fedoraproject.xmvn.utils.LoggingUtils;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
@@ -80,8 +78,6 @@ public class DefaultResolver
 
     private AtomicFileCounter bisectCounter;
 
-    private ResolverSettings settings;
-
     private static final RpmDb rpmdb = new RpmDb();
 
     private void initializeBisect()
@@ -111,9 +107,6 @@ public class DefaultResolver
     public void initialize()
     {
         initializeBisect();
-
-        settings = configurator.getConfiguration().getResolverSettings();
-        LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         systemRepo = repositoryConfigurator.configureRepository( "resolve" );
     }

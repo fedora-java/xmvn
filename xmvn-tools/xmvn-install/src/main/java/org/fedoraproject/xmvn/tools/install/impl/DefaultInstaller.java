@@ -55,11 +55,11 @@ import org.eclipse.sisu.space.asm.ClassVisitor;
 import org.eclipse.sisu.space.asm.MethodVisitor;
 import org.eclipse.sisu.space.asm.Opcodes;
 import org.fedoraproject.xmvn.config.Configuration;
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Writer;
-import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
+import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Writer;
 import org.fedoraproject.xmvn.dependency.DependencyExtractionRequest;
 import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
 import org.fedoraproject.xmvn.dependency.DependencyExtractor;
@@ -74,7 +74,6 @@ import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.fedoraproject.xmvn.utils.LoggingUtils;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -738,7 +737,6 @@ public class DefaultInstaller
 
         configuration = configurator.getConfiguration();
         settings = configuration.getInstallerSettings();
-        LoggingUtils.setLoggerThreshold( logger, settings.isDebug() );
 
         packages = new TreeMap<>();
         packageDevelArtifacts = new LinkedHashMap<>();

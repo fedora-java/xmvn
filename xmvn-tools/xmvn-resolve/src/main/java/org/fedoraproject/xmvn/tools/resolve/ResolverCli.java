@@ -29,7 +29,6 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.utils.LoggingUtils;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
@@ -111,7 +110,6 @@ public class ResolverCli
         try
         {
             DefaultPlexusContainer container = new DefaultPlexusContainer();
-            LoggingUtils.configureContainerLogging( container, "xmvn-resolve", debug );
             Logger logger = container.getLoggerManager().getLoggerForComponent( Resolver.class.toString() );
             Resolver resolver = container.lookup( Resolver.class );
 
