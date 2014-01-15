@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.xmvn.config;
 
-import org.fedoraproject.xmvn.config.Configuration;
-
 /**
  * Component that can merge XMvn configurations.
  * 

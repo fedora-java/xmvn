@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.dependency;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.fedoraproject.xmvn.dependency.DependencyExtractor;
 
 /**
  * @author Mikolaj Izdebski

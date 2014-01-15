@@ -17,8 +17,8 @@ package org.fedoraproject.xmvn.resolver;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 
 /**

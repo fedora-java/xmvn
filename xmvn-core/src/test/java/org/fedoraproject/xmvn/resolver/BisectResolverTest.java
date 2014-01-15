@@ -24,11 +24,8 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.resolver.ResolutionRequest;
-import org.fedoraproject.xmvn.resolver.ResolutionResult;
-import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 
 /**

@@ -59,7 +59,7 @@ public class EffectivePackagingRule
     }
 
     private static org.fedoraproject.xmvn.config.Artifact expandBackreferences( List<Matcher> matchers,
-                                                                                 org.fedoraproject.xmvn.config.Artifact source )
+                                                                                org.fedoraproject.xmvn.config.Artifact source )
     {
         org.fedoraproject.xmvn.config.Artifact target = new org.fedoraproject.xmvn.config.Artifact();
         target.setStereotype( source.getStereotype() );

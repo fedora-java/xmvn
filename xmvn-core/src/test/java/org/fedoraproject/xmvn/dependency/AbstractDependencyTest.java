@@ -23,9 +23,6 @@ import java.util.Set;
 import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.dependency.DependencyExtractionRequest;
-import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
-import org.fedoraproject.xmvn.dependency.DependencyExtractor;
 
 /**
  * @author Mikolaj Izdebski

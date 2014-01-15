@@ -28,8 +28,8 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
-import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
+import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
 

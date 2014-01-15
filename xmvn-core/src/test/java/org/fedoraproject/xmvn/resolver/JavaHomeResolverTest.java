@@ -16,11 +16,8 @@
 package org.fedoraproject.xmvn.resolver;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.resolver.ResolutionRequest;
-import org.fedoraproject.xmvn.resolver.ResolutionResult;
-import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.utils.FileUtils;
 
 /**

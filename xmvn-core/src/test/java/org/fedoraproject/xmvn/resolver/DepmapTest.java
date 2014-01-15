@@ -25,9 +25,8 @@ import java.util.List;
 import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.resolver.DependencyMap;
+import org.fedoraproject.xmvn.config.ResolverSettings;
 
 /**
  * @author Mikolaj Izdebski

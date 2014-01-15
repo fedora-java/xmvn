@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.xmvn.dependency;
 
-import org.fedoraproject.xmvn.dependency.DependencyExtractor;
-
 /**
  * @author Mikolaj Izdebski
  */

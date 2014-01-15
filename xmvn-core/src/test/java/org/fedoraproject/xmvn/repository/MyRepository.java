@@ -27,8 +27,6 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Stereotype;
-import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 
 @Component( role = Repository.class, hint = "my-type" )
 public class MyRepository

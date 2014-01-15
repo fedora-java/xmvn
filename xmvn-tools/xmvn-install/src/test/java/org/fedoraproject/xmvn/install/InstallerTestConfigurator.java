@@ -21,11 +21,11 @@ import java.util.Iterator;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.xmvn.config.Configuration;
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.Stereotype;
-import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 
 /**

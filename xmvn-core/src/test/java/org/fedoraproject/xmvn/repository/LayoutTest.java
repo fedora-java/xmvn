@@ -22,8 +22,6 @@ import java.util.TreeSet;
 import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 
 /**
  * @author Mikolaj Izdebski

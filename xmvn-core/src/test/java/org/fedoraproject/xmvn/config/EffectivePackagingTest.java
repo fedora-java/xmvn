@@ -18,10 +18,6 @@ package org.fedoraproject.xmvn.config;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.fedoraproject.xmvn.config.Artifact;
-import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.config.Configurator;
 
 /**
  * @author Mikolaj Izdebski

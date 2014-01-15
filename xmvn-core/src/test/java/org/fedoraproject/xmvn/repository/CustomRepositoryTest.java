@@ -17,8 +17,8 @@ package org.fedoraproject.xmvn.repository;
 
 import org.codehaus.plexus.PlexusTestCase;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 
 /**
