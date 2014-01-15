@@ -24,9 +24,11 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.StringUtils;
 
 import com.beust.jcommander.DynamicParameter;
@@ -37,7 +39,8 @@ import com.beust.jcommander.ParameterException;
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = CommandLineParser.class )
+@Named
+@Singleton
 public class DefaultCommandLineParser
     implements CommandLineParser
 {

@@ -20,6 +20,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Build;
@@ -31,9 +35,6 @@ import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
-import org.apache.maven.model.validation.ModelValidator;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.xmvn.config.BuildSettings;
@@ -48,17 +49,23 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelValidator.class )
+@Named( "default" )
+@Singleton
 public class XMvnModelValidator
     extends DefaultModelValidator
 {
     private final Logger logger = LoggerFactory.getLogger( XMvnModelValidator.class );
 
-    @Requirement
-    private Configurator configurator;
+    private final Configurator configurator;
 
-    @Requirement
-    private ArtifactBlacklist blacklist;
+    private final ArtifactBlacklist blacklist;
+
+    @Inject
+    public XMvnModelValidator( Configurator configurator, ArtifactBlacklist blacklist )
+    {
+        this.configurator = configurator;
+        this.blacklist = blacklist;
+    }
 
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )

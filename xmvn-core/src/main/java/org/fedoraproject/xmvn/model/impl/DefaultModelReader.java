@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Model;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelReader;
 
@@ -32,12 +34,18 @@ import org.fedoraproject.xmvn.model.ModelReader;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelReader.class, instantiationStrategy = "singleton" )
+@Named
+@Singleton
 public class DefaultModelReader
     implements ModelReader
 {
-    @Requirement
-    private List<ModelReader> modelReaders;
+    private final List<ModelReader> modelReaders;
+
+    @Inject
+    public DefaultModelReader( List<ModelReader> modelReaders )
+    {
+        this.modelReaders = modelReaders;
+    }
 
     @Override
     public Model readModel( Path modelPath )

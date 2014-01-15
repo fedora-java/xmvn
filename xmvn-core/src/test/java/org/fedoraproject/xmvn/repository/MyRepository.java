@@ -23,12 +23,13 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Properties;
 
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Named;
+
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Stereotype;
 
-@Component( role = Repository.class, hint = "my-type" )
+@Named( "my-type" )
 public class MyRepository
     implements Repository
 {

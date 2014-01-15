@@ -24,6 +24,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -32,8 +35,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -47,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @author Mikolaj Izdebski
  */
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
-@Component( role = InstallMojo.class )
+@Named
 public class InstallMojo
     extends AbstractMojo
 {
@@ -59,8 +60,13 @@ public class InstallMojo
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
-    @Requirement
-    private Deployer deployer;
+    private final Deployer deployer;
+
+    @Inject
+    public InstallMojo( Deployer deployer )
+    {
+        this.deployer = deployer;
+    }
 
     /**
      * Dump project dependencies with "system" scope and fail if there are any such dependencies are found.

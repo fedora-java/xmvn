@@ -18,8 +18,7 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.fedoraproject.xmvn.repository.Repository;
+import javax.inject.Named;
 
 /**
  * Maven repository layout, as used by upstream Maven.
@@ -32,7 +31,7 @@ import org.fedoraproject.xmvn.repository.Repository;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = "maven", instantiationStrategy = "per-lookup" )
+@Named( "maven" )
 public class MavenRepository
     extends SimpleRepository
 {

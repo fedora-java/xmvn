@@ -17,13 +17,13 @@ package org.fedoraproject.xmvn.config;
 
 import java.util.List;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.sisu.launch.InjectedTestCase;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class EffectivePackagingTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     /**
      * Test if multiple rules are correctly aggregated into single effective rule.

@@ -15,13 +15,13 @@
  */
 package org.fedoraproject.xmvn.dependency;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.sisu.launch.InjectedTestCase;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class RuntimeDependencyExtractorTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     /**
      * Test if Plexus can load runtime dependency extractor component.

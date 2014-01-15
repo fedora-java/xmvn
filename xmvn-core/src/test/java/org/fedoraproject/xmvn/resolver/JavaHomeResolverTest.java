@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.sisu.launch.InjectedTestCase;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.utils.FileUtils;
@@ -24,7 +24,7 @@ import org.fedoraproject.xmvn.utils.FileUtils;
  * @author Mikolaj Izdebski
  */
 public class JavaHomeResolverTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     /**
      * Test if artifacts are resolved correctly from Java home.

@@ -42,9 +42,7 @@ import org.apache.ivy.plugins.repository.file.FileRepository;
 import org.apache.ivy.plugins.repository.file.FileResource;
 import org.apache.ivy.plugins.resolver.AbstractResolver;
 import org.apache.ivy.plugins.resolver.util.ResolvedResource;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainerException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.fedoraproject.xmvn.XMvn;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -58,21 +56,13 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class IvyResolver
     extends AbstractResolver
 {
-    private Resolver resolver;
+    private final Resolver resolver;
 
     public IvyResolver()
     {
         setName( "XMvn" );
 
-        try
-        {
-            DefaultPlexusContainer container = new DefaultPlexusContainer();
-            resolver = container.lookup( Resolver.class );
-        }
-        catch ( PlexusContainerException | ComponentLookupException e )
-        {
-            throw new RuntimeException( e );
-        }
+        resolver = XMvn.getResolver();
     }
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )

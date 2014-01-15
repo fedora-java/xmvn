@@ -23,7 +23,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Path;
 
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
@@ -44,7 +46,8 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Deployer.class )
+@Named
+@Singleton
 public class DefaultDeployer
     implements Deployer
 {

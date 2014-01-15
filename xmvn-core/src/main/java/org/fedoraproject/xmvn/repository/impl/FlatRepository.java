@@ -18,8 +18,7 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.fedoraproject.xmvn.repository.Repository;
+import javax.inject.Named;
 
 /**
  * Flat repository layout, either versioned or versionless, depending on properties.
@@ -32,7 +31,7 @@ import org.fedoraproject.xmvn.repository.Repository;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = "flat", instantiationStrategy = "per-lookup" )
+@Named( "flat" )
 public class FlatRepository
     extends SimpleRepository
 {

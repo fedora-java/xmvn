@@ -19,22 +19,30 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
-@Component( role = BuildExecutor.class )
+@Named
+@Singleton
 public class DefaultBuildExecutor
     implements BuildExecutor, InvocationOutputHandler
 {
-    @Requirement
-    private Invoker invoker;
+    private final Invoker invoker;
 
     private PrintWriter log;
+
+    @Inject
+    public DefaultBuildExecutor( Invoker invoker )
+    {
+        this.invoker = invoker;
+    }
 
     @Override
     public boolean executeBuild( InvocationRequest request, String logPath, boolean verbose )

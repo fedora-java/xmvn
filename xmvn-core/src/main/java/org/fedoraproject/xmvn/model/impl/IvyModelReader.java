@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
@@ -41,7 +44,6 @@ import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelReader;
@@ -53,7 +55,8 @@ import org.fedoraproject.xmvn.model.ModelReader;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelReader.class, hint = "ivy", instantiationStrategy = "singleton" )
+@Named( "ivy" )
+@Singleton
 public class IvyModelReader
     implements ModelReader
 {

@@ -41,11 +41,13 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -83,29 +85,24 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Installer.class )
+@Named
+@Singleton
 public class DefaultInstaller
     implements Installer
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultInstaller.class );
 
-    @Requirement
-    private Configurator configurator;
+    private final Configurator configurator;
 
-    @Requirement
-    private RepositoryConfigurator repositoryConfigurator;
+    private final RepositoryConfigurator repositoryConfigurator;
 
-    @Requirement
-    private Resolver resolver;
+    private final Resolver resolver;
 
-    @Requirement( hint = DependencyExtractor.BUILD )
-    private DependencyExtractor buildDependencyExtractor;
+    private final DependencyExtractor buildDependencyExtractor;
 
-    @Requirement( hint = DependencyExtractor.RUNTIME )
-    private DependencyExtractor runtimeDependencyExtractor;
+    private final DependencyExtractor runtimeDependencyExtractor;
 
-    @Requirement
-    private ModelReader modelReader;
+    private final ModelReader modelReader;
 
     private Repository installRepo;
 
@@ -132,6 +129,20 @@ public class DefaultInstaller
     private Map<Artifact, Artifact> providedArtifacts;
 
     private Set<Artifact> skippedArtifacts;
+
+    @Inject
+    public DefaultInstaller( Configurator configurator, RepositoryConfigurator repositoryConfigurator,
+                             Resolver resolver, @Named( DependencyExtractor.BUILD )
+                             DependencyExtractor buildDependencyExtractor, @Named( DependencyExtractor.RUNTIME )
+                             DependencyExtractor runtimeDependencyExtractor, ModelReader modelReader )
+    {
+        this.configurator = configurator;
+        this.repositoryConfigurator = repositoryConfigurator;
+        this.resolver = resolver;
+        this.buildDependencyExtractor = buildDependencyExtractor;
+        this.runtimeDependencyExtractor = runtimeDependencyExtractor;
+        this.modelReader = modelReader;
+    }
 
     private void putAttribute( Manifest manifest, String key, String value, String defaultValue )
     {

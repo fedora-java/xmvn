@@ -24,16 +24,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.codehaus.plexus.DefaultPlexusContainer;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.eclipse.sisu.space.SpaceModule;
+import org.eclipse.sisu.space.URLClassSpace;
+import org.eclipse.sisu.wire.WireModule;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 
 /**
  * @author Mikolaj Izdebski
  */
+@Named
 public class SubstCli
 {
     @Parameter
@@ -59,6 +68,14 @@ public class SubstCli
 
     @DynamicParameter( names = "-D", description = "Define system property" )
     public Map<String, String> defines = new TreeMap<>();
+
+    private final ArtifactVisitor visitor;
+
+    @Inject
+    public SubstCli( ArtifactVisitor visitor )
+    {
+        this.visitor = visitor;
+    }
 
     private void parseArgs( String[] args )
     {
@@ -89,9 +106,6 @@ public class SubstCli
     {
         try
         {
-            DefaultPlexusContainer container = new DefaultPlexusContainer();
-
-            ArtifactVisitor visitor = container.lookup( ArtifactVisitor.class );
             visitor.setTypes( types );
             visitor.setFollowSymlinks( followSymlinks );
             visitor.setDryRun( dryRun );
@@ -113,7 +127,9 @@ public class SubstCli
 
     public static void main( String[] args )
     {
-        SubstCli cli = new SubstCli();
+        Module module = new WireModule( new SpaceModule( new URLClassSpace( SubstCli.class.getClassLoader() ) ) );
+        Injector injector = Guice.createInjector( module );
+        SubstCli cli = injector.getInstance( SubstCli.class );
         cli.parseArgs( args );
         cli.run();
     }

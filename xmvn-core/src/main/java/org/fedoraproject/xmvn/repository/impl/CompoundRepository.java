@@ -23,8 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
@@ -47,16 +48,21 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Repository.class, hint = "compound", instantiationStrategy = "per-lookup" )
+@Named( "compound" )
 public class CompoundRepository
     extends AbstractRepository
 {
-    @Requirement
-    private RepositoryConfigurator configurator;
+    private final RepositoryConfigurator configurator;
 
     private Path prefix;
 
     private final List<Repository> slaveRepositories = new ArrayList<>();
+
+    @Inject
+    public CompoundRepository( RepositoryConfigurator configurator )
+    {
+        this.configurator = configurator;
+    }
 
     @Override
     public void configure( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )

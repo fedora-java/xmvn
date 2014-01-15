@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.sisu.launch.InjectedTestCase;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
@@ -25,7 +25,7 @@ import org.fedoraproject.xmvn.config.RepositoryConfigurator;
  * @author Mikolaj Izdebski
  */
 public class CustomRepositoryTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     /**
      * Test if simple (non-composite) repository configuration works as expected.

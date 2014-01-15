@@ -17,27 +17,42 @@ package org.fedoraproject.xmvn.tools.bisect;
 
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.maven.shared.invoker.InvocationRequest;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import org.eclipse.sisu.space.SpaceModule;
+import org.eclipse.sisu.space.URLClassSpace;
+import org.eclipse.sisu.wire.WireModule;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = BisectCli.class )
+@Named
 public class BisectCli
 {
     private final Logger logger = LoggerFactory.getLogger( BisectCli.class );
 
-    @Requirement
-    private CommandLineParser commandLineParser;
+    private static String[] args;
 
-    @Requirement
-    private BuildExecutor buildExecutor;
+    private final CommandLineParser commandLineParser;
+
+    private final BuildExecutor buildExecutor;
+
+    @Inject
+    public BisectCli( CommandLineParser commandLineParser, BuildExecutor buildExecutor )
+        throws Exception
+    {
+        this.commandLineParser = commandLineParser;
+        this.buildExecutor = buildExecutor;
+    }
 
     private static String getBuildLogName( int buildId )
     {
@@ -49,7 +64,7 @@ public class BisectCli
         return "bisect-initial.log";
     }
 
-    public void run( String[] args )
+    private void run()
         throws Exception
     {
         commandLineParser.parseCommandLine( args );
@@ -128,12 +143,14 @@ public class BisectCli
     }
 
     public static void main( String[] args )
+        throws Exception
     {
         try
         {
-            DefaultPlexusContainer container = new DefaultPlexusContainer();
-            BisectCli cli = container.lookup( BisectCli.class );
-            cli.run( args );
+            Module module = new WireModule( new SpaceModule( new URLClassSpace( BisectCli.class.getClassLoader() ) ) );
+            Injector injector = Guice.createInjector( module );
+            BisectCli cli = injector.getInstance( BisectCli.class );
+            cli.run();
         }
         catch ( Exception e )
         {

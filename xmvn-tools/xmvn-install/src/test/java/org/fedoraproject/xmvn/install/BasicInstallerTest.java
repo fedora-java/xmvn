@@ -15,14 +15,14 @@
  */
 package org.fedoraproject.xmvn.install;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.sisu.launch.InjectedTestCase;
 import org.fedoraproject.xmvn.tools.install.Installer;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class BasicInstallerTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     /**
      * Test if installer component can be instantiated.

@@ -19,10 +19,10 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.launch.InjectedTestCase;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
@@ -33,7 +33,7 @@ import org.fedoraproject.xmvn.config.Stereotype;
  * @author Mikolaj Izdebski
  */
 public class NestedRepositoriesTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     private final Artifact POM = new DefaultArtifact( "JPP/sisu:sisu-plexus:pom:1.2.3" );
 

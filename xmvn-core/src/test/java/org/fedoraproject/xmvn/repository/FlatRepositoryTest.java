@@ -17,9 +17,9 @@ package org.fedoraproject.xmvn.repository;
 
 import java.nio.file.Paths;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.launch.InjectedTestCase;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
@@ -29,7 +29,7 @@ import org.fedoraproject.xmvn.config.RepositoryConfigurator;
  * @author Mikolaj Izdebski
  */
 public class FlatRepositoryTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     public void testJppRepository()
         throws Exception

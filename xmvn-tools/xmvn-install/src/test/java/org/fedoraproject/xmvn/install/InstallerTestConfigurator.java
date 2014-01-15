@@ -18,10 +18,13 @@ package org.fedoraproject.xmvn.install;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.ConfigurationMerger;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.config.Repository;
@@ -31,10 +34,17 @@ import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = Configurator.class )
+@Named( "default" )
+@Singleton
 public class InstallerTestConfigurator
     extends DefaultConfigurator
 {
+    @Inject
+    public InstallerTestConfigurator( ConfigurationMerger merger )
+    {
+        super( merger );
+    }
+
     private void removeRepo( Configuration configuration, String id )
     {
         Iterator<Repository> it = configuration.getRepositories().iterator();

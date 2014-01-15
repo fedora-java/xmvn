@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.codehaus.plexus.component.annotations.Component;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configuration;
@@ -38,7 +40,8 @@ import org.fedoraproject.xmvn.config.ResolverSettings;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ConfigurationMerger.class )
+@Named
+@Singleton
 public class DefaultConfigurationMerger
     implements ConfigurationMerger
 {

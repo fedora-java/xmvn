@@ -18,15 +18,19 @@ package org.fedoraproject.xmvn.config.impl;
 import java.util.List;
 import java.util.Properties;
 
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.sisu.inject.MutableBeanLocator;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
+
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -35,15 +39,21 @@ import org.fedoraproject.xmvn.repository.Repository;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = RepositoryConfigurator.class )
+@Named
+@Singleton
 public class DefaultRepositoryConfigurator
     implements RepositoryConfigurator
 {
-    @Requirement
-    private Configurator configurator;
+    private final Configurator configurator;
 
-    @Requirement
-    private PlexusContainer container;
+    private final MutableBeanLocator locator;
+
+    @Inject
+    public DefaultRepositoryConfigurator( Configurator configurator, MutableBeanLocator locator )
+    {
+        this.configurator = configurator;
+        this.locator = locator;
+    }
 
     private org.fedoraproject.xmvn.config.Repository findDescriptor( String repoId )
     {
@@ -73,15 +83,9 @@ public class DefaultRepositoryConfigurator
 
         List<Stereotype> stereotypes = desc.getStereotypes();
 
-        try
-        {
-            Repository repository = container.lookup( Repository.class, type );
-            repository.configure( stereotypes, properties, configurationXml );
-            return repository;
-        }
-        catch ( ComponentLookupException e )
-        {
-            throw new RuntimeException( "Unable to load implementation for repository type '" + type + "'", e );
-        }
+        Key<Repository> key = Key.get( Repository.class, Names.named( type ) );
+        Repository repository = locator.locate( key ).iterator().next().getValue();
+        repository.configure( stereotypes, properties, configurationXml );
+        return repository;
     }
 }

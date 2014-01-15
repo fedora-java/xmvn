@@ -29,8 +29,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.fedoraproject.xmvn.config.Configuration;
@@ -50,20 +52,26 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Configurator.class, instantiationStrategy = "singleton" )
+@Named
+@Singleton
 public class DefaultConfigurator
     implements Configurator
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultConfigurator.class );
 
-    @Requirement
-    private ConfigurationMerger merger;
+    private final ConfigurationMerger merger;
 
     private Configuration cachedConfiguration;
 
     private Configuration cachedDefaultConfiguration;
 
     private List<Path> configFiles;
+
+    @Inject
+    public DefaultConfigurator( ConfigurationMerger merger )
+    {
+        this.merger = merger;
+    }
 
     private Configuration loadConfigurationFromStream( InputStream stream )
         throws IOException

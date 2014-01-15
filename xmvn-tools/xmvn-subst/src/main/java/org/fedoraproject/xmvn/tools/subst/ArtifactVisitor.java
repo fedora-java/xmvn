@@ -33,8 +33,10 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
@@ -44,7 +46,8 @@ import org.fedoraproject.xmvn.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component( role = ArtifactVisitor.class )
+@Named
+@Singleton
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
@@ -52,14 +55,19 @@ public class ArtifactVisitor
 
     private final Set<String> types = new LinkedHashSet<>();
 
-    @Requirement
-    private Resolver resolver;
+    private final Resolver resolver;
 
     private boolean followSymlinks;
 
     private boolean dryRun;
 
     private int failureCount;
+
+    @Inject
+    public ArtifactVisitor( Resolver resolver )
+    {
+        this.resolver = resolver;
+    }
 
     public void setTypes( Collection<String> types )
     {

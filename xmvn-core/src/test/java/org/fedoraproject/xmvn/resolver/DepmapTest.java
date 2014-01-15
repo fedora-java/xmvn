@@ -22,9 +22,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.launch.InjectedTestCase;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 
@@ -32,7 +32,7 @@ import org.fedoraproject.xmvn.config.ResolverSettings;
  * @author Mikolaj Izdebski
  */
 public class DepmapTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     private DependencyMap readDepmap( Path fragment )
         throws Exception
@@ -95,7 +95,6 @@ public class DepmapTest
     {
         DependencyMap depmap = readDepmap( Paths.get( "/this/should/not/exist" ) );
         assertTrue( depmap.isEmpty() );
-        release( depmap );
     }
 
     private void testDepmapSample( String file )
@@ -109,7 +108,6 @@ public class DepmapTest
         Artifact jppCommonsIo = new DefaultArtifact( "JPP:commons-io:SYSTEM" );
         assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
         assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
-        release( depmap );
     }
 
     /**
@@ -198,7 +196,6 @@ public class DepmapTest
         Artifact jppCommonsIo = new DefaultArtifact( "JPP:commons-io:SYSTEM" );
         assertTrue( depmap.translate( commonsIo ).contains( jppCommonsIo ) );
         assertTrue( depmap.translate( apacheCommonsIo ).contains( jppCommonsIo ) );
-        release( depmap );
     }
 
     /**
@@ -211,6 +208,5 @@ public class DepmapTest
     {
         DependencyMap depmap = readDepmap( Paths.get( "src/test/resources" ).resolve( "corrupt-compressed-dempap.gz" ) );
         assertTrue( depmap.isEmpty() );
-        release( depmap );
     }
 }

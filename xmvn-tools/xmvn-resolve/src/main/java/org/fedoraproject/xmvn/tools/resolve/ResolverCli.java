@@ -23,9 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.codehaus.plexus.DefaultPlexusContainer;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.space.SpaceModule;
+import org.eclipse.sisu.space.URLClassSpace;
+import org.eclipse.sisu.wire.WireModule;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.slf4j.Logger;
@@ -35,6 +40,9 @@ import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 
 /**
  * Resolve artifacts given on command line.
@@ -44,6 +52,7 @@ import com.beust.jcommander.ParameterException;
  * 
  * @author Mikolaj Izdebski
  */
+@Named
 public class ResolverCli
 {
     private final Logger logger = LoggerFactory.getLogger( ResolverCli.class );
@@ -62,6 +71,14 @@ public class ResolverCli
 
     @DynamicParameter( names = "-D", description = "Define system property" )
     public Map<String, String> defines = new TreeMap<>();
+
+    private final Resolver resolver;
+
+    @Inject
+    public ResolverCli( Resolver resolver )
+    {
+        this.resolver = resolver;
+    }
 
     private void parseArgs( String[] args )
     {
@@ -108,13 +125,10 @@ public class ResolverCli
         }
     }
 
-    public void run()
+    private void run()
     {
         try
         {
-            DefaultPlexusContainer container = new DefaultPlexusContainer();
-            Resolver resolver = container.lookup( Resolver.class );
-
             try
             {
                 boolean error = false;
@@ -164,7 +178,9 @@ public class ResolverCli
 
     public static void main( String[] args )
     {
-        ResolverCli cli = new ResolverCli();
+        Module module = new WireModule( new SpaceModule( new URLClassSpace( ResolverCli.class.getClassLoader() ) ) );
+        Injector injector = Guice.createInjector( module );
+        ResolverCli cli = injector.getInstance( ResolverCli.class );
         cli.parseArgs( args );
         cli.run();
     }

@@ -17,8 +17,10 @@ package org.fedoraproject.xmvn.dependency.impl;
 
 import java.io.IOException;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.fedoraproject.xmvn.dependency.DependencyExtractionRequest;
 import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
 import org.fedoraproject.xmvn.dependency.DependencyExtractor;
@@ -33,13 +35,19 @@ import org.fedoraproject.xmvn.model.ModelProcessor;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = DependencyExtractor.class, hint = DependencyExtractor.BUILD )
+@Named( DependencyExtractor.BUILD )
+@Singleton
 public class BuildDependencyExtractor
     extends AbstractModelVisitor
     implements DependencyExtractor
 {
-    @Requirement
-    private ModelProcessor modelProcessor;
+    private final ModelProcessor modelProcessor;
+
+    @Inject
+    public BuildDependencyExtractor( ModelProcessor modelProcessor )
+    {
+        this.modelProcessor = modelProcessor;
+    }
 
     @Override
     public DependencyExtractionResult extract( DependencyExtractionRequest request )

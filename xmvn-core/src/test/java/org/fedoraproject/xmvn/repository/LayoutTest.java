@@ -19,15 +19,15 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.launch.InjectedTestCase;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class LayoutTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     /**
      * Make sure there is no default repository.

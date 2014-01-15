@@ -28,22 +28,31 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.DataFormatException;
 
-import org.codehaus.plexus.DefaultPlexusContainer;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.space.SpaceModule;
+import org.eclipse.sisu.space.URLClassSpace;
+import org.eclipse.sisu.wire.WireModule;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 
 /**
  * @author Mikolaj Izdebski
  */
+@Named
 public class InstallerCli
 {
     @Parameter
@@ -69,6 +78,14 @@ public class InstallerCli
 
     @DynamicParameter( names = "-D", description = "Define system property" )
     public Map<String, String> defines = new TreeMap<>();
+
+    private final Installer installer;
+
+    @Inject
+    public InstallerCli( Installer installer )
+    {
+        this.installer = installer;
+    }
 
     private void parseArgs( String[] args )
     {
@@ -143,8 +160,6 @@ public class InstallerCli
     {
         try
         {
-            DefaultPlexusContainer container = new DefaultPlexusContainer();
-
             InstallationRequest request = new InstallationRequest();
             request.setCheckForUnmatchedRules( !relaxed );
             request.setBasePackageName( packageName );
@@ -166,7 +181,6 @@ public class InstallerCli
                 request.addArtifact( artifact );
             }
 
-            Installer installer = container.lookup( Installer.class );
             installer.install( request );
         }
         catch ( Throwable e )
@@ -178,7 +192,9 @@ public class InstallerCli
 
     public static void main( String[] args )
     {
-        InstallerCli cli = new InstallerCli();
+        Module module = new WireModule( new SpaceModule( new URLClassSpace( InstallerCli.class.getClassLoader() ) ) );
+        Injector injector = Guice.createInjector( module );
+        InstallerCli cli = injector.getInstance( InstallerCli.class );
         cli.parseArgs( args );
         cli.run();
     }

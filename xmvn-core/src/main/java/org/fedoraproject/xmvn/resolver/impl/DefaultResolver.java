@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
@@ -57,28 +57,35 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Resolver.class )
+@Named
+@Singleton
 public class DefaultResolver
-    implements Resolver, Initializable
+    implements Resolver
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultResolver.class );
 
-    @Requirement
-    private Configurator configurator;
-
-    @Requirement
-    private RepositoryConfigurator repositoryConfigurator;
+    private final RepositoryConfigurator repositoryConfigurator;
 
     private Repository bisectRepo;
 
-    private Repository systemRepo;
+    private final Repository systemRepo;
 
-    @Requirement
-    private DependencyMap depmap;
+    private final DependencyMap depmap;
 
     private AtomicFileCounter bisectCounter;
 
     private static final RpmDb rpmdb = new RpmDb();
+
+    @Inject
+    public DefaultResolver( RepositoryConfigurator repositoryConfigurator, DependencyMap depmap )
+    {
+        this.repositoryConfigurator = repositoryConfigurator;
+        this.depmap = depmap;
+
+        initializeBisect();
+
+        systemRepo = repositoryConfigurator.configureRepository( "resolve" );
+    }
 
     private void initializeBisect()
     {
@@ -101,14 +108,6 @@ public class DefaultResolver
             logger.error( "Unable to initialize XMvn bisection build: {}", e );
             throw new RuntimeException( e );
         }
-    }
-
-    @Override
-    public void initialize()
-    {
-        initializeBisect();
-
-        systemRepo = repositoryConfigurator.configureRepository( "resolve" );
     }
 
     private DefaultResolutionResult tryResolveFromBisectRepo( Artifact artifact )

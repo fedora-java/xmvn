@@ -19,9 +19,10 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -40,17 +41,26 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ArtifactBlacklist.class )
+@Named
+@Singleton
 public class DefaultArtifactBlacklist
-    implements ArtifactBlacklist, Initializable
+    implements ArtifactBlacklist
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultArtifactBlacklist.class );
 
-    @Requirement
-    private Configurator configurator;
+    private final Configurator configurator;
 
-    @Requirement
-    private DependencyMap depmap;
+    private final DependencyMap depmap;
+
+    @Inject
+    public DefaultArtifactBlacklist( Configurator configurator, DependencyMap depmap )
+    {
+        this.configurator = configurator;
+        this.depmap = depmap;
+
+        createInitialBlacklist();
+        blacklistAliases();
+    }
 
     private final Set<Artifact> blacklist = new LinkedHashSet<>();
 
@@ -59,13 +69,6 @@ public class DefaultArtifactBlacklist
     {
         return contains( new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION,
                                               ArtifactUtils.DEFAULT_VERSION ) );
-    }
-
-    @Override
-    public void initialize()
-    {
-        createInitialBlacklist();
-        blacklistAliases();
     }
 
     @Override

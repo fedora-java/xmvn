@@ -23,6 +23,10 @@ import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.ActivationFile;
 import org.apache.maven.model.ActivationOS;
@@ -59,8 +63,6 @@ import org.apache.maven.model.RepositoryPolicy;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Site;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelProcessor;
 import org.fedoraproject.xmvn.model.ModelReader;
@@ -73,12 +75,18 @@ import org.fedoraproject.xmvn.model.ModelVisitor;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelProcessor.class )
+@Named
+@Singleton
 public class DefaultModelProcessor
     implements ModelProcessor
 {
-    @Requirement
-    private ModelReader modelReader;
+    private final ModelReader modelReader;
+
+    @Inject
+    public DefaultModelProcessor( ModelReader modelReader )
+    {
+        this.modelReader = modelReader;
+    }
 
     @Override
     public void processModel( Path modelPath, ModelVisitor visitor )

@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import org.codehaus.plexus.PlexusTestCase;
+import org.eclipse.sisu.launch.InjectedTestCase;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
@@ -24,7 +24,7 @@ import org.fedoraproject.xmvn.config.ResolverSettings;
  * @author Mikolaj Izdebski
  */
 public class BasicResolverTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     /**
      * Test if Plexus can load resolver component.

@@ -20,15 +20,15 @@ import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.sisu.launch.InjectedTestCase;
 
 /**
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractDependencyTest
-    extends PlexusTestCase
+    extends InjectedTestCase
 {
     private Path modelPath;
 
