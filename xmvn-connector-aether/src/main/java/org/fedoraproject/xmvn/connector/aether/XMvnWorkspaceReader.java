@@ -33,7 +33,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * @author Mikolaj Izdebski
  */
 @Component( role = WorkspaceReader.class, hint = "ide" )
-public class FedoraWorkspaceReader
+public class XMvnWorkspaceReader
     implements WorkspaceReader
 {
     @Requirement

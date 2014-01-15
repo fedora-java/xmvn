@@ -28,7 +28,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * @author Mikolaj Izdebski
  */
 @Component( role = PluginVersionResolver.class )
-public class FedoraPluginVersionResolver
+public class XMvnPluginVersionResolver
     implements PluginVersionResolver
 {
     @Override

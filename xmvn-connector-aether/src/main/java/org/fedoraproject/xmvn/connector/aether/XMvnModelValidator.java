@@ -49,10 +49,10 @@ import org.slf4j.LoggerFactory;
  * @author Mikolaj Izdebski
  */
 @Component( role = ModelValidator.class )
-public class FedoraModelValidator
+public class XMvnModelValidator
     extends DefaultModelValidator
 {
-    private final Logger logger = LoggerFactory.getLogger( FedoraModelValidator.class );
+    private final Logger logger = LoggerFactory.getLogger( XMvnModelValidator.class );
 
     @Requirement
     private Configurator configurator;
