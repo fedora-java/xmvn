@@ -15,22 +15,28 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import org.eclipse.sisu.launch.InjectedTestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.utils.FileUtils;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class JavaHomeResolverTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     /**
      * Test if artifacts are resolved correctly from Java home.
      * 
      * @throws Exception
      */
+    @Test
     public void testJavaHomeResolver()
         throws Exception
     {

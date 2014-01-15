@@ -15,6 +15,10 @@
  */
 package org.fedoraproject.xmvn.repository;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -22,18 +26,20 @@ import java.util.Iterator;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.config.Stereotype;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class NestedRepositoriesTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     private final Artifact POM = new DefaultArtifact( "JPP/sisu:sisu-plexus:pom:1.2.3" );
 
@@ -160,8 +166,9 @@ public class NestedRepositoriesTest
         configuration.addRepository( repo );
     }
 
+    @Before
     @Override
-    protected void setUp()
+    public void setUp()
         throws Exception
     {
         super.setUp();
@@ -182,6 +189,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testBasePomVersioned()
         throws Exception
     {
@@ -198,6 +206,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testBasePomVersionless()
         throws Exception
     {
@@ -214,6 +223,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testBaseJarVersioned()
         throws Exception
     {
@@ -230,6 +240,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testBaseJarVersionless()
         throws Exception
     {
@@ -246,6 +257,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAddonPomVersioned()
         throws Exception
     {
@@ -268,6 +280,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAddonPomVersionless()
         throws Exception
     {
@@ -289,6 +302,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAddonJarVersioned()
         throws Exception
     {
@@ -309,6 +323,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAddonJarVersionless()
         throws Exception
     {
@@ -329,6 +344,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeBasePomVersioned()
         throws Exception
     {
@@ -349,6 +365,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeBasePomVersionless()
         throws Exception
     {
@@ -370,6 +387,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeBaseJarVersioned()
         throws Exception
     {
@@ -390,6 +408,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeBaseJarVersionless()
         throws Exception
     {
@@ -411,6 +430,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeAddonPomVersioned()
         throws Exception
     {
@@ -442,6 +462,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeAddonPomVersionless()
         throws Exception
     {
@@ -473,6 +494,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeAddonJarVersioned()
         throws Exception
     {
@@ -501,6 +523,7 @@ public class NestedRepositoriesTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAlternativeAddonJarVersionless()
         throws Exception
     {

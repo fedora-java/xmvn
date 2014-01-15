@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.install;
 
 import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,7 @@ public class IvyInstallerExclusionTest
      * 
      * @throws Exception
      */
+    @Test
     public void testComponentLookup()
         throws Exception
     {

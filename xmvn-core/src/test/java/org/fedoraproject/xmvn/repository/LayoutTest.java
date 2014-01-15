@@ -15,19 +15,24 @@
  */
 package org.fedoraproject.xmvn.repository;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class LayoutTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     /**
      * Make sure there is no default repository.
@@ -62,6 +67,7 @@ public class LayoutTest
      * 
      * @throws Exception
      */
+    @Test
     public void testLayouts()
         throws Exception
     {
@@ -89,6 +95,7 @@ public class LayoutTest
      * 
      * @throws Exception
      */
+    @Test
     public void testJppPrefixes()
         throws Exception
     {

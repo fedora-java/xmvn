@@ -15,20 +15,24 @@
  */
 package org.fedoraproject.xmvn.install;
 
-import org.eclipse.sisu.launch.InjectedTestCase;
+import static org.junit.Assert.assertNotNull;
+
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.tools.install.Installer;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class BasicInstallerTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     /**
      * Test if installer component can be instantiated.
      * 
      * @throws Exception
      */
+    @Test
     public void testComponentLookup()
         throws Exception
     {

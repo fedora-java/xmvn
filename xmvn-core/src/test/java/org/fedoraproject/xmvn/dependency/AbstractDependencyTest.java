@@ -15,6 +15,10 @@
  */
 package org.fedoraproject.xmvn.dependency;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
@@ -22,13 +26,14 @@ import java.util.Set;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractDependencyTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     private Path modelPath;
 
@@ -103,6 +108,7 @@ public abstract class AbstractDependencyTest
             fail( "Dependency artifact " + artifact + " not expected but returned" );
     }
 
+    @Test
     public void testBuildDependencyExtraction()
         throws Exception
     {
@@ -110,6 +116,7 @@ public abstract class AbstractDependencyTest
         performTests( DependencyExtractor.BUILD );
     }
 
+    @Test
     public void testRuntimeDependencyExtraction()
         throws Exception
     {

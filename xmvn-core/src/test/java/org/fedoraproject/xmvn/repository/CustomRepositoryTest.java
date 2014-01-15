@@ -15,23 +15,28 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import org.eclipse.sisu.launch.InjectedTestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class CustomRepositoryTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     /**
      * Test if simple (non-composite) repository configuration works as expected.
      * 
      * @throws Exception
      */
+    @Test
     public void testCustomRepository()
         throws Exception
     {

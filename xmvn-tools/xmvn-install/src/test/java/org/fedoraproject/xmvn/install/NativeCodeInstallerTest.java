@@ -16,8 +16,12 @@
 package org.fedoraproject.xmvn.install;
 
 import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
+
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
@@ -30,6 +34,7 @@ public class NativeCodeInstallerTest
      * 
      * @throws Exception
      */
+    @Test
     public void testNativeJarInstallation()
         throws Exception
     {

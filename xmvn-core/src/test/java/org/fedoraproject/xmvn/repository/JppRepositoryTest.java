@@ -15,22 +15,27 @@
  */
 package org.fedoraproject.xmvn.repository;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.nio.file.Paths;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class JppRepositoryTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
+    @Test
     public void testJppRepository()
         throws Exception
     {

@@ -15,21 +15,28 @@
  */
 package org.fedoraproject.xmvn.config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class EffectivePackagingTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     /**
      * Test if multiple rules are correctly aggregated into single effective rule.
      * 
      * @throws Exception
      */
+    @Test
     public void testRuleAggregation()
         throws Exception
     {
@@ -67,6 +74,7 @@ public class EffectivePackagingTest
      * 
      * @throws Exception
      */
+    @Test
     public void testWildcards()
         throws Exception
     {
@@ -104,6 +112,7 @@ public class EffectivePackagingTest
      * 
      * @throws Exception
      */
+    @Test
     public void testEmptyGlob()
         throws Exception
     {
@@ -128,6 +137,7 @@ public class EffectivePackagingTest
      * 
      * @throws Exception
      */
+    @Test
     public void testEmptyPattern()
         throws Exception
     {
@@ -160,6 +170,7 @@ public class EffectivePackagingTest
      * 
      * @throws Exception
      */
+    @Test
     public void testSingletonAndSpecificRule()
         throws Exception
     {
@@ -196,6 +207,7 @@ public class EffectivePackagingTest
      * 
      * @throws Exception
      */
+    @Test
     public void testAliases()
         throws Exception
     {

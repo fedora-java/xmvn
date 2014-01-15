@@ -16,11 +16,15 @@
 package org.fedoraproject.xmvn.install;
 
 import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
@@ -33,6 +37,7 @@ public class SimpleInstallerTest
      * 
      * @throws Exception
      */
+    @Test
     public void testSimpleInstallation()
         throws Exception
     {
@@ -67,6 +72,7 @@ public class SimpleInstallerTest
      * 
      * @throws Exception
      */
+    @Test
     public void testNewManifestInjection()
         throws Exception
     {

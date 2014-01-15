@@ -15,22 +15,27 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import org.eclipse.sisu.launch.InjectedTestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class BasicResolverTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     /**
      * Test if Plexus can load resolver component.
      * 
      * @throws Exception
      */
+    @Test
     public void testComponentLookup()
         throws Exception
     {
@@ -43,6 +48,7 @@ public class BasicResolverTest
      * 
      * @throws Exception
      */
+    @Test
     public void testConfigurationExistance()
         throws Exception
     {
@@ -61,6 +67,7 @@ public class BasicResolverTest
      * 
      * @throws Exception
      */
+    @Test
     public void testResolutionFailure()
         throws Exception
     {

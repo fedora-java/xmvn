@@ -15,19 +15,23 @@
  */
 package org.fedoraproject.xmvn.dependency;
 
-import org.eclipse.sisu.launch.InjectedTestCase;
+import static org.junit.Assert.assertNotNull;
+
+import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class RuntimeDependencyExtractorTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     /**
      * Test if Plexus can load runtime dependency extractor component.
      * 
      * @throws Exception
      */
+    @Test
     public void testComponentLookup()
         throws Exception
     {

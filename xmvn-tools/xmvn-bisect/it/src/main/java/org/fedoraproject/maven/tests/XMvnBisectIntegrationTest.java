@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tests;
+package org.fedoraproject.xmvn.tests; import org.junit.After;import org.junit.Before;import org.junit.Test;import static org.junit.Assert.*;
 
 import org.codehaus.plexus.util.interpolation.Interpolator;
 
 /**
  * @author Mikolaj Izdebski
  */
-class XMvnBisectIntegrationTest
+public class XMvnBisectIntegrationTest
 {
     Interpolator interpolator;
 }

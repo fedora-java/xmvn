@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.install;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -31,19 +32,20 @@ import org.apache.maven.model.Parent;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
  */
-abstract class AbstractInstallerTest
-    extends InjectedTestCase
+public abstract class AbstractInstallerTest
+    extends InjectedTest
 {
     private Logger logger = LoggerFactory.getLogger( AbstractInstallerTest.class );
 
@@ -57,8 +59,9 @@ abstract class AbstractInstallerTest
 
     protected Path installRoot;
 
+    @Before
     @Override
-    protected void setUp()
+    public void setUp()
         throws Exception
     {
         super.setUp();

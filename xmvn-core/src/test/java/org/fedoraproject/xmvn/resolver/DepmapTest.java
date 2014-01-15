@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -24,15 +27,16 @@ import java.util.List;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.sisu.launch.InjectedTestCase;
+import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class DepmapTest
-    extends InjectedTestCase
+    extends InjectedTest
 {
     private DependencyMap readDepmap( Path fragment )
         throws Exception
@@ -63,6 +67,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testEmptyFragment()
         throws Exception
     {
@@ -78,6 +83,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testMalformedFragment()
         throws Exception
     {
@@ -90,6 +96,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testNonexistentFragmentFile()
         throws Exception
     {
@@ -115,6 +122,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testOldStyleDepmap()
         throws Exception
     {
@@ -126,6 +134,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testNewStyleDepmap()
         throws Exception
     {
@@ -139,6 +148,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testIndirectDepmap()
         throws Exception
     {
@@ -152,6 +162,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testCyclicDepmap()
         throws Exception
     {
@@ -163,6 +174,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testXmlDepmap()
         throws Exception
     {
@@ -174,6 +186,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testCompressedDepmap()
         throws Exception
     {
@@ -185,6 +198,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testNamespaceMatching()
         throws Exception
     {
@@ -203,6 +217,7 @@ public class DepmapTest
      * 
      * @throws Exception
      */
+    @Test
     public void testCorruptCompressedDepmap()
         throws Exception
     {

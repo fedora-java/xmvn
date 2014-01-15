@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.dependency;
 
+import org.junit.Test;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -71,12 +73,14 @@ public class JavaVersionTest
         expectJavaVersion( "1.1" );
     }
 
+    @Test
     public void testBuildJavaVersionDependencies()
         throws Exception
     {
         testJavaVersionDependencies( DependencyExtractor.BUILD );
     }
 
+    @Test
     public void testRuntimeJavaVersionDependencies()
         throws Exception
     {
