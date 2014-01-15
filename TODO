@@ -23,6 +23,11 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
    2.0.0 is next major release and it can break backwards
    compatibility where it makes sense.
 
+** show version report after build ends
+
+   At the end of build (sucess or failure) show version report which
+   includes requested and resolved artifact versions.
+
 ** cleanup namespaces
 
    org.fedoraproject.maven namespace was used before XMvn name chosen.
