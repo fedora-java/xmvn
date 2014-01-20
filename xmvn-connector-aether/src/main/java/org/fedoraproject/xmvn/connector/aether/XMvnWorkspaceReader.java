@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.connector.aether;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,17 +44,32 @@ public class XMvnWorkspaceReader
 
     private static final WorkspaceRepository repository = new WorkspaceRepository();
 
+    private final List<ResolutionListener> listeners = new ArrayList<>();
+
     @Inject
     public XMvnWorkspaceReader( Resolver resolver )
     {
         this.resolver = resolver;
     }
 
+    public void addResolutionListener( ResolutionListener listener )
+    {
+        listeners.add( listener );
+    }
+
     @Override
     public File findArtifact( Artifact artifact )
     {
         ResolutionRequest request = new ResolutionRequest( artifact );
+
+        for ( ResolutionListener listener : listeners )
+            listener.resolutionRequested( request );
+
         ResolutionResult result = resolver.resolve( request );
+
+        for ( ResolutionListener listener : listeners )
+            listener.resolutionCompleted( request, result );
+
         return result.getArtifactFile();
     }
 

@@ -78,7 +78,7 @@ class RpmDb
 
         try
         {
-            String query = "[%{NAME}|%{FILENAMES}\n]";
+            String query = "[%{NAME} (%{VERSION})|%{FILENAMES}\n]";
             Iterable<String> rows;
             rows = execQuery( query );
 
