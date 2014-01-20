@@ -68,7 +68,8 @@ public class IvyResolver
     private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )
     {
         return new org.eclipse.aether.artifact.DefaultArtifact( revision.getOrganisation(), revision.getName(),
-                                                                extension, revision.getRevision() );
+                                                                revision.getExtraAttribute( "classifier" ), extension,
+                                                                revision.getRevision() );
     }
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( org.apache.ivy.core.module.descriptor.Artifact artifact )
