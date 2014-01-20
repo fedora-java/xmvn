@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.aether.artifact.Artifact;
@@ -95,15 +97,33 @@ public class XMvn
         Thread.currentThread().setContextClassLoader( savedClassLoader );
     }
 
+    @SuppressWarnings( { "rawtypes", "unchecked" } )
     private static <T> T lookup( Class<T> role )
     {
         try
         {
             enterSisuRealm();
-            Class sisuClass = sisuRealm.loadClass( "org.codehaus.plexus.DefaultPlexusContainer" );
-            Object container = sisuClass.newInstance();
-            Method lookupMethod = sisuClass.getDeclaredMethod( "lookup", Class.class );
-            return (T) lookupMethod.invoke( container, role );
+
+            Class urlClassSpaceClass = sisuRealm.loadClass( "org.eclipse.sisu.space.URLClassSpace" );
+            Class spaceModuleClass = sisuRealm.loadClass( "org.eclipse.sisu.space.SpaceModule" );
+            Class classSpaceClass = sisuRealm.loadClass( "org.eclipse.sisu.space.ClassSpace" );
+            Class wireModuleClass = sisuRealm.loadClass( "org.eclipse.sisu.wire.WireModule" );
+            Class guiceClass = sisuRealm.loadClass( "com.google.inject.Guice" );
+            Class injectorClass = sisuRealm.loadClass( "com.google.inject.Injector" );
+
+            Constructor urlClassSpaceConstructor = urlClassSpaceClass.getConstructor( ClassLoader.class );
+            Constructor spaceModuleConstructor = spaceModuleClass.getConstructor( classSpaceClass );
+            Constructor wireModuleConstructor = wireModuleClass.getConstructor( Iterable.class );
+            Method createInjectorMethod = guiceClass.getMethod( "createInjector", Iterable.class );
+            Method getInstanceMethod = injectorClass.getMethod( "getInstance", Class.class );
+
+            Object urlClassSpace = urlClassSpaceConstructor.newInstance( sisuRealm );
+            Object spaceModule = spaceModuleConstructor.newInstance( urlClassSpace );
+            Object wireModule = wireModuleConstructor.newInstance( Collections.singleton( spaceModule ) );
+            Object injector = createInjectorMethod.invoke( null, Collections.singleton( wireModule ) );
+            Object component = getInstanceMethod.invoke( injector, role );
+
+            return (T) component;
         }
         catch ( ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException
                         | IllegalArgumentException | InvocationTargetException | InstantiationException e )
