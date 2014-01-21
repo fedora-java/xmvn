@@ -32,6 +32,7 @@ import org.fedoraproject.xmvn.config.Stereotype;
  * @author Mikolaj Izdebski
  */
 public interface Repository
+    extends Cloneable
 {
     /**
      * Configure this repository with given set of properties and repository-specific XML configuration.
@@ -114,4 +115,6 @@ public interface Repository
     String getNamespace();
 
     void setNamespace( String namespace );
+
+    Repository clone();
 }

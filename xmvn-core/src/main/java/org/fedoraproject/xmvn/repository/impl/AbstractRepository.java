@@ -65,4 +65,7 @@ abstract class AbstractRepository
     {
         return getArtifactPaths( artifacts, false );
     }
+
+    @Override
+    public abstract Repository clone();
 }

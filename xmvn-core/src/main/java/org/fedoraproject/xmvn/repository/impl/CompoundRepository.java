@@ -122,4 +122,10 @@ public class CompoundRepository
                 slave.setNamespace( namespace );
         }
     }
+
+    @Override
+    public Repository clone()
+    {
+        return new CompoundRepository( configurator );
+    }
 }

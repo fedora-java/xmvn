@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.config.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -23,14 +24,10 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.eclipse.sisu.inject.MutableBeanLocator;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
-
-import com.google.inject.Key;
-import com.google.inject.name.Names;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -46,13 +43,13 @@ public class DefaultRepositoryConfigurator
 {
     private final Configurator configurator;
 
-    private final MutableBeanLocator locator;
+    private final Map<String, Repository> repositories;
 
     @Inject
-    public DefaultRepositoryConfigurator( Configurator configurator, MutableBeanLocator locator )
+    public DefaultRepositoryConfigurator( Configurator configurator, Map<String, Repository> repositories )
     {
         this.configurator = configurator;
-        this.locator = locator;
+        this.repositories = repositories;
     }
 
     private org.fedoraproject.xmvn.config.Repository findDescriptor( String repoId )
@@ -83,8 +80,7 @@ public class DefaultRepositoryConfigurator
 
         List<Stereotype> stereotypes = desc.getStereotypes();
 
-        Key<Repository> key = Key.get( Repository.class, Names.named( type ) );
-        Repository repository = locator.locate( key ).iterator().next().getValue();
+        Repository repository = repositories.get( type ).clone();
         repository.configure( stereotypes, properties, configurationXml );
         return repository;
     }

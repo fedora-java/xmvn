@@ -97,4 +97,10 @@ public class MyRepository
         fail( "setNamespace was not expected to be called" );
         throw null;
     }
+
+    @Override
+    public Repository clone()
+    {
+        return new MyRepository();
+    }
 }

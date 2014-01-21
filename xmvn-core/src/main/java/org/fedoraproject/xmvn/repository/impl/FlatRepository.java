@@ -20,6 +20,8 @@ import java.nio.file.Paths;
 
 import javax.inject.Named;
 
+import org.fedoraproject.xmvn.repository.Repository;
+
 /**
  * Flat repository layout, either versioned or versionless, depending on properties.
  * <p>
@@ -55,5 +57,11 @@ public class FlatRepository
             path.append( '.' ).append( extension );
 
         return Paths.get( path.toString() );
+    }
+
+    @Override
+    public Repository clone()
+    {
+        return new FlatRepository();
     }
 }
