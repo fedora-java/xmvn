@@ -165,7 +165,7 @@ public class ResolverCli
             }
             catch ( IllegalArgumentException e )
             {
-                logger.error( "{}", e );
+                logger.error( "Failed to parse argument", e );
                 System.exit( 1 );
             }
         }

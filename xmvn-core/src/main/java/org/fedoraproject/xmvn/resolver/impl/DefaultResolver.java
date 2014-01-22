@@ -105,7 +105,7 @@ public class DefaultResolver
         }
         catch ( IOException e )
         {
-            logger.error( "Unable to initialize XMvn bisection build: {}", e );
+            logger.error( "Unable to initialize XMvn bisection build", e );
             throw new RuntimeException( e );
         }
     }

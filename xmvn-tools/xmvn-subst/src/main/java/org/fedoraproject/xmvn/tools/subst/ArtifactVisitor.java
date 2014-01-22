@@ -136,7 +136,7 @@ public class ArtifactVisitor
     public FileVisitResult visitFileFailed( Path path, IOException e )
         throws IOException
     {
-        logger.warn( "Failed to access file: {}", e );
+        logger.warn( "Failed to access file", e );
         return FileVisitResult.CONTINUE;
     }
 
@@ -210,7 +210,7 @@ public class ArtifactVisitor
         }
         catch ( IOException e )
         {
-            logger.error( "Failed to get artifact definition from file {}: {}", path, e );
+            logger.error( "Failed to get artifact definition from file {}", path, e );
             return null;
         }
     }
