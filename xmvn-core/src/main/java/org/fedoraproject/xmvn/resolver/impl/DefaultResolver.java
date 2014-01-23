@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 @Named
 @Singleton
 public class DefaultResolver
-    implements Resolver
+    implements Resolver, org.fedoraproject.maven.resolver.Resolver
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultResolver.class );
 
