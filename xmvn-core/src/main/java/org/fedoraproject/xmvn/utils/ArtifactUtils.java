@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.utils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -30,12 +37,16 @@ import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.ArtifactType;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.artifact.DefaultArtifactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class ArtifactUtils
 {
+    private static final Logger logger = LoggerFactory.getLogger( ArtifactUtils.class );
+
     public static final String DEFAULT_EXTENSION = "jar";
 
     public static final String DEFAULT_VERSION = "SYSTEM";
@@ -239,5 +250,80 @@ public class ArtifactUtils
         }
 
         return new DefaultArtifact( groupId, artifactId, classifier, extension, version );
+    }
+
+    private static String getManifestValue( Manifest manifest, String key, String defaultValue )
+    {
+        Attributes attributes = manifest.getMainAttributes();
+        String value = attributes.getValue( key );
+        return value != null ? value : defaultValue;
+    }
+
+    private static Artifact getArtifactFromManifest( Path path )
+        throws IOException
+    {
+        try (JarFile jarFile = new JarFile( path.toFile() ))
+        {
+            Manifest mf = jarFile.getManifest();
+            if ( mf == null )
+                return null;
+
+            String groupId = getManifestValue( mf, ArtifactUtils.MF_KEY_GROUPID, null );
+            String artifactId = getManifestValue( mf, ArtifactUtils.MF_KEY_ARTIFACTID, null );
+            String extension = getManifestValue( mf, ArtifactUtils.MF_KEY_EXTENSION, ArtifactUtils.DEFAULT_EXTENSION );
+            String classifier = getManifestValue( mf, ArtifactUtils.MF_KEY_CLASSIFIER, "" );
+            String version = getManifestValue( mf, ArtifactUtils.MF_KEY_VERSION, ArtifactUtils.DEFAULT_VERSION );
+
+            if ( groupId == null || artifactId == null )
+                return null;
+
+            return new DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        }
+    }
+
+    private static Artifact getArtifactFromPomProperties( Path path, String extension )
+        throws IOException
+    {
+        try (ZipInputStream zis = new ZipInputStream( new FileInputStream( path.toFile() ) ))
+        {
+            ZipEntry entry;
+            while ( ( entry = zis.getNextEntry() ) != null )
+            {
+                String name = entry.getName();
+                if ( name.startsWith( "META-INF/maven/" ) && name.endsWith( "/pom.properties" ) )
+                {
+                    Properties properties = new Properties();
+                    properties.load( zis );
+
+                    String groupId = properties.getProperty( "groupId" );
+                    String artifactId = properties.getProperty( "artifactId" );
+                    String version = properties.getProperty( "version" );
+                    return new DefaultArtifact( groupId, artifactId, extension, version );
+                }
+            }
+
+            return null;
+        }
+    }
+
+    public static Artifact readArtifactDefinition( Path path, String extension )
+    {
+        try
+        {
+            Artifact artifact = getArtifactFromManifest( path );
+            if ( artifact != null )
+                return artifact;
+
+            artifact = getArtifactFromPomProperties( path, extension );
+            if ( artifact != null )
+                return artifact;
+
+            return null;
+        }
+        catch ( IOException e )
+        {
+            logger.error( "Failed to get artifact definition from file {}", path, e );
+            return null;
+        }
     }
 }

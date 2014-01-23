@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.tools.subst;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -25,20 +24,13 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Properties;
 import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
@@ -140,85 +132,10 @@ public class ArtifactVisitor
         return FileVisitResult.CONTINUE;
     }
 
-    private String getManifestValue( Manifest manifest, String key, String defaultValue )
-    {
-        Attributes attributes = manifest.getMainAttributes();
-        String value = attributes.getValue( key );
-        return value != null ? value : defaultValue;
-    }
-
-    private Artifact getArtifactFromManifest( Path path )
-        throws IOException
-    {
-        try (JarFile jarFile = new JarFile( path.toFile() ))
-        {
-            Manifest mf = jarFile.getManifest();
-            if ( mf == null )
-                return null;
-
-            String groupId = getManifestValue( mf, ArtifactUtils.MF_KEY_GROUPID, null );
-            String artifactId = getManifestValue( mf, ArtifactUtils.MF_KEY_ARTIFACTID, null );
-            String extension = getManifestValue( mf, ArtifactUtils.MF_KEY_EXTENSION, ArtifactUtils.DEFAULT_EXTENSION );
-            String classifier = getManifestValue( mf, ArtifactUtils.MF_KEY_CLASSIFIER, "" );
-            String version = getManifestValue( mf, ArtifactUtils.MF_KEY_VERSION, ArtifactUtils.DEFAULT_VERSION );
-
-            if ( groupId == null || artifactId == null )
-                return null;
-
-            return new DefaultArtifact( groupId, artifactId, classifier, extension, version );
-        }
-    }
-
-    private Artifact getArtifactFromPomProperties( Path path, String extension )
-        throws IOException
-    {
-        try (ZipInputStream zis = new ZipInputStream( new FileInputStream( path.toFile() ) ))
-        {
-            ZipEntry entry;
-            while ( ( entry = zis.getNextEntry() ) != null )
-            {
-                String name = entry.getName();
-                if ( name.startsWith( "META-INF/maven/" ) && name.endsWith( "/pom.properties" ) )
-                {
-                    Properties properties = new Properties();
-                    properties.load( zis );
-
-                    String groupId = properties.getProperty( "groupId" );
-                    String artifactId = properties.getProperty( "artifactId" );
-                    String version = properties.getProperty( "version" );
-                    return new DefaultArtifact( groupId, artifactId, extension, version );
-                }
-            }
-
-            return null;
-        }
-    }
-
-    private Artifact readArtifactDefinition( Path path, String extension )
-    {
-        try
-        {
-            Artifact artifact = getArtifactFromManifest( path );
-            if ( artifact != null )
-                return artifact;
-
-            artifact = getArtifactFromPomProperties( path, extension );
-            if ( artifact != null )
-                return artifact;
-
-            return null;
-        }
-        catch ( IOException e )
-        {
-            logger.error( "Failed to get artifact definition from file {}", path, e );
-            return null;
-        }
-    }
-
     private void substituteArtifact( Path path, String type )
         throws IOException
     {
-        Artifact artifact = readArtifactDefinition( path, type );
+        Artifact artifact = ArtifactUtils.readArtifactDefinition( path, type );
         if ( artifact == null )
         {
             logger.info( "Skipping file {}: No artifact definition found", path );
