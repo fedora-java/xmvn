@@ -28,6 +28,7 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -43,13 +44,13 @@ public class DefaultRepositoryConfigurator
 {
     private final Configurator configurator;
 
-    private final Map<String, Repository> repositories;
+    private final Map<String, RepositoryFactory> repositoryFactories;
 
     @Inject
-    public DefaultRepositoryConfigurator( Configurator configurator, Map<String, Repository> repositories )
+    public DefaultRepositoryConfigurator( Configurator configurator, Map<String, RepositoryFactory> repositoryFactories )
     {
         this.configurator = configurator;
-        this.repositories = repositories;
+        this.repositoryFactories = repositoryFactories;
     }
 
     private org.fedoraproject.xmvn.config.Repository findDescriptor( String repoId )
@@ -63,6 +64,12 @@ public class DefaultRepositoryConfigurator
 
     @Override
     public Repository configureRepository( String repoId )
+    {
+        return configureRepository( repoId, "" );
+    }
+
+    @Override
+    public Repository configureRepository( String repoId, String namespace )
     {
         org.fedoraproject.xmvn.config.Repository desc = findDescriptor( repoId );
         if ( desc == null )
@@ -80,8 +87,10 @@ public class DefaultRepositoryConfigurator
 
         List<Stereotype> stereotypes = desc.getStereotypes();
 
-        Repository repository = repositories.get( type ).clone();
-        repository.configure( stereotypes, properties, configurationXml );
-        return repository;
+        RepositoryFactory factory = repositoryFactories.get( type );
+        if ( factory == null )
+            throw new RuntimeException( "Unable to create repository of type '" + type + "': no suitable factory found" );
+
+        return factory.getInstance( stereotypes, properties, configurationXml );
     }
 }

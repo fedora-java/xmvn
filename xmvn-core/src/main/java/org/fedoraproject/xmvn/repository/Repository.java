@@ -16,11 +16,8 @@
 package org.fedoraproject.xmvn.repository;
 
 import java.util.List;
-import java.util.Properties;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
-import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
  * Repository of artifacts.
@@ -32,19 +29,7 @@ import org.fedoraproject.xmvn.config.Stereotype;
  * @author Mikolaj Izdebski
  */
 public interface Repository
-    extends Cloneable
 {
-    /**
-     * Configure this repository with given set of properties and repository-specific XML configuration.
-     * <p>
-     * The meaning of properties and XML configuration is dependent on particular repository implementation.
-     * 
-     * @param stereotypes
-     * @param properties
-     * @param configuration
-     */
-    void configure( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration );
-
     /**
      * Obtain the preferred path to given artifact in this repository.
      * <p>
@@ -113,8 +98,4 @@ public interface Repository
     List<RepositoryPath> getArtifactPaths( List<Artifact> artifact, boolean ignoreType );
 
     String getNamespace();
-
-    void setNamespace( String namespace );
-
-    Repository clone();
 }

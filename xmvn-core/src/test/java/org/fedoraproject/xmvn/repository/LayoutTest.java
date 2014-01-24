@@ -20,12 +20,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.sisu.launch.InjectedTest;
+import org.fedoraproject.xmvn.config.Stereotype;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,17 +40,50 @@ import org.junit.Test;
 public class LayoutTest
     extends InjectedTest
 {
+    private Repository mavenRepository;
+
+    private Repository jppRepository;
+
+    private Repository flatRepository;
+
+    private Repository getRepositoryInstance( String type )
+    {
+        RepositoryFactory factory = lookup( RepositoryFactory.class, type );
+        assertNotNull( factory );
+
+        List<Stereotype> stereotypes = Collections.emptyList();
+        Properties properties = new Properties();
+        Xpp3Dom configuration = new Xpp3Dom( "configuration" );
+
+        Repository repository = factory.getInstance( stereotypes, properties, configuration );
+        assertNotNull( repository );
+
+        return repository;
+    }
+
+    @Before
+    @Override
+    public void setUp()
+        throws Exception
+    {
+        super.setUp();
+
+        mavenRepository = getRepositoryInstance( "maven" );
+        jppRepository = getRepositoryInstance( "jpp" );
+        flatRepository = getRepositoryInstance( "flat" );
+    }
+
     /**
-     * Make sure there is no default repository.
+     * Make sure there is no default repository factory.
      * 
      * @throws Exception
      */
-    public void defaultRepositoryTest()
+    public void defaultRepositoryFactoryTest()
         throws Exception
     {
-        Repository defaultRepository = lookup( Repository.class );
+        RepositoryFactory defaultRepositoryfFactory = lookup( RepositoryFactory.class );
 
-        assertNull( defaultRepository );
+        assertNull( defaultRepositoryfFactory );
     }
 
     private void testPaths( Repository repository, Artifact artifact, String... result )
@@ -71,13 +110,6 @@ public class LayoutTest
     public void testLayouts()
         throws Exception
     {
-        Repository mavenRepository = lookup( Repository.class, "maven" );
-        Repository jppRepository = lookup( Repository.class, "jpp" );
-        Repository flatRepository = lookup( Repository.class, "flat" );
-        assertNotNull( mavenRepository );
-        assertNotNull( jppRepository );
-        assertNotNull( flatRepository );
-
         Artifact artifact = new DefaultArtifact( "an-example.artifact:used-FOR42.testing:ext-ens.ion:blah-1.2.3-foo" );
 
         testPaths( mavenRepository, artifact,
@@ -99,9 +131,6 @@ public class LayoutTest
     public void testJppPrefixes()
         throws Exception
     {
-        Repository jppRepository = lookup( Repository.class, "jpp" );
-        assertNotNull( jppRepository );
-
         Artifact artifact1 = new DefaultArtifact( "JPP:testing:abc:1.2.3" );
         Artifact artifact2 = new DefaultArtifact( "JPP/group:testing:abc:1.2.3" );
         Artifact artifact3 = new DefaultArtifact( "JPP-group:testing:abc:1.2.3" );

@@ -17,26 +17,25 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
-import javax.inject.Named;
-
-import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
  * Flat repository layout, either versioned or versionless, depending on properties.
  * <p>
  * Example: {@code g.r.o.u.p-artifact-ver.ext} or {@code g.r.o.u.p-artifact.ext}
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "flat" )
-public class FlatRepository
+class FlatRepository
     extends SimpleRepository
 {
+    public FlatRepository( String namespace, Path root, List<Stereotype> stereotypes )
+    {
+        super( namespace, root, stereotypes );
+    }
+
     @Override
     protected Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
                                     String version )
@@ -57,11 +56,5 @@ public class FlatRepository
             path.append( '.' ).append( extension );
 
         return Paths.get( path.toString() );
-    }
-
-    @Override
-    public Repository clone()
-    {
-        return new FlatRepository();
     }
 }

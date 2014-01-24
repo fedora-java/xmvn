@@ -16,21 +16,12 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
-import org.fedoraproject.xmvn.config.RepositoryConfigurator;
-import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
 
@@ -41,50 +32,21 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
  * <p>
  * All requests are forwarded to repositories backing this compound repository. If no repositories are aggregated then
  * this repository is equivalent to empty repository.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "compound" )
-public class CompoundRepository
+class CompoundRepository
     extends AbstractRepository
 {
-    private final RepositoryConfigurator configurator;
+    private final Path prefix;
 
-    private Path prefix;
+    private final List<Repository> slaveRepositories;
 
-    private final List<Repository> slaveRepositories = new ArrayList<>();
-
-    @Inject
-    public CompoundRepository( RepositoryConfigurator configurator )
+    public CompoundRepository( String namespace, Path prefix, List<Repository> slaveRepositories )
     {
-        this.configurator = configurator;
-    }
-
-    @Override
-    public void configure( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
-    {
-        if ( properties.containsKey( "prefix" ) )
-            prefix = Paths.get( properties.getProperty( "prefix" ) );
-
-        if ( configuration.getChildCount() != 1 || !configuration.getChild( 0 ).getName().equals( "repositories" ) )
-            throw new RuntimeException( "compound repository expects configuration "
-                + "with exactly one child element: <repositories>" );
-        configuration = configuration.getChild( 0 );
-
-        for ( Xpp3Dom child : configuration.getChildren() )
-        {
-            if ( !child.getName().equals( "repository" ) || child.getChildCount() > 0 )
-                throw new RuntimeException( "All childreen of <repositories> must be <repository> text nodes" );
-
-            Repository slaveRepository = configurator.configureRepository( child.getValue().trim() );
-            slaveRepositories.add( slaveRepository );
-        }
-
-        setNamespace( properties.getProperty( "namespace", "" ) );
+        super( namespace );
+        this.prefix = prefix;
+        this.slaveRepositories = slaveRepositories;
     }
 
     @Override
@@ -109,23 +71,5 @@ public class CompoundRepository
     {
         Iterator<RepositoryPath> it = getArtifactPaths( artifact, ignoreType ).iterator();
         return it.hasNext() ? it.next() : null;
-    }
-
-    @Override
-    public void setNamespace( String namespace )
-    {
-        super.setNamespace( namespace );
-
-        if ( StringUtils.isNotEmpty( namespace ) )
-        {
-            for ( Repository slave : slaveRepositories )
-                slave.setNamespace( namespace );
-        }
-    }
-
-    @Override
-    public Repository clone()
-    {
-        return new CompoundRepository( configurator );
     }
 }

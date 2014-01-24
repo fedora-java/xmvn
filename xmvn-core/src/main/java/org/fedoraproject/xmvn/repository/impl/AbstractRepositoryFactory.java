@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2013-2014 Red Hat, Inc.
+ * Copyright (c) 2014 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.config;
+package org.fedoraproject.xmvn.repository.impl;
 
+import java.util.List;
+import java.util.Properties;
+
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**
  * @author Mikolaj Izdebski
  */
-public interface RepositoryConfigurator
+abstract class AbstractRepositoryFactory
+    implements RepositoryFactory
 {
-    Repository configureRepository( String repoId );
-
-    Repository configureRepository( String repoId, String namespace );
+    @Override
+    public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
+    {
+        return getInstance( stereotypes, properties, configuration, "" );
+    }
 }

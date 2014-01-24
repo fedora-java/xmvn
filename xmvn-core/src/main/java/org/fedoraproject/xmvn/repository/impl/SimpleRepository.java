@@ -16,13 +16,10 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
@@ -34,9 +31,16 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 abstract class SimpleRepository
     extends AbstractRepository
 {
-    private Path root;
+    private final Path root;
 
-    private final List<Stereotype> stereotypes = new ArrayList<>();
+    private final List<Stereotype> stereotypes;
+
+    public SimpleRepository( String namespace, Path root, List<Stereotype> stereotypes )
+    {
+        super( namespace );
+        this.root = root;
+        this.stereotypes = new ArrayList<>( stereotypes );
+    }
 
     protected abstract Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
                                              String version );
@@ -95,17 +99,5 @@ abstract class SimpleRepository
         }
 
         return Collections.unmodifiableList( paths );
-    }
-
-    @Override
-    public void configure( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
-    {
-        String rootProperty = properties.getProperty( "root" );
-        root = rootProperty != null ? Paths.get( rootProperty ) : null;
-
-        setNamespace( properties.getProperty( "namespace", "" ) );
-
-        this.stereotypes.clear();
-        this.stereotypes.addAll( stereotypes );
     }
 }

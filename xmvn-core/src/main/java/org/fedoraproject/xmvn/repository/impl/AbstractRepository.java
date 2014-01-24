@@ -28,18 +28,17 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
 abstract class AbstractRepository
     implements Repository
 {
-    private String namespace;
+    private final String namespace;
+
+    public AbstractRepository( String namespace )
+    {
+        this.namespace = namespace;
+    }
 
     @Override
     public String getNamespace()
     {
         return namespace;
-    }
-
-    @Override
-    public void setNamespace( String namespace )
-    {
-        this.namespace = namespace;
     }
 
     @Override
@@ -65,7 +64,4 @@ abstract class AbstractRepository
     {
         return getArtifactPaths( artifacts, false );
     }
-
-    @Override
-    public abstract Repository clone();
 }
