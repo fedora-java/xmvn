@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.eclipse.sisu.space.SpaceModule;
@@ -36,21 +37,17 @@ import com.google.inject.Module;
  * @author Mikolaj Izdebski
  */
 @Named
+@Singleton
 public class BisectCli
 {
     private final Logger logger = LoggerFactory.getLogger( BisectCli.class );
 
-    private static String[] args;
-
-    private final CommandLineParser commandLineParser;
-
     private final BuildExecutor buildExecutor;
 
     @Inject
-    public BisectCli( CommandLineParser commandLineParser, BuildExecutor buildExecutor )
+    public BisectCli( BuildExecutor buildExecutor )
         throws Exception
     {
-        this.commandLineParser = commandLineParser;
         this.buildExecutor = buildExecutor;
     }
 
@@ -64,10 +61,9 @@ public class BisectCli
         return "bisect-initial.log";
     }
 
-    private void run()
+    private void run( BisectCliRequest commandLineParser )
         throws Exception
     {
-        commandLineParser.parseCommandLine( args );
         boolean verbose = commandLineParser.isVerbose();
 
         InvocationRequest request = commandLineParser.createInvocationRequest();
@@ -147,15 +143,19 @@ public class BisectCli
     {
         try
         {
+            BisectCliRequest cliRequest = new BisectCliRequest( args );
+
             Module module = new WireModule( new SpaceModule( new URLClassSpace( BisectCli.class.getClassLoader() ) ) );
             Injector injector = Guice.createInjector( module );
             BisectCli cli = injector.getInstance( BisectCli.class );
-            cli.run();
+
+            cli.run( cliRequest );
         }
-        catch ( Exception e )
+        catch ( Throwable e )
         {
+            System.err.println( "Unhandled exception" );
             e.printStackTrace();
-            System.exit( 1 );
+            System.exit( 2 );
         }
     }
 }

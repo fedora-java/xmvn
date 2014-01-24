@@ -15,26 +15,20 @@
  */
 package org.fedoraproject.xmvn.tools.subst;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.beust.jcommander.DynamicParameter;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -43,31 +37,10 @@ import com.google.inject.Module;
  * @author Mikolaj Izdebski
  */
 @Named
+@Singleton
 public class SubstCli
 {
-    @Parameter
-    public List<String> parameters = new LinkedList<>();
-
-    @Parameter( names = { "-h", "--help" }, help = true, description = "Display usage information" )
-    private boolean help;
-
-    @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
-    public boolean debug = false;
-
-    @Parameter( names = { "-s", "--strict" }, description = "Fail if any artifact cannot be symlinked" )
-    public boolean strict = false;
-
-    @Parameter( names = { "-d", "--dry-run" }, description = "Do not symlink anything but report what would have been symlinked" )
-    public boolean dryRun = false;
-
-    @Parameter( names = { "-L", "--follow-symlinks" }, description = "Follow symbolic links when traversing directory structure" )
-    public boolean followSymlinks = false;
-
-    @Parameter( names = { "-t", "--type" }, description = "Consider artifacts with given type" )
-    public List<String> types = new ArrayList<>( Arrays.asList( "jar", "war" ) );
-
-    @DynamicParameter( names = "-D", description = "Define system property" )
-    public Map<String, String> defines = new TreeMap<>();
+    private final Logger logger = LoggerFactory.getLogger( SubstCli.class );
 
     private final ArtifactVisitor visitor;
 
@@ -77,60 +50,45 @@ public class SubstCli
         this.visitor = visitor;
     }
 
-    private void parseArgs( String[] args )
+    private void run( SubstCliRequest cliRequest )
     {
+        visitor.setTypes( cliRequest.getTypes() );
+        visitor.setFollowSymlinks( cliRequest.isFollowSymlinks() );
+        visitor.setDryRun( cliRequest.isDryRun() );
+
         try
         {
-            JCommander jcomm = new JCommander( this, args );
-            jcomm.setProgramName( "xmvn-subst" );
-
-            if ( help )
-            {
-                System.out.println( "xmvn-subst: Substitute artifact files with symbolic links" );
-                System.out.println();
-                jcomm.usage();
-                System.exit( 0 );
-            }
-
-            for ( String param : defines.keySet() )
-                System.setProperty( param, defines.get( param ) );
-        }
-        catch ( ParameterException e )
-        {
-            System.err.println( e.getMessage() + ". Specify -h for usage." );
-            System.exit( 1 );
-        }
-    }
-
-    private void run()
-    {
-        try
-        {
-            visitor.setTypes( types );
-            visitor.setFollowSymlinks( followSymlinks );
-            visitor.setDryRun( dryRun );
-
-            for ( String path : parameters )
+            for ( String path : cliRequest.getParameters() )
             {
                 Files.walkFileTree( Paths.get( path ), visitor );
             }
-
-            if ( strict && visitor.getFailureCount() > 0 )
-                System.exit( 1 );
         }
-        catch ( Throwable e )
+        catch ( IOException e )
         {
-            e.printStackTrace();
-            System.exit( 2 );
+            logger.error( "I/O error occured", e );
         }
+
+        if ( cliRequest.isStrict() && visitor.getFailureCount() > 0 )
+            System.exit( 1 );
     }
 
     public static void main( String[] args )
     {
-        Module module = new WireModule( new SpaceModule( new URLClassSpace( SubstCli.class.getClassLoader() ) ) );
-        Injector injector = Guice.createInjector( module );
-        SubstCli cli = injector.getInstance( SubstCli.class );
-        cli.parseArgs( args );
-        cli.run();
+        try
+        {
+            SubstCliRequest cliRequest = new SubstCliRequest( args );
+
+            Module module = new WireModule( new SpaceModule( new URLClassSpace( SubstCli.class.getClassLoader() ) ) );
+            Injector injector = Guice.createInjector( module );
+            SubstCli cli = injector.getInstance( SubstCli.class );
+
+            cli.run( cliRequest );
+        }
+        catch ( Throwable e )
+        {
+            System.err.println( "Unhandled exception" );
+            e.printStackTrace();
+            System.exit( 2 );
+        }
     }
 }

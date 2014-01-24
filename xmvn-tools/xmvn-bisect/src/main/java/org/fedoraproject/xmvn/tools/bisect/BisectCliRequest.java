@@ -24,9 +24,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.codehaus.plexus.util.StringUtils;
@@ -39,10 +36,7 @@ import com.beust.jcommander.ParameterException;
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
-public class DefaultCommandLineParser
-    implements CommandLineParser
+public class BisectCliRequest
 {
     @Parameter( description = "goals" )
     private List<String> goals;
@@ -137,6 +131,35 @@ public class DefaultCommandLineParser
     @Parameter( names = { "-s", "--settings" }, description = "Path to user settings" )
     private String userSettings;
 
+    public BisectCliRequest( String[] args )
+    {
+        setDefaultValues();
+
+        try
+        {
+            JCommander jcomm = new JCommander( this, args );
+            jcomm.setProgramName( "xmvn-bisect" );
+
+            if ( help )
+            {
+                System.out.println( "xmvn-bisect: Build Maven project using bisection method" );
+                System.out.println();
+                jcomm.usage();
+                System.exit( 0 );
+            }
+
+            if ( debug )
+                System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "trace" );
+            for ( String param : defines.keySet() )
+                System.setProperty( param, defines.get( param ) );
+        }
+        catch ( ParameterException e )
+        {
+            System.err.println( e.getMessage() + ". Specify -h for usage." );
+            System.exit( 1 );
+        }
+    }
+
     private static String fileToString( File file )
     {
         if ( file != null )
@@ -197,7 +220,6 @@ public class DefaultCommandLineParser
         userSettings = fileToString( request.getUserSettingsFile() );
     }
 
-    @Override
     public InvocationRequest createInvocationRequest()
     {
         InvocationRequest request = new DefaultInvocationRequest();
@@ -234,62 +256,31 @@ public class DefaultCommandLineParser
         return request;
     }
 
-    @Override
-    public void parseCommandLine( String[] args )
-    {
-        setDefaultValues();
-
-        try
-        {
-            JCommander jcomm = new JCommander( this, args );
-            jcomm.setProgramName( "xmvn-bisect" );
-
-            if ( help )
-            {
-                System.out.println( "xmvn-bisect: Build Maven project using bisection method" );
-                System.out.println();
-                jcomm.usage();
-                System.exit( 0 );
-            }
-        }
-        catch ( ParameterException e )
-        {
-            System.err.println( e.getMessage() + ". Specify -h for usage." );
-            System.exit( 1 );
-        }
-    }
-
-    @Override
     public Map<String, String> getSystemProperties()
     {
         return Collections.unmodifiableMap( defines );
     }
 
-    @Override
     public boolean useBinarySearch()
     {
         return !linearSearch;
     }
 
-    @Override
     public boolean isVerbose()
     {
         return verbose;
     }
 
-    @Override
     public String getRepoPath()
     {
         return repoPath;
     }
 
-    @Override
     public String getCounterPath()
     {
         return counterPath;
     }
 
-    @Override
     public boolean isSkipSanityChecks()
     {
         return noSanityChecks;

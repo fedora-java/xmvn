@@ -22,14 +22,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.zip.DataFormatException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
@@ -40,11 +37,9 @@ import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.beust.jcommander.DynamicParameter;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -53,31 +48,10 @@ import com.google.inject.Module;
  * @author Mikolaj Izdebski
  */
 @Named
+@Singleton
 public class InstallerCli
 {
-    @Parameter
-    public List<String> parameters = new LinkedList<>();
-
-    @Parameter( names = { "-h", "--help" }, help = true, description = "Display usage information" )
-    private boolean help;
-
-    @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
-    public boolean debug = false;
-
-    @Parameter( names = { "-r", "--relaxed" }, description = "Skip strict rule checking" )
-    public boolean relaxed;
-
-    @Parameter( names = { "-R", "--reactor" }, description = "Path to reactor descriptor" )
-    public String planPath = ".xmvn/reactor.xml";
-
-    @Parameter( names = { "-n", "--name" }, description = "Base package name" )
-    public String packageName = "pkgname";
-
-    @Parameter( names = { "-d", "--destination" }, description = "Destination directory" )
-    public String destDir = ".xmvn/root";
-
-    @DynamicParameter( names = "-D", description = "Define system property" )
-    public Map<String, String> defines = new TreeMap<>();
+    private final Logger logger = LoggerFactory.getLogger( InstallerCli.class );
 
     private final Installer installer;
 
@@ -87,32 +61,7 @@ public class InstallerCli
         this.installer = installer;
     }
 
-    private void parseArgs( String[] args )
-    {
-        try
-        {
-            JCommander jcomm = new JCommander( this, args );
-            jcomm.setProgramName( "xmvn-install" );
-
-            if ( help )
-            {
-                System.out.println( "xmvn-install: Install artifacts" );
-                System.out.println();
-                jcomm.usage();
-                System.exit( 0 );
-            }
-
-            for ( String param : defines.keySet() )
-                System.setProperty( param, defines.get( param ) );
-        }
-        catch ( ParameterException e )
-        {
-            System.err.println( e.getMessage() + ". Specify -h for usage." );
-            System.exit( 1 );
-        }
-    }
-
-    private Xpp3Dom readInstallationPlan()
+    private Xpp3Dom readInstallationPlan( String planPath )
         throws XmlPullParserException, IOException
     {
         try (Reader reader = new FileReader( planPath ))
@@ -156,16 +105,11 @@ public class InstallerCli
         return artifact;
     }
 
-    private void run()
+    private void readReactor( InstallationRequest request, InstallerCliRequest cliRequest )
     {
         try
         {
-            InstallationRequest request = new InstallationRequest();
-            request.setCheckForUnmatchedRules( !relaxed );
-            request.setBasePackageName( packageName );
-            request.setInstallRoot( Paths.get( destDir ) );
-
-            Xpp3Dom dom = readInstallationPlan();
+            Xpp3Dom dom = readInstallationPlan( cliRequest.getPlanPath() );
 
             for ( Xpp3Dom artifactDom : dom.getChildren( "artifact" ) )
             {
@@ -180,22 +124,43 @@ public class InstallerCli
                 artifact = ArtifactUtils.setEffectiveModelPath( artifact, effectiveModelPath );
                 request.addArtifact( artifact );
             }
-
-            installer.install( request );
         }
-        catch ( Throwable e )
+        catch ( IOException | DataFormatException | XmlPullParserException e )
         {
-            e.printStackTrace();
-            System.exit( 2 );
+            logger.error( "Unable to read reactor installation plan", e );
         }
+    }
+
+    private void run( InstallerCliRequest cliRequest )
+    {
+        InstallationRequest request = new InstallationRequest();
+        request.setCheckForUnmatchedRules( !cliRequest.isRelaxed() );
+        request.setBasePackageName( cliRequest.getPackageName() );
+        request.setInstallRoot( Paths.get( cliRequest.getDestDir() ) );
+
+        readReactor( request, cliRequest );
+
+        installer.install( request );
     }
 
     public static void main( String[] args )
     {
-        Module module = new WireModule( new SpaceModule( new URLClassSpace( InstallerCli.class.getClassLoader() ) ) );
-        Injector injector = Guice.createInjector( module );
-        InstallerCli cli = injector.getInstance( InstallerCli.class );
-        cli.parseArgs( args );
-        cli.run();
+        try
+        {
+            InstallerCliRequest cliRequest = new InstallerCliRequest( args );
+
+            Module module =
+                new WireModule( new SpaceModule( new URLClassSpace( InstallerCli.class.getClassLoader() ) ) );
+            Injector injector = Guice.createInjector( module );
+            InstallerCli cli = injector.getInstance( InstallerCli.class );
+
+            cli.run( cliRequest );
+        }
+        catch ( Throwable e )
+        {
+            System.err.println( "Unhandled exception" );
+            e.printStackTrace();
+            System.exit( 2 );
+        }
     }
 }
