@@ -101,7 +101,8 @@
     <junitVersion>4.11</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
-    <modelloVersion>1.7</modelloVersion>
+    <!-- Fix for MODELLO-284 and MODELLO-285 is needed -->
+    <modelloVersion>1.8.2-SNAPSHOT</modelloVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>2.7</projectInfoReportsPluginVersion>
     <resourcesPluginVersion>2.6</resourcesPluginVersion>

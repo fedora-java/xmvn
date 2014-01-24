@@ -32,14 +32,14 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Reader;
-import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Writer;
+import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
+import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,10 +78,10 @@ public class DefaultConfigurator
     {
         try
         {
-            ConfigurationXpp3Reader reader = new ConfigurationXpp3Reader();
+            ConfigurationStaxReader reader = new ConfigurationStaxReader();
             return reader.read( stream );
         }
-        catch ( XmlPullParserException e )
+        catch ( XMLStreamException e )
         {
             throw new IOException( "Failed to parse configuration", e );
         }
@@ -284,11 +284,11 @@ public class DefaultConfigurator
 
         try (StringWriter writer = new StringWriter())
         {
-            ConfigurationXpp3Writer dumper = new ConfigurationXpp3Writer();
+            ConfigurationStaxWriter dumper = new ConfigurationStaxWriter();
             dumper.write( writer, configuration );
             logger.debug( "XMvn configuration:\n{}", writer.toString() );
         }
-        catch ( IOException e )
+        catch ( IOException | XMLStreamException e )
         {
             throw new RuntimeException( e );
         }

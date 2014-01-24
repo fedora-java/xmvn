@@ -44,6 +44,7 @@ import java.util.zip.ZipInputStream;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -59,7 +60,7 @@ import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.config.io.xpp3.ConfigurationXpp3Writer;
+import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 import org.fedoraproject.xmvn.dependency.DependencyExtractionRequest;
 import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
 import org.fedoraproject.xmvn.dependency.DependencyExtractor;
@@ -237,9 +238,13 @@ public class DefaultInstaller
             {
                 Configuration wrapperConfiguration = new Configuration();
                 wrapperConfiguration.addArtifactManagement( rule );
-                ConfigurationXpp3Writer configurationWriter = new ConfigurationXpp3Writer();
+                ConfigurationStaxWriter configurationWriter = new ConfigurationStaxWriter();
                 configurationWriter.write( buffer, wrapperConfiguration );
                 logger.debug( "Effective packaging rule for {}:\n", artifact, buffer );
+            }
+            catch ( XMLStreamException e )
+            {
+                throw new RuntimeException( e );
             }
         }
 
