@@ -22,7 +22,6 @@ import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
-import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.junit.Test;
 
 /**

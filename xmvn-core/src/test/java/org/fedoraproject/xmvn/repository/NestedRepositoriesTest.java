@@ -30,7 +30,6 @@ import org.eclipse.sisu.launch.InjectedTest;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
-import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.junit.Before;
 import org.junit.Test;

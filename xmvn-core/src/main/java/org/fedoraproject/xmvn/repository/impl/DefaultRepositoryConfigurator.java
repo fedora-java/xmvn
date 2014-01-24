@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.config.impl;
+package org.fedoraproject.xmvn.repository.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -25,9 +25,9 @@ import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**

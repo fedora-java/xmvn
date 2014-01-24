@@ -27,9 +27,9 @@ import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.fedoraproject.xmvn.config.RepositoryConfigurator;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 
 /**
  * Factory creating compound repositories.
