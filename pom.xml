@@ -123,8 +123,8 @@
                   <version>${project.version}</version>
                   <type>xsd</type>
                   <classifier>config</classifier>
-                  <outputDirectory>${project.build.directory}/generated-site/xsd</outputDirectory>
-                  <destFileName>config-0.5.0.xsd</destFileName>
+                  <outputDirectory>${project.build.directory}/generated-site/resources/xsd</outputDirectory>
+                  <destFileName>config-2.0.0.xsd</destFileName>
                 </artifactItem>
               </artifactItems>
             </configuration>
