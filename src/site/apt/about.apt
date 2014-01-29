@@ -9,32 +9,32 @@
 Overview
 
   XMvn is a set of free software components that are useful in
-  packaging Java software which build is managed by Apache Maven.
-  XMvn maintains system-wide repository of artifacts, which it uses to
+  packaging Java software whose build is managed by Apache Maven.
+  XMvn maintains a system-wide repository of artifacts, which it uses to
   build projects without having to connect to the Internet to download
   artifacts from remote Maven repositories, such as Maven Central.
   XMvn also provides plugins for Apache Maven that can help with
   creating and debugging RPM packages containing Maven artifacts.
-  XMvn name comes from "local eXtensions for MaVeN".
+  XMvn name is derived from "local eXtensions for MaVeN".
 
 Reasons for existence of XMvn
 
-  According to one of Moore's laws, volume of computer software grows
-  exponentially with time.  This is reflected in fast increase of
-  number of packages in GNU/Linux distributions.  Unfortunately growth
-  of number of contributors is usually sublinear.  There is a clear
+  According to one of Moore's laws, the volume of computer software grows
+  exponentially with time.  This is reflected in a fast increase of
+  the number of packages in GNU/Linux distributions.  Unfortunately the
+  number of contributors doesn't grow as fast.  There is a clear
   need for better tooling so that package maintainers can keep up with
   fast changes in the free software world.
 
-  Fortunately for Java packagers current trend in Java build systems
+  Fortunately for Java packagers a current trend in Java build systems
   is Apache Maven, which, as opposed to Apache Ant, is based on
-  project object model (POM).  The model is stored in standardized XML
-  form in <<<pom.xml>>> files.  Such form of managing project
-  configuration opens door for improvements in packaging of Maven
-  artifacts in distributions of GNU/Linux.
+  the project object model (POM).  The model is stored in standardized XML
+  form in <<<pom.xml>>> files.  This form of managing project
+  configuration opens the door for improvements in packaging of Maven
+  artifacts in GNU/Linux distributions.
 
   Most of information that need to be included in every RPM package is
-  already present in Maven POM.  This includes simple things like
+  already present in a Maven POM.  This includes simple things like
   name, description or licensing, but also complex things such as
   dependencies, which are even more powerful than RPM dependencies
   (think of dependency scopes or exclusions).
@@ -46,8 +46,8 @@ Reasons for existence of XMvn
   dependencies is very important, but tedious at the same time, which
   unfortunately makes many packagers update dependencies carelessly
   or even skip this step completely.  Inaccurate RPM requires can
-  cause installation of hundreds of unneeded packages, but also (and
-  more importantly) breaking of other packages.
+  cause installation of hundreds of unneeded packages, but it can also
+  (more importantly) break of other packages.
 
   The <<<%install>>> section of RPM spec files is another example of
   redundant data.  Traditionally each JAR or POM file would need to be
@@ -83,32 +83,32 @@ Pros
   corner cases.  Only developers maintaining more complicated packages
   need to know mode advanced aspects of packaging Java using XMvn.
 
-  Packages using XMvn can be updates much faster than traditional Java
+  Packages using XMvn can be updated much faster than traditional Java
   packages.  Often just version bump is enough.  This is because most
   of package metadata as well as <<<%build>>> and <<<%install>>>
   sections are maintained by XMvn so there is no need to change them
   manually.
 
-  Packages using XMvn have usually improved quality.  One of reasons
+  Using XMvn will usually result in a quality improvement.  One of reasons
   for that is automated dependency management, which when done
-  manually was source of many packaging bugs.  Improved quality is
+  manually was the source of many packaging bugs.  Improved quality is
   also an indirect consequence of more readable spec files (bugs are
   easier to notice).
 
   Metadata redundancy is reduced in XMVn packages.  This means that if
-  someone wants to update some package information this has to be done
-  only on one place.
+  someone wants to update some package information this can be done
+  in a single place. 
 
   Maintenance of multi-module packages is much easier with XMvn,
   almost as easy as single-module packages.  "One artifact per
   package" rule is closer to upstream packaging, improves granularity
   of packaging, dependency graphs are more accurate.
 
-  Existence of XMvn allows upstream Maven to be used without any
+  The existence of XMvn allows upstream Maven to be used without any
   patching.  To build packages with Maven a custom patch set had to be
   maintained and rebased with each update of Maven.  XMvn obsoletes
-  that custom patches and allows unmodified Maven to be included in
-  distribution.
+  that custom patches and allows Maven to be included in a distribution
+  unmodified.
 
   Lastly, a very important advantage: changes in distribution policy
   are much easier to implement as there is only one place to implement
@@ -118,7 +118,7 @@ Pros
 
 Cons
 
-  As you may expect, everything comes at a price.  In XMvn's case,
+  As you may expect, these advantages comes at a price.  In XMvn's case,
   there are several tradeoffs that have been made in order to allow
   its function.  One of the greatest targets of complaints is the lack
   of packager's control over what is happening behind the scenes.
@@ -128,11 +128,11 @@ Cons
   customs, henceforth leaving control in hands of those who require
   it.
 
-  In case of a packaging bug occurring, using XMvn may under certain
+  In cases where a packaging bug occurs, using XMvn may under certain
   circumstances make debugging more difficult compared to the
   traditional way of Java packaging.  However, since most packages use
-  rather standard way of packaging, in most cases no serious hardships
-  are expected, especially after the initial bugs is ironed out.
+  a rather standard way of packaging, in most cases no serious hardships
+  are expected, especially after the initial bugs are ironed out.
 
   Even though XMvn allows the traditional way of packaging, it is not
   always compatible with some older systems (to name a few: RHEL 5,
