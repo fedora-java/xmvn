@@ -20,7 +20,6 @@ import static org.fedoraproject.xmvn.mojo.Utils.saveEffectivePom;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,29 +84,6 @@ public class InstallMojo
             {
                 if ( dependency.getScope() != null && dependency.getScope().equals( "system" ) )
                 {
-                    if ( dependency.getGroupId().equals( "p2.eclipse-plugin" ) )
-                    {
-                        Path bundlePath = Paths.get( dependency.getSystemPath() );
-                        Artifact bundleArtifact = ArtifactUtils.readArtifactDefinition( bundlePath, "jar" );
-
-                        if ( bundleArtifact != null )
-                        {
-                            String bundleSymbolicName = dependency.getArtifactId();
-
-                            dependency.setGroupId( bundleArtifact.getGroupId() );
-                            dependency.setArtifactId( bundleArtifact.getArtifactId() );
-                            dependency.setVersion( bundleArtifact.getVersion() );
-                            dependency.setType( bundleArtifact.getExtension() );
-                            dependency.setClassifier( bundleArtifact.getClassifier() );
-                            dependency.setScope( null );
-                            dependency.setSystemPath( null );
-
-                            logger.info( "Replaced OSGi dependency on {} with Maven dependency on {}",
-                                         bundleSymbolicName, bundleArtifact );
-                            continue;
-                        }
-                    }
-
                     systemDeps.add( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
                                                          dependency.getType(), dependency.getClassifier(),
                                                          dependency.getVersion() ) );
