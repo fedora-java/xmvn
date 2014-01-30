@@ -600,6 +600,7 @@ public class DefaultInstaller
 
         if ( isPomArtifact )
         {
+            assert rawModelPath != null;
             artifact = artifact.setFile( rawModelPath.toFile() );
             artifact = ArtifactUtils.setStereotype( artifact, "pom" );
         }
