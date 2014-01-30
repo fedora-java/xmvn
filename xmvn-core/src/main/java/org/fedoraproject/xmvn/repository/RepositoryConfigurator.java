@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-
 /**
  * @author Mikolaj Izdebski
  */

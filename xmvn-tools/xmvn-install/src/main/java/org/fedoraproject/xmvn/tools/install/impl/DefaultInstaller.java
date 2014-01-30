@@ -133,9 +133,10 @@ public class DefaultInstaller
 
     @Inject
     public DefaultInstaller( Configurator configurator, RepositoryConfigurator repositoryConfigurator,
-                             Resolver resolver, @Named( DependencyExtractor.BUILD )
-                             DependencyExtractor buildDependencyExtractor, @Named( DependencyExtractor.RUNTIME )
-                             DependencyExtractor runtimeDependencyExtractor, ModelReader modelReader )
+                             Resolver resolver,
+                             @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor,
+                             @Named( DependencyExtractor.RUNTIME ) DependencyExtractor runtimeDependencyExtractor,
+                             ModelReader modelReader )
     {
         this.configurator = configurator;
         this.repositoryConfigurator = repositoryConfigurator;

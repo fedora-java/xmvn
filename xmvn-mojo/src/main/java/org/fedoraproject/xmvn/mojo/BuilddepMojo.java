@@ -61,8 +61,8 @@ public class BuilddepMojo
     private final DependencyExtractor buildDependencyExtractor;
 
     @Inject
-    public BuilddepMojo( Resolver resolver, @Named( DependencyExtractor.BUILD )
-    DependencyExtractor buildDependencyExtractor )
+    public BuilddepMojo( Resolver resolver,
+                         @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor )
     {
         this.resolver = resolver;
         this.buildDependencyExtractor = buildDependencyExtractor;
