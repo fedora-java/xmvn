@@ -33,6 +33,9 @@ import java.util.List;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.deployer.Deployer;
+import org.fedoraproject.xmvn.deployer.DeploymentRequest;
+import org.fedoraproject.xmvn.deployer.DeploymentResult;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -163,14 +166,51 @@ public class XMvn
         }
     }
 
+    private static class IsolatedDeployer
+        implements Deployer
+    {
+        private static final Deployer instance = new IsolatedDeployer();
+
+        private final Deployer delegate;
+
+        public IsolatedDeployer()
+        {
+            delegate = lookup( Deployer.class );
+        }
+
+        @Override
+        public DeploymentResult deploy( DeploymentRequest request )
+        {
+            try
+            {
+                enterSisuRealm();
+                return delegate.deploy( request );
+            }
+            finally
+            {
+                leaveSisuRealm();
+            }
+        }
+    }
+
     public static Resolver getResolver()
     {
         return IsolatedResolver.instance;
     }
 
+    public static Deployer getDeployer()
+    {
+        return IsolatedDeployer.instance;
+    }
+
     public static ResolutionResult resolve( ResolutionRequest request )
     {
         return getResolver().resolve( request );
+    }
+
+    public static DeploymentResult deploy( DeploymentRequest request )
+    {
+        return getDeployer().deploy( request );
     }
 
     public static void main( String[] args )
