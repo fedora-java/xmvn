@@ -43,13 +43,15 @@ import org.apache.ivy.plugins.repository.file.FileResource;
 import org.apache.ivy.plugins.resolver.AbstractResolver;
 import org.apache.ivy.plugins.resolver.util.ResolvedResource;
 import org.fedoraproject.xmvn.XMvn;
+import org.fedoraproject.xmvn.deployer.Deployer;
+import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
- * Resolve Ivy artifacts by delegating most tasks to XMvn.
+ * Resolve and publish Ivy artifacts by delegating most tasks to XMvn.
  * 
  * @author Mikolaj Izdebski
  */
@@ -58,11 +60,14 @@ public class IvyResolver
 {
     private final Resolver resolver;
 
+    private final Deployer deployer;
+
     public IvyResolver()
     {
         setName( "XMvn" );
 
         resolver = XMvn.getResolver();
+        deployer = XMvn.getDeployer();
     }
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )
@@ -210,6 +215,8 @@ public class IvyResolver
     public void publish( Artifact artifact, File artifactFile, boolean overwrite )
         throws IOException
     {
-        throw new IOException( "Publishing Ivy artifacts through XMvn is not yet supported." );
+        DeploymentRequest request = new DeploymentRequest();
+        request.setArtifact( ivy2aether( artifact ) );
+        deployer.deploy( request );
     }
 }
