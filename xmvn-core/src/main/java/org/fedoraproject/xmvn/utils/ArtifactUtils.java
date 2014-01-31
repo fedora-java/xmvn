@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.utils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -80,10 +79,6 @@ public class ArtifactUtils
 
     private static final String KEY_STEREOTYPE = "xmvn.artifact.stereotype";
 
-    private static final String KEY_RAW_MODEL = "xmvn.artifact.rawModel";
-
-    private static final String KEY_EFFECTIVE_MODEL = "xmvn.artifact.effectiveModel";
-
     public static Artifact setProperty( Artifact artifact, String key, String value )
     {
         Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
@@ -119,30 +114,6 @@ public class ArtifactUtils
     public static Artifact copyStereotype( Artifact artifact, Artifact referenceArtifact )
     {
         return setStereotype( artifact, getStereotype( referenceArtifact ) );
-    }
-
-    public static Path getRawModelPath( Artifact artifact )
-    {
-        String path = artifact.getProperty( KEY_RAW_MODEL, null );
-        return path != null ? Paths.get( path ) : null;
-    }
-
-    public static Artifact setRawModelPath( Artifact artifact, Path rawModelPath )
-    {
-        String path = rawModelPath != null ? rawModelPath.toString() : null;
-        return setProperty( artifact, KEY_RAW_MODEL, path );
-    }
-
-    public static Path getEffectiveModelPath( Artifact artifact )
-    {
-        String path = artifact.getProperty( KEY_EFFECTIVE_MODEL, null );
-        return path != null ? Paths.get( path ) : null;
-    }
-
-    public static Artifact setEffectiveModelPath( Artifact artifact, Path effectiveModelPath )
-    {
-        String path = effectiveModelPath != null ? effectiveModelPath.toString() : null;
-        return setProperty( artifact, KEY_EFFECTIVE_MODEL, path );
     }
 
     /**

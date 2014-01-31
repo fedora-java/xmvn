@@ -112,10 +112,12 @@ public abstract class AbstractInstallerTest
 
         Artifact artifact = new DefaultArtifact( groupId, artifactId, "jar", version );
         artifact = artifact.setFile( artifactPath.toFile() );
-        artifact = ArtifactUtils.setRawModelPath( artifact, modelPath );
-        artifact = ArtifactUtils.setEffectiveModelPath( artifact, modelPath );
-
         request.addArtifact( artifact );
+
+        Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "pom", version );
+        pomArtifact = pomArtifact.setFile( modelPath.toFile() );
+        request.addArtifact( ArtifactUtils.setStereotype( artifact, "raw" ) );
+        request.addArtifact( ArtifactUtils.setStereotype( artifact, "effective" ) );
 
         logger.info( "Added arrifact {}", artifact );
         logger.info( "  POM path: {}", modelPath.toAbsolutePath() );
