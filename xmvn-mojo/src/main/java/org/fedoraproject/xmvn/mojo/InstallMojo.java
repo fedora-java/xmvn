@@ -109,13 +109,11 @@ public class InstallMojo
         }
     }
 
-    private void deployArtifact( Artifact artifact, Path rawPom, Path effectivePom )
+    private void deployArtifact( Artifact artifact )
         throws MojoExecutionException
     {
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact( artifact );
-        request.setRawModelPath( rawPom );
-        request.setEffectiveModelPath( effectivePom );
 
         DeploymentResult result = deployer.deploy( request );
         if ( result.getException() != null )
@@ -137,12 +135,28 @@ public class InstallMojo
                 logger.debug( "Installing main artifact {}", mainArtifact );
                 logger.debug( "Artifact file is {}", mainArtifact.getFile() );
 
-                Path rawPom = project.getFile().toPath();
-                Path effectivePom = saveEffectivePom( project.getModel() );
-                logger.debug( "Raw POM path: {}", rawPom );
-                logger.debug( "Effective POM path: {}", effectivePom );
+                if ( mainArtifact.getFile() != null )
+                {
+                    deployArtifact( mainArtifact );
 
-                deployArtifact( mainArtifact, rawPom, effectivePom );
+                    Artifact effectivePomArtifact =
+                        new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(),
+                                             mainArtifact.getClassifier(), "pom", mainArtifact.getVersion() );
+                    effectivePomArtifact = ArtifactUtils.setStereotype( effectivePomArtifact, "effective" );
+                    Path effectivePom = saveEffectivePom( project.getModel() );
+                    logger.debug( "Effective POM path: {}", effectivePom );
+                    effectivePomArtifact = effectivePomArtifact.setFile( effectivePom.toFile() );
+                    deployArtifact( effectivePomArtifact );
+                }
+
+                Artifact rawPomArtifact =
+                    new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(),
+                                         mainArtifact.getClassifier(), "pom", mainArtifact.getVersion() );
+                rawPomArtifact = ArtifactUtils.setStereotype( rawPomArtifact, "raw" );
+                Path rawPom = project.getFile().toPath();
+                logger.debug( "Raw POM path: {}", rawPom );
+                rawPomArtifact = rawPomArtifact.setFile( rawPom.toFile() );
+                deployArtifact( rawPomArtifact );
 
                 for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
                 {
@@ -150,7 +164,7 @@ public class InstallMojo
                     attachedArtifact = attachedArtifact.setFile( mavenArtifact.getFile() );
                     logger.debug( "Installing attached artifact {}", attachedArtifact );
 
-                    deployArtifact( attachedArtifact, null, null );
+                    deployArtifact( attachedArtifact );
                 }
             }
         }
