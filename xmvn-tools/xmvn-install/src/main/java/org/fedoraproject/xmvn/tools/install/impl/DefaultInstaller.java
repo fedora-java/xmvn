@@ -99,6 +99,10 @@ public class DefaultInstaller
 
     private Repository installRepo;
 
+    private Repository rawPomRepo;
+
+    private Repository effectivePomRepo;
+
     private InstallerSettings settings;
 
     private Configuration configuration;
@@ -238,7 +242,7 @@ public class DefaultInstaller
         return pkg;
     }
 
-    private List<Artifact> getJppArtifacts( Artifact artifact, PackagingRule rule, String packageName )
+    private List<Artifact> getJppArtifacts( Artifact artifact, PackagingRule rule, String packageName, Repository repo )
     {
         Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
@@ -271,7 +275,7 @@ public class DefaultInstaller
                                          artifact.getExtension(), version );
                 jppArtifact = ArtifactUtils.copyStereotype( jppArtifact, artifact );
 
-                RepositoryPath jppArtifactPath = installRepo.getPrimaryArtifactPath( jppArtifact );
+                RepositoryPath jppArtifactPath = repo.getPrimaryArtifactPath( jppArtifact );
                 if ( jppArtifactPath == null )
                     return null;
                 jppArtifact = jppArtifact.setFile( jppArtifactPath.getPath().toFile() );
@@ -492,7 +496,17 @@ public class DefaultInstaller
             return;
         }
 
-        List<Artifact> jppArtifacts = getJppArtifacts( artifact, rule, packageName );
+        Repository repo;
+        if ( StringUtils.equals( artifact.getExtension(), "pom" )
+            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "raw" ) )
+            repo = rawPomRepo;
+        else if ( StringUtils.equals( artifact.getExtension(), "pom" )
+            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "effective" ) )
+            repo = effectivePomRepo;
+        else
+            repo = installRepo;
+
+        List<Artifact> jppArtifacts = getJppArtifacts( artifact, rule, packageName, repo );
         if ( jppArtifacts == null )
         {
             logger.warn( "Skipping installation of artifact {}: No suitable repository found to store the artifact in.",
@@ -611,6 +625,8 @@ public class DefaultInstaller
     public InstallationResult install( InstallationRequest request )
     {
         installRepo = repositoryConfigurator.configureRepository( "install" );
+        rawPomRepo = repositoryConfigurator.configureRepository( "install-raw-pom" );
+        effectivePomRepo = repositoryConfigurator.configureRepository( "install-effective-pom" );
 
         configuration = configurator.getConfiguration();
         settings = configuration.getInstallerSettings();
