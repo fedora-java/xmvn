@@ -314,7 +314,7 @@ public class DefaultInstaller
         }
     }
 
-    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
+    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
         throws IOException
     {
         logger.info( "===============================================" );
@@ -353,7 +353,10 @@ public class DefaultInstaller
             Path symlink = jppSymlinkArtifact.getFile().toPath();
             pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
         }
+    }
 
+    private void generateDepmap( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
+    {
         Set<Artifact> packaged = packagedArtifacts.get( pkg );
         if ( packaged == null )
         {
@@ -515,7 +518,8 @@ public class DefaultInstaller
         }
 
         List<Artifact> aliases = getAliasArtifacts( rule );
-        installArtifact( pkg, artifact, aliases, jppArtifacts );
+        installArtifact( pkg, artifact, jppArtifacts );
+        generateDepmap( pkg, artifact, aliases, jppArtifacts );
 
         Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
         installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
