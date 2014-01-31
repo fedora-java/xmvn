@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -55,6 +56,9 @@ class Package
 
     /** installed user artifacts (no aliases) */
     private final Set<Artifact> userArtifacts = new LinkedHashSet<>();
+
+    /** map generic artifact => provided artifact */
+    private Map<Artifact, Artifact> providedArtifacts;
 
     public Package( String name, InstallerSettings settings )
     {
@@ -227,5 +231,51 @@ class Package
     public Set<Artifact> getUserArtifacts()
     {
         return Collections.unmodifiableSet( userArtifacts );
+    }
+
+    public void addArtifactMetadata( Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
+    {
+        for ( Artifact jppArtifact : jppArtifacts )
+        {
+            String providedVersion = jppArtifact.getVersion();
+            Artifact providedArtifact = artifact.setVersion( providedVersion ).setFile( null ).setProperties( null );
+
+            String scope = ArtifactUtils.getScope( jppArtifact );
+            Artifact scopedArtifact = ArtifactUtils.setScope( artifact, scope );
+            Artifact scopedProvidedArtifact = ArtifactUtils.setScope( providedArtifact, scope );
+
+            providedArtifacts.put( providedArtifact, scopedProvidedArtifact );
+            metadata.addMapping( scopedArtifact, jppArtifact );
+
+            for ( Artifact alias : aliases )
+            {
+                Artifact providedAlias = alias.setVersion( providedVersion ).setProperties( null );
+                Artifact scopedAlias = ArtifactUtils.setScope( alias, scope );
+                Artifact scopedProvidedAlias = ArtifactUtils.setScope( providedAlias, scope );
+
+                providedArtifacts.put( providedAlias, scopedProvidedAlias );
+                metadata.addMapping( scopedAlias, jppArtifact );
+            }
+        }
+    }
+
+    /**
+     * Get all artifacts and aliases for which this package provides depmap.
+     * 
+     * @return
+     */
+    public Set<Artifact> getTrackedArtifacts()
+    {
+        return Collections.unmodifiableSet( providedArtifacts.keySet() );
+    }
+
+    /**
+     * Given an artifact or alias return real artifact provided by this package or null.
+     * 
+     * @return
+     */
+    public Artifact getProvidedArtifact( Artifact artifact )
+    {
+        return providedArtifacts.get( artifact );
     }
 }

@@ -24,8 +24,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -97,12 +97,6 @@ public class DefaultInstaller
     private Configuration configuration;
 
     private Map<Package, Package> packages;
-
-    /** map package => provided artifacts and aliases */
-    private Map<Package, Set<Artifact>> packagedArtifacts;
-
-    /** map generic artifact => provided artifact */
-    private Map<Artifact, Artifact> providedArtifacts;
 
     private Set<Artifact> skippedArtifacts;
 
@@ -288,51 +282,32 @@ public class DefaultInstaller
         installer.installArtifact( pkg, artifact, jppArtifacts );
     }
 
-    private void generateDepmap( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
+    private Artifact resolvePackagedArtifact( Artifact artifact, Set<Package> packageSet )
     {
-        Set<Artifact> packaged = packagedArtifacts.get( pkg );
-        if ( packaged == null )
+        for ( Package pkg : packageSet )
         {
-            packaged = new LinkedHashSet<>();
-            packagedArtifacts.put( pkg, packaged );
+            Artifact providedArtifact = pkg.getProvidedArtifact( artifact );
+            if ( providedArtifact != null )
+                return providedArtifact;
         }
 
-        for ( Artifact jppArtifact : jppArtifacts )
+        Artifact versionlessArtifact = artifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+        for ( Package pkg : packageSet )
         {
-            String providedVersion = jppArtifact.getVersion();
-            Artifact providedArtifact = artifact.setVersion( providedVersion ).setFile( null ).setProperties( null );
-
-            String scope = ArtifactUtils.getScope( jppArtifact );
-            Artifact scopedArtifact = ArtifactUtils.setScope( artifact, scope );
-            Artifact scopedProvidedArtifact = ArtifactUtils.setScope( providedArtifact, scope );
-
-            packaged.add( providedArtifact );
-            providedArtifacts.put( providedArtifact, scopedProvidedArtifact );
-            pkg.getMetadata().addMapping( scopedArtifact, jppArtifact );
-
-            for ( Artifact alias : aliases )
-            {
-                Artifact providedAlias = alias.setVersion( providedVersion ).setProperties( null );
-                Artifact scopedAlias = ArtifactUtils.setScope( alias, scope );
-                Artifact scopedProvidedAlias = ArtifactUtils.setScope( providedAlias, scope );
-
-                packaged.add( providedAlias );
-                providedArtifacts.put( providedAlias, scopedProvidedAlias );
-                pkg.getMetadata().addMapping( scopedAlias, jppArtifact );
-            }
+            Artifact providedArtifact = pkg.getProvidedArtifact( versionlessArtifact );
+            if ( providedArtifact != null )
+                return providedArtifact;
         }
+
+        return null;
     }
 
     private Artifact resolveDependencyArtifact( Package pkg, Artifact artifact )
     {
-        Artifact versionlessArtifact = artifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
-        Set<Artifact> packaged = packagedArtifacts.get( pkg );
-        if ( packaged.contains( artifact ) || packaged.contains( versionlessArtifact ) )
+        if ( resolvePackagedArtifact( artifact, Collections.singleton( pkg ) ) != null )
             return null;
 
-        Artifact providedArtifact = providedArtifacts.get( artifact );
-        if ( providedArtifact == null )
-            providedArtifact = providedArtifacts.get( versionlessArtifact );
+        Artifact providedArtifact = resolvePackagedArtifact( artifact, packages.keySet() );
         if ( providedArtifact != null )
             return providedArtifact;
 
@@ -429,7 +404,7 @@ public class DefaultInstaller
         else
         {
             List<Artifact> aliases = getAliasArtifacts( rule );
-            generateDepmap( pkg, artifact, aliases, jppArtifacts );
+            pkg.addArtifactMetadata( artifact, aliases, jppArtifacts );
         }
     }
 
@@ -518,8 +493,6 @@ public class DefaultInstaller
         settings = configuration.getInstallerSettings();
 
         packages = new TreeMap<>();
-        packagedArtifacts = new LinkedHashMap<>();
-        providedArtifacts = new LinkedHashMap<>();
         skippedArtifacts = new LinkedHashSet<>();
 
         Package mainPackage = new Package( Package.MAIN, settings );
