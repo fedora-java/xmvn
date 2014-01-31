@@ -50,7 +50,6 @@ import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
 import org.fedoraproject.xmvn.dependency.DependencyExtractor;
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -78,19 +77,11 @@ public class DefaultInstaller
 
     private final Configurator configurator;
 
-    private final RepositoryConfigurator repositoryConfigurator;
-
     private final Resolver resolver;
 
     private final DependencyExtractor buildDependencyExtractor;
 
     private final DependencyExtractor runtimeDependencyExtractor;
-
-    private Repository installRepo;
-
-    private Repository rawPomRepo;
-
-    private Repository effectivePomRepo;
 
     private InstallerSettings settings;
 
@@ -103,14 +94,12 @@ public class DefaultInstaller
     private final Map<String, ArtifactInstaller> installers;
 
     @Inject
-    public DefaultInstaller( Configurator configurator, RepositoryConfigurator repositoryConfigurator,
-                             Resolver resolver,
+    public DefaultInstaller( Configurator configurator, Resolver resolver,
                              @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor,
                              @Named( DependencyExtractor.RUNTIME ) DependencyExtractor runtimeDependencyExtractor,
                              Map<String, ArtifactInstaller> installers )
     {
         this.configurator = configurator;
-        this.repositoryConfigurator = repositoryConfigurator;
         this.resolver = resolver;
         this.buildDependencyExtractor = buildDependencyExtractor;
         this.runtimeDependencyExtractor = runtimeDependencyExtractor;
@@ -130,7 +119,7 @@ public class DefaultInstaller
                                                            version );
     }
 
-    private List<Artifact> getAliasArtifacts( PackagingRule rule )
+    static List<Artifact> getAliasArtifacts( PackagingRule rule )
     {
         List<Artifact> aliasArtifacts = new ArrayList<>();
 
@@ -178,7 +167,7 @@ public class DefaultInstaller
         return pkg;
     }
 
-    private List<Artifact> getJppArtifacts( Artifact artifact, PackagingRule rule, String packageName, Repository repo )
+    static List<Artifact> getJppArtifacts( Artifact artifact, PackagingRule rule, String packageName, Repository repo )
     {
         Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
@@ -225,61 +214,6 @@ public class DefaultInstaller
             throw new RuntimeException( "At least one non-absolute file must be specified for artifact " + artifact );
 
         return jppArtifacts;
-    }
-
-    private void installAbsoluteSymlinks( Package pkg, Artifact artifact, PackagingRule rule, Path symlinkTarget )
-        throws IOException
-    {
-        List<String> versionSuffixes = new ArrayList<>();
-        for ( String version : rule.getVersions() )
-            versionSuffixes.add( "-" + version );
-        if ( rule.getVersions().isEmpty() )
-            versionSuffixes.add( "" );
-
-        for ( String filePath : rule.getFiles() )
-        {
-            String classifierSuffix = artifact.getClassifier().isEmpty() ? "" : "-" + artifact.getClassifier();
-            String extensionSuffix = artifact.getExtension().isEmpty() ? "" : "." + artifact.getExtension();
-
-            for ( String versionSuffix : versionSuffixes )
-            {
-                Path symlink = Paths.get( filePath + versionSuffix + classifierSuffix + extensionSuffix );
-                if ( symlink.isAbsolute() )
-                    pkg.addSymlink( Paths.get( "/" ).relativize( symlink ), symlinkTarget );
-            }
-        }
-    }
-
-    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts,
-                                  ArtifactInstaller installer )
-        throws IOException
-    {
-        logger.info( "===============================================" );
-        logger.info( "SOURCE ARTIFACT:" );
-        logger.info( "    groupId: {}", artifact.getGroupId() );
-        logger.info( " artifactId: {}", artifact.getArtifactId() );
-        logger.info( "  extension: {}", artifact.getExtension() );
-        logger.info( " classifier: {}", artifact.getClassifier() );
-        logger.info( "    version: {}", artifact.getVersion() );
-        logger.info( " stereotype: {}", ArtifactUtils.getStereotype( artifact ) );
-        logger.info( "  namespace: {}", ArtifactUtils.getScope( artifact ) );
-        logger.info( "       file: {}", artifact.getFile() );
-        for ( Artifact jppArtifact : jppArtifacts )
-        {
-            logger.info( "-----------------------------------------------" );
-            logger.info( "TARGET ARTIFACT:" );
-            logger.info( "    groupId: {}", jppArtifact.getGroupId() );
-            logger.info( " artifactId: {}", jppArtifact.getArtifactId() );
-            logger.info( "  extension: {}", jppArtifact.getExtension() );
-            logger.info( " classifier: {}", jppArtifact.getClassifier() );
-            logger.info( "    version: {}", jppArtifact.getVersion() );
-            logger.info( " stereotype: {}", ArtifactUtils.getStereotype( jppArtifact ) );
-            logger.info( "  namespace: {}", ArtifactUtils.getScope( jppArtifact ) );
-            logger.info( "       file: {}", jppArtifact.getFile() );
-        }
-        logger.info( "===============================================" );
-
-        installer.installArtifact( pkg, artifact, aliases, jppArtifacts );
     }
 
     private Artifact resolvePackagedArtifact( Artifact artifact, Set<Package> packageSet )
@@ -368,29 +302,7 @@ public class DefaultInstaller
             return;
         }
 
-        Repository repo;
-        if ( StringUtils.equals( artifact.getExtension(), "pom" )
-            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "raw" ) )
-            repo = rawPomRepo;
-        else if ( StringUtils.equals( artifact.getExtension(), "pom" )
-            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "effective" ) )
-            repo = effectivePomRepo;
-        else
-            repo = installRepo;
-
-        List<Artifact> jppArtifacts = getJppArtifacts( artifact, rule, packageName, repo );
-        if ( jppArtifacts == null )
-        {
-            logger.warn( "Skipping installation of artifact {}: No suitable repository found to store the artifact in.",
-                         artifact );
-            return;
-        }
-
-        List<Artifact> aliases = getAliasArtifacts( rule );
-        installArtifact( pkg, artifact, aliases, jppArtifacts, installer );
-
-        Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
-        installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
+        installer.installArtifact( pkg, artifact, rule, packageName );
     }
 
     private void generateRequires( Package pkg )
@@ -470,10 +382,6 @@ public class DefaultInstaller
     @Override
     public InstallationResult install( InstallationRequest request )
     {
-        installRepo = repositoryConfigurator.configureRepository( "install" );
-        rawPomRepo = repositoryConfigurator.configureRepository( "install-raw-pom" );
-        effectivePomRepo = repositoryConfigurator.configureRepository( "install-effective-pom" );
-
         configuration = configurator.getConfiguration();
         settings = configuration.getInstallerSettings();
 

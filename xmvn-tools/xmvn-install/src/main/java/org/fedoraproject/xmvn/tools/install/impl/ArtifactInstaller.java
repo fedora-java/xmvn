@@ -16,15 +16,15 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.xmvn.config.PackagingRule;
 
 /**
  * @author Mikolaj Izdebski
  */
 public interface ArtifactInstaller
 {
-    void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
+    void installArtifact( Package pkg, Artifact artifact, PackagingRule rule, String packageName )
         throws IOException;
 }

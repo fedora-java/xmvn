@@ -20,9 +20,13 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.xmvn.config.PackagingRule;
+import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 
 /**
  * @author Mikolaj Izdebski
@@ -31,10 +35,21 @@ import org.eclipse.aether.artifact.Artifact;
 public class EffectivePomInstaller
     implements ArtifactInstaller
 {
+    private final RepositoryConfigurator repositoryConfigurator;
+
+    @Inject
+    public EffectivePomInstaller( RepositoryConfigurator repositoryConfigurator )
+    {
+        this.repositoryConfigurator = repositoryConfigurator;
+    }
+
     @Override
-    public void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
+    public void installArtifact( Package pkg, Artifact artifact, PackagingRule rule, String packageName )
         throws IOException
     {
+        Repository repo = repositoryConfigurator.configureRepository( "install-effective-pom" );
+
+        List<Artifact> jppArtifacts = DefaultInstaller.getJppArtifacts( artifact, rule, packageName, repo );
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();
         Artifact primaryJppArtifact = jppIterator.next();
         pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );

@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.jar.Attributes;
@@ -29,10 +31,16 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.xmvn.config.PackagingRule;
+import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -41,6 +49,16 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class DefaultArtifactInstaller
     implements ArtifactInstaller
 {
+    private final Logger logger = LoggerFactory.getLogger( DefaultArtifactInstaller.class );
+
+    private final RepositoryConfigurator repositoryConfigurator;
+
+    @Inject
+    public DefaultArtifactInstaller( RepositoryConfigurator repositoryConfigurator )
+    {
+        this.repositoryConfigurator = repositoryConfigurator;
+    }
+
     private void putAttribute( Manifest manifest, String key, String value, String defaultValue )
     {
         if ( defaultValue == null || !value.equals( defaultValue ) )
@@ -86,10 +104,70 @@ public class DefaultArtifactInstaller
         return artifact.setFile( targetJar );
     }
 
-    @Override
-    public void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
+    private void installAbsoluteSymlinks( Package pkg, Artifact artifact, PackagingRule rule, Path symlinkTarget )
         throws IOException
     {
+        List<String> versionSuffixes = new ArrayList<>();
+        for ( String version : rule.getVersions() )
+            versionSuffixes.add( "-" + version );
+        if ( rule.getVersions().isEmpty() )
+            versionSuffixes.add( "" );
+
+        for ( String filePath : rule.getFiles() )
+        {
+            String classifierSuffix = artifact.getClassifier().isEmpty() ? "" : "-" + artifact.getClassifier();
+            String extensionSuffix = artifact.getExtension().isEmpty() ? "" : "." + artifact.getExtension();
+
+            for ( String versionSuffix : versionSuffixes )
+            {
+                Path symlink = Paths.get( filePath + versionSuffix + classifierSuffix + extensionSuffix );
+                if ( symlink.isAbsolute() )
+                    pkg.addSymlink( Paths.get( "/" ).relativize( symlink ), symlinkTarget );
+            }
+        }
+    }
+
+    @Override
+    public void installArtifact( Package pkg, Artifact artifact, PackagingRule rule, String packageName )
+        throws IOException
+    {
+        Repository repo = repositoryConfigurator.configureRepository( "install" );
+
+        List<Artifact> jppArtifacts = DefaultInstaller.getJppArtifacts( artifact, rule, packageName, repo );
+
+        logger.info( "===============================================" );
+        logger.info( "SOURCE ARTIFACT:" );
+        logger.info( "    groupId: {}", artifact.getGroupId() );
+        logger.info( " artifactId: {}", artifact.getArtifactId() );
+        logger.info( "  extension: {}", artifact.getExtension() );
+        logger.info( " classifier: {}", artifact.getClassifier() );
+        logger.info( "    version: {}", artifact.getVersion() );
+        logger.info( " stereotype: {}", ArtifactUtils.getStereotype( artifact ) );
+        logger.info( "  namespace: {}", ArtifactUtils.getScope( artifact ) );
+        logger.info( "       file: {}", artifact.getFile() );
+
+        if ( jppArtifacts == null )
+        {
+            logger.warn( "Skipping installation of artifact {}: No suitable repository found to store the artifact in.",
+                         artifact );
+            return;
+        }
+
+        for ( Artifact jppArtifact : jppArtifacts )
+        {
+            logger.info( "-----------------------------------------------" );
+            logger.info( "TARGET ARTIFACT:" );
+            logger.info( "    groupId: {}", jppArtifact.getGroupId() );
+            logger.info( " artifactId: {}", jppArtifact.getArtifactId() );
+            logger.info( "  extension: {}", jppArtifact.getExtension() );
+            logger.info( " classifier: {}", jppArtifact.getClassifier() );
+            logger.info( "    version: {}", jppArtifact.getVersion() );
+            logger.info( " stereotype: {}", ArtifactUtils.getStereotype( jppArtifact ) );
+            logger.info( "  namespace: {}", ArtifactUtils.getScope( jppArtifact ) );
+            logger.info( "       file: {}", jppArtifact.getFile() );
+        }
+        logger.info( "===============================================" );
+
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();
         Artifact primaryJppArtifact = jppIterator.next();
         artifact = injectManifest( artifact, primaryJppArtifact.getVersion() );
@@ -102,6 +180,10 @@ public class DefaultArtifactInstaller
             pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
         }
 
+        List<Artifact> aliases = DefaultInstaller.getAliasArtifacts( rule );
         pkg.addArtifactMetadata( artifact, aliases, jppArtifacts );
+
+        Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
+        installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
     }
 }
