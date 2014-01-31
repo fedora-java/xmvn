@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.containsNativeCode;
+import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.usesNativeCode;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -36,8 +39,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,10 +48,6 @@ import javax.xml.stream.XMLStreamException;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.sisu.space.asm.ClassReader;
-import org.eclipse.sisu.space.asm.ClassVisitor;
-import org.eclipse.sisu.space.asm.MethodVisitor;
-import org.eclipse.sisu.space.asm.Opcodes;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
@@ -426,68 +423,10 @@ public class DefaultInstaller
         return artifact;
     }
 
-    private boolean containsNativeCode( Artifact artifact )
-    {
-        // From /usr/include/linux/elf.h
-        final int ELFMAG0 = 0x7F;
-        final int ELFMAG1 = 'E';
-        final int ELFMAG2 = 'L';
-        final int ELFMAG3 = 'F';
-
-        try (ZipInputStream jis = new ZipInputStream( new FileInputStream( artifact.getFile() ) ))
-        {
-            ZipEntry ent;
-            while ( ( ent = jis.getNextEntry() ) != null )
-            {
-                if ( ent.isDirectory() )
-                    continue;
-                if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2 && jis.read() == ELFMAG3 )
-                    return true;
-            }
-
-            return false;
-        }
-        catch ( IOException e )
-        {
-            return false;
-        }
-    }
-
-    private boolean usesNativeCode( Artifact artifact )
-        throws IOException
-    {
-        try (ZipInputStream jis = new ZipInputStream( new FileInputStream( artifact.getFile() ) ))
-        {
-            ZipEntry ent;
-            while ( ( ent = jis.getNextEntry() ) != null )
-            {
-                if ( ent.isDirectory() || !ent.getName().endsWith( ".class" ) )
-                    continue;
-
-                final boolean[] usesNativeCode = new boolean[1];
-
-                new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM4 )
-                {
-                    @Override
-                    public MethodVisitor visitMethod( int flags, String name, String desc, String sig, String[] exc )
-                    {
-                        usesNativeCode[0] = ( flags & Opcodes.ACC_NATIVE ) != 0;
-                        return super.visitMethod( flags, name, desc, sig, exc );
-                    }
-                }, ClassReader.SKIP_CODE );
-
-                if ( usesNativeCode[0] )
-                    return true;
-            }
-
-            return false;
-        }
-    }
-
     private void installArtifact( Artifact artifact, String packageName )
         throws IOException
     {
-        if ( containsNativeCode( artifact ) || usesNativeCode( artifact ) )
+        if ( containsNativeCode( artifact.getFile() ) || usesNativeCode( artifact.getFile() ) )
             artifact = ArtifactUtils.setStereotype( artifact, "native" );
 
         PackagingRule rule = ruleForArtifact( artifact );
