@@ -20,6 +20,8 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +49,12 @@ class Package
     private static final String NOINSTALL_SUFFIX = "__noinstall";
 
     private final InstallerSettings settings;
+
+    /** installed devel artifacts (no aliases) */
+    private final Set<Artifact> develArtifacts = new LinkedHashSet<>();
+
+    /** installed user artifacts (no aliases) */
+    private final Set<Artifact> userArtifacts = new LinkedHashSet<>();
 
     public Package( String name, InstallerSettings settings )
     {
@@ -199,5 +207,25 @@ class Package
     public int compareTo( Package rhs )
     {
         return suffix.compareTo( rhs.suffix );
+    }
+
+    public void addDevelArtifact( Artifact artifact )
+    {
+        develArtifacts.add( artifact );
+    }
+
+    public Set<Artifact> getDevelArtifacts()
+    {
+        return Collections.unmodifiableSet( develArtifacts );
+    }
+
+    public void addUserArtifact( Artifact artifact )
+    {
+        userArtifacts.add( artifact );
+    }
+
+    public Set<Artifact> getUserArtifacts()
+    {
+        return Collections.unmodifiableSet( userArtifacts );
     }
 }

@@ -98,12 +98,6 @@ public class DefaultInstaller
 
     private Map<Package, Package> packages;
 
-    /** map package => installed devel artifacts (no aliases) */
-    private Map<Package, Set<Artifact>> packageDevelArtifacts;
-
-    /** map package => installed user artifacts (no aliases) */
-    private Map<Package, Set<Artifact>> packageUserArtifacts;
-
     /** map package => provided artifacts and aliases */
     private Map<Package, Set<Artifact>> packagedArtifacts;
 
@@ -425,26 +419,12 @@ public class DefaultInstaller
         if ( StringUtils.equals( artifact.getExtension(), "pom" )
             && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "raw" ) )
         {
-            Set<Artifact> develArtifacts = packageDevelArtifacts.get( pkg );
-            if ( develArtifacts == null )
-            {
-                develArtifacts = new LinkedHashSet<>();
-                packageDevelArtifacts.put( pkg, develArtifacts );
-            }
-
-            develArtifacts.add( artifact );
+            pkg.addDevelArtifact( artifact );
         }
         else if ( StringUtils.equals( artifact.getExtension(), "pom" )
             && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "effective" ) )
         {
-            Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
-            if ( userArtifacts == null )
-            {
-                userArtifacts = new LinkedHashSet<>();
-                packageUserArtifacts.put( pkg, userArtifacts );
-            }
-
-            userArtifacts.add( artifact );
+            pkg.addUserArtifact( artifact );
         }
         else
         {
@@ -457,13 +437,13 @@ public class DefaultInstaller
         throws IOException, ModelFormatException
     {
         boolean pureDevelPackage = false;
-        Set<Artifact> artifacts = packageUserArtifacts.get( pkg );
+        Set<Artifact> artifacts = pkg.getUserArtifacts();
         DependencyExtractor dependencyExtractor = runtimeDependencyExtractor;
 
         if ( artifacts == null )
         {
             pureDevelPackage = true;
-            artifacts = packageDevelArtifacts.get( pkg );
+            artifacts = pkg.getDevelArtifacts();
             dependencyExtractor = buildDependencyExtractor;
         }
 
@@ -538,8 +518,6 @@ public class DefaultInstaller
         settings = configuration.getInstallerSettings();
 
         packages = new TreeMap<>();
-        packageDevelArtifacts = new LinkedHashMap<>();
-        packageUserArtifacts = new LinkedHashMap<>();
         packagedArtifacts = new LinkedHashMap<>();
         providedArtifacts = new LinkedHashMap<>();
         skippedArtifacts = new LinkedHashSet<>();
