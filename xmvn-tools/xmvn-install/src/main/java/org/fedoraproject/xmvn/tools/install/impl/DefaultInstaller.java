@@ -271,11 +271,11 @@ public class DefaultInstaller
     private ArtifactInstaller getInstallerForArtifact( Artifact artifact )
     {
         String key = artifact.getExtension();
-        if ( key == null )
+        if ( StringUtils.isEmpty( key ) )
             key = ArtifactUtils.DEFAULT_EXTENSION;
 
         String stereotype = ArtifactUtils.getStereotype( artifact );
-        if ( stereotype != null )
+        if ( StringUtils.isNotEmpty( stereotype ) )
             key += "/" + stereotype;
 
         ArtifactInstaller installer = installers.get( key );

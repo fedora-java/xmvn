@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +41,8 @@ public class BasicIvyInstallerTest
      * 
      * @throws Exception
      */
-    // FIXME: Ivy is currently broken, tests are skipped
-    // @Test
-    public void testComponentLookup()
+    @Test
+    public void testIvyModelInstallation()
         throws Exception
     {
         Path artifactPath = Paths.get( "src/test/resources/jar/empty.jar" );
@@ -50,10 +50,11 @@ public class BasicIvyInstallerTest
 
         Artifact artifact = new DefaultArtifact( "org.apache", "hello-ivy", "jar", "1.2.3" );
         artifact = artifact.setFile( artifactPath.toFile() );
-        // artifact = ArtifactUtils.setRawModelPath( artifact, modelPath );
-        // artifact = ArtifactUtils.setEffectiveModelPath( artifact, modelPath );
-
         request.addArtifact( artifact );
+
+        Artifact modelArtifact = new DefaultArtifact( "org.apache", "hello-ivy", "ivy", "1.2.3" );
+        modelArtifact = modelArtifact.setFile( modelPath.toFile() );
+        request.addArtifact( modelArtifact );
 
         logger.info( "Added arrifact {}", artifact );
         logger.info( "  POM path: {}", modelPath.toAbsolutePath() );

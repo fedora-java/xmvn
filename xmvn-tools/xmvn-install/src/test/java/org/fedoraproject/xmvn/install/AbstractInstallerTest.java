@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.install;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -144,9 +145,12 @@ public abstract class AbstractInstallerTest
     protected void assertXmlEqual( String expected, String generated )
         throws Exception
     {
+        Path generatedPath = installRoot.resolve( generated );
+        assertTrue( Files.isRegularFile( generatedPath ) );
+
         try (Reader expectedReader = new FileReader( Paths.get( "src/test/resources" ).resolve( expected ).toFile() ))
         {
-            try (Reader generatedReader = new FileReader( installRoot.resolve( generated ).toFile() ))
+            try (Reader generatedReader = new FileReader( generatedPath.toFile() ))
             {
                 assertXMLEqual( expectedReader, generatedReader );
             }

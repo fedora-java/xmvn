@@ -3,4 +3,5 @@
   <groupId>org.apache</groupId>
   <artifactId>hello-ivy</artifactId>
   <version>1.2.3</version>
+  <packaging>jar</packaging>
 </project>
