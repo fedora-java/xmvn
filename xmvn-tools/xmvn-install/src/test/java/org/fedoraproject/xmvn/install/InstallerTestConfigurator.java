@@ -101,6 +101,7 @@ public class InstallerTestConfigurator
         installerSettings.setMetadataDir( "depmaps" );
 
         PackagingRule rule = new PackagingRule();
+        rule.setOptional( true );
         configuration.addArtifactManagement( rule );
 
         org.fedoraproject.xmvn.config.Artifact glob = new org.fedoraproject.xmvn.config.Artifact();
