@@ -35,6 +35,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
+import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,6 +100,9 @@ public class InstallerCli
         String file = readValue( dom, "file", null, true );
         if ( file != null )
             artifact = artifact.setFile( new File( file ) );
+
+        String stereotype = readValue( dom, "stereotype", null, true );
+        artifact = ArtifactUtils.setStereotype( artifact, stereotype );
 
         return artifact;
     }
