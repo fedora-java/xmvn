@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.DataFormatException;
 
@@ -36,7 +35,6 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,14 +112,6 @@ public class InstallerCli
             for ( Xpp3Dom artifactDom : dom.getChildren( "artifact" ) )
             {
                 Artifact artifact = readArtifact( artifactDom );
-
-                String rawPom = readValue( artifactDom, "rawPomPath", null, true );
-                Path rawModelPath = rawPom != null ? Paths.get( rawPom ) : null;
-                String effectivePom = readValue( artifactDom, "effectivePomPath", null, true );
-                Path effectiveModelPath = effectivePom != null ? Paths.get( effectivePom ) : null;
-
-                artifact = ArtifactUtils.setRawModelPath( artifact, rawModelPath );
-                artifact = ArtifactUtils.setEffectiveModelPath( artifact, effectiveModelPath );
                 request.addArtifact( artifact );
             }
         }
