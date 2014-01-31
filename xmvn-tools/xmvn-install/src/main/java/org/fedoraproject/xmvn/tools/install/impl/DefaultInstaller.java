@@ -18,10 +18,8 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,9 +44,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -65,7 +60,6 @@ import org.fedoraproject.xmvn.dependency.DependencyExtractionRequest;
 import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
 import org.fedoraproject.xmvn.dependency.DependencyExtractor;
 import org.fedoraproject.xmvn.model.ModelFormatException;
-import org.fedoraproject.xmvn.model.ModelReader;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
@@ -103,13 +97,7 @@ public class DefaultInstaller
 
     private final DependencyExtractor runtimeDependencyExtractor;
 
-    private final ModelReader modelReader;
-
     private Repository installRepo;
-
-    private Repository rawPomRepo;
-
-    private Repository effectivePomRepo;
 
     private InstallerSettings settings;
 
@@ -135,15 +123,13 @@ public class DefaultInstaller
     public DefaultInstaller( Configurator configurator, RepositoryConfigurator repositoryConfigurator,
                              Resolver resolver,
                              @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor,
-                             @Named( DependencyExtractor.RUNTIME ) DependencyExtractor runtimeDependencyExtractor,
-                             ModelReader modelReader )
+                             @Named( DependencyExtractor.RUNTIME ) DependencyExtractor runtimeDependencyExtractor )
     {
         this.configurator = configurator;
         this.repositoryConfigurator = repositoryConfigurator;
         this.resolver = resolver;
         this.buildDependencyExtractor = buildDependencyExtractor;
         this.runtimeDependencyExtractor = runtimeDependencyExtractor;
-        this.modelReader = modelReader;
     }
 
     private void putAttribute( Manifest manifest, String key, String value, String defaultValue )
@@ -433,91 +419,6 @@ public class DefaultInstaller
         return artifact;
     }
 
-    private Path writeModel( Model model )
-        throws IOException
-    {
-        Path modelPath = Files.createTempFile( "xmvn", ".pom" );
-
-        try (Writer fileWriter = new FileWriter( modelPath.toFile() ))
-        {
-            MavenXpp3Writer modelWriter = new MavenXpp3Writer();
-            modelWriter.write( fileWriter, model );
-            return modelPath;
-        }
-    }
-
-    private Model simplifyEffectiveModel( Model model )
-    {
-        Model m = new Model();
-        m.setModelEncoding( model.getModelEncoding() );
-        m.setModelVersion( model.getModelVersion() );
-        m.setGroupId( model.getGroupId() );
-        m.setArtifactId( model.getArtifactId() );
-        m.setVersion( model.getVersion() );
-
-        for ( Dependency dep : model.getDependencies() )
-        {
-            String scope = dep.getScope();
-            if ( scope != null )
-            {
-                if ( scope.equals( "system" ) )
-                    throw new RuntimeException( "Unsupported system-scoped dependency found" );
-                if ( scope.equals( "provided" ) || scope.equals( "test" ) )
-                    continue;
-                if ( scope.equals( "compile" ) )
-                    dep.setScope( null );
-            }
-            m.addDependency( dep );
-        }
-
-        return m;
-    }
-
-    private void installPomFiles( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
-        throws IOException, ModelFormatException
-    {
-        Set<Artifact> jppPomArtifacts = new LinkedHashSet<>();
-        for ( Artifact jppArtifact : jppArtifacts )
-        {
-            Artifact jppPomArtifact =
-                new DefaultArtifact( jppArtifact.getGroupId(), jppArtifact.getArtifactId(),
-                                     jppArtifact.getClassifier(), "pom", jppArtifact.getVersion() );
-            jppPomArtifacts.add( jppPomArtifact );
-        }
-
-        Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
-        if ( rawModelPath != null && settings.isEnableRawPoms() )
-        {
-            Iterator<Artifact> it = jppPomArtifacts.iterator();
-            Path target = rawPomRepo.getPrimaryArtifactPath( it.next() ).getPath();
-            pkg.addFile( rawModelPath, target, 0644 );
-
-            while ( it.hasNext() )
-            {
-                Path symlink = rawPomRepo.getPrimaryArtifactPath( it.next() ).getPath();
-                pkg.addSymlink( symlink, target );
-            }
-        }
-
-        Path effectiveModelPath = ArtifactUtils.getEffectiveModelPath( artifact );
-        if ( effectiveModelPath != null && settings.isEnableEffectivePoms() )
-        {
-            Iterator<Artifact> it = jppPomArtifacts.iterator();
-            Path target = effectivePomRepo.getPrimaryArtifactPath( it.next() ).getPath();
-
-            Model effectiveModel = modelReader.readModel( effectiveModelPath );
-            Model simplifiedEffectiveModel = simplifyEffectiveModel( effectiveModel );
-            Path simplifiedEffectivePomPath = writeModel( simplifiedEffectiveModel );
-            pkg.addFile( simplifiedEffectivePomPath, target, 0644 );
-
-            while ( it.hasNext() )
-            {
-                Path symlink = effectivePomRepo.getPrimaryArtifactPath( it.next() ).getPath();
-                pkg.addSymlink( symlink, target );
-            }
-        }
-    }
-
     private boolean containsNativeCode( Artifact artifact )
     {
         // From /usr/include/linux/elf.h
@@ -577,17 +478,9 @@ public class DefaultInstaller
     }
 
     private void installArtifact( Artifact artifact, String packageName )
-        throws IOException, ModelFormatException
+        throws IOException
     {
-        Path rawModelPath = ArtifactUtils.getRawModelPath( artifact );
-        boolean isAttachedArtifact = rawModelPath == null;
-        boolean isPomArtifact = artifact.getFile() == null;
-        if ( isAttachedArtifact && isPomArtifact )
-            throw new RuntimeException( "Attached artifact cannot be POM artifact: " + artifact );
-        if ( isPomArtifact && !artifact.getExtension().equals( "pom" ) )
-            throw new RuntimeException( "POM artifact has extension different from 'pom': " + artifact.getExtension() );
-
-        if ( !isPomArtifact && ( containsNativeCode( artifact ) || usesNativeCode( artifact ) ) )
+        if ( containsNativeCode( artifact ) || usesNativeCode( artifact ) )
             artifact = ArtifactUtils.setStereotype( artifact, "native" );
 
         PackagingRule rule = ruleForArtifact( artifact );
@@ -597,13 +490,6 @@ public class DefaultInstaller
         {
             skippedArtifacts.add( artifact );
             return;
-        }
-
-        if ( isPomArtifact )
-        {
-            assert rawModelPath != null;
-            artifact = artifact.setFile( rawModelPath.toFile() );
-            artifact = ArtifactUtils.setStereotype( artifact, "pom" );
         }
 
         List<Artifact> jppArtifacts = getJppArtifacts( artifact, rule, packageName );
@@ -617,7 +503,11 @@ public class DefaultInstaller
         List<Artifact> aliases = getAliasArtifacts( rule );
         installArtifact( pkg, artifact, aliases, jppArtifacts );
 
-        if ( isPomArtifact )
+        Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
+        installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
+
+        if ( StringUtils.equals( artifact.getExtension(), "pom" )
+            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "raw" ) )
         {
             Set<Artifact> develArtifacts = packageDevelArtifacts.get( pkg );
             if ( develArtifacts == null )
@@ -628,24 +518,18 @@ public class DefaultInstaller
 
             develArtifacts.add( artifact );
         }
-        else
+
+        if ( StringUtils.equals( artifact.getExtension(), "pom" )
+            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "effective" ) )
         {
-            Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
-            installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
-
-            if ( !isAttachedArtifact )
+            Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
+            if ( userArtifacts == null )
             {
-                installPomFiles( pkg, artifact, jppArtifacts );
-
-                Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
-                if ( userArtifacts == null )
-                {
-                    userArtifacts = new LinkedHashSet<>();
-                    packageUserArtifacts.put( pkg, userArtifacts );
-                }
-
-                userArtifacts.add( artifact );
+                userArtifacts = new LinkedHashSet<>();
+                packageUserArtifacts.put( pkg, userArtifacts );
             }
+
+            userArtifacts.add( artifact );
         }
     }
 
@@ -668,30 +552,7 @@ public class DefaultInstaller
 
         for ( Artifact artifact : artifacts )
         {
-            Path modelPath;
-
-            if ( pureDevelPackage )
-            {
-                modelPath = ArtifactUtils.getRawModelPath( artifact );
-                if ( modelPath == null )
-                {
-                    logger.warn( "Skipping generation of devel requires for artifact {}: raw model path is not specified",
-                                 artifact );
-                    return;
-                }
-            }
-            else
-            {
-                modelPath = ArtifactUtils.getEffectiveModelPath( artifact );
-                if ( modelPath == null )
-                {
-                    logger.warn( "Skipping generation of user requires for artifact {}: effective model path is not specified",
-                                 artifact );
-                    return;
-                }
-            }
-
-            DependencyExtractionRequest request = new DependencyExtractionRequest( modelPath );
+            DependencyExtractionRequest request = new DependencyExtractionRequest( artifact.getFile().toPath() );
             DependencyExtractionResult result = dependencyExtractor.extract( request );
             FragmentFile metadata = pkg.getMetadata();
 
@@ -750,8 +611,6 @@ public class DefaultInstaller
     public InstallationResult install( InstallationRequest request )
     {
         installRepo = repositoryConfigurator.configureRepository( "install" );
-        rawPomRepo = repositoryConfigurator.configureRepository( "install-raw-pom" );
-        effectivePomRepo = repositoryConfigurator.configureRepository( "install-effective-pom" );
 
         configuration = configurator.getConfiguration();
         settings = configuration.getInstallerSettings();
