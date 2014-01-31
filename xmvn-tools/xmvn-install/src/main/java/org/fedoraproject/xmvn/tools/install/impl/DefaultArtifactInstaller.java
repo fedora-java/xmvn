@@ -101,5 +101,7 @@ public class DefaultArtifactInstaller
             Path symlink = jppSymlinkArtifact.getFile().toPath();
             pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
         }
+
+        pkg.addArtifactMetadata( artifact, aliases, jppArtifacts );
     }
 }

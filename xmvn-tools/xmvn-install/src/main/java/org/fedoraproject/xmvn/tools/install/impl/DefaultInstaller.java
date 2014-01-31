@@ -342,7 +342,7 @@ public class DefaultInstaller
 
         String stereotype = ArtifactUtils.getStereotype( artifact );
         if ( stereotype != null )
-            key += stereotype;
+            key += "/" + stereotype;
 
         ArtifactInstaller installer = installers.get( key );
         if ( installer == null )
@@ -391,21 +391,6 @@ public class DefaultInstaller
 
         Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
         installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
-
-        if ( StringUtils.equals( artifact.getExtension(), "pom" )
-            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "raw" ) )
-        {
-            pkg.addDevelArtifact( artifact );
-        }
-        else if ( StringUtils.equals( artifact.getExtension(), "pom" )
-            && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "effective" ) )
-        {
-            pkg.addUserArtifact( artifact );
-        }
-        else
-        {
-            pkg.addArtifactMetadata( artifact, aliases, jppArtifacts );
-        }
     }
 
     private void generateRequires( Package pkg )
