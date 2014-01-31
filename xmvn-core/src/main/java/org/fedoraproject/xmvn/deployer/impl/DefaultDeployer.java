@@ -21,7 +21,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.file.Path;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -59,7 +58,7 @@ public class DefaultDeployer
         try
         {
             Xpp3Dom dom = readInstallationPlan();
-            addArtifact( dom, request.getArtifact(), request.getRawModelPath(), request.getEffectiveModelPath() );
+            addArtifact( dom, request.getArtifact() );
             writeInstallationPlan( dom );
         }
         catch ( Exception e )
@@ -97,13 +96,12 @@ public class DefaultDeployer
         }
     }
 
-    private void addArtifact( Xpp3Dom parent, Artifact artifact, Path rawPom, Path effectivePom )
+    private void addArtifact( Xpp3Dom parent, Artifact artifact )
     {
         Xpp3Dom child = ArtifactUtils.toXpp3Dom( artifact, "artifact" );
 
         addChild( child, "file", artifact.getFile() );
-        addChild( child, "rawPomPath", rawPom );
-        addChild( child, "effectivePomPath", effectivePom );
+        addChild( child, "stereotype", ArtifactUtils.getStereotype( artifact ) );
 
         parent.addChild( child );
     }

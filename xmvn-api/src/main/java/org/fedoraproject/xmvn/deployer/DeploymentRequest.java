@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
-import java.nio.file.Path;
-
 import org.eclipse.aether.artifact.Artifact;
 
 /**
@@ -26,10 +24,6 @@ public class DeploymentRequest
 {
     private Artifact artifact;
 
-    private Path rawModelPath;
-
-    private Path effectiveModelPath;
-
     public Artifact getArtifact()
     {
         return artifact;
@@ -38,25 +32,5 @@ public class DeploymentRequest
     public void setArtifact( Artifact artifact )
     {
         this.artifact = artifact;
-    }
-
-    public Path getRawModelPath()
-    {
-        return rawModelPath;
-    }
-
-    public void setRawModelPath( Path rawModelPath )
-    {
-        this.rawModelPath = rawModelPath;
-    }
-
-    public Path getEffectiveModelPath()
-    {
-        return effectiveModelPath;
-    }
-
-    public void setEffectiveModelPath( Path effectiveModelPath )
-    {
-        this.effectiveModelPath = effectiveModelPath;
     }
 }
