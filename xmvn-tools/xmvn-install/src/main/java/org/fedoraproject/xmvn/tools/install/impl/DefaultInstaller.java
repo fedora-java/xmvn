@@ -18,9 +18,6 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.containsNativeCode;
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.usesNativeCode;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -34,11 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -120,62 +112,21 @@ public class DefaultInstaller
 
     private Set<Artifact> skippedArtifacts;
 
+    private final ArtifactInstaller installer;
+
     @Inject
     public DefaultInstaller( Configurator configurator, RepositoryConfigurator repositoryConfigurator,
                              Resolver resolver,
                              @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor,
-                             @Named( DependencyExtractor.RUNTIME ) DependencyExtractor runtimeDependencyExtractor )
+                             @Named( DependencyExtractor.RUNTIME ) DependencyExtractor runtimeDependencyExtractor,
+                             ArtifactInstaller installer )
     {
         this.configurator = configurator;
         this.repositoryConfigurator = repositoryConfigurator;
         this.resolver = resolver;
         this.buildDependencyExtractor = buildDependencyExtractor;
         this.runtimeDependencyExtractor = runtimeDependencyExtractor;
-    }
-
-    private void putAttribute( Manifest manifest, String key, String value, String defaultValue )
-    {
-        if ( defaultValue == null || !value.equals( defaultValue ) )
-        {
-            Attributes attributes = manifest.getMainAttributes();
-            attributes.putValue( key, value );
-        }
-    }
-
-    private Artifact injectManifest( Artifact artifact, String version )
-        throws IOException
-    {
-        File targetJar = Files.createTempFile( "xmvn", ".jar" ).toFile();
-        targetJar.deleteOnExit();
-
-        try (JarInputStream jis = new JarInputStream( new FileInputStream( artifact.getFile() ) ))
-        {
-            Manifest mf = jis.getManifest();
-            if ( mf == null )
-                return artifact;
-
-            putAttribute( mf, ArtifactUtils.MF_KEY_GROUPID, artifact.getGroupId(), null );
-            putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
-            putAttribute( mf, ArtifactUtils.MF_KEY_EXTENSION, artifact.getExtension(), ArtifactUtils.DEFAULT_EXTENSION );
-            putAttribute( mf, ArtifactUtils.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
-            putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, version, ArtifactUtils.DEFAULT_VERSION );
-
-            try (JarOutputStream jos = new JarOutputStream( new FileOutputStream( targetJar ), mf ))
-            {
-                byte[] buf = new byte[512];
-                JarEntry entry;
-                while ( ( entry = jis.getNextJarEntry() ) != null )
-                {
-                    jos.putNextEntry( entry );
-
-                    int sz;
-                    while ( ( sz = jis.read( buf ) ) > 0 )
-                        jos.write( buf, 0, sz );
-                }
-            }
-        }
-
-        return artifact.setFile( targetJar );
+        this.installer = installer;
     }
 
     private PackagingRule ruleForArtifact( Artifact artifact )
@@ -339,17 +290,7 @@ public class DefaultInstaller
         }
         logger.info( "===============================================" );
 
-        Iterator<Artifact> jppIterator = jppArtifacts.iterator();
-        Artifact primaryJppArtifact = jppIterator.next();
-        artifact = injectManifest( artifact, primaryJppArtifact.getVersion() );
-        pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );
-
-        while ( jppIterator.hasNext() )
-        {
-            Artifact jppSymlinkArtifact = jppIterator.next();
-            Path symlink = jppSymlinkArtifact.getFile().toPath();
-            pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
-        }
+        installer.installArtifact( pkg, artifact, jppArtifacts );
     }
 
     private void generateDepmap( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
