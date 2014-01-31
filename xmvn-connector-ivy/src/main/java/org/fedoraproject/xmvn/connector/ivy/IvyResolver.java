@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.xmvn.connector.ivy;
 
+import static org.fedoraproject.xmvn.connector.ivy.IvyResolver.LazyDeployerProvider.deployer;
+import static org.fedoraproject.xmvn.connector.ivy.IvyResolver.LazyResolverProvider.resolver;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,16 +61,19 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class IvyResolver
     extends AbstractResolver
 {
-    private final Resolver resolver;
+    static class LazyResolverProvider
+    {
+        static final Resolver resolver = XMvn.getResolver();
+    }
 
-    private final Deployer deployer;
+    static class LazyDeployerProvider
+    {
+        static final Deployer deployer = XMvn.getDeployer();
+    }
 
     public IvyResolver()
     {
         setName( "XMvn" );
-
-        resolver = XMvn.getResolver();
-        deployer = XMvn.getDeployer();
     }
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )
