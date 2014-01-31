@@ -365,9 +365,28 @@ public class DefaultInstaller
         return artifact;
     }
 
+    private ArtifactInstaller getInstallerForArtifact( Artifact artifact )
+    {
+        String key = artifact.getExtension();
+        if ( key == null )
+            key = ArtifactUtils.DEFAULT_EXTENSION;
+
+        String stereotype = ArtifactUtils.getStereotype( artifact );
+        if ( stereotype != null )
+            key += stereotype;
+
+        ArtifactInstaller installer = installers.get( key );
+        if ( installer == null )
+            installer = installers.get( "default" );
+
+        return installer;
+    }
+
     private void installArtifact( Artifact artifact, String packageName )
         throws IOException
     {
+        ArtifactInstaller installer = getInstallerForArtifact( artifact );
+
         if ( containsNativeCode( artifact.getFile() ) || usesNativeCode( artifact.getFile() ) )
             artifact = ArtifactUtils.setStereotype( artifact, "native" );
 
@@ -398,7 +417,7 @@ public class DefaultInstaller
             return;
         }
 
-        installArtifact( pkg, artifact, jppArtifacts, installers.get( "default" ) );
+        installArtifact( pkg, artifact, jppArtifacts, installer );
 
         Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
         installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
