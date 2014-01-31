@@ -517,9 +517,7 @@ public class DefaultInstaller
             return;
         }
 
-        List<Artifact> aliases = getAliasArtifacts( rule );
         installArtifact( pkg, artifact, jppArtifacts );
-        generateDepmap( pkg, artifact, aliases, jppArtifacts );
 
         Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
         installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
@@ -536,8 +534,7 @@ public class DefaultInstaller
 
             develArtifacts.add( artifact );
         }
-
-        if ( StringUtils.equals( artifact.getExtension(), "pom" )
+        else if ( StringUtils.equals( artifact.getExtension(), "pom" )
             && StringUtils.equals( ArtifactUtils.getStereotype( artifact ), "effective" ) )
         {
             Set<Artifact> userArtifacts = packageUserArtifacts.get( pkg );
@@ -548,6 +545,11 @@ public class DefaultInstaller
             }
 
             userArtifacts.add( artifact );
+        }
+        else
+        {
+            List<Artifact> aliases = getAliasArtifacts( rule );
+            generateDepmap( pkg, artifact, aliases, jppArtifacts );
         }
     }
 

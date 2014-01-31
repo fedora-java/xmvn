@@ -64,8 +64,7 @@ public class SimpleInstallerTest
         depmap.append( "    </jpp>" );
         depmap.append( "  </dependency>" );
         depmap.append( "</dependencyMap>" );
-        // FIXME
-        // assertXmlEqual( depmap, "depmaps/package.xml" );
+        assertXmlEqual( depmap, "depmaps/package.xml" );
     }
 
     /**
