@@ -48,6 +48,7 @@ import org.apache.ivy.plugins.resolver.util.ResolvedResource;
 import org.fedoraproject.xmvn.XMvn;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
+import org.fedoraproject.xmvn.deployer.DeploymentResult;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -223,6 +224,8 @@ public class IvyResolver
     {
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact( ivy2aether( artifact ) );
-        deployer.deploy( request );
+        DeploymentResult result = deployer.deploy( request );
+        if ( result.getException() != null )
+            throw new IOException( "Failed to publish artifact", result.getException() );
     }
 }
