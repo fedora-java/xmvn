@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +59,7 @@ class Package
     private final Set<Artifact> userArtifacts = new LinkedHashSet<>();
 
     /** map generic artifact => provided artifact */
-    private Map<Artifact, Artifact> providedArtifacts;
+    private final Map<Artifact, Artifact> providedArtifacts = new LinkedHashMap<>();
 
     public Package( String name, InstallerSettings settings )
     {
