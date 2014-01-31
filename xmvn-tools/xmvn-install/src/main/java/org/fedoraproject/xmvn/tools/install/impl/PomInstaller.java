@@ -27,6 +27,8 @@ import org.eclipse.aether.artifact.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -35,6 +37,8 @@ import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 public class PomInstaller
     implements ArtifactInstaller
 {
+    private final Logger logger = LoggerFactory.getLogger( PomInstaller.class );
+
     private final RepositoryConfigurator repositoryConfigurator;
 
     @Inject
@@ -50,6 +54,12 @@ public class PomInstaller
         Repository repo = repositoryConfigurator.configureRepository( "install-raw-pom" );
 
         List<Artifact> jppArtifacts = DefaultInstaller.getJppArtifacts( artifact, rule, packageName, repo );
+        if ( jppArtifacts == null )
+        {
+            logger.error( "No suitable repository found to store POM artifact {}", artifact );
+            throw new RuntimeException( "No suitable repository found to store POM artifact" );
+        }
+
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();
         Artifact primaryJppArtifact = jppIterator.next();
         pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );
