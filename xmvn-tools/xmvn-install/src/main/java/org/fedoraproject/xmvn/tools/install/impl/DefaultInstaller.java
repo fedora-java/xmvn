@@ -112,21 +112,21 @@ public class DefaultInstaller
 
     private Set<Artifact> skippedArtifacts;
 
-    private final ArtifactInstaller installer;
+    private final Map<String, ArtifactInstaller> installers;
 
     @Inject
     public DefaultInstaller( Configurator configurator, RepositoryConfigurator repositoryConfigurator,
                              Resolver resolver,
                              @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor,
                              @Named( DependencyExtractor.RUNTIME ) DependencyExtractor runtimeDependencyExtractor,
-                             ArtifactInstaller installer )
+                             Map<String, ArtifactInstaller> installers )
     {
         this.configurator = configurator;
         this.repositoryConfigurator = repositoryConfigurator;
         this.resolver = resolver;
         this.buildDependencyExtractor = buildDependencyExtractor;
         this.runtimeDependencyExtractor = runtimeDependencyExtractor;
-        this.installer = installer;
+        this.installers = installers;
     }
 
     private PackagingRule ruleForArtifact( Artifact artifact )
@@ -262,7 +262,8 @@ public class DefaultInstaller
         }
     }
 
-    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
+    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> jppArtifacts,
+                                  ArtifactInstaller installer )
         throws IOException
     {
         logger.info( "===============================================" );
@@ -397,7 +398,7 @@ public class DefaultInstaller
             return;
         }
 
-        installArtifact( pkg, artifact, jppArtifacts );
+        installArtifact( pkg, artifact, jppArtifacts, installers.get( "default" ) );
 
         Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
         installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
