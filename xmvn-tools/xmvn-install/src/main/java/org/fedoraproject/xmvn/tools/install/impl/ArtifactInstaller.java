@@ -25,6 +25,6 @@ import org.eclipse.aether.artifact.Artifact;
  */
 public interface ArtifactInstaller
 {
-    void installArtifact( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
+    void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
         throws IOException;
 }

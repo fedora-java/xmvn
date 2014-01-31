@@ -87,7 +87,7 @@ public class DefaultArtifactInstaller
     }
 
     @Override
-    public void installArtifact( Package pkg, Artifact artifact, List<Artifact> jppArtifacts )
+    public void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts )
         throws IOException
     {
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();

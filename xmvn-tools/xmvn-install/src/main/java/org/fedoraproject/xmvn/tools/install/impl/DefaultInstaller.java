@@ -250,7 +250,7 @@ public class DefaultInstaller
         }
     }
 
-    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> jppArtifacts,
+    private void installArtifact( Package pkg, Artifact artifact, List<Artifact> aliases, List<Artifact> jppArtifacts,
                                   ArtifactInstaller installer )
         throws IOException
     {
@@ -279,7 +279,7 @@ public class DefaultInstaller
         }
         logger.info( "===============================================" );
 
-        installer.installArtifact( pkg, artifact, jppArtifacts );
+        installer.installArtifact( pkg, artifact, aliases, jppArtifacts );
     }
 
     private Artifact resolvePackagedArtifact( Artifact artifact, Set<Package> packageSet )
@@ -386,7 +386,8 @@ public class DefaultInstaller
             return;
         }
 
-        installArtifact( pkg, artifact, jppArtifacts, installer );
+        List<Artifact> aliases = getAliasArtifacts( rule );
+        installArtifact( pkg, artifact, aliases, jppArtifacts, installer );
 
         Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
         installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
@@ -403,7 +404,6 @@ public class DefaultInstaller
         }
         else
         {
-            List<Artifact> aliases = getAliasArtifacts( rule );
             pkg.addArtifactMetadata( artifact, aliases, jppArtifacts );
         }
     }
