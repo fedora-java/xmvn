@@ -61,7 +61,7 @@ public class XMvn
     {
         List<URL> urls = new ArrayList<>();
 
-        for ( String subdir : Arrays.asList( "boot", "lib" ) )
+        for ( String subdir : Arrays.asList( "boot", "lib/ext", "lib" ) )
         {
             Path dir = getHome().resolve( subdir );
             try (DirectoryStream<Path> stream = Files.newDirectoryStream( dir ))
