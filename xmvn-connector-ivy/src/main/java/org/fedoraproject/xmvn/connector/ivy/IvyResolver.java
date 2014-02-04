@@ -223,7 +223,7 @@ public class IvyResolver
         throws IOException
     {
         DeploymentRequest request = new DeploymentRequest();
-        request.setArtifact( ivy2aether( artifact ) );
+        request.setArtifact( ivy2aether( artifact ).setFile( artifactFile ) );
         DeploymentResult result = deployer.deploy( request );
         if ( result.getException() != null )
             throw new IOException( "Failed to publish artifact", result.getException() );
