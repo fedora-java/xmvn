@@ -66,6 +66,9 @@ class IsolatedXMvnServiceLocator
             realm.importPackage( "org.fedoraproject.xmvn.deployer" );
             realm.importPackage( "org.fedoraproject.xmvn.resolver" );
             realm.importPackage( "org.eclipse.aether.artifact" );
+            realm.importPackage( "org.slf4j" );
+            realm.importPackage( "org.slf4j.impl" );
+            realm.importPackage( "org.slf4j.spi" );
         }
         catch ( IOException e )
         {
