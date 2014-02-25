@@ -26,8 +26,6 @@ import org.slf4j.helpers.MarkerIgnoringBase;
 import org.slf4j.helpers.MessageFormatter;
 
 /**
- * slf: trace,debug,info,warn,error; ivy: debug,verbose,info,warn,error
- * 
  * @author Mikolaj Izdebski
  */
 class IvyLoggerAdapter
