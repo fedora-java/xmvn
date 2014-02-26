@@ -52,6 +52,29 @@ import org.slf4j.LoggerFactory;
 public class InstallMojo
     extends AbstractMojo
 {
+    private static final Set<String> TYCHO_PACKAGING_TYPES = new LinkedHashSet<>();
+
+    private static final Set<String> TYCHO_P2_CLASSIFIERS = new LinkedHashSet<>();
+
+    static
+    {
+        TYCHO_PACKAGING_TYPES.add( "eclipse-plugin" );
+        TYCHO_PACKAGING_TYPES.add( "eclipse-test-plugin" );
+        TYCHO_PACKAGING_TYPES.add( "eclipse-feature" );
+        TYCHO_PACKAGING_TYPES.add( "eclipse-update-site" );
+        TYCHO_PACKAGING_TYPES.add( "eclipse-application" );
+        TYCHO_PACKAGING_TYPES.add( "eclipse-repository" );
+
+        for ( String packaging : TYCHO_PACKAGING_TYPES )
+            TYCHO_P2_CLASSIFIERS.add( "p2." + packaging );
+    }
+
+    private static boolean isTychoInjectedDependency( MavenProject project, Dependency dependency )
+    {
+        return TYCHO_PACKAGING_TYPES.contains( project.getPackaging() )
+            && TYCHO_P2_CLASSIFIERS.contains( dependency.getGroupId() );
+    }
+
     private final Logger logger = LoggerFactory.getLogger( InstallMojo.class );
 
     @Parameter( defaultValue = "${project}", readonly = true, required = true )
@@ -82,6 +105,10 @@ public class InstallMojo
 
             for ( Dependency dependency : project.getModel().getDependencies() )
             {
+                // Ignore dependencies injected by Tycho
+                if ( isTychoInjectedDependency( project, dependency ) )
+                    continue;
+
                 if ( dependency.getScope() != null && dependency.getScope().equals( "system" ) )
                 {
                     systemDeps.add( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
