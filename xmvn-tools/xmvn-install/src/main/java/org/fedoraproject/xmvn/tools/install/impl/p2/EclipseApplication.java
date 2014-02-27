@@ -51,8 +51,11 @@ class EclipseApplication
     {
         for ( String baseDir : EQUINOX_BASE_DIRS )
         {
-            try (DirectoryStream<Path> stream =
-                Files.newDirectoryStream( Paths.get( baseDir ), EQUINOX_LAUNCHER_BUNDLE_GLOB ))
+            Path basePath = Paths.get( baseDir );
+            if ( !Files.isDirectory( basePath ) )
+                continue;
+
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream( basePath, EQUINOX_LAUNCHER_BUNDLE_GLOB ))
             {
                 for ( Path bundle : stream )
                     return bundle.toAbsolutePath();
