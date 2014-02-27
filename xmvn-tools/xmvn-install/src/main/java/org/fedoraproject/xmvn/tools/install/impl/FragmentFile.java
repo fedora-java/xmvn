@@ -52,8 +52,7 @@ class FragmentFile
 
     public boolean isEmpty()
     {
-        return mapping.isEmpty() && dependencies.isEmpty() && javaVersionRequirement == null
-            && javaVersionDevelRequirement == null;
+        return mapping.isEmpty();
     }
 
     private static void addMapping( Map<Artifact, Set<Artifact>> map, Artifact from, Artifact to )
