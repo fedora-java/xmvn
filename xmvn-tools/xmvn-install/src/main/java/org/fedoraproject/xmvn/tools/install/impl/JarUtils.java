@@ -29,7 +29,7 @@ import org.eclipse.sisu.space.asm.Opcodes;
 /**
  * @author Mikolaj Izdebski
  */
-class JarUtils
+public class JarUtils
 {
     /**
      * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native (architecture-dependant)
