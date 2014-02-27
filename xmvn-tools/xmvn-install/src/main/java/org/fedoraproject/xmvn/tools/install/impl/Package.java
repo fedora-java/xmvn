@@ -20,6 +20,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -60,6 +61,10 @@ public class Package
 
     /** map generic artifact => provided artifact */
     private final Map<Artifact, Artifact> providedArtifacts = new LinkedHashMap<>();
+
+    private final List<PackagePreInstallHook> preInstallHooks = new ArrayList<>();
+
+    private final Map<String, Object> properties = new LinkedHashMap<>();
 
     public Package( String name, InstallerSettings settings )
     {
@@ -283,5 +288,20 @@ public class Package
     public Artifact getProvidedArtifact( Artifact artifact )
     {
         return providedArtifacts.get( artifact );
+    }
+
+    public void addPreInstallHook( PackagePreInstallHook hook )
+    {
+        preInstallHooks.add( hook );
+    }
+
+    public void setProperty( String key, Object value )
+    {
+        properties.put( key, value );
+    }
+
+    public Object getProperty( String key )
+    {
+        return properties.get( key );
     }
 }
