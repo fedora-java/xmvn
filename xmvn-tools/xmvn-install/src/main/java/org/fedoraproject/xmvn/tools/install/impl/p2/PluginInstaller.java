@@ -30,7 +30,7 @@ import org.fedoraproject.xmvn.tools.install.impl.Package;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "eclipse-plugin" )
+@Named( "jar/eclipse-plugin" )
 public class PluginInstaller
     extends AbstractP2Installer
 {

@@ -30,7 +30,7 @@ import org.fedoraproject.xmvn.tools.install.impl.Package;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "eclipse-feature" )
+@Named( "jar/eclipse-feature" )
 public class FeatureInstaller
     extends AbstractP2Installer
 {
