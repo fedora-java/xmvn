@@ -15,12 +15,5 @@
       <description/>
       <isolated-realm>false</isolated-realm>
     </component>
-    <component>
-      <role>org.eclipse.aether.repository.WorkspaceReader</role>
-      <role-hint>default</role-hint>
-      <implementation>org.fedoraproject.xmvn.connector.aether.XMvnWorkspaceReader</implementation>
-      <description/>
-      <isolated-realm>false</isolated-realm>
-    </component>
   </components>
 </component-set>
