@@ -39,7 +39,7 @@ import org.fedoraproject.xmvn.utils.FileUtils;
 /**
  * @author Mikolaj Izdebski
  */
-class Package
+public class Package
     implements Comparable<Package>
 {
     private final String suffix;
