@@ -81,6 +81,11 @@ public class Package
         int mode;
     }
 
+    public String getSuffix()
+    {
+        return suffix;
+    }
+
     private final List<TargetFile> targetFiles = new LinkedList<>();
 
     public void addFile( Path file, Path dirPath, Path fileName, int mode )
