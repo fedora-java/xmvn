@@ -203,6 +203,9 @@ public class Package
     public void install( String packageName, Path root )
         throws IOException
     {
+        for ( PackagePreInstallHook hook : preInstallHooks )
+            hook.beforePackageInstallation( this );
+
         installMetadata( packageName );
         installFiles( root );
         createFileList();
