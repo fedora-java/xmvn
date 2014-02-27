@@ -69,10 +69,14 @@ public class InstallMojo
             TYCHO_P2_CLASSIFIERS.add( "p2." + packaging );
     }
 
-    private static boolean isTychoInjectedDependency( MavenProject project, Dependency dependency )
+    private static boolean isTychoInjectedDependency( Dependency dependency )
     {
-        return TYCHO_PACKAGING_TYPES.contains( project.getPackaging() )
-            && TYCHO_P2_CLASSIFIERS.contains( dependency.getGroupId() );
+        return TYCHO_P2_CLASSIFIERS.contains( dependency.getGroupId() );
+    }
+
+    private static boolean isTychoProject( MavenProject project )
+    {
+        return TYCHO_PACKAGING_TYPES.contains( project.getPackaging() );
     }
 
     private final Logger logger = LoggerFactory.getLogger( InstallMojo.class );
@@ -106,7 +110,7 @@ public class InstallMojo
             for ( Dependency dependency : project.getModel().getDependencies() )
             {
                 // Ignore dependencies injected by Tycho
-                if ( isTychoInjectedDependency( project, dependency ) )
+                if ( isTychoProject( project ) && isTychoInjectedDependency( dependency ) )
                     continue;
 
                 if ( dependency.getScope() != null && dependency.getScope().equals( "system" ) )
@@ -163,9 +167,10 @@ public class InstallMojo
                 logger.debug( "Artifact file is {}", mainArtifact.getFile() );
 
                 if ( mainArtifact.getFile() != null )
-                {
                     deployArtifact( mainArtifact );
 
+                if ( mainArtifact.getFile() != null && !isTychoProject( project ) )
+                {
                     Artifact effectivePomArtifact =
                         new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(),
                                              mainArtifact.getClassifier(), "pom", mainArtifact.getVersion() );
