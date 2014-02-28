@@ -156,7 +156,7 @@ public class DefaultInstaller
                 wrapperConfiguration.addArtifactManagement( rule );
                 ConfigurationStaxWriter configurationWriter = new ConfigurationStaxWriter();
                 configurationWriter.write( buffer, wrapperConfiguration );
-                logger.debug( "Effective packaging rule for {}:\n", artifact, buffer );
+                logger.debug( "Effective packaging rule for {}:\n{}", artifact, buffer );
             }
             catch ( XMLStreamException e )
             {
