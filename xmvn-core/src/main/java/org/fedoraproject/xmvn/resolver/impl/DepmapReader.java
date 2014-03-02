@@ -61,7 +61,7 @@ class DepmapReader
 {
     private final ThreadPoolExecutor executor;
 
-    private static class DaemonFactory
+    static class DaemonFactory
         implements ThreadFactory
     {
         @Override

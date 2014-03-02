@@ -26,7 +26,7 @@ class IvyLoggerFactory
 {
     private static class Lazy
     {
-        private static final Logger INSTANCE = new IvyLoggerAdapter();
+        static final Logger INSTANCE = new IvyLoggerAdapter();
     }
 
     @Override

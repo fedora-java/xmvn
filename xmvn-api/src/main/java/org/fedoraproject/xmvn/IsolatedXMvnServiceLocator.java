@@ -31,7 +31,7 @@ class IsolatedXMvnServiceLocator
         INSTANCE = new IsolatedXMvnServiceLocator();
     }
 
-    private static IsolatedXMvnServiceLocator INSTANCE;
+    static IsolatedXMvnServiceLocator INSTANCE;
 
     private static Path getHome()
     {
@@ -45,14 +45,14 @@ class IsolatedXMvnServiceLocator
         return Paths.get( home );
     }
 
-    private final IsolatedClassRealm realm;
+    final IsolatedClassRealm realm;
 
     public static IsolatedClassRealm getRealm()
     {
         return INSTANCE.realm;
     }
 
-    private final Method getServiceMethod;
+    final Method getServiceMethod;
 
     private IsolatedXMvnServiceLocator()
     {
