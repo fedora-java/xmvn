@@ -1,0 +1,13 @@
+XMvn author believes that storing Eclipse project files together with
+code is generally a *bad* idea.  Instead, Eclipse project files and
+settings are provided in a separate git branch.
+
+To add XMvn Eclipse project files to existing git working tree, run:
+
+    git --git-dir .eclipse init
+    git --git-dir .eclipse remote add -f origin git://git.fedorahosted.org/git/xmvn.git
+    git --git-dir .eclipse --work-tree . checkout eclipse
+
+If you prefer to use Github repo, use the following git URL instead:
+
+    git://github.com/mizdebsk/xmvn.git
