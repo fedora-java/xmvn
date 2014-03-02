@@ -23,6 +23,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.StringUtils;
+
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;

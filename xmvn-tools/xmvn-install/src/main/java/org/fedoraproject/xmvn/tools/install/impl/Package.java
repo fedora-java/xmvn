@@ -32,6 +32,7 @@ import java.util.TreeSet;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;

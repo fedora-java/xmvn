@@ -40,6 +40,9 @@ import javax.xml.stream.XMLStreamException;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
@@ -58,8 +61,6 @@ import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for

@@ -31,6 +31,7 @@ import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
+
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;

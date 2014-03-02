@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.model.Dependency;
+
 import org.fedoraproject.xmvn.model.AbstractModelVisitor;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 

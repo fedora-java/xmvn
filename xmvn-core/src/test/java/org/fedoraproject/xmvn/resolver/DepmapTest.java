@@ -28,9 +28,10 @@ import java.util.List;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Test;
+
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski

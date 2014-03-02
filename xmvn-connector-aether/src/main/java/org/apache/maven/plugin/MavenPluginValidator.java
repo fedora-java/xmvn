@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**

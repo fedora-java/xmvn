@@ -23,18 +23,18 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import org.eclipse.sisu.EagerSingleton;
 import org.eclipse.sisu.space.BeanScanning;
 import org.eclipse.sisu.space.ClassSpace;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
+
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.resolver.Resolver;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 
 /**
  * @author Mikolaj Izdebski

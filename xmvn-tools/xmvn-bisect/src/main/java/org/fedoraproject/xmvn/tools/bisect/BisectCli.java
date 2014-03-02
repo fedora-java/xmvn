@@ -21,17 +21,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
-import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
+import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 
 /**
  * @author Mikolaj Izdebski

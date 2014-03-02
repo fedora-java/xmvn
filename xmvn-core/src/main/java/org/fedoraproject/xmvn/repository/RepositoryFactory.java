@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+
 import org.fedoraproject.xmvn.config.Stereotype;
 
 /**

@@ -35,12 +35,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.aether.artifact.Artifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski

@@ -36,6 +36,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.Artifact;
+
 import org.fedoraproject.xmvn.dependency.DependencyExtractionRequest;
 import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
 import org.fedoraproject.xmvn.dependency.DependencyExtractor;

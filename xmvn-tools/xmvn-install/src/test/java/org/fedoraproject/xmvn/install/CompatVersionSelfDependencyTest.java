@@ -21,11 +21,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 
+import org.junit.Test;
+
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.junit.Test;
 
 /**
  * Test case for <a href="http://bugzilla.redhat.com/1019670">Red Hat bug #1019670</a>.

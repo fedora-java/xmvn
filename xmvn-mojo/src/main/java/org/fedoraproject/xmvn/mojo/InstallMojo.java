@@ -37,12 +37,13 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski

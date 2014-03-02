@@ -24,6 +24,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.model.Model;
+
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelReader;
 

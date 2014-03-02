@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+
 import org.fedoraproject.xmvn.model.AbstractModelVisitor;
 
 /**

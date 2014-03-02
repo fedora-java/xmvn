@@ -35,13 +35,14 @@ import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of XMvn configurator.

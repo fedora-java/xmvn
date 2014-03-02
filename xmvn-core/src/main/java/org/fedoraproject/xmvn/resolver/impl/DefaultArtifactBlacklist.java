@@ -25,12 +25,13 @@ import javax.inject.Singleton;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
 import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of {@code ArtifactBlacklist} container.

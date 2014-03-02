@@ -63,6 +63,7 @@ import org.apache.maven.model.RepositoryPolicy;
 import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Site;
+
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelProcessor;
 import org.fedoraproject.xmvn.model.ModelReader;

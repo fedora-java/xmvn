@@ -21,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.codehaus.plexus.util.StringUtils;
+
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.utils.GlobUtils;

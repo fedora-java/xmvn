@@ -20,10 +20,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Test;
+
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.utils.FileUtils;
-import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski

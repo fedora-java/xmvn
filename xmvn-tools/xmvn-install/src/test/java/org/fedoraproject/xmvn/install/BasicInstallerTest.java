@@ -18,8 +18,9 @@ package org.fedoraproject.xmvn.install;
 import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.sisu.launch.InjectedTest;
-import org.fedoraproject.xmvn.tools.install.Installer;
 import org.junit.Test;
+
+import org.fedoraproject.xmvn.tools.install.Installer;
 
 /**
  * @author Mikolaj Izdebski

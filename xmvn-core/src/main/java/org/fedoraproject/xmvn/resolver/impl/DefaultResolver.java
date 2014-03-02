@@ -35,6 +35,9 @@ import javax.inject.Singleton;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
@@ -45,8 +48,6 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 import org.fedoraproject.xmvn.utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.

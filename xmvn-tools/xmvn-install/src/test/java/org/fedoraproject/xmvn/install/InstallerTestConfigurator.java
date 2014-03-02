@@ -23,6 +23,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;
 import org.fedoraproject.xmvn.config.InstallerSettings;

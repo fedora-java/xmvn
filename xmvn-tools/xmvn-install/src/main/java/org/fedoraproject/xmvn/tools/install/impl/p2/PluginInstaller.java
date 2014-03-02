@@ -20,6 +20,7 @@ import java.io.IOException;
 import javax.inject.Named;
 
 import org.eclipse.aether.artifact.Artifact;
+
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.tools.install.impl.Package;
 

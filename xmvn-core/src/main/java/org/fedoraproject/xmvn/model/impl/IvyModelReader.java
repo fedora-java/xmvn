@@ -45,6 +45,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.StringUtils;
+
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelReader;
 

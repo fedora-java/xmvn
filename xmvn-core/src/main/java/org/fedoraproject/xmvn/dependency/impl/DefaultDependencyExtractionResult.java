@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.aether.artifact.Artifact;
+
 import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
 
 /**

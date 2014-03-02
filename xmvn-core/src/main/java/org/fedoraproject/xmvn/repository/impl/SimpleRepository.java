@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.aether.artifact.Artifact;
+
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;

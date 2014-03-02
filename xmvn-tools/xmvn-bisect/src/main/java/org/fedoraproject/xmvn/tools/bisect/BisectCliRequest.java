@@ -24,14 +24,13 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.codehaus.plexus.util.StringUtils;
-
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import org.apache.maven.shared.invoker.DefaultInvocationRequest;
+import org.apache.maven.shared.invoker.InvocationRequest;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author Mikolaj Izdebski

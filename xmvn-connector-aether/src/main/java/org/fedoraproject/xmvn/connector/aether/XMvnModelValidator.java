@@ -37,12 +37,13 @@ import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.

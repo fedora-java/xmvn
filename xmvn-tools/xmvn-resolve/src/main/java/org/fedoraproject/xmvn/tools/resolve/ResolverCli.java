@@ -24,19 +24,19 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
-import org.fedoraproject.xmvn.resolver.ResolutionRequest;
-import org.fedoraproject.xmvn.resolver.Resolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
+import org.fedoraproject.xmvn.resolver.ResolutionRequest;
+import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
  * Resolve artifacts given on command line.

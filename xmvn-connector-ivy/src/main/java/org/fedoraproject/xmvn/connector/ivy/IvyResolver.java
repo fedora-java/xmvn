@@ -45,6 +45,7 @@ import org.apache.ivy.plugins.repository.file.FileRepository;
 import org.apache.ivy.plugins.repository.file.FileResource;
 import org.apache.ivy.plugins.resolver.AbstractResolver;
 import org.apache.ivy.plugins.resolver.util.ResolvedResource;
+
 import org.fedoraproject.xmvn.XMvn;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;

@@ -26,6 +26,7 @@ import javax.inject.Singleton;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelReader;
 

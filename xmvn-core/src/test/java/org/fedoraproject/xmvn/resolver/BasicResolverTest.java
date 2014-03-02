@@ -19,10 +19,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Test;
+
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
