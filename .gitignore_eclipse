@@ -1,0 +1,5 @@
+*
+!.gitignore_eclipse
+!.project
+!.classpath
+!.settings
