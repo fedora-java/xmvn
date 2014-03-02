@@ -94,7 +94,6 @@ class IsolatedXMvnServiceLocator
         }
     }
 
-    @SuppressWarnings( "unchecked" )
     public static <T> T getService( final Class<T> role )
     {
         try
