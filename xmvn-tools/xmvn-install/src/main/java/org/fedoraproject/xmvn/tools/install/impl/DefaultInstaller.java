@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.containsNativeCode;
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.usesNativeCode;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -291,7 +292,8 @@ public class DefaultInstaller
     {
         ArtifactInstaller installer = getInstallerForArtifact( artifact );
 
-        if ( containsNativeCode( artifact.getFile() ) || usesNativeCode( artifact.getFile() ) )
+        File artifactFile = artifact.getFile();
+        if ( artifactFile != null && ( containsNativeCode( artifactFile ) || usesNativeCode( artifactFile ) ) )
             artifact = ArtifactUtils.setStereotype( artifact, "native" );
 
         PackagingRule rule = ruleForArtifact( artifact );
