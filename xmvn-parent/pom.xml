@@ -83,7 +83,7 @@
     <mavenVersion>3.2.1</mavenVersion>
     <plexusUtilsVersion>3.0.16</plexusUtilsVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
-    <sisuVersion>0.2.0.M1</sisuVersion>
+    <sisuVersion>0.2.0</sisuVersion>
     <slf4jVersion>1.7.6</slf4jVersion>
 
     <!-- Build dependencies -->
