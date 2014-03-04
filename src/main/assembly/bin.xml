@@ -51,6 +51,17 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>xmvn-core/target/dependency</directory>
+      <outputDirectory>lib/core</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>xmvn-core/target</directory>
+      <outputDirectory>lib/core</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>xmvn-tools/xmvn-bisect/target/dependency</directory>
       <outputDirectory>lib/bisect</outputDirectory>
     </fileSet>
