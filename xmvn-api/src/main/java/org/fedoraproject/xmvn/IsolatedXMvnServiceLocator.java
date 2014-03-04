@@ -60,7 +60,7 @@ class IsolatedXMvnServiceLocator
         {
             realm = new IsolatedClassRealm( XMvn.class.getClassLoader() );
 
-            realm.addJarDirectory( getHome().resolve( "core" ) );
+            realm.addJarDirectory( getHome().resolve( "lib" ).resolve( "core" ) );
 
             realm.importPackage( "org.fedoraproject.xmvn" );
             realm.importPackage( "org.fedoraproject.xmvn.deployer" );
