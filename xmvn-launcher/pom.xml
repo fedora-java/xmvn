@@ -31,4 +31,10 @@
     This module contains provides a way of launching XMvn running in
     isolated class realm and locating XMVn services.
   </description>
+  <dependencies>
+    <dependency>
+      <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-api</artifactId>
+    </dependency>
+  </dependencies>
 </project>

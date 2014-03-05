@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn;
+package org.fedoraproject.xmvn.locator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,7 +27,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * @author Mikolaj Izdebski
@@ -207,24 +206,5 @@ class IsolatedClassRealm
         }
 
         return Collections.enumeration( resources );
-    }
-
-    public <T> T execute( Callable<T> routine )
-        throws Exception
-    {
-        ClassLoader savedThreadContextClassLoader = Thread.currentThread().getContextClassLoader();
-        try
-        {
-            Thread.currentThread().setContextClassLoader( this );
-            return routine.call();
-        }
-        catch ( ReflectiveOperationException e )
-        {
-            throw new RuntimeException( e );
-        }
-        finally
-        {
-            Thread.currentThread().setContextClassLoader( savedThreadContextClassLoader );
-        }
     }
 }

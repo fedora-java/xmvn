@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn;
+package org.fedoraproject.xmvn.locator;
 
 import java.util.concurrent.Callable;
 
@@ -24,27 +24,27 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 /**
  * @author Mikolaj Izdebski
  */
-class IsolatedResolver
+public class IsolatedResolver
     implements Resolver
 {
-    static
-    {
-        INSTANCE = new IsolatedResolver();
-    }
+    final IsolatedXMvnServiceLocator locator;
 
-    static final Resolver INSTANCE;
+    public IsolatedResolver( IsolatedXMvnServiceLocator locator )
+    {
+        this.locator = locator;
+    }
 
     @Override
     public ResolutionResult resolve( final ResolutionRequest request )
     {
         try
         {
-            return IsolatedXMvnServiceLocator.getRealm().execute( new Callable<ResolutionResult>()
+            return locator.call( new Callable<ResolutionResult>()
             {
                 @Override
                 public ResolutionResult call()
                 {
-                    return IsolatedXMvnServiceLocator.getService( Resolver.class ).resolve( request );
+                    return locator.get( Resolver.class ).resolve( request );
                 }
             } );
         }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn;
+package org.fedoraproject.xmvn.locator;
 
 import java.util.concurrent.Callable;
 
@@ -24,27 +24,27 @@ import org.fedoraproject.xmvn.deployer.DeploymentResult;
 /**
  * @author Mikolaj Izdebski
  */
-class IsolatedDeployer
+public class IsolatedDeployer
     implements Deployer
 {
-    static
-    {
-        INSTANCE = new IsolatedDeployer();
-    }
+    final IsolatedXMvnServiceLocator locator;
 
-    static final Deployer INSTANCE;
+    public IsolatedDeployer( IsolatedXMvnServiceLocator locator )
+    {
+        this.locator = locator;
+    }
 
     @Override
     public DeploymentResult deploy( final DeploymentRequest request )
     {
         try
         {
-            return IsolatedXMvnServiceLocator.getRealm().execute( new Callable<DeploymentResult>()
+            return locator.call( new Callable<DeploymentResult>()
             {
                 @Override
                 public DeploymentResult call()
                 {
-                    return IsolatedXMvnServiceLocator.getService( Deployer.class ).deploy( request );
+                    return locator.get( Deployer.class ).deploy( request );
                 }
             } );
         }
