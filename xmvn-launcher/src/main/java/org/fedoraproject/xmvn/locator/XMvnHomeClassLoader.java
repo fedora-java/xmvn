@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.locator;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -25,7 +24,9 @@ import java.nio.file.Paths;
 public class XMvnHomeClassLoader
     extends IsolatedClassRealm
 {
-    private static Path getHome()
+    private final Path home;
+
+    private static Path getDefaultHome()
     {
         String home = System.getProperty( "xmvn.home" );
         if ( home == null )
@@ -39,25 +40,24 @@ public class XMvnHomeClassLoader
 
     public XMvnHomeClassLoader( ClassLoader parent )
     {
-        this( getHome(), parent );
+        this( getDefaultHome(), parent );
     }
 
     public XMvnHomeClassLoader( Path home, ClassLoader parent )
     {
         super( parent );
+        this.home = home;
 
-        try
-        {
-            addJarDirectory( home.resolve( "lib" ).resolve( "core" ) );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( "Unable to initialize XMvn class realm", e );
-        }
+        addJarDirectory( home.resolve( "lib" ).resolve( "core" ) );
 
         importPackage( "org.fedoraproject.xmvn" );
         importPackage( "org.fedoraproject.xmvn.deployer" );
         importPackage( "org.fedoraproject.xmvn.resolver" );
         importPackage( "org.eclipse.aether.artifact" );
+    }
+
+    public Path getHome()
+    {
+        return home;
     }
 }

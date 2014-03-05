@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.locator;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
@@ -50,20 +51,29 @@ class IsolatedClassRealm
     }
 
     public void addJar( Path jar )
-        throws IOException
     {
-        addURL( jar.toUri().toURL() );
+        try
+        {
+            addURL( jar.toUri().toURL() );
+        }
+        catch ( MalformedURLException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 
     public void addJarDirectory( Path dir )
-        throws IOException
     {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream( dir, "*.jar" ))
         {
             for ( Path path : stream )
             {
-                addURL( path.toUri().toURL() );
+                addJar( path );
             }
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
         }
     }
 

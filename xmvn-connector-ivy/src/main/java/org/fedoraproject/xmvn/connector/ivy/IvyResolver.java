@@ -49,10 +49,13 @@ import org.apache.ivy.plugins.resolver.util.ResolvedResource;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
+import org.fedoraproject.xmvn.locator.IsolatedDeployer;
+import org.fedoraproject.xmvn.locator.IsolatedResolver;
+import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
+import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * Resolve and publish Ivy artifacts by delegating most tasks to XMvn.
@@ -62,16 +65,27 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class IvyResolver
     extends AbstractResolver
 {
+    static class LazyLocatorProvider
+    {
+        static final IsolatedXMvnServiceLocator locator;
+
+        static
+        {
+            @SuppressWarnings( "resource" ) XMvnHomeClassLoader realm =
+                new XMvnHomeClassLoader( LazyLocatorProvider.class.getClassLoader() );
+            realm.addJarDirectory( realm.getHome().resolve( "lib" ).resolve( "ivy" ) );
+            locator = new IsolatedXMvnServiceLocator( realm );
+        }
+    }
+
     static class LazyResolverProvider
     {
-        // FIXME
-        static final Resolver resolver = null;
+        static final Resolver resolver = new IsolatedResolver( LazyLocatorProvider.locator );
     }
 
     static class LazyDeployerProvider
     {
-        // FIXME
-        static final Deployer deployer = null;
+        static final Deployer deployer = new IsolatedDeployer( LazyLocatorProvider.locator );
     }
 
     public IvyResolver()
@@ -94,7 +108,7 @@ public class IvyResolver
     private static String resolvedVersion( ResolutionResult resolutionResult )
     {
         String version = resolutionResult.getCompatVersion();
-        return version != null ? version : ArtifactUtils.DEFAULT_VERSION;
+        return version != null ? version : "SYSTEM";
     }
 
     private String resolveModuleVersion( ModuleDescriptor module )

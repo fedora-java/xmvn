@@ -35,16 +35,20 @@
   <dependencies>
     <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
-      <artifactId>xmvn-core</artifactId>
+      <artifactId>xmvn-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-launcher</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.sonatype.sisu</groupId>
-      <artifactId>sisu-guice</artifactId>
-      <classifier>no_aop</classifier>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ivy</groupId>
+      <artifactId>ivy</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
