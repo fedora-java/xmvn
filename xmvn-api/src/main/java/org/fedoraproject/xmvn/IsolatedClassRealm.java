@@ -50,15 +50,20 @@ class IsolatedClassRealm
         this.parent = parent;
     }
 
+    public void addJar( Path jar )
+        throws IOException
+    {
+        addURL( jar.toUri().toURL() );
+    }
+
     public void addJarDirectory( Path dir )
         throws IOException
     {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream( dir ))
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream( dir, "*.jar" ))
         {
             for ( Path path : stream )
             {
-                if ( path.toString().endsWith( ".jar" ) )
-                    addURL( path.toUri().toURL() );
+                addURL( path.toUri().toURL() );
             }
         }
     }
