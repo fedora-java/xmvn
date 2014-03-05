@@ -188,6 +188,11 @@
       </dependency>
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-launcher</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedoraproject.xmvn</groupId>
         <artifactId>xmvn-core</artifactId>
         <version>${project.version}</version>
       </dependency>

@@ -37,6 +37,7 @@
   <modules>
     <module>xmvn-parent</module>
     <module>xmvn-api</module>
+    <module>xmvn-launcher</module>
     <module>xmvn-core</module>
     <module>xmvn-connector-aether</module>
     <module>xmvn-connector-ivy</module>
