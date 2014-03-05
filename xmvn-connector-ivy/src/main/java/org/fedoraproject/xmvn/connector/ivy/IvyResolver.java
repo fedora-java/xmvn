@@ -46,7 +46,6 @@ import org.apache.ivy.plugins.repository.file.FileResource;
 import org.apache.ivy.plugins.resolver.AbstractResolver;
 import org.apache.ivy.plugins.resolver.util.ResolvedResource;
 
-import org.fedoraproject.xmvn.XMvn;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
@@ -65,12 +64,14 @@ public class IvyResolver
 {
     static class LazyResolverProvider
     {
-        static final Resolver resolver = XMvn.getResolver();
+        // FIXME
+        static final Resolver resolver = null;
     }
 
     static class LazyDeployerProvider
     {
-        static final Deployer deployer = XMvn.getDeployer();
+        // FIXME
+        static final Deployer deployer = null;
     }
 
     public IvyResolver()

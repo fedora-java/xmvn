@@ -58,7 +58,7 @@ class IsolatedXMvnServiceLocator
     {
         try
         {
-            realm = new IsolatedClassRealm( XMvn.class.getClassLoader() );
+            realm = new IsolatedClassRealm( IsolatedXMvnServiceLocator.class.getClassLoader() );
 
             realm.addJarDirectory( getHome().resolve( "lib" ).resolve( "core" ) );
 
