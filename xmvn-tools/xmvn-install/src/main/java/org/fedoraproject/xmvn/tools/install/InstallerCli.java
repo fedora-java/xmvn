@@ -79,7 +79,12 @@ public class InstallerCli
         Xpp3Dom[] childreen = parent.getChildren( tag );
 
         if ( childreen.length == 1 )
-            return childreen[0].getValue().trim();
+        {
+            String value = childreen[0].getValue();
+            if ( value == null )
+                value = "";
+            return value.trim();
+        }
 
         if ( childreen.length == 0 && optional )
             return defaultValue;
