@@ -91,9 +91,13 @@ public class DefaultDeployer
     {
         if ( value != null )
         {
-            Xpp3Dom child = new Xpp3Dom( tag );
-            child.setValue( value.toString() );
-            parent.addChild( child );
+            String stringValue = value.toString();
+            if ( stringValue.length() > 0 )
+            {
+                Xpp3Dom child = new Xpp3Dom( tag );
+                child.setValue( stringValue );
+                parent.addChild( child );
+            }
         }
     }
 
