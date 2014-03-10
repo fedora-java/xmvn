@@ -95,14 +95,34 @@ public class IvyResolver
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )
     {
-        return new org.eclipse.aether.artifact.DefaultArtifact( revision.getOrganisation(), revision.getName(),
-                                                                revision.getExtraAttribute( "classifier" ), extension,
-                                                                revision.getRevision() );
+        String groupId = revision.getOrganisation();
+        String artifactId = revision.getName();
+        String classifier = revision.getExtraAttribute( "classifier" );
+        String version = revision.getRevision();
+
+        return new org.eclipse.aether.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
     }
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( org.apache.ivy.core.module.descriptor.Artifact artifact )
     {
-        return ivy2aether( artifact.getModuleRevisionId(), artifact.getExt() );
+        ModuleRevisionId revision = artifact.getModuleRevisionId();
+
+        String groupId = revision.getOrganisation();
+        String artifactId = revision.getName();
+        String extension = artifact.getExt();
+        String classifier = revision.getExtraAttribute( "classifier" );
+        String version = revision.getRevision();
+        String type = artifact.getType();
+
+        if ( classifier == null || classifier.isEmpty() )
+        {
+            if ( extension.equals( "jar" ) && type.equals( "source" ) )
+                classifier = "sources";
+            else if ( extension.equals( "jar" ) && type.equals( "javadoc" ) )
+                classifier = "javadoc";
+        }
+
+        return new org.eclipse.aether.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
     }
 
     private static String resolvedVersion( ResolutionResult resolutionResult )
