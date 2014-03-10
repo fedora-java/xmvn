@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.ParseException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.ivy.core.cache.ArtifactOrigin;
 import org.apache.ivy.core.module.descriptor.Artifact;
@@ -39,6 +41,9 @@ import org.apache.ivy.core.resolve.ResolveData;
 import org.apache.ivy.core.resolve.ResolvedModuleRevision;
 import org.apache.ivy.plugins.parser.ModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.m2.PomModuleDescriptorParser;
+import org.apache.ivy.plugins.parser.m2.PomModuleDescriptorWriter;
+import org.apache.ivy.plugins.parser.m2.PomWriterOptions;
+import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorWriter;
 import org.apache.ivy.plugins.repository.Resource;
 import org.apache.ivy.plugins.repository.file.FileRepository;
@@ -254,14 +259,46 @@ public class IvyResolver
         return report;
     }
 
+    private void deploy( org.eclipse.aether.artifact.Artifact artifact, File artifactFile )
+        throws IOException
+    {
+        DeploymentRequest request = new DeploymentRequest();
+        request.setArtifact( artifact.setFile( artifactFile ) );
+        DeploymentResult result = deployer.deploy( request );
+        if ( result.getException() != null )
+            throw new IOException( "Failed to publish artifact", result.getException() );
+    }
+
+    private void deployEffectivePom( ModuleRevisionId moduleRevisionId, File artifactFile )
+        throws IOException
+    {
+        try
+        {
+            File pomFile = Files.createTempFile( "xmvn-", ".pom" ).toFile();
+            ModuleDescriptorParser parser = XmlModuleDescriptorParser.getInstance();
+            ModuleDescriptor module = parser.parseDescriptor( getSettings(), artifactFile.toURI().toURL(), false );
+            PomModuleDescriptorWriter.write( module, pomFile, new PomWriterOptions() );
+
+            org.eclipse.aether.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
+            Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
+            properties.put( "xmvn.artifact.stereotype", "effective" );
+            deploy( artifact.setProperties( properties ), artifactFile );
+        }
+        catch ( ParseException e )
+        {
+            throw new IOException( e );
+        }
+    }
+
     @Override
     public void publish( Artifact artifact, File artifactFile, boolean overwrite )
         throws IOException
     {
-        DeploymentRequest request = new DeploymentRequest();
-        request.setArtifact( ivy2aether( artifact ).setFile( artifactFile ) );
-        DeploymentResult result = deployer.deploy( request );
-        if ( result.getException() != null )
-            throw new IOException( "Failed to publish artifact", result.getException() );
+        if ( artifact.getExt().equals( "xml" ) && artifact.getType().equals( "ivy" ) )
+        {
+            deployEffectivePom( artifact.getModuleRevisionId(), artifactFile );
+        }
+
+        deploy( ivy2aether( artifact ), artifactFile );
     }
 }
