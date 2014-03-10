@@ -94,6 +94,7 @@
     <compilerPluginVersion>3.1</compilerPluginVersion>
     <dependencyPluginVersion>2.8</dependencyPluginVersion>
     <deployPluginVersion>2.8.1</deployPluginVersion>
+    <easymockVersion>3.2</easymockVersion>
     <installPluginVersion>2.5.1</installPluginVersion>
     <invokerPluginVersion>1.8</invokerPluginVersion>
     <jarPluginVersion>2.4</jarPluginVersion>
@@ -217,6 +218,11 @@
         <version>${xmlunitVersion}</version>
       </dependency>
       <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>${easymockVersion}</version>
+      </dependency>
+      <dependency>
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
         <version>${jcommanderVersion}</version>
@@ -252,6 +258,11 @@
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
