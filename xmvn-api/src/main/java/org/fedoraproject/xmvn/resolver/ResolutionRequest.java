@@ -86,4 +86,36 @@ public class ResolutionRequest
     {
         this.isProviderNeeded = isProviderNeeded;
     }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( ( artifact == null ) ? 0 : artifact.hashCode() );
+        result = prime * result + ( isProviderNeeded ? 1231 : 1237 );
+        return result;
+    }
+
+    @Override
+    public boolean equals( Object obj )
+    {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        ResolutionRequest other = (ResolutionRequest) obj;
+        if ( artifact == null )
+        {
+            if ( other.artifact != null )
+                return false;
+        }
+        else if ( !artifact.equals( other.artifact ) )
+            return false;
+        if ( isProviderNeeded != other.isProviderNeeded )
+            return false;
+        return true;
+    }
 }
