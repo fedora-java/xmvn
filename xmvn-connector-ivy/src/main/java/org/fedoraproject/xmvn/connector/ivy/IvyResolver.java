@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.connector.ivy;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.ParseException;
@@ -213,6 +214,10 @@ public class IvyResolver
             report.setSearched( true );
 
             return new ResolvedModuleRevision( this, this, module, report, true );
+        }
+        catch ( FileNotFoundException e )
+        {
+            return null;
         }
         catch ( IOException e )
         {
