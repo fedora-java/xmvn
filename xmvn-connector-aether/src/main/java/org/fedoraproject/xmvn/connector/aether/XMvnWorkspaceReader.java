@@ -58,8 +58,7 @@ public class XMvnWorkspaceReader
         listeners.add( listener );
     }
 
-    @Override
-    public File findArtifact( Artifact artifact )
+    private ResolutionResult resolve( Artifact artifact )
     {
         ResolutionRequest request = new ResolutionRequest( artifact );
 
@@ -71,13 +70,30 @@ public class XMvnWorkspaceReader
         for ( ResolutionListener listener : listeners )
             listener.resolutionCompleted( request, result );
 
+        return result;
+    }
+
+    @Override
+    public File findArtifact( Artifact artifact )
+    {
+        ResolutionResult result = resolve( artifact );
+
         return result.getArtifactFile();
     }
 
     @Override
     public List<String> findVersions( Artifact artifact )
     {
-        return Collections.singletonList( ArtifactUtils.DEFAULT_VERSION );
+        ResolutionResult result = resolve( artifact );
+
+        if ( result.getArtifactFile() == null )
+            return Collections.emptyList();
+
+        String version = result.getCompatVersion();
+        if ( version == null )
+            version = ArtifactUtils.DEFAULT_VERSION;
+
+        return Collections.singletonList( version );
     }
 
     @Override
