@@ -91,31 +91,33 @@ public class IvyResolver
         static final Deployer deployer = new IsolatedDeployer( LazyLocatorProvider.locator );
     }
 
-    private final Resolver resolver;
+    private Resolver resolver;
 
-    private final Deployer deployer;
+    private Deployer deployer;
 
     public IvyResolver()
     {
-        this( null, null );
-    }
-
-    public IvyResolver( Resolver resolver, Deployer deployer )
-    {
-        this.resolver = resolver;
-        this.deployer = deployer;
-
         setName( "XMvn" );
     }
 
-    private Resolver getResolver()
+    public Resolver getResolver()
     {
         return resolver != null ? resolver : LazyResolverProvider.resolver;
     }
 
-    private Deployer getDeployer()
+    public void setResolver( Resolver resolver )
+    {
+        this.resolver = resolver;
+    }
+
+    public Deployer getDeployer()
     {
         return deployer != null ? deployer : LazyDeployerProvider.deployer;
+    }
+
+    public void setDeployer( Deployer deployer )
+    {
+        this.deployer = deployer;
     }
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )

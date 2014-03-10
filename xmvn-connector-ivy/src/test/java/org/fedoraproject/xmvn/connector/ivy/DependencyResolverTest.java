@@ -1,0 +1,146 @@
+/*-
+ * Copyright (c) 2014 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.fedoraproject.xmvn.connector.ivy;
+
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.io.File;
+import java.nio.file.Paths;
+
+import org.apache.ivy.core.module.descriptor.DefaultDependencyDescriptor;
+import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
+import org.apache.ivy.core.module.id.ModuleId;
+import org.apache.ivy.core.module.id.ModuleRevisionId;
+import org.apache.ivy.core.resolve.ResolvedModuleRevision;
+import org.apache.ivy.core.settings.IvySettings;
+import org.easymock.EasyMockRunner;
+import org.easymock.Mock;
+import org.easymock.TestSubject;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.fedoraproject.xmvn.deployer.Deployer;
+import org.fedoraproject.xmvn.resolver.ResolutionRequest;
+import org.fedoraproject.xmvn.resolver.ResolutionResult;
+import org.fedoraproject.xmvn.resolver.Resolver;
+
+/**
+ * @author Mikolaj Izdebski
+ */
+@RunWith( EasyMockRunner.class )
+public class DependencyResolverTest
+{
+    @TestSubject
+    private final IvyResolver ivyResolver = new IvyResolver();
+
+    @Mock
+    private Resolver resolver;
+
+    @Mock
+    private Deployer deployer;
+
+    @Before
+    public void setUp()
+    {
+        ivyResolver.setSettings( new IvySettings() );
+    }
+
+    private File getResource( String id, String ext )
+    {
+        if ( id == null )
+            return null;
+
+        return Paths.get( "src/test/resources/" + id + "." + ext ).toAbsolutePath().toFile();
+    }
+
+    private void testResolution( String pom, String jar )
+        throws Exception
+    {
+        Artifact pomArtifact = new DefaultArtifact( "gid:aid:pom:ver" );
+        ResolutionRequest pomRequest = new ResolutionRequest( pomArtifact );
+        File pomFile = getResource( pom, "pom" );
+        ResolutionResult pomResult = new ResolutionResultMock( pomFile );
+        expect( resolver.resolve( pomRequest ) ).andReturn( pomResult );
+
+        Artifact jarArtifact = new DefaultArtifact( "gid:aid:jar:ver" );
+        ResolutionRequest jarRequest = new ResolutionRequest( jarArtifact );
+        File jarFile = getResource( jar, "jar" );
+        ResolutionResult jarResult = new ResolutionResultMock( jarFile );
+        expect( resolver.resolve( jarRequest ) ).andReturn( jarResult );
+
+        replay( resolver, deployer );
+
+        ModuleId moduleId = new ModuleId( "gid", "aid" );
+        ModuleRevisionId mrid = new ModuleRevisionId( moduleId, "ver" );
+        DependencyDescriptor dd = new DefaultDependencyDescriptor( mrid, true );
+        ResolvedModuleRevision rmr = ivyResolver.getDependency( dd, null );
+
+        if ( pom == null || !pomFile.exists() )
+        {
+            assertNull( rmr );
+        }
+        else
+        {
+            assertNotNull( rmr );
+            assertEquals( ivyResolver, rmr.getArtifactResolver() );
+            assertEquals( "org.codehaus.plexus", rmr.getDescriptor().getModuleRevisionId().getOrganisation() );
+            assertEquals( "plexus", rmr.getDescriptor().getModuleRevisionId().getName() );
+            assertEquals( "3.3.1", rmr.getDescriptor().getModuleRevisionId().getRevision() );
+        }
+    }
+
+    @Test
+    public void testPomResolutionFailure()
+        throws Exception
+    {
+        testResolution( null, null );
+    }
+
+    @Test
+    public void testNonExistentPom()
+        throws Exception
+    {
+        testResolution( "non-existent", null );
+    }
+
+    @Test
+    public void testJarResolutionFailure()
+        throws Exception
+    {
+        testResolution( "plexus", null );
+    }
+
+    @Test
+    public void testNonExistentJar()
+        throws Exception
+    {
+        testResolution( "plexus", "non-existent" );
+    }
+
+    @Test
+    public void testSuccess()
+        throws Exception
+    {
+        testResolution( "plexus", "empty" );
+    }
+}
