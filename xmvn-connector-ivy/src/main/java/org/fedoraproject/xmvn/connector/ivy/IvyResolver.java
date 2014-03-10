@@ -15,9 +15,6 @@
  */
 package org.fedoraproject.xmvn.connector.ivy;
 
-import static org.fedoraproject.xmvn.connector.ivy.IvyResolver.LazyDeployerProvider.deployer;
-import static org.fedoraproject.xmvn.connector.ivy.IvyResolver.LazyResolverProvider.resolver;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -93,9 +90,31 @@ public class IvyResolver
         static final Deployer deployer = new IsolatedDeployer( LazyLocatorProvider.locator );
     }
 
+    private final Resolver resolver;
+
+    private final Deployer deployer;
+
     public IvyResolver()
     {
+        this( null, null );
+    }
+
+    public IvyResolver( Resolver resolver, Deployer deployer )
+    {
+        this.resolver = resolver;
+        this.deployer = deployer;
+
         setName( "XMvn" );
+    }
+
+    private Resolver getResolver()
+    {
+        return resolver != null ? resolver : LazyResolverProvider.resolver;
+    }
+
+    private Deployer getDeployer()
+    {
+        return deployer != null ? deployer : LazyDeployerProvider.deployer;
     }
 
     private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )
@@ -141,7 +160,7 @@ public class IvyResolver
         for ( Artifact artifact : module.getAllArtifacts() )
         {
             ResolutionRequest request = new ResolutionRequest( ivy2aether( artifact ) );
-            ResolutionResult result = resolver.resolve( request );
+            ResolutionResult result = getResolver().resolve( request );
             if ( result.getArtifactFile() != null )
                 return resolvedVersion( result );
         }
@@ -156,7 +175,7 @@ public class IvyResolver
 
         ResolutionRequest request = new ResolutionRequest();
         request.setArtifact( ivy2aether( depId, "pom" ) );
-        ResolutionResult result = resolver.resolve( request );
+        ResolutionResult result = getResolver().resolve( request );
         File pomPath = result.getArtifactFile();
 
         String version;
@@ -208,7 +227,7 @@ public class IvyResolver
 
         ResolutionRequest request = new ResolutionRequest();
         request.setArtifact( ivy2aether( artifact.getModuleRevisionId(), "pom" ) );
-        ResolutionResult result = resolver.resolve( request );
+        ResolutionResult result = getResolver().resolve( request );
         File pomPath = result.getArtifactFile();
         if ( pomPath == null )
             return null;
@@ -239,7 +258,7 @@ public class IvyResolver
             ArtifactDownloadReport artifactReport = new ArtifactDownloadReport( artifact );
             ResolutionRequest request = new ResolutionRequest();
             request.setArtifact( ivy2aether( artifact ) );
-            ResolutionResult result = resolver.resolve( request );
+            ResolutionResult result = getResolver().resolve( request );
             File artifactPath = result.getArtifactFile();
 
             if ( artifactPath != null )
@@ -264,7 +283,7 @@ public class IvyResolver
     {
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact( artifact.setFile( artifactFile ) );
-        DeploymentResult result = deployer.deploy( request );
+        DeploymentResult result = getDeployer().deploy( request );
         if ( result.getException() != null )
             throw new IOException( "Failed to publish artifact", result.getException() );
     }
