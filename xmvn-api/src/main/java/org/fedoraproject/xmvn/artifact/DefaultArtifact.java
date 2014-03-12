@@ -16,8 +16,6 @@
 package org.fedoraproject.xmvn.artifact;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * @author Mikolaj Izdebski
@@ -25,31 +23,39 @@ import java.util.Map;
 public final class DefaultArtifact
     implements Artifact
 {
-    private static final String KEY_SCOPE = "xmvn.artifact.scope";
-
-    private static final String KEY_STEREOTYPE = "xmvn.artifact.stereotype";
-
     private final org.eclipse.aether.artifact.Artifact artifact;
 
-    private DefaultArtifact( org.eclipse.aether.artifact.Artifact artifact )
+    private final String scope;
+
+    private final String stereotype;
+
+    private DefaultArtifact( org.eclipse.aether.artifact.Artifact artifact, String scope, String stereotype )
     {
         this.artifact = artifact;
+        this.scope = scope;
+        this.stereotype = stereotype;
     }
 
     public DefaultArtifact( String coords )
     {
         artifact = new org.eclipse.aether.artifact.DefaultArtifact( coords );
+        scope = null;
+        stereotype = null;
     }
 
     public DefaultArtifact( String groupId, String artifactId, String extension, String version )
     {
         artifact = new org.eclipse.aether.artifact.DefaultArtifact( groupId, artifactId, extension, version );
+        scope = null;
+        stereotype = null;
     }
 
     public DefaultArtifact( String groupId, String artifactId, String classifier, String extension, String version )
     {
         artifact =
             new org.eclipse.aether.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        scope = null;
+        stereotype = null;
     }
 
     @Override
@@ -91,61 +97,36 @@ public final class DefaultArtifact
     @Override
     public String getScope()
     {
-        return getProperty( KEY_SCOPE, "" );
+        return scope;
     }
 
     @Override
     public String getStereotype()
     {
-        return getProperty( KEY_STEREOTYPE, "" );
+        return stereotype;
     }
 
     @Override
     public Artifact setVersion( String version )
     {
-        return new DefaultArtifact( artifact.setVersion( version ) );
+        return new DefaultArtifact( artifact.setVersion( version ), scope, stereotype );
     }
 
     @Override
     public Artifact setFile( File file )
     {
-        return new DefaultArtifact( artifact.setFile( file ) );
+        return new DefaultArtifact( artifact.setFile( file ), scope, stereotype );
     }
 
     @Override
     public Artifact setScope( String scope )
     {
-        return setProperty( KEY_SCOPE, scope );
+        return new DefaultArtifact( artifact, scope, stereotype );
     }
 
     @Override
     public Artifact setStereotype( String stereotype )
     {
-        return setProperty( KEY_STEREOTYPE, stereotype );
-    }
-
-    @Override
-    public String getProperty( String key, String defaultValue )
-    {
-        return getProperty( key, defaultValue );
-    }
-
-    @Override
-    public Map<String, String> getProperties()
-    {
-        return getProperties();
-    }
-
-    @Override
-    public Artifact setProperties( Map<String, String> properties )
-    {
-        return new DefaultArtifact( artifact.setProperties( properties ) );
-    }
-
-    private Artifact setProperty( String key, String value )
-    {
-        Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
-        properties.put( key, value );
-        return setProperties( properties );
+        return new DefaultArtifact( artifact, scope, stereotype );
     }
 }

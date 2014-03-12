@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.artifact;
 
 import java.io.File;
-import java.util.Map;
 
 /**
  * @author Mikolaj Izdebski
@@ -46,10 +45,4 @@ public interface Artifact
     Artifact setScope( String scope );
 
     Artifact setStereotype( String stereotype );
-
-    String getProperty( String key, String defaultValue );
-
-    Map<String, String> getProperties();
-
-    Artifact setProperties( Map<String, String> properties );
 }
