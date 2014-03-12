@@ -138,14 +138,7 @@ public class DefaultArtifactInstaller
 
         logger.info( "===============================================" );
         logger.info( "SOURCE ARTIFACT:" );
-        logger.info( "    groupId: {}", artifact.getGroupId() );
-        logger.info( " artifactId: {}", artifact.getArtifactId() );
-        logger.info( "  extension: {}", artifact.getExtension() );
-        logger.info( " classifier: {}", artifact.getClassifier() );
-        logger.info( "    version: {}", artifact.getVersion() );
-        logger.info( " stereotype: {}", artifact.getStereotype() );
-        logger.info( "  namespace: {}", artifact.getScope() );
-        logger.info( "       file: {}", artifact.getFile() );
+        ArtifactUtils.log( logger, artifact );
 
         if ( jppArtifacts == null )
         {
@@ -158,14 +151,7 @@ public class DefaultArtifactInstaller
         {
             logger.info( "-----------------------------------------------" );
             logger.info( "TARGET ARTIFACT:" );
-            logger.info( "    groupId: {}", jppArtifact.getGroupId() );
-            logger.info( " artifactId: {}", jppArtifact.getArtifactId() );
-            logger.info( "  extension: {}", jppArtifact.getExtension() );
-            logger.info( " classifier: {}", jppArtifact.getClassifier() );
-            logger.info( "    version: {}", jppArtifact.getVersion() );
-            logger.info( " stereotype: {}", jppArtifact.getStereotype() );
-            logger.info( "  namespace: {}", jppArtifact.getScope() );
-            logger.info( "       file: {}", jppArtifact.getFile() );
+            ArtifactUtils.log( logger, jppArtifact );
         }
         logger.info( "===============================================" );
 

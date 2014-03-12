@@ -245,4 +245,16 @@ public class ArtifactUtils
             return null;
         }
     }
+
+    public static void log( Logger logger, Artifact artifact )
+    {
+        logger.info( "    groupId: {}", artifact.getGroupId() );
+        logger.info( " artifactId: {}", artifact.getArtifactId() );
+        logger.info( "  extension: {}", artifact.getExtension() );
+        logger.info( " classifier: {}", artifact.getClassifier() );
+        logger.info( "    version: {}", artifact.getVersion() );
+        logger.info( " stereotype: {}", artifact.getStereotype() );
+        logger.info( "  namespace: {}", artifact.getScope() );
+        logger.info( "       file: {}", artifact.getFile() );
+    }
 }

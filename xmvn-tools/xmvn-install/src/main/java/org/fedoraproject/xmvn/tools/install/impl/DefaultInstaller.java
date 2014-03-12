@@ -110,15 +110,9 @@ public class DefaultInstaller
 
     private PackagingRule ruleForArtifact( Artifact artifact )
     {
-        String stereotype = artifact.getStereotype();
-        String groupId = artifact.getGroupId();
-        String artifactId = artifact.getArtifactId();
-        String extension = artifact.getExtension();
-        String classifier = artifact.getClassifier();
-        String version = artifact.getVersion();
-
-        return configuration.createEffectivePackagingRule( stereotype, groupId, artifactId, extension, classifier,
-                                                           version );
+        return configuration.createEffectivePackagingRule( artifact.getStereotype(), artifact.getGroupId(),
+                                                           artifact.getArtifactId(), artifact.getExtension(),
+                                                           artifact.getClassifier(), artifact.getVersion() );
     }
 
     static List<Artifact> getAliasArtifacts( PackagingRule rule )
@@ -181,7 +175,7 @@ public class DefaultInstaller
         for ( String version : rule.getVersions() )
             versions.add( version );
         if ( versions.isEmpty() )
-            versions.add( "SYSTEM" );
+            versions.add( Artifact.DEFAULT_VERSION );
 
         List<Artifact> jppArtifacts = new ArrayList<>();
 
@@ -255,10 +249,7 @@ public class DefaultInstaller
             logger.warn( "Unable to resolve dependency artifact {}, generating dependencies with unknown version and namespace.",
                          artifact );
 
-            artifact = artifact.setVersion( ArtifactUtils.UNKNOWN_VERSION );
-            artifact = artifact.setScope( ArtifactUtils.UNKNOWN_NAMESPACE );
-
-            return artifact;
+            return artifact.setVersion( ArtifactUtils.UNKNOWN_VERSION ).setScope( ArtifactUtils.UNKNOWN_NAMESPACE );
         }
 
         String version = result.getCompatVersion() != null ? result.getCompatVersion() : Artifact.DEFAULT_VERSION;
