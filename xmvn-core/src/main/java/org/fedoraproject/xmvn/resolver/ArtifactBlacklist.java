@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * A container structure holding artifacts.

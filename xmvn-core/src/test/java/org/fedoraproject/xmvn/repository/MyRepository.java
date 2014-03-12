@@ -19,7 +19,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski

@@ -120,17 +120,17 @@ public class IvyResolver
         this.deployer = deployer;
     }
 
-    private static org.eclipse.aether.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )
+    private static org.fedoraproject.xmvn.artifact.Artifact ivy2aether( ModuleRevisionId revision, String extension )
     {
         String groupId = revision.getOrganisation();
         String artifactId = revision.getName();
         String classifier = revision.getExtraAttribute( "classifier" );
         String version = revision.getRevision();
 
-        return new org.eclipse.aether.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
     }
 
-    private static org.eclipse.aether.artifact.Artifact ivy2aether( org.apache.ivy.core.module.descriptor.Artifact artifact )
+    private static org.fedoraproject.xmvn.artifact.Artifact ivy2aether( org.apache.ivy.core.module.descriptor.Artifact artifact )
     {
         ModuleRevisionId revision = artifact.getModuleRevisionId();
 
@@ -149,7 +149,7 @@ public class IvyResolver
                 classifier = "javadoc";
         }
 
-        return new org.eclipse.aether.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
     }
 
     private static String resolvedVersion( ResolutionResult resolutionResult )
@@ -285,7 +285,7 @@ public class IvyResolver
         return report;
     }
 
-    private void deploy( org.eclipse.aether.artifact.Artifact artifact, File artifactFile )
+    private void deploy( org.fedoraproject.xmvn.artifact.Artifact artifact, File artifactFile )
         throws IOException
     {
         DeploymentRequest request = new DeploymentRequest();
@@ -305,7 +305,7 @@ public class IvyResolver
             ModuleDescriptor module = parser.parseDescriptor( getSettings(), artifactFile.toURI().toURL(), false );
             PomModuleDescriptorWriter.write( module, pomFile, new PomWriterOptions() );
 
-            org.eclipse.aether.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
+            org.fedoraproject.xmvn.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
             Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
             properties.put( "xmvn.artifact.stereotype", "effective" );
             deploy( artifact.setProperties( properties ), artifactFile );

@@ -60,7 +60,11 @@ public class XMvnWorkspaceReader
 
     private ResolutionResult resolve( Artifact artifact )
     {
-        ResolutionRequest request = new ResolutionRequest( artifact );
+        org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact =
+            new org.fedoraproject.xmvn.artifact.DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
+                                                                 artifact.getClassifier(), artifact.getExtension(),
+                                                                 artifact.getVersion() );
+        ResolutionRequest request = new ResolutionRequest( xmvnArtifact );
 
         for ( ResolutionListener listener : listeners )
             listener.resolutionRequested( request );

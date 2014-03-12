@@ -17,8 +17,7 @@ package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.io.IOException;
 
-import org.eclipse.aether.artifact.Artifact;
-
+import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 
 /**

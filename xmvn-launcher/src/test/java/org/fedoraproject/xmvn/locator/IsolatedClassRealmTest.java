@@ -18,8 +18,6 @@ package org.fedoraproject.xmvn.locator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.fedoraproject.xmvn.locator.IsolatedClassRealm;
-
 import org.junit.Test;
 
 /**

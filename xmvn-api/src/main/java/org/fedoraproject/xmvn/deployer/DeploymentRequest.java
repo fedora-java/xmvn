@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
-import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski

@@ -17,7 +17,7 @@ package org.fedoraproject.xmvn.repository;
 
 import java.util.List;
 
-import org.eclipse.aether.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * Repository of artifacts.
