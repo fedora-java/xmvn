@@ -110,10 +110,10 @@ public class DefaultDependencyMap
     public void addMapping( Artifact from, Artifact to )
     {
         from =
-            new DefaultArtifact( from.getGroupId(), from.getArtifactId(), from.getClassifier(), from.getExtension(),
+            new DefaultArtifact( from.getGroupId(), from.getArtifactId(), from.getExtension(), from.getClassifier(),
                                  ArtifactUtils.DEFAULT_VERSION );
         to =
-            new DefaultArtifact( to.getGroupId(), to.getArtifactId(), to.getClassifier(), to.getExtension(),
+            new DefaultArtifact( to.getGroupId(), to.getArtifactId(), to.getExtension(), to.getClassifier(),
                                  ArtifactUtils.DEFAULT_VERSION );
 
         try
@@ -179,8 +179,8 @@ public class DefaultDependencyMap
     public List<Artifact> translate( Artifact artifact )
     {
         artifact =
-            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(),
-                                 artifact.getExtension(), ArtifactUtils.DEFAULT_VERSION );
+            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getExtension(),
+                                 artifact.getClassifier(), ArtifactUtils.DEFAULT_VERSION );
         logger.debug( "Trying to translate artifact {}", artifact );
 
         try
@@ -200,8 +200,8 @@ public class DefaultDependencyMap
     public Set<Artifact> relativesOf( Artifact artifact )
     {
         artifact =
-            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(),
-                                 artifact.getExtension(), ArtifactUtils.DEFAULT_VERSION );
+            new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getExtension(),
+                                 artifact.getClassifier(), ArtifactUtils.DEFAULT_VERSION );
 
         try
         {

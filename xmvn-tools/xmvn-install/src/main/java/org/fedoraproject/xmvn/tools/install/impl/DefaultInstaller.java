@@ -128,8 +128,8 @@ public class DefaultInstaller
         for ( org.fedoraproject.xmvn.config.Artifact alias : rule.getAliases() )
         {
             Artifact aliasArtifact =
-                new DefaultArtifact( alias.getGroupId(), alias.getArtifactId(), alias.getClassifier(),
-                                     alias.getExtension(), alias.getVersion() );
+                new DefaultArtifact( alias.getGroupId(), alias.getArtifactId(), alias.getExtension(),
+                                     alias.getClassifier(), alias.getVersion() );
             aliasArtifact = aliasArtifact.setStereotype( alias.getStereotype() );
             aliasArtifacts.add( aliasArtifact );
         }
@@ -198,8 +198,8 @@ public class DefaultInstaller
             for ( String version : versions )
             {
                 Artifact jppArtifact =
-                    new DefaultArtifact( jppGroup.toString(), jppName.toString(), artifact.getClassifier(),
-                                         artifact.getExtension(), version );
+                    new DefaultArtifact( jppGroup.toString(), jppName.toString(), artifact.getExtension(),
+                                         artifact.getClassifier(), version );
                 jppArtifact = jppArtifact.setStereotype( artifact.getStereotype() );
 
                 RepositoryPath jppArtifactPath = repo.getPrimaryArtifactPath( jppArtifact );

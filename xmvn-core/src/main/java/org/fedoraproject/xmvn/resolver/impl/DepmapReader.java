@@ -283,7 +283,7 @@ class DepmapReader
             String classifier = getValue( element, "classifier", "" );
             String verision = "SYSTEM";
 
-            return new DefaultArtifact( groupId, artifactId, classifier, extension, verision );
+            return new DefaultArtifact( groupId, artifactId, extension, classifier, verision );
         }
 
         private String getValue( Element parent, String tag, String defaultValue )

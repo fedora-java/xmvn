@@ -99,7 +99,7 @@ public class InstallerCli
         String extension = readValue( dom, "extension", "jar", true );
         String classifier = readValue( dom, "classifier", "", true );
         String version = readValue( dom, "version", null, false );
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
 
         String file = readValue( dom, "file", null, true );
         if ( file != null )

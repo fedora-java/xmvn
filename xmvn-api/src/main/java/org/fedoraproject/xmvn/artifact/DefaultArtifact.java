@@ -50,7 +50,7 @@ public final class DefaultArtifact
         stereotype = null;
     }
 
-    public DefaultArtifact( String groupId, String artifactId, String classifier, String extension, String version )
+    public DefaultArtifact( String groupId, String artifactId, String extension, String classifier, String version )
     {
         artifact =
             new org.eclipse.aether.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );

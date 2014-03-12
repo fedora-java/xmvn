@@ -64,7 +64,7 @@ public class IvyInstaller
         try
         {
             Artifact pomArtifact =
-                new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(), "pom",
+                new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), "pom", artifact.getClassifier(),
                                      artifact.getVersion() );
 
             File ivyPath = artifact.getFile();

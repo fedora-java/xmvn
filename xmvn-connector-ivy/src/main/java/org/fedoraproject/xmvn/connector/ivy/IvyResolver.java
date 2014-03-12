@@ -125,7 +125,7 @@ public class IvyResolver
         String classifier = revision.getExtraAttribute( "classifier" );
         String version = revision.getRevision();
 
-        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, extension, classifier, version );
     }
 
     private static org.fedoraproject.xmvn.artifact.Artifact ivy2aether( org.apache.ivy.core.module.descriptor.Artifact artifact )
@@ -147,7 +147,7 @@ public class IvyResolver
                 classifier = "javadoc";
         }
 
-        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, extension, classifier, version );
     }
 
     private static String resolvedVersion( ResolutionResult resolutionResult )

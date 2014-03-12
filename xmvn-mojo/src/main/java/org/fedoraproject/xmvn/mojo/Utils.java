@@ -50,7 +50,7 @@ class Utils
 
         File artifactFile = mavenArtifact.getFile();
 
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
         artifact = artifact.setStereotype( stereotype );
         artifact = artifact.setFile( artifactFile );
         return artifact;

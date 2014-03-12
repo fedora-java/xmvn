@@ -148,13 +148,13 @@ public class DefaultResolver
         if ( artifact.getExtension().equals( "pom" ) )
         {
             Artifact jarArtifact =
-                new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(), "jar",
+                new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), "jar", artifact.getClassifier(),
                                      ArtifactUtils.DEFAULT_VERSION );
             for ( Artifact jppJarArtifact : depmap.translate( jarArtifact ) )
             {
                 Artifact jppPomArtifact =
-                    new DefaultArtifact( jppJarArtifact.getGroupId(), jppJarArtifact.getArtifactId(),
-                                         jppJarArtifact.getClassifier(), "pom", ArtifactUtils.DEFAULT_VERSION );
+                    new DefaultArtifact( jppJarArtifact.getGroupId(), jppJarArtifact.getArtifactId(), "pom",
+                                         jppJarArtifact.getClassifier(), ArtifactUtils.DEFAULT_VERSION );
                 jppArtifacts.add( jppPomArtifact );
             }
         }

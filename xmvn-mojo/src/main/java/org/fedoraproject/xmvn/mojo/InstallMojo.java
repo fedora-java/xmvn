@@ -117,7 +117,7 @@ public class InstallMojo
                 if ( dependency.getScope() != null && dependency.getScope().equals( "system" ) )
                 {
                     systemDeps.add( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                         dependency.getType(), dependency.getClassifier(),
+                                                         dependency.getClassifier(), dependency.getType(),
                                                          dependency.getVersion() ) );
                 }
             }
@@ -173,8 +173,8 @@ public class InstallMojo
                 if ( mainArtifact.getFile() != null && !isTychoProject( project ) )
                 {
                     Artifact effectivePomArtifact =
-                        new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(),
-                                             mainArtifact.getClassifier(), "pom", mainArtifact.getVersion() );
+                        new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
+                                             mainArtifact.getClassifier(), mainArtifact.getVersion() );
                     effectivePomArtifact = effectivePomArtifact.setStereotype( "effective" );
                     Path effectivePom = saveEffectivePom( project.getModel() );
                     logger.debug( "Effective POM path: {}", effectivePom );
@@ -183,8 +183,8 @@ public class InstallMojo
                 }
 
                 Artifact rawPomArtifact =
-                    new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(),
-                                         mainArtifact.getClassifier(), "pom", mainArtifact.getVersion() );
+                    new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
+                                         mainArtifact.getClassifier(), mainArtifact.getVersion() );
                 rawPomArtifact = rawPomArtifact.setStereotype( "raw" );
                 Path rawPom = project.getFile().toPath();
                 logger.debug( "Raw POM path: {}", rawPom );

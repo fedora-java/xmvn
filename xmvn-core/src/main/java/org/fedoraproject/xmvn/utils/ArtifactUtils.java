@@ -180,7 +180,7 @@ public class ArtifactUtils
                 classifier = artifactType.getClassifier();
         }
 
-        return new DefaultArtifact( groupId, artifactId, classifier, extension, version );
+        return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
     }
 
     private static String getManifestValue( Manifest manifest, String key, String defaultValue )
@@ -208,7 +208,7 @@ public class ArtifactUtils
             if ( groupId == null || artifactId == null )
                 return null;
 
-            return new DefaultArtifact( groupId, artifactId, classifier, extension, version );
+            return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
         }
     }
 
