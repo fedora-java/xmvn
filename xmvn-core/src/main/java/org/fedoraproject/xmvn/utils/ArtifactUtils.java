@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -46,10 +45,6 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 public class ArtifactUtils
 {
     private static final Logger logger = LoggerFactory.getLogger( ArtifactUtils.class );
-
-    public static final String DEFAULT_EXTENSION = "jar";
-
-    public static final String DEFAULT_VERSION = "SYSTEM";
 
     public static final String UNKNOWN_VERSION = "UNKNOWN";
 
@@ -170,7 +165,7 @@ public class ArtifactUtils
     public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
                                                 String version )
     {
-        String extension = type != null ? type : ArtifactUtils.DEFAULT_EXTENSION;
+        String extension = type != null ? type : Artifact.DEFAULT_EXTENSION;
 
         ArtifactType artifactType = stereotypes.get( type );
         if ( artifactType != null )
@@ -183,13 +178,6 @@ public class ArtifactUtils
         return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
     }
 
-    private static String getManifestValue( Manifest manifest, String key, String defaultValue )
-    {
-        Attributes attributes = manifest.getMainAttributes();
-        String value = attributes.getValue( key );
-        return value != null ? value : defaultValue;
-    }
-
     private static Artifact getArtifactFromManifest( Path path )
         throws IOException
     {
@@ -199,11 +187,11 @@ public class ArtifactUtils
             if ( mf == null )
                 return null;
 
-            String groupId = getManifestValue( mf, ArtifactUtils.MF_KEY_GROUPID, null );
-            String artifactId = getManifestValue( mf, ArtifactUtils.MF_KEY_ARTIFACTID, null );
-            String extension = getManifestValue( mf, ArtifactUtils.MF_KEY_EXTENSION, ArtifactUtils.DEFAULT_EXTENSION );
-            String classifier = getManifestValue( mf, ArtifactUtils.MF_KEY_CLASSIFIER, "" );
-            String version = getManifestValue( mf, ArtifactUtils.MF_KEY_VERSION, ArtifactUtils.DEFAULT_VERSION );
+            String groupId = mf.getMainAttributes().getValue( ArtifactUtils.MF_KEY_GROUPID );
+            String artifactId = mf.getMainAttributes().getValue( ArtifactUtils.MF_KEY_ARTIFACTID );
+            String extension = mf.getMainAttributes().getValue( ArtifactUtils.MF_KEY_EXTENSION );
+            String classifier = mf.getMainAttributes().getValue( ArtifactUtils.MF_KEY_CLASSIFIER );
+            String version = mf.getMainAttributes().getValue( ArtifactUtils.MF_KEY_VERSION );
 
             if ( groupId == null || artifactId == null )
                 return null;

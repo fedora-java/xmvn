@@ -18,10 +18,9 @@ package org.apache.maven.plugin;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * This is a simple Maven plugin validator that pretends that all plugins have valid descriptors.
@@ -38,14 +37,14 @@ public class MavenPluginValidator
 {
     // This constructor must be provided for compatibility with Maven
     @SuppressWarnings( "unused" )
-    public MavenPluginValidator( Artifact pluginArtifact )
+    public MavenPluginValidator( org.apache.maven.artifact.Artifact pluginArtifact )
     {
     }
 
     public void validate( PluginDescriptor pluginDescriptor )
     {
         if ( pluginDescriptor.getVersion() == null )
-            pluginDescriptor.setVersion( ArtifactUtils.DEFAULT_VERSION );
+            pluginDescriptor.setVersion( Artifact.DEFAULT_VERSION );
     }
 
     public boolean hasErrors()

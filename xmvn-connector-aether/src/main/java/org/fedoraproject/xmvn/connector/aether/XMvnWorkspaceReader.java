@@ -31,7 +31,6 @@ import org.eclipse.aether.repository.WorkspaceRepository;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -95,7 +94,7 @@ public class XMvnWorkspaceReader
 
         String version = result.getCompatVersion();
         if ( version == null )
-            version = ArtifactUtils.DEFAULT_VERSION;
+            version = org.fedoraproject.xmvn.artifact.Artifact.DEFAULT_VERSION;
 
         return Collections.singletonList( version );
     }

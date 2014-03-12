@@ -118,7 +118,7 @@ public class BuilddepMojo
                 }
                 else
                 {
-                    dependencyArtifact = dependencyArtifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+                    dependencyArtifact = dependencyArtifact.setVersion( Artifact.DEFAULT_VERSION );
                 }
 
                 resolvedDependencies.add( dependencyArtifact );

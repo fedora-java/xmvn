@@ -23,7 +23,6 @@ import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -73,7 +72,7 @@ abstract class SimpleRepository
         String extension = artifact.getExtension();
         String classifier = artifact.getClassifier();
         String version = artifact.getVersion();
-        if ( version.equals( ArtifactUtils.DEFAULT_VERSION ) )
+        if ( version.equals( Artifact.DEFAULT_VERSION ) )
             version = null;
 
         Path path = getArtifactPath( groupId, artifactId, extension, classifier, version );

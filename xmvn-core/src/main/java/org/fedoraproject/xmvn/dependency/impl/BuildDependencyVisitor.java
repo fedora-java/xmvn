@@ -87,7 +87,7 @@ class BuildDependencyVisitor
     public void visitBuildExtension( Extension extension )
     {
         result.addDependencyArtifact( new DefaultArtifact( extension.getGroupId(), extension.getArtifactId(),
-                                                           ArtifactUtils.DEFAULT_EXTENSION, extension.getVersion() ) );
+                                                           extension.getVersion() ) );
     }
 
     @Override
@@ -99,10 +99,10 @@ class BuildDependencyVisitor
         if ( StringUtils.isEmpty( groupId ) )
             groupId = "org.apache.maven.plugins";
         if ( StringUtils.isEmpty( version ) )
-            version = ArtifactUtils.DEFAULT_VERSION;
+            version = Artifact.DEFAULT_VERSION;
 
-        Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version );
-        Artifact versionlessPluginArtifact = pluginArtifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+        Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, version );
+        Artifact versionlessPluginArtifact = pluginArtifact.setVersion( Artifact.DEFAULT_VERSION );
 
         if ( !commonPlugins.contains( versionlessPluginArtifact ) )
             result.addDependencyArtifact( pluginArtifact );

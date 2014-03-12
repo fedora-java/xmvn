@@ -140,7 +140,7 @@ public class DefaultResolver
      */
     private List<Artifact> getJppArtifactList( Artifact artifact )
     {
-        Artifact versionlessArtifact = artifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+        Artifact versionlessArtifact = artifact.setVersion( null );
         Set<Artifact> jppArtifacts = new LinkedHashSet<>( depmap.translate( versionlessArtifact ) );
 
         // For POM artifacts besides standard mapping we need to use backwards-compatible mappings too. We set extension
@@ -148,13 +148,13 @@ public class DefaultResolver
         if ( artifact.getExtension().equals( "pom" ) )
         {
             Artifact jarArtifact =
-                new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), "jar", artifact.getClassifier(),
-                                     ArtifactUtils.DEFAULT_VERSION );
+                new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), null, artifact.getClassifier(),
+                                     null );
             for ( Artifact jppJarArtifact : depmap.translate( jarArtifact ) )
             {
                 Artifact jppPomArtifact =
                     new DefaultArtifact( jppJarArtifact.getGroupId(), jppJarArtifact.getArtifactId(), "pom",
-                                         jppJarArtifact.getClassifier(), ArtifactUtils.DEFAULT_VERSION );
+                                         jppJarArtifact.getClassifier(), null );
                 jppArtifacts.add( jppPomArtifact );
             }
         }
@@ -187,7 +187,7 @@ public class DefaultResolver
 
     private DefaultResolutionResult tryResolveFromConfiguredRepos( List<Artifact> jppArtifacts, String requestedVersion )
     {
-        List<String> versionList = Arrays.asList( requestedVersion, ArtifactUtils.DEFAULT_VERSION );
+        List<String> versionList = Arrays.asList( requestedVersion, Artifact.DEFAULT_VERSION );
         Set<String> orderedVersionSet = new LinkedHashSet<>( versionList );
 
         for ( String version : orderedVersionSet )

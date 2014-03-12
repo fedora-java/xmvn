@@ -227,7 +227,7 @@ public class DefaultInstaller
                 return providedArtifact;
         }
 
-        Artifact versionlessArtifact = artifact.setVersion( ArtifactUtils.DEFAULT_VERSION );
+        Artifact versionlessArtifact = artifact.setVersion( null );
         for ( Package pkg : packageSet )
         {
             Artifact providedArtifact = pkg.getProvidedArtifact( versionlessArtifact );
@@ -261,7 +261,7 @@ public class DefaultInstaller
             return artifact;
         }
 
-        String version = result.getCompatVersion() != null ? result.getCompatVersion() : ArtifactUtils.DEFAULT_VERSION;
+        String version = result.getCompatVersion() != null ? result.getCompatVersion() : Artifact.DEFAULT_VERSION;
         artifact = artifact.setVersion( version );
 
         String namespace = result.getNamespace();
@@ -274,7 +274,7 @@ public class DefaultInstaller
     {
         String key = artifact.getExtension();
         if ( StringUtils.isEmpty( key ) )
-            key = ArtifactUtils.DEFAULT_EXTENSION;
+            key = Artifact.DEFAULT_EXTENSION;
 
         String stereotype = artifact.getStereotype();
         if ( StringUtils.isNotEmpty( stereotype ) )

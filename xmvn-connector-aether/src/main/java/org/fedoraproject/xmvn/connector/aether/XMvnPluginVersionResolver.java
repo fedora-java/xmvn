@@ -25,7 +25,7 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.ArtifactRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski
@@ -53,7 +53,7 @@ public class XMvnPluginVersionResolver
             @Override
             public String getVersion()
             {
-                return ArtifactUtils.DEFAULT_VERSION;
+                return Artifact.DEFAULT_VERSION;
             }
         };
     }

@@ -40,10 +40,10 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
@@ -166,22 +166,24 @@ public class XMvnModelValidator
 
         if ( StringUtils.isEmpty( version ) )
         {
-            logger.debug( "Missing version of dependency {}, using SYSTEM.", id );
-            return ArtifactUtils.DEFAULT_VERSION;
+            logger.debug( "Missing version of dependency {}, using {}.", id, Artifact.DEFAULT_VERSION );
+            return Artifact.DEFAULT_VERSION;
         }
 
         try
         {
             if ( VersionRange.createFromVersionSpec( version ).getRecommendedVersion() == null )
             {
-                logger.debug( "Dependency {} has no recommended version, falling back to SYSTEM.", id );
-                return ArtifactUtils.DEFAULT_VERSION;
+                logger.debug( "Dependency {} has no recommended version, falling back to {}.", id,
+                              Artifact.DEFAULT_VERSION );
+                return Artifact.DEFAULT_VERSION;
             }
         }
         catch ( InvalidVersionSpecificationException e )
         {
-            logger.debug( "Dependency {} is using invalid version range, falling back to SYSTEM.", id );
-            return ArtifactUtils.DEFAULT_VERSION;
+            logger.debug( "Dependency {} is using invalid version range, falling back to {}.", id,
+                          Artifact.DEFAULT_VERSION );
+            return Artifact.DEFAULT_VERSION;
         }
 
         return version;

@@ -22,6 +22,10 @@ import java.io.File;
  */
 public interface Artifact
 {
+    public static final String DEFAULT_EXTENSION = "jar";
+
+    public static final String DEFAULT_VERSION = "SYSTEM";
+
     String getGroupId();
 
     String getArtifactId();

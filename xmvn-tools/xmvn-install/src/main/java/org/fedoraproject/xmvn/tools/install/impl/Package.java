@@ -34,7 +34,6 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.fedoraproject.xmvn.utils.FileUtils;
 
 /**
@@ -158,17 +157,14 @@ public class Package
     public void createDepmaps( String groupId, String artifactId, String version, Path jppGroup, Path jppName,
                                PackagingRule rule )
     {
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, ArtifactUtils.DEFAULT_EXTENSION, version );
-        Artifact jppArtifact =
-            new DefaultArtifact( jppGroup.toString(), jppName.toString(), ArtifactUtils.DEFAULT_EXTENSION, version );
+        Artifact artifact = new DefaultArtifact( groupId, artifactId, version );
+        Artifact jppArtifact = new DefaultArtifact( jppGroup.toString(), jppName.toString(), version );
 
         getMetadata().addMapping( artifact, jppArtifact );
 
         for ( org.fedoraproject.xmvn.config.Artifact alias2 : rule.getAliases() )
         {
-            Artifact alias =
-                new DefaultArtifact( alias2.getGroupId(), alias2.getArtifactId(), ArtifactUtils.DEFAULT_EXTENSION,
-                                     alias2.getVersion() );
+            Artifact alias = new DefaultArtifact( alias2.getGroupId(), alias2.getArtifactId(), alias2.getVersion() );
             getMetadata().addMapping( alias, jppArtifact );
         }
     }

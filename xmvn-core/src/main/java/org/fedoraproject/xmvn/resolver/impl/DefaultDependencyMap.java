@@ -111,10 +111,8 @@ public class DefaultDependencyMap
     {
         from =
             new DefaultArtifact( from.getGroupId(), from.getArtifactId(), from.getExtension(), from.getClassifier(),
-                                 ArtifactUtils.DEFAULT_VERSION );
-        to =
-            new DefaultArtifact( to.getGroupId(), to.getArtifactId(), to.getExtension(), to.getClassifier(),
-                                 ArtifactUtils.DEFAULT_VERSION );
+                                 null );
+        to = new DefaultArtifact( to.getGroupId(), to.getArtifactId(), to.getExtension(), to.getClassifier(), null );
 
         try
         {
@@ -180,7 +178,7 @@ public class DefaultDependencyMap
     {
         artifact =
             new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getExtension(),
-                                 artifact.getClassifier(), ArtifactUtils.DEFAULT_VERSION );
+                                 artifact.getClassifier(), null );
         logger.debug( "Trying to translate artifact {}", artifact );
 
         try
@@ -201,7 +199,7 @@ public class DefaultDependencyMap
     {
         artifact =
             new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getExtension(),
-                                 artifact.getClassifier(), ArtifactUtils.DEFAULT_VERSION );
+                                 artifact.getClassifier(), null );
 
         try
         {
