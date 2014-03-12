@@ -31,11 +31,4 @@
     This module contains public interface for functionality
     implemented by XMvn Core.
   </description>
-  <dependencies>
-    <!-- TODO: Get rid of dependency on Aether -->
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-api</artifactId>
-    </dependency>
-  </dependencies>
 </project>

@@ -76,10 +76,6 @@
       <artifactId>sisu-guice</artifactId>
       <classifier>no_aop</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-api</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
