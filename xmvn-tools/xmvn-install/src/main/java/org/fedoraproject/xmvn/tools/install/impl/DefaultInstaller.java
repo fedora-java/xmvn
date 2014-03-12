@@ -110,7 +110,7 @@ public class DefaultInstaller
 
     private PackagingRule ruleForArtifact( Artifact artifact )
     {
-        String stereotype = ArtifactUtils.getStereotype( artifact );
+        String stereotype = artifact.getStereotype();
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
         String extension = artifact.getExtension();
@@ -130,7 +130,7 @@ public class DefaultInstaller
             Artifact aliasArtifact =
                 new DefaultArtifact( alias.getGroupId(), alias.getArtifactId(), alias.getClassifier(),
                                      alias.getExtension(), alias.getVersion() );
-            aliasArtifact = ArtifactUtils.setStereotype( aliasArtifact, alias.getStereotype() );
+            aliasArtifact = aliasArtifact.setStereotype( alias.getStereotype() );
             aliasArtifacts.add( aliasArtifact );
         }
 
@@ -200,13 +200,13 @@ public class DefaultInstaller
                 Artifact jppArtifact =
                     new DefaultArtifact( jppGroup.toString(), jppName.toString(), artifact.getClassifier(),
                                          artifact.getExtension(), version );
-                jppArtifact = ArtifactUtils.copyStereotype( jppArtifact, artifact );
+                jppArtifact = jppArtifact.setStereotype( artifact.getStereotype() );
 
                 RepositoryPath jppArtifactPath = repo.getPrimaryArtifactPath( jppArtifact );
                 if ( jppArtifactPath == null )
                     return null;
                 jppArtifact = jppArtifact.setFile( jppArtifactPath.getPath().toFile() );
-                jppArtifact = ArtifactUtils.setScope( jppArtifact, jppArtifactPath.getRepository().getNamespace() );
+                jppArtifact = jppArtifact.setScope( jppArtifactPath.getRepository().getNamespace() );
 
                 jppArtifacts.add( jppArtifact );
             }
@@ -256,7 +256,7 @@ public class DefaultInstaller
                          artifact );
 
             artifact = artifact.setVersion( ArtifactUtils.UNKNOWN_VERSION );
-            artifact = ArtifactUtils.setScope( artifact, ArtifactUtils.UNKNOWN_NAMESPACE );
+            artifact = artifact.setScope( ArtifactUtils.UNKNOWN_NAMESPACE );
 
             return artifact;
         }
@@ -265,7 +265,7 @@ public class DefaultInstaller
         artifact = artifact.setVersion( version );
 
         String namespace = result.getNamespace();
-        artifact = ArtifactUtils.setScope( artifact, namespace );
+        artifact = artifact.setScope( namespace );
 
         return artifact;
     }
@@ -276,7 +276,7 @@ public class DefaultInstaller
         if ( StringUtils.isEmpty( key ) )
             key = ArtifactUtils.DEFAULT_EXTENSION;
 
-        String stereotype = ArtifactUtils.getStereotype( artifact );
+        String stereotype = artifact.getStereotype();
         if ( StringUtils.isNotEmpty( stereotype ) )
             key += "/" + stereotype;
 
@@ -294,7 +294,7 @@ public class DefaultInstaller
 
         File artifactFile = artifact.getFile();
         if ( artifactFile != null && ( containsNativeCode( artifactFile ) || usesNativeCode( artifactFile ) ) )
-            artifact = ArtifactUtils.setStereotype( artifact, "native" );
+            artifact = artifact.setStereotype( "native" );
 
         PackagingRule rule = ruleForArtifact( artifact );
 

@@ -106,7 +106,7 @@ public class DefaultDeployer
         Xpp3Dom child = ArtifactUtils.toXpp3Dom( artifact, "artifact" );
 
         addChild( child, "file", artifact.getFile() );
-        addChild( child, "stereotype", ArtifactUtils.getStereotype( artifact ) );
+        addChild( child, "stereotype", artifact.getStereotype() );
 
         parent.addChild( child );
     }

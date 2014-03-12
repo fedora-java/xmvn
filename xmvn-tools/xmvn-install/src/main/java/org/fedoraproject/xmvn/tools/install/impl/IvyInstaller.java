@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -75,11 +74,11 @@ public class IvyInstaller
             PomModuleDescriptorWriter.write( module, pomPath, new PomWriterOptions() );
             logger.debug( "Converted Ivy XML file {} to Maven POM {}", ivyPath, pomPath );
 
-            Artifact effectivePomArtifact = ArtifactUtils.setStereotype( pomArtifact, "effective" );
+            Artifact effectivePomArtifact = pomArtifact.setStereotype( "effective" );
             effectivePomArtifact = effectivePomArtifact.setFile( pomPath );
             effectivePomInstaller.installArtifact( pkg, effectivePomArtifact, rule, packageName );
 
-            Artifact rawPomArtifact = ArtifactUtils.setStereotype( pomArtifact, "raw" );
+            Artifact rawPomArtifact = pomArtifact.setStereotype( "raw" );
             rawPomArtifact = rawPomArtifact.setFile( ivyPath );
             rawPomInstaller.installArtifact( pkg, rawPomArtifact, rule, packageName );
         }

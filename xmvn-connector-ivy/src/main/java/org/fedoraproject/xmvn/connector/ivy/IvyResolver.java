@@ -20,8 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.ParseException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.apache.ivy.core.cache.ArtifactOrigin;
 import org.apache.ivy.core.module.descriptor.Artifact;
@@ -306,9 +304,7 @@ public class IvyResolver
             PomModuleDescriptorWriter.write( module, pomFile, new PomWriterOptions() );
 
             org.fedoraproject.xmvn.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
-            Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
-            properties.put( "xmvn.artifact.stereotype", "effective" );
-            deploy( artifact.setProperties( properties ), artifactFile );
+            deploy( artifact.setStereotype( "effective" ), artifactFile );
         }
         catch ( ParseException e )
         {

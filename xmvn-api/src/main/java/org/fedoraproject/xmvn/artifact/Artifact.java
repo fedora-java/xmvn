@@ -35,9 +35,17 @@ public interface Artifact
 
     File getFile();
 
+    String getScope();
+
+    String getStereotype();
+
     Artifact setVersion( String version );
 
     Artifact setFile( File file );
+
+    Artifact setScope( String scope );
+
+    Artifact setStereotype( String stereotype );
 
     String getProperty( String key, String defaultValue );
 

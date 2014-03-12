@@ -143,8 +143,8 @@ public class DefaultArtifactInstaller
         logger.info( "  extension: {}", artifact.getExtension() );
         logger.info( " classifier: {}", artifact.getClassifier() );
         logger.info( "    version: {}", artifact.getVersion() );
-        logger.info( " stereotype: {}", ArtifactUtils.getStereotype( artifact ) );
-        logger.info( "  namespace: {}", ArtifactUtils.getScope( artifact ) );
+        logger.info( " stereotype: {}", artifact.getStereotype() );
+        logger.info( "  namespace: {}", artifact.getScope() );
         logger.info( "       file: {}", artifact.getFile() );
 
         if ( jppArtifacts == null )
@@ -163,8 +163,8 @@ public class DefaultArtifactInstaller
             logger.info( "  extension: {}", jppArtifact.getExtension() );
             logger.info( " classifier: {}", jppArtifact.getClassifier() );
             logger.info( "    version: {}", jppArtifact.getVersion() );
-            logger.info( " stereotype: {}", ArtifactUtils.getStereotype( jppArtifact ) );
-            logger.info( "  namespace: {}", ArtifactUtils.getScope( jppArtifact ) );
+            logger.info( " stereotype: {}", jppArtifact.getStereotype() );
+            logger.info( "  namespace: {}", jppArtifact.getScope() );
             logger.info( "       file: {}", jppArtifact.getFile() );
         }
         logger.info( "===============================================" );

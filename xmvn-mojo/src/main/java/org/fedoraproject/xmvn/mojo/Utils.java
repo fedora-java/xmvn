@@ -29,7 +29,6 @@ import org.codehaus.plexus.util.StringUtils;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -52,7 +51,7 @@ class Utils
         File artifactFile = mavenArtifact.getFile();
 
         Artifact artifact = new DefaultArtifact( groupId, artifactId, classifier, extension, version );
-        artifact = ArtifactUtils.setStereotype( artifact, stereotype );
+        artifact = artifact.setStereotype( stereotype );
         artifact = artifact.setFile( artifactFile );
         return artifact;
     }

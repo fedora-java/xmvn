@@ -175,7 +175,7 @@ public class InstallMojo
                     Artifact effectivePomArtifact =
                         new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(),
                                              mainArtifact.getClassifier(), "pom", mainArtifact.getVersion() );
-                    effectivePomArtifact = ArtifactUtils.setStereotype( effectivePomArtifact, "effective" );
+                    effectivePomArtifact = effectivePomArtifact.setStereotype( "effective" );
                     Path effectivePom = saveEffectivePom( project.getModel() );
                     logger.debug( "Effective POM path: {}", effectivePom );
                     effectivePomArtifact = effectivePomArtifact.setFile( effectivePom.toFile() );
@@ -185,7 +185,7 @@ public class InstallMojo
                 Artifact rawPomArtifact =
                     new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(),
                                          mainArtifact.getClassifier(), "pom", mainArtifact.getVersion() );
-                rawPomArtifact = ArtifactUtils.setStereotype( rawPomArtifact, "raw" );
+                rawPomArtifact = rawPomArtifact.setStereotype( "raw" );
                 Path rawPom = project.getFile().toPath();
                 logger.debug( "Raw POM path: {}", rawPom );
                 rawPomArtifact = rawPomArtifact.setFile( rawPom.toFile() );

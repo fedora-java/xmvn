@@ -254,9 +254,9 @@ public class Package
             String providedVersion = jppArtifact.getVersion();
             Artifact providedArtifact = artifact.setVersion( providedVersion ).setFile( null ).setProperties( null );
 
-            String scope = ArtifactUtils.getScope( jppArtifact );
-            Artifact scopedArtifact = ArtifactUtils.setScope( artifact, scope );
-            Artifact scopedProvidedArtifact = ArtifactUtils.setScope( providedArtifact, scope );
+            String scope = jppArtifact.getScope();
+            Artifact scopedArtifact = artifact.setScope( scope );
+            Artifact scopedProvidedArtifact = providedArtifact.setScope( scope );
 
             providedArtifacts.put( providedArtifact, scopedProvidedArtifact );
             metadata.addMapping( scopedArtifact, jppArtifact );
@@ -264,8 +264,8 @@ public class Package
             for ( Artifact alias : aliases )
             {
                 Artifact providedAlias = alias.setVersion( providedVersion ).setProperties( null );
-                Artifact scopedAlias = ArtifactUtils.setScope( alias, scope );
-                Artifact scopedProvidedAlias = ArtifactUtils.setScope( providedAlias, scope );
+                Artifact scopedAlias = alias.setScope( scope );
+                Artifact scopedProvidedAlias = providedAlias.setScope( scope );
 
                 providedArtifacts.put( providedAlias, scopedProvidedAlias );
                 metadata.addMapping( scopedAlias, jppArtifact );

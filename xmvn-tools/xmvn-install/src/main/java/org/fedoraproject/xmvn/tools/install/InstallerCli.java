@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -107,7 +106,7 @@ public class InstallerCli
             artifact = artifact.setFile( new File( file ) );
 
         String stereotype = readValue( dom, "stereotype", null, true );
-        artifact = ArtifactUtils.setStereotype( artifact, stereotype );
+        artifact = artifact.setStereotype( stereotype );
 
         return artifact;
     }

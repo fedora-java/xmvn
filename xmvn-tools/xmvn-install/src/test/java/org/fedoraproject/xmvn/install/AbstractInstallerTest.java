@@ -41,7 +41,6 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -118,8 +117,8 @@ public abstract class AbstractInstallerTest
 
         Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "pom", version );
         pomArtifact = pomArtifact.setFile( modelPath.toFile() );
-        request.addArtifact( ArtifactUtils.setStereotype( pomArtifact, "raw" ) );
-        request.addArtifact( ArtifactUtils.setStereotype( pomArtifact, "effective" ) );
+        request.addArtifact( pomArtifact.setStereotype( "raw" ) );
+        request.addArtifact( pomArtifact.setStereotype( "effective" ) );
 
         logger.info( "Added arrifact {}", artifact );
         logger.info( "  POM path: {}", modelPath.toAbsolutePath() );

@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.artifact;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -24,6 +25,10 @@ import java.util.Map;
 public final class DefaultArtifact
     implements Artifact
 {
+    private static final String KEY_SCOPE = "xmvn.artifact.scope";
+
+    private static final String KEY_STEREOTYPE = "xmvn.artifact.stereotype";
+
     private final org.eclipse.aether.artifact.Artifact artifact;
 
     private DefaultArtifact( org.eclipse.aether.artifact.Artifact artifact )
@@ -84,6 +89,18 @@ public final class DefaultArtifact
     }
 
     @Override
+    public String getScope()
+    {
+        return getProperty( KEY_SCOPE, "" );
+    }
+
+    @Override
+    public String getStereotype()
+    {
+        return getProperty( KEY_STEREOTYPE, "" );
+    }
+
+    @Override
     public Artifact setVersion( String version )
     {
         return new DefaultArtifact( artifact.setVersion( version ) );
@@ -93,6 +110,18 @@ public final class DefaultArtifact
     public Artifact setFile( File file )
     {
         return new DefaultArtifact( artifact.setFile( file ) );
+    }
+
+    @Override
+    public Artifact setScope( String scope )
+    {
+        return setProperty( KEY_SCOPE, scope );
+    }
+
+    @Override
+    public Artifact setStereotype( String stereotype )
+    {
+        return setProperty( KEY_STEREOTYPE, stereotype );
     }
 
     @Override
@@ -111,5 +140,12 @@ public final class DefaultArtifact
     public Artifact setProperties( Map<String, String> properties )
     {
         return new DefaultArtifact( artifact.setProperties( properties ) );
+    }
+
+    private Artifact setProperty( String key, String value )
+    {
+        Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
+        properties.put( key, value );
+        return setProperties( properties );
     }
 }

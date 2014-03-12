@@ -47,7 +47,7 @@ abstract class SimpleRepository
 
     private boolean matchesStereotypes( Artifact artifact, boolean ignoreType )
     {
-        String type = ArtifactUtils.getStereotype( artifact );
+        String type = artifact.getStereotype();
 
         for ( Stereotype stereotype : stereotypes )
         {

@@ -76,47 +76,6 @@ public class ArtifactUtils
      */
     public static final Artifact DUMMY_JPP = new DefaultArtifact( "JPP/maven:empty-dep:SYSTEM" );
 
-    private static final String KEY_SCOPE = "xmvn.artifact.scope";
-
-    private static final String KEY_STEREOTYPE = "xmvn.artifact.stereotype";
-
-    public static Artifact setProperty( Artifact artifact, String key, String value )
-    {
-        Map<String, String> properties = new LinkedHashMap<>( artifact.getProperties() );
-        properties.put( key, value );
-        return artifact.setProperties( properties );
-    }
-
-    public static String getScope( Artifact artifact )
-    {
-        return artifact.getProperty( KEY_SCOPE, "" );
-    }
-
-    public static Artifact setScope( Artifact artifact, String scope )
-    {
-        return setProperty( artifact, KEY_SCOPE, scope );
-    }
-
-    public static Artifact copyScope( Artifact artifact, Artifact referenceArtifact )
-    {
-        return setScope( artifact, getScope( referenceArtifact ) );
-    }
-
-    public static String getStereotype( Artifact artifact )
-    {
-        return artifact.getProperty( KEY_STEREOTYPE, "" );
-    }
-
-    public static Artifact setStereotype( Artifact artifact, String stereotype )
-    {
-        return setProperty( artifact, KEY_STEREOTYPE, stereotype );
-    }
-
-    public static Artifact copyStereotype( Artifact artifact, Artifact referenceArtifact )
-    {
-        return setStereotype( artifact, getStereotype( referenceArtifact ) );
-    }
-
     /**
      * Convert a collection of artifacts to a human-readable string. This function uses single-line representation.
      * 
@@ -173,7 +132,7 @@ public class ArtifactUtils
     {
         Xpp3Dom parent = new Xpp3Dom( tag );
 
-        addOptionalChild( parent, "namespace", ArtifactUtils.getScope( artifact ), "" );
+        addOptionalChild( parent, "namespace", artifact.getScope(), "" );
         addOptionalChild( parent, "groupId", artifact.getGroupId(), null );
         addOptionalChild( parent, "artifactId", artifact.getArtifactId(), null );
         addOptionalChild( parent, "extension", artifact.getExtension(), "jar" );
