@@ -17,33 +17,34 @@ package org.fedoraproject.xmvn.locator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 /**
  * @author Mikolaj Izdebski
  */
-public class IsolatedXMvnServiceLocator
+class ServiceInvocationHandler
+    implements InvocationHandler
 {
-    final ClassLoader classLoader;
+    private final ClassLoader classLoader;
 
-    public IsolatedXMvnServiceLocator( ClassLoader classLoader )
+    private final Object delegate;
+
+    public ServiceInvocationHandler( ClassLoader classLoader, Object delegate )
     {
         this.classLoader = classLoader;
+        this.delegate = delegate;
     }
 
-    public <T> T getService( final Class<T> role )
+    @Override
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
         ClassLoader savedThreadContextClassLoader = Thread.currentThread().getContextClassLoader();
+
         try
         {
             Thread.currentThread().setContextClassLoader( classLoader );
 
-            Class<?> locatorClass = classLoader.loadClass( "org.fedoraproject.xmvn.XMvnServiceLocator" );
-            Method getServiceMethod = locatorClass.getDeclaredMethod( "getService", Class.class );
-            Object delegate = getServiceMethod.invoke( null, role );
-            InvocationHandler handler = new ServiceInvocationHandler( classLoader, delegate );
-            T proxy = (T) Proxy.newProxyInstance( classLoader, new Class[] { role }, handler );
-            return proxy;
+            return method.invoke( delegate, args );
         }
         catch ( ReflectiveOperationException e )
         {

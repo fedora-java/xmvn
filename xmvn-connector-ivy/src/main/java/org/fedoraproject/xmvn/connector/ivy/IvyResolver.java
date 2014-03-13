@@ -51,8 +51,6 @@ import org.apache.ivy.plugins.resolver.util.ResolvedResource;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
-import org.fedoraproject.xmvn.locator.IsolatedDeployer;
-import org.fedoraproject.xmvn.locator.IsolatedResolver;
 import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
 import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
@@ -82,12 +80,12 @@ public class IvyResolver
 
     static class LazyResolverProvider
     {
-        static final Resolver resolver = new IsolatedResolver( LazyLocatorProvider.locator );
+        static final Resolver resolver = LazyLocatorProvider.locator.getService( Resolver.class );
     }
 
     static class LazyDeployerProvider
     {
-        static final Deployer deployer = new IsolatedDeployer( LazyLocatorProvider.locator );
+        static final Deployer deployer = LazyLocatorProvider.locator.getService( Deployer.class );
     }
 
     private Resolver resolver;
