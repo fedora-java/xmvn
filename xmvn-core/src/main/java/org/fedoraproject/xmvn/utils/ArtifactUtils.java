@@ -127,7 +127,8 @@ public class ArtifactUtils
     {
         Xpp3Dom parent = new Xpp3Dom( tag );
 
-        addOptionalChild( parent, "namespace", artifact.getScope(), "" );
+        if ( artifact.getScope() != null )
+            addOptionalChild( parent, "namespace", artifact.getScope(), null );
         addOptionalChild( parent, "groupId", artifact.getGroupId(), null );
         addOptionalChild( parent, "artifactId", artifact.getArtifactId(), null );
         addOptionalChild( parent, "extension", artifact.getExtension(), "jar" );
