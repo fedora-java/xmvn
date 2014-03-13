@@ -15,12 +15,12 @@
  */
 package org.fedoraproject.xmvn.deployer.impl;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.inject.Named;
@@ -52,6 +52,8 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class DefaultDeployer
     implements Deployer
 {
+    private static final Path PLAN_PATH = Paths.get( ".xmvn-reactor" );
+
     @Override
     public DeploymentResult deploy( DeploymentRequest request )
     {
@@ -74,13 +76,14 @@ public class DefaultDeployer
     private Xpp3Dom readInstallationPlan()
         throws IOException
     {
-        try (Reader reader = Files.newBufferedReader( Paths.get( ".xmvn-reactor" ), StandardCharsets.US_ASCII ))
-        {
-            return Xpp3DomBuilder.build( reader );
-        }
-        catch ( FileNotFoundException e )
+        if ( !Files.exists( PLAN_PATH ) )
         {
             return new Xpp3Dom( "reactorInstallationPlan" );
+        }
+
+        try (Reader reader = Files.newBufferedReader( PLAN_PATH, StandardCharsets.US_ASCII ))
+        {
+            return Xpp3DomBuilder.build( reader );
         }
         catch ( XmlPullParserException e )
         {
@@ -115,7 +118,7 @@ public class DefaultDeployer
     private void writeInstallationPlan( Xpp3Dom dom )
         throws IOException
     {
-        try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-reactor" ), StandardCharsets.US_ASCII ))
+        try (Writer writer = Files.newBufferedWriter( PLAN_PATH, StandardCharsets.US_ASCII ))
         {
             XmlSerializer s = new MXSerializer();
             s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );

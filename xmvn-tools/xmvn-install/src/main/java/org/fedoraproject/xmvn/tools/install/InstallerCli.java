@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -63,13 +62,14 @@ public class InstallerCli
     private Xpp3Dom readInstallationPlan( Path planPath )
         throws XmlPullParserException, IOException
     {
+        if ( !Files.exists( planPath ) )
+        {
+            return new Xpp3Dom( "reactorInstallationPlan" );
+        }
+
         try (Reader reader = Files.newBufferedReader( planPath, StandardCharsets.US_ASCII ))
         {
             return Xpp3DomBuilder.build( reader );
-        }
-        catch ( FileNotFoundException e )
-        {
-            return new Xpp3Dom( "reactorInstallationPlan" );
         }
     }
 
