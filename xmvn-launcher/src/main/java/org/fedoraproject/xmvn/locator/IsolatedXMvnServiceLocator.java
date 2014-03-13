@@ -38,7 +38,7 @@ public class IsolatedXMvnServiceLocator
         {
             Thread.currentThread().setContextClassLoader( classLoader );
 
-            Class<?> locatorClass = classLoader.loadClass( "org.fedoraproject.xmvn.XMvnServiceLocator" );
+            Class<?> locatorClass = classLoader.loadClass( "org.fedoraproject.xmvn.locator.XMvnServiceLocator" );
             Method getServiceMethod = locatorClass.getDeclaredMethod( "getService", Class.class );
             Object delegate = getServiceMethod.invoke( null, role );
             InvocationHandler handler = new ServiceInvocationHandler( classLoader, delegate );
