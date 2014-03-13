@@ -19,11 +19,10 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -96,7 +95,7 @@ public abstract class AbstractInstallerTest
         Path modelPath = Paths.get( "src/test/resources/pom/" + pom + ".pom" );
 
         Model model;
-        try (InputStream is = new FileInputStream( modelPath.toFile() ))
+        try (InputStream is = Files.newInputStream( modelPath ))
         {
             model = modelReader.read( is );
         }
@@ -112,11 +111,11 @@ public abstract class AbstractInstallerTest
             version = parent.getVersion();
 
         Artifact artifact = new DefaultArtifact( groupId, artifactId, "jar", version );
-        artifact = artifact.setFile( artifactPath.toFile() );
+        artifact = artifact.setPath( artifactPath );
         request.addArtifact( artifact );
 
         Artifact pomArtifact = new DefaultArtifact( groupId, artifactId, "pom", version );
-        pomArtifact = pomArtifact.setFile( modelPath.toFile() );
+        pomArtifact = pomArtifact.setPath( modelPath );
         request.addArtifact( pomArtifact.setStereotype( "raw" ) );
         request.addArtifact( pomArtifact.setStereotype( "effective" ) );
 
@@ -133,9 +132,12 @@ public abstract class AbstractInstallerTest
     protected void assertXmlEqual( StringBuilder expected, String generated )
         throws Exception
     {
+        Path generatedPath = installRoot.resolve( generated );
+        assertTrue( Files.isRegularFile( generatedPath ) );
+
         try (Reader expectedReader = new StringReader( expected.toString() ))
         {
-            try (Reader generatedReader = new FileReader( installRoot.resolve( generated ).toFile() ))
+            try (Reader generatedReader = Files.newBufferedReader( generatedPath, StandardCharsets.US_ASCII ))
             {
                 assertXMLEqual( expectedReader, generatedReader );
             }
@@ -145,12 +147,14 @@ public abstract class AbstractInstallerTest
     protected void assertXmlEqual( String expected, String generated )
         throws Exception
     {
+        Path expectedPath = Paths.get( "src/test/resources" ).resolve( expected );
+
         Path generatedPath = installRoot.resolve( generated );
         assertTrue( Files.isRegularFile( generatedPath ) );
 
-        try (Reader expectedReader = new FileReader( Paths.get( "src/test/resources" ).resolve( expected ).toFile() ))
+        try (Reader expectedReader = Files.newBufferedReader( expectedPath, StandardCharsets.US_ASCII ))
         {
-            try (Reader generatedReader = new FileReader( generatedPath.toFile() ))
+            try (Reader generatedReader = Files.newBufferedReader( generatedPath, StandardCharsets.US_ASCII ))
             {
                 assertXMLEqual( expectedReader, generatedReader );
             }

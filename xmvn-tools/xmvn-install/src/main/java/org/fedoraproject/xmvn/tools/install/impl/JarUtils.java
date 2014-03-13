@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,7 +39,7 @@ public class JarUtils
      * 
      * @return {@code true} if native code was found inside given JAR
      */
-    public static boolean containsNativeCode( File jar )
+    public static boolean containsNativeCode( Path jar )
     {
         // From /usr/include/linux/elf.h
         final int ELFMAG0 = 0x7F;
@@ -47,7 +47,7 @@ public class JarUtils
         final int ELFMAG2 = 'L';
         final int ELFMAG3 = 'F';
 
-        try (ZipInputStream jis = new ZipInputStream( new FileInputStream( jar ) ))
+        try (ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ))
         {
             ZipEntry ent;
             while ( ( ent = jis.getNextEntry() ) != null )
@@ -75,10 +75,10 @@ public class JarUtils
      * 
      * @return {@code true} given JAR as found inside to use native code
      */
-    public static boolean usesNativeCode( File jar )
+    public static boolean usesNativeCode( Path jar )
         throws IOException
     {
-        try (ZipInputStream jis = new ZipInputStream( new FileInputStream( jar ) ))
+        try (ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ))
         {
             ZipEntry ent;
             while ( ( ent = jis.getNextEntry() ) != null )

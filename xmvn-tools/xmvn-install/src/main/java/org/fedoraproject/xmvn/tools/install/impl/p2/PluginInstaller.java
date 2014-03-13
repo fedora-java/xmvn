@@ -39,6 +39,6 @@ public class PluginInstaller
         throws IOException
     {
         P2RepoDescriptor request = getDescriptor( pkg, packageName );
-        request.addPlugin( artifact.getFile().toPath() );
+        request.addPlugin( artifact.getPath() );
     }
 }

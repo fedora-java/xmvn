@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.tools.subst;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -144,17 +143,16 @@ public class ArtifactVisitor
             return;
         }
 
-        File artifactFile = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactFile();
-        if ( artifactFile == null )
+        Path artifactPath = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactPath();
+        if ( artifactPath == null )
         {
             logger.warn( "Skipping file {}: Artifact {} not found in repository", path, artifact );
             failureCount++;
             return;
         }
 
-        Path target = artifactFile.toPath();
         if ( !dryRun )
-            FileUtils.replaceFileWithSymlink( path, target );
-        logger.info( "Linked {} to {}", path, target );
+            FileUtils.replaceFileWithSymlink( path, artifactPath );
+        logger.info( "Linked {} to {}", path, artifactPath );
     }
 }

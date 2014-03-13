@@ -15,10 +15,12 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,10 +85,10 @@ public class BuilddepMojo
             for ( MavenProject project : reactorProjects )
             {
                 Artifact projectArtifact = Utils.aetherArtifact( project.getArtifact() );
-                projectArtifact = projectArtifact.setFile( project.getFile() );
+                projectArtifact = projectArtifact.setPath( project.getFile().toPath() );
 
                 DependencyExtractionRequest request = new DependencyExtractionRequest();
-                request.setModelPath( projectArtifact.getFile().toPath() );
+                request.setModelPath( projectArtifact.getPath() );
                 DependencyExtractionResult result = buildDependencyExtractor.extract( request );
 
                 dependencies.addAll( result.getDependencyArtifacts() );
@@ -111,9 +113,9 @@ public class BuilddepMojo
                 request.setArtifact( dependencyArtifact );
                 ResolutionResult result = resolver.resolve( request );
 
-                if ( result.getArtifactFile() != null )
+                if ( result.getArtifactPath() != null )
                 {
-                    dependencyArtifact = dependencyArtifact.setFile( result.getArtifactFile() );
+                    dependencyArtifact = dependencyArtifact.setPath( result.getArtifactPath() );
                     dependencyArtifact = dependencyArtifact.setVersion( result.getCompatVersion() );
                 }
                 else
@@ -124,7 +126,7 @@ public class BuilddepMojo
                 resolvedDependencies.add( dependencyArtifact );
             }
 
-            try (Writer writer = new FileWriter( ".xmvn-builddep" ))
+            try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-builddep" ), StandardCharsets.US_ASCII ))
             {
                 XmlSerializer s = new MXSerializer();
                 s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );

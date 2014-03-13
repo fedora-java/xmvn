@@ -18,15 +18,14 @@ package org.fedoraproject.xmvn.resolver.impl;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,27 +81,25 @@ class DepmapReader
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, new DaemonFactory() );
     }
 
-    public void readMappings( DependencyMap depmap, List<String> depmapLocations )
+    public void readMappings( DependencyMap depmap, List<Path> depmapLocations )
     {
         List<Future<List<Mapping>>> futures = new ArrayList<>();
 
-        for ( String path : depmapLocations )
+        for ( Path path : depmapLocations )
         {
-            File file = Paths.get( path ).toFile();
-
-            if ( file.isDirectory() )
+            if ( Files.isDirectory( path ) )
             {
-                String flist[] = file.list();
+                String flist[] = path.toFile().list();
                 if ( flist != null )
                 {
                     Arrays.sort( flist );
                     for ( String fragFilename : flist )
-                        futures.add( executor.submit( new Task( new File( file, fragFilename ) ) ) );
+                        futures.add( executor.submit( new Task( path.resolve( fragFilename ) ) ) );
                 }
             }
             else
             {
-                futures.add( executor.submit( new Task( file ) ) );
+                futures.add( executor.submit( new Task( path ) ) );
             }
         }
 
@@ -148,11 +145,11 @@ class DepmapReader
     class Task
         implements Callable<List<Mapping>>
     {
-        private final File file;
+        private final Path path;
 
-        public Task( File file )
+        public Task( Path path )
         {
-            this.file = file;
+            this.path = path;
         }
 
         @Override
@@ -188,7 +185,7 @@ class DepmapReader
                 DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
                 fact.setNamespaceAware( true );
                 DocumentBuilder builder = fact.newDocumentBuilder();
-                String contents = wrapFragment( file );
+                String contents = wrapFragment( path );
                 try (Reader reader = new StringReader( contents ))
                 {
                     InputSource source = new InputSource( reader );
@@ -205,10 +202,10 @@ class DepmapReader
             }
         }
 
-        private String wrapFragment( File fragmentFile )
+        private String wrapFragment( Path fragmentPath )
             throws IOException
         {
-            try (FileInputStream fis = new FileInputStream( fragmentFile ))
+            try (InputStream fis = Files.newInputStream( fragmentPath ))
             {
                 try (BufferedInputStream bis = new BufferedInputStream( fis, 128 ))
                 {

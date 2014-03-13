@@ -54,15 +54,15 @@ public class FileUtils
      * @param file path in which symlinks are to be followed
      * @return canonical file
      */
-    public static File followSymlink( File file )
+    public static Path followSymlink( Path path )
     {
         try
         {
-            return file.getCanonicalFile();
+            return path.toRealPath();
         }
         catch ( IOException e )
         {
-            return file;
+            return path;
         }
     }
 

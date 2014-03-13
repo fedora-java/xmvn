@@ -90,7 +90,7 @@ public class BisectResolverTest
         ResolutionResult result = resolver.resolve( request );
 
         assertNotNull( result );
-        assertNull( result.getArtifactFile() );
+        assertNull( result.getArtifactPath() );
         assertEquals( 999, counter.getValue() );
     }
 }

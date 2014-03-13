@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * Provides access to results of artifact resolution.
@@ -29,7 +29,7 @@ public interface ResolutionResult
      * 
      * @return resolved artifact file or {@code null} if requested artifact could not be resolved
      */
-    File getArtifactFile();
+    Path getArtifactPath();
 
     /**
      * Get name of system package providing requested artifact.

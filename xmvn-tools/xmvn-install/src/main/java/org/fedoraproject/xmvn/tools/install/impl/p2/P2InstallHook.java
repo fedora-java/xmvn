@@ -61,7 +61,7 @@ class P2InstallHook
 
         for ( Path bundle : bundles )
         {
-            if ( containsNativeCode( bundle.toFile() ) || usesNativeCode( bundle.toFile() ) )
+            if ( containsNativeCode( bundle ) || usesNativeCode( bundle ) )
                 return Paths.get( ARCH_DEP_DROPIN_DIR );
         }
 

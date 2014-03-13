@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.artifact;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author Mikolaj Izdebski
@@ -36,7 +36,7 @@ public interface Artifact
 
     String getVersion();
 
-    File getFile();
+    Path getPath();
 
     String getScope();
 
@@ -44,7 +44,7 @@ public interface Artifact
 
     Artifact setVersion( String version );
 
-    Artifact setFile( File file );
+    Artifact setPath( Path path );
 
     Artifact setScope( String scope );
 

@@ -15,7 +15,9 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -65,14 +67,14 @@ public class DefaultDependencyMap
     {
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
 
-        List<String> metadataDirs = new ArrayList<>();
+        List<Path> metadataDirs = new ArrayList<>();
         for ( String prefix : settings.getPrefixes() )
         {
-            File root = new File( prefix );
-            if ( root.isDirectory() )
+            Path root = Paths.get( prefix );
+            if ( Files.isDirectory( root ) )
             {
                 for ( String dir : settings.getMetadataRepositories() )
-                    metadataDirs.add( new File( root, dir ).toString() );
+                    metadataDirs.add( root.resolve( dir ) );
             }
         }
 

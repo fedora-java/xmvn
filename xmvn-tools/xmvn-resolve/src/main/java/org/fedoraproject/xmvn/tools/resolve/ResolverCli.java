@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.resolve;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,11 +60,11 @@ public class ResolverCli
         this.resolver = resolver;
     }
 
-    private void printResult( ResolverCliRequest cli, List<File> result )
+    private void printResult( ResolverCliRequest cli, List<Path> result )
     {
         if ( cli.isClasspath() )
         {
-            Iterator<File> it = result.iterator();
+            Iterator<Path> it = result.iterator();
             System.out.print( it.next() );
             while ( it.hasNext() )
             {
@@ -75,8 +75,8 @@ public class ResolverCli
         }
         else
         {
-            for ( File f : result )
-                System.out.println( f );
+            for ( Path path : result )
+                System.out.println( path );
         }
     }
 
@@ -85,7 +85,7 @@ public class ResolverCli
         try
         {
             boolean error = false;
-            List<File> result = new ArrayList<>();
+            List<Path> result = new ArrayList<>();
 
             for ( String s : cliRequest.getParameters() )
             {
@@ -95,16 +95,16 @@ public class ResolverCli
                     s += "SYSTEM";
 
                 Artifact artifact = new DefaultArtifact( s );
-                File file = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactFile();
+                Path path = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactPath();
 
-                if ( file == null )
+                if ( path == null )
                 {
                     error = true;
                     logger.error( "Unable to resolve artifact {}", artifact );
                 }
                 else
                 {
-                    result.add( file );
+                    result.add( path );
                 }
             }
 

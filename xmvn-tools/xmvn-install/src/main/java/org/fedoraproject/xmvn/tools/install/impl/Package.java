@@ -249,7 +249,7 @@ public class Package
         {
             String providedVersion = jppArtifact.getVersion();
             Artifact providedArtifact =
-                artifact.setVersion( providedVersion ).setFile( null ).setScope( null ).setStereotype( null );
+                artifact.setVersion( providedVersion ).setPath( null ).setScope( null ).setStereotype( null );
 
             String scope = jppArtifact.getScope();
             Artifact scopedArtifact = artifact.setScope( scope );

@@ -15,11 +15,12 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.DataFormatException;
 
@@ -59,10 +60,10 @@ public class InstallerCli
         this.installer = installer;
     }
 
-    private Xpp3Dom readInstallationPlan( String planPath )
+    private Xpp3Dom readInstallationPlan( Path planPath )
         throws XmlPullParserException, IOException
     {
-        try (Reader reader = new FileReader( planPath ))
+        try (Reader reader = Files.newBufferedReader( planPath, StandardCharsets.US_ASCII ))
         {
             return Xpp3DomBuilder.build( reader );
         }
@@ -103,7 +104,7 @@ public class InstallerCli
 
         String file = readValue( dom, "file", null, true );
         if ( file != null )
-            artifact = artifact.setFile( new File( file ) );
+            artifact = artifact.setPath( Paths.get( file ) );
 
         String stereotype = readValue( dom, "stereotype", null, true );
         artifact = artifact.setStereotype( stereotype );
@@ -115,7 +116,7 @@ public class InstallerCli
     {
         try
         {
-            Xpp3Dom dom = readInstallationPlan( cliRequest.getPlanPath() );
+            Xpp3Dom dom = readInstallationPlan( Paths.get( cliRequest.getPlanPath() ) );
 
             for ( Xpp3Dom artifactDom : dom.getChildren( "artifact" ) )
             {

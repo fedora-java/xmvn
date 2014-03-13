@@ -15,9 +15,6 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,10 +69,10 @@ public class DefaultArtifactInstaller
     private Artifact injectManifest( Artifact artifact, String version )
         throws IOException
     {
-        File targetJar = Files.createTempFile( "xmvn", ".jar" ).toFile();
-        targetJar.deleteOnExit();
+        Path targetJar = Files.createTempFile( "xmvn", ".jar" );
+        targetJar.toFile().deleteOnExit();
 
-        try (JarInputStream jis = new JarInputStream( new FileInputStream( artifact.getFile() ) ))
+        try (JarInputStream jis = new JarInputStream( Files.newInputStream( artifact.getPath() ) ))
         {
             Manifest mf = jis.getManifest();
             if ( mf == null )
@@ -87,7 +84,7 @@ public class DefaultArtifactInstaller
             putAttribute( mf, ArtifactUtils.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
             putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, version, Artifact.DEFAULT_VERSION );
 
-            try (JarOutputStream jos = new JarOutputStream( new FileOutputStream( targetJar ), mf ))
+            try (JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ))
             {
                 byte[] buf = new byte[512];
                 JarEntry entry;
@@ -102,7 +99,7 @@ public class DefaultArtifactInstaller
             }
         }
 
-        return artifact.setFile( targetJar );
+        return artifact.setPath( targetJar );
     }
 
     private void installAbsoluteSymlinks( Package pkg, Artifact artifact, PackagingRule rule, Path symlinkTarget )
@@ -158,19 +155,19 @@ public class DefaultArtifactInstaller
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();
         Artifact primaryJppArtifact = jppIterator.next();
         artifact = injectManifest( artifact, primaryJppArtifact.getVersion() );
-        pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );
+        pkg.addFile( artifact.getPath(), primaryJppArtifact.getPath(), 0644 );
 
         while ( jppIterator.hasNext() )
         {
             Artifact jppSymlinkArtifact = jppIterator.next();
-            Path symlink = jppSymlinkArtifact.getFile().toPath();
-            pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
+            Path symlink = jppSymlinkArtifact.getPath();
+            pkg.addSymlink( symlink, primaryJppArtifact.getPath() );
         }
 
         List<Artifact> aliases = DefaultInstaller.getAliasArtifacts( rule );
         pkg.addArtifactMetadata( artifact, aliases, jppArtifacts );
 
-        Path primaryJppArtifactPath = jppArtifacts.iterator().next().getFile().toPath();
+        Path primaryJppArtifactPath = jppArtifacts.iterator().next().getPath();
         installAbsoluteSymlinks( pkg, artifact, rule, primaryJppArtifactPath );
     }
 }

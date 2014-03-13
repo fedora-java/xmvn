@@ -39,6 +39,6 @@ public class FeatureInstaller
         throws IOException
     {
         P2RepoDescriptor request = getDescriptor( pkg, packageName );
-        request.addFeature( artifact.getFile().toPath() );
+        request.addFeature( artifact.getPath() );
     }
 }

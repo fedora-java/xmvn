@@ -17,8 +17,8 @@ package org.fedoraproject.xmvn.resolver.impl;
 
 import static org.fedoraproject.xmvn.utils.FileUtils.followSymlink;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -118,9 +118,9 @@ public class DefaultResolver
             if ( bisectCounter == null || bisectRepo == null || bisectCounter.tryDecrement() == 0 )
                 return null;
 
-            File artifactFile = bisectRepo.getPrimaryArtifactPath( artifact ).getPath().toFile();
-            if ( artifactFile.exists() )
-                return new DefaultResolutionResult( artifactFile, bisectRepo );
+            Path artifactPath = bisectRepo.getPrimaryArtifactPath( artifact ).getPath();
+            if ( Files.exists( artifactPath ) )
+                return new DefaultResolutionResult( artifactPath, bisectRepo );
 
             return new DefaultResolutionResult();
         }
@@ -168,17 +168,17 @@ public class DefaultResolver
         if ( javaHome == null )
             return null;
 
-        Path javaHomeDir = followSymlink( new File( javaHome ) ).toPath();
+        Path javaHomeDir = followSymlink( Paths.get( javaHome ) );
 
         for ( Artifact jppArtifact : jppArtifacts )
         {
             if ( jppArtifact.getGroupId().equals( "JAVA_HOME" ) )
             {
-                Path artifactPath = Paths.get( jppArtifact.getArtifactId() + "." + jppArtifact.getExtension() );
-                File artifactFile = javaHomeDir.resolve( artifactPath ).toFile();
-                artifactFile = followSymlink( artifactFile );
-                if ( artifactFile.exists() )
-                    return new DefaultResolutionResult( artifactFile );
+                Path artifactPath =
+                    javaHomeDir.resolve( Paths.get( jppArtifact.getArtifactId() + "." + jppArtifact.getExtension() ) );
+                artifactPath = followSymlink( artifactPath );
+                if ( Files.exists( artifactPath ) )
+                    return new DefaultResolutionResult( artifactPath );
             }
         }
 
@@ -197,11 +197,11 @@ public class DefaultResolver
 
             for ( RepositoryPath repoPath : systemRepo.getArtifactPaths( jppArtifacts, true ) )
             {
-                File artifactFile = repoPath.getPath().toFile();
-                logger.debug( "Checking artifact path: {}", artifactFile );
-                if ( artifactFile.exists() )
+                Path artifactPath = repoPath.getPath();
+                logger.debug( "Checking artifact path: {}", artifactPath );
+                if ( Files.exists( artifactPath ) )
                 {
-                    DefaultResolutionResult result = new DefaultResolutionResult( artifactFile );
+                    DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
                     result.setCompatVersion( version );
                     result.setRepository( repoPath.getRepository() );
                     return result;
@@ -234,13 +234,13 @@ public class DefaultResolver
             return new DefaultResolutionResult();
         }
 
-        File artifactFile = result.getArtifactFile();
-        if ( artifactFile != null )
+        Path artifactPath = result.getArtifactPath();
+        if ( artifactPath != null )
         {
-            artifactFile = FileUtils.followSymlink( artifactFile );
-            logger.debug( "Artifact {} was resolved to {}", artifact, artifactFile );
+            artifactPath = FileUtils.followSymlink( artifactPath );
+            logger.debug( "Artifact {} was resolved to {}", artifact, artifactPath );
             if ( request.isProviderNeeded() )
-                result.setProvider( rpmdb.lookupFile( artifactFile ) );
+                result.setProvider( rpmdb.lookupPath( artifactPath ) );
         }
 
         return result;

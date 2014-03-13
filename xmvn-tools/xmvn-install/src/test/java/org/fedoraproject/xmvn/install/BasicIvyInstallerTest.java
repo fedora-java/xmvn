@@ -50,11 +50,11 @@ public class BasicIvyInstallerTest
         Path modelPath = Paths.get( "src/test/resources/ivy/simple.ivy" );
 
         Artifact artifact = new DefaultArtifact( "org.apache", "hello-ivy", "jar", "1.2.3" );
-        artifact = artifact.setFile( artifactPath.toFile() );
+        artifact = artifact.setPath( artifactPath );
         request.addArtifact( artifact );
 
         Artifact modelArtifact = new DefaultArtifact( "org.apache", "hello-ivy", "ivy", "1.2.3" );
-        modelArtifact = modelArtifact.setFile( modelPath.toFile() );
+        modelArtifact = modelArtifact.setPath( modelPath );
         request.addArtifact( modelArtifact );
 
         logger.info( "Added arrifact {}", artifact );

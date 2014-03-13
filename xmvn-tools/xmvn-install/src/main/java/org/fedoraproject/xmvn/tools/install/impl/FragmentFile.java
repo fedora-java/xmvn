@@ -15,10 +15,11 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -104,7 +105,7 @@ class FragmentFile
     public void write( Path path, InstallerSettings settings )
         throws IOException
     {
-        try (Writer writer = new FileWriter( path.toFile() ))
+        try (Writer writer = Files.newBufferedWriter( path, StandardCharsets.US_ASCII ))
         {
             XmlSerializer s = new MXSerializer();
             s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );

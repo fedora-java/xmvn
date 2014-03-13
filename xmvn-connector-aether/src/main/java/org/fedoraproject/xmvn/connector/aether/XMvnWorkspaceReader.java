@@ -81,7 +81,7 @@ public class XMvnWorkspaceReader
     {
         ResolutionResult result = resolve( artifact );
 
-        return result.getArtifactFile();
+        return result.getArtifactPath().toFile();
     }
 
     @Override
@@ -89,7 +89,7 @@ public class XMvnWorkspaceReader
     {
         ResolutionResult result = resolve( artifact );
 
-        if ( result.getArtifactFile() == null )
+        if ( result.getArtifactPath() == null )
             return Collections.emptyList();
 
         String version = result.getCompatVersion();

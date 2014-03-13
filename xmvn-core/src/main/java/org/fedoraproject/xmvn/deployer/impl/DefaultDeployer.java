@@ -16,11 +16,12 @@
 package org.fedoraproject.xmvn.deployer.impl;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -73,7 +74,7 @@ public class DefaultDeployer
     private Xpp3Dom readInstallationPlan()
         throws IOException
     {
-        try (Reader reader = new FileReader( ".xmvn-reactor" ))
+        try (Reader reader = Files.newBufferedReader( Paths.get( ".xmvn-reactor" ), StandardCharsets.US_ASCII ))
         {
             return Xpp3DomBuilder.build( reader );
         }
@@ -105,7 +106,7 @@ public class DefaultDeployer
     {
         Xpp3Dom child = ArtifactUtils.toXpp3Dom( artifact, "artifact" );
 
-        addChild( child, "file", artifact.getFile() );
+        addChild( child, "file", artifact.getPath() );
         addChild( child, "stereotype", artifact.getStereotype() );
 
         parent.addChild( child );
@@ -114,7 +115,7 @@ public class DefaultDeployer
     private void writeInstallationPlan( Xpp3Dom dom )
         throws IOException
     {
-        try (Writer writer = new FileWriter( ".xmvn-reactor" ))
+        try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-reactor" ), StandardCharsets.US_ASCII ))
         {
             XmlSerializer s = new MXSerializer();
             s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );

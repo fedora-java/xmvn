@@ -15,9 +15,10 @@
  */
 package org.fedoraproject.xmvn.model.impl;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.inject.Named;
@@ -46,7 +47,7 @@ public class MavenModelReader
     public Model readModel( Path modelPath )
         throws IOException, ModelFormatException
     {
-        try (Reader fileReader = new FileReader( modelPath.toFile() ))
+        try (Reader fileReader = Files.newBufferedReader( modelPath, StandardCharsets.US_ASCII ))
         {
             MavenXpp3Reader modelReader = new MavenXpp3Reader();
             return modelReader.read( fileReader );

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 
 import org.apache.ivy.core.cache.ArtifactOrigin;
@@ -162,7 +163,7 @@ public class IvyResolver
         {
             ResolutionRequest request = new ResolutionRequest( ivy2aether( artifact ) );
             ResolutionResult result = getResolver().resolve( request );
-            if ( result.getArtifactFile() != null )
+            if ( result.getArtifactPath() != null )
                 return resolvedVersion( result );
         }
 
@@ -177,14 +178,14 @@ public class IvyResolver
         ResolutionRequest request = new ResolutionRequest();
         request.setArtifact( ivy2aether( depId, "pom" ) );
         ResolutionResult result = getResolver().resolve( request );
-        File pomPath = result.getArtifactFile();
+        Path pomPath = result.getArtifactPath();
 
         String version;
         ModuleDescriptor module;
         if ( pomPath != null )
         {
             ModuleDescriptorParser parser = PomModuleDescriptorParser.getInstance();
-            module = parser.parseDescriptor( getSettings(), pomPath.toURI().toURL(), false );
+            module = parser.parseDescriptor( getSettings(), pomPath.toFile().toURI().toURL(), false );
             version = resolvedVersion( result );
         }
         else
@@ -233,7 +234,7 @@ public class IvyResolver
         ResolutionRequest request = new ResolutionRequest();
         request.setArtifact( ivy2aether( artifact.getModuleRevisionId(), "pom" ) );
         ResolutionResult result = getResolver().resolve( request );
-        File pomPath = result.getArtifactFile();
+        Path pomPath = result.getArtifactPath();
         if ( pomPath == null )
             return null;
 
@@ -241,7 +242,7 @@ public class IvyResolver
         {
             File ivyPath = Files.createTempFile( "xmvn-", ".ivy.xml" ).toFile();
             ModuleDescriptorParser parser = PomModuleDescriptorParser.getInstance();
-            ModuleDescriptor module = parser.parseDescriptor( getSettings(), pomPath.toURI().toURL(), false );
+            ModuleDescriptor module = parser.parseDescriptor( getSettings(), pomPath.toFile().toURI().toURL(), false );
             XmlModuleDescriptorWriter.write( module, ivyPath );
         }
         catch ( IOException | ParseException e )
@@ -249,7 +250,7 @@ public class IvyResolver
             throw new RuntimeException( e );
         }
 
-        Resource fileResource = new FileResource( new FileRepository(), pomPath );
+        Resource fileResource = new FileResource( new FileRepository(), pomPath.toFile() );
         return new ResolvedResource( fileResource, resolvedVersion( result ) );
     }
 
@@ -264,12 +265,12 @@ public class IvyResolver
             ResolutionRequest request = new ResolutionRequest();
             request.setArtifact( ivy2aether( artifact ) );
             ResolutionResult result = getResolver().resolve( request );
-            File artifactPath = result.getArtifactFile();
+            Path artifactPath = result.getArtifactPath();
 
             if ( artifactPath != null )
             {
                 artifactReport.setArtifactOrigin( new ArtifactOrigin( artifact, false, artifactPath.toString() ) );
-                artifactReport.setLocalFile( artifactPath );
+                artifactReport.setLocalFile( artifactPath.toFile() );
                 artifactReport.setDownloadStatus( DownloadStatus.SUCCESSFUL );
             }
             else
@@ -283,28 +284,29 @@ public class IvyResolver
         return report;
     }
 
-    private void deploy( org.fedoraproject.xmvn.artifact.Artifact artifact, File artifactFile )
+    private void deploy( org.fedoraproject.xmvn.artifact.Artifact artifact, Path artifactPath )
         throws IOException
     {
         DeploymentRequest request = new DeploymentRequest();
-        request.setArtifact( artifact.setFile( artifactFile ) );
+        request.setArtifact( artifact.setPath( artifactPath ) );
         DeploymentResult result = getDeployer().deploy( request );
         if ( result.getException() != null )
             throw new IOException( "Failed to publish artifact", result.getException() );
     }
 
-    private void deployEffectivePom( ModuleRevisionId moduleRevisionId, File artifactFile )
+    private void deployEffectivePom( ModuleRevisionId moduleRevisionId, Path artifactPath )
         throws IOException
     {
         try
         {
             File pomFile = Files.createTempFile( "xmvn-", ".pom" ).toFile();
             ModuleDescriptorParser parser = XmlModuleDescriptorParser.getInstance();
-            ModuleDescriptor module = parser.parseDescriptor( getSettings(), artifactFile.toURI().toURL(), false );
+            ModuleDescriptor module =
+                parser.parseDescriptor( getSettings(), artifactPath.toFile().toURI().toURL(), false );
             PomModuleDescriptorWriter.write( module, pomFile, new PomWriterOptions() );
 
             org.fedoraproject.xmvn.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
-            deploy( artifact.setStereotype( "effective" ), artifactFile );
+            deploy( artifact.setStereotype( "effective" ), artifactPath );
         }
         catch ( ParseException e )
         {
@@ -318,9 +320,9 @@ public class IvyResolver
     {
         if ( artifact.getExt().equals( "xml" ) && artifact.getType().equals( "ivy" ) )
         {
-            deployEffectivePom( artifact.getModuleRevisionId(), artifactFile );
+            deployEffectivePom( artifact.getModuleRevisionId(), artifactFile.toPath() );
         }
 
-        deploy( ivy2aether( artifact ), artifactFile );
+        deploy( ivy2aether( artifact ), artifactFile.toPath() );
     }
 }

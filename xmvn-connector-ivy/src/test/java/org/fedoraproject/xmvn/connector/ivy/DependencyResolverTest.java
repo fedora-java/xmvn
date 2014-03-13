@@ -21,7 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.ivy.core.module.descriptor.DefaultDependencyDescriptor;
@@ -65,12 +66,12 @@ public class DependencyResolverTest
         ivyResolver.setSettings( new IvySettings() );
     }
 
-    private File getResource( String id, String ext )
+    private Path getResource( String id, String ext )
     {
         if ( id == null )
             return null;
 
-        return Paths.get( "src/test/resources/" + id + "." + ext ).toAbsolutePath().toFile();
+        return Paths.get( "src/test/resources/" + id + "." + ext ).toAbsolutePath();
     }
 
     private void testResolution( String pom, String jar )
@@ -78,14 +79,14 @@ public class DependencyResolverTest
     {
         Artifact pomArtifact = new DefaultArtifact( "gid:aid:pom:ver" );
         ResolutionRequest pomRequest = new ResolutionRequest( pomArtifact );
-        File pomFile = getResource( pom, "pom" );
-        ResolutionResult pomResult = new ResolutionResultMock( pomFile );
+        Path pomPath = getResource( pom, "pom" );
+        ResolutionResult pomResult = new ResolutionResultMock( pomPath );
         expect( resolver.resolve( pomRequest ) ).andReturn( pomResult );
 
         Artifact jarArtifact = new DefaultArtifact( "gid:aid:jar:ver" );
         ResolutionRequest jarRequest = new ResolutionRequest( jarArtifact );
-        File jarFile = getResource( jar, "jar" );
-        ResolutionResult jarResult = new ResolutionResultMock( jarFile );
+        Path jarPath = getResource( jar, "jar" );
+        ResolutionResult jarResult = new ResolutionResultMock( jarPath );
         expect( resolver.resolve( jarRequest ) ).andReturn( jarResult );
 
         replay( resolver, deployer );
@@ -95,7 +96,7 @@ public class DependencyResolverTest
         DependencyDescriptor dd = new DefaultDependencyDescriptor( mrid, true );
         ResolvedModuleRevision rmr = ivyResolver.getDependency( dd, null );
 
-        if ( pom == null || !pomFile.exists() )
+        if ( pom == null || !Files.exists( pomPath ) )
         {
             assertNull( rmr );
         }

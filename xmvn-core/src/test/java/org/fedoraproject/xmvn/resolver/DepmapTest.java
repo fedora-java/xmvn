@@ -19,7 +19,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,7 +57,7 @@ public class DepmapTest
     {
         Path fragment = Files.createTempFile( "depmap-", ".xml" );
         fragment.toFile().deleteOnExit();
-        try (FileWriter writer = new FileWriter( fragment.toFile() ))
+        try (Writer writer = Files.newBufferedWriter( fragment, StandardCharsets.US_ASCII ))
         {
             writer.write( xml );
         }

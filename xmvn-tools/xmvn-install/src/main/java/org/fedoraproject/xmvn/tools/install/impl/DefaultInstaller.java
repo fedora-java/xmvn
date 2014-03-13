@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.containsNativeCode;
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.usesNativeCode;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -199,7 +198,7 @@ public class DefaultInstaller
                 RepositoryPath jppArtifactPath = repo.getPrimaryArtifactPath( jppArtifact );
                 if ( jppArtifactPath == null )
                     return null;
-                jppArtifact = jppArtifact.setFile( jppArtifactPath.getPath().toFile() );
+                jppArtifact = jppArtifact.setPath( jppArtifactPath.getPath() );
                 jppArtifact = jppArtifact.setScope( jppArtifactPath.getRepository().getNamespace() );
 
                 jppArtifacts.add( jppArtifact );
@@ -244,7 +243,7 @@ public class DefaultInstaller
         ResolutionRequest request = new ResolutionRequest( artifact );
         ResolutionResult result = resolver.resolve( request );
 
-        if ( result.getArtifactFile() == null )
+        if ( result.getArtifactPath() == null )
         {
             logger.warn( "Unable to resolve dependency artifact {}, generating dependencies with unknown version and namespace.",
                          artifact );
@@ -283,8 +282,8 @@ public class DefaultInstaller
     {
         ArtifactInstaller installer = getInstallerForArtifact( artifact );
 
-        File artifactFile = artifact.getFile();
-        if ( artifactFile != null && ( containsNativeCode( artifactFile ) || usesNativeCode( artifactFile ) ) )
+        Path artifactPath = artifact.getPath();
+        if ( artifactPath != null && ( containsNativeCode( artifactPath ) || usesNativeCode( artifactPath ) ) )
             artifact = artifact.setStereotype( "native" );
 
         PackagingRule rule = ruleForArtifact( artifact );
@@ -318,7 +317,7 @@ public class DefaultInstaller
 
         for ( Artifact artifact : artifacts )
         {
-            DependencyExtractionRequest request = new DependencyExtractionRequest( artifact.getFile().toPath() );
+            DependencyExtractionRequest request = new DependencyExtractionRequest( artifact.getPath() );
             DependencyExtractionResult result = dependencyExtractor.extract( request );
             FragmentFile metadata = pkg.getMetadata();
 

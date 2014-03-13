@@ -40,7 +40,7 @@ public class DefaultArtifactTest
         assertEquals( "jar", artifact2.getExtension() );
         assertEquals( "", artifact2.getClassifier() );
         assertEquals( "SYSTEM", artifact2.getVersion() );
-        assertNull( artifact2.getFile() );
+        assertNull( artifact2.getPath() );
         assertNull( artifact2.getScope() );
         assertNull( artifact2.getStereotype() );
 
@@ -50,7 +50,7 @@ public class DefaultArtifactTest
         assertEquals( "jar", artifact3.getExtension() );
         assertEquals( "", artifact3.getClassifier() );
         assertEquals( "ver", artifact3.getVersion() );
-        assertNull( artifact3.getFile() );
+        assertNull( artifact3.getPath() );
         assertNull( artifact3.getScope() );
         assertNull( artifact3.getStereotype() );
 
@@ -60,7 +60,7 @@ public class DefaultArtifactTest
         assertEquals( "ext", artifact4.getExtension() );
         assertEquals( "", artifact4.getClassifier() );
         assertEquals( "ver", artifact4.getVersion() );
-        assertNull( artifact4.getFile() );
+        assertNull( artifact4.getPath() );
         assertNull( artifact4.getScope() );
         assertNull( artifact4.getStereotype() );
 
@@ -70,7 +70,7 @@ public class DefaultArtifactTest
         assertEquals( "ext", artifact5.getExtension() );
         assertEquals( "cla", artifact5.getClassifier() );
         assertEquals( "ver", artifact5.getVersion() );
-        assertNull( artifact5.getFile() );
+        assertNull( artifact5.getPath() );
         assertNull( artifact5.getScope() );
         assertNull( artifact5.getStereotype() );
     }
@@ -108,7 +108,7 @@ public class DefaultArtifactTest
         assertEquals( "jar", artifact.getExtension() );
         assertEquals( "", artifact.getClassifier() );
         assertEquals( "SYSTEM", artifact.getVersion() );
-        assertNull( artifact.getFile() );
+        assertNull( artifact.getPath() );
         assertNull( artifact.getScope() );
         assertNull( artifact.getStereotype() );
     }
@@ -126,7 +126,7 @@ public class DefaultArtifactTest
         assertEquals( "jar", artifact.getExtension() );
         assertEquals( "", artifact.getClassifier() );
         assertEquals( "ver", artifact.getVersion() );
-        assertNull( artifact.getFile() );
+        assertNull( artifact.getPath() );
         assertNull( artifact.getScope() );
         assertNull( artifact.getStereotype() );
     }
@@ -144,7 +144,7 @@ public class DefaultArtifactTest
         assertEquals( "ext", artifact.getExtension() );
         assertEquals( "", artifact.getClassifier() );
         assertEquals( "ver", artifact.getVersion() );
-        assertNull( artifact.getFile() );
+        assertNull( artifact.getPath() );
         assertNull( artifact.getScope() );
         assertNull( artifact.getStereotype() );
     }
@@ -162,7 +162,7 @@ public class DefaultArtifactTest
         assertEquals( "ext", artifact.getExtension() );
         assertEquals( "cla", artifact.getClassifier() );
         assertEquals( "ver", artifact.getVersion() );
-        assertNull( artifact.getFile() );
+        assertNull( artifact.getPath() );
         assertNull( artifact.getScope() );
         assertNull( artifact.getStereotype() );
     }

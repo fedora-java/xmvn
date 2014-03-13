@@ -15,8 +15,8 @@
  */
 package org.fedoraproject.xmvn.utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
@@ -204,7 +204,7 @@ public class ArtifactUtils
     private static Artifact getArtifactFromPomProperties( Path path, String extension )
         throws IOException
     {
-        try (ZipInputStream zis = new ZipInputStream( new FileInputStream( path.toFile() ) ))
+        try (ZipInputStream zis = new ZipInputStream( Files.newInputStream( path ) ))
         {
             ZipEntry entry;
             while ( ( entry = zis.getNextEntry() ) != null )
@@ -256,6 +256,6 @@ public class ArtifactUtils
         logger.info( "    version: {}", artifact.getVersion() );
         logger.info( " stereotype: {}", artifact.getStereotype() );
         logger.info( "  namespace: {}", artifact.getScope() );
-        logger.info( "       file: {}", artifact.getFile() );
+        logger.info( "       file: {}", artifact.getPath() );
     }
 }

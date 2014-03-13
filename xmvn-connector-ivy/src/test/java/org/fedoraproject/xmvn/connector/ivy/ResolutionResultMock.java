@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.connector.ivy;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
@@ -25,17 +25,17 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
 class ResolutionResultMock
     implements ResolutionResult
 {
-    private final File artifactFile;
+    private final Path artifactPath;
 
-    public ResolutionResultMock( File artifactFile )
+    public ResolutionResultMock( Path artifactPath )
     {
-        this.artifactFile = artifactFile;
+        this.artifactPath = artifactPath;
     }
 
     @Override
-    public File getArtifactFile()
+    public Path getArtifactPath()
     {
-        return artifactFile;
+        return artifactPath;
     }
 
     @Override

@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -26,7 +26,7 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
 class DefaultResolutionResult
     implements ResolutionResult
 {
-    private final File artifactFile;
+    private final Path artifactPath;
 
     private String provider;
 
@@ -39,21 +39,21 @@ class DefaultResolutionResult
         this( null );
     }
 
-    public DefaultResolutionResult( File artifactFile )
+    public DefaultResolutionResult( Path artifactPath )
     {
-        this( artifactFile, null );
+        this( artifactPath, null );
     }
 
-    public DefaultResolutionResult( File artifactFile, Repository repository )
+    public DefaultResolutionResult( Path artifactPath, Repository repository )
     {
-        this.artifactFile = artifactFile;
+        this.artifactPath = artifactPath;
         this.repository = repository;
     }
 
     @Override
-    public File getArtifactFile()
+    public Path getArtifactPath()
     {
-        return artifactFile;
+        return artifactPath;
     }
 
     @Override

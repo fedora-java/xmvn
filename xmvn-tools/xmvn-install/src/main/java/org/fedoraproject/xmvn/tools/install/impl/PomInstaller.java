@@ -63,13 +63,13 @@ public class PomInstaller
 
         Iterator<Artifact> jppIterator = jppArtifacts.iterator();
         Artifact primaryJppArtifact = jppIterator.next();
-        pkg.addFile( artifact.getFile().toPath(), primaryJppArtifact.getFile().toPath(), 0644 );
+        pkg.addFile( artifact.getPath(), primaryJppArtifact.getPath(), 0644 );
 
         while ( jppIterator.hasNext() )
         {
             Artifact jppSymlinkArtifact = jppIterator.next();
-            Path symlink = jppSymlinkArtifact.getFile().toPath();
-            pkg.addSymlink( symlink, primaryJppArtifact.getFile().toPath() );
+            Path symlink = jppSymlinkArtifact.getPath();
+            pkg.addSymlink( symlink, primaryJppArtifact.getPath() );
         }
 
         pkg.addDevelArtifact( artifact );

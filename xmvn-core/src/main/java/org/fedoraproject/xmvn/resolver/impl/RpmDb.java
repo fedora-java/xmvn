@@ -18,10 +18,11 @@ package org.fedoraproject.xmvn.resolver.impl;
 import static org.fedoraproject.xmvn.utils.FileUtils.followSymlink;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -95,20 +96,20 @@ class RpmDb
         }
     }
 
-    public String lookupFile( String path )
+    public String lookupPath( String path )
     {
-        return lookupFile( new File( path ) );
+        return lookupPath( Paths.get( path ) );
     }
 
-    public String lookupFile( File file )
+    public String lookupPath( Path path )
     {
-        file = followSymlink( file );
+        path = followSymlink( path );
 
         synchronized ( lock )
         {
             if ( paths == null )
                 buildDatabase();
-            return paths.get( file.getPath() );
+            return paths.get( path );
         }
     }
 }

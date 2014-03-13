@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 
 import javax.inject.Inject;
@@ -67,19 +67,20 @@ public class IvyInstaller
                 new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), "pom", artifact.getClassifier(),
                                      artifact.getVersion() );
 
-            File ivyPath = artifact.getFile();
-            File pomPath = Files.createTempFile( "xmvn-", ".ivy.pom" ).toFile();
+            Path ivyPath = artifact.getPath();
+            Path pomPath = Files.createTempFile( "xmvn-", ".ivy.pom" );
             ModuleDescriptorParser parser = XmlModuleDescriptorParser.getInstance();
-            ModuleDescriptor module = parser.parseDescriptor( new IvySettings(), ivyPath.toURI().toURL(), false );
-            PomModuleDescriptorWriter.write( module, pomPath, new PomWriterOptions() );
+            ModuleDescriptor module =
+                parser.parseDescriptor( new IvySettings(), ivyPath.toFile().toURI().toURL(), false );
+            PomModuleDescriptorWriter.write( module, pomPath.toFile(), new PomWriterOptions() );
             logger.debug( "Converted Ivy XML file {} to Maven POM {}", ivyPath, pomPath );
 
             Artifact effectivePomArtifact = pomArtifact.setStereotype( "effective" );
-            effectivePomArtifact = effectivePomArtifact.setFile( pomPath );
+            effectivePomArtifact = effectivePomArtifact.setPath( pomPath );
             effectivePomInstaller.installArtifact( pkg, effectivePomArtifact, rule, packageName );
 
             Artifact rawPomArtifact = pomArtifact.setStereotype( "raw" );
-            rawPomArtifact = rawPomArtifact.setFile( ivyPath );
+            rawPomArtifact = rawPomArtifact.setPath( ivyPath );
             rawPomInstaller.installArtifact( pkg, rawPomArtifact, rule, packageName );
         }
         catch ( IOException | ParseException e )

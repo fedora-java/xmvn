@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Files;
+
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
@@ -52,20 +54,20 @@ public class JavaHomeResolverTest
 
         ResolutionRequest comSunToolsRequest = new ResolutionRequest( "com.sun", "tools", "SYSTEM", "jar" );
         ResolutionResult comSunToolsResult = javaHomeResolver.resolve( comSunToolsRequest );
-        assertNotNull( comSunToolsResult.getArtifactFile() );
-        assertTrue( comSunToolsResult.getArtifactFile().exists() );
+        assertNotNull( comSunToolsResult.getArtifactPath() );
+        assertTrue( Files.exists( comSunToolsResult.getArtifactPath() ) );
 
         ResolutionRequest toolsRequest = new ResolutionRequest( "JAVA_HOME", "../lib/tools", "SYSTEM", "jar" );
         ResolutionResult toolsResult = javaHomeResolver.resolve( toolsRequest );
-        assertNotNull( toolsResult.getArtifactFile() );
-        assertTrue( toolsResult.getArtifactFile().exists() );
+        assertNotNull( toolsResult.getArtifactPath() );
+        assertTrue( Files.exists( toolsResult.getArtifactPath() ) );
 
         ResolutionRequest toolzRequest = new ResolutionRequest( "JAVA_HOME", "../lib/toolz", "SYSTEM", "jar" );
         ResolutionResult toolzResult = javaHomeResolver.resolve( toolzRequest );
-        assertNull( toolzResult.getArtifactFile() );
+        assertNull( toolzResult.getArtifactPath() );
 
         ResolutionRequest xpp3Request = new ResolutionRequest( "JPP/xpp3", "xpp3", "SYSTEM", "jar" );
         ResolutionResult xpp3Result = javaHomeResolver.resolve( xpp3Request );
-        assertNull( xpp3Result.getArtifactFile() );
+        assertNull( xpp3Result.getArtifactPath() );
     }
 }

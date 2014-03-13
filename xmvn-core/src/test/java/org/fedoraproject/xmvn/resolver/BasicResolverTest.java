@@ -76,6 +76,6 @@ public class BasicResolverTest
         ResolutionRequest request = new ResolutionRequest( "some", "nonexistent", "artifact", "pom" );
         ResolutionResult result = resolver.resolve( request );
         assertNotNull( result );
-        assertNull( result.getArtifactFile() );
+        assertNull( result.getArtifactPath() );
     }
 }

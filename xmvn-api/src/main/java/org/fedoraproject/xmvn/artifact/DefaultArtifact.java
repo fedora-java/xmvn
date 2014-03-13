@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.artifact;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author Mikolaj Izdebski
@@ -33,7 +33,7 @@ public final class DefaultArtifact
 
     private final String version;
 
-    private final File file;
+    private final Path path;
 
     private final String scope;
 
@@ -60,7 +60,7 @@ public final class DefaultArtifact
         extension = n < 3 || a[2].isEmpty() ? DEFAULT_EXTENSION : a[2];
         classifier = n < 4 ? "" : a[3];
         version = n < 2 || a[n].isEmpty() ? DEFAULT_VERSION : a[n];
-        file = null;
+        path = null;
         scope = null;
         stereotype = null;
     }
@@ -86,7 +86,7 @@ public final class DefaultArtifact
     }
 
     public DefaultArtifact( String groupId, String artifactId, String extension, String classifier, String version,
-                            File file, String scope, String stereotype )
+                            Path path, String scope, String stereotype )
     {
         if ( groupId == null || groupId.isEmpty() )
             throw new IllegalArgumentException( "groupId must be specified" );
@@ -98,7 +98,7 @@ public final class DefaultArtifact
         this.extension = extension == null || extension.isEmpty() ? DEFAULT_EXTENSION : extension;
         this.classifier = classifier == null ? "" : classifier;
         this.version = version == null || version.isEmpty() ? DEFAULT_VERSION : version;
-        this.file = file;
+        this.path = path;
         this.scope = scope;
         this.stereotype = stereotype;
     }
@@ -134,9 +134,9 @@ public final class DefaultArtifact
     }
 
     @Override
-    public File getFile()
+    public Path getPath()
     {
-        return file;
+        return path;
     }
 
     @Override
@@ -154,25 +154,25 @@ public final class DefaultArtifact
     @Override
     public Artifact setVersion( String version )
     {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, file, scope, stereotype );
+        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, scope, stereotype );
     }
 
     @Override
-    public Artifact setFile( File file )
+    public Artifact setPath( Path path )
     {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, file, scope, stereotype );
+        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, scope, stereotype );
     }
 
     @Override
     public Artifact setScope( String scope )
     {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, file, scope, stereotype );
+        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, scope, stereotype );
     }
 
     @Override
     public Artifact setStereotype( String stereotype )
     {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, file, scope, stereotype );
+        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, scope, stereotype );
     }
 
     @Override
@@ -198,7 +198,7 @@ public final class DefaultArtifact
 
         return groupId.equals( x.getGroupId() ) && artifactId.equals( x.getArtifactId() )
             && extension.equals( x.getExtension() ) && classifier.equals( x.getClassifier() )
-            && version.equals( x.getVersion() ) && ( file == null ? x.getFile() == null : file.equals( x.getFile() ) )
+            && version.equals( x.getVersion() ) && ( path == null ? x.getPath() == null : path.equals( x.getPath() ) )
             && ( scope == null ? x.getScope() == null : scope.equals( x.getScope() ) )
             && ( stereotype == null ? x.getStereotype() == null : stereotype.equals( x.getStereotype() ) );
     }

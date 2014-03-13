@@ -163,14 +163,14 @@ public class InstallMojo
             for ( MavenProject project : reactorProjects )
             {
                 Artifact mainArtifact = aetherArtifact( project.getArtifact() );
-                mainArtifact = mainArtifact.setFile( project.getArtifact().getFile() );
+                mainArtifact = mainArtifact.setPath( project.getArtifact().getFile().toPath() );
                 logger.debug( "Installing main artifact {}", mainArtifact );
-                logger.debug( "Artifact file is {}", mainArtifact.getFile() );
+                logger.debug( "Artifact file is {}", mainArtifact.getPath() );
 
-                if ( mainArtifact.getFile() != null )
+                if ( mainArtifact.getPath() != null )
                     deployArtifact( mainArtifact );
 
-                if ( mainArtifact.getFile() != null && !isTychoProject( project ) )
+                if ( mainArtifact.getPath() != null && !isTychoProject( project ) )
                 {
                     Artifact effectivePomArtifact =
                         new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
@@ -178,7 +178,7 @@ public class InstallMojo
                     effectivePomArtifact = effectivePomArtifact.setStereotype( "effective" );
                     Path effectivePom = saveEffectivePom( project.getModel() );
                     logger.debug( "Effective POM path: {}", effectivePom );
-                    effectivePomArtifact = effectivePomArtifact.setFile( effectivePom.toFile() );
+                    effectivePomArtifact = effectivePomArtifact.setPath( effectivePom );
                     deployArtifact( effectivePomArtifact );
                 }
 
@@ -188,13 +188,13 @@ public class InstallMojo
                 rawPomArtifact = rawPomArtifact.setStereotype( "raw" );
                 Path rawPom = project.getFile().toPath();
                 logger.debug( "Raw POM path: {}", rawPom );
-                rawPomArtifact = rawPomArtifact.setFile( rawPom.toFile() );
+                rawPomArtifact = rawPomArtifact.setPath( rawPom );
                 deployArtifact( rawPomArtifact );
 
                 for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
                 {
                     Artifact attachedArtifact = aetherArtifact( mavenArtifact );
-                    attachedArtifact = attachedArtifact.setFile( mavenArtifact.getFile() );
+                    attachedArtifact = attachedArtifact.setPath( mavenArtifact.getFile().toPath() );
                     logger.debug( "Installing attached artifact {}", attachedArtifact );
 
                     deployArtifact( attachedArtifact );

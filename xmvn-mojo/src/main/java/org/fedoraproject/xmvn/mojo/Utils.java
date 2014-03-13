@@ -15,10 +15,9 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -48,18 +47,18 @@ class Utils
         if ( StringUtils.isNotEmpty( mavenArtifact.getClassifier() ) )
             classifier = mavenArtifact.getClassifier();
 
-        File artifactFile = mavenArtifact.getFile();
+        Path artifactPath = mavenArtifact.getFile().toPath();
 
         Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
         artifact = artifact.setStereotype( stereotype );
-        artifact = artifact.setFile( artifactFile );
+        artifact = artifact.setPath( artifactPath );
         return artifact;
     }
 
     private static void writeModel( Model model, Path path )
         throws IOException
     {
-        try (Writer writer = new FileWriter( path.toFile() ))
+        try (Writer writer = Files.newBufferedWriter( path, StandardCharsets.US_ASCII ))
         {
             MavenXpp3Writer pomWriter = new MavenXpp3Writer();
             pomWriter.write( writer, model );

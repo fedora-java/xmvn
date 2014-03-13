@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.config.impl;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -104,7 +103,7 @@ public class DefaultConfigurator
     private Configuration loadConfiguration( Path path )
         throws IOException
     {
-        try (InputStream childStream = new FileInputStream( path.toFile() ))
+        try (InputStream childStream = Files.newInputStream( path ))
         {
             return loadConfigurationFromStream( childStream );
         }
