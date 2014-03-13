@@ -51,9 +51,9 @@ public class XMvnHomeClassLoader
         addJarDirectory( home.resolve( "lib" ).resolve( "core" ) );
 
         importPackage( "org.fedoraproject.xmvn" );
+        importPackage( "org.fedoraproject.xmvn.artifact" );
         importPackage( "org.fedoraproject.xmvn.deployer" );
         importPackage( "org.fedoraproject.xmvn.resolver" );
-        importPackage( "org.eclipse.aether.artifact" );
     }
 
     public Path getHome()
