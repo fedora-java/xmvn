@@ -109,7 +109,7 @@ class RpmDb
         {
             if ( paths == null )
                 buildDatabase();
-            return paths.get( path );
+            return paths.get( path.toString() );
         }
     }
 }
