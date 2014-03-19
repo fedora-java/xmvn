@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.connector.aether;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,7 +82,8 @@ public class XMvnWorkspaceReader
     {
         ResolutionResult result = resolve( artifact );
 
-        return result.getArtifactPath().toFile();
+        Path artifactPath = result.getArtifactPath();
+        return artifactPath != null ? artifactPath.toFile() : null;
     }
 
     @Override
