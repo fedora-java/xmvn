@@ -80,7 +80,7 @@
     <jcommanderVersion>1.32</jcommanderVersion>
     <guiceVersion>3.1.8</guiceVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
-    <mavenVersion>3.2.1</mavenVersion>
+    <mavenVersion>3.2.2-SNAPSHOT</mavenVersion>
     <plexusUtilsVersion>3.0.16</plexusUtilsVersion>
     <pluginToolsVersion>3.2</pluginToolsVersion>
     <sisuVersion>0.2.0</sisuVersion>
@@ -271,6 +271,19 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>fedorapeople-snapshots</id>
+      <url>http://mizdebsk.fedorapeople.org/xmvn/repo/</url>
+      <snapshots>
+        <enabled>true</enabled>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>fedorapeople-snapshots</id>
