@@ -57,7 +57,7 @@ public class DepmapTest
     {
         Path fragment = Files.createTempFile( "depmap-", ".xml" );
         fragment.toFile().deleteOnExit();
-        try (Writer writer = Files.newBufferedWriter( fragment, StandardCharsets.US_ASCII ))
+        try (Writer writer = Files.newBufferedWriter( fragment, StandardCharsets.UTF_8 ))
         {
             writer.write( xml );
         }

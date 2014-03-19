@@ -47,7 +47,7 @@ public class MavenModelReader
     public Model readModel( Path modelPath )
         throws IOException, ModelFormatException
     {
-        try (Reader fileReader = Files.newBufferedReader( modelPath, StandardCharsets.US_ASCII ))
+        try (Reader fileReader = Files.newBufferedReader( modelPath, StandardCharsets.UTF_8 ))
         {
             MavenXpp3Reader modelReader = new MavenXpp3Reader();
             return modelReader.read( fileReader );

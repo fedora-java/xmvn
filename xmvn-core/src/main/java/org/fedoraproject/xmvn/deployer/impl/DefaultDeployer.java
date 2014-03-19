@@ -81,7 +81,7 @@ public class DefaultDeployer
             return new Xpp3Dom( "reactorInstallationPlan" );
         }
 
-        try (Reader reader = Files.newBufferedReader( PLAN_PATH, StandardCharsets.US_ASCII ))
+        try (Reader reader = Files.newBufferedReader( PLAN_PATH, StandardCharsets.UTF_8 ))
         {
             return Xpp3DomBuilder.build( reader );
         }
@@ -118,7 +118,7 @@ public class DefaultDeployer
     private void writeInstallationPlan( Xpp3Dom dom )
         throws IOException
     {
-        try (Writer writer = Files.newBufferedWriter( PLAN_PATH, StandardCharsets.US_ASCII ))
+        try (Writer writer = Files.newBufferedWriter( PLAN_PATH, StandardCharsets.UTF_8 ))
         {
             XmlSerializer s = new MXSerializer();
             s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );

@@ -67,7 +67,7 @@ public class InstallerCli
             return new Xpp3Dom( "reactorInstallationPlan" );
         }
 
-        try (Reader reader = Files.newBufferedReader( planPath, StandardCharsets.US_ASCII ))
+        try (Reader reader = Files.newBufferedReader( planPath, StandardCharsets.UTF_8 ))
         {
             return Xpp3DomBuilder.build( reader );
         }

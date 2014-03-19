@@ -58,7 +58,7 @@ class Utils
     private static void writeModel( Model model, Path path )
         throws IOException
     {
-        try (Writer writer = Files.newBufferedWriter( path, StandardCharsets.US_ASCII ))
+        try (Writer writer = Files.newBufferedWriter( path, StandardCharsets.UTF_8 ))
         {
             MavenXpp3Writer pomWriter = new MavenXpp3Writer();
             pomWriter.write( writer, model );

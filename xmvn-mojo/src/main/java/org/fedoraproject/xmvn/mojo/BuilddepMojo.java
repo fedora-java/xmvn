@@ -126,7 +126,7 @@ public class BuilddepMojo
                 resolvedDependencies.add( dependencyArtifact );
             }
 
-            try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-builddep" ), StandardCharsets.US_ASCII ))
+            try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-builddep" ), StandardCharsets.UTF_8 ))
             {
                 XmlSerializer s = new MXSerializer();
                 s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );

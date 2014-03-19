@@ -137,7 +137,7 @@ public abstract class AbstractInstallerTest
 
         try (Reader expectedReader = new StringReader( expected.toString() ))
         {
-            try (Reader generatedReader = Files.newBufferedReader( generatedPath, StandardCharsets.US_ASCII ))
+            try (Reader generatedReader = Files.newBufferedReader( generatedPath, StandardCharsets.UTF_8 ))
             {
                 assertXMLEqual( expectedReader, generatedReader );
             }
@@ -152,9 +152,9 @@ public abstract class AbstractInstallerTest
         Path generatedPath = installRoot.resolve( generated );
         assertTrue( Files.isRegularFile( generatedPath ) );
 
-        try (Reader expectedReader = Files.newBufferedReader( expectedPath, StandardCharsets.US_ASCII ))
+        try (Reader expectedReader = Files.newBufferedReader( expectedPath, StandardCharsets.UTF_8 ))
         {
-            try (Reader generatedReader = Files.newBufferedReader( generatedPath, StandardCharsets.US_ASCII ))
+            try (Reader generatedReader = Files.newBufferedReader( generatedPath, StandardCharsets.UTF_8 ))
             {
                 assertXMLEqual( expectedReader, generatedReader );
             }

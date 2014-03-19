@@ -105,7 +105,7 @@ class FragmentFile
     public void write( Path path, InstallerSettings settings )
         throws IOException
     {
-        try (Writer writer = Files.newBufferedWriter( path, StandardCharsets.US_ASCII ))
+        try (Writer writer = Files.newBufferedWriter( path, StandardCharsets.UTF_8 ))
         {
             XmlSerializer s = new MXSerializer();
             s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );
