@@ -2,8 +2,7 @@
 <configuration xmlns="http://fedorahosted.org/xmvn/CONFIG/1.0.0">
   <resolverSettings>
     <metadataRepositories>
-      <repository>/etc/xdg/xmvn/depmap.xml</repository>
-      <repository>/usr/share/maven-fragments</repository>
+      <repository>${build.directory}/root/etc/xdg/xmvn/depmap.xml</repository>
     </metadataRepositories>
     <prefixes>
       <prefix>${project.build.directory}/root</prefix>
