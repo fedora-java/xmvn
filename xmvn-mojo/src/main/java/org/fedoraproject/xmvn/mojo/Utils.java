@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +48,8 @@ class Utils
         if ( StringUtils.isNotEmpty( mavenArtifact.getClassifier() ) )
             classifier = mavenArtifact.getClassifier();
 
-        Path artifactPath = mavenArtifact.getFile().toPath();
+        File artifactFile = mavenArtifact.getFile();
+        Path artifactPath = artifactFile != null ? artifactFile.toPath() : null;
 
         Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
         artifact = artifact.setStereotype( stereotype );

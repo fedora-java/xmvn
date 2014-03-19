@@ -15,11 +15,13 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -85,10 +87,12 @@ public class BuilddepMojo
             for ( MavenProject project : reactorProjects )
             {
                 Artifact projectArtifact = Utils.aetherArtifact( project.getArtifact() );
-                projectArtifact = projectArtifact.setPath( project.getFile().toPath() );
+                File projectFile = project.getFile();
+                Path artifactPath = projectFile != null ? projectFile.toPath() : null;
+                projectArtifact = projectArtifact.setPath( artifactPath );
 
                 DependencyExtractionRequest request = new DependencyExtractionRequest();
-                request.setModelPath( projectArtifact.getPath() );
+                request.setModelPath( artifactPath );
                 DependencyExtractionResult result = buildDependencyExtractor.extract( request );
 
                 dependencies.addAll( result.getDependencyArtifacts() );
