@@ -81,6 +81,7 @@
           <useJava5>true</useJava5>
           <models>
             <model>src/main/mdo/config.mdo</model>
+            <model>src/main/mdo/metadata.mdo</model>
           </models>
         </configuration>
         <executions>
@@ -120,9 +121,19 @@
                   <classifier>config</classifier>
                 </artifact>
                 <artifact>
+                  <file>${project.build.directory}/generated-site/xdoc/metadata.xml</file>
+                  <type>xdoc</type>
+                  <classifier>metadata</classifier>
+                </artifact>
+                <artifact>
                   <file>${project.build.directory}/generated-site/resources/xsd/config-2.0.0.xsd</file>
                   <type>xsd</type>
                   <classifier>config</classifier>
+                </artifact>
+                <artifact>
+                  <file>${project.build.directory}/generated-site/resources/xsd/metadata-2.0.0.xsd</file>
+                  <type>xsd</type>
+                  <classifier>metadata</classifier>
                 </artifact>
               </artifacts>
             </configuration>
