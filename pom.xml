@@ -122,10 +122,28 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>xmvn-core</artifactId>
                   <version>${project.version}</version>
+                  <type>xdoc</type>
+                  <classifier>metadata</classifier>
+                  <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
+                  <destFileName>metadata.xml</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>xmvn-core</artifactId>
+                  <version>${project.version}</version>
                   <type>xsd</type>
                   <classifier>config</classifier>
                   <outputDirectory>${project.build.directory}/generated-site/resources/xsd</outputDirectory>
                   <destFileName>config-2.0.0.xsd</destFileName>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>xmvn-core</artifactId>
+                  <version>${project.version}</version>
+                  <type>xsd</type>
+                  <classifier>metadata</classifier>
+                  <outputDirectory>${project.build.directory}/generated-site/resources/xsd</outputDirectory>
+                  <destFileName>metadata-2.0.0.xsd</destFileName>
                 </artifactItem>
               </artifactItems>
             </configuration>

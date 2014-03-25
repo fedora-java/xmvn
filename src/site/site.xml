@@ -49,6 +49,7 @@
     <menu name="Project Documentation">
       <item name="Configuration" href="configuration.html"/>
       <item name="Configuration Reference" href="config.html"/>
+      <item name="Metadata Reference" href="metadata.html"/>
       <item name="API Documentation" href="apidocs/"/>
       <item name="Tutorials" href="howto/index.html" collapse="true">
         <item name="Using XMvn Bisect" href="howto/bisect.html"/>
