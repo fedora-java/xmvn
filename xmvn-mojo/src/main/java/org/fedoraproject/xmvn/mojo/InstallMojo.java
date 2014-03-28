@@ -94,6 +94,11 @@ public class InstallMojo
         this.deployer = deployer;
     }
 
+    void setReactorProjects( List<MavenProject> reactorProjects )
+    {
+        this.reactorProjects = reactorProjects;
+    }
+
     /**
      * Dump project dependencies with "system" scope and fail if there are any such dependencies are found.
      */
