@@ -166,9 +166,7 @@ public class InstallMojo
             for ( MavenProject project : reactorProjects )
             {
                 Artifact mainArtifact = aetherArtifact( project.getArtifact() );
-                File mainArtifactFile = project.getArtifact().getFile();
-                Path mainArtifactPath = mainArtifactFile != null ? mainArtifactFile.toPath() : null;
-                mainArtifact = mainArtifact.setPath( mainArtifactPath );
+                Path mainArtifactPath = mainArtifact.getPath();
                 logger.debug( "Installing main artifact {}", mainArtifact );
                 logger.debug( "Artifact file is {}", mainArtifactPath );
 
@@ -200,9 +198,7 @@ public class InstallMojo
                 for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
                 {
                     Artifact attachedArtifact = aetherArtifact( mavenArtifact );
-                    File attachedArtifactFile = mavenArtifact.getFile();
-                    Path attachedArtifactPath = attachedArtifactFile != null ? attachedArtifactFile.toPath() : null;
-                    attachedArtifact = attachedArtifact.setPath( attachedArtifactPath );
+                    Path attachedArtifactPath = attachedArtifact.getPath();
                     logger.debug( "Installing attached artifact {}", attachedArtifact );
 
                     deployArtifact( attachedArtifact );
