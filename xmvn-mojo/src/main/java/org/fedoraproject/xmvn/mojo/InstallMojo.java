@@ -20,6 +20,7 @@ import static org.fedoraproject.xmvn.mojo.Utils.saveEffectivePom;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -170,6 +171,13 @@ public class InstallMojo
                 logger.debug( "Installing main artifact {}", mainArtifact );
                 logger.debug( "Artifact file is {}", mainArtifactPath );
 
+                if ( !Files.isRegularFile( mainArtifactPath ) )
+                {
+                    logger.info( "Skipping installation of artifact {}: artifact file is not a regular file",
+                                 mainArtifactPath );
+                    mainArtifactPath = null;
+                }
+
                 if ( mainArtifactPath != null )
                     deployArtifact( mainArtifact );
 
@@ -200,6 +208,14 @@ public class InstallMojo
                     Artifact attachedArtifact = aetherArtifact( mavenArtifact );
                     Path attachedArtifactPath = attachedArtifact.getPath();
                     logger.debug( "Installing attached artifact {}", attachedArtifact );
+                    logger.debug( "Artifact file is {}", attachedArtifactPath );
+
+                    if ( !Files.isRegularFile( attachedArtifactPath ) )
+                    {
+                        logger.info( "Skipping installation of attached artifact {}: artifact file is not a regular file",
+                                     attachedArtifact );
+                        continue;
+                    }
 
                     deployArtifact( attachedArtifact );
                 }
