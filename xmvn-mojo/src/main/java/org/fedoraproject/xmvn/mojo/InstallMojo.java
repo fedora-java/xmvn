@@ -83,9 +83,6 @@ public class InstallMojo
 
     private final Logger logger = LoggerFactory.getLogger( InstallMojo.class );
 
-    @Parameter( defaultValue = "${project}", readonly = true, required = true )
-    private MavenProject rootProject;
-
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
