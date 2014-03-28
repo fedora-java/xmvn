@@ -171,7 +171,7 @@ public class InstallMojo
                 logger.debug( "Installing main artifact {}", mainArtifact );
                 logger.debug( "Artifact file is {}", mainArtifactPath );
 
-                if ( !Files.isRegularFile( mainArtifactPath ) )
+                if ( mainArtifactPath != null && !Files.isRegularFile( mainArtifactPath ) )
                 {
                     logger.info( "Skipping installation of artifact {}: artifact file is not a regular file",
                                  mainArtifactPath );
@@ -210,7 +210,7 @@ public class InstallMojo
                     logger.debug( "Installing attached artifact {}", attachedArtifact );
                     logger.debug( "Artifact file is {}", attachedArtifactPath );
 
-                    if ( !Files.isRegularFile( attachedArtifactPath ) )
+                    if ( attachedArtifactPath != null && !Files.isRegularFile( attachedArtifactPath ) )
                     {
                         logger.info( "Skipping installation of attached artifact {}: artifact file is not a regular file",
                                      attachedArtifact );
