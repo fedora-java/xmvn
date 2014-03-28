@@ -20,17 +20,14 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.handler.ArtifactHandler;
-import org.apache.maven.project.MavenProject;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.easymock.MockType;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,60 +42,40 @@ import org.fedoraproject.xmvn.deployer.DeploymentResult;
  */
 @RunWith( EasyMockRunner.class )
 public class DirectoryInstallationTest
+    extends AbstractInstallMojoTest
 {
-    @Mock( type = MockType.NICE )
-    private Artifact projectArtifact;
-
-    @Mock( type = MockType.NICE )
-    private ArtifactHandler artifactHandler;
-
     @Mock( type = MockType.STRICT )
     private Deployer deployer;
 
     @Mock( type = MockType.NICE )
     private DeploymentResult deploymentResult;
 
-    private MavenProject projectStub;
-
-    @Before
-    public void setUp()
+    @Override
+    protected File getArtifactFile()
         throws Exception
     {
-        projectStub = new MavenProject();
-        projectStub.setModelVersion( "4.0.0" );
-        projectStub.setGroupId( "test-gid" );
-        projectStub.setArtifactId( "test-aid" );
-        projectStub.setVersion( "test-version" );
+        Path emptyDirectory = Files.createTempDirectory( "xmvn-test" );
+        return emptyDirectory.toFile();
     }
 
     @Test
     public void testDirectoryAsProjectFile()
         throws Exception
     {
-        Path emptyDirectory = Files.createTempDirectory( "xmvn-test" );
-
-        expect( projectArtifact.getGroupId() ).andReturn( "test-gid" ).anyTimes();
-        expect( projectArtifact.getArtifactId() ).andReturn( "test-aid" ).anyTimes();
-        expect( projectArtifact.getVersion() ).andReturn( "test-version" ).anyTimes();
-        expect( projectArtifact.getType() ).andReturn( "jar" ).anyTimes();
-        expect( projectArtifact.getClassifier() ).andReturn( "" ).anyTimes();
-        expect( projectArtifact.getFile() ).andReturn( emptyDirectory.toFile() ).atLeastOnce();
-        expect( projectArtifact.getArtifactHandler() ).andReturn( artifactHandler ).anyTimes();
-
-        expect( artifactHandler.getExtension() ).andReturn( "jar" ).anyTimes();
-        expect( artifactHandler.getClassifier() ).andReturn( "" ).anyTimes();
+        setMojoMockExpectations();
 
         // Expect deployment of POM file only
         expect( deployer.deploy( isA( DeploymentRequest.class ) ) ).andReturn( deploymentResult );
 
-        replay( projectArtifact, artifactHandler, deployer, deploymentResult );
+        replay( deployer, deploymentResult );
 
-        projectStub.setArtifact( projectArtifact );
+        getProject().setArtifact( getArtifact() );
 
         InstallMojo mojo = new InstallMojo( deployer );
-        mojo.setReactorProjects( Collections.singletonList( projectStub ) );
+        mojo.setReactorProjects( Collections.singletonList( getProject() ) );
         mojo.execute();
 
-        verify( projectArtifact, artifactHandler, deployer, deploymentResult );
+        verify( deployer, deploymentResult );
+        verifyMojoMocks();
     }
 }
