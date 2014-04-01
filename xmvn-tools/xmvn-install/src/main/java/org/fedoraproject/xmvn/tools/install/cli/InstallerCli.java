@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.cli;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -41,6 +41,8 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.tools.install.InstallationRequest;
+import org.fedoraproject.xmvn.tools.install.Installer;
 
 /**
  * @author Mikolaj Izdebski
