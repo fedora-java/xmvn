@@ -88,7 +88,7 @@ public class DefaultInstaller
 
     private Configuration configuration;
 
-    private Map<Package, Package> packages;
+    private Map<String, Package> packages;
 
     private Set<Artifact> skippedArtifacts;
 
@@ -114,11 +114,12 @@ public class DefaultInstaller
         if ( StringUtils.isEmpty( packageName ) )
             packageName = Package.MAIN;
 
-        Package pkg = new Package( packageName, settings );
-        if ( packages.containsKey( pkg ) )
-            pkg = packages.get( pkg );
-        else
-            packages.put( pkg, pkg );
+        Package pkg = packages.get( packageName );
+        if ( pkg == null )
+        {
+            pkg = new Package( packageName, settings );
+            packages.put( packageName, pkg );
+        }
 
         if ( logger.isDebugEnabled() )
         {
@@ -188,9 +189,9 @@ public class DefaultInstaller
         return jppArtifacts;
     }
 
-    private Artifact resolvePackagedArtifact( Artifact artifact, Set<Package> packageSet )
+    private Artifact resolvePackagedArtifact( Artifact artifact, Iterable<Package> packages )
     {
-        for ( Package pkg : packageSet )
+        for ( Package pkg : packages )
         {
             Artifact providedArtifact = pkg.getProvidedArtifact( artifact );
             if ( providedArtifact != null )
@@ -198,7 +199,7 @@ public class DefaultInstaller
         }
 
         Artifact versionlessArtifact = artifact.setVersion( null );
-        for ( Package pkg : packageSet )
+        for ( Package pkg : packages )
         {
             Artifact providedArtifact = pkg.getProvidedArtifact( versionlessArtifact );
             if ( providedArtifact != null )
@@ -213,7 +214,7 @@ public class DefaultInstaller
         if ( resolvePackagedArtifact( artifact, Collections.singleton( pkg ) ) != null )
             return null;
 
-        Artifact providedArtifact = resolvePackagedArtifact( artifact, packages.keySet() );
+        Artifact providedArtifact = resolvePackagedArtifact( artifact, packages.values() );
         if ( providedArtifact != null )
             return providedArtifact;
 
@@ -359,7 +360,7 @@ public class DefaultInstaller
         skippedArtifacts = new LinkedHashSet<>();
 
         Package mainPackage = new Package( Package.MAIN, settings );
-        packages.put( mainPackage, mainPackage );
+        packages.put( Package.MAIN, mainPackage );
 
         Set<Artifact> artifactSet = request.getArtifacts();
 
