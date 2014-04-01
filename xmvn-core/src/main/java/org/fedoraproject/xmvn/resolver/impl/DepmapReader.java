@@ -57,6 +57,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 /**
  * @author Mikolaj Izdebski
  */
+@Deprecated
 class DepmapReader
 {
     private final ThreadPoolExecutor executor;

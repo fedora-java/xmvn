@@ -44,6 +44,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  */
 @Named
 @Singleton
+@Deprecated
 public class DefaultArtifactBlacklist
     implements ArtifactBlacklist
 {

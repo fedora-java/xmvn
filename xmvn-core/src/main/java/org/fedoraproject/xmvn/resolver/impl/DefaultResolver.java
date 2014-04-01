@@ -60,6 +60,7 @@ import org.fedoraproject.xmvn.utils.FileUtils;
  */
 @Named
 @Singleton
+@Deprecated
 public class DefaultResolver
     implements Resolver, org.fedoraproject.maven.resolver.Resolver
 {

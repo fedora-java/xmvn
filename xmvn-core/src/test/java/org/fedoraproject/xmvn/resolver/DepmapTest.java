@@ -37,6 +37,7 @@ import org.fedoraproject.xmvn.config.ResolverSettings;
 /**
  * @author Mikolaj Izdebski
  */
+@Deprecated
 public class DepmapTest
     extends InjectedTest
 {
