@@ -51,7 +51,6 @@ import org.xml.sax.SAXException;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
@@ -82,7 +81,7 @@ class DepmapReader
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, new DaemonFactory() );
     }
 
-    public void readMappings( DependencyMap depmap, List<Path> depmapLocations )
+    public void readMappings( DefaultDependencyMap depmap, List<Path> depmapLocations )
     {
         List<Future<List<Mapping>>> futures = new ArrayList<>();
 
@@ -137,7 +136,7 @@ class DepmapReader
             this.to = to;
         }
 
-        public void addToDepmap( DependencyMap depmap )
+        public void addToDepmap( DefaultDependencyMap depmap )
         {
             depmap.addMapping( from, to );
         }

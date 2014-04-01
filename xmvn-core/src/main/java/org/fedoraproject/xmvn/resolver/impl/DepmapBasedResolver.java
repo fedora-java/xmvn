@@ -41,7 +41,6 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
-import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -72,14 +71,14 @@ public class DepmapBasedResolver
 
     private final Repository systemRepo;
 
-    private final DependencyMap depmap;
+    private final DefaultDependencyMap depmap;
 
     private AtomicFileCounter bisectCounter;
 
     private static final RpmDb rpmdb = new RpmDb();
 
     @Inject
-    public DepmapBasedResolver( RepositoryConfigurator repositoryConfigurator, DependencyMap depmap )
+    public DepmapBasedResolver( RepositoryConfigurator repositoryConfigurator, DefaultDependencyMap depmap )
     {
         this.repositoryConfigurator = repositoryConfigurator;
         this.depmap = depmap;

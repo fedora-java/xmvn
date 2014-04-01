@@ -30,7 +30,6 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
-import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
@@ -52,10 +51,10 @@ public class DepmapBasedArtifactBlacklist
 
     private final Configurator configurator;
 
-    private final DependencyMap depmap;
+    private final DefaultDependencyMap depmap;
 
     @Inject
-    public DepmapBasedArtifactBlacklist( Configurator configurator, DependencyMap depmap )
+    public DepmapBasedArtifactBlacklist( Configurator configurator, DefaultDependencyMap depmap )
     {
         this.configurator = configurator;
         this.depmap = depmap;

@@ -39,7 +39,6 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.resolver.DependencyMap;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
@@ -53,7 +52,6 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 @Singleton
 @Deprecated
 public class DefaultDependencyMap
-    implements DependencyMap
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultDependencyMap.class );
 
@@ -83,7 +81,6 @@ public class DefaultDependencyMap
         reader.readMappings( this, metadataDirs );
     }
 
-    @Override
     public boolean isEmpty()
     {
         try
@@ -109,7 +106,6 @@ public class DefaultDependencyMap
         set.add( to );
     }
 
-    @Override
     public void addMapping( Artifact from, Artifact to )
     {
         from =
@@ -176,7 +172,6 @@ public class DefaultDependencyMap
         return result;
     }
 
-    @Override
     public List<Artifact> translate( Artifact artifact )
     {
         artifact =
@@ -197,7 +192,6 @@ public class DefaultDependencyMap
         }
     }
 
-    @Override
     public Set<Artifact> relativesOf( Artifact artifact )
     {
         artifact =

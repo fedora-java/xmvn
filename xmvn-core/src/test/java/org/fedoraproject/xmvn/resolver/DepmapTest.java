@@ -33,6 +33,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
+import org.fedoraproject.xmvn.resolver.impl.DefaultDependencyMap;
 
 /**
  * @author Mikolaj Izdebski
@@ -41,7 +42,7 @@ import org.fedoraproject.xmvn.config.ResolverSettings;
 public class DepmapTest
     extends InjectedTest
 {
-    private DependencyMap readDepmap( Path fragment )
+    private DefaultDependencyMap readDepmap( Path fragment )
         throws Exception
     {
         Configurator configurator = lookup( Configurator.class );
@@ -50,10 +51,10 @@ public class DepmapTest
         settings.addPrefix( new File( "." ).getAbsolutePath() );
         settings.getMetadataRepositories().clear();
         settings.addMetadataRepository( fragment.toString() );
-        return lookup( DependencyMap.class );
+        return new DefaultDependencyMap( configurator );
     }
 
-    private DependencyMap readDepmap( String xml )
+    private DefaultDependencyMap readDepmap( String xml )
         throws Exception
     {
         Path fragment = Files.createTempFile( "depmap-", ".xml" );
@@ -74,7 +75,7 @@ public class DepmapTest
     public void testEmptyFragment()
         throws Exception
     {
-        DependencyMap depmap = readDepmap( "" );
+        DefaultDependencyMap depmap = readDepmap( "" );
         assertTrue( depmap.isEmpty() );
         Artifact fooBar = new DefaultArtifact( "foo:bar:SYSTEM" );
         List<Artifact> translationResult = depmap.translate( fooBar );
@@ -90,7 +91,7 @@ public class DepmapTest
     public void testMalformedFragment()
         throws Exception
     {
-        DependencyMap depmap = readDepmap( "Lorem ipsum dolor sit amet" );
+        DefaultDependencyMap depmap = readDepmap( "Lorem ipsum dolor sit amet" );
         assertTrue( depmap.isEmpty() );
     }
 
@@ -103,7 +104,7 @@ public class DepmapTest
     public void testNonexistentFragmentFile()
         throws Exception
     {
-        DependencyMap depmap = readDepmap( Paths.get( "/this/should/not/exist" ) );
+        DefaultDependencyMap depmap = readDepmap( Paths.get( "/this/should/not/exist" ) );
         assertTrue( depmap.isEmpty() );
     }
 
@@ -111,7 +112,7 @@ public class DepmapTest
         throws Exception
     {
         Path path = Paths.get( "src/test/resources" ).resolve( file );
-        DependencyMap depmap = readDepmap( path );
+        DefaultDependencyMap depmap = readDepmap( path );
         assertFalse( depmap.isEmpty() );
         Artifact commonsIo = new DefaultArtifact( "commons-io:commons-io:SYSTEM" );
         Artifact apacheCommonsIo = new DefaultArtifact( "org.apache.commons:commons-io:SYSTEM" );
@@ -206,7 +207,7 @@ public class DepmapTest
         throws Exception
     {
         Path path = Paths.get( "src/test/resources/namespaced-depmap.xml" );
-        DependencyMap depmap = readDepmap( path );
+        DefaultDependencyMap depmap = readDepmap( path );
         assertFalse( depmap.isEmpty() );
         Artifact commonsIo = new DefaultArtifact( "commons-io:commons-io:SYSTEM" );
         Artifact apacheCommonsIo = new DefaultArtifact( "org.apache.commons:commons-io:SYSTEM" );
@@ -224,7 +225,8 @@ public class DepmapTest
     public void testCorruptCompressedDepmap()
         throws Exception
     {
-        DependencyMap depmap = readDepmap( Paths.get( "src/test/resources" ).resolve( "corrupt-compressed-dempap.gz" ) );
+        DefaultDependencyMap depmap =
+            readDepmap( Paths.get( "src/test/resources" ).resolve( "corrupt-compressed-dempap.gz" ) );
         assertTrue( depmap.isEmpty() );
     }
 }
