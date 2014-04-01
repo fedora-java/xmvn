@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.resolver.impl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -25,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -47,9 +50,20 @@ public class DefaultResolver
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultResolver.class );
 
-    private MetadataResolver metadataResolver;
+    private final MetadataResolver metadataResolver;
 
     private static final RpmDb rpmdb = new RpmDb();
+
+    private final Resolver depmapResolver;
+
+    @Inject
+    public DefaultResolver( @Named( "depmap" ) Resolver depmapResolver, Configurator configurator )
+    {
+        this.depmapResolver = depmapResolver;
+
+        ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
+        metadataResolver = new MetadataResolver( settings.getMetadataRepositories() );
+    }
 
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
@@ -87,7 +101,16 @@ public class DefaultResolver
             return result;
         }
 
-        logger.debug( "Failed to resolve artifact: {}", artifact );
-        return new DefaultResolutionResult();
+        // TODO: drop support for depmaps
+        if ( System.getProperty( "xmvn.depmap.ignore" ) != null )
+        {
+            logger.debug( "Failed to resolve artifact: {}", artifact );
+            return new DefaultResolutionResult();
+        }
+        else
+        {
+            // TODO: drop support for depmaps
+            return depmapResolver.resolve( request );
+        }
     }
 }

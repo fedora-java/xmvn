@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -43,7 +42,7 @@ class MetadataResolver
 
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
-    public MetadataResolver( List<Path> depmapLocations )
+    public MetadataResolver( List<String> depmapLocations )
     {
         MetadataReader reader = new MetadataReader();
         List<PackageMetadata> metadataList = reader.readMetadata( depmapLocations );

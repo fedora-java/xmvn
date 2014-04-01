@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,12 +66,14 @@ class MetadataReader
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, new DaemonFactory() );
     }
 
-    public List<PackageMetadata> readMetadata( List<Path> depmapLocations )
+    public List<PackageMetadata> readMetadata( List<String> depmapLocations )
     {
         List<Future<PackageMetadata>> futures = new ArrayList<>();
 
-        for ( Path path : depmapLocations )
+        for ( String pathString : depmapLocations )
         {
+            Path path = Paths.get( pathString );
+
             if ( Files.isDirectory( path ) )
             {
                 String flist[] = path.toFile().list();
