@@ -107,22 +107,6 @@ public class DefaultInstaller
         this.installers = installers;
     }
 
-    static List<Artifact> getAliasArtifacts( PackagingRule rule )
-    {
-        List<Artifact> aliasArtifacts = new ArrayList<>();
-
-        for ( org.fedoraproject.xmvn.config.Artifact alias : rule.getAliases() )
-        {
-            Artifact aliasArtifact =
-                new DefaultArtifact( alias.getGroupId(), alias.getArtifactId(), alias.getExtension(),
-                                     alias.getClassifier(), alias.getVersion() );
-            aliasArtifact = aliasArtifact.setStereotype( alias.getStereotype() );
-            aliasArtifacts.add( aliasArtifact );
-        }
-
-        return aliasArtifacts;
-    }
-
     private Package getTargetPackageForArtifact( Artifact artifact, PackagingRule rule )
         throws IOException
     {

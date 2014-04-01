@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
@@ -125,6 +126,22 @@ public class DefaultArtifactInstaller
         }
     }
 
+    private List<Artifact> getAliasArtifacts( PackagingRule rule )
+    {
+        List<Artifact> aliasArtifacts = new ArrayList<>();
+
+        for ( org.fedoraproject.xmvn.config.Artifact alias : rule.getAliases() )
+        {
+            Artifact aliasArtifact =
+                new DefaultArtifact( alias.getGroupId(), alias.getArtifactId(), alias.getExtension(),
+                                     alias.getClassifier(), alias.getVersion() );
+            aliasArtifact = aliasArtifact.setStereotype( alias.getStereotype() );
+            aliasArtifacts.add( aliasArtifact );
+        }
+
+        return aliasArtifacts;
+    }
+
     @Override
     public void installArtifact( Package pkg, Artifact artifact, PackagingRule rule, String packageName )
         throws IOException
@@ -164,7 +181,7 @@ public class DefaultArtifactInstaller
             pkg.addSymlink( symlink, primaryJppArtifact.getPath() );
         }
 
-        List<Artifact> aliases = DefaultInstaller.getAliasArtifacts( rule );
+        List<Artifact> aliases = getAliasArtifacts( rule );
         pkg.addArtifactMetadata( artifact, aliases, jppArtifacts );
 
         Path primaryJppArtifactPath = jppArtifacts.iterator().next().getPath();
