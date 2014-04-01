@@ -58,13 +58,13 @@ import org.fedoraproject.xmvn.utils.FileUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
+@Named( "depmap" )
 @Singleton
 @Deprecated
-public class DefaultResolver
+public class DepmapBasedResolver
     implements Resolver, org.fedoraproject.maven.resolver.Resolver
 {
-    private final Logger logger = LoggerFactory.getLogger( DefaultResolver.class );
+    private final Logger logger = LoggerFactory.getLogger( DepmapBasedResolver.class );
 
     private final RepositoryConfigurator repositoryConfigurator;
 
@@ -79,7 +79,7 @@ public class DefaultResolver
     private static final RpmDb rpmdb = new RpmDb();
 
     @Inject
-    public DefaultResolver( RepositoryConfigurator repositoryConfigurator, DependencyMap depmap )
+    public DepmapBasedResolver( RepositoryConfigurator repositoryConfigurator, DependencyMap depmap )
     {
         this.repositoryConfigurator = repositoryConfigurator;
         this.depmap = depmap;

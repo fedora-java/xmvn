@@ -42,20 +42,20 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
+@Named( "depmap" )
 @Singleton
 @Deprecated
-public class DefaultArtifactBlacklist
+public class DepmapBasedArtifactBlacklist
     implements ArtifactBlacklist
 {
-    private final Logger logger = LoggerFactory.getLogger( DefaultArtifactBlacklist.class );
+    private final Logger logger = LoggerFactory.getLogger( DepmapBasedArtifactBlacklist.class );
 
     private final Configurator configurator;
 
     private final DependencyMap depmap;
 
     @Inject
-    public DefaultArtifactBlacklist( Configurator configurator, DependencyMap depmap )
+    public DepmapBasedArtifactBlacklist( Configurator configurator, DependencyMap depmap )
     {
         this.configurator = configurator;
         this.depmap = depmap;
