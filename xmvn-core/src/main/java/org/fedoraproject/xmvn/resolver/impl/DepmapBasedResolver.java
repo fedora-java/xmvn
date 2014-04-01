@@ -62,7 +62,7 @@ import org.fedoraproject.xmvn.utils.FileUtils;
 @Singleton
 @Deprecated
 public class DepmapBasedResolver
-    implements Resolver, org.fedoraproject.maven.resolver.Resolver
+    implements Resolver
 {
     private final Logger logger = LoggerFactory.getLogger( DepmapBasedResolver.class );
 
