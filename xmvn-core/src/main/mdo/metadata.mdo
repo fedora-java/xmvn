@@ -35,10 +35,10 @@
   <classes>
 
     <class xml.tagName="skippedArtifact" java.clone="deep">
-      <name>SkippedArtifact</name>
+      <name>SkippedArtifactMetadata</name>
       <version>2.0.0+</version>
       <description>
-        Identification of artifact which was built, but not installed
+        Information about artifact which was built, but not installed
         into any package.
       </description>
       <fields>
@@ -82,7 +82,7 @@
     </class>
 
     <class xml.tagName="alias" java.clone="deep">
-      <name>Alias</name>
+      <name>ArtifactAlias</name>
       <version>2.0.0+</version>
       <description>
         Alternative artifact identification coordinates.
@@ -244,10 +244,10 @@
     </class>
 
     <class xml.tagName="artifact" java.clone="deep">
-      <name>InstalledArtifact</name>
+      <name>ArtifactMetadata</name>
       <version>2.0.0+</version>
       <description>
-        Root element of the metadata file.
+        Information about a single artifact.
       </description>
       <fields>
 
@@ -363,7 +363,7 @@
                instead of addAlias() and removeALias(). To workaround this we
                skip generating of adders and generate them manually. -->
           <association xml.tagName="alias" java.adder="false">
-            <type>Alias</type>
+            <type>ArtifactAlias</type>
             <multiplicity>*</multiplicity>
           </association>
         </field>
@@ -389,7 +389,7 @@
      * Add an alias.
      * @param alias alias to be added
      */
-    public void addAlias( Alias alias )
+    public void addAlias( ArtifactAlias alias )
     {
         getAliases().add( alias );
     }
@@ -398,7 +398,7 @@
      * Remove an alias.
      * @param alias alias to be removed
      */
-    public void removeAlias( Alias alias )
+    public void removeAlias( ArtifactAlias alias )
     {
         getAliases().remove( alias );
     }
@@ -409,7 +409,7 @@
     </class>
 
     <class rootElement="true" xml.tagName="metadata" java.clone="deep">
-      <name>Metadata</name>
+      <name>PackageMetadata</name>
       <version>2.0.0+</version>
       <description>
         Root element of the metadata file.
@@ -439,14 +439,14 @@
         </field>
 
         <field>
-          <name>installedArtifacts</name>
+          <name>artifacts</name>
           <version>2.0.0+</version>
           <description>
             List of installed artifacts described by this piece of
             metadata.
           </description>
           <association>
-            <type>InstalledArtifact</type>
+            <type>ArtifactMetadata</type>
             <multiplicity>*</multiplicity>
           </association>
         </field>
@@ -459,7 +459,7 @@
             Useful for detecting broken package dependencies.
           </description>
           <association>
-            <type>SkippedArtifact</type>
+            <type>SkippedArtifactMetadata</type>
             <multiplicity>*</multiplicity>
           </association>
         </field>

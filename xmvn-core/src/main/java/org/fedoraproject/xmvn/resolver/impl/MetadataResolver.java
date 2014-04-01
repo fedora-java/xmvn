@@ -1,6 +1,22 @@
+/*-
+ * Copyright (c) 2014 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,48 +27,50 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.metadata.Alias;
-import org.fedoraproject.xmvn.metadata.InstalledArtifact;
-import org.fedoraproject.xmvn.metadata.Metadata;
+import org.fedoraproject.xmvn.metadata.ArtifactAlias;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 class MetadataResolver
 {
     private final Logger logger = LoggerFactory.getLogger( MetadataResolver.class );
 
-    private Set<Artifact> ignoredArtifacts;
+    private final Set<Artifact> ignoredArtifacts = new LinkedHashSet<>();
 
-    private Map<Artifact, InstalledArtifact> map;
+    private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
     public MetadataResolver( List<Path> depmapLocations )
     {
         MetadataReader reader = new MetadataReader();
-        List<Metadata> metadataList = reader.readMetadata( depmapLocations );
+        List<PackageMetadata> metadataList = reader.readMetadata( depmapLocations );
 
-        for ( Metadata metadata : metadataList )
+        for ( PackageMetadata metadata : metadataList )
         {
-            for ( InstalledArtifact installedArtifact : metadata.getInstalledArtifacts() )
+            for ( ArtifactMetadata installedArtifact : metadata.getArtifacts() )
             {
-                processInstalledArtifact( installedArtifact );
+                processArtifactMetadata( installedArtifact );
             }
         }
     }
 
-    private void processInstalledArtifact( InstalledArtifact installedArtifact )
+    private void processArtifactMetadata( ArtifactMetadata metadata )
     {
         Artifact baseArtifact =
-            new DefaultArtifact( installedArtifact.getGroupId(), installedArtifact.getArtifactId(),
-                                 installedArtifact.getExtension(), installedArtifact.getClassifier(),
-                                 installedArtifact.getVersion() );
+            new DefaultArtifact( metadata.getGroupId(), metadata.getArtifactId(), metadata.getExtension(),
+                                 metadata.getClassifier(), metadata.getVersion() );
 
         Set<Artifact> artifactSet = new LinkedHashSet<>();
         artifactSet.add( baseArtifact );
         artifactSet.add( baseArtifact.setVersion( Artifact.DEFAULT_VERSION ) );
 
-        for ( Alias alias : installedArtifact.getAliases() )
+        for ( ArtifactAlias alias : metadata.getAliases() )
         {
             Artifact aliasArtifact =
                 new DefaultArtifact( alias.getGroupId(), alias.getArtifactId(), alias.getExtension(),
-                                     alias.getClassifier(), installedArtifact.getVersion() );
+                                     alias.getClassifier(), metadata.getVersion() );
 
             artifactSet.add( aliasArtifact );
             artifactSet.add( aliasArtifact.setVersion( Artifact.DEFAULT_VERSION ) );
@@ -66,27 +84,27 @@ class MetadataResolver
                 continue;
             }
 
-            InstalledArtifact otherInstalledArtifact = map.get( artifact );
-            if ( otherInstalledArtifact != null )
+            ArtifactMetadata otherMetadata = artifactMap.get( artifact );
+            if ( otherMetadata != null )
             {
-                map.remove( artifact );
+                artifactMap.remove( artifact );
 
                 logger.warn( "Ignoring metadata for artifact {} as it has duplicate metadata", artifact );
                 ignoredArtifacts.add( artifact );
                 continue;
             }
 
-            map.put( artifact, installedArtifact );
+            artifactMap.put( artifact, metadata );
         }
     }
 
-    public InstalledArtifact resolveArtifactMetadata( Artifact artifact )
+    public ArtifactMetadata resolveArtifactMetadata( Artifact artifact )
     {
-        InstalledArtifact versionedArtifact = map.get( artifact );
+        ArtifactMetadata versionedArtifact = artifactMap.get( artifact );
         if ( versionedArtifact != null )
             return versionedArtifact;
 
-        InstalledArtifact versionlessArtifact = map.get( artifact );
+        ArtifactMetadata versionlessArtifact = artifactMap.get( artifact );
         if ( versionlessArtifact != null )
             return versionlessArtifact;
 

@@ -35,7 +35,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
-import org.fedoraproject.xmvn.metadata.Metadata;
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 
 /**
@@ -65,9 +65,9 @@ class MetadataReader
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, new DaemonFactory() );
     }
 
-    public List<Metadata> readMetadata( List<Path> depmapLocations )
+    public List<PackageMetadata> readMetadata( List<Path> depmapLocations )
     {
-        List<Future<Metadata>> futures = new ArrayList<>();
+        List<Future<PackageMetadata>> futures = new ArrayList<>();
 
         for ( Path path : depmapLocations )
         {
@@ -89,9 +89,9 @@ class MetadataReader
 
         try
         {
-            List<Metadata> result = new ArrayList<>();
+            List<PackageMetadata> result = new ArrayList<>();
 
-            for ( Future<Metadata> future : futures )
+            for ( Future<PackageMetadata> future : futures )
             {
                 try
                 {
@@ -99,7 +99,7 @@ class MetadataReader
                 }
                 catch ( ExecutionException e )
                 {
-                    // Ignore. Failure to read metadata of a single package should not break the whole system
+                    // Ignore. Failure to read PackageMetadata of a single package should not break the whole system
                 }
             }
 
@@ -112,7 +112,7 @@ class MetadataReader
     }
 
     class Task
-        implements Callable<Metadata>
+        implements Callable<PackageMetadata>
     {
         private final Path path;
 
@@ -122,7 +122,7 @@ class MetadataReader
         }
 
         @Override
-        public Metadata call()
+        public PackageMetadata call()
             throws Exception
         {
             try (InputStream fis = Files.newInputStream( path ))
