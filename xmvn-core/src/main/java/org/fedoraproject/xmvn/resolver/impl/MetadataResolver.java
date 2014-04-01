@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -62,9 +63,16 @@ class MetadataResolver
             new DefaultArtifact( metadata.getGroupId(), metadata.getArtifactId(), metadata.getExtension(),
                                  metadata.getClassifier(), metadata.getVersion() );
 
+        List<String> versions = metadata.getCompatVersions();
+        if ( versions.isEmpty() )
+            versions = Collections.singletonList( Artifact.DEFAULT_VERSION );
+
         Set<Artifact> artifactSet = new LinkedHashSet<>();
-        artifactSet.add( baseArtifact );
-        artifactSet.add( baseArtifact.setVersion( Artifact.DEFAULT_VERSION ) );
+
+        for ( String version : versions )
+        {
+            artifactSet.add( baseArtifact.setVersion( version ) );
+        }
 
         for ( ArtifactAlias alias : metadata.getAliases() )
         {
@@ -72,8 +80,10 @@ class MetadataResolver
                 new DefaultArtifact( alias.getGroupId(), alias.getArtifactId(), alias.getExtension(),
                                      alias.getClassifier(), metadata.getVersion() );
 
-            artifactSet.add( aliasArtifact );
-            artifactSet.add( aliasArtifact.setVersion( Artifact.DEFAULT_VERSION ) );
+            for ( String version : versions )
+            {
+                artifactSet.add( aliasArtifact.setVersion( version ) );
+            }
         }
 
         for ( Artifact artifact : artifactSet )
@@ -100,14 +110,6 @@ class MetadataResolver
 
     public ArtifactMetadata resolveArtifactMetadata( Artifact artifact )
     {
-        ArtifactMetadata versionedArtifact = artifactMap.get( artifact );
-        if ( versionedArtifact != null )
-            return versionedArtifact;
-
-        ArtifactMetadata versionlessArtifact = artifactMap.get( artifact );
-        if ( versionlessArtifact != null )
-            return versionlessArtifact;
-
-        return null;
+        return artifactMap.get( artifact );
     }
 }
