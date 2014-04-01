@@ -18,6 +18,10 @@ http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
    Bugs in Bugzilla marked with NeedsTestCase keyword.
 
+** Reduce usage of RuntimeExceptions
+
+   Use checked exceptions in favor of unchecked RuntimeException.
+
 * Planned for XMvn 2.0.0
 
    2.0.0 is next major release and it can break backwards
