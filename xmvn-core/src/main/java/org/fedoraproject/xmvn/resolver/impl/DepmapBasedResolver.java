@@ -121,7 +121,7 @@ public class DepmapBasedResolver
 
             Path artifactPath = bisectRepo.getPrimaryArtifactPath( artifact ).getPath();
             if ( Files.exists( artifactPath ) )
-                return new DefaultResolutionResult( artifactPath, bisectRepo );
+                return new DefaultResolutionResult( artifactPath, bisectRepo.getNamespace() );
 
             return new DefaultResolutionResult();
         }
@@ -202,9 +202,10 @@ public class DepmapBasedResolver
                 logger.debug( "Checking artifact path: {}", artifactPath );
                 if ( Files.exists( artifactPath ) )
                 {
+                    Repository repo = repoPath.getRepository();
                     DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
                     result.setCompatVersion( version );
-                    result.setRepository( repoPath.getRepository() );
+                    result.setNamespace( repo != null ? repo.getNamespace() : null );
                     return result;
                 }
             }

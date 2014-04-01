@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.resolver.impl;
 
 import java.nio.file.Path;
 
-import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
 /**
@@ -32,7 +31,7 @@ class DefaultResolutionResult
 
     private String compatVersion;
 
-    private Repository repository;
+    private String namespace;
 
     public DefaultResolutionResult()
     {
@@ -44,10 +43,10 @@ class DefaultResolutionResult
         this( artifactPath, null );
     }
 
-    public DefaultResolutionResult( Path artifactPath, Repository repository )
+    public DefaultResolutionResult( Path artifactPath, String namespace )
     {
         this.artifactPath = artifactPath;
-        this.repository = repository;
+        this.namespace = namespace;
     }
 
     @Override
@@ -81,11 +80,11 @@ class DefaultResolutionResult
     @Override
     public String getNamespace()
     {
-        return repository != null ? repository.getNamespace() : null;
+        return namespace;
     }
 
-    public void setRepository( Repository repository )
+    public void setNamespace( String namespace )
     {
-        this.repository = repository;
+        this.namespace = namespace;
     }
 }
