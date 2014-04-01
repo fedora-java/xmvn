@@ -107,13 +107,6 @@ public class DefaultInstaller
         this.installers = installers;
     }
 
-    private PackagingRule ruleForArtifact( Artifact artifact )
-    {
-        return configuration.createEffectivePackagingRule( artifact.getStereotype(), artifact.getGroupId(),
-                                                           artifact.getArtifactId(), artifact.getExtension(),
-                                                           artifact.getClassifier(), artifact.getVersion() );
-    }
-
     static List<Artifact> getAliasArtifacts( PackagingRule rule )
     {
         List<Artifact> aliasArtifacts = new ArrayList<>();
@@ -286,7 +279,7 @@ public class DefaultInstaller
         if ( artifactPath != null && ( containsNativeCode( artifactPath ) || usesNativeCode( artifactPath ) ) )
             artifact = artifact.setStereotype( "native" );
 
-        PackagingRule rule = ruleForArtifact( artifact );
+        PackagingRule rule = configuration.createEffectivePackagingRule( artifact );
 
         Package pkg = getTargetPackageForArtifact( artifact, rule );
         if ( !pkg.isInstallable() )

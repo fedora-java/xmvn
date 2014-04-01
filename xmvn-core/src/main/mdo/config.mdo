@@ -641,14 +641,18 @@
             <![CDATA[
     /**
      * Create an effective packaging rule for specified artifact.
-     * @param groupId
-     * @param artifactId
-     * @param verson
+     * 
+     * @param artifact
      */
-    public PackagingRule createEffectivePackagingRule( String stereotype, String groupId, String artifactId, String extension, String classifier, String version )
+    public PackagingRule createEffectivePackagingRule( org.fedoraproject.xmvn.artifact.Artifact artifact )
     {
-        return new org.fedoraproject.xmvn.config.impl.EffectivePackagingRule
-            ( getArtifactManagement(), stereotype, groupId, artifactId, extension, classifier, version );
+        return new org.fedoraproject.xmvn.config.impl.EffectivePackagingRule( getArtifactManagement(),
+                                                                              artifact.getStereotype(),
+                                                                              artifact.getGroupId(),
+                                                                              artifact.getArtifactId(),
+                                                                              artifact.getExtension(),
+                                                                              artifact.getClassifier(),
+                                                                              artifact.getVersion() );
     }
             ]]>
           </code>
