@@ -15,20 +15,73 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
+
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class MetadataReaderTest
 {
-    @Test
-    @Ignore
-    public void test()
+    private MetadataReader reader;
+
+    @Before
+    public void setUp()
     {
-        fail( "Not yet implemented" );
+        reader = new MetadataReader();
+    }
+
+    /**
+     * Test if trying to read metadata from empty list of directories returns empty result.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testReadingEmptyList()
+        throws Exception
+    {
+        List<PackageMetadata> list = reader.readMetadata( Collections.<String> emptyList() );
+        assertNotNull( list );
+        assertTrue( list.isEmpty() );
+    }
+
+    /**
+     * Test if trying to read metadata from empty directory returns empty result.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testReadingEmptyDirectory()
+        throws Exception
+    {
+        Path dir = Files.createTempDirectory( "xmvn-test" );
+        List<PackageMetadata> list = reader.readMetadata( Collections.singletonList( dir.toString() ) );
+        assertNotNull( list );
+        assertTrue( list.isEmpty() );
+    }
+
+    /**
+     * Test if trying to read metadata from depmap file empty result.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testReadingDepmap()
+        throws Exception
+    {
+        List<PackageMetadata> list =
+            reader.readMetadata( Collections.singletonList( "src/test/resources/xml-depmap.xml" ) );
+        assertNotNull( list );
+        assertTrue( list.isEmpty() );
     }
 }
