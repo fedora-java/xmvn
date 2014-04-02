@@ -15,20 +15,95 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import org.junit.Ignore;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Test;
+
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class MetadataResolverTest
 {
+    /**
+     * Test if metadata resolution works for exact version.
+     * 
+     * @throws Exception
+     */
     @Test
-    @Ignore
-    public void test()
+    public void testCompatExactVersion()
+        throws Exception
     {
-        fail( "Not yet implemented" );
+        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1.xml" );
+        MetadataResolver resolver = new MetadataResolver( pathList );
+
+        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.2-beta3" );
+        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+
+        assertNotNull( am );
+        assertEquals( "/foo/bar", am.getPath() );
+    }
+
+    /**
+     * Test if metadata resolution does not work for inexact versions.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testCompatNonExactVersion()
+        throws Exception
+    {
+        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1.xml" );
+        MetadataResolver resolver = new MetadataResolver( pathList );
+
+        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
+        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+
+        assertNull( am );
+    }
+
+    /**
+     * Test if metadata resolution works for exact version.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testNonCompatExactVersion()
+        throws Exception
+    {
+        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1-non-compat.xml" );
+        MetadataResolver resolver = new MetadataResolver( pathList );
+
+        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION );
+        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+
+        assertNotNull( am );
+        assertEquals( "/foo/bar", am.getPath() );
+    }
+
+    /**
+     * Test if metadata resolution does not work for inexact versions.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testNonCompatNonExactVersion()
+        throws Exception
+    {
+        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1-non-compat.xml" );
+        MetadataResolver resolver = new MetadataResolver( pathList );
+
+        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
+        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+
+        assertNull( am );
     }
 }
