@@ -347,7 +347,7 @@
             empty then this artifact is not considered as
             compatibility artifact.
           </description>
-          <association xml.tagName="file">
+          <association xml.tagName="version">
             <type>String</type>
             <multiplicity>*</multiplicity>
           </association>
