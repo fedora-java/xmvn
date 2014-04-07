@@ -15,6 +15,12 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
@@ -24,6 +30,10 @@ public class DeploymentRequest
 {
     private Artifact artifact;
 
+    private final Map<Artifact, List<Artifact>> dependencies = new LinkedHashMap<>();
+
+    private final Map<String, String> properties = new LinkedHashMap<>();
+
     public Artifact getArtifact()
     {
         return artifact;
@@ -32,6 +42,46 @@ public class DeploymentRequest
     public void setArtifact( Artifact artifact )
     {
         this.artifact = artifact;
+    }
+
+    public Map<Artifact, List<Artifact>> getDependencies()
+    {
+        return Collections.unmodifiableMap( dependencies );
+    }
+
+    public void addDependency( Artifact dependencyArtifact, Artifact... exclusions )
+    {
+        addDependency( dependencyArtifact, Arrays.asList( exclusions ) );
+    }
+
+    public void addDependency( Artifact dependencyArtifact, List<Artifact> exclusions )
+    {
+        dependencies.put( dependencyArtifact, Collections.unmodifiableList( exclusions ) );
+    }
+
+    public void removeDependency( Artifact dependencyArtifact )
+    {
+        dependencies.remove( dependencyArtifact );
+    }
+
+    public Map<String, String> getProperties()
+    {
+        return Collections.unmodifiableMap( properties );
+    }
+
+    public String getProperty( String key )
+    {
+        return properties.get( key );
+    }
+
+    public void addProperty( String key, String value )
+    {
+        properties.put( key, value );
+    }
+
+    public void removeProperty( String key )
+    {
+        properties.remove( key );
     }
 
     @Override
