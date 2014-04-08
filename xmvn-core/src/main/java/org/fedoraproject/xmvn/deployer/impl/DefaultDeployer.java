@@ -21,22 +21,23 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map.Entry;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.codehaus.plexus.util.xml.pull.MXSerializer;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.codehaus.plexus.util.xml.pull.XmlSerializer;
+import javax.xml.stream.XMLStreamException;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.Dependency;
+import org.fedoraproject.xmvn.metadata.DependencyExclusion;
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
  * Default implementation of XMvn {@code Deployer} interface.
@@ -52,8 +53,6 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 public class DefaultDeployer
     implements Deployer
 {
-    private static final Path PLAN_PATH = Paths.get( ".xmvn-reactor" );
-
     @Override
     public DeploymentResult deploy( DeploymentRequest request )
     {
@@ -61,9 +60,42 @@ public class DefaultDeployer
 
         try
         {
-            Xpp3Dom dom = readInstallationPlan();
-            addArtifact( dom, request.getArtifact() );
-            writeInstallationPlan( dom );
+            PackageMetadata plan = readInstallationPlan( request.getPlanPath() );
+
+            ArtifactMetadata am = new ArtifactMetadata();
+            plan.addArtifact( am );
+
+            Artifact artifact = request.getArtifact();
+            am.setGroupId( artifact.getGroupId() );
+            am.setArtifactId( artifact.getArtifactId() );
+            am.setExtension( artifact.getExtension() );
+            am.setClassifier( artifact.getClassifier() );
+            am.setVersion( artifact.getVersion() );
+            am.setPath( artifact.getPath().toString() );
+            // TODO: properties
+
+            for ( Entry<Artifact, List<Artifact>> entry : request.getDependencies().entrySet() )
+            {
+                Dependency dependency = new Dependency();
+                am.addDependency( dependency );
+
+                Artifact dependencyArtifact = entry.getKey();
+                dependency.setGroupId( dependencyArtifact.getGroupId() );
+                dependency.setArtifactId( dependencyArtifact.getArtifactId() );
+                dependency.setExtension( dependencyArtifact.getExtension() );
+                dependency.setRequestedVersion( dependencyArtifact.getVersion() );
+
+                for ( Artifact exclusionArtifact : entry.getValue() )
+                {
+                    DependencyExclusion exclusion = new DependencyExclusion();
+                    dependency.addExclusion( exclusion );
+
+                    exclusion.setGroupId( exclusionArtifact.getGroupId() );
+                    exclusion.setArtifactId( exclusionArtifact.getArtifactId() );
+                }
+            }
+
+            writeInstallationPlan( plan, request.getPlanPath() );
         }
         catch ( Exception e )
         {
@@ -73,64 +105,34 @@ public class DefaultDeployer
         return result;
     }
 
-    private Xpp3Dom readInstallationPlan()
+    private PackageMetadata readInstallationPlan( Path planPath )
         throws IOException
     {
-        if ( !Files.exists( PLAN_PATH ) )
+        if ( !Files.exists( planPath ) )
         {
-            return new Xpp3Dom( "reactorInstallationPlan" );
+            return new PackageMetadata();
         }
 
-        try (Reader reader = Files.newBufferedReader( PLAN_PATH, StandardCharsets.UTF_8 ))
+        try (Reader reader = Files.newBufferedReader( planPath, StandardCharsets.UTF_8 ))
         {
-            return Xpp3DomBuilder.build( reader );
+            return new MetadataStaxReader().read( reader );
         }
-        catch ( XmlPullParserException e )
+        catch ( XMLStreamException e )
         {
-            throw new IOException( "Failed to parse existing reactor installation plan", e );
-        }
-    }
-
-    private void addChild( Xpp3Dom parent, String tag, Object value )
-    {
-        if ( value != null )
-        {
-            String stringValue = value.toString();
-            if ( stringValue.length() > 0 )
-            {
-                Xpp3Dom child = new Xpp3Dom( tag );
-                child.setValue( stringValue );
-                parent.addChild( child );
-            }
+            throw new IOException( "Failed to parse reactor installation plan", e );
         }
     }
 
-    private void addArtifact( Xpp3Dom parent, Artifact artifact )
-    {
-        Xpp3Dom child = ArtifactUtils.toXpp3Dom( artifact, "artifact" );
-
-        addChild( child, "file", artifact.getPath() );
-        addChild( child, "stereotype", artifact.getStereotype() );
-
-        parent.addChild( child );
-    }
-
-    private void writeInstallationPlan( Xpp3Dom dom )
+    private void writeInstallationPlan( PackageMetadata plan, Path planPath )
         throws IOException
     {
-        try (Writer writer = Files.newBufferedWriter( PLAN_PATH, StandardCharsets.UTF_8 ))
+        try (Writer writer = Files.newBufferedWriter( planPath, StandardCharsets.UTF_8 ))
         {
-            XmlSerializer s = new MXSerializer();
-            s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );
-            s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-line-separator", "\n" );
-            s.setOutput( writer );
-            s.startDocument( "US-ASCII", null );
-            s.comment( " Reactor installation plan generated by XMvn " );
-            s.text( "\n" );
-
-            dom.writeToSerializer( null, s );
-
-            s.endDocument();
+            new MetadataStaxWriter().write( writer, plan );
+        }
+        catch ( XMLStreamException e )
+        {
+            throw new IOException( "Unable to write reactor installation plan", e );
         }
     }
 }
