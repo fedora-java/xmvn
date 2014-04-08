@@ -71,6 +71,11 @@ public class JavaVersionTest
         expectJavaVersion( "1.4" );
         setModel( "java-version-cldc1.1.xml" );
         expectJavaVersion( "1.1" );
+        performTests( roleHint );
+
+        setModel( "java-version-managed-1.7.xml" );
+        expectJavaVersion( "1.7" );
+        performTests( roleHint );
     }
 
     @Test
