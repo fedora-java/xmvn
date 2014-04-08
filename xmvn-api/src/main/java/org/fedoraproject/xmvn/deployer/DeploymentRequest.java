@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -28,11 +30,15 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  */
 public class DeploymentRequest
 {
+    private static final Path DEFAULT_PLAN_PATH = Paths.get( ".xmvn-reactor" );
+
     private Artifact artifact;
 
     private final Map<Artifact, List<Artifact>> dependencies = new LinkedHashMap<>();
 
     private final Map<String, String> properties = new LinkedHashMap<>();
+
+    private Path planPath = DEFAULT_PLAN_PATH;
 
     public Artifact getArtifact()
     {
@@ -82,6 +88,16 @@ public class DeploymentRequest
     public void removeProperty( String key )
     {
         properties.remove( key );
+    }
+
+    public Path getPlanPath()
+    {
+        return planPath;
+    }
+
+    public void setPlanPath( Path planPath )
+    {
+        this.planPath = planPath;
     }
 
     @Override
