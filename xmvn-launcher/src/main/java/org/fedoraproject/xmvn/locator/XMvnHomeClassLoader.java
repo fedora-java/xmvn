@@ -19,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
+ * A class loader, which loads classes from XMvn home directory.
+ * 
  * @author Mikolaj Izdebski
  */
 public class XMvnHomeClassLoader
@@ -38,11 +40,24 @@ public class XMvnHomeClassLoader
         return Paths.get( home );
     }
 
+    /**
+     * Create an instance of the class loader with default XMvn home and specified parent class loader, from which all
+     * XMvn API classes should be imported.
+     * 
+     * @param parent class loader to import XMvn API classes from
+     */
     public XMvnHomeClassLoader( ClassLoader parent )
     {
         this( getDefaultHome(), parent );
     }
 
+    /**
+     * Create an instance of the class loader with specified XMvn home and parent class loader, from which all XMvn API
+     * classes should be imported.
+     * 
+     * @param home a path to the root of XMvn home
+     * @param parent class loader to import XMvn API classes from
+     */
     public XMvnHomeClassLoader( Path home, ClassLoader parent )
     {
         super( parent );
@@ -56,6 +71,11 @@ public class XMvnHomeClassLoader
         importPackage( "org.fedoraproject.xmvn.resolver" );
     }
 
+    /**
+     * Get path to XMvn home from which this loader loads classes.
+     * 
+     * @return path to XMVn home
+     */
     public Path getHome()
     {
         return home;

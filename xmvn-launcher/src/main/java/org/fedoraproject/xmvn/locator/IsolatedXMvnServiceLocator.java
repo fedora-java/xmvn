@@ -20,17 +20,32 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
+ * A service locator for services provided by XMvn.
+ * <p>
+ * This service locator uses a separate class loader to load XMvn classes and all of its dependencies.
+ * 
  * @author Mikolaj Izdebski
  */
 public class IsolatedXMvnServiceLocator
 {
     final ClassLoader classLoader;
 
+    /**
+     * Create a new instance of {@code IsolatedXMvnServiceLocator}.
+     * 
+     * @param classLoader class loader to load XMvn classes from
+     */
     public IsolatedXMvnServiceLocator( ClassLoader classLoader )
     {
         this.classLoader = classLoader;
     }
 
+    /**
+     * Load an instance of XMvn service.
+     * 
+     * @param role interface class identifying requested service
+     * @return instance of XMvn service, never {@code null}.
+     */
     public <T> T getService( final Class<T> role )
     {
         ClassLoader savedThreadContextClassLoader = Thread.currentThread().getContextClassLoader();

@@ -30,6 +30,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
+ * A generic, isolated class loader.
+ * <p>
+ * This class loader has its own classpath, separate from the primary Java classpath. It has a parent class loader, to
+ * which it delegates loading a set of imported classes. All other classes are loaded from its own classpath.
+ * 
  * @author Mikolaj Izdebski
  */
 class IsolatedClassRealm
