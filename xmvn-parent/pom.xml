@@ -75,6 +75,7 @@
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
     <aetherVersion>0.9.0.v20140226</aetherVersion>
+    <asmVersion>5.0.1</asmVersion>
     <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.3.0</ivyVersion>
     <jcommanderVersion>1.32</jcommanderVersion>
@@ -246,6 +247,11 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
         <version>${slf4jVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${asmVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -21,10 +21,10 @@ import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.eclipse.sisu.space.asm.ClassReader;
-import org.eclipse.sisu.space.asm.ClassVisitor;
-import org.eclipse.sisu.space.asm.MethodVisitor;
-import org.eclipse.sisu.space.asm.Opcodes;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * @author Mikolaj Izdebski
