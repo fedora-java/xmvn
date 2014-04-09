@@ -88,4 +88,19 @@ public class SimpleInstallerTest
             assertNull( mf );
         }
     }
+
+    /**
+     * Test if installer is able to install JAR files containing classes in Java 8 format.
+     * <p>
+     * See rhbz#1085903
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testJava8Support()
+        throws Exception
+    {
+        addJarArtifact( "aether-api", "java8" );
+        performInstallation();
+    }
 }
