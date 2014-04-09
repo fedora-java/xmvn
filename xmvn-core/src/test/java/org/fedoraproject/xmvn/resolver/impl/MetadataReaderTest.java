@@ -94,7 +94,7 @@ public class MetadataReaderTest
     }
 
     /**
-     * Test read metadata from a file.
+     * Test reading metadata from a file.
      * 
      * @throws Exception
      */
@@ -102,7 +102,25 @@ public class MetadataReaderTest
     public void testMetadata1()
         throws Exception
     {
-        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1.xml" );
+        testMetadata1( "metadata1" );
+    }
+
+    /**
+     * Test reading metadata from a file (with explicit namespace).
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testMetadata1WithNamespace()
+        throws Exception
+    {
+        testMetadata1( "metadata1-ns" );
+    }
+
+    private void testMetadata1( String fileName )
+        throws Exception
+    {
+        List<String> pathList = Collections.singletonList( "src/test/resources/" + fileName + ".xml" );
         List<PackageMetadata> list = reader.readMetadata( pathList );
         assertNotNull( list );
         assertEquals( 1, list.size() );
