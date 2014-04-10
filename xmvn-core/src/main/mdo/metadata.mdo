@@ -50,6 +50,7 @@
             Group ID of skipped artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -59,6 +60,7 @@
             Artifact ID of skipped artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -68,6 +70,7 @@
             Extension of skipped artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -77,6 +80,7 @@
             Classifier of skipped artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
       </fields>
     </class>
@@ -96,6 +100,7 @@
             Group ID of the artifact alias.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -105,6 +110,7 @@
             Artifact ID of the artifact alias.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -114,6 +120,7 @@
             Extension of the artifact alias.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -123,6 +130,7 @@
             Classifier of the artifact alias.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
       </fields>
     </class>
@@ -142,6 +150,7 @@
             Group ID of the excluded artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -151,6 +160,7 @@
             Artifact ID of the excluded artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
       </fields>
     </class>
@@ -169,6 +179,7 @@
             Group ID of the dependency artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -178,6 +189,7 @@
             Artifact ID of the dependency artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -187,6 +199,7 @@
             Extension of the dependency artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -196,6 +209,7 @@
             Classifier of the dependency artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -207,16 +221,19 @@
             supported by Aether.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
           <name>resolvedVersion</name>
           <version>2.0.0+</version>
           <description>
-            Version of the dependency artifac, as resolved during
-            build.
+            Version of the dependency artifact, as resolved during
+            build.  Absence of this field indicates a dependency on
+            default artifact version.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -227,6 +244,7 @@
             usually is an identifier of software collection.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -258,6 +276,7 @@
             Group identifier of the artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -267,6 +286,7 @@
             Identifier of the artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -276,6 +296,7 @@
             Extension of artifact file.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -285,6 +306,7 @@
             Classifier of the artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -295,6 +317,7 @@
             compat version nor SYSTEM.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -305,6 +328,7 @@
             system.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -315,6 +339,7 @@
             usually is an identifier of software collection.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -324,6 +349,7 @@
             Universally unique identifier of this artifact.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -423,6 +449,7 @@
             Universally unique identifier of this piece of metadata.
           </description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
