@@ -18,7 +18,7 @@
             <version>1.0</version>
             <namespace>ns</namespace>
             <extension>pom</extension>
-            <path>/usr/share/maven-poms/ant-factory-1.0.pom</path>
+            <path>/usr/share/maven-poms/JPP.plexus-ant-factory-1.0.pom</path>
             <compatVersions>
                 <version>1.0</version>
             </compatVersions>
