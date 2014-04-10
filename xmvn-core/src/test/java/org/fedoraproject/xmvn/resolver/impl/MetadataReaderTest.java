@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -192,5 +193,49 @@ public class MetadataReaderTest
         assertEquals( "s-aid", skip.getArtifactId() );
         assertEquals( "s-ext", skip.getExtension() );
         assertEquals( "s-cla", skip.getClassifier() );
+    }
+
+    @Test
+    public void testSimpleMetadata()
+    {
+        List<String> pathList = Collections.singletonList( "src/test/resources/simple.xml" );
+        List<PackageMetadata> list = reader.readMetadata( pathList );
+        assertNotNull( list );
+        assertEquals( 1, list.size() );
+
+        PackageMetadata pm = list.iterator().next();
+        Iterator<ArtifactMetadata> iter = pm.getArtifacts().iterator();
+
+        assertTrue( iter.hasNext() );
+        ArtifactMetadata am1 = iter.next();
+        assertNotNull( am1 );
+
+        assertEquals( "org.codehaus.plexus", am1.getGroupId() );
+        assertEquals( "plexus-ant-factory", am1.getArtifactId() );
+        assertEquals( "", am1.getExtension() );
+        assertEquals( "", am1.getClassifier() );
+        assertEquals( "1.0", am1.getVersion() );
+        assertEquals( "ns", am1.getNamespace() );
+        assertEquals( "/usr/share/java/plexus/ant-factory-1.0.jar", am1.getPath() );
+
+        List<String> compatVersions1 = am1.getCompatVersions();
+        assertEquals( 1, compatVersions1.size() );
+        assertEquals( "1.0", compatVersions1.iterator().next() );
+
+        assertTrue( iter.hasNext() );
+        ArtifactMetadata am2 = iter.next();
+        assertNotNull( am2 );
+
+        assertEquals( "org.codehaus.plexus", am2.getGroupId() );
+        assertEquals( "plexus-ant-factory", am2.getArtifactId() );
+        assertEquals( "pom", am2.getExtension() );
+        assertEquals( "", am2.getClassifier() );
+        assertEquals( "1.0", am2.getVersion() );
+        assertEquals( "ns", am2.getNamespace() );
+        assertEquals( "/usr/share/maven-poms/JPP.plexus-ant-factory-1.0.pom", am2.getPath() );
+
+        List<String> compatVersions2 = am2.getCompatVersions();
+        assertEquals( 1, compatVersions2.size() );
+        assertEquals( "1.0", compatVersions2.iterator().next() );
     }
 }
