@@ -1,0 +1,60 @@
+/*-
+ * Copyright (c) 2014 Red Hat, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.fedoraproject.xmvn.tools.install.impl;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * A directory installed as part of a package.
+ * <p>
+ * While package doesn't have to own all directories it creates, directories represented by instances of this class are
+ * assumed to be owned by the package they belong to.
+ * 
+ * @author Mikolaj Izdebski
+ */
+class Directory
+    extends File
+{
+    /**
+     * Create a directory with specified path and default permissions (0755).
+     * 
+     * @param targetPath
+     */
+    public Directory( Path targetPath )
+    {
+        this( targetPath, 0755 );
+    }
+
+    /**
+     * Create a directory with specified path and permissions.
+     * 
+     * @param targetPath
+     * @param accessMode
+     */
+    public Directory( Path targetPath, int accessMode )
+    {
+        super( targetPath, accessMode );
+    }
+
+    @Override
+    protected void installContents( Path installRoot )
+        throws IOException
+    {
+        Files.createDirectory( installRoot.resolve( getTargetPath() ) );
+    }
+}
