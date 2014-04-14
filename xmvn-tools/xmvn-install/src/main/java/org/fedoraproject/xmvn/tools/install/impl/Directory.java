@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
 /**
@@ -55,6 +56,7 @@ class Directory
     protected void installContents( Path targetAbsolutePath )
         throws IOException
     {
-        Files.createDirectory( targetAbsolutePath );
+        if ( !Files.isDirectory( targetAbsolutePath, LinkOption.NOFOLLOW_LINKS ) )
+            Files.createDirectory( targetAbsolutePath );
     }
 }
