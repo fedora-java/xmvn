@@ -33,7 +33,7 @@ class Directory
     /**
      * Create a directory with specified path and default permissions (0755).
      * 
-     * @param targetPath
+     * @param targetPath directory path, relative to installation root
      */
     public Directory( Path targetPath )
     {
@@ -43,8 +43,8 @@ class Directory
     /**
      * Create a directory with specified path and permissions.
      * 
-     * @param targetPath
-     * @param accessMode
+     * @param targetPath directory path, relative to installation root
+     * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
     public Directory( Path targetPath, int accessMode )
     {

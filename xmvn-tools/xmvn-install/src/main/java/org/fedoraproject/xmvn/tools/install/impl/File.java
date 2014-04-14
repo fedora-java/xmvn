@@ -53,7 +53,7 @@ abstract class File
     /**
      * Create a file object with specified path and default access mode of 0644.
      * 
-     * @param targetPath
+     * @param targetPath file path, relative to installation root
      */
     public File( Path targetPath )
     {
@@ -63,8 +63,8 @@ abstract class File
     /**
      * Create a file object with specified path and access mode.
      * 
-     * @param targetPath
-     * @param accessMode
+     * @param targetPath file path, relative to installation root
+     * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
     public File( Path targetPath, int accessMode )
     {
