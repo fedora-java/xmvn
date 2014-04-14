@@ -44,10 +44,10 @@ abstract class File
      * Implementations of this method can assume that all parent directory of target file already exists. Access mode of
      * target file doesn't have to be set as it will be manipulated with other means.
      * 
-     * @param installRoot absolute path of root directory under which the file should be installed
+     * @param targetAbsolutePath absolute path to the target file
      * @throws IOException
      */
-    protected abstract void installContents( Path installRoot )
+    protected abstract void installContents( Path targetAbsolutePath )
         throws IOException;
 
     /**
@@ -121,6 +121,6 @@ abstract class File
         Path targetAbsolutePath = installRoot.resolve( targetPath );
         Files.createDirectories( targetAbsolutePath.getParent() );
 
-        installContents( installRoot );
+        installContents( targetAbsolutePath );
     }
 }

@@ -52,9 +52,9 @@ class Directory
     }
 
     @Override
-    protected void installContents( Path installRoot )
+    protected void installContents( Path targetAbsolutePath )
         throws IOException
     {
-        Files.createDirectory( installRoot.resolve( getTargetPath() ) );
+        Files.createDirectory( targetAbsolutePath );
     }
 }
