@@ -251,7 +251,7 @@ public class Package
             Artifact providedArtifact =
                 artifact.setVersion( providedVersion ).setPath( null ).setScope( null ).setStereotype( null );
 
-            String scope = jppArtifact.getScope();
+            String scope = jppArtifact.getNamespace();
             Artifact scopedArtifact = artifact.setScope( scope );
             Artifact scopedProvidedArtifact = providedArtifact.setScope( scope );
 

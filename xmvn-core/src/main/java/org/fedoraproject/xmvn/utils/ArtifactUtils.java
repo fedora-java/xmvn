@@ -127,8 +127,8 @@ public class ArtifactUtils
     {
         Xpp3Dom parent = new Xpp3Dom( tag );
 
-        if ( artifact.getScope() != null )
-            addOptionalChild( parent, "namespace", artifact.getScope(), "" );
+        if ( artifact.getNamespace() != null )
+            addOptionalChild( parent, "namespace", artifact.getNamespace(), "" );
         addOptionalChild( parent, "groupId", artifact.getGroupId(), null );
         addOptionalChild( parent, "artifactId", artifact.getArtifactId(), null );
         addOptionalChild( parent, "extension", artifact.getExtension(), "jar" );
@@ -255,7 +255,7 @@ public class ArtifactUtils
         logger.info( " classifier: {}", artifact.getClassifier() );
         logger.info( "    version: {}", artifact.getVersion() );
         logger.info( " stereotype: {}", artifact.getStereotype() );
-        logger.info( "  namespace: {}", artifact.getScope() );
+        logger.info( "  namespace: {}", artifact.getNamespace() );
         logger.info( "       file: {}", artifact.getPath() );
     }
 }

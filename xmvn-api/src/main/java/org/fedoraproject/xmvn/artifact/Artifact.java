@@ -38,7 +38,7 @@ public interface Artifact
 
     Path getPath();
 
-    String getScope();
+    String getNamespace();
 
     String getStereotype();
 

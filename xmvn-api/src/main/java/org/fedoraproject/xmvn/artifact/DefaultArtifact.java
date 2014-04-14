@@ -140,7 +140,7 @@ public final class DefaultArtifact
     }
 
     @Override
-    public String getScope()
+    public String getNamespace()
     {
         return scope;
     }
@@ -199,7 +199,7 @@ public final class DefaultArtifact
         return groupId.equals( x.getGroupId() ) && artifactId.equals( x.getArtifactId() )
             && extension.equals( x.getExtension() ) && classifier.equals( x.getClassifier() )
             && version.equals( x.getVersion() ) && ( path == null ? x.getPath() == null : path.equals( x.getPath() ) )
-            && ( scope == null ? x.getScope() == null : scope.equals( x.getScope() ) )
+            && ( scope == null ? x.getNamespace() == null : scope.equals( x.getNamespace() ) )
             && ( stereotype == null ? x.getStereotype() == null : stereotype.equals( x.getStereotype() ) );
     }
 

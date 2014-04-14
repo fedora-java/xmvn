@@ -41,7 +41,7 @@ public class DefaultArtifactTest
         assertEquals( "", artifact2.getClassifier() );
         assertEquals( "SYSTEM", artifact2.getVersion() );
         assertNull( artifact2.getPath() );
-        assertNull( artifact2.getScope() );
+        assertNull( artifact2.getNamespace() );
         assertNull( artifact2.getStereotype() );
 
         Artifact artifact3 = new DefaultArtifact( "gid:aid:ver" );
@@ -51,7 +51,7 @@ public class DefaultArtifactTest
         assertEquals( "", artifact3.getClassifier() );
         assertEquals( "ver", artifact3.getVersion() );
         assertNull( artifact3.getPath() );
-        assertNull( artifact3.getScope() );
+        assertNull( artifact3.getNamespace() );
         assertNull( artifact3.getStereotype() );
 
         Artifact artifact4 = new DefaultArtifact( "gid:aid:ext:ver" );
@@ -61,7 +61,7 @@ public class DefaultArtifactTest
         assertEquals( "", artifact4.getClassifier() );
         assertEquals( "ver", artifact4.getVersion() );
         assertNull( artifact4.getPath() );
-        assertNull( artifact4.getScope() );
+        assertNull( artifact4.getNamespace() );
         assertNull( artifact4.getStereotype() );
 
         Artifact artifact5 = new DefaultArtifact( "gid:aid:ext:cla:ver" );
@@ -71,7 +71,7 @@ public class DefaultArtifactTest
         assertEquals( "cla", artifact5.getClassifier() );
         assertEquals( "ver", artifact5.getVersion() );
         assertNull( artifact5.getPath() );
-        assertNull( artifact5.getScope() );
+        assertNull( artifact5.getNamespace() );
         assertNull( artifact5.getStereotype() );
     }
 
@@ -109,7 +109,7 @@ public class DefaultArtifactTest
         assertEquals( "", artifact.getClassifier() );
         assertEquals( "SYSTEM", artifact.getVersion() );
         assertNull( artifact.getPath() );
-        assertNull( artifact.getScope() );
+        assertNull( artifact.getNamespace() );
         assertNull( artifact.getStereotype() );
     }
 
@@ -127,7 +127,7 @@ public class DefaultArtifactTest
         assertEquals( "", artifact.getClassifier() );
         assertEquals( "ver", artifact.getVersion() );
         assertNull( artifact.getPath() );
-        assertNull( artifact.getScope() );
+        assertNull( artifact.getNamespace() );
         assertNull( artifact.getStereotype() );
     }
 
@@ -145,7 +145,7 @@ public class DefaultArtifactTest
         assertEquals( "", artifact.getClassifier() );
         assertEquals( "ver", artifact.getVersion() );
         assertNull( artifact.getPath() );
-        assertNull( artifact.getScope() );
+        assertNull( artifact.getNamespace() );
         assertNull( artifact.getStereotype() );
     }
 
@@ -163,7 +163,7 @@ public class DefaultArtifactTest
         assertEquals( "cla", artifact.getClassifier() );
         assertEquals( "ver", artifact.getVersion() );
         assertNull( artifact.getPath() );
-        assertNull( artifact.getScope() );
+        assertNull( artifact.getNamespace() );
         assertNull( artifact.getStereotype() );
     }
 
