@@ -38,5 +38,9 @@ public class SymbolicLinkTest extends AbstractFileTest {
                 "F /usr/share/java/foobar.jar", "L /usr/share/java/link.jar" );
         Path link = root.resolve( Paths.get( "usr/share/java/link.jar" ) );
         assertEquals( Files.readSymbolicLink(link), Paths.get( "foobar.jar" ) );
+
+        assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/share/java",
+                                "%attr(0644,root,root) /usr/share/java/foobar.jar",
+                                "%attr(0644,root,root) /usr/share/java/link.jar" );
     }
 }
