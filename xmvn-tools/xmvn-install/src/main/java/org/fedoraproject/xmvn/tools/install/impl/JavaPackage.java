@@ -15,10 +15,19 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import javax.xml.stream.XMLStreamException;
+
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
- * Class describing a Java package as a package which besides other files files also installs Java metadata.
+ * Class describing a Java package as a package which besides other files files also installs Java metadata as an
+ * additional file.
  * 
  * @author Mikolaj Izdebski
  */
@@ -30,14 +39,24 @@ class JavaPackage
      */
     private final PackageMetadata metadata = new PackageMetadata();
 
+    private final Path metadataPath;
+
     /**
      * Create an empty Java package with given ID.
      * 
      * @param id package ID
+     * @param settings installer settings to use
+     * @throws IOException
      */
-    public JavaPackage( String id )
+    public JavaPackage( String id, Path metadataPath )
+        throws IOException
     {
         super( id );
+        this.metadataPath = metadataPath;
+
+        Path sourcePath = Files.createTempFile( "xmvn-metadata", "xml" );
+        File metadataFile = new RegularFile( metadataPath, sourcePath );
+        addFile( metadataFile );
     }
 
     /**
@@ -48,5 +67,27 @@ class JavaPackage
     public PackageMetadata getMetadata()
     {
         return metadata;
+    }
+
+    @Override
+    public void install( Path installRoot )
+        throws IOException
+    {
+        writeMetadataFile();
+
+        super.install( installRoot );
+    }
+
+    private void writeMetadataFile()
+        throws IOException
+    {
+        try (OutputStream stream = Files.newOutputStream( metadataPath ))
+        {
+            new MetadataStaxWriter().write( stream, metadata );
+        }
+        catch ( XMLStreamException e )
+        {
+            throw new IOException( "Failed to write package metadata", e );
+        }
     }
 }
