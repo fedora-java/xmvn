@@ -163,4 +163,16 @@ abstract class File
 
         return sb.toString();
     }
+
+    @Override
+    public int hashCode()
+    {
+        return targetPath.hashCode();
+    }
+
+    @Override
+    public boolean equals( Object rhs )
+    {
+        return rhs != null && getClass() == rhs.getClass() && targetPath.equals( ( (File) rhs ).targetPath );
+    }
 }
