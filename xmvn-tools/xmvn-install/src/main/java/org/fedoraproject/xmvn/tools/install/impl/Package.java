@@ -78,12 +78,15 @@ class Package
     }
 
     /**
-     * Add a file to this package.
+     * Add a file to this package. The package must not already contains the file.
      * 
      * @param file file to be added
      */
     public void addFile( File file )
     {
+        if ( files.contains( file ) )
+            throw new IllegalArgumentException( "Package " + id + " already contains file " + file.getTargetPath() );
+
         files.add( file );
     }
 
