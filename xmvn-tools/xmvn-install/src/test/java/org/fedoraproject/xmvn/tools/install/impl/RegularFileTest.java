@@ -51,6 +51,19 @@ public class RegularFileTest extends AbstractFileTest {
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java",
                 "F /usr/share/java/foobar.jar" );
         assertFilesEqual(jar, root.resolve( Paths.get("usr/share/java/foobar.jar") ) );
+        assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/share/java",
+                                "%attr(0644,root,root) /usr/share/java/foobar.jar" );
+    }
+
+    @Test
+    public void testCreateParentDirectory() throws Exception {
+        Path jar = getResource( "example.jar" );
+        add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), jar ) );
+        Path root = performInstallation();
+        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java",
+                "F /usr/share/java/foobar.jar" );
+        assertFilesEqual(jar, root.resolve( Paths.get("usr/share/java/foobar.jar") ) );
+        assertDescriptorEquals( "%attr(0644,root,root) /usr/share/java/foobar.jar" );
     }
 
     @Test(expected = IOException.class)
@@ -84,5 +97,11 @@ public class RegularFileTest extends AbstractFileTest {
     public void testNegativeMode() throws Exception {
         Path jar = getResource( "example.jar" );
         add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), jar, -0644) );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAbsoluteTarget() throws Exception {
+        Path jar = getResource( "example.jar" );
+        add( new RegularFile(Paths.get( "/usr/share/java/foobar.jar" ), jar, 01000) );
     }
 }
