@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Arrays;
+import java.io.IOException;
 
 /**
  * @author Mikolaj Izdebski
@@ -118,5 +121,15 @@ public abstract class AbstractFileTest
 
             throw e;
         }
+    }
+
+    Path getResource(String name) {
+        return Paths.get( "src/test/resources/", name  ).toAbsolutePath();
+    }
+
+    void assertFilesEqual(Path expected, Path actual) throws IOException {
+        byte expectedContent[] = Files.readAllBytes( expected );
+        byte actualContent[] = Files.readAllBytes( actual );
+        assertTrue( Arrays.equals( expectedContent, actualContent ));
     }
 }
