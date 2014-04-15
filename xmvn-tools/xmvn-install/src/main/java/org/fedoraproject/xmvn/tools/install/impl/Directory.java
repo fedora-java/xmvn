@@ -59,4 +59,10 @@ class Directory
         if ( !Files.isDirectory( targetAbsolutePath, LinkOption.NOFOLLOW_LINKS ) )
             Files.createDirectory( targetAbsolutePath );
     }
+
+    @Override
+    protected String getDescriptorExtra()
+    {
+        return "%dir";
+    }
 }

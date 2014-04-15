@@ -51,6 +51,18 @@ abstract class File
         throws IOException;
 
     /**
+     * Get additional file attributes to be added to file descriptor.
+     * <p>
+     * By default there are no extra attributes, but subclasses can override this method and specify it.
+     * 
+     * @return extra descriptor data (can be {@code null})
+     */
+    protected String getDescriptorExtra()
+    {
+        return null;
+    }
+
+    /**
      * Create a file object with specified path and default access mode of 0644.
      * 
      * @param targetPath file path, relative to installation root
@@ -122,5 +134,32 @@ abstract class File
         Files.createDirectories( targetAbsolutePath.getParent() );
 
         installContents( targetAbsolutePath );
+    }
+
+    /**
+     * Get descriptor string for given file.
+     * <p>
+     * Descriptor is a line containing file path and some attributes. In other words, descriptor is a single line from
+     * {@code .mfiles} describing the file.
+     * 
+     * @return descriptor string
+     */
+    public String getDescriptor()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( String.format( "%%attr(0%o,root,root)", accessMode ) );
+
+        String extra = getDescriptorExtra();
+        if ( extra != null )
+        {
+            sb.append( ' ' );
+            sb.append( extra );
+        }
+
+        sb.append( ' ' );
+        sb.append( targetPath );
+
+        return sb.toString();
     }
 }
