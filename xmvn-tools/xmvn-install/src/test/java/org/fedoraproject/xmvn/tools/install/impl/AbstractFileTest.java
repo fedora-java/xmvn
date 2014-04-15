@@ -35,6 +35,8 @@ public abstract class AbstractFileTest
 
     private Path installRoot;
 
+    private final List<String> descriptors = new ArrayList<>();
+
     protected void add( File file )
         throws Exception
     {
@@ -54,6 +56,9 @@ public abstract class AbstractFileTest
             for ( File file : files )
                 file.install( installRoot );
 
+            for ( File file : files )
+                descriptors.add( file.getDescriptor() );
+
             return installRoot;
         }
         finally
@@ -71,12 +76,21 @@ public abstract class AbstractFileTest
     protected void assertDirectoryStructure( Path root, String... expected )
         throws Exception
     {
+        List<String> actualList = new ArrayList<>();
+        Files.walkFileTree( root, new FileSystemWalker( root, actualList ) );
+        assertEqualsImpl( actualList, "directory structure", expected );
+    }
+
+    protected void assertDescriptorEquals( String... expected )
+    {
+        assertEqualsImpl( descriptors, "file descriptor", expected );
+    }
+
+    private void assertEqualsImpl( List<String> actualList, String what, String... expected )
+    {
         List<String> expectedList = new ArrayList<>();
         for ( String string : expected )
             expectedList.add( string );
-
-        List<String> actualList = new ArrayList<>();
-        Files.walkFileTree( root, new FileSystemWalker( root, actualList ) );
 
         Collections.sort( expectedList );
         Collections.sort( actualList );
@@ -94,11 +108,11 @@ public abstract class AbstractFileTest
         }
         catch ( AssertionError e )
         {
-            System.err.println( "EXPECTED directory structure:" );
+            System.err.println( "EXPECTED " + what + ":" );
             for ( String string : expectedList )
                 System.err.println( "  " + string );
 
-            System.err.println( "ACTUAL directory structure:" );
+            System.err.println( "ACTUAL " + what + ":" );
             for ( String string : actualList )
                 System.err.println( "  " + string );
 
