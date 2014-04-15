@@ -39,6 +39,8 @@ public class DirectoryTest
         performInstallation();
 
         assertDirectoryStructure( "D /usr", "D /usr/src", "D /usr/src/sys", "D /usr/src/sys/kern" );
+
+        assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/src/sys/kern" );
     }
 
     /**
@@ -56,6 +58,9 @@ public class DirectoryTest
         performInstallation();
 
         assertDirectoryStructure( "D /etc", "D /etc/sysconfig", "D /etc/sysconfig/java", "D /etc/xmvn" );
+
+        assertDescriptorEquals( "%attr(0755,root,root) %dir /etc", "%attr(0755,root,root) %dir /etc/sysconfig/java",
+                                "%attr(0755,root,root) %dir /etc/xmvn" );
     }
 
     /**
