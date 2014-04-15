@@ -25,10 +25,8 @@ import java.util.Set;
 
 import com.google.common.io.Files;
 
-import org.fedoraproject.xmvn.metadata.PackageMetadata;
-
 /**
- * Class describing a binary package as a set of files with associated metadata.
+ * Class describing a binary package as a set of files.
  * 
  * @author Mikolaj Izdebski
  */
@@ -48,11 +46,6 @@ class Package
      * List of files that will be installed into this package.
      */
     private final Set<File> files = new LinkedHashSet<>();
-
-    /**
-     * Metadata associated with this package.
-     */
-    private final PackageMetadata metadata = new PackageMetadata();
 
     /**
      * Create an empty package with given ID.
@@ -92,16 +85,6 @@ class Package
     public void addFile( File file )
     {
         files.add( file );
-    }
-
-    /**
-     * Get metadata associated with this package.
-     * 
-     * @return package metadata object
-     */
-    public PackageMetadata getMetadata()
-    {
-        return metadata;
     }
 
     /**
