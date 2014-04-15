@@ -158,6 +158,7 @@ abstract class File
         }
 
         sb.append( ' ' );
+        sb.append( '/' );
         sb.append( targetPath );
 
         return sb.toString();
