@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Arrays;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * @author Mikolaj Izdebski
@@ -68,6 +69,17 @@ public abstract class AbstractFileTest
         {
             files.clear();
         }
+    }
+
+    protected Path performInstallation( Package pkg )
+            throws Exception
+    {
+        String testName = getClass().getName();
+        Path workPath = Paths.get( "target" ).resolve( "test-work" );
+        Files.createDirectories( workPath );
+        installRoot = Files.createTempDirectory( workPath, testName );
+        pkg.install(installRoot);
+        return installRoot;
     }
 
     protected void assertDirectoryStructure( String... expected )
@@ -131,5 +143,19 @@ public abstract class AbstractFileTest
         byte expectedContent[] = Files.readAllBytes( expected );
         byte actualContent[] = Files.readAllBytes( actual );
         assertTrue( Arrays.equals( expectedContent, actualContent ));
+    }
+
+    protected void assertDescriptorEquals( Package pkg, String... expected )
+            throws IOException {
+        Path mfiles = installRoot.resolve( ".mfiles" );
+        pkg.writeDescriptor( mfiles );
+        List<String> lines = Files.readAllLines( mfiles, Charset.defaultCharset() );
+
+        Iterator<String> iterator = lines.iterator();
+
+        for ( String expectedLine: expected ) {
+            assertTrue( iterator.hasNext() );
+            assertEquals( expectedLine, iterator.next() );
+        }
     }
 }
