@@ -87,4 +87,19 @@ public class DirectoryTest
         add( new Directory( Paths.get( "a/b/c/d/e/f/g/h" ) ) );
         performInstallation();
     }
+
+    /**
+     * Test if custom access mode can be specified.
+     */
+    @Test
+    public void testAccessMode()
+        throws Exception
+    {
+        add( new Directory( Paths.get( "foo" ), 320 ) );
+        performInstallation();
+
+        assertDirectoryStructure( "D /foo" );
+
+        assertDescriptorEquals( "%attr(0500,root,root) %dir /foo" );
+    }
 }
