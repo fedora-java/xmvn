@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.TERMINATE;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -81,9 +80,8 @@ class FileSystemWalker
 
     @Override
     public FileVisitResult visitFileFailed( Path path, IOException e )
+        throws IOException
     {
-        e.printStackTrace();
-
-        return TERMINATE;
+        throw e;
     }
 }
