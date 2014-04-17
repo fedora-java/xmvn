@@ -212,7 +212,7 @@ public class MetadataReaderTest
 
         assertEquals( "org.codehaus.plexus", am1.getGroupId() );
         assertEquals( "plexus-ant-factory", am1.getArtifactId() );
-        assertEquals( "", am1.getExtension() );
+        assertEquals( "jar", am1.getExtension() );
         assertEquals( "", am1.getClassifier() );
         assertEquals( "1.0", am1.getVersion() );
         assertEquals( "ns", am1.getNamespace() );
