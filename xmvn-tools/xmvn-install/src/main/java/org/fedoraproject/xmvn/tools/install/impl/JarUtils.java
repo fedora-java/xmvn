@@ -37,7 +37,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 /**
  * @author Mikolaj Izdebski
  */
-public class JarUtils
+class JarUtils
 {
     /**
      * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native (architecture-dependant)
