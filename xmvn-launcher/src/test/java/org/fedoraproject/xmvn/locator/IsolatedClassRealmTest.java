@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.locator;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -122,31 +121,6 @@ public class IsolatedClassRealmTest
         }
     }
 
-    class MockClassLoader
-            extends ClassLoader
-    {
-        @Override
-        public Class<?> loadClass( String string )
-                throws ClassNotFoundException
-        {
-            return IsolatedClassRealmTest.class;
-        }
-
-        @Override
-        public URL getResource( String string )
-        {
-            try
-            {
-                return new URL( "http://example.com" );
-            }
-            catch ( MalformedURLException ex )
-            {
-                throw new RuntimeException();
-            }
-        }
-
-    }
-
     @Test
     public void testParentClassloader()
             throws Exception
@@ -156,7 +130,7 @@ public class IsolatedClassRealmTest
             realm.addJar( jarPath );
             realm.importPackage( "com.example" );
             Class clazz = realm.loadClass( "com.example.Example" );
-            assertEquals( IsolatedClassRealmTest.class, clazz );
+            assertEquals( MockClassLoader.class, clazz );
         }
     }
 
