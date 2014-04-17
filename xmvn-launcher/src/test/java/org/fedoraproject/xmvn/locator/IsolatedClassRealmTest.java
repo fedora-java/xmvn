@@ -15,17 +15,18 @@
  */
 package org.fedoraproject.xmvn.locator;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
@@ -33,7 +34,9 @@ import static org.junit.Assert.assertTrue;
 public class IsolatedClassRealmTest
 {
     protected final Path resourceDir = Paths.get( "src/test/resources" ).toAbsolutePath();
+
     protected Path jarPath = resourceDir.resolve( "example.jar" );
+
     protected Path secondJarPath = resourceDir.resolve( "example2.jar" );
 
     @Test
@@ -65,9 +68,9 @@ public class IsolatedClassRealmTest
 
     @Test
     public void testLoadJar()
-            throws Exception
+        throws Exception
     {
-        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
         {
             realm.addJar( jarPath );
             Class clazz = realm.loadClass( "com.example.Example" );
@@ -78,9 +81,9 @@ public class IsolatedClassRealmTest
 
     @Test
     public void testLoadJarDirectory()
-            throws Exception
+        throws Exception
     {
-        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
         {
             realm.addJarDirectory( resourceDir );
             Class clazz = realm.loadClass( "com.example.Example" );
@@ -94,9 +97,9 @@ public class IsolatedClassRealmTest
 
     @Test
     public void testGetResource()
-            throws Exception
+        throws Exception
     {
-        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
         {
             realm.addJar( jarPath );
             InputStream resourceStream = realm.getResourceAsStream( "secret-file" );
@@ -108,9 +111,9 @@ public class IsolatedClassRealmTest
 
     @Test
     public void testGetResources()
-            throws Exception
+        throws Exception
     {
-        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
         {
             realm.addJarDirectory( resourceDir );
             realm.getResource( "secret-file" );
@@ -123,9 +126,9 @@ public class IsolatedClassRealmTest
 
     @Test
     public void testParentClassloader()
-            throws Exception
+        throws Exception
     {
-        try ( IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ) )
+        try (IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ))
         {
             realm.addJar( jarPath );
             realm.importPackage( "com.example" );
@@ -136,9 +139,9 @@ public class IsolatedClassRealmTest
 
     @Test
     public void testParentClassloaderResource()
-            throws Exception
+        throws Exception
     {
-        try ( IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ) )
+        try (IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ))
         {
             realm.addJar( jarPath );
             realm.importPackage( "resources" );
@@ -147,4 +150,3 @@ public class IsolatedClassRealmTest
         }
     }
 }
-

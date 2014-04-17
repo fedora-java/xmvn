@@ -15,26 +15,27 @@
  */
 package org.fedoraproject.xmvn.locator;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
 /**
- *
  * @author Michael Simacek
  */
 public class XMvnHomeClassLoaderTest
 {
     protected final Path resourceDir = Paths.get( "src/test/resources" ).toAbsolutePath();
+
     protected Path jarPath = resourceDir.resolve( "example.jar" );
 
     @Test
     public void testHome()
-            throws Exception
+        throws Exception
     {
-        try ( XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, null ) )
+        try (XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, null ))
         {
             assertEquals( resourceDir, loader.getHome() );
         }
@@ -42,13 +43,13 @@ public class XMvnHomeClassLoaderTest
 
     @Test
     public void testHomeProperty()
-            throws Exception
+        throws Exception
     {
         String saved = System.getProperty( "xmvn.home" );
         try
         {
             System.setProperty( "xmvn.home", resourceDir.toString() );
-            try ( XMvnHomeClassLoader loader = new XMvnHomeClassLoader( null ) )
+            try (XMvnHomeClassLoader loader = new XMvnHomeClassLoader( null ))
             {
                 assertEquals( resourceDir, loader.getHome() );
             }
@@ -62,9 +63,10 @@ public class XMvnHomeClassLoaderTest
 
     @Test
     public void testLoadJar()
-            throws Exception
+        throws Exception
     {
-        try ( XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, XMvnHomeClassLoaderTest.class.getClassLoader() ) )
+        try (XMvnHomeClassLoader loader =
+            new XMvnHomeClassLoader( resourceDir, XMvnHomeClassLoaderTest.class.getClassLoader() ))
         {
             loader.addJar( jarPath );
             Class clazz = loader.loadClass( "com.example.Example" );
@@ -75,17 +77,13 @@ public class XMvnHomeClassLoaderTest
 
     @Test
     public void testImports()
-            throws Exception
+        throws Exception
     {
-        try ( XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, new MockClassLoader() ) )
+        try (XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, new MockClassLoader() ))
         {
             String[] imports =
-            {
-                "org.fedoraproject.xmvn",
-                "org.fedoraproject.xmvn.artifact",
-                "org.fedoraproject.xmvn.deployer",
-                "org.fedoraproject.xmvn.resolver"
-            };
+                { "org.fedoraproject.xmvn", "org.fedoraproject.xmvn.artifact", "org.fedoraproject.xmvn.deployer",
+                    "org.fedoraproject.xmvn.resolver" };
             for ( String imp : imports )
             {
                 Class clazz = loader.loadClass( imp + ".Example" );

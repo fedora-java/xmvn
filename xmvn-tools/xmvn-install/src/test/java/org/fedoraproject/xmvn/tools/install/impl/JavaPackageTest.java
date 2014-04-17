@@ -15,38 +15,38 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
+
 /**
- *
  * @author Michael Simacek
  */
 public class JavaPackageTest
-        extends AbstractFileTest
+    extends AbstractFileTest
 {
     @Test
     public void testJavaPackage()
-            throws Exception
+        throws Exception
     {
         JavaPackage pkg = new JavaPackage( "my-id", Paths.get( "usr/share/maven-metadata/my-id.xml" ) );
         assertEquals( "my-id", pkg.getId() );
 
         performInstallation( pkg );
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/maven-metadata",
-                "F /usr/share/maven-metadata/my-id.xml" );
+                                  "F /usr/share/maven-metadata/my-id.xml" );
         assertDescriptorEquals( pkg, "%attr(0644,root,root) /usr/share/maven-metadata/my-id.xml" );
     }
 
     @Test
     public void testJavaPackageMetadata()
-            throws Exception
+        throws Exception
     {
         Path metadataPath = Paths.get( "usr/share/maven-metadata/my-id.xml" );
         JavaPackage pkg = new JavaPackage( "my-id", metadataPath );

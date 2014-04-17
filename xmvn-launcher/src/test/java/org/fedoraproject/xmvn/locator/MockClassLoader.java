@@ -20,14 +20,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- *
  * @author Michael Simacek
  */
-class MockClassLoader extends ClassLoader {
-
+class MockClassLoader
+    extends ClassLoader
+{
     @Override
     public Class<?> loadClass( String string )
-            throws ClassNotFoundException
+        throws ClassNotFoundException
     {
         return MockClassLoader.class;
     }
@@ -44,5 +44,4 @@ class MockClassLoader extends ClassLoader {
             throw new RuntimeException();
         }
     }
-
 }

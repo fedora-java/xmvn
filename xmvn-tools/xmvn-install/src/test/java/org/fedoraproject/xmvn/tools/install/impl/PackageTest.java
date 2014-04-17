@@ -15,16 +15,13 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.IOException;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author msimacek
@@ -71,7 +68,7 @@ public class PackageTest
 
     @Test
     public void testEmpty()
-            throws Exception
+        throws Exception
     {
         Package pkg = new Package( "my-id" );
 
@@ -82,7 +79,7 @@ public class PackageTest
 
     @Test( expected = IllegalArgumentException.class )
     public void testSameFileTwice()
-            throws Exception
+        throws Exception
     {
         File jarfile = new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar );
         Package pkg = new Package( "my-id" );
@@ -93,7 +90,7 @@ public class PackageTest
 
     @Test
     public void testEquality()
-            throws Exception
+        throws Exception
     {
         Package pkg = new Package( "my-id" );
         Package same_pkg = new Package( "my-id" );
