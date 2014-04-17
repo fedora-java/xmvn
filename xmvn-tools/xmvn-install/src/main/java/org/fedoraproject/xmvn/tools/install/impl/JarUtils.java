@@ -18,6 +18,11 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -25,6 +30,9 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -103,6 +111,58 @@ public class JarUtils
             }
 
             return false;
+        }
+    }
+
+    private static void putAttribute( Manifest manifest, String key, String value, String defaultValue )
+    {
+        if ( defaultValue == null || !value.equals( defaultValue ) )
+        {
+            Attributes attributes = manifest.getMainAttributes();
+            attributes.putValue( key, value );
+        }
+    }
+
+    /**
+     * Inject artifact coordinates into manifest of specified JAR (or WAR, EAR, ...) file. The file is modified
+     * in-place.
+     * 
+     * @param targetJar
+     * @param artifact
+     * @throws IOException
+     */
+    public static void injectManifest( Path targetJar, Artifact artifact )
+        throws IOException
+    {
+        targetJar = targetJar.toRealPath();
+
+        try (JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ))
+        {
+            Manifest mf = jis.getManifest();
+            if ( mf == null )
+                return;
+
+            putAttribute( mf, ArtifactUtils.MF_KEY_GROUPID, artifact.getGroupId(), null );
+            putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
+            putAttribute( mf, ArtifactUtils.MF_KEY_EXTENSION, artifact.getExtension(), Artifact.DEFAULT_EXTENSION );
+            putAttribute( mf, ArtifactUtils.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
+            putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
+
+            Files.delete( targetJar );
+
+            try (JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ))
+            {
+                byte[] buf = new byte[512];
+                JarEntry entry;
+                while ( ( entry = jis.getNextJarEntry() ) != null )
+                {
+                    jos.putNextEntry( entry );
+
+                    int sz;
+                    while ( ( sz = jis.read( buf ) ) > 0 )
+                        jos.write( buf, 0, sz );
+                }
+            }
         }
     }
 }
