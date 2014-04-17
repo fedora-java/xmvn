@@ -19,16 +19,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Arrays;
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * @author Mikolaj Izdebski
@@ -72,13 +72,13 @@ public abstract class AbstractFileTest
     }
 
     protected Path performInstallation( Package pkg )
-            throws Exception
+        throws Exception
     {
         String testName = getClass().getName();
         Path workPath = Paths.get( "target" ).resolve( "test-work" );
         Files.createDirectories( workPath );
         installRoot = Files.createTempDirectory( workPath, testName );
-        pkg.install(installRoot);
+        pkg.install( installRoot );
         return installRoot;
     }
 
@@ -135,25 +135,30 @@ public abstract class AbstractFileTest
         }
     }
 
-    Path getResource(String name) {
-        return Paths.get( "src/test/resources/", name  ).toAbsolutePath();
+    Path getResource( String name )
+    {
+        return Paths.get( "src/test/resources/", name ).toAbsolutePath();
     }
 
-    void assertFilesEqual(Path expected, Path actual) throws IOException {
+    void assertFilesEqual( Path expected, Path actual )
+        throws IOException
+    {
         byte expectedContent[] = Files.readAllBytes( expected );
         byte actualContent[] = Files.readAllBytes( actual );
-        assertTrue( Arrays.equals( expectedContent, actualContent ));
+        assertTrue( Arrays.equals( expectedContent, actualContent ) );
     }
 
     protected void assertDescriptorEquals( Package pkg, String... expected )
-            throws IOException {
+        throws IOException
+    {
         Path mfiles = installRoot.resolve( ".mfiles" );
         pkg.writeDescriptor( mfiles );
         List<String> lines = Files.readAllLines( mfiles, Charset.defaultCharset() );
 
         Iterator<String> iterator = lines.iterator();
 
-        for ( String expectedLine: expected ) {
+        for ( String expectedLine : expected )
+        {
             assertTrue( iterator.hasNext() );
             assertEquals( expectedLine, iterator.next() );
         }

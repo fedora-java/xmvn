@@ -1,11 +1,11 @@
-/*
- * Copyright 2014 Red Hat, Inc..
+/*-
+ * Copyright (c) 2014 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,92 +16,105 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.Files;
+
 import org.junit.Test;
 
 /**
- *
  * @author Michael Simacek
  */
-public class RegularFileTest extends AbstractFileTest {
-
+public class RegularFileTest
+    extends AbstractFileTest
+{
     @Test
-    public void testFileInstallationFromArray() throws Exception {
+    public void testFileInstallationFromArray()
+        throws Exception
+    {
         Path jar = getResource( "example.jar" );
         byte content[] = Files.readAllBytes( jar );
         add( new Directory( Paths.get( "usr/share/java" ) ) );
-        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), content) );
+        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), content ) );
         Path root = performInstallation();
-        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java",
-                "F /usr/share/java/foobar.jar" );
-        assertFilesEqual(jar, root.resolve( Paths.get("usr/share/java/foobar.jar") ) );
+        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar" );
+        assertFilesEqual( jar, root.resolve( Paths.get( "usr/share/java/foobar.jar" ) ) );
 
         assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/share/java",
                                 "%attr(0644,root,root) /usr/share/java/foobar.jar" );
     }
 
     @Test
-    public void testFileInstallationFromFile() throws Exception {
+    public void testFileInstallationFromFile()
+        throws Exception
+    {
         Path jar = getResource( "example.jar" );
-        add( new Directory( Paths.get( "usr/share/java" )));
-        add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), jar ) );
+        add( new Directory( Paths.get( "usr/share/java" ) ) );
+        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar ) );
         Path root = performInstallation();
-        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java",
-                "F /usr/share/java/foobar.jar" );
-        assertFilesEqual(jar, root.resolve( Paths.get("usr/share/java/foobar.jar") ) );
+        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar" );
+        assertFilesEqual( jar, root.resolve( Paths.get( "usr/share/java/foobar.jar" ) ) );
         assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/share/java",
                                 "%attr(0644,root,root) /usr/share/java/foobar.jar" );
     }
 
     @Test
-    public void testCreateParentDirectory() throws Exception {
+    public void testCreateParentDirectory()
+        throws Exception
+    {
         Path jar = getResource( "example.jar" );
-        add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), jar ) );
+        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar ) );
         Path root = performInstallation();
-        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java",
-                "F /usr/share/java/foobar.jar" );
-        assertFilesEqual(jar, root.resolve( Paths.get("usr/share/java/foobar.jar") ) );
+        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar" );
+        assertFilesEqual( jar, root.resolve( Paths.get( "usr/share/java/foobar.jar" ) ) );
         assertDescriptorEquals( "%attr(0644,root,root) /usr/share/java/foobar.jar" );
     }
 
-    @Test(expected = IOException.class)
-    public void testNonexistentFile() throws Exception {
-        add( new Directory( Paths.get( "usr/share/java" )));
-        add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), Paths.get( "not-here" )) );
+    @Test( expected = IOException.class )
+    public void testNonexistentFile()
+        throws Exception
+    {
+        add( new Directory( Paths.get( "usr/share/java" ) ) );
+        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), Paths.get( "not-here" ) ) );
         performInstallation();
     }
 
     @Test
-    public void testAccessMode() throws Exception {
-        Path jar = getResource( "example.jar");
-        add( new Directory( Paths.get( "usr/share/java" )));
-        add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), jar, 0666 ) );
+    public void testAccessMode()
+        throws Exception
+    {
+        Path jar = getResource( "example.jar" );
+        add( new Directory( Paths.get( "usr/share/java" ) ) );
+        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar, 0666 ) );
         Path root = performInstallation();
-        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java",
-                "F /usr/share/java/foobar.jar" );
-        assertFilesEqual(jar, root.resolve( Paths.get("usr/share/java/foobar.jar") ) );
+        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar" );
+        assertFilesEqual( jar, root.resolve( Paths.get( "usr/share/java/foobar.jar" ) ) );
 
         assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/share/java",
                                 "%attr(0666,root,root) /usr/share/java/foobar.jar" );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testIncorrectMode() throws Exception {
+    @Test( expected = IllegalArgumentException.class )
+    public void testIncorrectMode()
+        throws Exception
+    {
         Path jar = getResource( "example.jar" );
-        add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), jar, 01000) );
+        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar, 01000 ) );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNegativeMode() throws Exception {
+    @Test( expected = IllegalArgumentException.class )
+    public void testNegativeMode()
+        throws Exception
+    {
         Path jar = getResource( "example.jar" );
-        add( new RegularFile(Paths.get( "usr/share/java/foobar.jar" ), jar, -0644) );
+        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar, -0644 ) );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testAbsoluteTarget() throws Exception {
+    @Test( expected = IllegalArgumentException.class )
+    public void testAbsoluteTarget()
+        throws Exception
+    {
         Path jar = getResource( "example.jar" );
-        add( new RegularFile(Paths.get( "/usr/share/java/foobar.jar" ), jar, 01000) );
+        add( new RegularFile( Paths.get( "/usr/share/java/foobar.jar" ), jar, 01000 ) );
     }
 }
