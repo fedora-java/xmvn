@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.locator;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -118,6 +119,57 @@ public class IsolatedClassRealmTest
             assertTrue( resources.hasMoreElements() );
             resources.nextElement();
             assertTrue( resources.hasMoreElements() );
+        }
+    }
+
+    class MockClassLoader
+            extends ClassLoader
+    {
+        @Override
+        public Class<?> loadClass( String string )
+                throws ClassNotFoundException
+        {
+            return IsolatedClassRealmTest.class;
+        }
+
+        @Override
+        public URL getResource( String string )
+        {
+            try
+            {
+                return new URL( "http://example.com" );
+            }
+            catch ( MalformedURLException ex )
+            {
+                throw new RuntimeException();
+            }
+        }
+
+    }
+
+    @Test
+    public void testParentClassloader()
+            throws Exception
+    {
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ) )
+        {
+            realm.addJar( jarPath );
+            realm.importPackage( "com.example" );
+            Class clazz = realm.loadClass( "com.example.Example" );
+            assertEquals( IsolatedClassRealmTest.class, clazz );
+        }
+    }
+
+    @Test
+    public void testParentClassloaderResource()
+            throws Exception
+    {
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ) )
+        {
+            realm.addJar( jarPath );
+            realm.importPackage( "resources" );
+            URL url = realm.getResource( "resources/secret-file" );
+            assertEquals( "http://example.com", url.toString() );
         }
     }
 }
