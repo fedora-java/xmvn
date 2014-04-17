@@ -15,16 +15,27 @@
  */
 package org.fedoraproject.xmvn.locator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Enumeration;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class IsolatedClassRealmTest
 {
+    protected final Path resourceDir = Paths.get( "src/test/resources" ).toAbsolutePath();
+    protected Path jarPath = resourceDir.resolve( "example.jar" );
+    protected Path secondJarPath = resourceDir.resolve( "example2.jar" );
+
     @Test
     public void testImports()
         throws Exception
@@ -51,4 +62,63 @@ public class IsolatedClassRealmTest
             assertFalse( realm.isImported( "org.eclipse.sisu.space.asm.ClassVisitor" ) );
         }
     }
+
+    @Test
+    public void testLoadJar()
+            throws Exception
+    {
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        {
+            realm.addJar( jarPath );
+            Class clazz = realm.loadClass( "com.example.Example" );
+            String data = (String) clazz.getMethod( "getTestData" ).invoke( null, new Object[0] );
+            assertEquals( "test", data );
+        }
+    }
+
+    @Test
+    public void testLoadJarDirectory()
+            throws Exception
+    {
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        {
+            realm.addJarDirectory( resourceDir );
+            Class clazz = realm.loadClass( "com.example.Example" );
+            String data = (String) clazz.getMethod( "getTestData" ).invoke( null, new Object[0] );
+            assertEquals( "test", data );
+            Class clazz2 = realm.loadClass( "com.example.SecondExample" );
+            String data2 = (String) clazz2.getMethod( "getTestData" ).invoke( null, new Object[0] );
+            assertEquals( "test-second", data2 );
+        }
+    }
+
+    @Test
+    public void testGetResource()
+            throws Exception
+    {
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        {
+            realm.addJar( jarPath );
+            InputStream resourceStream = realm.getResourceAsStream( "secret-file" );
+            assertNotNull( resourceStream );
+            int read = resourceStream.read();
+            assertEquals( '#', read );
+        }
+    }
+
+    @Test
+    public void testGetResources()
+            throws Exception
+    {
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
+        {
+            realm.addJarDirectory( resourceDir );
+            realm.getResource( "secret-file" );
+            Enumeration<URL> resources = realm.getResources( "secret-file" );
+            assertTrue( resources.hasMoreElements() );
+            resources.nextElement();
+            assertTrue( resources.hasMoreElements() );
+        }
+    }
 }
+
