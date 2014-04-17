@@ -394,7 +394,7 @@
       </fields>
       <codeSegments>
         <codeSegment>
-          <version>0.4.0+</version>
+          <version>2.0.0+</version>
           <code>
             <![CDATA[
     /**
@@ -413,6 +413,24 @@
     public void removeAlias( ArtifactAlias alias )
     {
         getAliases().remove( alias );
+    }
+
+    /**
+     * Return list of versions from which this artifact can be resolved.
+     * <p>
+     * For non-compat artifacts this method returns a singleton list containing default artfact version. For it returns
+     * a list of compat versions.
+     * 
+     * @return non-empty list of versions, never {@code null}
+     */
+    public java.util.List<String> getResolvableVersions()
+    {
+        java.util.List<String> versions = java.util.Collections.unmodifiableList( getCompatVersions() );
+
+        if ( versions.isEmpty() )
+            versions = java.util.Collections.singletonList( org.fedoraproject.xmvn.artifact.Artifact.DEFAULT_VERSION );
+
+        return versions;
     }
             ]]>
           </code>
