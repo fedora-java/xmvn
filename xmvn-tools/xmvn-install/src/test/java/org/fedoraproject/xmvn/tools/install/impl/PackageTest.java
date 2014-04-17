@@ -15,12 +15,16 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author msimacek
@@ -63,5 +67,40 @@ public class PackageTest
         assertDescriptorEquals( pkg, "%attr(0755,root,root) %dir /usr/share/java",
                                 "%attr(0600,root,root) /usr/share/java/foobar.jar",
                                 "%attr(0644,root,root) /usr/share/java/link.jar" );
+    }
+
+    @Test
+    public void testEmpty()
+            throws Exception
+    {
+        Package pkg = new Package( "my-id" );
+
+        performInstallation( pkg );
+        assertDirectoryStructure();
+        assertDescriptorEquals( pkg );
+    }
+
+    @Test( expected = IllegalArgumentException.class )
+    public void testSameFileTwice()
+            throws Exception
+    {
+        File jarfile = new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar );
+        Package pkg = new Package( "my-id" );
+        assertEquals( "my-id", pkg.getId() );
+        pkg.addFile( jarfile );
+        pkg.addFile( jarfile );
+    }
+
+    @Test
+    public void testEquality()
+            throws Exception
+    {
+        Package pkg = new Package( "my-id" );
+        Package same_pkg = new Package( "my-id" );
+        Package another_pkg = new Package( "other-id" );
+
+        assertEquals( same_pkg, pkg );
+        assertNotEquals( pkg, another_pkg );
+        assertNotEquals( same_pkg, another_pkg );
     }
 }
