@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -134,5 +135,29 @@ public class JarUtilsTest
 
         assertTrue( JarUtils.usesNativeCode( nativeMethodJarPath ) );
         assertFalse( JarUtils.containsNativeCode( nativeMethodJarPath ) );
+    }
+
+    /**
+     * Test if any of utility functions throws exception when trying to access invalid JAR file.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testInvalidJar()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/invalid.jar" );
+        Path testJar = workDir.resolve( "invalid.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "foo", "bar" );
+        JarUtils.injectManifest( testJar, artifact );
+
+        byte[] testJarContent = Files.readAllBytes( testJar );
+        byte[] testResourceContent = Files.readAllBytes( testResource );
+        assertTrue( Arrays.equals( testJarContent, testResourceContent ) );
+
+        assertFalse( JarUtils.usesNativeCode( testResource ) );
+        assertFalse( JarUtils.containsNativeCode( testResource ) );
     }
 }
