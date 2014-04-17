@@ -22,7 +22,7 @@ import java.nio.file.Path;
 /**
  * An abstract class denoting a file entry in a package with all relevant attributes.
  * <p>
- * A file does not necessairly mean a regular file, it could be for example a directory or a device file.
+ * A file does not necessarily mean a regular file, it could be for example a directory or a device file.
  * 
  * @author Mikolaj Izdebski
  */
@@ -90,7 +90,7 @@ abstract class File
     }
 
     /**
-     * Return path to target file. Returned patjh is always relative to buildroot (never absolute).
+     * Return path to target file. Returned path is always relative to buildroot (never absolute).
      * 
      * @return file target path (never {@code null})
      */
