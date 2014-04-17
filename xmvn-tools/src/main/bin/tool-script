@@ -57,7 +57,7 @@ case "${tool}" in
         ;;
     *install*)
         tool=installer
-        class=org.fedoraproject.xmvn.tools.install.InstallerCli
+        class=org.fedoraproject.xmvn.tools.install.cli.InstallerCli
         ;;
     *resolve*)
         tool=resolver

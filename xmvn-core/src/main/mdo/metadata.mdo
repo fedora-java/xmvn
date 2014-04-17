@@ -418,8 +418,8 @@
     /**
      * Return list of versions from which this artifact can be resolved.
      * <p>
-     * For non-compat artifacts this method returns a singleton list containing default artfact version. For it returns
-     * a list of compat versions.
+     * For non-compat artifacts this method returns a singleton list containing default artfact version.
+     * Otherwise it returns a list of compat versions.
      * 
      * @return non-empty list of versions, never {@code null}
      */

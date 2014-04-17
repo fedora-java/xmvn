@@ -16,11 +16,6 @@
 package org.fedoraproject.xmvn.tools.install;
 
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski
@@ -29,7 +24,7 @@ public class InstallationRequest
 {
     private boolean checkForUnmatchedRules;
 
-    private final Set<Artifact> artifacts = new LinkedHashSet<>();
+    private Path installationPlanPath;
 
     private String basePackageName;
 
@@ -45,14 +40,14 @@ public class InstallationRequest
         this.checkForUnmatchedRules = checkForUnmatchedRules;
     }
 
-    public void addArtifact( Artifact artifact )
+    public Path getInstallationPlan()
     {
-        artifacts.add( artifact );
+        return installationPlanPath;
     }
 
-    public Set<Artifact> getArtifacts()
+    public void setInstallationPlan( Path installationPlanPath )
     {
-        return Collections.unmodifiableSet( artifacts );
+        this.installationPlanPath = installationPlanPath;
     }
 
     public String getBasePackageName()

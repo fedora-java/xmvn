@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2013-2014 Red Hat, Inc.
+ * Copyright (c) 2014 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.IOException;
-
-import org.fedoraproject.xmvn.tools.install.impl.ArtifactInstallationException;
+import org.fedoraproject.xmvn.config.PackagingRule;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 
 /**
  * @author Mikolaj Izdebski
  */
-public interface Installer
+public interface ArtifactInstaller
 {
-    InstallationResult install( InstallationRequest request )
-        throws ArtifactInstallationException, IOException;
+    void install( JavaPackage targetPackage, ArtifactMetadata artifactMetadata, PackagingRule packagingRule )
+        throws ArtifactInstallationException;
 }

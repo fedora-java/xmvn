@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -45,18 +46,25 @@ class JavaPackage
      * Create an empty Java package with given ID.
      * 
      * @param id package ID
-     * @param metadataPath installation path for metadata relative to
-     * installation root
+     * @param metadataPath installation path for metadata relative to installation root
      * @throws IOException
      */
     public JavaPackage( String id, Path metadataPath )
-        throws IOException
     {
         super( id );
 
-        this.sourcePath = Files.createTempFile( "xmvn-metadata", "xml" );
-        File metadataFile = new RegularFile( metadataPath, sourcePath );
-        addFile( metadataFile );
+        metadata.setUuid( UUID.randomUUID().toString() );
+
+        try
+        {
+            this.sourcePath = Files.createTempFile( "xmvn-metadata", "xml" );
+            File metadataFile = new RegularFile( metadataPath, sourcePath );
+            addFile( metadataFile );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 
     /**
@@ -81,7 +89,7 @@ class JavaPackage
     private void writeMetadataFile()
         throws IOException
     {
-        try ( OutputStream stream = Files.newOutputStream( sourcePath ) )
+        try (OutputStream stream = Files.newOutputStream( sourcePath ))
         {
             new MetadataStaxWriter().write( stream, metadata );
         }

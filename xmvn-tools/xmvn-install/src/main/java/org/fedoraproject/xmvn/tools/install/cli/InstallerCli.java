@@ -16,12 +16,7 @@
 package org.fedoraproject.xmvn.tools.install.cli;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.zip.DataFormatException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,19 +25,15 @@ import javax.inject.Singleton;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.Installer;
+import org.fedoraproject.xmvn.tools.install.impl.ArtifactInstallationException;
 
 /**
  * @author Mikolaj Izdebski
@@ -61,87 +52,22 @@ public class InstallerCli
         this.installer = installer;
     }
 
-    private Xpp3Dom readInstallationPlan( Path planPath )
-        throws XmlPullParserException, IOException
-    {
-        if ( !Files.exists( planPath ) )
-        {
-            return new Xpp3Dom( "reactorInstallationPlan" );
-        }
-
-        try (Reader reader = Files.newBufferedReader( planPath, StandardCharsets.UTF_8 ))
-        {
-            return Xpp3DomBuilder.build( reader );
-        }
-    }
-
-    private String readValue( Xpp3Dom parent, String tag, String defaultValue, boolean optional )
-        throws DataFormatException
-    {
-        Xpp3Dom[] childreen = parent.getChildren( tag );
-
-        if ( childreen.length == 1 )
-        {
-            String value = childreen[0].getValue();
-            if ( value == null )
-                value = "";
-            return value.trim();
-        }
-
-        if ( childreen.length == 0 && optional )
-            return defaultValue;
-
-        throw new DataFormatException( "<artifact> must have at exactly one <" + tag + "> child" );
-    }
-
-    private Artifact readArtifact( Xpp3Dom dom )
-        throws DataFormatException
-    {
-        String groupId = readValue( dom, "groupId", null, false );
-        String artifactId = readValue( dom, "artifactId", null, false );
-        String extension = readValue( dom, "extension", "jar", true );
-        String classifier = readValue( dom, "classifier", "", true );
-        String version = readValue( dom, "version", null, false );
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
-
-        String file = readValue( dom, "file", null, true );
-        if ( file != null )
-            artifact = artifact.setPath( Paths.get( file ) );
-
-        String stereotype = readValue( dom, "stereotype", null, true );
-        artifact = artifact.setStereotype( stereotype );
-
-        return artifact;
-    }
-
-    private void readReactor( InstallationRequest request, InstallerCliRequest cliRequest )
-    {
-        try
-        {
-            Xpp3Dom dom = readInstallationPlan( Paths.get( cliRequest.getPlanPath() ) );
-
-            for ( Xpp3Dom artifactDom : dom.getChildren( "artifact" ) )
-            {
-                Artifact artifact = readArtifact( artifactDom );
-                request.addArtifact( artifact );
-            }
-        }
-        catch ( IOException | DataFormatException | XmlPullParserException e )
-        {
-            logger.error( "Unable to read reactor installation plan", e );
-        }
-    }
-
     private void run( InstallerCliRequest cliRequest )
     {
         InstallationRequest request = new InstallationRequest();
         request.setCheckForUnmatchedRules( !cliRequest.isRelaxed() );
         request.setBasePackageName( cliRequest.getPackageName() );
         request.setInstallRoot( Paths.get( cliRequest.getDestDir() ) );
+        request.setInstallationPlan( Paths.get( cliRequest.getPlanPath() ) );
 
-        readReactor( request, cliRequest );
-
-        installer.install( request );
+        try
+        {
+            installer.install( request );
+        }
+        catch ( ArtifactInstallationException | IOException e )
+        {
+            logger.error( "Artifact installation failed", e );
+        }
     }
 
     public static void main( String[] args )
