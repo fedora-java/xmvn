@@ -16,7 +16,9 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,5 +111,28 @@ public class JarUtilsTest
             assertEquals( null, attr.getValue( "JavaPackages-Classifier" ) );
             assertEquals( null, attr.getValue( "JavaPackages-Version" ) );
         }
+    }
+
+    /**
+     * Test if native code detection works as expected.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testNativeCodeDetection()
+        throws Exception
+    {
+        Path plainJarPath = Paths.get( "src/test/resources/example.jar" );
+        Path nativeCodeJarPath = Paths.get( "src/test/resources/native-code.jar" );
+        Path nativeMethodJarPath = Paths.get( "src/test/resources/native-method.jar" );
+
+        assertFalse( JarUtils.usesNativeCode( plainJarPath ) );
+        assertFalse( JarUtils.containsNativeCode( plainJarPath ) );
+
+        assertFalse( JarUtils.usesNativeCode( nativeCodeJarPath ) );
+        assertTrue( JarUtils.containsNativeCode( nativeCodeJarPath ) );
+
+        assertTrue( JarUtils.usesNativeCode( nativeMethodJarPath ) );
+        assertFalse( JarUtils.containsNativeCode( nativeMethodJarPath ) );
     }
 }
