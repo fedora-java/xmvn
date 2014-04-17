@@ -39,22 +39,22 @@ class JavaPackage
      */
     private final PackageMetadata metadata = new PackageMetadata();
 
-    private final Path metadataPath;
+    private final Path sourcePath;
 
     /**
      * Create an empty Java package with given ID.
      * 
      * @param id package ID
-     * @param settings installer settings to use
+     * @param metadataPath installation path for metadata relative to
+     * installation root
      * @throws IOException
      */
     public JavaPackage( String id, Path metadataPath )
         throws IOException
     {
         super( id );
-        this.metadataPath = metadataPath;
 
-        Path sourcePath = Files.createTempFile( "xmvn-metadata", "xml" );
+        this.sourcePath = Files.createTempFile( "xmvn-metadata", "xml" );
         File metadataFile = new RegularFile( metadataPath, sourcePath );
         addFile( metadataFile );
     }
@@ -81,7 +81,7 @@ class JavaPackage
     private void writeMetadataFile()
         throws IOException
     {
-        try (OutputStream stream = Files.newOutputStream( metadataPath ))
+        try ( OutputStream stream = Files.newOutputStream( sourcePath ) )
         {
             new MetadataStaxWriter().write( stream, metadata );
         }
