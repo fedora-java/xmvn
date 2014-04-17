@@ -83,7 +83,7 @@ abstract class File
         if ( targetPath.isAbsolute() )
             throw new IllegalArgumentException( "target path must not be absolute" );
         if ( accessMode < 0 || accessMode > 0777 )
-            throw new IllegalArgumentException( "access mode must be in range from 0 to 777" );
+            throw new IllegalArgumentException( "access mode must be in range from 0 to 0777" );
 
         this.targetPath = targetPath;
         this.accessMode = accessMode;
