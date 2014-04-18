@@ -35,6 +35,7 @@ import org.fedoraproject.xmvn.repository.Repository;
  */
 @Named( "maven" )
 @Singleton
+@Deprecated
 public class MavenRepositoryFactory
     extends SimpleRepositoryFactory
 {

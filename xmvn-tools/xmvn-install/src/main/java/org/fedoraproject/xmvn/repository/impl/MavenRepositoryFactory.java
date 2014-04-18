@@ -33,15 +33,14 @@ import org.fedoraproject.xmvn.repository.Repository;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "jpp" )
+@Named( "maven" )
 @Singleton
-@Deprecated
-public class JppRepositoryFactory
+public class MavenRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
     protected Repository newInstance( String namespace, Path root, List<Stereotype> stereotypes )
     {
-        return new JppRepository( namespace, root, stereotypes );
+        return new MavenRepository( namespace, root, stereotypes );
     }
 }

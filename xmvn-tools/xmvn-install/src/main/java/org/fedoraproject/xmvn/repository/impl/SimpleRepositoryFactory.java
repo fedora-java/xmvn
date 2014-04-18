@@ -29,7 +29,6 @@ import org.fedoraproject.xmvn.repository.Repository;
 /**
  * @author Mikolaj Izdebski
  */
-@Deprecated
 abstract class SimpleRepositoryFactory
     extends AbstractRepositoryFactory
 {

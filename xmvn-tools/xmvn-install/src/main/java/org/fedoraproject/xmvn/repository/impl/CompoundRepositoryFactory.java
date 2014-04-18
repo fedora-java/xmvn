@@ -43,7 +43,6 @@ import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
  */
 @Named( "compound" )
 @Singleton
-@Deprecated
 public class CompoundRepositoryFactory
     extends AbstractRepositoryFactory
 {

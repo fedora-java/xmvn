@@ -22,7 +22,6 @@ import java.nio.file.Path;
  * 
  * @author Mikolaj Izdebski
  */
-@Deprecated
 public interface RepositoryPath
 {
     /**

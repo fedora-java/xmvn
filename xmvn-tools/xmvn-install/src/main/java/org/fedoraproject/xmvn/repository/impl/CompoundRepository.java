@@ -35,7 +35,6 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
  * 
  * @author Mikolaj Izdebski
  */
-@Deprecated
 class CompoundRepository
     extends AbstractRepository
 {

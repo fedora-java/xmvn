@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2012-2014 Red Hat, Inc.
+ * Copyright (c) 2014 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,33 +15,24 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import java.nio.file.Path;
 import java.util.List;
+import java.util.Properties;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**
- * Factory creating JPP repositories.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
- * 
  * @author Mikolaj Izdebski
  */
-@Named( "jpp" )
-@Singleton
-@Deprecated
-public class JppRepositoryFactory
-    extends SimpleRepositoryFactory
+abstract class AbstractRepositoryFactory
+    implements RepositoryFactory
 {
     @Override
-    protected Repository newInstance( String namespace, Path root, List<Stereotype> stereotypes )
+    public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
     {
-        return new JppRepository( namespace, root, stereotypes );
+        return getInstance( stereotypes, properties, configuration, "" );
     }
 }

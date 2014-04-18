@@ -25,7 +25,6 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
 /**
  * @author Mikolaj Izdebski
  */
-@Deprecated
 abstract class AbstractRepository
     implements Repository
 {

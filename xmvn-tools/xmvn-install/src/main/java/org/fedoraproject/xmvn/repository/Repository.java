@@ -28,7 +28,6 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-@Deprecated
 public interface Repository
 {
     /**

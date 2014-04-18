@@ -22,17 +22,16 @@ import java.util.List;
 import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
- * Flat repository layout, either versioned or versionless, depending on properties.
+ * JPP-style repository JPP layout, either versioned or versionless, depending on properties.
  * <p>
- * Example: {@code g.r.o.u.p-artifact-ver.ext} or {@code g.r.o.u.p-artifact.ext}
+ * Example: {@code g/r/o/u/p/artifact-ver.ext} or {@code g/r/o/u/p/artifact.ext}
  * 
  * @author Mikolaj Izdebski
  */
-@Deprecated
-class FlatRepository
+class JppRepository
     extends SimpleRepository
 {
-    public FlatRepository( String namespace, Path root, List<Stereotype> stereotypes )
+    public JppRepository( String namespace, Path root, List<Stereotype> stereotypes )
     {
         super( namespace, root, stereotypes );
     }
@@ -43,9 +42,12 @@ class FlatRepository
     {
         StringBuilder path = new StringBuilder();
 
-        path.append( groupId.replace( '/', '.' ) );
+        if ( groupId.startsWith( "JPP/" ) )
+            path.append( groupId.substring( 4 ) ).append( '/' );
+        else if ( !groupId.equals( "JPP" ) )
+            path.append( groupId ).append( '/' );
 
-        path.append( '-' ).append( artifactId );
+        path.append( artifactId );
 
         if ( version != null )
             path.append( '-' ).append( version );

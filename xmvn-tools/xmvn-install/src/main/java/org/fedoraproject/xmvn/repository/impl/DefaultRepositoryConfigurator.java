@@ -40,7 +40,6 @@ import org.fedoraproject.xmvn.repository.RepositoryFactory;
  */
 @Named
 @Singleton
-@Deprecated
 public class DefaultRepositoryConfigurator
     implements RepositoryConfigurator
 {

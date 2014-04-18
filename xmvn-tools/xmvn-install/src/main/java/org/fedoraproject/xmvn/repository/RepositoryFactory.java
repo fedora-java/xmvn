@@ -25,7 +25,6 @@ import org.fedoraproject.xmvn.config.Stereotype;
 /**
  * @author Mikolaj Izdebski
  */
-@Deprecated
 public interface RepositoryFactory
 {
     /**

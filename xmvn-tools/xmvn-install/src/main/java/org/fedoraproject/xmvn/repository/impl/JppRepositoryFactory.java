@@ -35,7 +35,6 @@ import org.fedoraproject.xmvn.repository.Repository;
  */
 @Named( "jpp" )
 @Singleton
-@Deprecated
 public class JppRepositoryFactory
     extends SimpleRepositoryFactory
 {

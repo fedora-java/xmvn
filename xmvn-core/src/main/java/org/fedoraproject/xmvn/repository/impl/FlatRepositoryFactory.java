@@ -35,6 +35,7 @@ import org.fedoraproject.xmvn.repository.Repository;
  */
 @Named( "flat" )
 @Singleton
+@Deprecated
 public class FlatRepositoryFactory
     extends SimpleRepositoryFactory
 {

@@ -23,7 +23,6 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
 /**
  * @author Mikolaj Izdebski
  */
-@Deprecated
 class DefaultRepositoryPath
     implements RepositoryPath
 {

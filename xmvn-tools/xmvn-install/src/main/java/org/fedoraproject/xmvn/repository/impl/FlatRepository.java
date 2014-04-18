@@ -28,7 +28,6 @@ import org.fedoraproject.xmvn.config.Stereotype;
  * 
  * @author Mikolaj Izdebski
  */
-@Deprecated
 class FlatRepository
     extends SimpleRepository
 {

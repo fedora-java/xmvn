@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.repository;
 /**
  * @author Mikolaj Izdebski
  */
+@Deprecated
 public interface RepositoryConfigurator
 {
     Repository configureRepository( String repoId );
