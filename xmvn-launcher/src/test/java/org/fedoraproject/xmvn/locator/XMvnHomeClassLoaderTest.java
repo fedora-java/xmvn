@@ -69,7 +69,7 @@ public class XMvnHomeClassLoaderTest
             new XMvnHomeClassLoader( resourceDir, XMvnHomeClassLoaderTest.class.getClassLoader() ))
         {
             loader.addJar( jarPath );
-            Class clazz = loader.loadClass( "com.example.Example" );
+            Class<?> clazz = loader.loadClass( "com.example.Example" );
             String data = (String) clazz.getMethod( "getTestData" ).invoke( null, new Object[0] );
             assertEquals( "test", data );
         }
@@ -86,7 +86,7 @@ public class XMvnHomeClassLoaderTest
                     "org.fedoraproject.xmvn.resolver" };
             for ( String imp : imports )
             {
-                Class clazz = loader.loadClass( imp + ".Example" );
+                Class<?> clazz = loader.loadClass( imp + ".Example" );
                 assertEquals( MockClassLoader.class, clazz );
             }
         }

@@ -73,7 +73,7 @@ public class IsolatedClassRealmTest
         try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
         {
             realm.addJar( jarPath );
-            Class clazz = realm.loadClass( "com.example.Example" );
+            Class<?> clazz = realm.loadClass( "com.example.Example" );
             String data = (String) clazz.getMethod( "getTestData" ).invoke( null, new Object[0] );
             assertEquals( "test", data );
         }
@@ -86,10 +86,10 @@ public class IsolatedClassRealmTest
         try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
         {
             realm.addJarDirectory( resourceDir );
-            Class clazz = realm.loadClass( "com.example.Example" );
+            Class<?> clazz = realm.loadClass( "com.example.Example" );
             String data = (String) clazz.getMethod( "getTestData" ).invoke( null, new Object[0] );
             assertEquals( "test", data );
-            Class clazz2 = realm.loadClass( "com.example.SecondExample" );
+            Class<?> clazz2 = realm.loadClass( "com.example.SecondExample" );
             String data2 = (String) clazz2.getMethod( "getTestData" ).invoke( null, new Object[0] );
             assertEquals( "test-second", data2 );
         }
@@ -102,10 +102,12 @@ public class IsolatedClassRealmTest
         try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
         {
             realm.addJar( jarPath );
-            InputStream resourceStream = realm.getResourceAsStream( "secret-file" );
-            assertNotNull( resourceStream );
-            int read = resourceStream.read();
-            assertEquals( '#', read );
+            try (InputStream resourceStream = realm.getResourceAsStream( "secret-file" ))
+            {
+                assertNotNull( resourceStream );
+                int read = resourceStream.read();
+                assertEquals( '#', read );
+            }
         }
     }
 
@@ -132,7 +134,7 @@ public class IsolatedClassRealmTest
         {
             realm.addJar( jarPath );
             realm.importPackage( "com.example" );
-            Class clazz = realm.loadClass( "com.example.Example" );
+            Class<?> clazz = realm.loadClass( "com.example.Example" );
             assertEquals( MockClassLoader.class, clazz );
         }
     }
