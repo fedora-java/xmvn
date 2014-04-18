@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+  <artifacts>
+    <artifact>
+      <groupId>com.example</groupId>
+      <artifactId>test</artifactId>
+      <version>42</version>
+      <path>/home/msimacek/extern/xmvn/xmvn-tools/xmvn-install/src/test/resources/example.jar</path>
+    </artifact>
+  </artifacts>
+  <skippedArtifacts>
+    <skippedArtifact>
+      <groupId>com.example</groupId>
+      <artifactId>skipped</artifactId>
+    </skippedArtifact>
+  </skippedArtifacts>
+</metadata>

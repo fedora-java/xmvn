@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+  <artifacts>
+    <artifact>
+      <groupId>com.example</groupId>
+      <artifactId>test2</artifactId>
+      <version>42</version>
+      <path>/home/msimacek/extern/xmvn/xmvn-tools/xmvn-install/src/test/resources/native-code.jar</path>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-benchmark</artifactId>
+          <requestedVersion>4.1</requestedVersion>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-spatial</artifactId>
+          <requestedVersion>4.1</requestedVersion>
+        </dependency>
+      </dependencies>
+    </artifact>
+    <artifact>
+      <groupId>com.example</groupId>
+      <artifactId>test</artifactId>
+      <version>42</version>
+    </artifact>
+  </artifacts>
+</metadata>
