@@ -35,8 +35,6 @@ public final class DefaultArtifact
 
     private final Path path;
 
-    private final String stereotype;
-
     public DefaultArtifact( String coords )
     {
         String s = coords;
@@ -59,7 +57,6 @@ public final class DefaultArtifact
         classifier = n < 4 ? "" : a[3];
         version = n < 2 || a[n].isEmpty() ? DEFAULT_VERSION : a[n];
         path = null;
-        stereotype = null;
     }
 
     public DefaultArtifact( String groupId, String artifactId )
@@ -79,11 +76,11 @@ public final class DefaultArtifact
 
     public DefaultArtifact( String groupId, String artifactId, String extension, String classifier, String version )
     {
-        this( groupId, artifactId, extension, classifier, version, null, null );
+        this( groupId, artifactId, extension, classifier, version, null );
     }
 
     public DefaultArtifact( String groupId, String artifactId, String extension, String classifier, String version,
-                            Path path, String stereotype )
+                            Path path )
     {
         if ( groupId == null || groupId.isEmpty() )
             throw new IllegalArgumentException( "groupId must be specified" );
@@ -96,7 +93,6 @@ public final class DefaultArtifact
         this.classifier = classifier == null ? "" : classifier;
         this.version = version == null || version.isEmpty() ? DEFAULT_VERSION : version;
         this.path = path;
-        this.stereotype = stereotype;
     }
 
     @Override
@@ -138,13 +134,13 @@ public final class DefaultArtifact
     @Override
     public Artifact setVersion( String version )
     {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, stereotype );
+        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path );
     }
 
     @Override
     public Artifact setPath( Path path )
     {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, stereotype );
+        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path );
     }
 
     @Override
