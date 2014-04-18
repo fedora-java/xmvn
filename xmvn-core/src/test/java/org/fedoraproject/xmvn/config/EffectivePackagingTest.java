@@ -47,7 +47,6 @@ public class EffectivePackagingTest
         assertTrue( artifactManagement.isEmpty() );
 
         Artifact glob = new Artifact();
-        glob.setStereotype( "stereo" );
         glob.setGroupId( "foo" );
         glob.setArtifactId( "bar" );
         glob.setExtension( "the=ext" );
@@ -66,7 +65,7 @@ public class EffectivePackagingTest
 
         PackagingRule effectiveRule =
             configuration.createEffectivePackagingRule( new DefaultArtifact( "foo", "bar", "the=ext", "_my_clasfr",
-                                                                             "baz" ).setStereotype( "stereo" ) );
+                                                                             "baz" ) );
         assertTrue( effectiveRule.getFiles().get( 0 ).equals( "file1" ) );
         assertTrue( effectiveRule.getFiles().get( 1 ).equals( "file2" ) );
         assertEquals( effectiveRule.getFiles().size(), 2 );
@@ -133,7 +132,7 @@ public class EffectivePackagingTest
 
         PackagingRule effRule1 =
             configuration.createEffectivePackagingRule( new DefaultArtifact( "maven-plugin", "com.example", "jar",
-                                                                             "funny", "0.42" ).setStereotype( "some-test" ) );
+                                                                             "funny", "0.42" ) );
         assertNotNull( effRule1.getTargetPackage() );
         assertTrue( effRule1.getTargetPackage().equals( "somePackage" ) );
     }
@@ -165,7 +164,7 @@ public class EffectivePackagingTest
         artifactManagement.add( rule );
 
         PackagingRule effectiveRule =
-            configuration.createEffectivePackagingRule( new DefaultArtifact( "bar", "baz", "xy", "zzy", "1.2.3" ).setStereotype( "foo" ) );
+            configuration.createEffectivePackagingRule( new DefaultArtifact( "bar", "baz", "xy", "zzy", "1.2.3" ) );
         assertNotNull( effectiveRule );
         assertNotNull( effectiveRule.getTargetPackage() );
         assertTrue( effectiveRule.getTargetPackage().equals( "fooBar" ) );

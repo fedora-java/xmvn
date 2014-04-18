@@ -46,13 +46,10 @@ abstract class SimpleRepository
 
     private boolean matchesStereotypes( Artifact artifact, boolean ignoreType )
     {
-        String type = artifact.getStereotype();
-
         for ( Stereotype stereotype : stereotypes )
         {
             if ( ( stereotype.getExtension() == null || stereotype.getExtension().equals( artifact.getExtension() ) )
-                && ( stereotype.getClassifier() == null || stereotype.getClassifier().equals( artifact.getClassifier() ) )
-                && ( ignoreType || stereotype.getType() == null || ( stereotype.getType().equals( type ) ) ) )
+                && ( stereotype.getClassifier() == null || stereotype.getClassifier().equals( artifact.getClassifier() ) ) )
             {
                 return true;
             }

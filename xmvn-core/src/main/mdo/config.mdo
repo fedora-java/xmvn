@@ -647,7 +647,6 @@
     public PackagingRule createEffectivePackagingRule( org.fedoraproject.xmvn.artifact.Artifact artifact )
     {
         return new org.fedoraproject.xmvn.config.impl.EffectivePackagingRule( getArtifactManagement(),
-                                                                              artifact.getStereotype(),
                                                                               artifact.getGroupId(),
                                                                               artifact.getArtifactId(),
                                                                               artifact.getExtension(),

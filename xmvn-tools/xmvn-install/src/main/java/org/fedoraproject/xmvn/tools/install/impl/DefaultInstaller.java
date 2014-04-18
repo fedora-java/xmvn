@@ -110,7 +110,7 @@ public class DefaultInstaller
         Artifact artifact = artifactState.getArtifact();
 
         PackagingRule rule =
-            new EffectivePackagingRule( configuration.getArtifactManagement(), null, artifact.getGroupId(),
+            new EffectivePackagingRule( configuration.getArtifactManagement(), artifact.getGroupId(),
                                         artifact.getArtifactId(), artifact.getExtension(), artifact.getClassifier(),
                                         artifact.getVersion() );
 

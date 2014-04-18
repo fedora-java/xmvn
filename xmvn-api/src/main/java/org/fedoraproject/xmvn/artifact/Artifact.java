@@ -38,11 +38,7 @@ public interface Artifact
 
     Path getPath();
 
-    String getStereotype();
-
     Artifact setVersion( String version );
 
     Artifact setPath( Path path );
-
-    Artifact setStereotype( String stereotype );
 }

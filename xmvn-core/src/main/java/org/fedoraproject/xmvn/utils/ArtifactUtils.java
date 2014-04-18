@@ -220,7 +220,6 @@ public class ArtifactUtils
         logger.info( "  extension: {}", artifact.getExtension() );
         logger.info( " classifier: {}", artifact.getClassifier() );
         logger.info( "    version: {}", artifact.getVersion() );
-        logger.info( " stereotype: {}", artifact.getStereotype() );
         logger.info( "       file: {}", artifact.getPath() );
     }
 }

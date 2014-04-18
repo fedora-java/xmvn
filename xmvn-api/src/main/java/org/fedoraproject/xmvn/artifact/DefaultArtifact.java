@@ -136,12 +136,6 @@ public final class DefaultArtifact
     }
 
     @Override
-    public String getStereotype()
-    {
-        return stereotype;
-    }
-
-    @Override
     public Artifact setVersion( String version )
     {
         return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, stereotype );
@@ -149,12 +143,6 @@ public final class DefaultArtifact
 
     @Override
     public Artifact setPath( Path path )
-    {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, stereotype );
-    }
-
-    @Override
-    public Artifact setStereotype( String stereotype )
     {
         return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path, stereotype );
     }
@@ -182,8 +170,7 @@ public final class DefaultArtifact
 
         return groupId.equals( x.getGroupId() ) && artifactId.equals( x.getArtifactId() )
             && extension.equals( x.getExtension() ) && classifier.equals( x.getClassifier() )
-            && version.equals( x.getVersion() ) && ( path == null ? x.getPath() == null : path.equals( x.getPath() ) )
-            && ( stereotype == null ? x.getStereotype() == null : stereotype.equals( x.getStereotype() ) );
+            && version.equals( x.getVersion() ) && ( path == null ? x.getPath() == null : path.equals( x.getPath() ) );
     }
 
     @Override

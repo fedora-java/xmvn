@@ -163,18 +163,16 @@ public class EffectivePackagingRule
      * Create effective packaging rule for given artifact.
      * 
      * @param artifactManagement list of raw packaging rules that are foundation of newly constructed effective rule
-     * @param stereotype stereotype of artifact for which effective rule is to be created
      * @param groupId groupId of artifact for which effective rule is to be created
      * @param artifactId artifactId of artifact for which effective rule is to be created
      * @param extension extension of artifact for which effective rule is to be created
      * @param classifier classifier of artifact for which effective rule is to be created
      * @param version version of artifact for which effective rule is to be created
      */
-    public EffectivePackagingRule( List<PackagingRule> artifactManagement, String stereotype, String groupId,
-                                   String artifactId, String extension, String classifier, String version )
+    public EffectivePackagingRule( List<PackagingRule> artifactManagement, String groupId, String artifactId,
+                                   String extension, String classifier, String version )
     {
         Artifact artifact = new Artifact();
-        artifact.setStereotype( stereotype );
         artifact.setGroupId( groupId );
         artifact.setArtifactId( artifactId );
         artifact.setExtension( extension );

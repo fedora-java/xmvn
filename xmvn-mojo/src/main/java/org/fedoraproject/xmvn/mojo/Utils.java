@@ -40,7 +40,6 @@ class Utils
         String groupId = mavenArtifact.getGroupId();
         String artifactId = mavenArtifact.getArtifactId();
         String version = mavenArtifact.getVersion();
-        String stereotype = mavenArtifact.getType();
 
         ArtifactHandler handler = mavenArtifact.getArtifactHandler();
         String extension = handler.getExtension();
@@ -52,7 +51,6 @@ class Utils
         Path artifactPath = artifactFile != null ? artifactFile.toPath() : null;
 
         Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
-        artifact = artifact.setStereotype( stereotype );
         artifact = artifact.setPath( artifactPath );
         return artifact;
     }

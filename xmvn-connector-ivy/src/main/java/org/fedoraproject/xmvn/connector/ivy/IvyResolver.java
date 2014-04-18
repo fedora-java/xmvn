@@ -304,7 +304,7 @@ public class IvyResolver
             PomModuleDescriptorWriter.write( module, pomFile, new PomWriterOptions() );
 
             org.fedoraproject.xmvn.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
-            deploy( artifact.setStereotype( "effective" ), artifactPath );
+            deploy( artifact, artifactPath );
         }
         catch ( ParseException e )
         {
