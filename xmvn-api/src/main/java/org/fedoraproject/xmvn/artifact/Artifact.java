@@ -38,15 +38,11 @@ public interface Artifact
 
     Path getPath();
 
-    String getNamespace();
-
     String getStereotype();
 
     Artifact setVersion( String version );
 
     Artifact setPath( Path path );
-
-    Artifact setScope( String scope );
 
     Artifact setStereotype( String stereotype );
 }

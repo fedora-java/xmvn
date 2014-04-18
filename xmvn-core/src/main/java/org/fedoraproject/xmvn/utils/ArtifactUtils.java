@@ -221,7 +221,6 @@ public class ArtifactUtils
         logger.info( " classifier: {}", artifact.getClassifier() );
         logger.info( "    version: {}", artifact.getVersion() );
         logger.info( " stereotype: {}", artifact.getStereotype() );
-        logger.info( "  namespace: {}", artifact.getNamespace() );
         logger.info( "       file: {}", artifact.getPath() );
     }
 }

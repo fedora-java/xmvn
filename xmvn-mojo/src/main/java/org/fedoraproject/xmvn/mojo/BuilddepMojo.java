@@ -87,8 +87,6 @@ public class BuilddepMojo
     {
         Xpp3Dom parent = new Xpp3Dom( tag );
 
-        if ( artifact.getNamespace() != null )
-            addOptionalChild( parent, "namespace", artifact.getNamespace(), "" );
         addOptionalChild( parent, "groupId", artifact.getGroupId(), null );
         addOptionalChild( parent, "artifactId", artifact.getArtifactId(), null );
         addOptionalChild( parent, "extension", artifact.getExtension(), "jar" );
