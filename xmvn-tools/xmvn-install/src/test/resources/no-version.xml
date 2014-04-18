@@ -4,7 +4,7 @@
     <artifact>
       <groupId>com.example</groupId>
       <artifactId>test</artifactId>
-      <path>/home/msimacek/extern/xmvn/xmvn-tools/xmvn-install/src/test/resources/example.jar</path>
+      <path>src/test/resources/example.jar</path>
     </artifact>
   </artifacts>
 </metadata>

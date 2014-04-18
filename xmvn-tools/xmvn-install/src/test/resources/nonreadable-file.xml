@@ -5,7 +5,7 @@
       <groupId>com.example</groupId>
       <artifactId>test</artifactId>
       <version>42</version>
-      <path>/home/msimacek/extern/xmvn/xmvn-tools/xmvn-install/src/test/resources/root/bla</path>
+      <path>/root/bla</path>
     </artifact>
   </artifacts>
 </metadata>

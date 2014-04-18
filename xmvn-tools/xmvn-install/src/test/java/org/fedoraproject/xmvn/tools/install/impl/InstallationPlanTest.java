@@ -15,8 +15,16 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -31,19 +39,53 @@ public class InstallationPlanTest
 {
     private final Path resources = Paths.get( "src/test/resources/" ).toAbsolutePath();
 
+    private Path workdir;
+
+    @Before
+    public void setUp()
+            throws IOException
+    {
+        String testName = getClass().getName();
+        Path workPath = Paths.get( "target" ).resolve( "test-work" );
+        Files.createDirectories( workPath );
+        workdir = Files.createTempDirectory( workPath, testName );
+    }
+
+    private InstallationPlan createInstallationPlan( String filename )
+            throws Exception
+    {
+        Path metadataPath = resources.resolve( filename );
+        PackageMetadata metadata = new MetadataStaxReader().read( metadataPath.toString() );
+        for ( ArtifactMetadata artifact : metadata.getArtifacts() )
+        {
+            String path = artifact.getPath();
+            if ( path != null )
+            {
+                path = path.replace( "src/test/resources", resources.toAbsolutePath().toString() );
+                artifact.setPath( path );
+            }
+        }
+        Path newMetadata = workdir.resolve( filename );
+        try ( OutputStream os = Files.newOutputStream( newMetadata ) )
+        {
+            new MetadataStaxWriter().write( os, metadata );
+        }
+        return new InstallationPlan( newMetadata );
+    }
+
     @Test
     public void testNonexistent()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        InstallationPlan plan = new InstallationPlan( resources.resolve( "not-there" ) );
+        InstallationPlan plan = new InstallationPlan( Paths.get( "not-there" ) );
         assertTrue( plan.getArtifacts().isEmpty() );
     }
 
     @Test
     public void testValid()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        InstallationPlan plan = new InstallationPlan( resources.resolve( "valid.xml" ) );
+        InstallationPlan plan = createInstallationPlan( "valid.xml" );
         assertFalse( plan.getArtifacts().isEmpty() );
         assertEquals( 2, plan.getArtifacts().size() );
         assertEquals( "test", plan.getArtifacts().get( 0 ).getArtifactId() );
@@ -52,141 +94,141 @@ public class InstallationPlanTest
 
     @Test( expected = ArtifactInstallationException.class )
     public void testUuid()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "uuid.xml" ) );
+        createInstallationPlan( "uuid.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNamespace()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "namespace.xml" ) );
+        createInstallationPlan( "namespace.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testAlias()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "alias.xml" ) );
+        createInstallationPlan( "alias.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testCompat()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "compat.xml" ) );
+        createInstallationPlan( "compat.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoGroupId()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-gid.xml" ) );
+        createInstallationPlan( "no-gid.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoArtifactId()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-aid.xml" ) );
+        createInstallationPlan( "no-aid.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoVersion()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-version.xml" ) );
+        createInstallationPlan( "no-version.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoFile()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-file.xml" ) );
+        createInstallationPlan( "no-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNonexistenFile()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "nonexistent-file.xml" ) );
+        createInstallationPlan( "nonexistent-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNonregularFile()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "nonregular-file.xml" ) );
+        createInstallationPlan( "nonregular-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNonreadableFile()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "nonreadable-file.xml" ) );
+        createInstallationPlan( "nonreadable-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoArtifactIdDep()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-aid-dep.xml" ) );
+        createInstallationPlan( "no-aid-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoGroupIdDep()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-gid-dep.xml" ) );
+        createInstallationPlan( "no-gid-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoVersionDep()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-version-dep.xml" ) );
+        createInstallationPlan( "no-version-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNamespaceDep()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "namespace-dep.xml" ) );
+        createInstallationPlan( "namespace-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testResolvedVersionDep()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "resolved-version.xml" ) );
+        createInstallationPlan( "resolved-version.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoArtifactIdExclusion()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-aid-excl.xml" ) );
+        createInstallationPlan( "no-aid-excl.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoGroupIdExclusion()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "no-gid-excl.xml" ) );
+        createInstallationPlan( "no-gid-excl.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testSkipped()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "skipped.xml" ) );
+        createInstallationPlan( "skipped.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testMetadataUuid()
-            throws ArtifactInstallationException
+            throws Exception
     {
-        new InstallationPlan( resources.resolve( "metadata-uuid.xml" ) );
+        createInstallationPlan( "metadata-uuid.xml" );
     }
 }
