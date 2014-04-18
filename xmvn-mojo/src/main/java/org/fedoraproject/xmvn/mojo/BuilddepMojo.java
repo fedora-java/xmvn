@@ -37,6 +37,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 
@@ -48,7 +49,6 @@ import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -71,6 +71,38 @@ public class BuilddepMojo
     {
         this.resolver = resolver;
         this.buildDependencyExtractor = buildDependencyExtractor;
+    }
+
+    private static void addOptionalChild( Xpp3Dom parent, String tag, String value, String defaultValue )
+    {
+        if ( defaultValue == null || !value.equals( defaultValue ) )
+        {
+            Xpp3Dom child = new Xpp3Dom( tag );
+            child.setValue( value );
+            parent.addChild( child );
+        }
+    }
+
+    private static Xpp3Dom toXpp3Dom( Artifact artifact, String tag )
+    {
+        Xpp3Dom parent = new Xpp3Dom( tag );
+
+        if ( artifact.getNamespace() != null )
+            addOptionalChild( parent, "namespace", artifact.getNamespace(), "" );
+        addOptionalChild( parent, "groupId", artifact.getGroupId(), null );
+        addOptionalChild( parent, "artifactId", artifact.getArtifactId(), null );
+        addOptionalChild( parent, "extension", artifact.getExtension(), "jar" );
+        addOptionalChild( parent, "classifier", artifact.getClassifier(), "" );
+        addOptionalChild( parent, "version", artifact.getVersion(), "SYSTEM" );
+
+        return parent;
+    }
+
+    private static void serialize( Artifact artifact, XmlSerializer serializer, String namespace, String tag )
+        throws IOException
+    {
+        Xpp3Dom dom = toXpp3Dom( artifact, tag );
+        dom.writeToSerializer( namespace, serializer );
     }
 
     @Override
@@ -142,7 +174,7 @@ public class BuilddepMojo
                 s.startTag( null, "dependencies" );
 
                 for ( Artifact dependencyArtifact : resolvedDependencies )
-                    ArtifactUtils.serialize( dependencyArtifact, s, null, "dependency" );
+                    serialize( dependencyArtifact, s, null, "dependency" );
 
                 s.endTag( null, "dependencies" );
             }

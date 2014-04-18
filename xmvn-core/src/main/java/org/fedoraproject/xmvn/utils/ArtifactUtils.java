@@ -29,8 +29,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.eclipse.aether.artifact.ArtifactType;
 import org.eclipse.aether.artifact.DefaultArtifactType;
 import org.slf4j.Logger;
@@ -111,38 +109,6 @@ public class ArtifactUtils
 
         sb.append( separator + "]" );
         return sb.toString();
-    }
-
-    private static void addOptionalChild( Xpp3Dom parent, String tag, String value, String defaultValue )
-    {
-        if ( defaultValue == null || !value.equals( defaultValue ) )
-        {
-            Xpp3Dom child = new Xpp3Dom( tag );
-            child.setValue( value );
-            parent.addChild( child );
-        }
-    }
-
-    public static Xpp3Dom toXpp3Dom( Artifact artifact, String tag )
-    {
-        Xpp3Dom parent = new Xpp3Dom( tag );
-
-        if ( artifact.getNamespace() != null )
-            addOptionalChild( parent, "namespace", artifact.getNamespace(), "" );
-        addOptionalChild( parent, "groupId", artifact.getGroupId(), null );
-        addOptionalChild( parent, "artifactId", artifact.getArtifactId(), null );
-        addOptionalChild( parent, "extension", artifact.getExtension(), "jar" );
-        addOptionalChild( parent, "classifier", artifact.getClassifier(), "" );
-        addOptionalChild( parent, "version", artifact.getVersion(), "SYSTEM" );
-
-        return parent;
-    }
-
-    public static void serialize( Artifact artifact, XmlSerializer serializer, String namespace, String tag )
-        throws IOException
-    {
-        Xpp3Dom dom = toXpp3Dom( artifact, tag );
-        dom.writeToSerializer( namespace, serializer );
     }
 
     private static final Map<String, ArtifactType> stereotypes = new LinkedHashMap<>();
