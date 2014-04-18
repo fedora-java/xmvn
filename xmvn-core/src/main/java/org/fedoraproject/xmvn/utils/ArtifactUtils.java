@@ -20,8 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -29,8 +27,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.codehaus.plexus.util.StringUtils;
-import org.eclipse.aether.artifact.ArtifactType;
-import org.eclipse.aether.artifact.DefaultArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,35 +107,16 @@ public class ArtifactUtils
         return sb.toString();
     }
 
-    private static final Map<String, ArtifactType> stereotypes = new LinkedHashMap<>();
-
-    private static void addStereotype( String type, String extension, String classifier )
-    {
-        stereotypes.put( type, new DefaultArtifactType( type, extension, classifier, "java" ) );
-    }
-
-    // The list was taken from MavenRepositorySystemUtils in maven-aether-provider.
-    static
-    {
-        addStereotype( "maven-plugin", "jar", "" );
-        addStereotype( "ejb", "jar", "" );
-        addStereotype( "ejb-client", "jar", "client" );
-        addStereotype( "test-jar", "jar", "tests" );
-        addStereotype( "javadoc", "jar", "javadoc" );
-        addStereotype( "java-source", "jar", "sources" );
-    }
-
     public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
                                                 String version )
     {
         String extension = type != null ? type : Artifact.DEFAULT_EXTENSION;
 
-        ArtifactType artifactType = stereotypes.get( type );
-        if ( artifactType != null )
+        if ( ArtifactTypeRegistry.isRegisteredType( type ) )
         {
-            extension = artifactType.getExtension();
+            extension = ArtifactTypeRegistry.getExtension( type );
             if ( StringUtils.isEmpty( classifier ) )
-                classifier = artifactType.getClassifier();
+                classifier = ArtifactTypeRegistry.getClassifier( type );
         }
 
         return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
