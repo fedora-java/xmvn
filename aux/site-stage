@@ -3,8 +3,8 @@
 set -e
 
 if [ ! -d target/site ]; then
-    echo "Site wasn't built." >&@
-    echo "You may want to run 'mvn clean verify site first." >&@
+    echo "$0: Site wasn't built." >&2
+    echo "$0: You may want to run 'mvn clean verify site' first." >&2
     exit 1
 fi
 
