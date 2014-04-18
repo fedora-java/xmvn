@@ -76,10 +76,6 @@
       <artifactId>sisu-guice</artifactId>
       <classifier>no_aop</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.apache.ivy</groupId>
-      <artifactId>ivy</artifactId>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

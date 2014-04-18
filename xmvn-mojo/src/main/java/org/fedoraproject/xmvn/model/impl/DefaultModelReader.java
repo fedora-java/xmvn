@@ -16,14 +16,17 @@
 package org.fedoraproject.xmvn.model.impl;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelReader;
@@ -40,33 +43,18 @@ import org.fedoraproject.xmvn.model.ModelReader;
 public class DefaultModelReader
     implements ModelReader
 {
-    private final List<ModelReader> modelReaders;
-
-    @Inject
-    public DefaultModelReader( List<ModelReader> modelReaders )
-    {
-        this.modelReaders = modelReaders;
-    }
-
     @Override
     public Model readModel( Path modelPath )
         throws IOException, ModelFormatException
     {
-        ModelFormatException modelFormatException = null;
-
-        for ( ModelReader reader : modelReaders )
+        try (Reader fileReader = Files.newBufferedReader( modelPath, StandardCharsets.UTF_8 ))
         {
-            try
-            {
-                if ( reader != this )
-                    return reader.readModel( modelPath );
-            }
-            catch ( ModelFormatException e )
-            {
-                modelFormatException = e;
-            }
+            MavenXpp3Reader modelReader = new MavenXpp3Reader();
+            return modelReader.read( fileReader );
         }
-
-        throw new IOException( "Unable to read model", modelFormatException );
+        catch ( XmlPullParserException e )
+        {
+            throw new ModelFormatException( "Unparseable Maven POM", e );
+        }
     }
 }
