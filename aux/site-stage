@@ -1,0 +1,11 @@
+#!/bin/sh
+# Upload site to stagging area
+set -e
+
+if [ ! -d target/site ]; then
+    echo "Site wasn't built." >&@
+    echo "You may want to run 'mvn clean verify site first." >&@
+    exit 1
+fi
+
+tar cC target site | lbzip2 -u | ssh fedorapeople.org "cd public_html/xmvn/stage && rm -rf site && tar xjv"
