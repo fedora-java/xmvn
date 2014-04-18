@@ -30,9 +30,6 @@ Configuring XMvn
 
   XMvn reads its configuration from the following sources:
 
-    [[1]] Artifact configuration - specified in <<<pluginManagement>>>
-          in artifact POM,
-
     [[2]] Reactor configuration directory - specified in configuration
           files in <<<$PWD/.xmvn/conf.d/>>> directory,
 
@@ -79,21 +76,6 @@ Configuring XMvn
   reactor configuration then it will be inherited from user
   configuration, but if this setting is explicitly set in reactor
   configuration then it will take precedence over user configuration.
-
-** Artifact configuration
-
-  Every Maven artifact can specify XMvn configuration in
-  <<<pluginManagement>>> in its POM (see maven POM reference for more
-  details about pluginManagement).  This configuration has highest
-  precedence and it is subject to standard maven POM inheritance
-  mechanisms.  This means that parent POM files can specify XMvn
-  configuration for all offspring artifacts.
-
-  Configuration in POM does not interfere with normal Maven build if
-  XMvn is not used.  In particular Maven will not try to download XMvn
-  artifacts during normal build.  This means that XMvn configuration
-  can be easily included in upstream POM files (if upstream is willing
-  to cooperate).
 
 ** Builtin configuration
 
