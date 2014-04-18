@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver.impl;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import static org.fedoraproject.xmvn.utils.FileUtils.followSymlink;
 
@@ -38,9 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;

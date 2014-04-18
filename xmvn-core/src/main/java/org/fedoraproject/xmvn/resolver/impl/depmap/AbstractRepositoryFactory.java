@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2013-2014 Red Hat, Inc.
+ * Copyright (c) 2014 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
-import java.nio.file.Path;
+import java.util.List;
+import java.util.Properties;
+
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
+import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
- * Artifact path within repository.
- * 
  * @author Mikolaj Izdebski
  */
 @Deprecated
-public interface RepositoryPath
+abstract class AbstractRepositoryFactory
+    implements RepositoryFactory
 {
-    /**
-     * Return artifact path relative to highest-level repository root. Returned path includes all repository prefixes.
-     * 
-     * @return artifact path
-     */
-    Path getPath();
-
-    /**
-     * Get lowest-level repository that this path belongs to.
-     * 
-     * @return repository this path belongs to
-     */
-    Repository getRepository();
+    @Override
+    public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
+    {
+        return getInstance( stereotypes, properties, configuration, "" );
+    }
 }

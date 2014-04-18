@@ -33,7 +33,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.resolver.impl.DefaultDependencyMap;
+import org.fedoraproject.xmvn.resolver.impl.depmap.DefaultDependencyMap;
 
 /**
  * @author Mikolaj Izdebski

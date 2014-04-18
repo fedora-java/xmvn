@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository.impl;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 
 /**
  * @author Mikolaj Izdebski

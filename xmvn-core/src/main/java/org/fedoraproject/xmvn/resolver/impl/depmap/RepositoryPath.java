@@ -13,15 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
+
+import java.nio.file.Path;
 
 /**
+ * Artifact path within repository.
+ * 
  * @author Mikolaj Izdebski
  */
 @Deprecated
-public interface RepositoryConfigurator
+public interface RepositoryPath
 {
-    Repository configureRepository( String repoId );
+    /**
+     * Return artifact path relative to highest-level repository root. Returned path includes all repository prefixes.
+     * 
+     * @return artifact path
+     */
+    Path getPath();
 
-    Repository configureRepository( String repoId, String namespace );
+    /**
+     * Get lowest-level repository that this path belongs to.
+     * 
+     * @return repository this path belongs to
+     */
+    Repository getRepository();
 }

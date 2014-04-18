@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository.impl;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import java.util.List;
 import java.util.Map;
@@ -27,9 +27,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Stereotype;
-import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
-import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for

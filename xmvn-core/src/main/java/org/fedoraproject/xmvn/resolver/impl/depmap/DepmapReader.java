@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver.impl;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;

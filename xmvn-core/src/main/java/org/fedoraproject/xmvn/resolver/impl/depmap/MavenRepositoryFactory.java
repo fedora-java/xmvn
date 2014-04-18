@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository.impl;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -22,7 +22,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.fedoraproject.xmvn.config.Stereotype;
-import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * Factory creating JPP repositories.
@@ -33,15 +32,15 @@ import org.fedoraproject.xmvn.repository.Repository;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "jpp" )
+@Named( "maven" )
 @Singleton
 @Deprecated
-public class JppRepositoryFactory
+public class MavenRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
     protected Repository newInstance( String namespace, Path root, List<Stereotype> stereotypes )
     {
-        return new JppRepository( namespace, root, stereotypes );
+        return new MavenRepository( namespace, root, stereotypes );
     }
 }

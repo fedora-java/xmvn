@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository.impl;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,17 +22,17 @@ import java.util.List;
 import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
- * JPP-style repository JPP layout, either versioned or versionless, depending on properties.
+ * Maven repository layout, as used by upstream Maven.
  * <p>
- * Example: {@code g/r/o/u/p/artifact-ver.ext} or {@code g/r/o/u/p/artifact.ext}
+ * Example: {@code g/r/o/u/p/artifact/ver/artifact-ver.ext}
  * 
  * @author Mikolaj Izdebski
  */
 @Deprecated
-class JppRepository
+class MavenRepository
     extends SimpleRepository
 {
-    public JppRepository( String namespace, Path root, List<Stereotype> stereotypes )
+    public MavenRepository( String namespace, Path root, List<Stereotype> stereotypes )
     {
         super( namespace, root, stereotypes );
     }
@@ -41,17 +41,20 @@ class JppRepository
     protected Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
                                     String version )
     {
+        if ( version == null )
+            return null;
+
         StringBuilder path = new StringBuilder();
 
-        if ( groupId.startsWith( "JPP/" ) )
-            path.append( groupId.substring( 4 ) ).append( '/' );
-        else if ( !groupId.equals( "JPP" ) )
-            path.append( groupId ).append( '/' );
+        path.append( groupId.replace( '.', '/' ) ).append( '/' );
 
         path.append( artifactId );
 
-        if ( version != null )
-            path.append( '-' ).append( version );
+        path.append( '/' ).append( version );
+
+        path.append( '/' ).append( artifactId );
+
+        path.append( '-' ).append( version );
 
         if ( !classifier.isEmpty() )
             path.append( '-' ).append( classifier );

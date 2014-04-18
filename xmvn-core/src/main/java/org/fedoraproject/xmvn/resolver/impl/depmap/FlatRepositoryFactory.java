@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository.impl;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -22,10 +22,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.fedoraproject.xmvn.config.Stereotype;
-import org.fedoraproject.xmvn.repository.Repository;
 
 /**
- * Factory creating JPP repositories.
+ * Factory creating flat repositories.
  * <p>
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
  * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
@@ -33,15 +32,15 @@ import org.fedoraproject.xmvn.repository.Repository;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "maven" )
+@Named( "flat" )
 @Singleton
 @Deprecated
-public class MavenRepositoryFactory
+public class FlatRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
     protected Repository newInstance( String namespace, Path root, List<Stereotype> stereotypes )
     {
-        return new MavenRepository( namespace, root, stereotypes );
+        return new FlatRepository( namespace, root, stereotypes );
     }
 }
