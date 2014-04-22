@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -28,6 +29,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 import org.junit.After;
 import org.junit.Before;
 
@@ -186,5 +191,34 @@ public abstract class AbstractFileTest
             assertTrue( iterator.hasNext() );
             assertEquals( expectedLine, iterator.next() );
         }
+    }
+
+    protected Path prepareInstallationPlanFile( String filename )
+            throws Exception
+    {
+        Path metadataPath = getResource( filename );
+        PackageMetadata metadata = new MetadataStaxReader().read( metadataPath.toString() );
+        for ( ArtifactMetadata artifact : metadata.getArtifacts() )
+        {
+            String path = artifact.getPath();
+            if ( path != null )
+            {
+                path = path.replace( "src/test/resources", getResource( "" ).toAbsolutePath().toString() );
+                artifact.setPath( path );
+            }
+        }
+        Path newMetadata = workdir.resolve( filename );
+        try ( OutputStream os = Files.newOutputStream( newMetadata ) )
+        {
+            new MetadataStaxWriter().write( os, metadata );
+        }
+        return newMetadata;
+    }
+
+    protected InstallationPlan createInstallationPlan( String filename )
+            throws Exception
+    {
+        
+        return new InstallationPlan( prepareInstallationPlanFile( filename ) );
     }
 }

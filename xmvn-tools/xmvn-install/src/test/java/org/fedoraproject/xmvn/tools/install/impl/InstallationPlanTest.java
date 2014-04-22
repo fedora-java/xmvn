@@ -36,30 +36,6 @@ import static org.junit.Assert.assertTrue;
 public class InstallationPlanTest
         extends AbstractFileTest
 {
-    private final Path resources = Paths.get( "src/test/resources/" ).toAbsolutePath();
-
-    private InstallationPlan createInstallationPlan( String filename )
-            throws Exception
-    {
-        Path metadataPath = resources.resolve( filename );
-        PackageMetadata metadata = new MetadataStaxReader().read( metadataPath.toString() );
-        for ( ArtifactMetadata artifact : metadata.getArtifacts() )
-        {
-            String path = artifact.getPath();
-            if ( path != null )
-            {
-                path = path.replace( "src/test/resources", resources.toAbsolutePath().toString() );
-                artifact.setPath( path );
-            }
-        }
-        Path newMetadata = workdir.resolve( filename );
-        try ( OutputStream os = Files.newOutputStream( newMetadata ) )
-        {
-            new MetadataStaxWriter().write( os, metadata );
-        }
-        return new InstallationPlan( newMetadata );
-    }
-
     @Test
     public void testNonexistent()
             throws Exception
