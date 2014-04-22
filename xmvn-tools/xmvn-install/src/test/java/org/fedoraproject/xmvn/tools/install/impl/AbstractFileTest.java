@@ -15,20 +15,25 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.junit.After;
+import org.junit.Before;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Mikolaj Izdebski
@@ -37,7 +42,7 @@ public abstract class AbstractFileTest
 {
     private final List<File> files = new ArrayList<>();
 
-    private Path installRoot;
+    protected Path workdir;
 
     private final List<String> descriptors = new ArrayList<>();
 
@@ -47,23 +52,53 @@ public abstract class AbstractFileTest
         files.add( file );
     }
 
+    @Before
+    public void setUpWorkdir()
+            throws IOException
+    {
+        String testName = getClass().getName();
+        Path workPath = Paths.get( "target" ).resolve( "test-work" );
+        Files.createDirectories( workPath );
+        workdir = Files.createTempDirectory( workPath, testName );
+    }
+
+    @After
+    public void tearDownWorkdir()
+            throws IOException
+    {
+        Files.walkFileTree( workdir, new SimpleFileVisitor<Path>()
+        {
+            @Override
+            public FileVisitResult visitFile( Path file, BasicFileAttributes attrs )
+                    throws IOException
+            {
+                Files.delete( file );
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory( Path dir, IOException exc )
+                    throws IOException
+            {
+                Files.delete( dir );
+                return FileVisitResult.CONTINUE;
+            }
+
+        } );
+    }
+
     protected Path performInstallation()
         throws Exception
     {
         try
         {
-            String testName = getClass().getName();
-            Path workPath = Paths.get( "target" ).resolve( "test-work" );
-            Files.createDirectories( workPath );
-            installRoot = Files.createTempDirectory( workPath, testName );
-
             for ( File file : files )
-                file.install( installRoot );
+                file.install( workdir );
 
             for ( File file : files )
                 descriptors.add( file.getDescriptor() );
 
-            return installRoot;
+            return workdir;
         }
         finally
         {
@@ -71,21 +106,10 @@ public abstract class AbstractFileTest
         }
     }
 
-    protected Path performInstallation( Package pkg )
-        throws Exception
-    {
-        String testName = getClass().getName();
-        Path workPath = Paths.get( "target" ).resolve( "test-work" );
-        Files.createDirectories( workPath );
-        installRoot = Files.createTempDirectory( workPath, testName );
-        pkg.install( installRoot );
-        return installRoot;
-    }
-
     protected void assertDirectoryStructure( String... expected )
         throws Exception
     {
-        assertDirectoryStructure( installRoot, expected );
+        assertDirectoryStructure( workdir, expected );
     }
 
     protected void assertDirectoryStructure( Path root, String... expected )
@@ -151,7 +175,7 @@ public abstract class AbstractFileTest
     protected void assertDescriptorEquals( Package pkg, String... expected )
         throws IOException
     {
-        Path mfiles = installRoot.resolve( ".mfiles" );
+        Path mfiles = workdir.resolve( ".mfiles" );
         pkg.writeDescriptor( mfiles );
         List<String> lines = Files.readAllLines( mfiles, Charset.defaultCharset() );
 

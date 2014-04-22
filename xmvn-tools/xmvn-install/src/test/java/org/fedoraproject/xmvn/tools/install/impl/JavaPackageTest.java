@@ -38,7 +38,7 @@ public class JavaPackageTest
         JavaPackage pkg = new JavaPackage( "my-id", Paths.get( "usr/share/maven-metadata/my-id.xml" ) );
         assertEquals( "my-id", pkg.getId() );
 
-        performInstallation( pkg );
+        pkg.install( workdir );
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/maven-metadata",
                                   "F /usr/share/maven-metadata/my-id.xml" );
         assertDescriptorEquals( pkg, "%attr(0644,root,root) /usr/share/maven-metadata/my-id.xml" );
@@ -54,9 +54,9 @@ public class JavaPackageTest
         PackageMetadata inputMetadata = pkg.getMetadata();
         inputMetadata.setUuid( "test-uuid" );
 
-        Path root = performInstallation( pkg );
+        pkg.install( workdir );
 
-        PackageMetadata actualMetadata = new MetadataStaxReader().read( root.resolve( metadataPath ).toString(), true );
+        PackageMetadata actualMetadata = new MetadataStaxReader().read( workdir.resolve( metadataPath ).toString(), true );
         assertEquals( "test-uuid", actualMetadata.getUuid() );
     }
 }

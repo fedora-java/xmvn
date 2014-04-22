@@ -40,7 +40,7 @@ public class PackageTest
         assertEquals( "my-id", pkg.getId() );
         pkg.addFile( jarfile );
 
-        performInstallation( pkg );
+        pkg.install( workdir );
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar" );
         assertDescriptorEquals( pkg, "%attr(0644,root,root) /usr/share/java/foobar.jar" );
     }
@@ -58,7 +58,7 @@ public class PackageTest
         pkg.addFile( jarfile );
         pkg.addFile( link );
 
-        performInstallation( pkg );
+        pkg.install( workdir );
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar",
                                   "L /usr/share/java/link.jar" );
         assertDescriptorEquals( pkg, "%attr(0755,root,root) %dir /usr/share/java",
@@ -72,7 +72,7 @@ public class PackageTest
     {
         Package pkg = new Package( "my-id" );
 
-        performInstallation( pkg );
+        pkg.install( workdir );
         assertDirectoryStructure();
         assertDescriptorEquals( pkg );
     }

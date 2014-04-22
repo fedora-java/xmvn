@@ -18,8 +18,6 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -30,7 +28,6 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -41,6 +38,7 @@ import static org.junit.Assert.assertNotNull;
  * @author Michael Simacek
  */
 public class DefaultArtifactInstallerTest
+        extends AbstractFileTest
 {
     class MockRepositoryConfigurator
             implements RepositoryConfigurator
@@ -143,19 +141,6 @@ public class DefaultArtifactInstallerTest
         }
     } );
 
-    protected static Path workdir;
-    private final Path resources = Paths.get( "src/test/resources" );
-
-    @BeforeClass
-    public static void setUpClass()
-            throws IOException
-    {
-        String testName = new Throwable().getStackTrace()[0].getClassName();
-        Path workPath = Paths.get( "target" ).resolve( "test-work" );
-        Files.createDirectories( workPath );
-        workdir = Files.createTempDirectory( workPath, testName ).toAbsolutePath();
-    }
-
     @Test
     public void testInstallation()
             throws Exception
@@ -164,7 +149,7 @@ public class DefaultArtifactInstallerTest
         artifact.setGroupId( "com.example" );
         artifact.setArtifactId( "test" );
         artifact.setVersion( "4.5" );
-        artifact.setPath( resources.resolve( "example.jar" ).toString() );
+        artifact.setPath( getResource( "example.jar" ).toString() );
 
         JavaPackage pkg = new JavaPackage( "test", Paths.get( "usr/share/maven-metadata/test.xml" ) );
 

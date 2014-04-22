@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,7 +23,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -36,20 +34,9 @@ import static org.junit.Assert.assertTrue;
  * @author Michael Simacek
  */
 public class InstallationPlanTest
+        extends AbstractFileTest
 {
     private final Path resources = Paths.get( "src/test/resources/" ).toAbsolutePath();
-
-    private Path workdir;
-
-    @Before
-    public void setUp()
-            throws IOException
-    {
-        String testName = getClass().getName();
-        Path workPath = Paths.get( "target" ).resolve( "test-work" );
-        Files.createDirectories( workPath );
-        workdir = Files.createTempDirectory( workPath, testName );
-    }
 
     private InstallationPlan createInstallationPlan( String filename )
             throws Exception
