@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -34,9 +36,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.After;
 import org.junit.Before;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
@@ -226,5 +234,39 @@ public abstract class AbstractFileTest
         throws Exception
     {
         return new InstallationPlan( prepareInstallationPlanFile( filename ) );
+    }
+
+    private void unifyUuids( NodeList nodes )
+    {
+        for ( int i = 0; i < nodes.getLength(); i++ )
+        {
+            nodes.item( i ).setTextContent( "uuid-placeholder" );
+        }
+    }
+
+    protected void assertMetadataEqual( Path expected, Path actual )
+            throws Exception
+    {
+        setIgnoreWhitespace( true );
+        assertTrue( Files.isRegularFile( actual ) );
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document expectedXml = builder.parse( expected.toString() );
+        Document actualXml = builder.parse( actual.toString() );
+
+        NodeList nodes = expectedXml.getElementsByTagName( "path" );
+
+        for ( int i = 0; i < nodes.getLength(); i++ )
+        {
+            Node pathNode = nodes.item( i );
+            String path = pathNode.getTextContent();
+            if ( path.startsWith( "???" ) )
+                pathNode.setTextContent( getResource( path.substring( 3 ) ).toAbsolutePath().toString() );
+        }
+
+        unifyUuids( expectedXml.getElementsByTagName( "uuid" ) );
+        unifyUuids( actualXml.getElementsByTagName( "uuid" ) );
+
+        assertXMLEqual( expectedXml, actualXml );
     }
 }

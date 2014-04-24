@@ -64,19 +64,6 @@ public class DefaultInstallerTest
         config.setInstallerSettings( settings );
     }
 
-    @Before
-    public void setUpMocks()
-    {
-
-
-    }
-
-    @After
-    public void tearDownMocks()
-    {
-
-    }
-
     private final ResolutionRequest request1 = new ResolutionRequest( "org.apache.lucene", "lucene-benchmark", "4.1", "jar" );
     private final ResolutionRequest request2 = new ResolutionRequest( "org.apache.lucene", "lucene-benchmark", "SYSTEM", "jar" );
     private final ResolutionRequest request3 = new ResolutionRequest( "org.apache.lucene", "lucene-spatial", "4.1", "jar" );
@@ -131,5 +118,7 @@ public class DefaultInstallerTest
                 "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar", "F /usr/share/maven-metadata/test-pkg.xml" );
         assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
                 "%attr(0644,root,root) /usr/share/java/test.jar", "%attr(0644,root,root) /usr/share/java/test2.jar" );
+
+        assertMetadataEqual( getResource( "test-pkg.xml" ), installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
     }
 }
