@@ -15,12 +15,9 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-
-import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
  * @author Mikolaj Izdebski
@@ -32,21 +29,21 @@ public interface RepositoryFactory
      * <p>
      * The meaning of properties and XML configuration is dependent on particular repository implementation.
      * 
-     * @param stereotypes
+     * @param filter
      * @param properties
      * @param configuration
      */
-    Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration );
+    Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration );
 
     /**
      * Create a resolver instance configured with given set of properties and repository-specific XML configuration.
      * <p>
      * The meaning of properties and XML configuration is dependent on particular repository implementation.
      * 
-     * @param stereotypes
+     * @param filter
      * @param properties
      * @param configuration
      * @param namespace
      */
-    Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration, String namespace );
+    Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration, String namespace );
 }

@@ -15,12 +15,10 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import java.util.List;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
@@ -31,8 +29,8 @@ abstract class AbstractRepositoryFactory
     implements RepositoryFactory
 {
     @Override
-    public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
+    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration )
     {
-        return getInstance( stereotypes, properties, configuration, "" );
+        return getInstance( filter, properties, configuration, "" );
     }
 }

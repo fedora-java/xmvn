@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,7 +25,6 @@ import javax.inject.Singleton;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
@@ -86,12 +84,12 @@ public class DefaultRepositoryConfigurator
         if ( type == null )
             throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
 
-        List<Stereotype> stereotypes = desc.getStereotypes();
+        Xpp3Dom filter = (Xpp3Dom) desc.getFilter();
 
         RepositoryFactory factory = repositoryFactories.get( type );
         if ( factory == null )
             throw new RuntimeException( "Unable to create repository of type '" + type + "': no suitable factory found" );
 
-        return factory.getInstance( stereotypes, properties, configurationXml );
+        return factory.getInstance( filter, properties, configurationXml );
     }
 }

@@ -20,15 +20,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-
-import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
  * @author Mikolaj Izdebski
@@ -39,7 +36,7 @@ public class MyRepositoryFactory
     implements RepositoryFactory
 {
     @Override
-    public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration )
+    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration )
     {
         assertNotNull( properties );
         assertNotNull( configuration );
@@ -50,8 +47,7 @@ public class MyRepositoryFactory
     }
 
     @Override
-    public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration,
-                                   String namespace )
+    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration, String namespace )
     {
         fail( "getInstance was not expected to be called" );
         return null;

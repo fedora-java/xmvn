@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
+import org.fedoraproject.xmvn.tools.install.condition.Condition;
 
 /**
  * @author Mikolaj Izdebski
@@ -32,36 +34,23 @@ abstract class SimpleRepository
 {
     private final Path root;
 
-    private final List<Stereotype> stereotypes;
+    private final Condition condition;
 
-    public SimpleRepository( String namespace, Path root, List<Stereotype> stereotypes )
+    public SimpleRepository( String namespace, Path root, Xpp3Dom filter )
     {
         super( namespace );
         this.root = root;
-        this.stereotypes = new ArrayList<>( stereotypes );
+        this.condition = new Condition( filter );
     }
 
     protected abstract Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
                                              String version );
 
-    private boolean matchesStereotypes( Artifact artifact, boolean ignoreType )
-    {
-        for ( Stereotype stereotype : stereotypes )
-        {
-            if ( ( stereotype.getExtension() == null || stereotype.getExtension().equals( artifact.getExtension() ) )
-                && ( stereotype.getClassifier() == null || stereotype.getClassifier().equals( artifact.getClassifier() ) ) )
-            {
-                return true;
-            }
-        }
-
-        return stereotypes.isEmpty();
-    }
-
     @Override
     public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
     {
-        if ( !matchesStereotypes( artifact, ignoreType ) )
+        // FIXME: support artifact properties
+        if ( !condition.getValue( Collections.<String, String> emptyMap() ) )
             return null;
 
         String groupId = artifact.getGroupId();

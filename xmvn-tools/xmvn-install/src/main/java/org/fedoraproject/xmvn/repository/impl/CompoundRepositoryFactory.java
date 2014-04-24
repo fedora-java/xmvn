@@ -28,7 +28,6 @@ import javax.inject.Singleton;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-import org.fedoraproject.xmvn.config.Stereotype;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 
@@ -55,8 +54,7 @@ public class CompoundRepositoryFactory
     }
 
     @Override
-    public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration,
-                                   String namespace )
+    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration, String namespace )
     {
         Path prefix = null;
         if ( properties.containsKey( "prefix" ) )

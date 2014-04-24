@@ -16,12 +16,12 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.util.List;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.fedoraproject.xmvn.config.Stereotype;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
 import org.fedoraproject.xmvn.repository.Repository;
 
 /**
@@ -39,8 +39,8 @@ public class FlatRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
-    protected Repository newInstance( String namespace, Path root, List<Stereotype> stereotypes )
+    protected Repository newInstance( String namespace, Path root, Xpp3Dom filter )
     {
-        return new FlatRepository( namespace, root, stereotypes );
+        return new FlatRepository( namespace, root, filter );
     }
 }

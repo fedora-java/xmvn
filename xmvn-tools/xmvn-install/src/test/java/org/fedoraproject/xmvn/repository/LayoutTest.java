@@ -20,8 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -33,7 +31,6 @@ import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.Stereotype;
 
 /**
  * @author Mikolaj Izdebski
@@ -52,11 +49,11 @@ public class LayoutTest
         RepositoryFactory factory = lookup( RepositoryFactory.class, type );
         assertNotNull( factory );
 
-        List<Stereotype> stereotypes = Collections.emptyList();
+        Xpp3Dom filter = new Xpp3Dom( "filter" );
         Properties properties = new Properties();
         Xpp3Dom configuration = new Xpp3Dom( "configuration" );
 
-        Repository repository = factory.getInstance( stereotypes, properties, configuration );
+        Repository repository = factory.getInstance( filter, properties, configuration );
         assertNotNull( repository );
 
         return repository;

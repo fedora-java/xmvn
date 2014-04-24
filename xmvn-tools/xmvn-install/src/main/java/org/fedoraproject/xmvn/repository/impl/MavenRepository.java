@@ -17,9 +17,8 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
-import org.fedoraproject.xmvn.config.Stereotype;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * Maven repository layout, as used by upstream Maven.
@@ -31,9 +30,9 @@ import org.fedoraproject.xmvn.config.Stereotype;
 class MavenRepository
     extends SimpleRepository
 {
-    public MavenRepository( String namespace, Path root, List<Stereotype> stereotypes )
+    public MavenRepository( String namespace, Path root, Xpp3Dom filter )
     {
-        super( namespace, root, stereotypes );
+        super( namespace, root, filter );
     }
 
     @Override

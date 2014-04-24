@@ -204,6 +204,15 @@
           </description>
           <type>DOM</type>
         </field>
+        <field>
+          <name>filter</name>
+          <version>2.0.0+</version>
+          <description>
+            A boolean expression describing which artifacts can be
+            stored in this repository.
+          </description>
+          <type>DOM</type>
+        </field>
       </fields>
     </class>
 

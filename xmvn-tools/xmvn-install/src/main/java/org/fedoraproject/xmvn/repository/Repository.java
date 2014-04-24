@@ -28,6 +28,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
+// XXX: add support for artifact properties!
 public interface Repository
 {
     /**
