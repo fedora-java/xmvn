@@ -15,12 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 
 /**
  * @author Mikolaj Izdebski
@@ -39,11 +34,5 @@ abstract class AbstractRepository
     public String getNamespace()
     {
         return namespace;
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( Artifact artifact )
-    {
-        return getArtifactPaths( Collections.singletonList( artifact ) );
     }
 }

@@ -98,18 +98,6 @@ public class DefaultArtifactInstallerTest
         }
 
         @Override
-        public List<RepositoryPath> getArtifactPaths( Artifact artifact )
-        {
-            throw new UnsupportedOperationException( "Not supported" );
-        }
-
-        @Override
-        public List<RepositoryPath> getArtifactPaths( List<Artifact> artifact )
-        {
-            throw new UnsupportedOperationException( "Not supported" );
-        }
-
-        @Override
         public String getNamespace()
         {
             return "ns";

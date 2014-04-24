@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import java.util.List;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
@@ -40,28 +38,6 @@ public interface Repository
      * @return preferred artifact path
      */
     RepositoryPath getPrimaryArtifactPath( Artifact artifact );
-
-    /**
-     * Get list of possible paths to given artifact in this repository. The returned list is ordered by decreasing
-     * preference - the first path on the returned list is the most preferred one.
-     * <p>
-     * All returned paths are relative to the repository base.
-     * 
-     * @param artifact
-     * @return list of possible artifact paths
-     */
-    List<RepositoryPath> getArtifactPaths( Artifact artifact );
-
-    /**
-     * Get list of possible paths to given artifacts in this repository. The returned list is ordered by decreasing
-     * preference - the first path on the returned list is the most preferred one.
-     * <p>
-     * All returned paths are relative to the repository base.
-     * 
-     * @param artifacts list of artifacts to lookup
-     * @return list of possible artifact paths
-     */
-    List<RepositoryPath> getArtifactPaths( List<Artifact> artifact );
 
     String getNamespace();
 }

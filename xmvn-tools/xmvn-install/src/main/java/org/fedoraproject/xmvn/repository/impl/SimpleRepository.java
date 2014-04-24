@@ -16,9 +16,7 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -69,20 +67,5 @@ abstract class SimpleRepository
             path = root.resolve( path );
 
         return new DefaultRepositoryPath( path, this );
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
-    {
-        List<RepositoryPath> paths = new ArrayList<>();
-
-        for ( Artifact artifact : artifacts )
-        {
-            RepositoryPath path = getPrimaryArtifactPath( artifact );
-            if ( path != null )
-                paths.add( path );
-        }
-
-        return Collections.unmodifiableList( paths );
     }
 }

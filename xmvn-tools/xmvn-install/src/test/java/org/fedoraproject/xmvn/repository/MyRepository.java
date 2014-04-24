@@ -17,8 +17,6 @@ package org.fedoraproject.xmvn.repository;
 
 import static org.junit.Assert.fail;
 
-import java.util.List;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
@@ -31,20 +29,6 @@ class MyRepository
     public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
     {
         fail( "getPrimaryArtifactPath() was not expected to be called" );
-        throw null;
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( Artifact artifact )
-    {
-        fail( "getArtifactPaths() was not expected to be called" );
-        throw null;
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifact )
-    {
-        fail( "getArtifactPaths() was not expected to be called" );
         throw null;
     }
 

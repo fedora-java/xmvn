@@ -19,10 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.Arrays;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.sisu.launch.InjectedTest;
@@ -84,18 +81,9 @@ public class LayoutTest
         assertNull( defaultRepositoryfFactory );
     }
 
-    private void testPaths( Repository repository, Artifact artifact, String... result )
+    private void testPaths( Repository repository, Artifact artifact, String expected )
     {
-        Set<String> expected = new TreeSet<>();
-        Set<String> actual = new TreeSet<>();
-
-        expected.addAll( Arrays.asList( result ) );
-        for ( RepositoryPath path : repository.getArtifactPaths( artifact ) )
-        {
-            assertNotNull( path );
-            actual.add( path.getPath().toString() );
-        }
-
+        String actual = repository.getPrimaryArtifactPath( artifact ).toString();
         assertEquals( expected, actual );
     }
 
@@ -112,7 +100,7 @@ public class LayoutTest
 
         testPaths( mavenRepository, artifact,
                    "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
-        testPaths( mavenRepository, artifact.setVersion( "SYSTEM" ) );
+        testPaths( mavenRepository, artifact.setVersion( "SYSTEM" ), null );
         testPaths( jppRepository, artifact, "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
         testPaths( jppRepository, artifact.setVersion( "SYSTEM" ), "an-example.artifact/used-FOR42.testing.ext-ens.ion" );
         testPaths( flatRepository, artifact, "an-example.artifact-used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );

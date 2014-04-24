@@ -16,9 +16,6 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -50,26 +47,17 @@ class CompoundRepository
     }
 
     @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
-    {
-        List<RepositoryPath> paths = new ArrayList<>();
-        for ( Repository repository : slaveRepositories )
-        {
-            for ( RepositoryPath path : repository.getArtifactPaths( artifacts ) )
-            {
-                DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
-                if ( prefix != null )
-                    newPath.setPath( prefix.resolve( path.getPath() ) );
-                paths.add( newPath );
-            }
-        }
-        return Collections.unmodifiableList( paths );
-    }
-
-    @Override
     public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
     {
-        Iterator<RepositoryPath> it = getArtifactPaths( artifact ).iterator();
-        return it.hasNext() ? it.next() : null;
+        for ( Repository repository : slaveRepositories )
+        {
+            RepositoryPath path = repository.getPrimaryArtifactPath( artifact );
+            DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
+            if ( prefix != null )
+                newPath.setPath( prefix.resolve( path.getPath() ) );
+            return newPath;
+        }
+
+        return null;
     }
 }
