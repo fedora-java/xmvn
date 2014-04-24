@@ -47,7 +47,7 @@ abstract class SimpleRepository
                                              String version );
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
     {
         // FIXME: support artifact properties
         if ( !condition.getValue( Collections.<String, String> emptyMap() ) )
@@ -72,13 +72,13 @@ abstract class SimpleRepository
     }
 
     @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts, boolean ignoreType )
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
     {
         List<RepositoryPath> paths = new ArrayList<>();
 
         for ( Artifact artifact : artifacts )
         {
-            RepositoryPath path = getPrimaryArtifactPath( artifact, ignoreType );
+            RepositoryPath path = getPrimaryArtifactPath( artifact );
             if ( path != null )
                 paths.add( path );
         }

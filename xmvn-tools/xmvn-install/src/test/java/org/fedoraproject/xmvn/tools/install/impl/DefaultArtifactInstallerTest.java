@@ -93,12 +93,6 @@ public class DefaultArtifactInstallerTest
         @Override
         public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
         {
-            return getPrimaryArtifactPath( artifact, false );
-        }
-
-        @Override
-        public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
-        {
             String coordinates = artifact.getGroupId() + '-' + artifact.getArtifactId();
             return new MockRepositoryPath( Paths.get( coordinates ), this );
         }
@@ -110,19 +104,7 @@ public class DefaultArtifactInstallerTest
         }
 
         @Override
-        public List<RepositoryPath> getArtifactPaths( Artifact artifact, boolean ignoreType )
-        {
-            throw new UnsupportedOperationException( "Not supported" );
-        }
-
-        @Override
         public List<RepositoryPath> getArtifactPaths( List<Artifact> artifact )
-        {
-            throw new UnsupportedOperationException( "Not supported" );
-        }
-
-        @Override
-        public List<RepositoryPath> getArtifactPaths( List<Artifact> artifact, boolean ignoreType )
         {
             throw new UnsupportedOperationException( "Not supported" );
         }

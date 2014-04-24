@@ -50,12 +50,12 @@ class CompoundRepository
     }
 
     @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts, boolean ignoreType )
+    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
     {
         List<RepositoryPath> paths = new ArrayList<>();
         for ( Repository repository : slaveRepositories )
         {
-            for ( RepositoryPath path : repository.getArtifactPaths( artifacts, ignoreType ) )
+            for ( RepositoryPath path : repository.getArtifactPaths( artifacts ) )
             {
                 DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
                 if ( prefix != null )
@@ -67,9 +67,9 @@ class CompoundRepository
     }
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
     {
-        Iterator<RepositoryPath> it = getArtifactPaths( artifact, ignoreType ).iterator();
+        Iterator<RepositoryPath> it = getArtifactPaths( artifact ).iterator();
         return it.hasNext() ? it.next() : null;
     }
 }

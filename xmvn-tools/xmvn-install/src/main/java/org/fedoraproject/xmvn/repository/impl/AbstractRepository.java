@@ -42,26 +42,8 @@ abstract class AbstractRepository
     }
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
-    {
-        return getPrimaryArtifactPath( artifact, false );
-    }
-
-    @Override
     public List<RepositoryPath> getArtifactPaths( Artifact artifact )
     {
-        return getArtifactPaths( artifact, false );
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( Artifact artifact, boolean ignoreType )
-    {
-        return getArtifactPaths( Collections.singletonList( artifact ), ignoreType );
-    }
-
-    @Override
-    public List<RepositoryPath> getArtifactPaths( List<Artifact> artifacts )
-    {
-        return getArtifactPaths( artifacts, false );
+        return getArtifactPaths( Collections.singletonList( artifact ) );
     }
 }
