@@ -15,6 +15,10 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,9 +32,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.google.inject.Binder;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -43,74 +50,41 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
  * @author Michael Simacek
  */
 public class DefaultArtifactInstallerTest
-    extends AbstractFileTest
+        extends AbstractFileTest
 {
+    private final Repository repositoryMock = createMock( Repository.class );
+    private final RepositoryPath repositoryPathMock = createMock( RepositoryPath.class );
+    private final RepositoryConfigurator repositoryConfiguratorMock = createMock( RepositoryConfigurator.class );
+
     @Inject
     private ArtifactInstaller installer;
-
-    class MockRepositoryConfigurator
-        implements RepositoryConfigurator
-    {
-        @Override
-        public Repository configureRepository( String repoId )
-        {
-            return configureRepository( repoId, null );
-        }
-
-        @Override
-        public Repository configureRepository( String repoId, String namespace )
-        {
-            return new MockRepository();
-        }
-    }
-
-    static class MockRepositoryPath
-        implements RepositoryPath
-    {
-        private final Path path;
-
-        private final Repository repository;
-
-        public MockRepositoryPath( Path path, Repository repository )
-        {
-            this.path = path;
-            this.repository = repository;
-        }
-
-        @Override
-        public Path getPath()
-        {
-            return path;
-        }
-
-        @Override
-        public Repository getRepository()
-        {
-            return repository;
-        }
-    }
-
-    class MockRepository
-        implements Repository
-    {
-        @Override
-        public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
-        {
-            String coordinates = artifact.getGroupId() + '-' + artifact.getArtifactId();
-            return new MockRepositoryPath( Paths.get( coordinates ), this );
-        }
-
-        @Override
-        public String getNamespace()
-        {
-            return "ns";
-        }
-    }
 
     @Override
     public void configure( Binder binder )
     {
-        binder.bind( RepositoryConfigurator.class ).toInstance( new MockRepositoryConfigurator() );
+        binder.bind( RepositoryConfigurator.class ).toInstance( repositoryConfiguratorMock );
+    }
+
+    @Before
+    public void setUpMocks()
+    {
+        Artifact inputArtifact = new DefaultArtifact( "com.example", "test", "4.5" );
+        expect( repositoryPathMock.getPath() ).andReturn( Paths.get( "com.example-test" ) );
+        expect( repositoryPathMock.getRepository() ).andReturn( repositoryMock );
+        expect( repositoryMock.getPrimaryArtifactPath( inputArtifact ) ).andReturn( repositoryPathMock );
+        expect( repositoryMock.getNamespace() ).andReturn( "ns" );
+        expect( repositoryConfiguratorMock.configureRepository( "install" ) ).andReturn( repositoryMock );
+        replay( repositoryPathMock );
+        replay( repositoryMock );
+        replay( repositoryConfiguratorMock );
+    }
+
+    @After
+    public void tearDownMocks()
+    {
+        verify( repositoryConfiguratorMock );
+        verify( repositoryMock );
+        verify( repositoryPathMock );
     }
 
     private ArtifactMetadata createArtifact()
