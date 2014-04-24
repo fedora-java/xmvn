@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.tools.install.condition;
 /**
  * @author Mikolaj Izdebski
  */
-abstract class Not
+class Not
     extends BooleanExpression
 {
     private final BooleanExpression rhs;
