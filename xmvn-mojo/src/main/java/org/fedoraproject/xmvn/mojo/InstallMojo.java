@@ -16,12 +16,11 @@
 package org.fedoraproject.xmvn.mojo;
 
 import static org.fedoraproject.xmvn.mojo.Utils.aetherArtifact;
-import static org.fedoraproject.xmvn.mojo.Utils.saveEffectivePom;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +29,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -145,11 +146,30 @@ public class InstallMojo
         }
     }
 
-    private void deployArtifact( Artifact artifact )
+    private void deployArtifact( Artifact artifact, Model model )
         throws MojoExecutionException
     {
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact( artifact );
+
+        for ( Dependency dependency : model.getDependencies() )
+        {
+            String scope = dependency.getScope();
+            if ( scope == null || scope.equals( "compile" ) || scope.equals( "runtime" ) )
+            {
+                Artifact dependencyArtifact =
+                    new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(),
+                                         dependency.getClassifier(), dependency.getVersion() );
+
+                List<Artifact> exclusions = new ArrayList<>();
+                for ( Exclusion e : dependency.getExclusions() )
+                {
+                    exclusions.add( new DefaultArtifact( e.getGroupId(), e.getArtifactId() ) );
+                }
+
+                request.addDependency( dependencyArtifact, exclusions );
+            }
+        }
 
         DeploymentResult result = deployer.deploy( request );
         if ( result.getException() != null )
@@ -162,66 +182,48 @@ public class InstallMojo
     {
         handleSystemDependencies();
 
-        try
+        for ( MavenProject project : reactorProjects )
         {
-            for ( MavenProject project : reactorProjects )
+            Artifact mainArtifact = aetherArtifact( project.getArtifact() );
+            Path mainArtifactPath = mainArtifact.getPath();
+            logger.debug( "Installing main artifact {}", mainArtifact );
+            logger.debug( "Artifact file is {}", mainArtifactPath );
+
+            if ( mainArtifactPath != null && !Files.isRegularFile( mainArtifactPath ) )
             {
-                Artifact mainArtifact = aetherArtifact( project.getArtifact() );
-                Path mainArtifactPath = mainArtifact.getPath();
-                logger.debug( "Installing main artifact {}", mainArtifact );
-                logger.debug( "Artifact file is {}", mainArtifactPath );
-
-                if ( mainArtifactPath != null && !Files.isRegularFile( mainArtifactPath ) )
-                {
-                    logger.info( "Skipping installation of artifact {}: artifact file is not a regular file",
-                                 mainArtifactPath );
-                    mainArtifactPath = null;
-                }
-
-                if ( mainArtifactPath != null )
-                    deployArtifact( mainArtifact );
-
-                if ( mainArtifactPath != null && !isTychoProject( project ) )
-                {
-                    Artifact effectivePomArtifact =
-                        new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
-                                             mainArtifact.getClassifier(), mainArtifact.getVersion() );
-                    Path effectivePom = saveEffectivePom( project.getModel() );
-                    logger.debug( "Effective POM path: {}", effectivePom );
-                    effectivePomArtifact = effectivePomArtifact.setPath( effectivePom );
-                    deployArtifact( effectivePomArtifact );
-                }
-
-                Artifact rawPomArtifact =
-                    new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
-                                         mainArtifact.getClassifier(), mainArtifact.getVersion() );
-                File rawPomFile = project.getFile();
-                Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
-                logger.debug( "Raw POM path: {}", rawPomPath );
-                rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
-                deployArtifact( rawPomArtifact );
-
-                for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
-                {
-                    Artifact attachedArtifact = aetherArtifact( mavenArtifact );
-                    Path attachedArtifactPath = attachedArtifact.getPath();
-                    logger.debug( "Installing attached artifact {}", attachedArtifact );
-                    logger.debug( "Artifact file is {}", attachedArtifactPath );
-
-                    if ( attachedArtifactPath != null && !Files.isRegularFile( attachedArtifactPath ) )
-                    {
-                        logger.info( "Skipping installation of attached artifact {}: artifact file is not a regular file",
-                                     attachedArtifact );
-                        continue;
-                    }
-
-                    deployArtifact( attachedArtifact );
-                }
+                logger.info( "Skipping installation of artifact {}: artifact file is not a regular file",
+                             mainArtifactPath );
+                mainArtifactPath = null;
             }
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Failed to install project", e );
+
+            if ( mainArtifactPath != null )
+                deployArtifact( mainArtifact, project.getModel() );
+
+            Artifact rawPomArtifact =
+                new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
+                                     mainArtifact.getClassifier(), mainArtifact.getVersion() );
+            File rawPomFile = project.getFile();
+            Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
+            logger.debug( "Raw POM path: {}", rawPomPath );
+            rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
+            deployArtifact( rawPomArtifact, project.getModel() );
+
+            for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
+            {
+                Artifact attachedArtifact = aetherArtifact( mavenArtifact );
+                Path attachedArtifactPath = attachedArtifact.getPath();
+                logger.debug( "Installing attached artifact {}", attachedArtifact );
+                logger.debug( "Artifact file is {}", attachedArtifactPath );
+
+                if ( attachedArtifactPath != null && !Files.isRegularFile( attachedArtifactPath ) )
+                {
+                    logger.info( "Skipping installation of attached artifact {}: artifact file is not a regular file",
+                                 attachedArtifact );
+                    continue;
+                }
+
+                deployArtifact( attachedArtifact, project.getModel() );
+            }
         }
     }
 }
