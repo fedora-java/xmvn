@@ -157,9 +157,11 @@ public class InstallMojo
             String scope = dependency.getScope();
             if ( scope == null || scope.equals( "compile" ) || scope.equals( "runtime" ) )
             {
+                // TODO: consider using artifact handler?
                 Artifact dependencyArtifact =
-                    new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(),
-                                         dependency.getClassifier(), dependency.getVersion() );
+                    ArtifactUtils.createTypedArtifact( dependency.getGroupId(), dependency.getArtifactId(),
+                                                       dependency.getType(), dependency.getClassifier(),
+                                                       dependency.getVersion() );
 
                 List<Artifact> exclusions = new ArrayList<>();
                 for ( Exclusion e : dependency.getExclusions() )
