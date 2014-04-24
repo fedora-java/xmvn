@@ -15,12 +15,20 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import javax.inject.Inject;
+
+import com.google.inject.Binder;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.config.Configuration;
@@ -32,14 +40,22 @@ import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
+import org.fedoraproject.xmvn.tools.install.Installer;
 
 /**
  * @author Michael Simacek
  */
 public class DefaultInstallerTest
-    extends AbstractFileTest
+        extends AbstractFileTest
 {
-    static final Configuration config = new Configuration();
+    private static final Configuration config = new Configuration();
+
+    @Inject
+    private Installer installer;
+
+    private final Configurator configuratorMock = createMock( Configurator.class );
+    private final Resolver resolverMock = createMock( Resolver.class );
+    private final ResolutionResult resolutionResultMock = createNiceMock( ResolutionResult.class );
 
     static
     {
@@ -48,96 +64,72 @@ public class DefaultInstallerTest
         config.setInstallerSettings( settings );
     }
 
-    class MockConfigurator
-        implements Configurator
+    @Before
+    public void setUpMocks()
     {
-        @Override
-        public Configuration getDefaultConfiguration()
-        {
-            return config;
-        }
 
-        @Override
-        public Configuration getConfiguration()
-        {
-            return config;
-        }
 
-        @Override
-        public void dumpConfiguration()
-        {
-        }
     }
 
+    @After
+    public void tearDownMocks()
+    {
+
+    }
+
+    private final ResolutionRequest request1 = new ResolutionRequest( "org.apache.lucene", "lucene-benchmark", "4.1", "jar" );
+    private final ResolutionRequest request2 = new ResolutionRequest( "org.apache.lucene", "lucene-benchmark", "SYSTEM", "jar" );
+    private final ResolutionRequest request3 = new ResolutionRequest( "org.apache.lucene", "lucene-spatial", "4.1", "jar" );
+    private final ResolutionRequest request4 = new ResolutionRequest( "org.apache.lucene", "lucene-spatial", "SYSTEM", "jar" );
+
     class MockArtifactInstaller
-        implements ArtifactInstaller
+            implements ArtifactInstaller
     {
         @Override
         public void install( JavaPackage targetPackage, ArtifactMetadata artifactMetadata, PackagingRule packagingRule )
-            throws ArtifactInstallationException
+                throws ArtifactInstallationException
         {
-            Path path = Paths.get( "usr/share/java/" + artifactMetadata.getArtifactId() );
+            Path path = Paths.get( "usr/share/java/" + artifactMetadata.getArtifactId() + ".jar" );
             File file = new RegularFile( path, Paths.get( artifactMetadata.getPath() ) );
             targetPackage.addFile( file );
             targetPackage.getMetadata().addArtifact( artifactMetadata );
         }
     }
 
-    class MockResolver
-        implements Resolver
+    @Override
+    public void configure( Binder binder )
     {
-        @Override
-        public ResolutionResult resolve( ResolutionRequest request )
-        {
-            return new ResolutionResult()
-            {
-                @Override
-                public Path getArtifactPath()
-                {
-                    return null;
-                }
-
-                @Override
-                public String getProvider()
-                {
-                    return null;
-                }
-
-                @Override
-                public String getCompatVersion()
-                {
-                    return null;
-                }
-
-                @Override
-                public String getNamespace()
-                {
-                    return null;
-                }
-            };
-        }
+        binder.bind( Configurator.class ).toInstance( configuratorMock );
+        binder.bind( ArtifactInstaller.class ).toInstance( new MockArtifactInstaller() );
+        binder.bind( Resolver.class ).toInstance( resolverMock );
     }
-
-    private final Injector injector = Guice.createInjector( new AbstractModule()
-    {
-        @Override
-        protected void configure()
-        {
-            bind( Configurator.class ).toInstance( new MockConfigurator() );
-            bind( ArtifactInstaller.class ).toInstance( new MockArtifactInstaller() );
-            bind( Resolver.class ).toInstance( new MockResolver() );
-        }
-    } );
 
     @Test
     public void testInstall()
-        throws Exception
+            throws Exception
     {
+        expect( configuratorMock.getConfiguration() ).andReturn( config );
+        expect( resolverMock.resolve( request1 ) ).andReturn( resolutionResultMock );
+        expect( resolverMock.resolve( request2 ) ).andReturn( resolutionResultMock );
+        expect( resolverMock.resolve( request3 ) ).andReturn( resolutionResultMock );
+        expect( resolverMock.resolve( request4 ) ).andReturn( resolutionResultMock );
+        replay( resolverMock );
+        replay( configuratorMock );
+        replay( resolutionResultMock );
+
         InstallationRequest request = new InstallationRequest();
         request.setBasePackageName( "test-pkg" );
-        request.setInstallRoot( workdir );
+        request.setInstallRoot( installRoot );
         request.setInstallationPlan( prepareInstallationPlanFile( "valid.xml" ) );
-        DefaultInstaller installer = injector.getInstance( DefaultInstaller.class );
+
         installer.install( request );
+
+        verify( configuratorMock );
+        verify( resolverMock );
+
+        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "D /usr/share/maven-metadata",
+                "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar", "F /usr/share/maven-metadata/test-pkg.xml" );
+        assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
+                "%attr(0644,root,root) /usr/share/java/test.jar", "%attr(0644,root,root) /usr/share/java/test2.jar" );
     }
 }

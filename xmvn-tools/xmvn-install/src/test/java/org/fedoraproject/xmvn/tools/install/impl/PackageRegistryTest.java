@@ -58,7 +58,7 @@ public class PackageRegistryTest
         throws Exception
     {
         JavaPackage pkg = registry.getPackageById( null );
-        pkg.install( workdir );
+        pkg.install( installRoot );
         assertDescriptorEquals( pkg, "%attr(0644,root,root) /usr/share/maven-metadata/test-package.xml" );
     }
 
@@ -67,7 +67,7 @@ public class PackageRegistryTest
         throws Exception
     {
         JavaPackage pkg = registry.getPackageById( "subpackage" );
-        pkg.install( workdir );
+        pkg.install( installRoot );
         assertDescriptorEquals( pkg, "%attr(0644,root,root) /usr/share/maven-metadata/subpackage.xml" );
     }
 

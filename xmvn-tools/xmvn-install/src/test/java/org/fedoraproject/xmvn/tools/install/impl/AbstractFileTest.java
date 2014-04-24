@@ -53,6 +53,8 @@ public abstract class AbstractFileTest
 
     protected Path workdir;
 
+    protected Path installRoot;
+
     private final List<String> descriptors = new ArrayList<>();
 
     protected void add( File file )
@@ -69,6 +71,8 @@ public abstract class AbstractFileTest
         Path workPath = Paths.get( "target" ).resolve( "test-work" );
         Files.createDirectories( workPath );
         workdir = Files.createTempDirectory( workPath, testName );
+        installRoot = workdir.resolve( "install-root" );
+        Files.createDirectory( installRoot );
     }
 
     @After
@@ -101,12 +105,12 @@ public abstract class AbstractFileTest
         try
         {
             for ( File file : files )
-                file.install( workdir );
+                file.install( installRoot );
 
             for ( File file : files )
                 descriptors.add( file.getDescriptor() );
 
-            return workdir;
+            return installRoot;
         }
         finally
         {
@@ -117,7 +121,7 @@ public abstract class AbstractFileTest
     protected void assertDirectoryStructure( String... expected )
         throws Exception
     {
-        assertDirectoryStructure( workdir, expected );
+        assertDirectoryStructure( installRoot, expected );
     }
 
     protected void assertDirectoryStructure( Path root, String... expected )
@@ -180,20 +184,20 @@ public abstract class AbstractFileTest
         assertTrue( Arrays.equals( expectedContent, actualContent ) );
     }
 
-    protected void assertDescriptorEquals( Package pkg, String... expected )
+    protected void assertDescriptorEquals( Path mfiles, String... expected )
         throws IOException
     {
-        Path mfiles = workdir.resolve( ".mfiles" );
-        pkg.writeDescriptor( mfiles );
         List<String> lines = Files.readAllLines( mfiles, Charset.defaultCharset() );
 
-        Iterator<String> iterator = lines.iterator();
+        assertEqualsImpl( lines, "descriptor", expected );
+    }
 
-        for ( String expectedLine : expected )
-        {
-            assertTrue( iterator.hasNext() );
-            assertEquals( expectedLine, iterator.next() );
-        }
+    protected void assertDescriptorEquals( Package pkg, String... expected )
+            throws IOException
+    {
+        Path mfiles = installRoot.resolve( ".mfiles" );
+        pkg.writeDescriptor( mfiles );
+        assertDescriptorEquals( mfiles, expected );
     }
 
     protected Path prepareInstallationPlanFile( String filename )
