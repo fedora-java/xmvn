@@ -39,7 +39,7 @@ import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 public class DefaultInstallerTest
     extends AbstractFileTest
 {
-    private static final Configuration config = new Configuration();
+    static final Configuration config = new Configuration();
 
     static
     {
