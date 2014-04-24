@@ -35,7 +35,7 @@ public class PackageRegistryTest
     private PackageRegistry registry;
 
     @Before
-    public void setUp()
+    public void setUpRegistry()
     {
         settings = new InstallerSettings();
         settings.setMetadataDir( "usr/share/maven-metadata" );
