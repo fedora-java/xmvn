@@ -15,30 +15,23 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
-import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Paths;
+
+import org.junit.Test;
+
 /**
- *
  * @author Michael Simacek
  */
 public class InstallationPlanTest
-        extends AbstractFileTest
+    extends AbstractFileTest
 {
     @Test
     public void testNonexistent()
-            throws Exception
+        throws Exception
     {
         InstallationPlan plan = new InstallationPlan( Paths.get( "not-there" ) );
         assertTrue( plan.getArtifacts().isEmpty() );
@@ -46,7 +39,7 @@ public class InstallationPlanTest
 
     @Test
     public void testValid()
-            throws Exception
+        throws Exception
     {
         InstallationPlan plan = createInstallationPlan( "valid.xml" );
         assertFalse( plan.getArtifacts().isEmpty() );
@@ -57,140 +50,140 @@ public class InstallationPlanTest
 
     @Test( expected = ArtifactInstallationException.class )
     public void testUuid()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "uuid.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNamespace()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "namespace.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testAlias()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "alias.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testCompat()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "compat.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoGroupId()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-gid.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoArtifactId()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-aid.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoVersion()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-version.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoFile()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNonexistenFile()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "nonexistent-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNonregularFile()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "nonregular-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNonreadableFile()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "nonreadable-file.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoArtifactIdDep()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-aid-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoGroupIdDep()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-gid-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoVersionDep()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-version-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNamespaceDep()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "namespace-dep.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testResolvedVersionDep()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "resolved-version.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoArtifactIdExclusion()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-aid-excl.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testNoGroupIdExclusion()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "no-gid-excl.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testSkipped()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "skipped.xml" );
     }
 
     @Test( expected = ArtifactInstallationException.class )
     public void testMetadataUuid()
-            throws Exception
+        throws Exception
     {
         createInstallationPlan( "metadata-uuid.xml" );
     }

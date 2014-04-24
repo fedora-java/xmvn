@@ -15,15 +15,21 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import org.junit.Test;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
@@ -32,22 +38,16 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
- *
  * @author Michael Simacek
  */
 public class DefaultArtifactInstallerTest
-        extends AbstractFileTest
+    extends AbstractFileTest
 {
     class MockRepositoryConfigurator
-            implements RepositoryConfigurator
+        implements RepositoryConfigurator
     {
-
         @Override
         public Repository configureRepository( String repoId )
         {
@@ -59,13 +59,13 @@ public class DefaultArtifactInstallerTest
         {
             return new MockRepository();
         }
-
     }
 
     static class MockRepositoryPath
-            implements RepositoryPath
+        implements RepositoryPath
     {
         private final Path path;
+
         private final Repository repository;
 
         public MockRepositoryPath( Path path, Repository repository )
@@ -88,9 +88,8 @@ public class DefaultArtifactInstallerTest
     }
 
     class MockRepository
-            implements Repository
+        implements Repository
     {
-
         @Override
         public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
         {
@@ -133,7 +132,6 @@ public class DefaultArtifactInstallerTest
         {
             return "ns";
         }
-
     }
 
     private final Injector injector = Guice.createInjector( new AbstractModule()
@@ -157,7 +155,7 @@ public class DefaultArtifactInstallerTest
 
     @Test
     public void testInstallation()
-            throws Exception
+        throws Exception
     {
         ArtifactMetadata artifact = createArtifact();
         Path metadataPath = Paths.get( "usr/share/maven-metadata/test.xml" );
@@ -184,7 +182,7 @@ public class DefaultArtifactInstallerTest
 
     @Test
     public void testCompatVersion()
-            throws Exception
+        throws Exception
     {
         ArtifactMetadata artifact = createArtifact();
         JavaPackage pkg = new JavaPackage( "test", Paths.get( "usr/share/maven-metadata/test.xml" ) );
@@ -200,15 +198,12 @@ public class DefaultArtifactInstallerTest
         ArtifactMetadata actualArtifact = metadata.getArtifacts().get( 0 );
         List<String> actualVersions = actualArtifact.getCompatVersions();
         Collections.sort( actualVersions );
-        assertEquals( Arrays.asList( new String[]
-        {
-            "3", "3.4"
-        } ), actualVersions );
+        assertEquals( Arrays.asList( new String[] { "3", "3.4" } ), actualVersions );
     }
 
     @Test
     public void testAliases()
-            throws Exception
+        throws Exception
     {
         ArtifactMetadata artifact = createArtifact();
         JavaPackage pkg = new JavaPackage( "test", Paths.get( "usr/share/maven-metadata/test.xml" ) );

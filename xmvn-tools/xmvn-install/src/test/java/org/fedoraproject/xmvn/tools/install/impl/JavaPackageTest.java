@@ -56,7 +56,8 @@ public class JavaPackageTest
 
         pkg.install( workdir );
 
-        PackageMetadata actualMetadata = new MetadataStaxReader().read( workdir.resolve( metadataPath ).toString(), true );
+        PackageMetadata actualMetadata =
+            new MetadataStaxReader().read( workdir.resolve( metadataPath ).toString(), true );
         assertEquals( "test-uuid", actualMetadata.getUuid() );
     }
 }

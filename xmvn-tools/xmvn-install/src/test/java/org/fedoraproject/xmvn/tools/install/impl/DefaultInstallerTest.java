@@ -15,11 +15,14 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.junit.Test;
+
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
@@ -29,16 +32,13 @@ import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
-import org.junit.Test;
 
 /**
- *
  * @author Michael Simacek
  */
 public class DefaultInstallerTest
-        extends AbstractFileTest
+    extends AbstractFileTest
 {
-
     private static final Configuration config = new Configuration();
 
     static
@@ -49,9 +49,8 @@ public class DefaultInstallerTest
     }
 
     class MockConfigurator
-            implements Configurator
+        implements Configurator
     {
-
         @Override
         public Configuration getDefaultConfiguration()
         {
@@ -71,22 +70,21 @@ public class DefaultInstallerTest
     }
 
     class MockArtifactInstaller
-            implements ArtifactInstaller
+        implements ArtifactInstaller
     {
         @Override
         public void install( JavaPackage targetPackage, ArtifactMetadata artifactMetadata, PackagingRule packagingRule )
-                throws ArtifactInstallationException
+            throws ArtifactInstallationException
         {
             Path path = Paths.get( "usr/share/java/" + artifactMetadata.getArtifactId() );
             File file = new RegularFile( path, Paths.get( artifactMetadata.getPath() ) );
             targetPackage.addFile( file );
             targetPackage.getMetadata().addArtifact( artifactMetadata );
         }
-
     }
 
     class MockResolver
-            implements Resolver
+        implements Resolver
     {
         @Override
         public ResolutionResult resolve( ResolutionRequest request )
@@ -133,7 +131,7 @@ public class DefaultInstallerTest
 
     @Test
     public void testInstall()
-            throws Exception
+        throws Exception
     {
         InstallationRequest request = new InstallationRequest();
         request.setBasePackageName( "test-pkg" );

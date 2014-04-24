@@ -15,6 +15,10 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -29,16 +33,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
-import org.junit.After;
-import org.junit.Before;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Mikolaj Izdebski
@@ -59,7 +61,7 @@ public abstract class AbstractFileTest
 
     @Before
     public void setUpWorkdir()
-            throws IOException
+        throws IOException
     {
         String testName = getClass().getName();
         Path workPath = Paths.get( "target" ).resolve( "test-work" );
@@ -69,13 +71,13 @@ public abstract class AbstractFileTest
 
     @After
     public void tearDownWorkdir()
-            throws IOException
+        throws IOException
     {
         Files.walkFileTree( workdir, new SimpleFileVisitor<Path>()
         {
             @Override
             public FileVisitResult visitFile( Path file, BasicFileAttributes attrs )
-                    throws IOException
+                throws IOException
             {
                 Files.delete( file );
                 return FileVisitResult.CONTINUE;
@@ -83,12 +85,11 @@ public abstract class AbstractFileTest
 
             @Override
             public FileVisitResult postVisitDirectory( Path dir, IOException exc )
-                    throws IOException
+                throws IOException
             {
                 Files.delete( dir );
                 return FileVisitResult.CONTINUE;
             }
-
         } );
     }
 
@@ -194,7 +195,7 @@ public abstract class AbstractFileTest
     }
 
     protected Path prepareInstallationPlanFile( String filename )
-            throws Exception
+        throws Exception
     {
         Path metadataPath = getResource( filename );
         PackageMetadata metadata = new MetadataStaxReader().read( metadataPath.toString() );
@@ -208,7 +209,7 @@ public abstract class AbstractFileTest
             }
         }
         Path newMetadata = workdir.resolve( filename );
-        try ( OutputStream os = Files.newOutputStream( newMetadata ) )
+        try (OutputStream os = Files.newOutputStream( newMetadata ))
         {
             new MetadataStaxWriter().write( os, metadata );
         }
@@ -216,9 +217,8 @@ public abstract class AbstractFileTest
     }
 
     protected InstallationPlan createInstallationPlan( String filename )
-            throws Exception
+        throws Exception
     {
-        
         return new InstallationPlan( prepareInstallationPlanFile( filename ) );
     }
 }

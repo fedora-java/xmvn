@@ -15,22 +15,23 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import org.fedoraproject.xmvn.config.InstallerSettings;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import org.fedoraproject.xmvn.config.InstallerSettings;
+
 /**
- *
  * @author Michael Simacek
  */
 public class PackageRegistryTest
-        extends AbstractFileTest
+    extends AbstractFileTest
 {
     private InstallerSettings settings;
+
     private PackageRegistry registry;
 
     @Before
@@ -54,7 +55,7 @@ public class PackageRegistryTest
 
     @Test
     public void testMetadata()
-            throws Exception
+        throws Exception
     {
         JavaPackage pkg = registry.getPackageById( null );
         pkg.install( workdir );
@@ -63,7 +64,7 @@ public class PackageRegistryTest
 
     @Test
     public void testNonDefault()
-            throws Exception
+        throws Exception
     {
         JavaPackage pkg = registry.getPackageById( "subpackage" );
         pkg.install( workdir );
@@ -72,7 +73,7 @@ public class PackageRegistryTest
 
     @Test
     public void testMultiple()
-            throws Exception
+        throws Exception
     {
         JavaPackage pkg1 = registry.getPackageById( null );
         JavaPackage pkg2 = registry.getPackageById( "subpackage" );
