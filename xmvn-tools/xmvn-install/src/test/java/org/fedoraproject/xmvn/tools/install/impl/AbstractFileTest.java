@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.After;
 import org.junit.Before;
 
@@ -46,6 +47,7 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractFileTest
+    extends InjectedTest
 {
     private final List<File> files = new ArrayList<>();
 

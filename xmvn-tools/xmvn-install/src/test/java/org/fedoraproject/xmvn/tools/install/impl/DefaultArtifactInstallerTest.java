@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import javax.inject.Inject;
+
+import com.google.inject.Binder;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -45,6 +45,9 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
 public class DefaultArtifactInstallerTest
     extends AbstractFileTest
 {
+    @Inject
+    private ArtifactInstaller installer;
+
     class MockRepositoryConfigurator
         implements RepositoryConfigurator
     {
@@ -104,14 +107,11 @@ public class DefaultArtifactInstallerTest
         }
     }
 
-    private final Injector injector = Guice.createInjector( new AbstractModule()
+    @Override
+    public void configure( Binder binder )
     {
-        @Override
-        protected void configure()
-        {
-            bind( RepositoryConfigurator.class ).toInstance( new MockRepositoryConfigurator() );
-        }
-    } );
+        binder.bind( RepositoryConfigurator.class ).toInstance( new MockRepositoryConfigurator() );
+    }
 
     private ArtifactMetadata createArtifact()
     {
@@ -132,7 +132,6 @@ public class DefaultArtifactInstallerTest
         JavaPackage pkg = new JavaPackage( "test", metadataPath );
         PackagingRule rule = new PackagingRule();
 
-        DefaultArtifactInstaller installer = injector.getInstance( DefaultArtifactInstaller.class );
         installer.install( pkg, artifact, rule );
 
         PackageMetadata metadata = pkg.getMetadata();
@@ -160,7 +159,6 @@ public class DefaultArtifactInstallerTest
         rule.addVersion( "3.4" );
         rule.addVersion( "3" );
 
-        DefaultArtifactInstaller installer = injector.getInstance( DefaultArtifactInstaller.class );
         installer.install( pkg, artifact, rule );
 
         PackageMetadata metadata = pkg.getMetadata();
@@ -190,7 +188,6 @@ public class DefaultArtifactInstallerTest
         rule.addAlias( alias1 );
         rule.addAlias( alias2 );
 
-        DefaultArtifactInstaller installer = injector.getInstance( DefaultArtifactInstaller.class );
         installer.install( pkg, artifact, rule );
 
         PackageMetadata metadata = pkg.getMetadata();
