@@ -25,7 +25,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -36,6 +39,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 
@@ -44,6 +50,8 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
  */
 class MetadataReader
 {
+    private final Logger logger = LoggerFactory.getLogger( MetadataReader.class );
+
     private final ThreadPoolExecutor executor;
 
     static class DaemonFactory
@@ -68,7 +76,7 @@ class MetadataReader
 
     public List<PackageMetadata> readMetadata( List<String> depmapLocations )
     {
-        List<Future<PackageMetadata>> futures = new ArrayList<>();
+        Map<Path, Future<PackageMetadata>> futures = new LinkedHashMap<>();
 
         for ( String pathString : depmapLocations )
         {
@@ -81,12 +89,15 @@ class MetadataReader
                 {
                     Arrays.sort( flist );
                     for ( String fragFilename : flist )
-                        futures.add( executor.submit( new Task( path.resolve( fragFilename ) ) ) );
+                    {
+                        Path xmlPath = path.resolve( fragFilename );
+                        futures.put( xmlPath, executor.submit( new Task( xmlPath ) ) );
+                    }
                 }
             }
             else
             {
-                futures.add( executor.submit( new Task( path ) ) );
+                futures.put( path, executor.submit( new Task( path ) ) );
             }
         }
 
@@ -94,15 +105,21 @@ class MetadataReader
         {
             List<PackageMetadata> result = new ArrayList<>();
 
-            for ( Future<PackageMetadata> future : futures )
+            for ( Entry<Path, Future<PackageMetadata>> entry : futures.entrySet() )
             {
+                Path path = entry.getKey();
+                Future<PackageMetadata> future = entry.getValue();
+
                 try
                 {
-                    result.add( future.get() );
+                    PackageMetadata metadata = future.get();
+                    result.add( metadata );
+                    logger.debug( "Read metadata for {} artifacts from file {}", metadata.getArtifacts().size(), path );
                 }
                 catch ( ExecutionException e )
                 {
                     // Ignore. Failure to read PackageMetadata of a single package should not break the whole system
+                    logger.debug( "Skipping metadata file {}", path, e );
                 }
             }
 
@@ -110,6 +127,7 @@ class MetadataReader
         }
         catch ( InterruptedException e )
         {
+            logger.debug( "Metadata reader thread was interrupted" );
             throw new RuntimeException( e );
         }
     }
