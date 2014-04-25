@@ -53,10 +53,13 @@ class CompoundRepository
         for ( Repository repository : slaveRepositories )
         {
             RepositoryPath path = repository.getPrimaryArtifactPath( artifact, context );
-            DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
-            if ( prefix != null )
-                newPath.setPath( prefix.resolve( path.getPath() ) );
-            return newPath;
+            if ( path != null )
+            {
+                DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
+                if ( prefix != null )
+                    newPath.setPath( prefix.resolve( path.getPath() ) );
+                return newPath;
+            }
         }
 
         return null;
