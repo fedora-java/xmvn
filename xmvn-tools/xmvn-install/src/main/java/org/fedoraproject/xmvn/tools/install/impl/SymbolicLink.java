@@ -42,6 +42,16 @@ class SymbolicLink
     public SymbolicLink( Path targetPath, Path referencedPath )
     {
         super( targetPath );
+
+        if ( referencedPath.isAbsolute() )
+        {
+            Path parent = getTargetPath().getParent();
+            Path base = Paths.get( "/" );
+            if ( parent != null )
+                base = base.resolve( parent );
+            referencedPath = base.relativize( referencedPath );
+        }
+
         this.referencedPath = referencedPath;
     }
 
@@ -49,11 +59,6 @@ class SymbolicLink
     protected void installContents( Path targetAbsolutePath )
         throws IOException
     {
-        Path parent = getTargetPath().getParent();
-        if ( parent == null )
-            parent = Paths.get( "/" );
-        Path relativePath = parent.relativize( referencedPath );
-
-        Files.createSymbolicLink( targetAbsolutePath, relativePath );
+        Files.createSymbolicLink( targetAbsolutePath, referencedPath );
     }
 }
