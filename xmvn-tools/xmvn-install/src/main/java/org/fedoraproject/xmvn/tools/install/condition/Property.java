@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
+import org.fedoraproject.xmvn.repository.ArtifactContext;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -29,7 +31,7 @@ class Property
     }
 
     @Override
-    public String getValue( Context context )
+    public String getValue( ArtifactContext context )
     {
         return context.getProperty( key );
     }

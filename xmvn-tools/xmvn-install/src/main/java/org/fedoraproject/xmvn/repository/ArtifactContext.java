@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.condition;
+package org.fedoraproject.xmvn.repository;
 
 import java.util.Map;
 
 /**
  * @author Mikolaj Izdebski
  */
-class Context
+public class ArtifactContext
 {
     private final Map<String, String> properties;
 
-    public Context( Map<String, String> properties )
+    public ArtifactContext( Map<String, String> properties )
     {
         this.properties = properties;
     }

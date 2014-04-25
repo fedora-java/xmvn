@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.fedoraproject.xmvn.repository.ArtifactContext;
+
 import org.junit.Test;
 
 /**
@@ -33,7 +35,7 @@ public class BooleanExpressionTest
     @Test
     public void testBasicExpressions()
     {
-        Context context = new Context( Collections.<String, String> emptyMap() );
+        ArtifactContext context = new ArtifactContext( Collections.<String, String> emptyMap() );
 
         BooleanExpression trueExpression = new BooleanLiteral( true );
         assertTrue( trueExpression.getValue( context ) );
@@ -57,7 +59,7 @@ public class BooleanExpressionTest
         Map<String, String> properties = new LinkedHashMap<>();
         properties.put( "foo", "bar" );
         properties.put( "baz", "" );
-        Context context = new Context( properties );
+        ArtifactContext context = new ArtifactContext( properties );
 
         StringExpression fooProperty = new Property( "foo" );
         assertEquals( "bar", fooProperty.getValue( context ) );

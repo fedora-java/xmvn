@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
+import org.fedoraproject.xmvn.repository.ArtifactContext;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -32,7 +34,7 @@ class Equals
     }
 
     @Override
-    public boolean getValue( Context context )
+    public boolean getValue( ArtifactContext context )
     {
         String lhsValue = lhs.getValue( context );
         String rhsValue = rhs.getValue( context );
