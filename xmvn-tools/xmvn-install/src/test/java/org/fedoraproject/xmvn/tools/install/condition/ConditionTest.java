@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.util.Collections;
@@ -135,5 +136,36 @@ public class ConditionTest
         Condition cond = new Condition( dom );
         assertTrue( cond.getValue( context1 ) );
         assertTrue( cond.getValue( context2 ) );
+    }
+
+    /**
+     * Test if syntax errors are caught by AST walker.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSyntaxError()
+        throws Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append( "<filter>" );
+        sb.append( "  <not>" );
+        sb.append( "    <xor>" );
+        sb.append( "      <hello/>" );
+        sb.append( "    </xor>" );
+        sb.append( "  </not>" );
+        sb.append( "</filter>" );
+
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( sb.toString() ) );
+
+        try
+        {
+            new Condition( dom );
+            fail();
+        }
+        catch ( RuntimeException e )
+        {
+            assertTrue( e.getMessage().contains( "unknown XML node name: hello" ) );
+        }
     }
 }
