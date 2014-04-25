@@ -15,9 +15,15 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -29,6 +35,8 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -47,6 +55,9 @@ public class DefaultArtifactInstaller
     @Inject
     private RepositoryConfigurator repositoryConfigurator;
 
+    @Inject
+    private Configurator configurator;
+
     @Override
     public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule )
         throws ArtifactInstallationException
@@ -58,27 +69,64 @@ public class DefaultArtifactInstaller
         Map<String, String> properties = new LinkedHashMap<>();
         for ( String name : am.getProperties().stringPropertyNames() )
             properties.put( name, am.getProperties().getProperty( name ) );
-        ArtifactContext context = new ArtifactContext( artifact, properties );
 
         logger.info( "Installing artifact {}", artifact );
+
+        InstallerSettings settings = configurator.getConfiguration().getInstallerSettings();
 
         Repository repo = repositoryConfigurator.configureRepository( "install" );
         if ( repo == null )
             throw new ArtifactInstallationException( "Unable to configure installation repository" );
 
-        // TODO: symlinks
-        RepositoryPath repoPath = repo.getPrimaryArtifactPath( artifact, context, rule.getFiles().iterator().next() );
-        if ( repoPath == null )
-            throw new ArtifactInstallationException( "Installation repository is incapable of holding artifact "
-                + artifact );
+        Set<Path> basePaths = new LinkedHashSet<>();
+        for ( String fileName : rule.getFiles() )
+            basePaths.add( Paths.get( fileName ) );
+        if ( basePaths.isEmpty() )
+            basePaths.add( Paths.get( settings.getPackageName() + "/" + artifact.getArtifactId() ) );
+
+        Set<Path> relativePaths = new LinkedHashSet<>();
+        Set<Path> absolutePaths = new LinkedHashSet<>();
+
+        for ( Path path : basePaths )
+        {
+            if ( path.isAbsolute() )
+                absolutePaths.add( path );
+            else
+                relativePaths.add( path );
+        }
+        if ( relativePaths.isEmpty() )
+            throw new RuntimeException( "At least one non-absolute file must be specified for artifact " + artifact );
+
+        String installedVersion = rule.getVersions().isEmpty() ? null : rule.getVersions().iterator().next();
+        Artifact versionedArtifact = artifact.setVersion( installedVersion );
+        ArtifactContext context = new ArtifactContext( versionedArtifact, properties );
+        List<RepositoryPath> repoPaths = new ArrayList<>();
+        for ( Path path : relativePaths )
+        {
+            RepositoryPath repoPath = repo.getPrimaryArtifactPath( versionedArtifact, context, path.toString() );
+            if ( repoPath == null )
+                throw new ArtifactInstallationException( "Installation repository is incapable of holding artifact "
+                    + versionedArtifact );
+            repoPaths.add( repoPath );
+        }
+        Iterator<RepositoryPath> repoPathIterator = repoPaths.iterator();
 
         // Artifact path
-        File artifactFile = new RegularFile( repoPath.getPath(), Paths.get( am.getPath() ) );
+        File artifactFile = new RegularFile( repoPathIterator.next().getPath(), Paths.get( am.getPath() ) );
         targetPackage.addFile( artifactFile );
-        am.setPath( Paths.get( "/" ).resolve( artifactFile.getTargetPath() ).toString() );
+        Path primaryPath = Paths.get( "/" ).resolve( artifactFile.getTargetPath() );
+        am.setPath( primaryPath.toString() );
+
+        // Relative symlinks
+        while ( repoPathIterator.hasNext() )
+        {
+            // TODO
+        }
+
+        // TODO: absolute symlinks
 
         // Namespace
-        am.setNamespace( repoPath.getRepository().getNamespace() );
+        am.setNamespace( repoPaths.iterator().next().getRepository().getNamespace() );
 
         // UUID
         am.setUuid( UUID.randomUUID().toString() );
