@@ -114,6 +114,26 @@ public class ConditionTest
     public void testTernaryOperators()
         throws Exception
     {
+        StringBuilder sb = new StringBuilder();
+        sb.append( "<filter>" );
+        sb.append( "  <or>" );
+        sb.append( "    <and>" );
+        sb.append( "      <true/>" );
+        sb.append( "      <false/>" );
+        sb.append( "      <true/>" );
+        sb.append( "    </and>" );
+        sb.append( "    <false/>" );
+        sb.append( "    <xor>" );
+        sb.append( "      <false/>" );
+        sb.append( "      <true/>" );
+        sb.append( "      <false/>" );
+        sb.append( "    </xor>" );
+        sb.append( "  </or>" );
+        sb.append( "</filter>" );
 
+        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( sb.toString() ) );
+        Condition cond = new Condition( dom );
+        assertTrue( cond.getValue( context1 ) );
+        assertTrue( cond.getValue( context2 ) );
     }
 }
