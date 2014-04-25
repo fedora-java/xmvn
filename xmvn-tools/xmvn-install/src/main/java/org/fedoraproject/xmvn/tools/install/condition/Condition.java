@@ -157,6 +157,12 @@ public class Condition
 
     public Condition( Xpp3Dom dom )
     {
+        if ( dom == null )
+        {
+            dom = new Xpp3Dom( "condition" );
+            dom.addChild( new Xpp3Dom( "true" ) );
+        }
+
         requireChildreen( dom, 1 );
         this.expr = parseBoolean( dom.getChild( 0 ) );
     }
