@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
 /**
@@ -34,7 +36,8 @@ public class BooleanExpressionTest
     @Test
     public void testBasicExpressions()
     {
-        ArtifactContext context = new ArtifactContext();
+        Artifact artifact = new DefaultArtifact( "foo", "bar" );
+        ArtifactContext context = new ArtifactContext( artifact );
 
         BooleanExpression trueExpression = new BooleanLiteral( true );
         assertTrue( trueExpression.getValue( context ) );
@@ -58,7 +61,8 @@ public class BooleanExpressionTest
         Map<String, String> properties = new LinkedHashMap<>();
         properties.put( "foo", "bar" );
         properties.put( "baz", "" );
-        ArtifactContext context = new ArtifactContext( properties );
+        Artifact artifact = new DefaultArtifact( "dummy", "dummy" );
+        ArtifactContext context = new ArtifactContext( artifact, properties );
 
         StringExpression fooProperty = new Property( "foo" );
         assertEquals( "bar", fooProperty.getValue( context ) );

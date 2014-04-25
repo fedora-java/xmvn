@@ -72,7 +72,7 @@ public class DefaultArtifactInstallerTest
     public void setUpMocks()
     {
         Artifact inputArtifact = new DefaultArtifact( "com.example", "test", "4.5" );
-        ArtifactContext context = new ArtifactContext();
+        ArtifactContext context = new ArtifactContext( inputArtifact );
         expect( repositoryPathMock.getPath() ).andReturn( Paths.get( "com.example-test" ) );
         expect( repositoryPathMock.getRepository() ).andReturn( repositoryMock );
         expect( repositoryMock.getPrimaryArtifactPath( inputArtifact, context ) ).andReturn( repositoryPathMock );

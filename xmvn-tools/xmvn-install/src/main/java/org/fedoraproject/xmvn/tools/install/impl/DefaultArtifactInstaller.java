@@ -58,7 +58,7 @@ public class DefaultArtifactInstaller
         Map<String, String> properties = new LinkedHashMap<>();
         for ( String name : am.getProperties().stringPropertyNames() )
             properties.put( name, am.getProperties().getProperty( name ) );
-        ArtifactContext context = new ArtifactContext( properties );
+        ArtifactContext context = new ArtifactContext( artifact, properties );
 
         logger.info( "Installing artifact {}", artifact );
 

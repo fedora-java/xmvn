@@ -18,21 +18,32 @@ package org.fedoraproject.xmvn.repository;
 import java.util.Collections;
 import java.util.Map;
 
+import org.fedoraproject.xmvn.artifact.Artifact;
+
 /**
  * @author Mikolaj Izdebski
  */
 public class ArtifactContext
 {
+    private final Artifact artifact;
+
     private final Map<String, String> properties;
 
-    public ArtifactContext()
+    public ArtifactContext( Artifact artifact )
     {
+        this.artifact = artifact;
         this.properties = Collections.emptyMap();
     }
 
-    public ArtifactContext( Map<String, String> properties )
+    public ArtifactContext( Artifact artifact, Map<String, String> properties )
     {
+        this.artifact = artifact;
         this.properties = properties;
+    }
+
+    public Artifact getArtifact()
+    {
+        return artifact;
     }
 
     public String getProperty( String key )
@@ -43,12 +54,13 @@ public class ArtifactContext
     @Override
     public boolean equals( Object rhs )
     {
-        return rhs != null && getClass() == rhs.getClass() && properties.equals( ( (ArtifactContext) rhs ).properties );
+        return rhs != null && getClass() == rhs.getClass() && artifact.equals( ( (ArtifactContext) rhs ).artifact )
+            && properties.equals( ( (ArtifactContext) rhs ).properties );
     }
 
     @Override
     public int hashCode()
     {
-        return properties.hashCode();
+        return artifact.hashCode() ^ properties.hashCode();
     }
 }

@@ -83,7 +83,7 @@ public class LayoutTest
 
     private void testPaths( Repository repository, Artifact artifact, String expected )
     {
-        ArtifactContext context = new ArtifactContext();
+        ArtifactContext context = new ArtifactContext( artifact );
         String actual = repository.getPrimaryArtifactPath( artifact, context ).toString();
         assertEquals( expected, actual );
     }

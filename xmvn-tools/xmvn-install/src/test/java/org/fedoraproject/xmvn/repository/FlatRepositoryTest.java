@@ -52,7 +52,7 @@ public class FlatRepositoryTest
         assertNotNull( repo );
 
         Artifact artifact = new DefaultArtifact( "JPP/foo.bar-bazz:the-artifact:baz:1.2.3" );
-        ArtifactContext context = new ArtifactContext();
+        ArtifactContext context = new ArtifactContext( artifact );
         assertEquals( Paths.get( "JPP.foo.bar-bazz-the-artifact-1.2.3.baz" ),
                       repo.getPrimaryArtifactPath( artifact, context ).getPath() );
         assertEquals( Paths.get( "JPP.foo.bar-bazz-the-artifact.baz" ),

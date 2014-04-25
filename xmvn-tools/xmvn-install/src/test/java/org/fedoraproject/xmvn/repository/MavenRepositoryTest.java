@@ -53,7 +53,7 @@ public class MavenRepositoryTest
         assertNotNull( repo );
 
         Artifact artifact = new DefaultArtifact( "foo.bar:the-artifact:baz:1.2.3" );
-        ArtifactContext context = new ArtifactContext();
+        ArtifactContext context = new ArtifactContext( artifact );
         assertEquals( Paths.get( "foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz" ),
                       repo.getPrimaryArtifactPath( artifact, context ).getPath() );
         assertNull( repo.getPrimaryArtifactPath( artifact.setVersion( "SYSTEM" ), context ) );
