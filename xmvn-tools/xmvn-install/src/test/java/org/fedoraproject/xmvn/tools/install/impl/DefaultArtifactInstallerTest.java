@@ -75,7 +75,7 @@ public class DefaultArtifactInstallerTest
         ArtifactContext context = new ArtifactContext( inputArtifact );
         expect( repositoryPathMock.getPath() ).andReturn( Paths.get( "com.example-test" ) );
         expect( repositoryPathMock.getRepository() ).andReturn( repositoryMock );
-        expect( repositoryMock.getPrimaryArtifactPath( inputArtifact, context ) ).andReturn( repositoryPathMock );
+        expect( repositoryMock.getPrimaryArtifactPath( inputArtifact, context, "test" ) ).andReturn( repositoryPathMock );
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );
         expect( repositoryConfiguratorMock.configureRepository( "install" ) ).andReturn( repositoryMock );
         replay( repositoryPathMock );

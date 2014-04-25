@@ -66,7 +66,8 @@ public class DefaultArtifactInstaller
         if ( repo == null )
             throw new ArtifactInstallationException( "Unable to configure installation repository" );
 
-        RepositoryPath repoPath = repo.getPrimaryArtifactPath( artifact, context );
+        // TODO: symlinks
+        RepositoryPath repoPath = repo.getPrimaryArtifactPath( artifact, context, rule.getFiles().iterator().next() );
         if ( repoPath == null )
             throw new ArtifactInstallationException( "Installation repository is incapable of holding artifact "
                 + artifact );

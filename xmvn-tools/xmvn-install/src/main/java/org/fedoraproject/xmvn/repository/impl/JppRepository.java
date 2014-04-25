@@ -36,17 +36,12 @@ class JppRepository
     }
 
     @Override
-    protected Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
-                                    String version )
+    protected Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,
+                                    String classifier, String version )
     {
         StringBuilder path = new StringBuilder();
 
-        if ( groupId.startsWith( "JPP/" ) )
-            path.append( groupId.substring( 4 ) ).append( '/' );
-        else if ( !groupId.equals( "JPP" ) )
-            path.append( groupId ).append( '/' );
-
-        path.append( artifactId );
+        path.append( pattern.replaceFirst( "^JPP/", "" ) );
 
         if ( version != null )
             path.append( '-' ).append( version );

@@ -48,11 +48,11 @@ class CompoundRepository
     }
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
     {
         for ( Repository repository : slaveRepositories )
         {
-            RepositoryPath path = repository.getPrimaryArtifactPath( artifact, context );
+            RepositoryPath path = repository.getPrimaryArtifactPath( artifact, context, pattern );
             if ( path != null )
             {
                 DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );

@@ -39,14 +39,12 @@ public class LayoutTest
 
     private Repository jppRepository;
 
-    private Repository flatRepository;
-
     private Repository getRepositoryInstance( String type )
     {
         RepositoryFactory factory = lookup( RepositoryFactory.class, type );
         assertNotNull( factory );
 
-        Xpp3Dom filter = new Xpp3Dom( "filter" );
+        Xpp3Dom filter = null;
         Properties properties = new Properties();
         Xpp3Dom configuration = new Xpp3Dom( "configuration" );
 
@@ -65,7 +63,6 @@ public class LayoutTest
 
         mavenRepository = getRepositoryInstance( "maven" );
         jppRepository = getRepositoryInstance( "jpp" );
-        flatRepository = getRepositoryInstance( "flat" );
     }
 
     /**
@@ -84,8 +81,20 @@ public class LayoutTest
     private void testPaths( Repository repository, Artifact artifact, String expected )
     {
         ArtifactContext context = new ArtifactContext( artifact );
-        String actual = repository.getPrimaryArtifactPath( artifact, context ).toString();
-        assertEquals( expected, actual );
+        RepositoryPath repoPath =
+            repository.getPrimaryArtifactPath( artifact, context,
+                                               artifact.getGroupId() + "/" + artifact.getArtifactId() );
+
+        if ( expected == null )
+        {
+            assertNull( repoPath );
+        }
+        else
+        {
+            assertNotNull( repoPath );
+            assertNotNull( repoPath.getPath() );
+            assertEquals( expected, repoPath.getPath().toString() );
+        }
     }
 
     /**
@@ -104,9 +113,6 @@ public class LayoutTest
         testPaths( mavenRepository, artifact.setVersion( "SYSTEM" ), null );
         testPaths( jppRepository, artifact, "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
         testPaths( jppRepository, artifact.setVersion( "SYSTEM" ), "an-example.artifact/used-FOR42.testing.ext-ens.ion" );
-        testPaths( flatRepository, artifact, "an-example.artifact-used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
-        testPaths( flatRepository, artifact.setVersion( "SYSTEM" ),
-                   "an-example.artifact-used-FOR42.testing.ext-ens.ion" );
     }
 
     /**

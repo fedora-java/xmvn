@@ -36,8 +36,8 @@ class MavenRepository
     }
 
     @Override
-    protected Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
-                                    String version )
+    protected Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,
+                                    String classifier, String version )
     {
         if ( version == null )
             return null;

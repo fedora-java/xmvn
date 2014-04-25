@@ -51,11 +51,14 @@ public class JppRepositoryTest
         org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository( "test123" );
         assertNotNull( repo );
 
-        Artifact artifact = new DefaultArtifact( "JPP/foo.bar:the-artifact:baz:1.2.3" );
-        ArtifactContext context = new ArtifactContext( artifact );
-        assertEquals( Paths.get( "foo.bar/the-artifact-1.2.3.baz" ),
-                      repo.getPrimaryArtifactPath( artifact, context ).getPath() );
-        assertEquals( Paths.get( "foo.bar/the-artifact.baz" ),
-                      repo.getPrimaryArtifactPath( artifact.setVersion( "SYSTEM" ), context ).getPath() );
+        Artifact artifact1 = new DefaultArtifact( "foo.bar", "the-artifact", "baz", "1.2.3" );
+        ArtifactContext context1 = new ArtifactContext( artifact1 );
+        assertEquals( Paths.get( "my-target/path/aid-1.2.3.baz" ),
+                      repo.getPrimaryArtifactPath( artifact1, context1, "my-target/path/aid" ).getPath() );
+
+        Artifact artifact2 = artifact1.setVersion( null );
+        ArtifactContext context2 = new ArtifactContext( artifact2 );
+        assertEquals( Paths.get( "my-target/path/aid.baz" ),
+                      repo.getPrimaryArtifactPath( artifact2, context2, "my-target/path/aid" ).getPath() );
     }
 }

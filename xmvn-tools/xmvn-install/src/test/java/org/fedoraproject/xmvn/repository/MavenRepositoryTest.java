@@ -52,10 +52,13 @@ public class MavenRepositoryTest
         org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository( "test123" );
         assertNotNull( repo );
 
-        Artifact artifact = new DefaultArtifact( "foo.bar:the-artifact:baz:1.2.3" );
-        ArtifactContext context = new ArtifactContext( artifact );
+        Artifact artifact1 = new DefaultArtifact( "foo.bar:the-artifact:baz:1.2.3" );
+        ArtifactContext context = new ArtifactContext( artifact1 );
         assertEquals( Paths.get( "foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz" ),
-                      repo.getPrimaryArtifactPath( artifact, context ).getPath() );
-        assertNull( repo.getPrimaryArtifactPath( artifact.setVersion( "SYSTEM" ), context ) );
+                      repo.getPrimaryArtifactPath( artifact1, context, "IGNORE-ME" ).getPath() );
+
+        Artifact artifact2 = artifact1.setVersion( null );
+        ArtifactContext context2 = new ArtifactContext( artifact2 );
+        assertNull( repo.getPrimaryArtifactPath( artifact2, context2, "IGNORE-ME" ) );
     }
 }

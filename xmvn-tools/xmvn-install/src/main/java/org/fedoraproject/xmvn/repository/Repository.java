@@ -35,9 +35,10 @@ public interface Repository
      * 
      * @param artifact
      * @param context TODO
+     * @param pattern TODO
      * @return preferred artifact path
      */
-    RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context );
+    RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern );
 
     String getNamespace();
 }

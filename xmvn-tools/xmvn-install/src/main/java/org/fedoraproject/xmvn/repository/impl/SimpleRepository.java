@@ -41,11 +41,11 @@ abstract class SimpleRepository
         this.condition = new Condition( filter );
     }
 
-    protected abstract Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
-                                             String version );
+    protected abstract Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,
+                                             String classifier, String version );
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
     {
         if ( !condition.getValue( context ) )
             return null;
@@ -58,7 +58,7 @@ abstract class SimpleRepository
         if ( version.equals( Artifact.DEFAULT_VERSION ) )
             version = null;
 
-        Path path = getArtifactPath( groupId, artifactId, extension, classifier, version );
+        Path path = getArtifactPath( pattern, groupId, artifactId, extension, classifier, version );
         if ( path == null )
             return null;
 
