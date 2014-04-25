@@ -120,10 +120,16 @@ public class DefaultArtifactInstaller
         // Relative symlinks
         while ( repoPathIterator.hasNext() )
         {
-            // TODO
+            File symlink = new SymbolicLink( repoPathIterator.next().getPath(), primaryPath );
+            targetPackage.addFile( symlink );
         }
 
-        // TODO: absolute symlinks
+        // Absolute symlinks
+        for ( Path path : absolutePaths )
+        {
+            File symlink = new SymbolicLink( Paths.get( "/" ).relativize( path ), primaryPath );
+            targetPackage.addFile( symlink );
+        }
 
         // Namespace
         am.setNamespace( repoPaths.iterator().next().getRepository().getNamespace() );
