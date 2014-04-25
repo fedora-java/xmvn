@@ -130,6 +130,12 @@ class Package
     }
 
     @Override
+    public String toString()
+    {
+        return id.equals( MAIN ) ? "main package" : "package " + getId();
+    }
+
+    @Override
     public int hashCode()
     {
         return id.hashCode();

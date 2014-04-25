@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -291,38 +292,50 @@ public class DefaultInstaller
         InstallerSettings settings = configuration.getInstallerSettings();
         packageRegistry = new PackageRegistry( settings, request.getBasePackageName() );
 
-        // Prepare
+        logger.debug( "Reading installation plan..." );
         InstallationPlan installationPlan = new InstallationPlan( request.getInstallationPlan() );
         buildReactor( installationPlan );
 
-        // Create effective packaging rules for each artifact
+        logger.debug( "Creating effective packaging rules for each artifact..." );
         for ( ArtifactState artifactState : reactor )
             constructEffectivePackagingRule( artifactState );
 
-        // Decide where to install each package
+        logger.debug( "Choosing target package for each artifact..." );
         for ( ArtifactState artifactState : reactor )
+        {
             assignTargetPackage( artifactState );
+            logger.debug( "Artifact {} will be installed into {}", artifactState.getArtifact(),
+                          artifactState.getTargetPackage() );
+        }
 
-        // Generate skipped artifact metadata
+        logger.debug( "Generating skipped artifact metadata..." );
         generateSkippedArtifactMetadata();
 
-        // Decide how to install each package
+        logger.debug( "Assigning installer for each installable artifact..." );
         for ( ArtifactState artifactState : reactor )
             assignArtifactInstaller( artifactState );
 
+        logger.debug( "Installing artifacts..." );
         for ( ArtifactState artifactState : reactor )
-            installArtifact( artifactState );
-
-        // Resolve dependency versions
-        resolveArtifactDependencies();
-
-        // Install packages
-        for ( JavaPackage pkg : packageRegistry.getPackages() )
         {
-            pkg.install( request.getInstallRoot() );
-            pkg.writeDescriptor( Paths.get( StringUtils.isEmpty( pkg.getId() ) ? ".mfiles" : ".mfiles-" + pkg.getId() ) );
+            logger.debug( "Installing {} using {}", artifactState.getArtifact(), artifactState.getInstaller() );
+            installArtifact( artifactState );
         }
 
+        logger.debug( "Resolving artifact dependencies..." );
+        resolveArtifactDependencies();
+
+        logger.debug( "Installing packages into buildroot: {}", request.getInstallRoot() );
+        for ( JavaPackage pkg : packageRegistry.getPackages() )
+        {
+            logger.debug( "Installing ", pkg );
+            pkg.install( request.getInstallRoot() );
+            Path mfiles = Paths.get( StringUtils.isEmpty( pkg.getId() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
+            logger.debug( "Writing file descriptor {}", mfiles );
+            pkg.writeDescriptor( mfiles );
+        }
+
+        logger.info( "Installation successfull" );
         return new InstallationResult()
         {
         };
