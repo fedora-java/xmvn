@@ -15,28 +15,37 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
+import java.util.List;
+
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
 /**
  * @author Mikolaj Izdebski
  */
-abstract class BooleanBinaryOperator
+abstract class BooleanOperator
     extends BooleanExpression
 {
-    private final BooleanExpression lhs;
+    private final boolean neutralValue;
 
-    private final BooleanExpression rhs;
+    private final List<BooleanExpression> childreen;
 
-    public BooleanBinaryOperator( BooleanExpression lhs, BooleanExpression rhs )
+    public BooleanOperator( boolean neutralValue, List<BooleanExpression> children )
     {
-        this.lhs = lhs;
-        this.rhs = rhs;
+        this.neutralValue = neutralValue;
+        this.childreen = children;
     }
 
     @Override
     public boolean getValue( ArtifactContext context )
     {
-        return evaluate( lhs.getValue( context ), rhs.getValue( context ) );
+        boolean value = neutralValue;
+
+        for ( BooleanExpression child : childreen )
+        {
+            value = evaluate( value, child.getValue( context ) );
+        }
+
+        return value;
     }
 
     protected abstract boolean evaluate( boolean lhs, boolean rhs );

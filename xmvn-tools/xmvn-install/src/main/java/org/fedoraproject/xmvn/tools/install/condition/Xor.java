@@ -15,15 +15,17 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
+import java.util.List;
+
 /**
  * @author Mikolaj Izdebski
  */
 class Xor
-    extends BooleanBinaryOperator
+    extends BooleanOperator
 {
-    public Xor( BooleanExpression lhs, BooleanExpression rhs )
+    public Xor( List<BooleanExpression> children )
     {
-        super( lhs, rhs );
+        super( false, children );
     }
 
     @Override

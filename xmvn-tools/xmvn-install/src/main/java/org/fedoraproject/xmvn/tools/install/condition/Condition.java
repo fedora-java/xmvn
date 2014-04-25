@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
@@ -126,18 +129,15 @@ public class Condition
 
             case "and":
                 requireText( dom, false );
-                requireChildreen( dom, 2 );
-                return new And( parseBoolean( dom.getChild( 0 ) ), parseBoolean( dom.getChild( 1 ) ) );
+                return new And( parseBooleans( dom.getChildren() ) );
 
             case "or":
                 requireText( dom, false );
-                requireChildreen( dom, 2 );
-                return new Or( parseBoolean( dom.getChild( 0 ) ), parseBoolean( dom.getChild( 1 ) ) );
+                return new Or( parseBooleans( dom.getChildren() ) );
 
             case "xor":
                 requireText( dom, false );
-                requireChildreen( dom, 2 );
-                return new Xor( parseBoolean( dom.getChild( 0 ) ), parseBoolean( dom.getChild( 1 ) ) );
+                return new Xor( parseBooleans( dom.getChildren() ) );
 
             case "equals":
                 requireText( dom, false );
@@ -153,6 +153,18 @@ public class Condition
                 throw new RuntimeException( "Unable to parse string expression: unknown XML node name: "
                     + dom.getName() );
         }
+    }
+
+    private List<BooleanExpression> parseBooleans( Xpp3Dom[] doms )
+    {
+        List<BooleanExpression> result = new ArrayList<>();
+
+        for ( Xpp3Dom dom : doms )
+        {
+            result.add( parseBoolean( dom ) );
+        }
+
+        return result;
     }
 
     public Condition( Xpp3Dom dom )

@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -45,13 +46,13 @@ public class BooleanExpressionTest
         BooleanExpression falseExpression = new BooleanLiteral( false );
         assertFalse( falseExpression.getValue( context ) );
 
-        BooleanExpression andExpression = new And( trueExpression, falseExpression );
+        BooleanExpression andExpression = new And( Arrays.asList( trueExpression, falseExpression ) );
         assertFalse( andExpression.getValue( context ) );
 
-        BooleanExpression orExpression = new Or( trueExpression, falseExpression );
+        BooleanExpression orExpression = new Or( Arrays.asList( trueExpression, falseExpression ) );
         assertTrue( orExpression.getValue( context ) );
 
-        BooleanExpression xorExpression = new Xor( trueExpression, falseExpression );
+        BooleanExpression xorExpression = new Xor( Arrays.asList( trueExpression, falseExpression ) );
         assertTrue( xorExpression.getValue( context ) );
     }
 

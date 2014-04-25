@@ -15,15 +15,17 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
+import java.util.List;
+
 /**
  * @author Mikolaj Izdebski
  */
 class Or
-    extends BooleanBinaryOperator
+    extends BooleanOperator
 {
-    public Or( BooleanExpression lhs, BooleanExpression rhs )
+    public Or( List<BooleanExpression> children )
     {
-        super( lhs, rhs );
+        super( false, children );
     }
 
     @Override
