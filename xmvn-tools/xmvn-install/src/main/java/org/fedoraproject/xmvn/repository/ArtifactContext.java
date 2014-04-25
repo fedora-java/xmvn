@@ -39,4 +39,16 @@ public class ArtifactContext
     {
         return properties.get( key );
     }
+
+    @Override
+    public boolean equals( Object rhs )
+    {
+        return rhs != null && getClass() == rhs.getClass() && properties.equals( ( (ArtifactContext) rhs ).properties );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return properties.hashCode();
+    }
 }
