@@ -15,13 +15,23 @@
  */
 package org.fedoraproject.xmvn.dependency.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import org.fedoraproject.xmvn.model.AbstractModelVisitor;
 
@@ -35,29 +45,36 @@ class JavaVersionVisitor
 
     private static final Map<String, BigDecimal> targetMap = new TreeMap<>();
 
+    private static void addMappings( NodeList mappings, Map<String, BigDecimal> map )
+    {
+        for ( int i = 0; i < mappings.getLength(); i++ )
+        {
+            Element mapping = (Element) mappings.item( i );
+            map.put( mapping.getAttribute( "from" ), new BigDecimal( mapping.getAttribute( "to" ) ) );
+        }
+    }
+
+    private static void loadVersionMap()
+    {
+        try ( InputStream xmlStream = JavaVersionVisitor.class.getResourceAsStream( "/version-map.xml" ) )
+        {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse( xmlStream );
+            NodeList sourceMappings = doc.getElementsByTagName( "sourceMapping" );
+            addMappings( sourceMappings, sourceMap );
+            targetMap.putAll( sourceMap );
+            NodeList targetMappings = doc.getElementsByTagName( "targetMapping" );
+            addMappings( targetMappings, targetMap );
+        }
+        catch ( ParserConfigurationException | IOException | SAXException ex )
+        {
+            throw new RuntimeException( "Couldnt load resource 'version-map.xml'", ex );
+        }
+    }
+
     static
     {
-        // TODO: extract this as configuration
-        sourceMap.put( "1.1", new BigDecimal( "1.1" ) );
-        sourceMap.put( "1.2", new BigDecimal( "1.2" ) );
-        sourceMap.put( "1.3", new BigDecimal( "1.3" ) );
-        sourceMap.put( "1.4", new BigDecimal( "1.4" ) );
-        sourceMap.put( "1.5", new BigDecimal( "1.5" ) );
-        sourceMap.put( "5", new BigDecimal( "1.5" ) );
-        sourceMap.put( "5.0", new BigDecimal( "1.5" ) );
-        sourceMap.put( "1.6", new BigDecimal( "1.6" ) );
-        sourceMap.put( "6", new BigDecimal( "1.6" ) );
-        sourceMap.put( "6.0", new BigDecimal( "1.6" ) );
-        sourceMap.put( "1.7", new BigDecimal( "1.7" ) );
-        sourceMap.put( "7", new BigDecimal( "1.7" ) );
-        sourceMap.put( "7.0", new BigDecimal( "1.7" ) );
-        sourceMap.put( "1.8", new BigDecimal( "1.8" ) );
-        sourceMap.put( "8", new BigDecimal( "1.8" ) );
-        sourceMap.put( "8.0", new BigDecimal( "1.8" ) );
-
-        targetMap.putAll( sourceMap );
-        targetMap.put( "cldc1.1", new BigDecimal( "1.1" ) );
-        targetMap.put( "jsr14", new BigDecimal( "1.4" ) );
+        loadVersionMap();
     }
 
     private final DefaultDependencyExtractionResult result;
