@@ -26,7 +26,7 @@ class MyRepository
     implements Repository
 {
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact )
+    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context )
     {
         fail( "getPrimaryArtifactPath() was not expected to be called" );
         throw null;

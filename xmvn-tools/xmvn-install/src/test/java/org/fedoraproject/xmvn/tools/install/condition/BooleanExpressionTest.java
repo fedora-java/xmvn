@@ -19,13 +19,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.fedoraproject.xmvn.repository.ArtifactContext;
-
 import org.junit.Test;
+
+import org.fedoraproject.xmvn.repository.ArtifactContext;
 
 /**
  * @author Mikolaj Izdebski
@@ -35,7 +34,7 @@ public class BooleanExpressionTest
     @Test
     public void testBasicExpressions()
     {
-        ArtifactContext context = new ArtifactContext( Collections.<String, String> emptyMap() );
+        ArtifactContext context = new ArtifactContext();
 
         BooleanExpression trueExpression = new BooleanLiteral( true );
         assertTrue( trueExpression.getValue( context ) );

@@ -1,10 +1,8 @@
 package org.fedoraproject.xmvn.tools.install.condition;
 
-import java.util.Map;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
-
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 public class Condition
 {
@@ -96,9 +94,8 @@ public class Condition
         this.expr = parseBoolean( dom.getChild( 0 ) );
     }
 
-    public boolean getValue( Map<String, String> properties )
+    public boolean getValue( ArtifactContext context )
     {
-        ArtifactContext context = new ArtifactContext( properties );
         return expr.getValue( context );
     }
 }

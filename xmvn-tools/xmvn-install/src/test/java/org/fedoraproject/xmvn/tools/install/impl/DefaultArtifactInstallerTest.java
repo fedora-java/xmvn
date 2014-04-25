@@ -42,6 +42,7 @@ import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
+import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
@@ -50,10 +51,12 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
  * @author Michael Simacek
  */
 public class DefaultArtifactInstallerTest
-        extends AbstractFileTest
+    extends AbstractFileTest
 {
     private final Repository repositoryMock = createMock( Repository.class );
+
     private final RepositoryPath repositoryPathMock = createMock( RepositoryPath.class );
+
     private final RepositoryConfigurator repositoryConfiguratorMock = createMock( RepositoryConfigurator.class );
 
     @Inject
@@ -69,9 +72,10 @@ public class DefaultArtifactInstallerTest
     public void setUpMocks()
     {
         Artifact inputArtifact = new DefaultArtifact( "com.example", "test", "4.5" );
+        ArtifactContext context = new ArtifactContext();
         expect( repositoryPathMock.getPath() ).andReturn( Paths.get( "com.example-test" ) );
         expect( repositoryPathMock.getRepository() ).andReturn( repositoryMock );
-        expect( repositoryMock.getPrimaryArtifactPath( inputArtifact ) ).andReturn( repositoryPathMock );
+        expect( repositoryMock.getPrimaryArtifactPath( inputArtifact, context ) ).andReturn( repositoryPathMock );
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );
         expect( repositoryConfiguratorMock.configureRepository( "install" ) ).andReturn( repositoryMock );
         replay( repositoryPathMock );

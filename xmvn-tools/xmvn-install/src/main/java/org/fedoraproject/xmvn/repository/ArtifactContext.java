@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -23,6 +24,11 @@ import java.util.Map;
 public class ArtifactContext
 {
     private final Map<String, String> properties;
+
+    public ArtifactContext()
+    {
+        this.properties = Collections.emptyMap();
+    }
 
     public ArtifactContext( Map<String, String> properties )
     {

@@ -26,7 +26,6 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  * 
  * @author Mikolaj Izdebski
  */
-// XXX: add support for artifact properties!
 public interface Repository
 {
     /**
@@ -35,9 +34,10 @@ public interface Repository
      * Returned path is relative to the repository base.
      * 
      * @param artifact
+     * @param context TODO
      * @return preferred artifact path
      */
-    RepositoryPath getPrimaryArtifactPath( Artifact artifact );
+    RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context );
 
     String getNamespace();
 }

@@ -16,6 +16,8 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -30,6 +32,7 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
@@ -52,13 +55,18 @@ public class DefaultArtifactInstaller
             new DefaultArtifact( am.getGroupId(), am.getArtifactId(), am.getExtension(), am.getClassifier(),
                                  am.getVersion() );
 
+        Map<String, String> properties = new LinkedHashMap<>();
+        for ( String name : am.getProperties().stringPropertyNames() )
+            properties.put( name, am.getProperties().getProperty( name ) );
+        ArtifactContext context = new ArtifactContext( properties );
+
         logger.info( "Installing artifact {}", artifact );
 
         Repository repo = repositoryConfigurator.configureRepository( "install" );
         if ( repo == null )
             throw new ArtifactInstallationException( "Unable to configure installation repository" );
 
-        RepositoryPath repoPath = repo.getPrimaryArtifactPath( artifact );
+        RepositoryPath repoPath = repo.getPrimaryArtifactPath( artifact, context );
         if ( repoPath == null )
             throw new ArtifactInstallationException( "Installation repository is incapable of holding artifact "
                 + artifact );
