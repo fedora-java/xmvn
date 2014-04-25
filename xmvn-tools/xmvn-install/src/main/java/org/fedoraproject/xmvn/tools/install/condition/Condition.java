@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.tools.install.condition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
@@ -31,15 +32,13 @@ public class Condition
 
     private void requireText( Xpp3Dom dom, boolean require )
     {
-        if ( require == ( dom.getValue() != null ) )
-            return;
-
         String name = dom.getName();
 
-        if ( require )
+        if ( require && ( dom.getChildCount() != 0 || dom.getValue() == null ) )
             throw new RuntimeException( "XML node " + name + " must have text content." );
 
-        throw new RuntimeException( "XML node " + name + " doesn't allow text content." );
+        if ( !require && StringUtils.isNotEmpty( dom.getValue() ) )
+            throw new RuntimeException( "XML node " + name + " doesn't allow text content." );
     }
 
     private void requireChildreen( Xpp3Dom dom, int n )
