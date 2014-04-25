@@ -39,6 +39,7 @@ class Equals
         String lhsValue = lhs.getValue( context );
         String rhsValue = rhs.getValue( context );
 
-        return ( lhsValue == null && rhsValue == null ) || lhsValue.equals( rhsValue );
+        return ( lhsValue == null && rhsValue == null )
+            || ( lhsValue != null && rhsValue != null && lhsValue.equals( rhsValue ) );
     }
 }
