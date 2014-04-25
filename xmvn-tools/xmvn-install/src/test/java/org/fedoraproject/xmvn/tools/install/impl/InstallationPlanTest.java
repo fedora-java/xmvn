@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.createInstallationPlan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +28,6 @@ import org.junit.Test;
  * @author Michael Simacek
  */
 public class InstallationPlanTest
-    extends AbstractFileTest
 {
     @Test
     public void testNonexistent()

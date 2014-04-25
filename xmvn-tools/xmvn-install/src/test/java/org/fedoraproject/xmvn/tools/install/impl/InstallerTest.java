@@ -20,6 +20,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,6 @@ import java.nio.file.Paths;
 import javax.inject.Inject;
 
 import com.google.inject.Binder;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,10 +45,10 @@ import org.fedoraproject.xmvn.tools.install.Installer;
 /**
  * @author Michael Simacek
  */
-public class DefaultInstallerTest
+public class InstallerTest
         extends AbstractFileTest
 {
-    private static final Configuration config = new Configuration();
+    private final Configuration config = new Configuration();
 
     @Inject
     private Installer installer;
@@ -57,7 +57,8 @@ public class DefaultInstallerTest
     private final Resolver resolverMock = createMock( Resolver.class );
     private final ResolutionResult resolutionResultMock = createNiceMock( ResolutionResult.class );
 
-    static
+    @Before
+    public void setUpSettings()
     {
         InstallerSettings settings = new InstallerSettings();
         settings.setMetadataDir( "usr/share/maven-metadata" );

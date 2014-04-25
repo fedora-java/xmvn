@@ -16,8 +16,12 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+
+import java.nio.file.Paths;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +32,6 @@ import org.fedoraproject.xmvn.config.InstallerSettings;
  * @author Michael Simacek
  */
 public class PackageRegistryTest
-    extends AbstractFileTest
 {
     private InstallerSettings settings;
 
@@ -58,8 +61,11 @@ public class PackageRegistryTest
         throws Exception
     {
         JavaPackage pkg = registry.getPackageById( null );
-        pkg.install( installRoot );
-        assertDescriptorEquals( pkg, "%attr(0644,root,root) /usr/share/maven-metadata/test-package.xml" );
+        Set<File> files = pkg.getFiles();
+        assertEquals( 1, files.size() );
+        File metadataFile = files.iterator().next();
+        assertEquals( Paths.get( "usr/share/maven-metadata/test-package.xml" ), metadataFile.getTargetPath() );
+        assertNotNull( pkg.getMetadata() );
     }
 
     @Test
@@ -67,8 +73,10 @@ public class PackageRegistryTest
         throws Exception
     {
         JavaPackage pkg = registry.getPackageById( "subpackage" );
-        pkg.install( installRoot );
-        assertDescriptorEquals( pkg, "%attr(0644,root,root) /usr/share/maven-metadata/subpackage.xml" );
+        Set<File> files = pkg.getFiles();
+        assertEquals( 1, files.size() );
+        File metadataFile = files.iterator().next();
+        assertEquals( Paths.get( "usr/share/maven-metadata/subpackage.xml" ), metadataFile.getTargetPath() );
     }
 
     @Test

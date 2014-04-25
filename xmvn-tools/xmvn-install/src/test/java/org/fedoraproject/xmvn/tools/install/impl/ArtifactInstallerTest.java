@@ -15,12 +15,15 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.easymock.MockType.NICE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,12 +35,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.google.inject.Binder;
-import org.junit.After;
-import org.junit.Before;
+import org.easymock.EasyMockRunner;
+import org.easymock.Mock;
+import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -50,14 +54,15 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
 /**
  * @author Michael Simacek
  */
-public class DefaultArtifactInstallerTest
-    extends AbstractFileTest
+@RunWith( EasyMockRunner.class )
+public class ArtifactInstallerTest
+        extends InjectedTest
 {
-    private final Repository repositoryMock = createMock( Repository.class );
+    @Mock
+    private Repository repositoryMock;
 
-    private final RepositoryPath repositoryPathMock = createMock( RepositoryPath.class );
-
-    private final RepositoryConfigurator repositoryConfiguratorMock = createMock( RepositoryConfigurator.class );
+    @Mock( type = NICE )
+    private RepositoryPath repositoryPathMock;
 
     @Inject
     private ArtifactInstaller installer;
@@ -65,28 +70,38 @@ public class DefaultArtifactInstallerTest
     @Override
     public void configure( Binder binder )
     {
-        binder.bind( RepositoryConfigurator.class ).toInstance( repositoryConfiguratorMock );
+        binder.bind( RepositoryConfigurator.class ).toInstance( new RepositoryConfigurator()
+        {
+            @Override
+            public Repository configureRepository( String repoId )
+            {
+                assertEquals( "install", repoId );
+                return repositoryMock;
+            }
+
+            @Override
+            public Repository configureRepository( String repoId, String namespace )
+            {
+                fail();
+                return null;
+            }
+
+        } );
     }
 
-    @Before
-    public void setUpMocks()
+    private void install( JavaPackage pkg, ArtifactMetadata am, PackagingRule rule )
+            throws ArtifactInstallationException
     {
-        Artifact inputArtifact = new DefaultArtifact( "com.example", "test", "4.5" );
-        ArtifactContext context = new ArtifactContext( inputArtifact );
         expect( repositoryPathMock.getPath() ).andReturn( Paths.get( "com.example-test" ) );
         expect( repositoryPathMock.getRepository() ).andReturn( repositoryMock );
-        expect( repositoryMock.getPrimaryArtifactPath( inputArtifact, context, "test" ) ).andReturn( repositoryPathMock );
+        expect( repositoryMock.getPrimaryArtifactPath( isA( Artifact.class ), isA( ArtifactContext.class ), isA( String.class ) ) )
+                .andReturn( repositoryPathMock );
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );
-        expect( repositoryConfiguratorMock.configureRepository( "install" ) ).andReturn( repositoryMock );
         replay( repositoryPathMock );
         replay( repositoryMock );
-        replay( repositoryConfiguratorMock );
-    }
 
-    @After
-    public void tearDownMocks()
-    {
-        verify( repositoryConfiguratorMock );
+        installer.install( pkg, am, rule );
+
         verify( repositoryMock );
         verify( repositoryPathMock );
     }
@@ -97,7 +112,7 @@ public class DefaultArtifactInstallerTest
         artifact.setGroupId( "com.example" );
         artifact.setArtifactId( "test" );
         artifact.setVersion( "4.5" );
-        artifact.setPath( getResource( "example.jar" ).toString() );
+        artifact.setPath( Paths.get( "src/test/resources/example.jar" ).toString() );
         return artifact;
     }
 
@@ -110,7 +125,7 @@ public class DefaultArtifactInstallerTest
         JavaPackage pkg = new JavaPackage( "test", metadataPath );
         PackagingRule rule = new PackagingRule();
 
-        installer.install( pkg, artifact, rule );
+        install( pkg, artifact, rule );
 
         PackageMetadata metadata = pkg.getMetadata();
         assertEquals( 1, metadata.getArtifacts().size() );
@@ -137,7 +152,7 @@ public class DefaultArtifactInstallerTest
         rule.addVersion( "3.4" );
         rule.addVersion( "3" );
 
-        installer.install( pkg, artifact, rule );
+        install( pkg, artifact, rule );
 
         PackageMetadata metadata = pkg.getMetadata();
         assertEquals( 1, metadata.getArtifacts().size() );
@@ -166,7 +181,7 @@ public class DefaultArtifactInstallerTest
         rule.addAlias( alias1 );
         rule.addAlias( alias2 );
 
-        installer.install( pkg, artifact, rule );
+        install( pkg, artifact, rule );
 
         PackageMetadata metadata = pkg.getMetadata();
         assertEquals( 1, metadata.getArtifacts().size() );

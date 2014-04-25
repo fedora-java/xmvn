@@ -208,34 +208,6 @@ public abstract class AbstractFileTest
         assertDescriptorEquals( mfiles, expected );
     }
 
-    protected Path prepareInstallationPlanFile( String filename )
-        throws Exception
-    {
-        Path metadataPath = getResource( filename );
-        PackageMetadata metadata = new MetadataStaxReader().read( metadataPath.toString() );
-        for ( ArtifactMetadata artifact : metadata.getArtifacts() )
-        {
-            String path = artifact.getPath();
-            if ( path != null )
-            {
-                path = path.replace( "src/test/resources", getResource( "" ).toAbsolutePath().toString() );
-                artifact.setPath( path );
-            }
-        }
-        Path newMetadata = workdir.resolve( filename );
-        try (OutputStream os = Files.newOutputStream( newMetadata ))
-        {
-            new MetadataStaxWriter().write( os, metadata );
-        }
-        return newMetadata;
-    }
-
-    protected InstallationPlan createInstallationPlan( String filename )
-        throws Exception
-    {
-        return new InstallationPlan( prepareInstallationPlanFile( filename ) );
-    }
-
     private void unifyUuids( NodeList nodes )
     {
         for ( int i = 0; i < nodes.getLength(); i++ )
