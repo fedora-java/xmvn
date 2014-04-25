@@ -38,6 +38,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.ArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +89,9 @@ public class InstallMojo
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
+
+    @Parameter( readonly = true, defaultValue = "${repositorySystemSession}" )
+    private RepositorySystemSession repoSession;
 
     private final Deployer deployer;
 
@@ -157,12 +162,24 @@ public class InstallMojo
             String scope = dependency.getScope();
             if ( scope == null || scope.equals( "compile" ) || scope.equals( "runtime" ) )
             {
-                // TODO: consider using artifact handler?
-                Artifact dependencyArtifact =
-                    ArtifactUtils.createTypedArtifact( dependency.getGroupId(), dependency.getArtifactId(),
-                                                       dependency.getType(), dependency.getClassifier(),
-                                                       dependency.getVersion() );
-
+                Artifact dependencyArtifact;
+                if ( repoSession != null )
+                {
+                    ArtifactType type = repoSession.getArtifactTypeRegistry().get( dependency.getType() );
+                    dependencyArtifact = new DefaultArtifact( dependency.getGroupId(),
+                                                              dependency.getArtifactId(),
+                                                              type.getExtension(),
+                                                              type.getClassifier(),
+                                                              dependency.getVersion() );
+                }
+                else
+                {
+                    dependencyArtifact = ArtifactUtils.createTypedArtifact( dependency.getGroupId(),
+                                                                            dependency.getArtifactId(),
+                                                                            dependency.getType(),
+                                                                            dependency.getClassifier(),
+                                                                            dependency.getVersion() );
+                }
                 List<Artifact> exclusions = new ArrayList<>();
                 for ( Exclusion e : dependency.getExclusions() )
                 {
