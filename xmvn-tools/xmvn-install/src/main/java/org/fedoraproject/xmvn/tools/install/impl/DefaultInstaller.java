@@ -292,15 +292,15 @@ public class DefaultInstaller
         InstallerSettings settings = configuration.getInstallerSettings();
         packageRegistry = new PackageRegistry( settings, request.getBasePackageName() );
 
-        logger.debug( "Reading installation plan..." );
+        logger.debug( "Reading installation plan" );
         InstallationPlan installationPlan = new InstallationPlan( request.getInstallationPlan() );
         buildReactor( installationPlan );
 
-        logger.debug( "Creating effective packaging rules for each artifact..." );
+        logger.debug( "Creating effective packaging rules for each artifact" );
         for ( ArtifactState artifactState : reactor )
             constructEffectivePackagingRule( artifactState );
 
-        logger.debug( "Choosing target package for each artifact..." );
+        logger.debug( "Choosing target package for each artifact" );
         for ( ArtifactState artifactState : reactor )
         {
             assignTargetPackage( artifactState );
@@ -308,17 +308,23 @@ public class DefaultInstaller
                           artifactState.getTargetPackage() );
         }
 
-        logger.debug( "Generating skipped artifact metadata..." );
+        logger.debug( "Generating skipped artifact metadata" );
         generateSkippedArtifactMetadata();
 
-        logger.debug( "Assigning installer for each installable artifact..." );
+        logger.debug( "Assigning installer for each installable artifact" );
         for ( ArtifactState artifactState : reactor )
             assignArtifactInstaller( artifactState );
 
-        logger.debug( "Installing artifacts..." );
+        logger.debug( "Installing artifacts" );
         for ( ArtifactState artifactState : reactor )
         {
-            logger.debug( "Installing {} using {}", artifactState.getArtifact(), artifactState.getInstaller() );
+            if ( logger.isDebugEnabled() )
+            {
+                if ( artifactState.getInstaller() != null )
+                    logger.debug( "Installing {} using {}", artifactState.getArtifact(),
+                                  artifactState.getInstaller().getClass().getName() );
+            }
+
             installArtifact( artifactState );
         }
 
@@ -328,7 +334,7 @@ public class DefaultInstaller
         logger.debug( "Installing packages into buildroot: {}", request.getInstallRoot() );
         for ( JavaPackage pkg : packageRegistry.getPackages() )
         {
-            logger.debug( "Installing ", pkg );
+            logger.debug( "Installing {}", pkg );
             pkg.install( request.getInstallRoot() );
             Path mfiles = Paths.get( StringUtils.isEmpty( pkg.getId() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
             logger.debug( "Writing file descriptor {}", mfiles );
