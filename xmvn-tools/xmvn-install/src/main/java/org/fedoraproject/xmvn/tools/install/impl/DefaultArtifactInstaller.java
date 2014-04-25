@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +128,14 @@ public class DefaultArtifactInstaller
         // Absolute symlinks
         for ( Path path : absolutePaths )
         {
-            File symlink = new SymbolicLink( Paths.get( "/" ).relativize( path ), primaryPath );
+            StringBuilder sb = new StringBuilder( Paths.get( "/" ).relativize( path ).toString() );
+            if ( !versionedArtifact.getVersion().equals( Artifact.DEFAULT_VERSION ) )
+                sb.append( '-' ).append( versionedArtifact.getVersion() );
+            if ( StringUtils.isNotEmpty( versionedArtifact.getClassifier() ) )
+                sb.append( '-' ).append( versionedArtifact.getClassifier() );
+            if ( !versionedArtifact.getExtension().equals( Artifact.DEFAULT_VERSION ) )
+                sb.append( '.' ).append( versionedArtifact.getExtension() );
+            File symlink = new SymbolicLink( Paths.get( sb.toString() ), primaryPath );
             targetPackage.addFile( symlink );
         }
 
