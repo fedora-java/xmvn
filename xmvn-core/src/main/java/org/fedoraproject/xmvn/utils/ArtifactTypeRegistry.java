@@ -15,8 +15,19 @@
  */
 package org.fedoraproject.xmvn.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * @author Mikolaj Izdebski
@@ -33,15 +44,31 @@ class ArtifactTypeRegistry
         CLASSIFIERS.put( type, classifier );
     }
 
-    // The list was taken from MavenRepositorySystemUtils in maven-aether-provider.
+    private static void loadStereotypes()
+    {
+        try ( InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/stereotypes.xml" ) )
+        {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse( xmlStream );
+            NodeList stereotypes = doc.getElementsByTagName( "stereotype" );
+            for ( int i = 0; i < stereotypes.getLength(); i++ )
+            {
+                Element stereotype = (Element) stereotypes.item( i );
+                String type = stereotype.getAttribute( "type" );
+                String extension = stereotype.getAttribute( "extension" );
+                String classifier = stereotype.getAttribute( "classifier" );
+                addStereotype( type, extension, classifier );
+            }
+        }
+        catch ( ParserConfigurationException | IOException | SAXException ex )
+        {
+            throw new RuntimeException( "Couldnt load resource 'stereotypes.xml'", ex );
+        }
+    }
+
     static
     {
-        addStereotype( "maven-plugin", "jar", "" );
-        addStereotype( "ejb", "jar", "" );
-        addStereotype( "ejb-client", "jar", "client" );
-        addStereotype( "test-jar", "jar", "tests" );
-        addStereotype( "javadoc", "jar", "javadoc" );
-        addStereotype( "java-source", "jar", "sources" );
+        loadStereotypes();
     }
 
     public static boolean isRegisteredType( String type )

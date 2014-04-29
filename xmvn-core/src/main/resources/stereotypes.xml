@@ -1,0 +1,9 @@
+<stereotypes>
+    <!-- The list was taken from MavenRepositorySystemUtils in maven-aether-provider -->
+    <stereotype type="maven-plugin" extension="jar" classifier=""/>
+    <stereotype type="ejb" extension="jar" classifier=""/>
+    <stereotype type="ejb-client" extension="jar" classifier="client"/>
+    <stereotype type="test-jar" extension="jar" classifier="tests"/>
+    <stereotype type="javadoc" extension="jar" classifier="javadoc"/>
+    <stereotype type="java-source" extension="jar" classifier="sources"/>
+</stereotypes>
