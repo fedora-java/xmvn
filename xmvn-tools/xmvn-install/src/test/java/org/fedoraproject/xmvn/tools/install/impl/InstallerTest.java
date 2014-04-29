@@ -24,12 +24,16 @@ import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.p
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import com.google.inject.Binder;
+import org.easymock.EasyMockRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -45,6 +49,7 @@ import org.fedoraproject.xmvn.tools.install.Installer;
 /**
  * @author Michael Simacek
  */
+@RunWith( EasyMockRunner.class )
 public class InstallerTest
         extends AbstractFileTest
 {
@@ -55,7 +60,8 @@ public class InstallerTest
 
     private final Configurator configuratorMock = createMock( Configurator.class );
     private final Resolver resolverMock = createMock( Resolver.class );
-    private final ResolutionResult resolutionResultMock = createNiceMock( ResolutionResult.class );
+
+    private final List<ResolutionResult> resolutionResults = new ArrayList<>();
 
     @Before
     public void setUpSettings()
@@ -64,11 +70,6 @@ public class InstallerTest
         settings.setMetadataDir( "usr/share/maven-metadata" );
         config.setInstallerSettings( settings );
     }
-
-    private final ResolutionRequest request1 = new ResolutionRequest( "org.apache.lucene", "lucene-benchmark", "4.1", "jar" );
-    private final ResolutionRequest request2 = new ResolutionRequest( "org.apache.lucene", "lucene-benchmark", "SYSTEM", "jar" );
-    private final ResolutionRequest request3 = new ResolutionRequest( "org.apache.lucene", "lucene-spatial", "4.1", "jar" );
-    private final ResolutionRequest request4 = new ResolutionRequest( "org.apache.lucene", "lucene-spatial", "SYSTEM", "jar" );
 
     class MockArtifactInstaller
             implements ArtifactInstaller
@@ -92,28 +93,52 @@ public class InstallerTest
         binder.bind( Resolver.class ).toInstance( resolverMock );
     }
 
-    @Test
-    public void testInstall()
+    private void addResolution( String coordinates, String compatVersion, String namespace, Path path )
+    {
+        String[] split = coordinates.split( ":" );
+        ResolutionRequest request = new ResolutionRequest( split[0], split[1], split[2], split[3] );
+        ResolutionResult result = createNiceMock( ResolutionResult.class );
+        expect( result.getCompatVersion() ).andReturn( compatVersion ).anyTimes();
+        expect( result.getNamespace() ).andReturn( namespace ).anyTimes();
+        expect( result.getArtifactPath() ).andReturn( path ).anyTimes();
+        replay( result );
+        resolutionResults.add( result );
+        expect( resolverMock.resolve( request ) ).andReturn( result );
+    }
+
+    private void addResolution( String coordinates )
+    {
+        addResolution( coordinates, null, null, null );
+    }
+
+    private void install( String planName )
             throws Exception
     {
         expect( configuratorMock.getConfiguration() ).andReturn( config );
-        expect( resolverMock.resolve( request1 ) ).andReturn( resolutionResultMock );
-        expect( resolverMock.resolve( request2 ) ).andReturn( resolutionResultMock );
-        expect( resolverMock.resolve( request3 ) ).andReturn( resolutionResultMock );
-        expect( resolverMock.resolve( request4 ) ).andReturn( resolutionResultMock );
-        replay( resolverMock );
-        replay( configuratorMock );
-        replay( resolutionResultMock );
+        replay( resolverMock, configuratorMock );
 
         InstallationRequest request = new InstallationRequest();
         request.setBasePackageName( "test-pkg" );
         request.setInstallRoot( installRoot );
-        request.setInstallationPlan( prepareInstallationPlanFile( "valid.xml" ) );
+        request.setInstallationPlan( prepareInstallationPlanFile( planName ) );
 
         installer.install( request );
 
-        verify( configuratorMock );
-        verify( resolverMock );
+        verify( resolverMock, configuratorMock );
+        for ( ResolutionResult result : resolutionResults )
+            verify( result );
+    }
+
+    @Test
+    public void testInstall()
+            throws Exception
+    {
+        addResolution( "org.apache.lucene:lucene-benchmark:4.1:jar" );
+        addResolution( "org.apache.lucene:lucene-benchmark:SYSTEM:jar" );
+        addResolution( "org.apache.lucene:lucene-spatial:4.1:jar" );
+        addResolution( "org.apache.lucene:lucene-spatial:SYSTEM:jar" );
+
+        install( "valid.xml" );
 
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "D /usr/share/maven-metadata",
                 "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar", "F /usr/share/maven-metadata/test-pkg.xml" );
