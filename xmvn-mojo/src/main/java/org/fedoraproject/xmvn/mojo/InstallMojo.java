@@ -163,23 +163,24 @@ public class InstallMojo
             if ( scope == null || scope.equals( "compile" ) || scope.equals( "runtime" ) )
             {
                 Artifact dependencyArtifact;
-                if ( repoSession != null )
+                String mappedExtension = null;
+                String mappedClassifier = null;
+                if ( repoSession != null && dependency.getType() != null )
                 {
                     ArtifactType type = repoSession.getArtifactTypeRegistry().get( dependency.getType() );
-                    dependencyArtifact = new DefaultArtifact( dependency.getGroupId(),
-                                                              dependency.getArtifactId(),
-                                                              type.getExtension(),
-                                                              type.getClassifier(),
-                                                              dependency.getVersion() );
+                    if ( type != null )
+                    {
+                        mappedExtension = type.getExtension();
+                        mappedClassifier = type.getClassifier();
+                    }
                 }
-                else
-                {
-                    dependencyArtifact = ArtifactUtils.createTypedArtifact( dependency.getGroupId(),
-                                                                            dependency.getArtifactId(),
-                                                                            dependency.getType(),
-                                                                            dependency.getClassifier(),
-                                                                            dependency.getVersion() );
-                }
+                dependencyArtifact = ArtifactUtils.createTypedArtifact( dependency.getGroupId(),
+                                                                        dependency.getArtifactId(),
+                                                                        dependency.getType(),
+                                                                        dependency.getClassifier(),
+                                                                        dependency.getVersion(),
+                                                                        mappedExtension,
+                                                                        mappedClassifier );
                 List<Artifact> exclusions = new ArrayList<>();
                 for ( Exclusion e : dependency.getExclusions() )
                 {
