@@ -49,6 +49,8 @@ class IsolatedClassRealm
 
     private final Set<String> imports = new HashSet<>();
 
+    private final Set<String> importsAll = new HashSet<>();
+
     public IsolatedClassRealm( ClassLoader parent )
     {
         super( new URL[0], null );
@@ -87,6 +89,11 @@ class IsolatedClassRealm
         imports.add( packageName );
     }
 
+    public void importAllPackages( String packageName )
+    {
+        importsAll.add( packageName );
+    }
+
     boolean isImported( String name )
     {
         int index = name.lastIndexOf( '/' );
@@ -100,7 +107,20 @@ class IsolatedClassRealm
             index = Math.max( name.lastIndexOf( '.' ), 0 );
         }
 
-        return imports.contains( name.substring( 0, index ) );
+        String namespace = name.substring( 0, index );
+
+        if ( imports.contains( namespace ) )
+            return true;
+
+        while ( !namespace.isEmpty() )
+        {
+            if ( importsAll.contains( namespace ) )
+                return true;
+
+            namespace = namespace.substring( 0, Math.max( namespace.lastIndexOf( '.' ), 0 ) );
+        }
+
+        return false;
     }
 
     @Override
