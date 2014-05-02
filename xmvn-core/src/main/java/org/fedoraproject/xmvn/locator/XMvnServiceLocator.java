@@ -37,6 +37,8 @@ import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
+ * Service locator for XMvn.
+ * 
  * @author Mikolaj Izdebski
  */
 @Named
