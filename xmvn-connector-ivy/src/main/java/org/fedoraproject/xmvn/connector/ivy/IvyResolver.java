@@ -74,6 +74,7 @@ public class IvyResolver
             @SuppressWarnings( "resource" ) XMvnHomeClassLoader realm =
                 new XMvnHomeClassLoader( LazyLocatorProvider.class.getClassLoader() );
             realm.addJarDirectory( realm.getHome().resolve( "lib" ).resolve( "ivy" ) );
+            realm.importAllPackages( "org.apache.ivy" );
             locator = new IsolatedXMvnServiceLocator( realm );
         }
     }
