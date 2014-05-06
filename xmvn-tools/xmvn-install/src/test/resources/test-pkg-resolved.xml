@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://fedorahosted.org/xmvn/CONFIG/2.0.0">
+    <uuid>1e5b4990-c4e3-42b4-9145-5b7783ab91a2</uuid>
+    <artifacts>
+        <artifact>
+            <groupId>com.example</groupId>
+            <artifactId>test</artifactId>
+            <version>42</version>
+            <path>???example.jar</path>
+        </artifact>
+        <artifact>
+            <groupId>com.example</groupId>
+            <artifactId>test2</artifactId>
+            <version>42</version>
+            <path>???native-code.jar</path>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-benchmark</artifactId>
+                    <requestedVersion>4.1</requestedVersion>
+                    <resolvedVersion>4</resolvedVersion>
+                    <namespace>ns</namespace>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.lucene</groupId>
+                    <artifactId>lucene-spatial</artifactId>
+                    <requestedVersion>4.1</requestedVersion>
+                </dependency>
+            </dependencies>
+        </artifact>
+    </artifacts>
+</metadata>

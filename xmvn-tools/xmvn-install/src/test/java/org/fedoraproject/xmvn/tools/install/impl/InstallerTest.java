@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
@@ -106,6 +107,11 @@ public class InstallerTest
         expect( resolverMock.resolve( request ) ).andReturn( result );
     }
 
+    private void addResolution( String coordinates, Path path )
+    {
+        addResolution( coordinates, null, null, path );
+    }
+
     private void addResolution( String coordinates )
     {
         addResolution( coordinates, null, null, null );
@@ -129,14 +135,19 @@ public class InstallerTest
             verify( result );
     }
 
-    @Test
-    public void testInstall()
-            throws Exception
+    private void addEmptyResolutions()
     {
         addResolution( "org.apache.lucene:lucene-benchmark:4.1:jar" );
         addResolution( "org.apache.lucene:lucene-benchmark:SYSTEM:jar" );
         addResolution( "org.apache.lucene:lucene-spatial:4.1:jar" );
         addResolution( "org.apache.lucene:lucene-spatial:SYSTEM:jar" );
+    }
+
+    @Test
+    public void testInstall()
+            throws Exception
+    {
+        addEmptyResolutions();
 
         install( "valid.xml" );
 
@@ -146,5 +157,48 @@ public class InstallerTest
                 "%attr(0644,root,root) /usr/share/java/test.jar", "%attr(0644,root,root) /usr/share/java/test2.jar" );
 
         assertMetadataEqual( getResource( "test-pkg.xml" ), installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
+    }
+
+    @Test
+    public void testResolution()
+            throws Exception
+    {
+        Path dependencyJar = Paths.get( "/tmp/bla.jar" );
+        addResolution( "org.apache.lucene:lucene-benchmark:4.1:jar" );
+        addResolution( "org.apache.lucene:lucene-benchmark:SYSTEM:jar", "4", "ns", dependencyJar );
+        addResolution( "org.apache.lucene:lucene-spatial:4.1:jar" );
+        addResolution( "org.apache.lucene:lucene-spatial:SYSTEM:jar", dependencyJar );
+
+        install( "valid.xml" );
+
+        assertMetadataEqual( getResource( "test-pkg-resolved.xml" ), installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
+    }
+
+    @Test
+    public void testSubpackage()
+            throws Exception
+    {
+        addEmptyResolutions();
+
+        PackagingRule rule = new PackagingRule();
+        Artifact subArtifact = new Artifact();
+        subArtifact.setArtifactId( "test2" );
+        rule.setArtifactGlob( subArtifact );
+        rule.setTargetPackage( "subpackage" );
+        config.addArtifactManagement( rule );
+
+        install( "valid.xml" );
+
+        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "D /usr/share/maven-metadata",
+                "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar", "F /usr/share/maven-metadata/test-pkg.xml",
+                "F /usr/share/maven-metadata/subpackage.xml" );
+
+        assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
+                "%attr(0644,root,root) /usr/share/java/test.jar" );
+        assertDescriptorEquals( Paths.get( ".mfiles-subpackage" ), "%attr(0644,root,root) /usr/share/maven-metadata/subpackage.xml",
+                "%attr(0644,root,root) /usr/share/java/test2.jar" );
+
+        assertMetadataEqual( getResource( "test-pkg-main.xml" ), installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
+        assertMetadataEqual( getResource( "test-pkg-sub.xml" ), installRoot.resolve( "usr/share/maven-metadata/subpackage.xml" ) );
     }
 }
