@@ -67,6 +67,22 @@ public class IsolatedClassRealmTest
     }
 
     @Test
+    public void testImportAll()
+            throws Exception
+    {
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( null ) )
+        {
+            realm.importAllPackages( "org.fedoraproject.xmvn" );
+
+            assertTrue( realm.isImported( "org.fedoraproject.xmvn.Artifact" ) );
+            assertTrue( realm.isImported( "org.fedoraproject.xmvn.install.Installer" ) );
+            assertTrue( realm.isImported( "org.fedoraproject.xmvn.install.impl.DefaultInstaller" ) );
+
+            assertFalse( realm.isImported( "org.fedoraproject.Example" ) );
+        }
+    }
+
+    @Test
     public void testLoadJar()
         throws Exception
     {
