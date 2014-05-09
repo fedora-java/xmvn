@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +58,8 @@ public class DefaultResolver
 
     private final Resolver depmapResolver;
 
+    private final EffectivePomGenerator pomGenerator;
+
     @Inject
     public DefaultResolver( @Named( "depmap" ) Resolver depmapResolver, Configurator configurator )
     {
@@ -63,6 +67,7 @@ public class DefaultResolver
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         metadataResolver = new MetadataResolver( settings.getMetadataRepositories() );
+        pomGenerator = new EffectivePomGenerator();
     }
 
     @Override
@@ -83,6 +88,20 @@ public class DefaultResolver
         else
         {
             compatVersion = artifact.getVersion();
+        }
+
+        if ( metadata != null && metadata.getPath() == null && StringUtils.equals( metadata.getExtension(), "pom" ) )
+        {
+            try
+            {
+                Path pomPath = pomGenerator.generateEffectivePom( metadata );
+                metadata.setPath( pomPath.toString() );
+            }
+            catch ( IOException e )
+            {
+                logger.warn( "Failed to generate effective POM", e );
+                metadata = null;
+            }
         }
 
         if ( metadata != null )
