@@ -500,29 +500,6 @@
           </association>
         </field>
         <field>
-          <name>jarRepositories</name>
-          <version>0.4.0+</version>
-          <description>
-            List of system repositories where XMvn will look for JAR files.
-          </description>
-          <association xml.tagName="repository">
-            <type>String</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
-          <name>pomRepositories</name>
-          <version>0.4.0+</version>
-          <description>
-            List of system repositories where XMvn will look for POM
-            files.
-          </description>
-          <association xml.tagName="repository">
-            <type>String</type>
-            <multiplicity>*</multiplicity>
-          </association>
-        </field>
-        <field>
           <name>metadataRepositories</name>
           <version>0.4.0+</version>
           <description>

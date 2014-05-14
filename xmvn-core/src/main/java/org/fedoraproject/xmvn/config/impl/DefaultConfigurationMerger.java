@@ -83,10 +83,6 @@ public class DefaultConfigurationMerger
 
         dominant.getLocalRepositories().addAll( recessive.getLocalRepositories() );
 
-        dominant.getJarRepositories().addAll( recessive.getJarRepositories() );
-
-        dominant.getPomRepositories().addAll( recessive.getPomRepositories() );
-
         dominant.getMetadataRepositories().addAll( recessive.getMetadataRepositories() );
 
         dominant.getPrefixes().addAll( recessive.getPrefixes() );
