@@ -72,8 +72,7 @@ public class DefaultDependencyMap
             Path root = Paths.get( prefix );
             if ( Files.isDirectory( root ) )
             {
-                for ( String dir : settings.getMetadataRepositories() )
-                    metadataDirs.add( root.resolve( dir ) );
+                metadataDirs.add( root.resolve( "usr/share/maven-fragments" ) );
             }
         }
 
