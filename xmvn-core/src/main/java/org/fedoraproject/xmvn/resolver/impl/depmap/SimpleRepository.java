@@ -44,7 +44,7 @@ abstract class SimpleRepository
     protected abstract Path getArtifactPath( String groupId, String artifactId, String extension, String classifier,
                                              String version );
 
-    private boolean matchesStereotypes( Artifact artifact, boolean ignoreType )
+    private boolean matchesStereotypes( Artifact artifact )
     {
         for ( Stereotype stereotype : stereotypes )
         {
@@ -61,7 +61,7 @@ abstract class SimpleRepository
     @Override
     public RepositoryPath getPrimaryArtifactPath( Artifact artifact, boolean ignoreType )
     {
-        if ( !matchesStereotypes( artifact, ignoreType ) )
+        if ( !matchesStereotypes( artifact ) )
             return null;
 
         String groupId = artifact.getGroupId();

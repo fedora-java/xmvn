@@ -22,7 +22,6 @@ import static org.easymock.EasyMock.verify;
 import static org.easymock.MockType.NICE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
@@ -56,10 +55,10 @@ import org.fedoraproject.xmvn.repository.RepositoryPath;
  */
 @RunWith( EasyMockRunner.class )
 public class ArtifactInstallerTest
-        extends InjectedTest
+    extends InjectedTest
 {
     @Mock
-    private Repository repositoryMock;
+    Repository repositoryMock;
 
     @Mock( type = NICE )
     private RepositoryPath repositoryPathMock;
@@ -90,12 +89,13 @@ public class ArtifactInstallerTest
     }
 
     private void install( JavaPackage pkg, ArtifactMetadata am, PackagingRule rule )
-            throws ArtifactInstallationException
+        throws ArtifactInstallationException
     {
         expect( repositoryPathMock.getPath() ).andReturn( Paths.get( "com.example-test" ) );
         expect( repositoryPathMock.getRepository() ).andReturn( repositoryMock );
-        expect( repositoryMock.getPrimaryArtifactPath( isA( Artifact.class ), isA( ArtifactContext.class ), isA( String.class ) ) )
-                .andReturn( repositoryPathMock );
+        expect(
+                repositoryMock.getPrimaryArtifactPath( isA( Artifact.class ), isA( ArtifactContext.class ),
+                                                       isA( String.class ) ) ).andReturn( repositoryPathMock );
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );
         replay( repositoryPathMock );
         replay( repositoryMock );

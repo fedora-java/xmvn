@@ -83,8 +83,8 @@ public class PackageRegistryTest
     public void testMultiple()
         throws Exception
     {
-        JavaPackage pkg1 = registry.getPackageById( null );
-        JavaPackage pkg2 = registry.getPackageById( "subpackage" );
+        registry.getPackageById( null );
+        registry.getPackageById( "subpackage" );
         assertEquals( 2, registry.getPackages().size() );
         assertNull( registry.getPackageById( "__noinstall" ) );
         assertEquals( 2, registry.getPackages().size() );

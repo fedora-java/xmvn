@@ -46,7 +46,6 @@ public class IsolatedXMvnServiceLocator
      * @param role interface class identifying requested service
      * @return instance of XMvn service, never {@code null}.
      */
-    @SuppressWarnings( "unchecked" )
     public <T> T getService( final Class<T> role )
     {
         ClassLoader savedThreadContextClassLoader = Thread.currentThread().getContextClassLoader();

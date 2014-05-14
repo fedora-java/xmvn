@@ -28,6 +28,7 @@ public class ArtifactInstallerFactory
     @Inject
     private ArtifactInstaller defaultArtifactInstaller;
 
+    @SuppressWarnings( "unused" )
     public ArtifactInstaller getInstallerFor( Artifact artifact )
     {
         // TODO: support pluggable installers

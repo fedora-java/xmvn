@@ -22,7 +22,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -45,11 +44,6 @@ import org.junit.Before;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
-import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
  * @author Mikolaj Izdebski
@@ -201,7 +195,7 @@ public abstract class AbstractFileTest
     }
 
     protected void assertDescriptorEquals( Package pkg, String... expected )
-            throws IOException
+        throws IOException
     {
         Path mfiles = installRoot.resolve( ".mfiles" );
         pkg.writeDescriptor( mfiles );
@@ -217,7 +211,7 @@ public abstract class AbstractFileTest
     }
 
     protected void assertMetadataEqual( Path expected, Path actual )
-            throws Exception
+        throws Exception
     {
         setIgnoreWhitespace( true );
         assertTrue( Files.isRegularFile( actual ) );
