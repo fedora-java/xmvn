@@ -67,7 +67,7 @@ public class ArtifactUtils
 
     /**
      * Convert a collection of artifacts to a human-readable string. This function uses single-line representation.
-     *
+     * 
      * @param collection collection of artifacts
      * @return string representation of given collection of artifacts
      */
@@ -78,7 +78,7 @@ public class ArtifactUtils
 
     /**
      * Convert a collection of artifacts to a human-readable string.
-     *
+     * 
      * @param collection collection of artifacts
      * @param multiLine if multi-line representation should be used instead of single-line
      * @return string representation of given collection of artifacts
@@ -110,17 +110,18 @@ public class ArtifactUtils
     public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
                                                 String version )
     {
-        if ( ArtifactTypeRegistry.isRegisteredType( type ) )
+        if ( ArtifactTypeRegistry.getDefaultRegistry().isRegisteredType( type ) )
         {
-            String mappedExtension = ArtifactTypeRegistry.getExtension( type );
-            String mappedClassifier = ArtifactTypeRegistry.getClassifier( type );
-            return createTypedArtifact( groupId, artifactId, type, classifier, version, mappedExtension, mappedClassifier );
+            String mappedExtension = ArtifactTypeRegistry.getDefaultRegistry().getExtension( type );
+            String mappedClassifier = ArtifactTypeRegistry.getDefaultRegistry().getClassifier( type );
+            return createTypedArtifact( groupId, artifactId, type, classifier, version, mappedExtension,
+                                        mappedClassifier );
         }
         return createTypedArtifact( groupId, artifactId, type, classifier, version, null, null );
     }
 
     public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
-            String version, String mappedExtension, String mappedClassifier )
+                                                String version, String mappedExtension, String mappedClassifier )
     {
         String extension = type != null ? type : Artifact.DEFAULT_EXTENSION;
         if ( !StringUtils.isEmpty( mappedExtension ) )

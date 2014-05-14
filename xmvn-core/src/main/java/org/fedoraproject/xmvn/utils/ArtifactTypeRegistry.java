@@ -34,19 +34,21 @@ import org.xml.sax.SAXException;
  */
 class ArtifactTypeRegistry
 {
-    private static final Map<String, String> EXTENSIONS = new LinkedHashMap<>();
+    private static final ArtifactTypeRegistry DEFAULT_REGISTRY = new ArtifactTypeRegistry();
 
-    private static final Map<String, String> CLASSIFIERS = new LinkedHashMap<>();
+    private final Map<String, String> EXTENSIONS = new LinkedHashMap<>();
 
-    private static void addStereotype( String type, String extension, String classifier )
+    private final Map<String, String> CLASSIFIERS = new LinkedHashMap<>();
+
+    private void addStereotype( String type, String extension, String classifier )
     {
         EXTENSIONS.put( type, extension );
         CLASSIFIERS.put( type, classifier );
     }
 
-    private static void loadStereotypes()
+    private ArtifactTypeRegistry()
     {
-        try ( InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/stereotypes.xml" ) )
+        try (InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/stereotypes.xml" ))
         {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse( xmlStream );
@@ -66,22 +68,22 @@ class ArtifactTypeRegistry
         }
     }
 
-    static
+    public static ArtifactTypeRegistry getDefaultRegistry()
     {
-        loadStereotypes();
+        return DEFAULT_REGISTRY;
     }
 
-    public static boolean isRegisteredType( String type )
+    public boolean isRegisteredType( String type )
     {
         return EXTENSIONS.get( type ) != null;
     }
 
-    public static String getExtension( String type )
+    public String getExtension( String type )
     {
         return EXTENSIONS.get( type );
     }
 
-    public static String getClassifier( String type )
+    public String getClassifier( String type )
     {
         return CLASSIFIERS.get( type );
     }
