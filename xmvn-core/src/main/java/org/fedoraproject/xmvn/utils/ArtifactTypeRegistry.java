@@ -68,9 +68,22 @@ class ArtifactTypeRegistry
         }
     }
 
+    private ArtifactTypeRegistry( ArtifactTypeRegistry template )
+    {
+        EXTENSIONS.putAll( template.EXTENSIONS );
+        CLASSIFIERS.putAll( template.CLASSIFIERS );
+    }
+
     public static ArtifactTypeRegistry getDefaultRegistry()
     {
         return DEFAULT_REGISTRY;
+    }
+
+    public ArtifactTypeRegistry registerStereotype( String type, String extension, String classifier )
+    {
+        ArtifactTypeRegistry newRegistry = new ArtifactTypeRegistry( this );
+        newRegistry.addStereotype( type, extension, classifier );
+        return newRegistry;
     }
 
     public boolean isRegisteredType( String type )
