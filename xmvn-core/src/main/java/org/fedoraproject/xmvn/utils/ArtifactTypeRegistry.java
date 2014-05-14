@@ -24,15 +24,19 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+
 /**
  * @author Mikolaj Izdebski
  */
-class ArtifactTypeRegistry
+public class ArtifactTypeRegistry
 {
     private static final ArtifactTypeRegistry DEFAULT_REGISTRY = new ArtifactTypeRegistry();
 
@@ -86,18 +90,13 @@ class ArtifactTypeRegistry
         return newRegistry;
     }
 
-    public boolean isRegisteredType( String type )
+    public Artifact createTypedArtifact( String groupId, String artifactId, String type, String customClassifier,
+                                         String version )
     {
-        return EXTENSIONS.get( type ) != null;
-    }
+        if ( type == null || EXTENSIONS.get( type ) == null )
+            return new DefaultArtifact( groupId, artifactId, type, customClassifier, version );
 
-    public String getExtension( String type )
-    {
-        return EXTENSIONS.get( type );
-    }
-
-    public String getClassifier( String type )
-    {
-        return CLASSIFIERS.get( type );
+        String classifier = StringUtils.isNotEmpty( customClassifier ) ? customClassifier : CLASSIFIERS.get( type );
+        return new DefaultArtifact( groupId, artifactId, EXTENSIONS.get( type ), classifier, version );
     }
 }

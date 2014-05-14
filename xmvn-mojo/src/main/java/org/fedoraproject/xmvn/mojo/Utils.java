@@ -23,12 +23,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.ArtifactType;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 
 /**
  * @author Mikolaj Izdebski
@@ -53,6 +57,25 @@ class Utils
         Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
         artifact = artifact.setPath( artifactPath );
         return artifact;
+    }
+
+    public static Artifact dependencyArtifact( RepositorySystemSession repoSession, Dependency dependency )
+    {
+        ArtifactTypeRegistry registry = ArtifactTypeRegistry.getDefaultRegistry();
+
+        if ( repoSession != null && dependency.getType() != null )
+        {
+            ArtifactType type = repoSession.getArtifactTypeRegistry().get( dependency.getType() );
+
+            if ( type != null )
+            {
+                registry =
+                    registry.registerStereotype( dependency.getType(), type.getExtension(), type.getClassifier() );
+            }
+        }
+
+        return registry.createTypedArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(),
+                                             dependency.getClassifier(), dependency.getVersion() );
     }
 
     private static void writeModel( Model model, Path path )

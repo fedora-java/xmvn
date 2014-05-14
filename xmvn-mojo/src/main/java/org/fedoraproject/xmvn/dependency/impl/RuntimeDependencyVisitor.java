@@ -21,7 +21,7 @@ import java.util.List;
 import org.apache.maven.model.Dependency;
 
 import org.fedoraproject.xmvn.model.AbstractModelVisitor;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 
 /**
  * @author Mikolaj Izdebski
@@ -44,10 +44,10 @@ class RuntimeDependencyVisitor
         if ( !scopes.contains( dependency.getScope() ) )
             return;
 
-        result.addDependencyArtifact( ArtifactUtils.createTypedArtifact( dependency.getGroupId(),
-                                                                         dependency.getArtifactId(),
-                                                                         dependency.getType(),
-                                                                         dependency.getClassifier(),
-                                                                         dependency.getVersion() ) );
+        result.addDependencyArtifact( ArtifactTypeRegistry.getDefaultRegistry().createTypedArtifact( dependency.getGroupId(),
+                                                                                                     dependency.getArtifactId(),
+                                                                                                     dependency.getType(),
+                                                                                                     dependency.getClassifier(),
+                                                                                                     dependency.getVersion() ) );
     }
 }

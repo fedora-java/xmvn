@@ -26,7 +26,6 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,31 +104,6 @@ public class ArtifactUtils
 
         sb.append( separator + "]" );
         return sb.toString();
-    }
-
-    public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
-                                                String version )
-    {
-        if ( ArtifactTypeRegistry.getDefaultRegistry().isRegisteredType( type ) )
-        {
-            String mappedExtension = ArtifactTypeRegistry.getDefaultRegistry().getExtension( type );
-            String mappedClassifier = ArtifactTypeRegistry.getDefaultRegistry().getClassifier( type );
-            return createTypedArtifact( groupId, artifactId, type, classifier, version, mappedExtension,
-                                        mappedClassifier );
-        }
-        return createTypedArtifact( groupId, artifactId, type, classifier, version, null, null );
-    }
-
-    public static Artifact createTypedArtifact( String groupId, String artifactId, String type, String classifier,
-                                                String version, String mappedExtension, String mappedClassifier )
-    {
-        String extension = type != null ? type : Artifact.DEFAULT_EXTENSION;
-        if ( !StringUtils.isEmpty( mappedExtension ) )
-            extension = mappedExtension;
-        if ( StringUtils.isEmpty( classifier ) )
-            classifier = mappedClassifier;
-
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
     }
 
     private static Artifact getArtifactFromManifest( Path path )

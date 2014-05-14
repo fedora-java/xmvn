@@ -39,7 +39,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.ArtifactType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,25 +161,8 @@ public class InstallMojo
             String scope = dependency.getScope();
             if ( scope == null || scope.equals( "compile" ) || scope.equals( "runtime" ) )
             {
-                Artifact dependencyArtifact;
-                String mappedExtension = null;
-                String mappedClassifier = null;
-                if ( repoSession != null && dependency.getType() != null )
-                {
-                    ArtifactType type = repoSession.getArtifactTypeRegistry().get( dependency.getType() );
-                    if ( type != null )
-                    {
-                        mappedExtension = type.getExtension();
-                        mappedClassifier = type.getClassifier();
-                    }
-                }
-                dependencyArtifact = ArtifactUtils.createTypedArtifact( dependency.getGroupId(),
-                                                                        dependency.getArtifactId(),
-                                                                        dependency.getType(),
-                                                                        dependency.getClassifier(),
-                                                                        dependency.getVersion(),
-                                                                        mappedExtension,
-                                                                        mappedClassifier );
+                Artifact dependencyArtifact = Utils.dependencyArtifact( repoSession, dependency );
+
                 List<Artifact> exclusions = new ArrayList<>();
                 for ( Exclusion e : dependency.getExclusions() )
                 {
