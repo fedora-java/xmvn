@@ -47,11 +47,14 @@ class MetadataResolver
         MetadataReader reader = new MetadataReader();
         List<PackageMetadata> metadataList = reader.readMetadata( depmapLocations );
 
+        PathInterpolator interpolator = new PathInterpolator();
+
         for ( PackageMetadata metadata : metadataList )
         {
             for ( ArtifactMetadata installedArtifact : metadata.getArtifacts() )
             {
                 processArtifactMetadata( installedArtifact );
+                interpolator.interpolate( installedArtifact );
             }
         }
     }

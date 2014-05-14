@@ -106,7 +106,6 @@ public class DefaultResolver
 
         if ( metadata != null )
         {
-            // TODO: interpolate paths to expand variables like Java home
             Path artifactPath = Paths.get( metadata.getPath() );
             artifactPath = FileUtils.followSymlink( artifactPath );
 
