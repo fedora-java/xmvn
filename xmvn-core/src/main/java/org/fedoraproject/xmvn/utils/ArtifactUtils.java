@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -182,5 +184,17 @@ public class ArtifactUtils
         logger.info( " classifier: {}", artifact.getClassifier() );
         logger.info( "    version: {}", artifact.getVersion() );
         logger.info( "       file: {}", artifact.getPath() );
+    }
+
+    public static Properties convertProperties( Map<String, String> map )
+    {
+        Properties properties = new Properties();
+
+        for ( Entry<String, String> entry : map.entrySet() )
+        {
+            properties.setProperty( entry.getKey(), entry.getValue() );
+        }
+
+        return properties;
     }
 }
