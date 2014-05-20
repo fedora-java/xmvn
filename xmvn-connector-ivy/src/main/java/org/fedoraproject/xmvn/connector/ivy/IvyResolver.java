@@ -283,11 +283,13 @@ public class IvyResolver
         return report;
     }
 
-    private void deploy( org.fedoraproject.xmvn.artifact.Artifact artifact, Path artifactPath )
+    private void deploy( org.fedoraproject.xmvn.artifact.Artifact artifact, String type, Path artifactPath )
         throws IOException
     {
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact( artifact.setPath( artifactPath ) );
+        if ( type != null )
+            request.addProperty( "type", type );
         DeploymentResult result = getDeployer().deploy( request );
         if ( result.getException() != null )
             throw new IOException( "Failed to publish artifact", result.getException() );
@@ -305,7 +307,7 @@ public class IvyResolver
             PomModuleDescriptorWriter.write( module, pomFile, new PomWriterOptions() );
 
             org.fedoraproject.xmvn.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
-            deploy( artifact, artifactPath );
+            deploy( artifact, null, artifactPath );
         }
         catch ( ParseException e )
         {
@@ -322,6 +324,6 @@ public class IvyResolver
             deployEffectivePom( artifact.getModuleRevisionId(), artifactFile.toPath() );
         }
 
-        deploy( ivy2aether( artifact ), artifactFile.toPath() );
+        deploy( ivy2aether( artifact ), artifact.getType(), artifactFile.toPath() );
     }
 }
