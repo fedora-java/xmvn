@@ -90,7 +90,9 @@ public class DefaultResolver
             compatVersion = artifact.getVersion();
         }
 
-        if ( metadata != null && metadata.getPath() == null && StringUtils.equals( metadata.getExtension(), "pom" ) )
+        if ( metadata != null
+            && StringUtils.equals( metadata.getExtension(), "pom" )
+            && ( StringUtils.equals( metadata.getProperties().getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
         {
             try
             {
