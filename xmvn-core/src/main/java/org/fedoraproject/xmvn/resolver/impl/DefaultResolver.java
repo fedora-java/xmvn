@@ -92,7 +92,7 @@ public class DefaultResolver
 
         if ( metadata != null
             && StringUtils.equals( metadata.getExtension(), "pom" )
-            && ( StringUtils.equals( metadata.getProperties().getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
+            && ( !StringUtils.equals( metadata.getProperties().getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
         {
             try
             {
