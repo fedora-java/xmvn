@@ -64,6 +64,11 @@ public class DefaultDependencyMap
     @Inject
     public DefaultDependencyMap( Configurator configurator )
     {
+        this( configurator, "usr/share/maven-fragments" );
+    }
+
+    DefaultDependencyMap( Configurator configurator, String depmapFragmentDir )
+    {
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
 
         List<Path> metadataDirs = new ArrayList<>();
@@ -72,7 +77,7 @@ public class DefaultDependencyMap
             Path root = Paths.get( prefix );
             if ( Files.isDirectory( root ) )
             {
-                metadataDirs.add( root.resolve( "usr/share/maven-fragments" ) );
+                metadataDirs.add( root.resolve( depmapFragmentDir ) );
             }
         }
 

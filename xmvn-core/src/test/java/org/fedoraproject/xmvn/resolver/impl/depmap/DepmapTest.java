@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver;
+package org.fedoraproject.xmvn.resolver.impl.depmap;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +33,6 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.resolver.impl.depmap.DefaultDependencyMap;
 
 /**
  * @author Mikolaj Izdebski
@@ -49,9 +48,7 @@ public class DepmapTest
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         settings.getPrefixes().clear();
         settings.addPrefix( new File( "." ).getAbsolutePath() );
-        settings.getMetadataRepositories().clear();
-        settings.addMetadataRepository( fragment.toString() );
-        return new DefaultDependencyMap( configurator );
+        return new DefaultDependencyMap( configurator, fragment.toString() );
     }
 
     private DefaultDependencyMap readDepmap( String xml )
