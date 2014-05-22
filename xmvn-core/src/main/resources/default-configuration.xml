@@ -8,10 +8,6 @@
   <resolverSettings>
     <debug>false</debug>
   </resolverSettings>
-  <installerSettings>
-    <skipProvides>false</skipProvides>
-    <skipRequires>false</skipRequires>
-  </installerSettings>
 
   <repositories>
     <repository>
