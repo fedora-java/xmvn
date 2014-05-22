@@ -36,8 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -56,11 +54,8 @@ public class DefaultArtifactInstaller
     @Inject
     private RepositoryConfigurator repositoryConfigurator;
 
-    @Inject
-    private Configurator configurator;
-
     @Override
-    public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule )
+    public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
         throws ArtifactInstallationException
     {
         Artifact artifact =
@@ -73,8 +68,6 @@ public class DefaultArtifactInstaller
 
         logger.info( "Installing artifact {}", artifact );
 
-        InstallerSettings settings = configurator.getConfiguration().getInstallerSettings();
-
         Repository repo = repositoryConfigurator.configureRepository( "install" );
         if ( repo == null )
             throw new ArtifactInstallationException( "Unable to configure installation repository" );
@@ -83,7 +76,7 @@ public class DefaultArtifactInstaller
         for ( String fileName : rule.getFiles() )
             basePaths.add( Paths.get( fileName ) );
         if ( basePaths.isEmpty() )
-            basePaths.add( Paths.get( settings.getPackageName() + "/" + artifact.getArtifactId() ) );
+            basePaths.add( Paths.get( basePackageName + "/" + artifact.getArtifactId() ) );
 
         Set<Path> relativePaths = new LinkedHashSet<>();
         Set<Path> absolutePaths = new LinkedHashSet<>();

@@ -52,7 +52,7 @@ import org.fedoraproject.xmvn.tools.install.Installer;
  */
 @RunWith( EasyMockRunner.class )
 public class InstallerTest
-        extends AbstractFileTest
+    extends AbstractFileTest
 {
     private final Configuration config = new Configuration();
 
@@ -60,6 +60,7 @@ public class InstallerTest
     private Installer installer;
 
     private final Configurator configuratorMock = createMock( Configurator.class );
+
     private final Resolver resolverMock = createMock( Resolver.class );
 
     private final List<ResolutionResult> resolutionResults = new ArrayList<>();
@@ -73,11 +74,12 @@ public class InstallerTest
     }
 
     class MockArtifactInstaller
-            implements ArtifactInstaller
+        implements ArtifactInstaller
     {
         @Override
-        public void install( JavaPackage targetPackage, ArtifactMetadata artifactMetadata, PackagingRule packagingRule )
-                throws ArtifactInstallationException
+        public void install( JavaPackage targetPackage, ArtifactMetadata artifactMetadata, PackagingRule packagingRule,
+                             String basePackageName )
+            throws ArtifactInstallationException
         {
             Path path = Paths.get( "usr/share/java/" + artifactMetadata.getArtifactId() + ".jar" );
             File file = new RegularFile( path, Paths.get( artifactMetadata.getPath() ) );
@@ -118,7 +120,7 @@ public class InstallerTest
     }
 
     private void install( String planName )
-            throws Exception
+        throws Exception
     {
         expect( configuratorMock.getConfiguration() ).andReturn( config );
         replay( resolverMock, configuratorMock );
@@ -145,23 +147,26 @@ public class InstallerTest
 
     @Test
     public void testInstall()
-            throws Exception
+        throws Exception
     {
         addEmptyResolutions();
 
         install( "valid.xml" );
 
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "D /usr/share/maven-metadata",
-                "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar", "F /usr/share/maven-metadata/test-pkg.xml" );
+                                  "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar",
+                                  "F /usr/share/maven-metadata/test-pkg.xml" );
         assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
-                "%attr(0644,root,root) /usr/share/java/test.jar", "%attr(0644,root,root) /usr/share/java/test2.jar" );
+                                "%attr(0644,root,root) /usr/share/java/test.jar",
+                                "%attr(0644,root,root) /usr/share/java/test2.jar" );
 
-        assertMetadataEqual( getResource( "test-pkg.xml" ), installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
+        assertMetadataEqual( getResource( "test-pkg.xml" ),
+                             installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
     }
 
     @Test
     public void testResolution()
-            throws Exception
+        throws Exception
     {
         Path dependencyJar = Paths.get( "/tmp/bla.jar" );
         addResolution( "org.apache.lucene:lucene-benchmark:4.1:jar" );
@@ -171,12 +176,13 @@ public class InstallerTest
 
         install( "valid.xml" );
 
-        assertMetadataEqual( getResource( "test-pkg-resolved.xml" ), installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
+        assertMetadataEqual( getResource( "test-pkg-resolved.xml" ),
+                             installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
     }
 
     @Test
     public void testSubpackage()
-            throws Exception
+        throws Exception
     {
         addEmptyResolutions();
 
@@ -190,15 +196,19 @@ public class InstallerTest
         install( "valid.xml" );
 
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "D /usr/share/maven-metadata",
-                "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar", "F /usr/share/maven-metadata/test-pkg.xml",
-                "F /usr/share/maven-metadata/subpackage.xml" );
+                                  "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar",
+                                  "F /usr/share/maven-metadata/test-pkg.xml",
+                                  "F /usr/share/maven-metadata/subpackage.xml" );
 
         assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
-                "%attr(0644,root,root) /usr/share/java/test.jar" );
-        assertDescriptorEquals( Paths.get( ".mfiles-subpackage" ), "%attr(0644,root,root) /usr/share/maven-metadata/subpackage.xml",
-                "%attr(0644,root,root) /usr/share/java/test2.jar" );
+                                "%attr(0644,root,root) /usr/share/java/test.jar" );
+        assertDescriptorEquals( Paths.get( ".mfiles-subpackage" ),
+                                "%attr(0644,root,root) /usr/share/maven-metadata/subpackage.xml",
+                                "%attr(0644,root,root) /usr/share/java/test2.jar" );
 
-        assertMetadataEqual( getResource( "test-pkg-main.xml" ), installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
-        assertMetadataEqual( getResource( "test-pkg-sub.xml" ), installRoot.resolve( "usr/share/maven-metadata/subpackage.xml" ) );
+        assertMetadataEqual( getResource( "test-pkg-main.xml" ),
+                             installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
+        assertMetadataEqual( getResource( "test-pkg-sub.xml" ),
+                             installRoot.resolve( "usr/share/maven-metadata/subpackage.xml" ) );
     }
 }

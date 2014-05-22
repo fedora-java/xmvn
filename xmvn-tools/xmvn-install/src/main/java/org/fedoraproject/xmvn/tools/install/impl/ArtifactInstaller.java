@@ -23,6 +23,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
  */
 public interface ArtifactInstaller
 {
-    void install( JavaPackage targetPackage, ArtifactMetadata artifactMetadata, PackagingRule packagingRule )
+    void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
         throws ArtifactInstallationException;
 }

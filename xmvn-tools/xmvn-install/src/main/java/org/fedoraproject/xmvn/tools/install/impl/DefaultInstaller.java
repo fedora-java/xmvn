@@ -205,7 +205,7 @@ public class DefaultInstaller
         artifactState.setInstaller( installerFactory.getInstallerFor( artifactState.getArtifact() ) );
     }
 
-    private void installArtifact( ArtifactState artifactState )
+    private void installArtifact( ArtifactState artifactState, String basePackageName )
         throws ArtifactInstallationException
     {
         JavaPackage targetPackage = artifactState.getTargetPackage();
@@ -215,7 +215,7 @@ public class DefaultInstaller
             ArtifactInstaller installer = artifactState.getInstaller();
             ArtifactMetadata metadata = artifactState.getMetadata();
             PackagingRule packagingRule = artifactState.getPackagingRule();
-            installer.install( targetPackage, metadata, packagingRule );
+            installer.install( targetPackage, metadata, packagingRule, basePackageName );
         }
     }
 
@@ -325,7 +325,7 @@ public class DefaultInstaller
                                   artifactState.getInstaller().getClass().getName() );
             }
 
-            installArtifact( artifactState );
+            installArtifact( artifactState, request.getBasePackageName() );
         }
 
         logger.debug( "Resolving artifact dependencies..." );

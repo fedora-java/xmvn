@@ -100,7 +100,7 @@ public class ArtifactInstallerTest
         replay( repositoryPathMock );
         replay( repositoryMock );
 
-        installer.install( pkg, am, rule );
+        installer.install( pkg, am, rule, "foo" );
 
         verify( repositoryMock );
         verify( repositoryPathMock );
