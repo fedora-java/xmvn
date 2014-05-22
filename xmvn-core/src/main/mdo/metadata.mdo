@@ -18,7 +18,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://modello.codehaus.org/MODELLO/1.4.0
                            http://modello.codehaus.org/xsd/modello-1.4.0.xsd"
-       xml.namespace="http://fedorahosted.org/xmvn/CONFIG/${version}">
+       xml.namespace="http://fedorahosted.org/xmvn/METADATA/${version}">
   <id>metadata</id>
   <name>Metadata</name>
   <description>

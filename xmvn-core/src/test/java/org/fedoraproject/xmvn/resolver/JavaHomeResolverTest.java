@@ -48,7 +48,7 @@ public class JavaHomeResolverTest
         assertTrue( settings.getPrefixes().isEmpty() );
         assertTrue( settings.getMetadataRepositories().isEmpty() );
         settings.addPrefix( FileUtils.CWD.getAbsolutePath() );
-        settings.addMetadataRepository( "src/test/resources/java-home-resolver-depmaps" );
+        settings.addMetadataRepository( "src/test/resources/java-home-resolver-metadata" );
 
         Resolver javaHomeResolver = lookup( Resolver.class );
 
