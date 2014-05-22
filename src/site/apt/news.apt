@@ -3,27 +3,113 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2013-12-09
+                    2014-05-22
 
 
 Release notes for XMvn
 
-* What's new in XMvn 1.5.0
+* What's new in XMvn 2.0.0
 
-  XMvn 1.5.0 was released on YYYY-MM-DD.  Most important changes
+  XMvn 2.0.0 was released on 2014-05-29.  Most important changes
   include:
 
   * Major features
 
-    * Ivy resolver
+    * New metadata format
 
-      Starting with verison 1.5.0 XMvn provides a connector for Apache
+      XMvn 2.0.0 now reads and writes the new Javapackages metadata
+      format instead of dependency maps.  Read-only depmap support
+      remains, but was deprecated.
+
+    * Ivy integration
+
+      Starting with version 2.0.0 XMvn provides a connector for Apache
       Ivy which enables Ivy or its clients to have access to XMvn
-      resolver.
+      resolver and deployer.
 
       This feature enables Ant build scripts using Ivy tasks or other
       build systems that use Ivy to use local system artifact
-      repository to resolve dependencies.
+      repository to resolve dependencies and more, making Ivy a
+      first-class citizen among other build systems.
+
+    * Artifact deployment
+
+      Starting with version 2.0.0 XMvn provides an API to deploy
+      artifacts to system repositories.
+
+    * API separation
+
+      XMvn 2.0.0 ships with a separate API module, which makes it more
+      clear which parts of XMvn are part of public interface and which
+      are considered as implementation details.
+
+    * Class loader isolation
+
+      XMvn 2.0.0 Core implementation is now using an isolated class
+      loader to prevent unwanted classes from polluting Maven Core or
+      user classpath.
+
+  * Minor features
+
+    * Improved logging
+
+      XMvn logging was ported from Plexus to SLF4J.  This makes it
+      possible to easily set different logging levels for different
+      subsystems as well as use a custom backend.
+
+      Besides that some logging messages were improved and new ones
+      were added.
+
+    * Dependency version report
+
+      At the end of a build XMvn can now print a dependency version
+      report, which contains information about requested and resolved
+      dependency artifact versions.
+
+    * Improved Tycho integration
+
+      XMvn 2.0.0 works better with Eclipse Tycho.  In particular
+      system-scoped OSGi dependencies injected by Tycho are now
+      ignored and don't cause installation failures any longer.
+
+    * Repository filtering
+
+      XMvn 2.0.0 improves artifact filtering for installation
+      repositories.
+
+  * Other changes
+
+    * Migration to JSR-330
+
+      Internal dependency injection mechanisms were migrated from Sisu
+      Plexus to Sisu Inject, which provides JSR-330-compatible IoC
+      mechanisms.
+
+    * XMvn Connector rename
+
+      <<<xmvn-connector>>> module was renamed to
+      <<<xmvn-connector-aether>>> to reflect addition of the new
+      <<<xmvn-connector-ivy>>> module.
+
+    * Removal of deprecated API
+
+      Parts of XMvn API which were marked as deprecated were removed.
+
+    * Namespace cleanup
+
+      Java package names were renamed from
+      <<<org.fedoraproject.maven>>> to <<<org.fedoraproject.maven>>>.
+
+    * XMvn Installer rewrite
+
+      XMvn Installer was rewritten from scratch in 2.0.0 and a new
+      pluggable API was added.
+
+    * Effective POM installation
+
+      Effective POM's are no longer installed during package build.
+      XMvn resolver is able to generate them on demand during package
+      build from the new Javapackages metadata.
 
 * What's new in XMvn 1.4.0
 
