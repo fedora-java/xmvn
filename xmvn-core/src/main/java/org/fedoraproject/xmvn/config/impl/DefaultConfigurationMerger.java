@@ -95,50 +95,8 @@ public class DefaultConfigurationMerger
         if ( dominant.isDebug() == null )
             dominant.setDebug( recessive.isDebug() );
 
-        if ( StringUtils.isEmpty( dominant.getPackageName() ) )
-            dominant.setPackageName( recessive.getPackageName() );
-
-        if ( dominant.isSkipProvides() == null )
-            dominant.setSkipProvides( recessive.isSkipProvides() );
-
-        if ( dominant.isSkipRequires() == null )
-            dominant.setSkipRequires( recessive.isSkipRequires() );
-
-        if ( dominant.isEnableRawPoms() == null )
-            dominant.setEnableRawPoms( recessive.isEnableRawPoms() );
-
-        if ( dominant.isEnableEffectivePoms() == null )
-            dominant.setEnableEffectivePoms( recessive.isEnableEffectivePoms() );
-
-        if ( dominant.isPomRawModel() == null )
-            dominant.setPomRawModel( recessive.isPomRawModel() );
-
-        if ( dominant.isPomEffectiveModel() == null )
-            dominant.setPomEffectiveModel( recessive.isPomEffectiveModel() );
-
-        if ( dominant.isJarRawModel() == null )
-            dominant.setJarRawModel( recessive.isJarRawModel() );
-
-        if ( dominant.isJarEffectiveModel() == null )
-            dominant.setJarEffectiveModel( recessive.isJarEffectiveModel() );
-
-        if ( StringUtils.isEmpty( dominant.getJarDir() ) )
-            dominant.setJarDir( recessive.getJarDir() );
-
-        if ( StringUtils.isEmpty( dominant.getJniDir() ) )
-            dominant.setJniDir( recessive.getJniDir() );
-
-        if ( StringUtils.isEmpty( dominant.getPomDir() ) )
-            dominant.setPomDir( recessive.getPomDir() );
-
-        if ( StringUtils.isEmpty( dominant.getEffectivePomDir() ) )
-            dominant.setEffectivePomDir( recessive.getEffectivePomDir() );
-
         if ( StringUtils.isEmpty( dominant.getMetadataDir() ) )
             dominant.setMetadataDir( recessive.getMetadataDir() );
-
-        if ( StringUtils.isEmpty( dominant.getInstallRoot() ) )
-            dominant.setInstallRoot( recessive.getInstallRoot() );
     }
 
     private void mergeConfiguration( Configuration dominant, Configuration recessive )
