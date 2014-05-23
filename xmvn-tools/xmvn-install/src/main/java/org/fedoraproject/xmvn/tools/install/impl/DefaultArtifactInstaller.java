@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.containsNativeCode;
+import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.usesNativeCode;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -72,6 +75,10 @@ public class DefaultArtifactInstaller
         if ( repo == null )
             throw new ArtifactInstallationException( "Unable to configure installation repository" );
 
+        Path artifactPath = Paths.get( am.getPath() );
+        if ( usesNativeCode( artifactPath ) || containsNativeCode( artifactPath ) )
+            am.getProperties().setProperty( "native", "true" );
+
         Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
             basePaths.add( Paths.get( fileName ) );
@@ -106,7 +113,7 @@ public class DefaultArtifactInstaller
         Iterator<RepositoryPath> repoPathIterator = repoPaths.iterator();
 
         // Artifact path
-        File artifactFile = new RegularFile( repoPathIterator.next().getPath(), Paths.get( am.getPath() ) );
+        File artifactFile = new RegularFile( repoPathIterator.next().getPath(), artifactPath );
         targetPackage.addFile( artifactFile );
         Path primaryPath = Paths.get( "/" ).resolve( artifactFile.getTargetPath() );
         am.setPath( primaryPath.toString() );

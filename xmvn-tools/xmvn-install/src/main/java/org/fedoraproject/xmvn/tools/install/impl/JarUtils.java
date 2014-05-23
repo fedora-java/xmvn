@@ -84,7 +84,6 @@ class JarUtils
      * @return {@code true} given JAR as found inside to use native code
      */
     public static boolean usesNativeCode( Path jar )
-        throws IOException
     {
         try (ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ))
         {
@@ -110,6 +109,10 @@ class JarUtils
                     return true;
             }
 
+            return false;
+        }
+        catch ( IOException e )
+        {
             return false;
         }
     }
