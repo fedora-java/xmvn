@@ -65,6 +65,10 @@ public class DefaultArtifactInstaller
             new DefaultArtifact( am.getGroupId(), am.getArtifactId(), am.getExtension(), am.getClassifier(),
                                  am.getVersion() );
 
+        Path artifactPath = Paths.get( am.getPath() );
+        if ( usesNativeCode( artifactPath ) || containsNativeCode( artifactPath ) )
+            am.getProperties().setProperty( "native", "true" );
+
         Map<String, String> properties = new LinkedHashMap<>();
         for ( String name : am.getProperties().stringPropertyNames() )
             properties.put( name, am.getProperties().getProperty( name ) );
@@ -74,10 +78,6 @@ public class DefaultArtifactInstaller
         Repository repo = repositoryConfigurator.configureRepository( "install" );
         if ( repo == null )
             throw new ArtifactInstallationException( "Unable to configure installation repository" );
-
-        Path artifactPath = Paths.get( am.getPath() );
-        if ( usesNativeCode( artifactPath ) || containsNativeCode( artifactPath ) )
-            am.getProperties().setProperty( "native", "true" );
 
         Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
