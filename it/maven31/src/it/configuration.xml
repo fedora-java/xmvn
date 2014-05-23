@@ -27,11 +27,7 @@
     </blacklist>
   </resolverSettings>
   <installerSettings>
-    <enableRawPoms>true</enableRawPoms>
-    <enableEffectivePoms>true</enableEffectivePoms>
     <metadataDir>usr/share/maven-fragments</metadataDir>
-    <installRoot>${project.build.directory}/install-root</installRoot>
-    <packageName>apache-maven</packageName>
   </installerSettings>
   <repositories>
     <repository>
