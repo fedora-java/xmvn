@@ -76,7 +76,7 @@ public class ResolverCli
         else
         {
             for ( Path path : result )
-                System.out.println( path );
+                System.out.println( path != null ? path : "" );
         }
     }
 
@@ -97,14 +97,15 @@ public class ResolverCli
                 Artifact artifact = new DefaultArtifact( s );
                 Path path = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactPath();
 
+                if ( path != null || !cliRequest.isClasspath() )
+                {
+                    result.add( path );
+                }
+
                 if ( path == null )
                 {
                     error = true;
                     logger.error( "Unable to resolve artifact {}", artifact );
-                }
-                else
-                {
-                    result.add( path );
                 }
             }
 
