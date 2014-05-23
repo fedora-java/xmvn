@@ -52,7 +52,7 @@ class PackageRegistry
 
     public JavaPackage getPackageById( String id )
     {
-        if ( id == null )
+        if ( id == null || id.equals( "__default" ) )
             id = "";
 
         if ( id.equals( "__noinstall" ) )
