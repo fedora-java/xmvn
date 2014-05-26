@@ -76,7 +76,7 @@ public class PackageRegistryTest
         Set<File> files = pkg.getFiles();
         assertEquals( 1, files.size() );
         File metadataFile = files.iterator().next();
-        assertEquals( Paths.get( "usr/share/maven-metadata/subpackage.xml" ), metadataFile.getTargetPath() );
+        assertEquals( Paths.get( "usr/share/maven-metadata/test-package-subpackage.xml" ), metadataFile.getTargetPath() );
     }
 
     @Test

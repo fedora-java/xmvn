@@ -198,17 +198,17 @@ public class InstallerTest
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "D /usr/share/maven-metadata",
                                   "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar",
                                   "F /usr/share/maven-metadata/test-pkg.xml",
-                                  "F /usr/share/maven-metadata/subpackage.xml" );
+                                  "F /usr/share/maven-metadata/test-pkg-subpackage.xml" );
 
         assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
                                 "%attr(0644,root,root) /usr/share/java/test.jar" );
         assertDescriptorEquals( Paths.get( ".mfiles-subpackage" ),
-                                "%attr(0644,root,root) /usr/share/maven-metadata/subpackage.xml",
+                                "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg-subpackage.xml",
                                 "%attr(0644,root,root) /usr/share/java/test2.jar" );
 
         assertMetadataEqual( getResource( "test-pkg-main.xml" ),
                              installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
         assertMetadataEqual( getResource( "test-pkg-sub.xml" ),
-                             installRoot.resolve( "usr/share/maven-metadata/subpackage.xml" ) );
+                             installRoot.resolve( "usr/share/maven-metadata/test-pkg-subpackage.xml" ) );
     }
 }
