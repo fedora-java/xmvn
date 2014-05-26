@@ -43,11 +43,10 @@ class PackageRegistry
 
     private Path getMetadataFilePath( String id )
     {
-        if ( !id.isEmpty() )
-            id += "-" + basePackageName;
+        String metadataBaseName = basePackageName + ( id.isEmpty() ? "" : "-" ) + id;
 
         Path metadatDir = Paths.get( settings.getMetadataDir() );
-        return metadatDir.resolve( id + ".xml" );
+        return metadatDir.resolve( metadataBaseName + ".xml" );
     }
 
     public JavaPackage getPackageById( String id )
