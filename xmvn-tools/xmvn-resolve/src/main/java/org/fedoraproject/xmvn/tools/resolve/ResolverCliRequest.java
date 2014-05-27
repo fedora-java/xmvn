@@ -42,6 +42,9 @@ class ResolverCliRequest
     @Parameter( names = { "-c", "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts" )
     private boolean classpath = false;
 
+    @Parameter( names = { "--raw-request" }, description = "Read a list of raw XMvn XML requests from standard input and print the results on standard output" )
+    private boolean raw = false;
+
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
@@ -58,6 +61,11 @@ class ResolverCliRequest
                 System.out.println();
                 jcomm.usage();
                 System.exit( 0 );
+            }
+
+            if ( raw && ( classpath || parameters.size() > 0 ) )
+            {
+                throw new ParameterException( "--raw-request must be used alone" );
             }
 
             if ( debug )
@@ -100,6 +108,16 @@ class ResolverCliRequest
     public void setClasspath( boolean classpath )
     {
         this.classpath = classpath;
+    }
+
+    public boolean isRaw()
+    {
+        return raw;
+    }
+
+    public void setRaw( boolean raw )
+    {
+        this.raw = raw;
     }
 
     public Map<String, String> getDefines()

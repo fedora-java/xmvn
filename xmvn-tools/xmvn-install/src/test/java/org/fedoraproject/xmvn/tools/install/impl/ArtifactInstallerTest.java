@@ -84,7 +84,6 @@ public class ArtifactInstallerTest
                 fail();
                 return null;
             }
-
         } );
     }
 

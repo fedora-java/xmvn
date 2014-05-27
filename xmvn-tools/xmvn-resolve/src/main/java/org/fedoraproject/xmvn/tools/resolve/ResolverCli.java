@@ -17,12 +17,17 @@ package org.fedoraproject.xmvn.tools.resolve;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -36,7 +41,10 @@ import org.slf4j.LoggerFactory;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
+import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.tools.resolve.xml.CompoundRequest;
+import org.fedoraproject.xmvn.tools.resolve.xml.CompoundResult;
 
 /**
  * Resolve artifacts given on command line.
@@ -60,12 +68,48 @@ public class ResolverCli
         this.resolver = resolver;
     }
 
-    private void printResult( ResolverCliRequest cli, List<Path> result )
+    private List<ResolutionRequest> parseRequests( ResolverCliRequest cli )
+        throws JAXBException
     {
-        if ( cli.isClasspath() )
+        if ( cli.isRaw() )
         {
-            Iterator<Path> it = result.iterator();
-            System.out.print( it.next() );
+            JAXBContext jaxbContext = JAXBContext.newInstance( CompoundRequest.class );
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            CompoundRequest compoundRequest = (CompoundRequest) jaxbUnmarshaller.unmarshal( System.in );
+            List<ResolutionRequest> requests = compoundRequest.getRequests();
+            return requests != null ? requests : Collections.<ResolutionRequest> emptyList();
+        }
+
+        List<ResolutionRequest> requests = new ArrayList<>();
+
+        for ( String s : cli.getParameters() )
+        {
+            if ( s.indexOf( ':' ) > 0 && s.indexOf( ':' ) == s.lastIndexOf( ':' ) )
+                s += ":";
+            if ( s.endsWith( ":" ) )
+                s += "SYSTEM";
+
+            Artifact artifact = new DefaultArtifact( s );
+            requests.add( new ResolutionRequest( artifact ) );
+        }
+
+        return requests;
+    }
+
+    private void printResults( ResolverCliRequest cli, List<ResolutionResult> results )
+        throws JAXBException
+    {
+        if ( cli.isRaw() )
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance( CompoundResult.class );
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+            jaxbMarshaller.marshal( new CompoundResult( results ), System.out );
+        }
+        else if ( cli.isClasspath() )
+        {
+            Iterator<ResolutionResult> it = results.iterator();
+            System.out.print( it.next().getArtifactPath() );
             while ( it.hasNext() )
             {
                 System.out.print( ':' );
@@ -75,47 +119,39 @@ public class ResolverCli
         }
         else
         {
-            for ( Path path : result )
+            for ( ResolutionResult result : results )
+            {
+                Path path = result.getArtifactPath();
                 System.out.println( path != null ? path : "" );
+            }
         }
     }
 
     private void run( ResolverCliRequest cliRequest )
+        throws JAXBException
     {
         try
         {
             boolean error = false;
-            List<Path> result = new ArrayList<>();
 
-            for ( String s : cliRequest.getParameters() )
+            List<ResolutionRequest> requests = parseRequests( cliRequest );
+            List<ResolutionResult> results = new ArrayList<>();
+
+            for ( ResolutionRequest request : requests )
             {
-                if ( s.indexOf( ':' ) > 0 && s.indexOf( ':' ) == s.lastIndexOf( ':' ) )
-                    s += ":";
-                if ( s.endsWith( ":" ) )
-                    s += "SYSTEM";
+                ResolutionResult result = resolver.resolve( request );
+                results.add( result );
 
-                Artifact artifact = new DefaultArtifact( s );
-                Path path = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactPath();
-
-                if ( path != null || !cliRequest.isClasspath() )
-                {
-                    result.add( path );
-                }
-
-                if ( path == null )
+                if ( result.getArtifactPath() == null )
                 {
                     error = true;
-                    logger.error( "Unable to resolve artifact {}", artifact );
+                    logger.error( "Unable to resolve artifact {}", request.getArtifact() );
                 }
             }
 
-            if ( error )
-                System.exit( 1 );
+            printResults( cliRequest, results );
 
-            if ( !result.isEmpty() )
-                printResult( cliRequest, result );
-
-            System.exit( 0 );
+            System.exit( error ? 1 : 0 );
         }
         catch ( IllegalArgumentException e )
         {

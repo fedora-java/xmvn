@@ -58,5 +58,4 @@ public class InstallationPlanLoader
     {
         return new InstallationPlan( prepareInstallationPlanFile( filename ) );
     }
-
 }
