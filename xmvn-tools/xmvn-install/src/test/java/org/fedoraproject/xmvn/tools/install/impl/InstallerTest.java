@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -99,7 +100,8 @@ public class InstallerTest
     private void addResolution( String coordinates, String compatVersion, String namespace, Path path )
     {
         String[] split = coordinates.split( ":" );
-        ResolutionRequest request = new ResolutionRequest( split[0], split[1], split[2], split[3] );
+        ResolutionRequest request =
+            new ResolutionRequest( new DefaultArtifact( split[0], split[1], split[3], split[2] ) );
         ResolutionResult result = createNiceMock( ResolutionResult.class );
         expect( result.getCompatVersion() ).andReturn( compatVersion ).anyTimes();
         expect( result.getNamespace() ).andReturn( namespace ).anyTimes();

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
@@ -73,7 +74,8 @@ public class BasicResolverTest
         throws Exception
     {
         Resolver resolver = lookup( Resolver.class );
-        ResolutionRequest request = new ResolutionRequest( "some", "nonexistent", "artifact", "pom" );
+        ResolutionRequest request =
+            new ResolutionRequest( new DefaultArtifact( "some", "nonexistent", "pom", "artifact" ) );
         ResolutionResult result = resolver.resolve( request );
         assertNotNull( result );
         assertNull( result.getArtifactPath() );

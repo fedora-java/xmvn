@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.utils.FileUtils;
@@ -52,21 +53,25 @@ public class JavaHomeResolverTest
 
         Resolver javaHomeResolver = lookup( Resolver.class );
 
-        ResolutionRequest comSunToolsRequest = new ResolutionRequest( "com.sun", "tools", "SYSTEM", "jar" );
+        ResolutionRequest comSunToolsRequest =
+            new ResolutionRequest( new DefaultArtifact( "com.sun", "tools", "jar", "SYSTEM" ) );
         ResolutionResult comSunToolsResult = javaHomeResolver.resolve( comSunToolsRequest );
         assertNotNull( comSunToolsResult.getArtifactPath() );
         assertTrue( Files.exists( comSunToolsResult.getArtifactPath() ) );
 
-        ResolutionRequest toolsRequest = new ResolutionRequest( "JAVA_HOME", "../lib/tools", "SYSTEM", "jar" );
+        ResolutionRequest toolsRequest =
+            new ResolutionRequest( new DefaultArtifact( "JAVA_HOME", "../lib/tools", "jar", "SYSTEM" ) );
         ResolutionResult toolsResult = javaHomeResolver.resolve( toolsRequest );
         assertNotNull( toolsResult.getArtifactPath() );
         assertTrue( Files.exists( toolsResult.getArtifactPath() ) );
 
-        ResolutionRequest toolzRequest = new ResolutionRequest( "JAVA_HOME", "../lib/toolz", "SYSTEM", "jar" );
+        ResolutionRequest toolzRequest =
+            new ResolutionRequest( new DefaultArtifact( "JAVA_HOME", "../lib/toolz", "jar", "SYSTEM" ) );
         ResolutionResult toolzResult = javaHomeResolver.resolve( toolzRequest );
         assertNull( toolzResult.getArtifactPath() );
 
-        ResolutionRequest xpp3Request = new ResolutionRequest( "JPP/xpp3", "xpp3", "SYSTEM", "jar" );
+        ResolutionRequest xpp3Request =
+            new ResolutionRequest( new DefaultArtifact( "JPP/xpp3", "xpp3", "jar", "SYSTEM" ) );
         ResolutionResult xpp3Result = javaHomeResolver.resolve( xpp3Request );
         assertNull( xpp3Result.getArtifactPath() );
     }

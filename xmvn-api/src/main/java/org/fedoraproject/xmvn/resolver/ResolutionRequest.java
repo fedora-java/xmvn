@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.resolver;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * Specifies parameters of artifact resolution.
@@ -36,11 +35,6 @@ public class ResolutionRequest
     public ResolutionRequest( Artifact artifact )
     {
         this.artifact = artifact;
-    }
-
-    public ResolutionRequest( String groupId, String artifactId, String version, String extension )
-    {
-        this.artifact = new DefaultArtifact( groupId, artifactId, extension, version );
     }
 
     /**
