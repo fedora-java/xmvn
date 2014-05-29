@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.containsNativeCode;
+import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.injectManifest;
 import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.usesNativeCode;
 
 import java.nio.file.Path;
@@ -65,9 +66,13 @@ public class DefaultArtifactInstaller
             new DefaultArtifact( am.getGroupId(), am.getArtifactId(), am.getExtension(), am.getClassifier(),
                                  am.getVersion() );
 
+        // Handle native JARs/WARs etc
         Path artifactPath = Paths.get( am.getPath() );
         if ( usesNativeCode( artifactPath ) || containsNativeCode( artifactPath ) )
             am.getProperties().setProperty( "native", "true" );
+
+        // Inject Javapackages manifests
+        injectManifest( artifactPath, artifact );
 
         Map<String, String> properties = new LinkedHashMap<>();
         for ( String name : am.getProperties().stringPropertyNames() )

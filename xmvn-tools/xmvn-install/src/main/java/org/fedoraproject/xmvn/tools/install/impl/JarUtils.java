@@ -30,17 +30,22 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
+import org.fedoraproject.xmvn.utils.FileUtils;
 
 /**
  * @author Mikolaj Izdebski
  */
 class JarUtils
 {
+    private static final Logger logger = LoggerFactory.getLogger( JarUtils.class );
+
     /**
-     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native (architecture-dependant)
+     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native (architecture-dependent)
      * code.
      * <p>
      * Currently this code only checks only for ELF binaries, but that behavior can change in future.
@@ -63,19 +68,43 @@ class JarUtils
                 if ( ent.isDirectory() )
                     continue;
                 if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2 && jis.read() == ELFMAG3 )
+                {
+                    logger.debug( "Native code found inside {}: {}", jar, ent.getName() );
                     return true;
+                }
             }
 
+            logger.trace( "Native code not found inside {}", jar );
             return false;
         }
         catch ( IOException e )
         {
+            logger.debug( "I/O exception caught when trying to determine whether JAR contains native code: {}", jar, e );
             return false;
         }
     }
 
+    static class NativeMethodFound
+        extends RuntimeException
+    {
+        private static final long serialVersionUID = 1;
+
+        final String className;
+
+        final String methodName;
+
+        final String methodSignature;
+
+        NativeMethodFound( String className, String methodName, String methodSignature )
+        {
+            this.className = className;
+            this.methodName = methodName;
+            this.methodSignature = methodSignature;
+        }
+    }
+
     /**
-     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file is using native (architecture-dependant)
+     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file is using native (architecture-dependent)
      * code.
      * <p>
      * Currently this code only checks if any class file declares Java native methods, but that behavior can change in
@@ -90,29 +119,33 @@ class JarUtils
             ZipEntry ent;
             while ( ( ent = jis.getNextEntry() ) != null )
             {
-                if ( ent.isDirectory() || !ent.getName().endsWith( ".class" ) )
+                final String entryName = ent.getName();
+                if ( ent.isDirectory() || !entryName.endsWith( ".class" ) )
                     continue;
 
-                final boolean[] usesNativeCode = new boolean[1];
-
-                new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM4 )
+                new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM5 )
                 {
                     @Override
                     public MethodVisitor visitMethod( int flags, String name, String desc, String sig, String[] exc )
                     {
-                        usesNativeCode[0] = ( flags & Opcodes.ACC_NATIVE ) != 0;
+                        if ( ( flags & Opcodes.ACC_NATIVE ) != 0 )
+                            throw new NativeMethodFound( entryName, name, sig );
+
                         return super.visitMethod( flags, name, desc, sig, exc );
                     }
                 }, ClassReader.SKIP_CODE );
-
-                if ( usesNativeCode[0] )
-                    return true;
             }
 
             return false;
         }
+        catch ( NativeMethodFound e )
+        {
+            logger.debug( "Native method {}({}) found in {}: {}", e.methodName, e.methodSignature, jar, e.className );
+            return true;
+        }
         catch ( IOException e )
         {
+            logger.debug( "I/O exception caught when trying to determine whether JAR uses native code: {}", jar, e );
             return false;
         }
     }
@@ -123,6 +156,11 @@ class JarUtils
         {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue( key, value );
+            logger.trace( "Injected field {}: {}", key, value );
+        }
+        else
+        {
+            logger.trace( "Not injecting field {} (it has default value \"{}\")", key, defaultValue );
         }
     }
 
@@ -132,18 +170,21 @@ class JarUtils
      * 
      * @param targetJar
      * @param artifact
-     * @throws IOException
      */
     public static void injectManifest( Path targetJar, Artifact artifact )
-        throws IOException
     {
-        targetJar = targetJar.toRealPath();
+        logger.trace( "Trying to inject manifest to {}", artifact );
+
+        targetJar = FileUtils.followSymlink( targetJar );
 
         try (JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ))
         {
             Manifest mf = jis.getManifest();
             if ( mf == null )
+            {
+                logger.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
                 return;
+            }
 
             putAttribute( mf, ArtifactUtils.MF_KEY_GROUPID, artifact.getGroupId(), null );
             putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
@@ -166,6 +207,17 @@ class JarUtils
                         jos.write( buf, 0, sz );
                 }
             }
+            catch ( IOException e )
+            {
+                // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
+                throw new RuntimeException( e );
+            }
+
+            logger.trace( "Manifest injected successfully" );
+        }
+        catch ( IOException e )
+        {
+            logger.debug( "I/O exception caught when trying to read JAR: {}", targetJar );
         }
     }
 }
