@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.resolver.impl;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,6 +74,8 @@ public class DefaultResolver
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
+        Properties properties = System.getProperties();
+
         // FIXME: bisect is not used
         Artifact artifact = request.getArtifact();
         logger.debug( "Trying to resolve artifact {}", artifact );
@@ -90,9 +93,15 @@ public class DefaultResolver
             compatVersion = artifact.getVersion();
         }
 
+        if ( metadata != null )
+        {
+            properties.putAll( metadata.getProperties() );
+        }
+
         if ( metadata != null
+            && !StringUtils.equals( properties.getProperty( "xmvn.resolver.disableEffectivePom" ), "true" )
             && StringUtils.equals( metadata.getExtension(), "pom" )
-            && ( !StringUtils.equals( metadata.getProperties().getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
+            && ( !StringUtils.equals( properties.getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
         {
             try
             {
@@ -122,15 +131,12 @@ public class DefaultResolver
         }
 
         // TODO: drop support for depmaps
-        if ( System.getProperty( "xmvn.depmap.ignore" ) != null )
+        if ( properties.getProperty( "xmvn.resolver.disableDepmap" ) == null )
         {
-            logger.debug( "Failed to resolve artifact: {}", artifact );
-            return new DefaultResolutionResult();
-        }
-        else
-        {
-            // TODO: drop support for depmaps
             return depmapResolver.resolve( request );
         }
+
+        logger.debug( "Failed to resolve artifact: {}", artifact );
+        return new DefaultResolutionResult();
     }
 }

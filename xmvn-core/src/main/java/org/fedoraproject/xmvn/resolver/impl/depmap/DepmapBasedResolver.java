@@ -228,7 +228,7 @@ public class DepmapBasedResolver
 
         if ( result == null )
         {
-            logger.info( "Failed to resolve artifact: {}", artifact );
+            logger.debug( "Failed to resolve artifact: {}", artifact );
             return new DefaultResolutionResult();
         }
 
