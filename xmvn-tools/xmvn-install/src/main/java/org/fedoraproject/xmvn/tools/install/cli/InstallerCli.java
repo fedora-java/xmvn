@@ -52,7 +52,7 @@ public class InstallerCli
         this.installer = installer;
     }
 
-    private void run( InstallerCliRequest cliRequest )
+    private int run( InstallerCliRequest cliRequest )
     {
         InstallationRequest request = new InstallationRequest();
         request.setCheckForUnmatchedRules( !cliRequest.isRelaxed() );
@@ -63,10 +63,12 @@ public class InstallerCli
         try
         {
             installer.install( request );
+            return 0;
         }
         catch ( ArtifactInstallationException | IOException e )
         {
             logger.error( "Artifact installation failed", e );
+            return 1;
         }
     }
 
@@ -81,7 +83,7 @@ public class InstallerCli
             Injector injector = Guice.createInjector( module );
             InstallerCli cli = injector.getInstance( InstallerCli.class );
 
-            cli.run( cliRequest );
+            System.exit( cli.run( cliRequest ) );
         }
         catch ( Throwable e )
         {
