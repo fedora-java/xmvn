@@ -74,7 +74,8 @@ public class DefaultResolver
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        Properties properties = System.getProperties();
+        Properties properties = new Properties();
+        properties.putAll( System.getProperties() );
 
         // FIXME: bisect is not used
         Artifact artifact = request.getArtifact();
