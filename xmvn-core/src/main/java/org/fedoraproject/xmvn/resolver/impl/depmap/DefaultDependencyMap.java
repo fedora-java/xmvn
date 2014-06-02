@@ -61,6 +61,10 @@ public class DefaultDependencyMap
 
     private final Map<Artifact, Set<Artifact>> reverseMapping = new LinkedHashMap<>();
 
+    private final Configurator configurator;
+
+    private final String depmapFragmentDir;
+
     @Inject
     public DefaultDependencyMap( Configurator configurator )
     {
@@ -68,6 +72,12 @@ public class DefaultDependencyMap
     }
 
     DefaultDependencyMap( Configurator configurator, String depmapFragmentDir )
+    {
+        this.configurator = configurator;
+        this.depmapFragmentDir = depmapFragmentDir;
+    }
+
+    private synchronized void initDepmap()
     {
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
 
@@ -87,6 +97,8 @@ public class DefaultDependencyMap
 
     public boolean isEmpty()
     {
+        initDepmap();
+
         try
         {
             lock.readLock().lock();
@@ -116,6 +128,8 @@ public class DefaultDependencyMap
             new DefaultArtifact( from.getGroupId(), from.getArtifactId(), from.getExtension(), from.getClassifier(),
                                  null );
         to = new DefaultArtifact( to.getGroupId(), to.getArtifactId(), to.getExtension(), to.getClassifier(), null );
+
+        initDepmap();
 
         try
         {
@@ -183,6 +197,8 @@ public class DefaultDependencyMap
                                  artifact.getClassifier(), null );
         logger.debug( "Trying to translate artifact {}", artifact );
 
+        initDepmap();
+
         try
         {
             lock.readLock().lock();
@@ -201,6 +217,8 @@ public class DefaultDependencyMap
         artifact =
             new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(), artifact.getExtension(),
                                  artifact.getClassifier(), null );
+
+        initDepmap();
 
         try
         {

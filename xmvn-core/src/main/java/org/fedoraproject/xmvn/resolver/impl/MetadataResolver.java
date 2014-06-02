@@ -38,11 +38,16 @@ class MetadataResolver
 {
     private final Logger logger = LoggerFactory.getLogger( MetadataResolver.class );
 
-    private final Set<Artifact> ignoredArtifacts = new LinkedHashSet<>();
-
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
+    private final List<String> depmapLocations;
+
     public MetadataResolver( List<String> depmapLocations )
+    {
+        this.depmapLocations = depmapLocations;
+    }
+
+    private synchronized void initArtifactMap()
     {
         MetadataReader reader = new MetadataReader();
         List<PackageMetadata> metadataList = reader.readMetadata( depmapLocations );
@@ -88,6 +93,8 @@ class MetadataResolver
             }
         }
 
+        Set<Artifact> ignoredArtifacts = new LinkedHashSet<>();
+
         for ( Artifact artifact : artifactSet )
         {
             if ( ignoredArtifacts.contains( artifact ) )
@@ -112,6 +119,7 @@ class MetadataResolver
 
     public ArtifactMetadata resolveArtifactMetadata( Artifact artifact )
     {
+        initArtifactMap();
         return artifactMap.get( artifact );
     }
 }
