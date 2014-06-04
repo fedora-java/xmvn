@@ -65,6 +65,8 @@ public class DefaultDependencyMap
 
     private final String depmapFragmentDir;
 
+    private boolean initialized;
+
     @Inject
     public DefaultDependencyMap( Configurator configurator )
     {
@@ -79,6 +81,11 @@ public class DefaultDependencyMap
 
     private synchronized void initDepmap()
     {
+        if ( initialized )
+            return;
+
+        initialized = true;
+
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
 
         List<Path> metadataDirs = new ArrayList<>();
