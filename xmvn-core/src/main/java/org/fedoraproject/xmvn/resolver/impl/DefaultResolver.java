@@ -57,13 +57,17 @@ public class DefaultResolver
 
     private static final RpmDb rpmdb = new RpmDb();
 
+    private final Resolver localRepoResolver;
+
     private final Resolver depmapResolver;
 
     private final EffectivePomGenerator pomGenerator;
 
     @Inject
-    public DefaultResolver( @Named( "depmap" ) Resolver depmapResolver, Configurator configurator )
+    public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver,
+                            @Named( "depmap" ) Resolver depmapResolver, Configurator configurator )
     {
+        this.localRepoResolver = localRepoResolver;
         this.depmapResolver = depmapResolver;
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
@@ -77,7 +81,10 @@ public class DefaultResolver
         Properties properties = new Properties();
         properties.putAll( System.getProperties() );
 
-        // FIXME: bisect is not used
+        ResolutionResult localRepoResult = localRepoResolver.resolve( request );
+        if ( localRepoResult.getArtifactPath() != null )
+            return localRepoResult;
+
         Artifact artifact = request.getArtifact();
         logger.debug( "Trying to resolve artifact {}", artifact );
 
