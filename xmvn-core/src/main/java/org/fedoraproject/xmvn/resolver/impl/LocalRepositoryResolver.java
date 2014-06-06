@@ -28,7 +28,7 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
- * Resolver that resolves artifacts from bisect repository.
+ * Resolver that resolves artifacts from local and bisect repositories.
  * <p>
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
  * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
