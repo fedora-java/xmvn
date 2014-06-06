@@ -77,7 +77,7 @@ public class LocalRepositoryResolver
         Path repoPath = getMavenRepositoryPath( artifact );
 
         // TODO: bisect
-        Path repoRoot = Paths.get( "." ).toAbsolutePath();
+        Path repoRoot = Paths.get( ".m2" ).toAbsolutePath();
 
         Path artifactPath = repoRoot.resolve( repoPath );
         if ( Files.isRegularFile( artifactPath ) )
