@@ -42,6 +42,8 @@ class MetadataResolver
 
     private final List<String> depmapLocations;
 
+    boolean initialized;
+
     public MetadataResolver( List<String> depmapLocations )
     {
         this.depmapLocations = depmapLocations;
@@ -49,6 +51,10 @@ class MetadataResolver
 
     private synchronized void initArtifactMap()
     {
+        if ( initialized )
+            return;
+        initialized = true;
+
         MetadataReader reader = new MetadataReader();
         List<PackageMetadata> metadataList = reader.readMetadata( depmapLocations );
 
