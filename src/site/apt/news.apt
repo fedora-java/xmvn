@@ -3,10 +3,55 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2014-05-22
+                    2014-06-06
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.0.1
+
+  XMvn 2.0.1 was released on 2014-06-06.  Most important changes
+  include:
+
+  * Minor features
+
+    * Property to disable effective POMs
+
+      XMvn 2.0.1 allows to globally disable generation and resolution
+      of effective POMs by setting system property
+      <<<xmvn.resolver.disableEffectivePom>>>
+
+  * Minor bugfixes
+
+    * Fixed JAR post-processing during installation
+
+      In some cases XMvn 2.0.0 may have failed to inject Javapackages
+      manifest entries to JARs it installs.  It also failed to detect
+      native code inside JARs.  This was fixed in XMvn 2.0.1.
+
+    * Fixed return code of <<<xmvn-install>>>
+
+      XMvn Installer CLI used to return zero exit code even if
+      installation failed.  This was corrected in XMvn 2.0.1.
+
+    * Implemented lazy loading of metadata
+
+      XMvn spawns background threads to initialize some "eager"
+      singletons in order to minimize delay on their first use and
+      improve overall performance.  Since Java allows isolated class
+      realms to have multiple singleton instances, hundreds of
+      initializer threads may have be spawned in applications heavily
+      using isolated realms, such as in unit testing.
+
+      XMvn 2.0.1 implemented lazy initialization instead of eager
+      initialization, which results in lower performance, but better
+      worst-case behavior.
+
+    * Fixed artifact resolution from local workspace repository
+
+      XMvn 2.0.1 fixes a regression introduced in version 2.0.0 -
+      artifacts were no longer resolved from local workspace
+      repository (<<<$PWD/.m2>>>).
 
 * What's new in XMvn 2.0.0
 
@@ -98,7 +143,7 @@ Release notes for XMvn
     * Namespace cleanup
 
       Java package names were renamed from
-      <<<org.fedoraproject.maven>>> to <<<org.fedoraproject.maven>>>.
+      <<<org.fedoraproject.maven>>> to <<<org.fedoraproject.xmvn>>>.
 
     * XMvn Installer rewrite
 
