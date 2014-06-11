@@ -86,7 +86,7 @@ public class BisectCli
             boolean success = buildExecutor.executeBuild( request, getBuildLogName( 0 ), verbose );
             if ( success )
             {
-                logger.error( "Standard local build was successfull, expected failure." );
+                logger.error( "Standard local build was successful, expected failure." );
                 logger.info( "Build log is available in {}", getBuildLogName( 0 ) );
                 System.exit( 1 );
             }

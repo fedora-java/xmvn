@@ -341,7 +341,7 @@ public class DefaultInstaller
             pkg.writeDescriptor( mfiles );
         }
 
-        logger.info( "Installation successfull" );
+        logger.info( "Installation successful" );
         return new InstallationResult()
         {
         };
