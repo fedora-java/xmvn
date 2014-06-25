@@ -202,7 +202,9 @@ public class DefaultInstaller
      */
     private void assignArtifactInstaller( ArtifactState artifactState )
     {
-        artifactState.setInstaller( installerFactory.getInstallerFor( artifactState.getArtifact() ) );
+        if ( artifactState.getTargetPackage() != null )
+            artifactState.setInstaller( installerFactory.getInstallerFor( artifactState.getArtifact(),
+                                                                          artifactState.getMetadata().getProperties() ) );
     }
 
     private void installArtifact( ArtifactState artifactState, String basePackageName )
@@ -326,6 +328,15 @@ public class DefaultInstaller
             }
 
             installArtifact( artifactState, request.getBasePackageName() );
+        }
+
+        logger.debug( "Running post-installation hooks" );
+        Set<ArtifactInstaller> installers = new LinkedHashSet<>();
+        for ( ArtifactState artifactState : reactor )
+        {
+            ArtifactInstaller installer = artifactState.getInstaller();
+            if ( installers.add( installer ) )
+                installer.postInstallation();
         }
 
         logger.debug( "Resolving artifact dependencies..." );

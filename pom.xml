@@ -42,6 +42,7 @@
     <module>xmvn-connector-aether</module>
     <module>xmvn-connector-ivy</module>
     <module>xmvn-mojo</module>
+    <module>xmvn-p2</module>
     <module>xmvn-tools</module>
   </modules>
   <dependencies>

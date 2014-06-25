@@ -167,4 +167,10 @@ public class DefaultArtifactInstaller
 
         targetPackage.getMetadata().addArtifact( am );
     }
+
+    @Override
+    public void postInstallation()
+    {
+        // Nothing to do
+    }
 }

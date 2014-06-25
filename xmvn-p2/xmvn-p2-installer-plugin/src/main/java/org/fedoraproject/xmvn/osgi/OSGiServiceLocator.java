@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
-
-import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+package org.fedoraproject.xmvn.osgi;
 
 /**
  * @author Mikolaj Izdebski
  */
-public interface ArtifactInstaller
+public interface OSGiServiceLocator
 {
-    void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
-        throws ArtifactInstallationException;
-
-    void postInstallation()
-        throws ArtifactInstallationException;
+    <T> T getService( Class<T> clazz );
 }

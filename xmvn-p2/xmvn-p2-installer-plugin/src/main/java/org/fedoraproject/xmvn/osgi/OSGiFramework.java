@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.osgi;
 
-import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.osgi.framework.BundleContext;
 
 /**
+ * Allows Eclipse Equinox OSGi framework to be embedded in the running JVM.
+ * 
  * @author Mikolaj Izdebski
  */
-public interface ArtifactInstaller
+public interface OSGiFramework
 {
-    void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
-        throws ArtifactInstallationException;
-
-    void postInstallation()
-        throws ArtifactInstallationException;
+    /**
+     * Obtain bundle context of embedded OSGi framework. This causes the framework to be launched if it is not running
+     * yet.
+     * 
+     * @return bundle context of embedded OSGi framework
+     */
+    BundleContext getBundleContext();
 }

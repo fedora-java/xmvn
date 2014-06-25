@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XMvn P2 OSGi service implementation
+Bundle-SymbolicName: org.fedoraproject.xmvn.p2.impl
+Bundle-Version: 2.1.0.qualifier
+Bundle-Activator: org.fedoraproject.xmvn.p2.impl.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.equinox.p2.repository.tools,
+ org.eclipse.equinox.p2.core,
+ org.eclipse.equinox.p2.repository,
+ org.eclipse.equinox.p2.artifact.repository,
+ org.eclipse.equinox.p2.metadata,
+ org.eclipse.equinox.p2.publisher,
+ org.eclipse.equinox.p2.publisher.eclipse,
+ org.eclipse.equinox.p2.metadata.repository,
+ org.eclipse.equinox.p2.engine,
+ org.eclipse.equinox.p2.director
+Import-Package: org.fedoraproject.xmvn.p2,
+ org.slf4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Service-Component: OSGI-INF/component.xml

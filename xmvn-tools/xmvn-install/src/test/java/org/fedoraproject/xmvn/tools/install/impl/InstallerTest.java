@@ -87,6 +87,12 @@ public class InstallerTest
             targetPackage.addFile( file );
             targetPackage.getMetadata().addArtifact( artifactMetadata );
         }
+
+        @Override
+        public void postInstallation()
+            throws ArtifactInstallationException
+        {
+        }
     }
 
     @Override

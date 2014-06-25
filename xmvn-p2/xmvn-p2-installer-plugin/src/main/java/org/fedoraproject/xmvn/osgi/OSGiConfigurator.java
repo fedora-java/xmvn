@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.osgi;
 
-import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import java.nio.file.Path;
+import java.util.Collection;
 
 /**
  * @author Mikolaj Izdebski
  */
-public interface ArtifactInstaller
+public interface OSGiConfigurator
 {
-    void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
-        throws ArtifactInstallationException;
+    Collection<Path> getBundles();
 
-    void postInstallation()
-        throws ArtifactInstallationException;
+    Collection<String> getExportedPackages();
 }
