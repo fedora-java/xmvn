@@ -78,6 +78,10 @@ public class EclipseArtifactInstaller
             request.addPackageMapping( unitId, subpackageId );
             pkgMap.put( targetPackage, subpackageId );
         }
+
+        // FIXME: Set correct path
+        am.setPath( "/dev/null" );
+        targetPackage.getMetadata().addArtifact( am );
     }
 
     @Override
