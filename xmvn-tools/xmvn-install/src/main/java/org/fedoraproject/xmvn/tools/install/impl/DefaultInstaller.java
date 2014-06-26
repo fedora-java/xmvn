@@ -335,7 +335,7 @@ public class DefaultInstaller
         for ( ArtifactState artifactState : reactor )
         {
             ArtifactInstaller installer = artifactState.getInstaller();
-            if ( installers.add( installer ) )
+            if ( installer != null && installers.add( installer ) )
                 installer.postInstallation();
         }
 
