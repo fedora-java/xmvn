@@ -28,6 +28,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.codehaus.plexus.util.StringUtils;
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.osgi.OSGiServiceLocator;
@@ -64,6 +66,11 @@ public class EclipseArtifactInstaller
             request.addFeature( path );
         else
             return;
+
+        Artifact artifact =
+            new DefaultArtifact( am.getGroupId(), am.getArtifactId(), am.getExtension(), am.getClassifier(),
+                                 am.getVersion() );
+        logger.info( "Installing artifact {}", artifact );
 
         String commonId = basePackageName.replaceAll( "^eclipse-", "" );
         String subpackageId = targetPackage.getId().replaceAll( "^eclipse-", "" );
