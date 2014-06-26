@@ -212,21 +212,50 @@ public class SystemIndex
         }
     }
 
+    /**
+     * Enumerate all platform installable units available in the system.
+     * <p>
+     * Platform units are installable units included as part of Eclipse Platform. They are assumed to always be
+     * available.
+     * 
+     * @return set of platform installable units available in the system
+     */
     public Set<IInstallableUnit> getPlatformUnits()
     {
         return Collections.unmodifiableSet( platformUnits );
     }
 
+    /**
+     * Enumerate all internal installable units available in the system.
+     * <p>
+     * Internal units are all installable units which are not part of Eclipse Platform, but are located in locations
+     * from which they will be automatically discovered by Eclipse during startup.
+     * 
+     * @return set of internal installable units available in the system
+     */
     public Set<IInstallableUnit> gitInternalUnits()
     {
         return Collections.unmodifiableSet( internalUnits );
     }
 
+    /**
+     * Enumerate all external installable units available in the system.
+     * <p>
+     * External units are all installable units which are not discovered nor loaded by Eclipse during startup - to be
+     * used they need to be symlinked from one of locations searched by Eclipse.
+     * 
+     * @return set of external installable units available in the system
+     */
     public Set<IInstallableUnit> getExternalUnits()
     {
         return Collections.unmodifiableSet( externalUnits );
     }
 
+    /**
+     * Locate external OSGi bundle in the system.
+     * 
+     * @return absolute path to the bundle (can be {@code null} if no bundle with requested coordinates is available)
+     */
     public Path lookupBundle( IVersionedId key )
     {
         return index.get( new VersionedId( key.getId(), key.getVersion() ) );
