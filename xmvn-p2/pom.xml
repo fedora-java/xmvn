@@ -37,4 +37,12 @@
     <module>org.fedoraproject.xmvn.p2</module>
     <module>org.fedoraproject.xmvn.p2.impl</module>
   </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

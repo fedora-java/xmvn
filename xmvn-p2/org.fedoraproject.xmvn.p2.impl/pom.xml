@@ -31,12 +31,4 @@
   <description>
     Implementation of XMvn P2 Installer OSGi service.
   </description>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 </project>
