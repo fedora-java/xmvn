@@ -98,8 +98,8 @@ public class DefaultEclipseInstaller
             Path installationPath = request.getTargetDropinDirectory().resolve( pkg.getId() ).resolve( "eclipse" );
             Repository runnableRepo = Repository.create( request.getBuildRoot().resolve( installationPath ) );
             Director.repo2runnable( runnableRepo, packageRepo );
-            Files.deleteIfExists( installationPath.resolve( "artifacts.jar" ) );
-            Files.deleteIfExists( installationPath.resolve( "content.jar" ) );
+            Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "artifacts.jar" ) );
+            Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "content.jar" ) );
 
             if ( logger.isInfoEnabled() && !pkg.getDependencies().isEmpty() )
                 logger.info( "Symlinking external dependencies..." );
