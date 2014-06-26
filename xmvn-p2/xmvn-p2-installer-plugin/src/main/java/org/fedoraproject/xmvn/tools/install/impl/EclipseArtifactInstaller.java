@@ -113,22 +113,25 @@ public class EclipseArtifactInstaller
     private void addAllFiles( JavaPackage pkg, Path dropin, Path root )
         throws IOException
     {
+        pkg.addFile( new Directory( root.relativize( dropin ) ) );
+
         if ( Files.isDirectory( dropin ) )
         {
             for ( Path path : Files.newDirectoryStream( dropin ) )
             {
                 Path relativePath = root.relativize( path );
-                File f;
-                if ( Files.isDirectory( path ) )
-                    f = new Directory( relativePath );
-                else if ( Files.isSymbolicLink( path ) )
-                    f = new SymbolicLink( relativePath, Files.readSymbolicLink( path ) );
-                else
-                    f = new RegularFile( relativePath, path );
-                pkg.addFile( f );
-
                 if ( Files.isDirectory( path ) )
                     addAllFiles( pkg, path, root );
+                else
+                {
+                    File f;
+
+                    if ( Files.isSymbolicLink( path ) )
+                        f = new SymbolicLink( relativePath, Files.readSymbolicLink( path ) );
+                    else
+                        f = new RegularFile( relativePath, path );
+                    pkg.addFile( f );
+                }
             }
         }
     }
