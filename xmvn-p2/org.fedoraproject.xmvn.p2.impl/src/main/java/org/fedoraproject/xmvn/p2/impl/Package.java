@@ -15,66 +15,230 @@
  */
 package org.fedoraproject.xmvn.p2.impl;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class Package
 {
-    private final String id;
+    private final Logger logger = LoggerFactory.getLogger( Package.class );
 
-    private final Set<IInstallableUnit> contents = new LinkedHashSet<>();
+    private final Set<IInstallableUnit> virtual = new LinkedHashSet<>();
 
-    private final Set<IInstallableUnit> dependencies = new LinkedHashSet<>();
+    final Map<IInstallableUnit, String> physical = new LinkedHashMap<>();
 
-    public Package( String id )
+    private final Set<Package> deps = new LinkedHashSet<>();
+
+    private final Set<Package> revdeps = new LinkedHashSet<>();
+
+    private int index;
+
+    private int lowlink;
+
+    public static Package creeatePhysical( String name, Set<IInstallableUnit> contents )
     {
-        this.id = id;
+        Package metapackage = new Package();
+
+        for ( IInstallableUnit unit : contents )
+        {
+            metapackage.physical.put( unit, name );
+        }
+
+        return metapackage;
     }
 
-    public String getId()
+    public static Package creeateVirtual( IInstallableUnit unit )
     {
-        return id;
+        Package metapackage = new Package();
+
+        metapackage.virtual.add( unit );
+
+        return metapackage;
+    }
+
+    public void merge( Package v )
+    {
+        if ( virtual.isEmpty() && v.virtual.isEmpty() )
+        {
+            physical.putAll( v.physical );
+        }
+        else if ( virtual.isEmpty() && !v.virtual.isEmpty() )
+        {
+            String name = physical.values().iterator().next();
+            for ( IInstallableUnit unit : v.virtual )
+                physical.put( unit, name );
+        }
+        else if ( !virtual.isEmpty() && v.virtual.isEmpty() )
+        {
+            physical.putAll( v.physical );
+            String name = physical.values().iterator().next();
+            for ( IInstallableUnit unit : virtual )
+                physical.put( unit, name );
+            virtual.clear();
+        }
+        else
+        {
+            virtual.addAll( v.virtual );
+        }
     }
 
     public Set<IInstallableUnit> getContents()
     {
-        return contents;
+        return Collections.unmodifiableSet( virtual.isEmpty() ? physical.keySet() : virtual );
     }
 
-    public void addContent( IInstallableUnit unit )
+    public void addDependency( Package dep )
     {
-        contents.add( unit );
+        deps.add( dep );
+        dep.revdeps.add( this );
     }
 
-    public void addContents( Set<IInstallableUnit> contents )
+    public static void detectStrongComponents( Set<Package> V )
     {
-        this.contents.addAll( contents );
+        AtomicInteger index = new AtomicInteger( 0 );
+        Stack<Package> S = new Stack<>();
+
+        for ( Package v : new LinkedHashSet<>( V ) )
+        {
+            if ( v.index == 0 )
+                strongconnect( V, v, index, S );
+        }
     }
 
-    public Set<IInstallableUnit> getDependencies()
+    private static void strongconnect( Set<Package> V, Package v, AtomicInteger index, Stack<Package> S )
     {
-        return dependencies;
+        v.index = v.lowlink = index.incrementAndGet();
+        S.push( v );
+
+        for ( Package w : v.deps )
+        {
+            if ( v.index == 0 )
+            {
+                strongconnect( V, w, index, S );
+
+                v.lowlink = Math.min( v.lowlink, w.lowlink );
+            }
+            else if ( S.contains( w ) )
+            {
+                v.lowlink = Math.min( v.lowlink, w.lowlink );
+            }
+        }
+
+        if ( v.lowlink == v.index )
+        {
+            for ( Package w; ( w = S.pop() ) != v; V.remove( w ) )
+            {
+                v.merge( w );
+            }
+        }
     }
 
-    public void addDependencies( Set<IInstallableUnit> dependencies )
+    public static void expandVirtualPackages( Set<Package> metapackages )
     {
-        this.dependencies.addAll( dependencies );
+        Package main = null;
+        for ( Package w : metapackages )
+        {
+            for ( String name : w.physical.values() )
+            {
+                if ( name.equals( "" ) )
+                    main = w;
+            }
+        }
+
+        Set<Package> unmerged = new LinkedHashSet<>();
+
+        main_loop: for ( ;; )
+        {
+            unmerged.clear();
+
+            for ( Package w : metapackages )
+            {
+                if ( w.virtual.isEmpty() )
+                    continue;
+
+                if ( w.revdeps.isEmpty() )
+                {
+                    if ( main != null )
+                    {
+                        main.merge( w );
+                        metapackages.remove( w );
+                    }
+                    else
+                    {
+                        for ( IInstallableUnit unit : w.virtual )
+                            w.physical.put( unit, "" );
+                        w.virtual.clear();
+                        main = w;
+                    }
+
+                    continue main_loop;
+                }
+
+                if ( w.revdeps.size() == 1 )
+                {
+                    metapackages.remove( w );
+                    w.revdeps.iterator().next().merge( w );
+
+                    continue main_loop;
+                }
+
+                unmerged.add( w );
+            }
+
+            if ( unmerged.isEmpty() )
+                return;
+
+            for ( Package metapackage : unmerged )
+            {
+                metapackage.dump();
+            }
+
+            throw new RuntimeException( "There are " + unmerged.size() + " unmerged virntual metapackages" );
+        }
     }
 
-    @Override
-    public boolean equals( Object rhs )
+    private void dumpContents()
     {
-        return rhs instanceof Package && id.equals( ( (Package) rhs ).id );
+        if ( virtual.isEmpty() )
+        {
+            logger.info( "  Physical metapackage" );
+
+            for ( Entry<IInstallableUnit, String> entry : physical.entrySet() )
+            {
+                logger.info( "    * {} ({})", entry.getKey(), entry.getValue() );
+            }
+        }
+        else
+        {
+            logger.info( "  Virtual metapackage:" );
+
+            for ( IInstallableUnit unit : virtual )
+            {
+                logger.info( "    * {} (virtual)", unit );
+            }
+        }
     }
 
-    @Override
-    public int hashCode()
+    public void dump()
     {
-        return id.hashCode();
+        dumpContents();
+
+        logger.info( "  Required by:" );
+        for ( Package mp : revdeps )
+            mp.dumpContents();
+
+        logger.info( "===================================" );
     }
 }

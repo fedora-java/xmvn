@@ -15,15 +15,28 @@
  */
 package org.fedoraproject.xmvn.p2.impl;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IInstallableUnitFragment;
+import org.eclipse.equinox.p2.metadata.IRequirement;
+import org.eclipse.equinox.p2.query.IQuery;
+import org.eclipse.equinox.p2.query.IQueryable;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.fedoraproject.xmvn.p2.EclipseInstallationRequest;
 import org.fedoraproject.xmvn.p2.EclipseInstaller;
 import org.slf4j.Logger;
@@ -57,17 +70,17 @@ public class DefaultEclipseInstaller
         Director.mirrorMetadata( unionMetadataRepo, index.getExternalUnits() );
         Director.mirrorMetadata( unionMetadataRepo, reactorUnits );
 
-        Map<String, Package> packages = new LinkedHashMap<>();
+        Map<String, Set<IInstallableUnit>> packages = new LinkedHashMap<>();
 
         for ( Entry<String, String> entry : request.getPackageMappings().entrySet() )
         {
             String unitId = entry.getKey();
             String packageId = entry.getValue();
 
-            Package pkg = packages.get( packageId );
+            Set<IInstallableUnit> pkg = packages.get( packageId );
             if ( pkg == null )
             {
-                pkg = new Package( packageId );
+                pkg = new LinkedHashSet<>();
                 packages.put( packageId, pkg );
             }
 
@@ -75,37 +88,50 @@ public class DefaultEclipseInstaller
             if ( unit == null )
                 throw new RuntimeException( "Unresolvable unit present in package mappings: " + unitId );
 
-            pkg.addContent( unit );
+            pkg.add( unit );
         }
 
-        for ( Package pkg : packages.values() )
-        {
-            dump( "Initlal contents", pkg.getContents() );
+        ;
 
-            logger.info( "Resolving dependencies for package {}...", pkg.getId() );
-            Resolver.resolveDependencies( pkg.getContents(), pkg.getDependencies(),
-                                          unionMetadataRepo.getMetadataRepository(), reactorUnits,
-                                          index.getPlatformUnits(), index.gitInternalUnits(), index.getExternalUnits() );
-            dump( "packageContents", pkg.getContents() );
-            dump( "externalDeps", pkg.getDependencies() );
+        Map<String, Set<IInstallableUnit>> map = new LinkedHashMap<>();
+        for ( Package metapkg : splitIntoMetapackages( reactorUnits, index.getPlatformUnits(),
+                                                           index.gitInternalUnits(), index.getExternalUnits(), packages ) )
+        {
+            for ( Entry<IInstallableUnit, String> e : metapkg.physical.entrySet() )
+            {
+                String name = e.getValue();
+                IInstallableUnit unit = e.getKey();
+                Set<IInstallableUnit> pkg = map.get( name );
+                if ( pkg == null )
+                {
+                    pkg = new LinkedHashSet<>();
+                    map.put( name, pkg );
+                }
+                pkg.add( unit );
+            }
         }
 
-        for ( Package pkg : packages.values() )
+        for ( Entry<String, Set<IInstallableUnit>> entry : map.entrySet() )
         {
-            logger.info( "Creating runnable repository for package {}...", pkg.getId() );
+            String name = entry.getKey();
+            Set<IInstallableUnit> content = entry.getValue();
+            Set<IInstallableUnit> symlinks = new LinkedHashSet<>();
+            symlinks.addAll( content );
+            content.retainAll( reactorUnits );
+            symlinks.removeAll( content );
+
+            logger.info( "Creating runnable repository for package {}...", name );
             Repository packageRepo = Repository.createTemp();
-            Director.mirror( packageRepo, reactorRepo, pkg.getContents() );
-            Path installationPath = request.getTargetDropinDirectory().resolve( pkg.getId() ).resolve( "eclipse" );
+            Director.mirror( packageRepo, reactorRepo, content );
+            Path installationPath = request.getTargetDropinDirectory().resolve( name ).resolve( "eclipse" );
             Repository runnableRepo = Repository.create( request.getBuildRoot().resolve( installationPath ) );
             Director.repo2runnable( runnableRepo, packageRepo );
             Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "artifacts.jar" ) );
             Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "content.jar" ) );
 
-            if ( logger.isInfoEnabled() && !pkg.getDependencies().isEmpty() )
-                logger.info( "Symlinking external dependencies..." );
-
+            logger.info( "Symlinking external dependencies..." );
             Path pluginsDir = runnableRepo.getLocation().resolve( "plugins" );
-            for ( IInstallableUnit iu : pkg.getDependencies() )
+            for ( IInstallableUnit iu : symlinks )
             {
                 Path path = index.lookupBundle( iu );
                 if ( path == null )
@@ -123,6 +149,181 @@ public class DefaultEclipseInstaller
 
             logger.info( "Done." );
         }
+    }
+
+    private Set<Package> splitIntoMetapackages( Set<IInstallableUnit> reactor, Set<IInstallableUnit> platform,
+                                                    Set<IInstallableUnit> internal, Set<IInstallableUnit> external,
+                                                    Map<String, Set<IInstallableUnit>> partialPackageMap )
+        throws ProvisionException, IOException
+    {
+        Set<Package> metapackages = createMetapackages( reactor, partialPackageMap );
+
+        resolveDeps( metapackages, reactor, platform, internal, external );
+
+        Package.detectStrongComponents( metapackages );
+
+        Package.expandVirtualPackages( metapackages );
+
+        return metapackages;
+    }
+
+    private Set<Package> createMetapackages( Set<IInstallableUnit> reactor,
+                                                 Map<String, Set<IInstallableUnit>> partialPackageMap )
+    {
+        Set<Package> metapackages = new LinkedHashSet<>();
+        Set<IInstallableUnit> unprocesseduUnits = new LinkedHashSet<>( reactor );
+
+        for ( Entry<String, Set<IInstallableUnit>> entry : partialPackageMap.entrySet() )
+        {
+            String name = entry.getKey();
+            Set<IInstallableUnit> contents = entry.getValue();
+            metapackages.add( Package.creeatePhysical( name, contents ) );
+            unprocesseduUnits.removeAll( contents );
+        }
+
+        for ( IInstallableUnit unit : unprocesseduUnits )
+        {
+            metapackages.add( Package.creeateVirtual( unit ) );
+        }
+
+        return metapackages;
+    }
+
+    public void resolveDeps( Set<Package> metapackages, Set<IInstallableUnit> reactor,
+                             Set<IInstallableUnit> platform, Set<IInstallableUnit> internal,
+                             Set<IInstallableUnit> external )
+        throws ProvisionException, IOException
+    {
+        IQueryable<IInstallableUnit> queryable = createQueryable( reactor, platform, internal, external );
+
+        Map<IInstallableUnit, Package> metapackageLookup = new LinkedHashMap<>();
+        for ( Package metapackage : metapackages )
+            for ( IInstallableUnit unit : metapackage.getContents() )
+                metapackageLookup.put( unit, metapackage );
+
+        LinkedList<Package> toProcess = new LinkedList<>( metapackages );
+        while ( !toProcess.isEmpty() )
+        {
+            Package metapackage = toProcess.removeFirst();
+            for ( IInstallableUnit iu : metapackage.getContents() )
+            {
+                logger.debug( "##### IU {}", iu );
+
+                for ( IRequirement req : getRequirements( iu ) )
+                {
+                    logger.debug( "    Requires: {}", req );
+
+                    IQuery<IInstallableUnit> query = QueryUtil.createMatchQuery( req.getMatches() );
+                    Set<IInstallableUnit> matches = queryable.query( query, null ).toUnmodifiableSet();
+                    if ( matches.isEmpty() )
+                    {
+                        if ( req.getMin() == 0 )
+                            logger.info( "Unable to satisfy optional dependency from {} to {}", iu, req );
+                        else
+                            logger.warn( "Unable to satisfy dependency from {} to {}", iu, req );
+                        continue;
+                    }
+
+                    Set<IInstallableUnit> resolved = new LinkedHashSet<>( matches );
+                    resolved.retainAll( reactor );
+                    if ( !resolved.isEmpty() )
+                    {
+                        for ( IInstallableUnit match : resolved )
+                        {
+                            logger.debug( "      => {} (reactor)", match );
+
+                            Package dep = metapackageLookup.get( match );
+                            metapackage.addDependency( dep );
+                        }
+
+                        continue;
+                    }
+
+                    resolved.addAll( matches );
+                    resolved.retainAll( platform );
+                    if ( !resolved.isEmpty() )
+                    {
+                        if ( logger.isDebugEnabled() )
+                        {
+                            for ( IInstallableUnit match : resolved )
+                                logger.debug( "      => {} (part of platform)", match );
+                        }
+
+                        continue;
+                    }
+
+                    resolved.addAll( matches );
+                    resolved.retainAll( internal );
+                    if ( !resolved.isEmpty() )
+                    {
+                        if ( logger.isDebugEnabled() )
+                        {
+                            for ( IInstallableUnit match : resolved )
+                                logger.debug( "      => {} (dropins)", match );
+                        }
+
+                        continue;
+                    }
+
+                    if ( matches.size() > 1 )
+                        logger.warn( "More than one external bundle satisfies dependency from {} to {}", iu, req );
+
+                    if ( !external.containsAll( matches ) )
+                        throw new RuntimeException( "Requirement was resolved from unknown repository" );
+
+                    for ( IInstallableUnit match : matches )
+                    {
+                        logger.debug( "      => {} (external, will be symlinked)", match );
+
+                        Package dep = metapackageLookup.get( match );
+                        if ( dep == null )
+                        {
+                            dep = Package.creeateVirtual( match );
+                            metapackageLookup.put( match, dep );
+                            toProcess.add( dep );
+                        }
+
+                        metapackage.addDependency( dep );
+                    }
+                }
+            }
+        }
+    }
+
+    private IQueryable<IInstallableUnit> createQueryable( Set<IInstallableUnit> reactor,
+                                                          Set<IInstallableUnit> platform,
+                                                          Set<IInstallableUnit> internal, Set<IInstallableUnit> external )
+        throws ProvisionException, IOException
+    {
+        Repository unionMetadataRepo = Repository.createTemp();
+
+        Director.mirrorMetadata( unionMetadataRepo, platform );
+        Director.mirrorMetadata( unionMetadataRepo, internal );
+        Director.mirrorMetadata( unionMetadataRepo, external );
+        Director.mirrorMetadata( unionMetadataRepo, reactor );
+
+        return unionMetadataRepo.getMetadataRepository();
+    }
+
+    private static Collection<IRequirement> getRequirements( IInstallableUnit iu )
+    {
+        List<IRequirement> requirements = new ArrayList<IRequirement>( iu.getRequirements() );
+        requirements.addAll( iu.getMetaRequirements() );
+
+        if ( iu instanceof IInstallableUnitFragment )
+        {
+            IInstallableUnitFragment fragment = (IInstallableUnitFragment) iu;
+            requirements.addAll( fragment.getHost() );
+        }
+
+        for ( Iterator<IRequirement> iterator = requirements.iterator(); iterator.hasNext(); )
+        {
+            IRequirement req = iterator.next();
+            if ( req.getMax() == 0 )
+                iterator.remove();
+        }
+
+        return requirements;
     }
 
     private void dump( String message, Set<IInstallableUnit> units )
