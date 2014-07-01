@@ -87,10 +87,17 @@ public class Package
         }
 
         deps.addAll( v.deps );
+        for ( Package w : v.deps )
+        {
+            w.revdeps.remove( v );
+            w.revdeps.add( this );
+        }
+
+        revdeps.addAll( v.revdeps );
         for ( Package w : v.revdeps )
         {
-            w.deps.remove( w );
-            w.deps.add( v );
+            w.deps.remove( v );
+            w.deps.add( this );
         }
     }
 
