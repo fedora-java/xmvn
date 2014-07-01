@@ -65,7 +65,7 @@ public class Package
         return metapackage;
     }
 
-    public void merge( Package v )
+    private void merge( Package v )
     {
         if ( virtual.isEmpty() && v.virtual.isEmpty() )
         {

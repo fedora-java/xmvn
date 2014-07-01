@@ -50,6 +50,16 @@ public class DefaultEclipseInstaller
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultEclipseInstaller.class );
 
+    private Set<IInstallableUnit> reactor;
+
+    private Set<IInstallableUnit> platform;
+
+    private Set<IInstallableUnit> internal;
+
+    private Set<IInstallableUnit> external;
+
+    private final Set<Package> metapackages = new LinkedHashSet<>();
+
     @Override
     public void performInstallation( EclipseInstallationRequest request )
         throws Exception
@@ -57,18 +67,15 @@ public class DefaultEclipseInstaller
         logger.info( "Indexing system bundles and features..." );
         SystemIndex index = new SystemIndex();
         index.index();
+        platform = index.getPlatformUnits();
+        internal = index.gitInternalUnits();
+        external = index.getExternalUnits();
 
         logger.info( "Populating all artifacts..." );
         Repository reactorRepo = Repository.createTemp();
         Director.publish( reactorRepo, request.getPlugins(), request.getFeatures() );
-        Set<IInstallableUnit> reactorUnits = reactorRepo.getAllUnits();
-        dump( "Reactor contents", reactorUnits );
-
-        Repository unionMetadataRepo = Repository.createTemp();
-        Director.mirrorMetadata( unionMetadataRepo, index.getPlatformUnits() );
-        Director.mirrorMetadata( unionMetadataRepo, index.gitInternalUnits() );
-        Director.mirrorMetadata( unionMetadataRepo, index.getExternalUnits() );
-        Director.mirrorMetadata( unionMetadataRepo, reactorUnits );
+        reactor = reactorRepo.getAllUnits();
+        dump( "Reactor contents", reactor );
 
         Map<String, Set<IInstallableUnit>> packages = new LinkedHashMap<>();
 
@@ -91,8 +98,12 @@ public class DefaultEclipseInstaller
             pkg.add( unit );
         }
 
-        for ( Package metapkg : splitIntoMetapackages( reactorUnits, index.getPlatformUnits(),
-                                                       index.gitInternalUnits(), index.getExternalUnits(), packages ) )
+        createMetapackages( packages );
+        resolveDeps();
+        Package.detectStrongComponents( metapackages );
+        Package.expandVirtualPackages( metapackages );
+
+        for ( Package metapkg : metapackages )
         {
             for ( Entry<String, Set<IInstallableUnit>> entry : metapkg.getPackageMap().entrySet() )
             {
@@ -100,7 +111,7 @@ public class DefaultEclipseInstaller
                 Set<IInstallableUnit> content = entry.getValue();
                 Set<IInstallableUnit> symlinks = new LinkedHashSet<>();
                 symlinks.addAll( content );
-                content.retainAll( reactorUnits );
+                content.retainAll( reactor );
                 symlinks.removeAll( content );
 
                 logger.info( "Creating runnable repository for package {}...", name );
@@ -135,26 +146,8 @@ public class DefaultEclipseInstaller
         }
     }
 
-    private Set<Package> splitIntoMetapackages( Set<IInstallableUnit> reactor, Set<IInstallableUnit> platform,
-                                                Set<IInstallableUnit> internal, Set<IInstallableUnit> external,
-                                                Map<String, Set<IInstallableUnit>> partialPackageMap )
-        throws ProvisionException, IOException
+    private void createMetapackages( Map<String, Set<IInstallableUnit>> partialPackageMap )
     {
-        Set<Package> metapackages = createMetapackages( reactor, partialPackageMap );
-
-        resolveDeps( metapackages, reactor, platform, internal, external );
-
-        Package.detectStrongComponents( metapackages );
-
-        Package.expandVirtualPackages( metapackages );
-
-        return metapackages;
-    }
-
-    private Set<Package> createMetapackages( Set<IInstallableUnit> reactor,
-                                             Map<String, Set<IInstallableUnit>> partialPackageMap )
-    {
-        Set<Package> metapackages = new LinkedHashSet<>();
         Set<IInstallableUnit> unprocesseduUnits = new LinkedHashSet<>( reactor );
 
         for ( Entry<String, Set<IInstallableUnit>> entry : partialPackageMap.entrySet() )
@@ -169,15 +162,12 @@ public class DefaultEclipseInstaller
         {
             metapackages.add( Package.creeateVirtual( unit ) );
         }
-
-        return metapackages;
     }
 
-    public void resolveDeps( Set<Package> metapackages, Set<IInstallableUnit> reactor, Set<IInstallableUnit> platform,
-                             Set<IInstallableUnit> internal, Set<IInstallableUnit> external )
+    public void resolveDeps()
         throws ProvisionException, IOException
     {
-        IQueryable<IInstallableUnit> queryable = createQueryable( reactor, platform, internal, external );
+        IQueryable<IInstallableUnit> queryable = createQueryable();
 
         Map<IInstallableUnit, Package> metapackageLookup = new LinkedHashMap<>();
         for ( Package metapackage : metapackages )
@@ -273,9 +263,7 @@ public class DefaultEclipseInstaller
         }
     }
 
-    private IQueryable<IInstallableUnit> createQueryable( Set<IInstallableUnit> reactor,
-                                                          Set<IInstallableUnit> platform,
-                                                          Set<IInstallableUnit> internal, Set<IInstallableUnit> external )
+    private IQueryable<IInstallableUnit> createQueryable()
         throws ProvisionException, IOException
     {
         Repository unionMetadataRepo = Repository.createTemp();

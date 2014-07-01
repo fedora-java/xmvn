@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.equinox.internal.p2.repository.Transport;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.internal.repository.mirroring.Mirroring;
 import org.eclipse.equinox.p2.internal.repository.tools.Repo2Runnable;
@@ -75,7 +73,7 @@ public class Director
         }
 
         Publisher publisher = new Publisher( info );
-        IStatus status = publisher.publish( actions.toArray( new IPublisherAction[0] ), new NullProgressMonitor() );
+        IStatus status = publisher.publish( actions.toArray( new IPublisherAction[0] ), null );
         if ( !status.isOK() )
             throw new ProvisionException( status );
     }
@@ -87,7 +85,7 @@ public class Director
         repo2Runnable.addSource( sourceRepository.getDescripror() );
         repo2Runnable.addDestination( destinationRepository.getDescripror() );
         repo2Runnable.setFlagAsRunnable( true );
-        IStatus status = repo2Runnable.run( new NullProgressMonitor() );
+        IStatus status = repo2Runnable.run( null );
         if ( !status.isOK() )
             throw new ProvisionException( status );
     }
@@ -112,7 +110,7 @@ public class Director
         Mirroring mirror = new Mirroring( sourceAr, destAr, true );
         mirror.setCompare( false );
         mirror.setValidate( false );
-        mirror.setTransport( (Transport) Activator.getAgent().getService( Transport.SERVICE_NAME ) );
+        // mirror.setTransport( (Transport) Activator.getAgent().getService( Transport.SERVICE_NAME ) );
         mirror.setIncludePacked( true );
 
         Collection<IArtifactKey> artifactKeys = new ArrayList<>();
