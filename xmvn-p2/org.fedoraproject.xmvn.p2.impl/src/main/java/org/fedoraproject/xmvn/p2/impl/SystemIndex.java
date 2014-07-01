@@ -172,15 +172,15 @@ public class SystemIndex
 
         logger.info( "Publishing platform bundles and features..." );
         Director.publish( systemRepo, platformBundles, platformFeatures );
-        platformUnits.addAll( Resolver.resolveAll( systemRepo ) );
+        platformUnits.addAll( systemRepo.getAllUnits() );
 
         logger.info( "Publishing internal bundles and features..." );
         Director.publish( systemRepo, internalBundles, internalFeatures );
-        internalUnits.addAll( Resolver.resolveAll( systemRepo ) );
+        internalUnits.addAll( systemRepo.getAllUnits() );
 
         logger.info( "Publishing external bundles and features..." );
         Director.publish( systemRepo, externalBundles, externalFeatures );
-        externalUnits.addAll( Resolver.resolveAll( systemRepo ) );
+        externalUnits.addAll( systemRepo.getAllUnits() );
 
         externalUnits.removeAll( internalUnits );
         internalUnits.removeAll( platformUnits );

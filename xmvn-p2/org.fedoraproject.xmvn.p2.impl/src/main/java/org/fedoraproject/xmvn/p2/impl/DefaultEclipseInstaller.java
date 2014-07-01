@@ -61,7 +61,7 @@ public class DefaultEclipseInstaller
         logger.info( "Populating all artifacts..." );
         Repository reactorRepo = Repository.createTemp();
         Director.publish( reactorRepo, request.getPlugins(), request.getFeatures() );
-        Set<IInstallableUnit> reactorUnits = Resolver.resolveAll( reactorRepo );
+        Set<IInstallableUnit> reactorUnits = reactorRepo.getAllUnits();
         dump( "Reactor contents", reactorUnits );
 
         Repository unionMetadataRepo = Repository.createTemp();
@@ -84,7 +84,7 @@ public class DefaultEclipseInstaller
                 packages.put( packageId, pkg );
             }
 
-            IInstallableUnit unit = Resolver.resolveOne( reactorRepo, unitId, null );
+            IInstallableUnit unit = reactorRepo.findUnit( unitId, null );
             if ( unit == null )
                 throw new RuntimeException( "Unresolvable unit present in package mappings: " + unitId );
 
