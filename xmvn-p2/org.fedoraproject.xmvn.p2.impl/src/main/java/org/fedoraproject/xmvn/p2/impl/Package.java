@@ -85,6 +85,13 @@ public class Package
         {
             virtual.addAll( v.virtual );
         }
+
+        deps.addAll( v.deps );
+        for ( Package w : v.revdeps )
+        {
+            w.deps.remove( w );
+            w.deps.add( v );
+        }
     }
 
     public Set<IInstallableUnit> getContents()
