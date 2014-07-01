@@ -91,69 +91,53 @@ public class DefaultEclipseInstaller
             pkg.add( unit );
         }
 
-        ;
-
-        Map<String, Set<IInstallableUnit>> map = new LinkedHashMap<>();
         for ( Package metapkg : splitIntoMetapackages( reactorUnits, index.getPlatformUnits(),
-                                                           index.gitInternalUnits(), index.getExternalUnits(), packages ) )
+                                                       index.gitInternalUnits(), index.getExternalUnits(), packages ) )
         {
-            for ( Entry<IInstallableUnit, String> e : metapkg.physical.entrySet() )
+            for ( Entry<String, Set<IInstallableUnit>> entry : metapkg.getPackageMap().entrySet() )
             {
-                String name = e.getValue();
-                IInstallableUnit unit = e.getKey();
-                Set<IInstallableUnit> pkg = map.get( name );
-                if ( pkg == null )
+                String name = entry.getKey();
+                Set<IInstallableUnit> content = entry.getValue();
+                Set<IInstallableUnit> symlinks = new LinkedHashSet<>();
+                symlinks.addAll( content );
+                content.retainAll( reactorUnits );
+                symlinks.removeAll( content );
+
+                logger.info( "Creating runnable repository for package {}...", name );
+                Repository packageRepo = Repository.createTemp();
+                Director.mirror( packageRepo, reactorRepo, content );
+                Path installationPath = request.getTargetDropinDirectory().resolve( name ).resolve( "eclipse" );
+                Repository runnableRepo = Repository.create( request.getBuildRoot().resolve( installationPath ) );
+                Director.repo2runnable( runnableRepo, packageRepo );
+                Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "artifacts.jar" ) );
+                Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "content.jar" ) );
+
+                logger.info( "Symlinking external dependencies..." );
+                Path pluginsDir = runnableRepo.getLocation().resolve( "plugins" );
+                for ( IInstallableUnit iu : symlinks )
                 {
-                    pkg = new LinkedHashSet<>();
-                    map.put( name, pkg );
+                    Path path = index.lookupBundle( iu );
+                    if ( path == null )
+                    {
+                        logger.error( "Unable to locate dependency in index: {}", iu );
+                    }
+                    else
+                    {
+                        String baseName = iu.getId() + "_" + iu.getVersion();
+                        String suffix = Files.isDirectory( path ) ? "" : ".jar";
+                        Files.createSymbolicLink( pluginsDir.resolve( baseName + suffix ), path );
+                        logger.debug( "Linked external dependency {} => {}", baseName + suffix, path );
+                    }
                 }
-                pkg.add( unit );
+
+                logger.info( "Done." );
             }
-        }
-
-        for ( Entry<String, Set<IInstallableUnit>> entry : map.entrySet() )
-        {
-            String name = entry.getKey();
-            Set<IInstallableUnit> content = entry.getValue();
-            Set<IInstallableUnit> symlinks = new LinkedHashSet<>();
-            symlinks.addAll( content );
-            content.retainAll( reactorUnits );
-            symlinks.removeAll( content );
-
-            logger.info( "Creating runnable repository for package {}...", name );
-            Repository packageRepo = Repository.createTemp();
-            Director.mirror( packageRepo, reactorRepo, content );
-            Path installationPath = request.getTargetDropinDirectory().resolve( name ).resolve( "eclipse" );
-            Repository runnableRepo = Repository.create( request.getBuildRoot().resolve( installationPath ) );
-            Director.repo2runnable( runnableRepo, packageRepo );
-            Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "artifacts.jar" ) );
-            Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "content.jar" ) );
-
-            logger.info( "Symlinking external dependencies..." );
-            Path pluginsDir = runnableRepo.getLocation().resolve( "plugins" );
-            for ( IInstallableUnit iu : symlinks )
-            {
-                Path path = index.lookupBundle( iu );
-                if ( path == null )
-                {
-                    logger.error( "Unable to locate dependency in index: {}", iu );
-                }
-                else
-                {
-                    String baseName = iu.getId() + "_" + iu.getVersion();
-                    String suffix = Files.isDirectory( path ) ? "" : ".jar";
-                    Files.createSymbolicLink( pluginsDir.resolve( baseName + suffix ), path );
-                    logger.debug( "Linked external dependency {} => {}", baseName + suffix, path );
-                }
-            }
-
-            logger.info( "Done." );
         }
     }
 
     private Set<Package> splitIntoMetapackages( Set<IInstallableUnit> reactor, Set<IInstallableUnit> platform,
-                                                    Set<IInstallableUnit> internal, Set<IInstallableUnit> external,
-                                                    Map<String, Set<IInstallableUnit>> partialPackageMap )
+                                                Set<IInstallableUnit> internal, Set<IInstallableUnit> external,
+                                                Map<String, Set<IInstallableUnit>> partialPackageMap )
         throws ProvisionException, IOException
     {
         Set<Package> metapackages = createMetapackages( reactor, partialPackageMap );
@@ -168,7 +152,7 @@ public class DefaultEclipseInstaller
     }
 
     private Set<Package> createMetapackages( Set<IInstallableUnit> reactor,
-                                                 Map<String, Set<IInstallableUnit>> partialPackageMap )
+                                             Map<String, Set<IInstallableUnit>> partialPackageMap )
     {
         Set<Package> metapackages = new LinkedHashSet<>();
         Set<IInstallableUnit> unprocesseduUnits = new LinkedHashSet<>( reactor );
@@ -189,9 +173,8 @@ public class DefaultEclipseInstaller
         return metapackages;
     }
 
-    public void resolveDeps( Set<Package> metapackages, Set<IInstallableUnit> reactor,
-                             Set<IInstallableUnit> platform, Set<IInstallableUnit> internal,
-                             Set<IInstallableUnit> external )
+    public void resolveDeps( Set<Package> metapackages, Set<IInstallableUnit> reactor, Set<IInstallableUnit> platform,
+                             Set<IInstallableUnit> internal, Set<IInstallableUnit> external )
         throws ProvisionException, IOException
     {
         IQueryable<IInstallableUnit> queryable = createQueryable( reactor, platform, internal, external );

@@ -37,7 +37,7 @@ public class Package
 
     private final Set<IInstallableUnit> virtual = new LinkedHashSet<>();
 
-    final Map<IInstallableUnit, String> physical = new LinkedHashMap<>();
+    private final Map<String, Set<IInstallableUnit>> physical = new LinkedHashMap<>();
 
     private final Set<Package> deps = new LinkedHashSet<>();
 
@@ -51,10 +51,7 @@ public class Package
     {
         Package metapackage = new Package();
 
-        for ( IInstallableUnit unit : contents )
-        {
-            metapackage.physical.put( unit, name );
-        }
+        metapackage.physical.put( name, new LinkedHashSet<>( contents ) );
 
         return metapackage;
     }
@@ -76,16 +73,12 @@ public class Package
         }
         else if ( virtual.isEmpty() && !v.virtual.isEmpty() )
         {
-            String name = physical.values().iterator().next();
-            for ( IInstallableUnit unit : v.virtual )
-                physical.put( unit, name );
+            physical.values().iterator().next().addAll( v.virtual );
         }
         else if ( !virtual.isEmpty() && v.virtual.isEmpty() )
         {
             physical.putAll( v.physical );
-            String name = physical.values().iterator().next();
-            for ( IInstallableUnit unit : virtual )
-                physical.put( unit, name );
+            physical.values().iterator().next().addAll( virtual );
             virtual.clear();
         }
         else
@@ -96,7 +89,19 @@ public class Package
 
     public Set<IInstallableUnit> getContents()
     {
-        return Collections.unmodifiableSet( virtual.isEmpty() ? physical.keySet() : virtual );
+        if ( !virtual.isEmpty() )
+            return Collections.unmodifiableSet( virtual );
+
+        Set<IInstallableUnit> contents = new LinkedHashSet<>();
+        for ( Set<IInstallableUnit> partialContents : physical.values() )
+            contents.addAll( partialContents );
+
+        return Collections.unmodifiableSet( contents );
+    }
+
+    public Map<String, Set<IInstallableUnit>> getPackageMap()
+    {
+        return Collections.unmodifiableMap( physical );
     }
 
     public void addDependency( Package dep )
@@ -150,11 +155,8 @@ public class Package
         Package main = null;
         for ( Package w : metapackages )
         {
-            for ( String name : w.physical.values() )
-            {
-                if ( name.equals( "" ) )
-                    main = w;
-            }
+            if ( w.physical.get( "" ) != null )
+                main = w;
         }
 
         Set<Package> unmerged = new LinkedHashSet<>();
@@ -177,8 +179,7 @@ public class Package
                     }
                     else
                     {
-                        for ( IInstallableUnit unit : w.virtual )
-                            w.physical.put( unit, "" );
+                        w.physical.put( "", new LinkedHashSet<>( w.virtual ) );
                         w.virtual.clear();
                         main = w;
                     }
@@ -213,20 +214,21 @@ public class Package
     {
         if ( virtual.isEmpty() )
         {
-            logger.info( "  Physical metapackage" );
-
-            for ( Entry<IInstallableUnit, String> entry : physical.entrySet() )
+            for ( Entry<String, Set<IInstallableUnit>> entry : physical.entrySet() )
             {
-                logger.info( "    * {} ({})", entry.getKey(), entry.getValue() );
+                logger.info( "  Physical package {}:", entry.getKey() );
+
+                for ( IInstallableUnit unit : entry.getValue() )
+                    logger.info( "    * {}", unit );
             }
         }
         else
         {
-            logger.info( "  Virtual metapackage:" );
+            logger.info( "  Virtual package:" );
 
             for ( IInstallableUnit unit : virtual )
             {
-                logger.info( "    * {} (virtual)", unit );
+                logger.info( "    * {}", unit );
             }
         }
     }
