@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.p2.impl;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Set;
 
@@ -40,6 +41,8 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 @SuppressWarnings( "restriction" )
 public class Repository
 {
+    private static Path tempDir;
+
     private final Path location;
 
     private final IArtifactRepository artifactRepository;
@@ -56,8 +59,7 @@ public class Repository
     public static Repository createTemp()
         throws ProvisionException, IOException
     {
-        Path tempDirectory = Files.createTempDirectory( "xmvn-p2-" );
-        tempDirectory.toFile().deleteOnExit();
+        Path tempDirectory = createTempDirectory();
         return create( tempDirectory );
     }
 
@@ -133,5 +135,45 @@ public class Repository
         if ( result.size() > 1 )
             throw new RuntimeException( "More than one IU found for " + id + ( version != null ? "/" + version : "" ) );
         return result.iterator().next();
+    }
+
+    private static synchronized Path createTempDirectory()
+        throws IOException
+    {
+        if ( tempDir == null )
+        {
+            tempDir = Files.createTempDirectory( "xmvn-p2-" );
+
+            Runtime.getRuntime().addShutdownHook( new Thread( new TempDirRemover() ) );
+        }
+
+        return Files.createTempDirectory( tempDir, "" );
+    }
+
+    private static class TempDirRemover
+        implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+                delete( tempDir );
+            }
+            catch ( IOException e )
+            {
+                e.printStackTrace();
+            }
+        }
+
+        private void delete( Path path )
+            throws IOException
+        {
+            if ( Files.isDirectory( path, LinkOption.NOFOLLOW_LINKS ) )
+                for ( Path child : Files.newDirectoryStream( path ) )
+                    delete( child );
+
+            Files.delete( path );
+        }
     }
 }
