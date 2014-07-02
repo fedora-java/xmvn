@@ -76,6 +76,14 @@ public class DefaultOSGiFramework
         EclipseStarter.startup( new String[0], null );
         BundleContext context = EclipseStarter.getSystemBundleContext();
 
+        if ( context == null )
+        {
+            logger.debug( "Failed to launch Equinox" );
+            if ( !logger.isDebugEnabled() )
+                logger.info( "You can enable debugging output with -X to see more information." );
+            throw new RuntimeException( "Failed to launch Equinox" );
+        }
+
         tryActivateBundle( context, "org.eclipse.equinox.ds" );
         tryActivateBundle( context, "org.eclipse.equinox.registry" );
         tryActivateBundle( context, "org.eclipse.core.net" );
