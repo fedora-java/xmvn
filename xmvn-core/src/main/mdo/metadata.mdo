@@ -213,6 +213,7 @@
             supported by Aether.
           </description>
           <type>String</type>
+          <defaultValue>SYSTEM</defaultValue>
         </field>
 
         <field>
