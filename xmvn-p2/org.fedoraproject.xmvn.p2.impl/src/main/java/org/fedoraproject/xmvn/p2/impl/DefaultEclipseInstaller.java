@@ -205,8 +205,11 @@ public class DefaultEclipseInstaller
                         {
                             logger.debug( "      => {} (reactor)", match );
 
-                            Package dep = metapackageLookup.get( match );
-                            metapackage.addDependency( dep );
+                            if ( reactor.contains( iu ) )
+                            {
+                                Package dep = metapackageLookup.get( match );
+                                metapackage.addDependency( dep );
+                            }
                         }
 
                         continue;
