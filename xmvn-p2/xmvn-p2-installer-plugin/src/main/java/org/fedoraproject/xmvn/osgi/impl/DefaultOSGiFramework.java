@@ -78,7 +78,7 @@ public class DefaultOSGiFramework
 
         if ( context == null )
         {
-            logger.debug( "Failed to launch Equinox" );
+            logger.error( "Failed to launch Equinox" );
             if ( !logger.isDebugEnabled() )
                 logger.info( "You can enable debugging output with -X to see more information." );
             throw new RuntimeException( "Failed to launch Equinox" );
