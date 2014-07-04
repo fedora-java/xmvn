@@ -18,7 +18,9 @@ package org.fedoraproject.xmvn.p2.impl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -31,14 +33,18 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.equinox.p2.core.ProvisionException;
+import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IInstallableUnitFragment;
 import org.eclipse.equinox.p2.metadata.IRequirement;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryable;
 import org.eclipse.equinox.p2.query.QueryUtil;
+import org.fedoraproject.xmvn.p2.Dropin;
 import org.fedoraproject.xmvn.p2.EclipseInstallationRequest;
+import org.fedoraproject.xmvn.p2.EclipseInstallationResult;
 import org.fedoraproject.xmvn.p2.EclipseInstaller;
+import org.fedoraproject.xmvn.p2.Provide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,10 +64,12 @@ public class DefaultEclipseInstaller
 
     private Set<IInstallableUnit> external;
 
+    private final Map<IInstallableUnit, String> reactorRequires = new LinkedHashMap<>();
+
     private final Set<Package> metapackages = new LinkedHashSet<>();
 
     @Override
-    public void performInstallation( EclipseInstallationRequest request )
+    public EclipseInstallationResult performInstallation( EclipseInstallationRequest request )
         throws Exception
     {
         logger.info( "Indexing system bundles and features..." );
@@ -103,11 +111,16 @@ public class DefaultEclipseInstaller
         Package.detectStrongComponents( metapackages );
         Package.expandVirtualPackages( metapackages );
 
+        Set<Dropin> dropins = new LinkedHashSet<>();
+
         for ( Package metapkg : metapackages )
         {
             for ( Entry<String, Set<IInstallableUnit>> entry : metapkg.getPackageMap().entrySet() )
             {
                 String name = entry.getKey();
+                Dropin dropin = new Dropin( name, request.getTargetDropinDirectory().resolve( name ) );
+                dropins.add( dropin );
+
                 Set<IInstallableUnit> content = entry.getValue();
                 Set<IInstallableUnit> symlinks = new LinkedHashSet<>();
                 symlinks.addAll( content );
@@ -117,13 +130,12 @@ public class DefaultEclipseInstaller
                 logger.info( "Creating runnable repository for package {}...", name );
                 Repository packageRepo = Repository.createTemp();
                 Director.mirror( packageRepo, reactorRepo, content );
-                Path installationPath = request.getTargetDropinDirectory().resolve( name ).resolve( "eclipse" );
+                Path installationPath = dropin.getPath().resolve( "eclipse" );
                 Repository runnableRepo = Repository.create( request.getBuildRoot().resolve( installationPath ) );
                 Director.repo2runnable( runnableRepo, packageRepo );
                 Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "artifacts.jar" ) );
                 Files.delete( request.getBuildRoot().resolve( installationPath ).resolve( "content.jar" ) );
 
-                logger.info( "Symlinking external dependencies..." );
                 Path pluginsDir = runnableRepo.getLocation().resolve( "plugins" );
                 for ( IInstallableUnit iu : symlinks )
                 {
@@ -141,9 +153,36 @@ public class DefaultEclipseInstaller
                     }
                 }
 
-                logger.info( "Done." );
+                for ( IInstallableUnit unit : content )
+                {
+                    for ( IArtifactKey artifact : unit.getArtifacts() )
+                    {
+                        String baseName = artifact.getId() + "_" + artifact.getVersion();
+
+                        Path path = Paths.get( "/dev/null" );
+                        for ( String artifactName : Arrays.asList( baseName, baseName + ".jar" ) )
+                        {
+                            for ( String type : Arrays.asList( "plugins", "features" ) )
+                            {
+                                if ( Files.exists( runnableRepo.getLocation().resolve( type ).resolve( artifactName ) ) )
+                                    path = installationPath.resolve( type ).resolve( artifactName );
+                            }
+                        }
+
+                        Provide provide =
+                            new Provide( artifact.getId(), artifact.getVersion().toString(),
+                                         Paths.get( "/" ).resolve( path ) );
+                        dropin.addProvide( provide );
+
+                        String requires = reactorRequires.get( unit );
+                        if ( requires != null )
+                            provide.setProperty( "osgi.requires", requires );
+                    }
+                }
             }
         }
+
+        return new EclipseInstallationResult( dropins );
     }
 
     private void createMetapackages( Map<String, Set<IInstallableUnit>> partialPackageMap )
@@ -182,6 +221,8 @@ public class DefaultEclipseInstaller
             {
                 logger.debug( "##### IU {}", iu );
 
+                StringBuilder requires = new StringBuilder();
+
                 for ( IRequirement req : getRequirements( iu ) )
                 {
                     logger.debug( "    Requires: {}", req );
@@ -210,6 +251,9 @@ public class DefaultEclipseInstaller
                                 Package dep = metapackageLookup.get( match );
                                 metapackage.addDependency( dep );
                             }
+
+                            for ( IArtifactKey artifact : match.getArtifacts() )
+                                requires.append( ',' ).append( artifact.getId() );
                         }
 
                         continue;
@@ -235,7 +279,12 @@ public class DefaultEclipseInstaller
                         if ( logger.isDebugEnabled() )
                         {
                             for ( IInstallableUnit match : resolved )
+                            {
                                 logger.debug( "      => {} (dropins)", match );
+
+                                for ( IArtifactKey artifact : match.getArtifacts() )
+                                    requires.append( ',' ).append( artifact.getId() );
+                            }
                         }
 
                         continue;
@@ -251,6 +300,9 @@ public class DefaultEclipseInstaller
                     {
                         logger.debug( "      => {} (external, will be symlinked)", match );
 
+                        for ( IArtifactKey artifact : match.getArtifacts() )
+                            requires.append( ',' ).append( artifact.getId() );
+
                         Package dep = metapackageLookup.get( match );
                         if ( dep == null )
                         {
@@ -262,6 +314,9 @@ public class DefaultEclipseInstaller
                         metapackage.addDependency( dep );
                     }
                 }
+
+                if ( requires.length() > 0 && reactor.contains( iu ) )
+                    reactorRequires.put( iu, requires.substring( 1 ) );
             }
         }
     }

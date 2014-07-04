@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,8 +32,11 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.osgi.OSGiServiceLocator;
+import org.fedoraproject.xmvn.p2.Dropin;
 import org.fedoraproject.xmvn.p2.EclipseInstallationRequest;
+import org.fedoraproject.xmvn.p2.EclipseInstallationResult;
 import org.fedoraproject.xmvn.p2.EclipseInstaller;
+import org.fedoraproject.xmvn.p2.Provide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +52,9 @@ public class EclipseArtifactInstaller
 
     private final EclipseInstallationRequest request = new EclipseInstallationRequest();
 
-    private final Map<JavaPackage, String> pkgMap = new LinkedHashMap<>();
+    private final Map<String, JavaPackage> packageMap = new LinkedHashMap<>();
+
+    private final Map<String, ArtifactMetadata> metadadaMap = new LinkedHashMap<>();
 
     @Override
     public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
@@ -83,10 +87,11 @@ public class EclipseArtifactInstaller
         {
             String unitId = isFeature ? am.getArtifactId() + ".feature.group" : am.getArtifactId();
             request.addPackageMapping( unitId, subpackageId );
-            pkgMap.put( targetPackage, subpackageId );
         }
 
-        // FIXME: Set correct path
+        packageMap.put( subpackageId, targetPackage );
+        metadadaMap.put( am.getArtifactId(), am );
+
         am.setPath( "/dev/null" );
         targetPackage.getMetadata().addArtifact( am );
     }
@@ -101,18 +106,30 @@ public class EclipseArtifactInstaller
 
             Path tempRoot = Files.createTempDirectory( "xmvn-root-" );
             request.setBuildRoot( tempRoot );
-            Path dropinRoot = Paths.get( "usr/share/eclipse/dropins" );
-            request.setTargetDropinDirectory( dropinRoot );
+            Path eclipseRoot = Paths.get( System.getProperty( "xmvn.p2.eclipseRoot", "/usr/share/eclipse" ) );
+            request.setTargetDropinDirectory( Paths.get( "/" ).relativize( eclipseRoot ).resolve( "dropins" ) );
 
             EclipseInstaller installer = equinox.getService( EclipseInstaller.class );
-            installer.performInstallation( request );
+            EclipseInstallationResult result = installer.performInstallation( request );
 
-            for ( Entry<JavaPackage, String> entry : pkgMap.entrySet() )
+            for ( Dropin dropin : result.getDropins() )
             {
-                JavaPackage pkg = entry.getKey();
-                String id = entry.getValue();
-                Path dropin = tempRoot.resolve( dropinRoot ).resolve( id );
-                addAllFiles( pkg, dropin, tempRoot );
+                JavaPackage pkg = packageMap.get( dropin.getId() );
+                addAllFiles( pkg, tempRoot.resolve( dropin.getPath() ), tempRoot );
+
+                for ( Provide provide : dropin.getOsgiProvides() )
+                {
+                    ArtifactMetadata am = metadadaMap.get( provide.getId() );
+                    if ( am == null )
+                        continue;
+
+                    am.setPath( provide.getPath().toString() );
+                    am.getProperties().putAll( provide.getProperties() );
+                    am.getProperties().setProperty( "osgi.id", provide.getId() );
+                    am.getProperties().setProperty( "osgi.version", provide.getVersion() );
+
+                    pkg.getMetadata().addArtifact( am );
+                }
             }
         }
         catch ( Exception e )

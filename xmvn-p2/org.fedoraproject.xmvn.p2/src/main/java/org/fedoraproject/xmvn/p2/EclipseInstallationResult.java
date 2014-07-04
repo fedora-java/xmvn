@@ -15,18 +15,29 @@
  */
 package org.fedoraproject.xmvn.p2;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
- * XMvn Eclipse Installer OSGi service.
- * 
  * @author Mikolaj Izdebski
  */
-public interface EclipseInstaller
+public class EclipseInstallationResult
 {
-    /**
-     * Perform installation of Eclipse artifacts.
-     * 
-     * @throws Exception if installation fails
-     */
-    EclipseInstallationResult performInstallation( EclipseInstallationRequest request )
-        throws Exception;
+    private final Set<Dropin> dropins = new LinkedHashSet<>();
+
+    public EclipseInstallationResult( Set<Dropin> dropins )
+    {
+        this.dropins.addAll( dropins );
+    }
+
+    public Set<Dropin> getDropins()
+    {
+        return Collections.unmodifiableSet( dropins );
+    }
+
+    public void addDropin( Dropin dropin )
+    {
+        dropins.add( dropin );
+    }
 }
