@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -41,11 +43,22 @@ public class ArtifactInstallerFactory
     @Named( "eclipse" )
     private ArtifactInstaller eclipseArtifactInstaller;
 
+    /**
+     * List of Tycho pacgkaging types.
+     */
+    private static final Collection<String> eclipsePackagingTypes = Arrays.asList( "eclipse-plugin", //
+                                                                                   "eclipse-test-plugin", //
+                                                                                   "eclipse-feature", //
+                                                                                   "eclipse-repository", //
+                                                                                   "eclipse-application", //
+                                                                                   "eclipse-update-site", //
+                                                                                   "eclipse-target-definition" );
+
     @SuppressWarnings( "unused" )
     public ArtifactInstaller getInstallerFor( Artifact artifact, Properties properties )
     {
         String type = properties.getProperty( "type" );
-        if ( type != null && ( type.equals( "eclipse-feature" ) || type.equals( "eclipse-plugin" ) ) )
+        if ( type != null && eclipsePackagingTypes.contains( type ) )
         {
             if ( eclipseArtifactInstaller != null )
                 return eclipseArtifactInstaller;
