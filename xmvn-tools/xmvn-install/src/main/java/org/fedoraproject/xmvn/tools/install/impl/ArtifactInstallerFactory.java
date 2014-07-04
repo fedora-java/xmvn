@@ -63,7 +63,8 @@ public class ArtifactInstallerFactory
             if ( eclipseArtifactInstaller != null )
                 return eclipseArtifactInstaller;
 
-            logger.warn( "Unable to load XMvn P2 plugin - Eclipse artifact installation may be impossible" );
+            logger.error( "Unable to load XMvn P2 plugin, Eclipse artifact installation will be impossible" );
+            throw new RuntimeException( "Unable to load XMvn P2 plugin" );
         }
 
         return defaultArtifactInstaller;
