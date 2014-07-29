@@ -15,22 +15,19 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
+import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 import com.google.inject.Binder;
+import com.google.inject.Provider;
 import org.easymock.EasyMockRunner;
+import org.easymock.Mock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,14 +54,11 @@ public class InstallerTest
 {
     private final Configuration config = new Configuration();
 
-    @Inject
-    private Installer installer;
+    @Mock
+    Configurator configuratorMock;
 
-    private final Configurator configuratorMock = createMock( Configurator.class );
-
-    private final Resolver resolverMock = createMock( Resolver.class );
-
-    private final List<ResolutionResult> resolutionResults = new ArrayList<>();
+    @Mock
+    Resolver resolverMock;
 
     @Before
     public void setUpSettings()
@@ -98,22 +92,58 @@ public class InstallerTest
     @Override
     public void configure( Binder binder )
     {
-        binder.bind( Configurator.class ).toInstance( configuratorMock );
+        binder.bind( Configurator.class ).toProvider( new Provider<Configurator>()
+        {
+            @Override
+            public Configurator get()
+            {
+                return configuratorMock;
+            }
+        } );
+
         binder.bind( ArtifactInstaller.class ).toInstance( new MockArtifactInstaller() );
-        binder.bind( Resolver.class ).toInstance( resolverMock );
+
+        binder.bind( Resolver.class ).toProvider( new Provider<Resolver>()
+        {
+            @Override
+            public Resolver get()
+            {
+                return resolverMock;
+            }
+        } );
     }
 
-    private void addResolution( String coordinates, String compatVersion, String namespace, Path path )
+    private void addResolution( String coordinates, final String compatVersion, final String namespace, final Path path )
     {
-        String[] split = coordinates.split( ":" );
-        ResolutionRequest request =
-            new ResolutionRequest( new DefaultArtifact( split[0], split[1], split[3], split[2] ) );
-        ResolutionResult result = createNiceMock( ResolutionResult.class );
-        expect( result.getCompatVersion() ).andReturn( compatVersion ).anyTimes();
-        expect( result.getNamespace() ).andReturn( namespace ).anyTimes();
-        expect( result.getArtifactPath() ).andReturn( path ).anyTimes();
-        replay( result );
-        resolutionResults.add( result );
+        ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( coordinates ) );
+
+        ResolutionResult result = new ResolutionResult()
+        {
+            @Override
+            public String getProvider()
+            {
+                return "some-package";
+            }
+
+            @Override
+            public String getNamespace()
+            {
+                return namespace;
+            }
+
+            @Override
+            public String getCompatVersion()
+            {
+                return compatVersion;
+            }
+
+            @Override
+            public Path getArtifactPath()
+            {
+                return path;
+            }
+        };
+
         expect( resolverMock.resolve( request ) ).andReturn( result );
     }
 
@@ -130,7 +160,7 @@ public class InstallerTest
     private void install( String planName )
         throws Exception
     {
-        expect( configuratorMock.getConfiguration() ).andReturn( config );
+        expect( configuratorMock.getConfiguration() ).andReturn( config ).atLeastOnce();
         replay( resolverMock, configuratorMock );
 
         InstallationRequest request = new InstallationRequest();
@@ -138,19 +168,19 @@ public class InstallerTest
         request.setInstallRoot( installRoot );
         request.setInstallationPlan( prepareInstallationPlanFile( planName ) );
 
+        Installer installer = lookup( Installer.class );
+        assertNotNull( installer );
         installer.install( request );
 
         verify( resolverMock, configuratorMock );
-        for ( ResolutionResult result : resolutionResults )
-            verify( result );
     }
 
     private void addEmptyResolutions()
     {
-        addResolution( "org.apache.lucene:lucene-benchmark:4.1:jar" );
-        addResolution( "org.apache.lucene:lucene-benchmark:SYSTEM:jar" );
-        addResolution( "org.apache.lucene:lucene-spatial:4.1:jar" );
-        addResolution( "org.apache.lucene:lucene-spatial:SYSTEM:jar" );
+        addResolution( "org.apache.lucene:lucene-benchmark:4.1" );
+        addResolution( "org.apache.lucene:lucene-benchmark" );
+        addResolution( "org.apache.lucene:lucene-spatial:4.1" );
+        addResolution( "org.apache.lucene:lucene-spatial" );
     }
 
     @Test
@@ -177,10 +207,10 @@ public class InstallerTest
         throws Exception
     {
         Path dependencyJar = Paths.get( "/tmp/bla.jar" );
-        addResolution( "org.apache.lucene:lucene-benchmark:4.1:jar" );
-        addResolution( "org.apache.lucene:lucene-benchmark:SYSTEM:jar", "4", "ns", dependencyJar );
-        addResolution( "org.apache.lucene:lucene-spatial:4.1:jar" );
-        addResolution( "org.apache.lucene:lucene-spatial:SYSTEM:jar", dependencyJar );
+        addResolution( "org.apache.lucene:lucene-benchmark:4.1" );
+        addResolution( "org.apache.lucene:lucene-benchmark", "4", "ns", dependencyJar );
+        addResolution( "org.apache.lucene:lucene-spatial:4.1" );
+        addResolution( "org.apache.lucene:lucene-spatial", dependencyJar );
 
         install( "valid.xml" );
 
