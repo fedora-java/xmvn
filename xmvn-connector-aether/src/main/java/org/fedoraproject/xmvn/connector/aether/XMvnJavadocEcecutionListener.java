@@ -28,6 +28,7 @@ import org.apache.maven.execution.MojoExecutionEvent;
 import org.apache.maven.execution.MojoExecutionListener;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Listens to executions of "aggregate" goal of Maven Javadoc Plugin and captures Javadoc report output location.
@@ -51,6 +52,7 @@ public class XMvnJavadocEcecutionListener
 
     @Override
     public void afterMojoExecutionSuccess( MojoExecutionEvent event )
+        throws MojoExecutionException
     {
         try
         {
@@ -75,7 +77,7 @@ public class XMvnJavadocEcecutionListener
         }
         catch ( ReflectiveOperationException | IOException e )
         {
-            throw new RuntimeException( e );
+            throw new MojoExecutionException( "Failed to capture Javadoc report output location", e );
         }
     }
 
