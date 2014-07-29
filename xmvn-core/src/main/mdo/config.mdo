@@ -496,29 +496,6 @@
         </field>
 
       </fields>
-      <codeSegments>
-        <codeSegment>
-          <version>0.4.0+</version>
-          <code>
-            <![CDATA[
-    /**
-     * Create an effective packaging rule for specified artifact.
-     * 
-     * @param artifact
-     */
-    public PackagingRule createEffectivePackagingRule( org.fedoraproject.xmvn.artifact.Artifact artifact )
-    {
-        return new org.fedoraproject.xmvn.config.impl.EffectivePackagingRule( getArtifactManagement(),
-                                                                              artifact.getGroupId(),
-                                                                              artifact.getArtifactId(),
-                                                                              artifact.getExtension(),
-                                                                              artifact.getClassifier(),
-                                                                              artifact.getVersion() );
-    }
-            ]]>
-          </code>
-        </codeSegment>
-      </codeSegments>
     </class>
   </classes>
 </model>
