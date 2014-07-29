@@ -76,7 +76,7 @@ public class DefaultEclipseInstaller
         SystemIndex index = new SystemIndex();
         index.index();
         platform = index.getPlatformUnits();
-        internal = index.gitInternalUnits();
+        internal = index.getInternalUnits();
         external = index.getExternalUnits();
 
         logger.info( "Populating all artifacts..." );

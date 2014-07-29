@@ -233,7 +233,7 @@ public class SystemIndex
      * 
      * @return set of internal installable units available in the system
      */
-    public Set<IInstallableUnit> gitInternalUnits()
+    public Set<IInstallableUnit> getInternalUnits()
     {
         return Collections.unmodifiableSet( internalUnits );
     }
