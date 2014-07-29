@@ -91,7 +91,7 @@ public class GlobUtils
         }
 
         if ( escape )
-            throw new Error( "Excape sequence ends prematurely" );
+            throw new Error( "Escape sequence ends prematurely" );
         if ( level != 0 )
             throw new Error( "Alternative not closed" );
 
