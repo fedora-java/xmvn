@@ -42,6 +42,7 @@ import java.util.zip.GZIPInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 
@@ -114,7 +115,14 @@ class MetadataReader
                 {
                     PackageMetadata metadata = future.get();
                     result.add( metadata );
-                    logger.debug( "Read metadata for {} artifacts from file {}", metadata.getArtifacts().size(), path );
+
+                    if ( logger.isDebugEnabled() )
+                    {
+                        logger.debug( "Adding metadata from file {}", path );
+
+                        for ( ArtifactMetadata artifact : metadata.getArtifacts() )
+                            logger.debug( "Added metadada for {}", artifact );
+                    }
                 }
                 catch ( ExecutionException e )
                 {
