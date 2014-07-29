@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.config;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +25,10 @@ import java.util.List;
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
-import org.fedoraproject.xmvn.config.impl.EffectivePackagingRule;
+import org.fedoraproject.xmvn.config.Artifact;
+import org.fedoraproject.xmvn.config.Configuration;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.PackagingRule;
 
 /**
  * @author Mikolaj Izdebski

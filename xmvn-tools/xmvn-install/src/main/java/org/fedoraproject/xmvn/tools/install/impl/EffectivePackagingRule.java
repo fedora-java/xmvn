@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.config.impl;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +41,7 @@ import org.fedoraproject.xmvn.utils.GlobUtils;
  * 
  * @author Mikolaj Izdebski
  */
-// XXX this should be private, or documented as such
-public class EffectivePackagingRule
+class EffectivePackagingRule
     extends PackagingRule
 {
     private static final long serialVersionUID = 1L;

@@ -42,7 +42,6 @@ import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.config.impl.EffectivePackagingRule;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
