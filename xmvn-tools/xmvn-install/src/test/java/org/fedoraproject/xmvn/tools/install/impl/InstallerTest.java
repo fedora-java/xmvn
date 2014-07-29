@@ -15,14 +15,21 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import com.google.inject.Binder;
 import com.google.inject.Provider;
@@ -31,6 +38,9 @@ import org.easymock.Mock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Artifact;
@@ -50,7 +60,7 @@ import org.fedoraproject.xmvn.tools.install.Installer;
  */
 @RunWith( EasyMockRunner.class )
 public class InstallerTest
-    extends AbstractFileTest
+    extends AbstractInstallerTest
 {
     private final Configuration config = new Configuration();
 
@@ -181,6 +191,40 @@ public class InstallerTest
         addResolution( "org.apache.lucene:lucene-benchmark" );
         addResolution( "org.apache.lucene:lucene-spatial:4.1" );
         addResolution( "org.apache.lucene:lucene-spatial" );
+    }
+
+    private void unifyUuids( NodeList nodes )
+    {
+        for ( int i = 0; i < nodes.getLength(); i++ )
+        {
+            nodes.item( i ).setTextContent( "uuid-placeholder" );
+        }
+    }
+
+    protected void assertMetadataEqual( Path expected, Path actual )
+        throws Exception
+    {
+        setIgnoreWhitespace( true );
+        assertTrue( Files.isRegularFile( actual ) );
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document expectedXml = builder.parse( expected.toString() );
+        Document actualXml = builder.parse( actual.toString() );
+
+        NodeList nodes = expectedXml.getElementsByTagName( "path" );
+
+        for ( int i = 0; i < nodes.getLength(); i++ )
+        {
+            Node pathNode = nodes.item( i );
+            String path = pathNode.getTextContent();
+            if ( path.startsWith( "???" ) )
+                pathNode.setTextContent( getResource( path.substring( 3 ) ).toAbsolutePath().toString() );
+        }
+
+        unifyUuids( expectedXml.getElementsByTagName( "uuid" ) );
+        unifyUuids( actualXml.getElementsByTagName( "uuid" ) );
+
+        assertXMLEqual( expectedXml, actualXml );
     }
 
     @Test
