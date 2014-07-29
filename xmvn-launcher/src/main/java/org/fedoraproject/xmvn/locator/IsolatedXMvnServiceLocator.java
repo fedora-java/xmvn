@@ -57,8 +57,8 @@ public class IsolatedXMvnServiceLocator
             Method getServiceMethod = locatorClass.getDeclaredMethod( "getService", Class.class );
             Object delegate = getServiceMethod.invoke( null, role );
             InvocationHandler handler = new ServiceInvocationHandler( classLoader, delegate );
-            T proxy = (T) Proxy.newProxyInstance( classLoader, new Class[] { role }, handler );
-            return proxy;
+            Object proxy = Proxy.newProxyInstance( classLoader, new Class[] { role }, handler );
+            return role.cast( proxy );
         }
         catch ( ReflectiveOperationException e )
         {
