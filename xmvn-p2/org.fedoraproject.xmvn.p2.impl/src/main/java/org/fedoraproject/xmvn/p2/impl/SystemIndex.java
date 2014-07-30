@@ -90,7 +90,7 @@ public class SystemIndex
         }
     }
 
-    private void filterPaths( Set<Path> prefixed, Set<Path> unpreifxed, Set<Path> prefixes, Set<Path> elements,
+    private void filterPaths( Set<Path> prefixed, Set<Path> unprefixed, Set<Path> prefixes, Set<Path> elements,
                               Set<Path> excludes )
     {
         elements.removeAll( excludes );
@@ -107,8 +107,8 @@ public class SystemIndex
             }
         }
 
-        unpreifxed.addAll( elements );
-        unpreifxed.removeAll( prefixed );
+        unprefixed.addAll( elements );
+        unprefixed.removeAll( prefixed );
     }
 
     public void index()
