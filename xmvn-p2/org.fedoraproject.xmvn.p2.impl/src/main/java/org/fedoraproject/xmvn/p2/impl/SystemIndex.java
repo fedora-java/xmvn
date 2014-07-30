@@ -138,7 +138,18 @@ public class SystemIndex
                 {
                     eclipseDirs.add( eclipseDir );
                     discoverPluginsAndFeatures( platformBundles, platformFeatures, eclipseDir );
-                    discoverPluginsAndFeatures( nonPlatformBundles, nonPlatformFeatures, eclipseDir.resolve( "dropins" ) );
+
+                    Path dropinsDir = eclipseDir.resolve( "dropins" );
+                    if ( Files.isDirectory( dropinsDir ) )
+                    {
+                        for ( Path dropin : Files.newDirectoryStream( dropinsDir ) )
+                        {
+                            if ( !Files.isDirectory( dropin.resolve( "plugins" ) ) )
+                                dropin = dropin.resolve( "eclipse" );
+
+                            discoverPluginsAndFeatures( nonPlatformBundles, nonPlatformFeatures, dropin );
+                        }
+                    }
                 }
 
                 for ( String javaVersion : Arrays.asList( null, "1.5.0", "1.6.0", "1.7.0", "1.8.0" ) )
