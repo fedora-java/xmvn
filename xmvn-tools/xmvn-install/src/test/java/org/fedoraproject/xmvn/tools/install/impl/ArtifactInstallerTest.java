@@ -24,8 +24,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -106,12 +108,18 @@ public class ArtifactInstallerTest
     }
 
     private ArtifactMetadata createArtifact()
+        throws Exception
     {
+        Path sourceJar = Paths.get( "src/test/resources/example.jar" );
+        Path tempJar = Paths.get( "target/test-temp-resources/example.jar" );
+        Files.createDirectories( tempJar.getParent() );
+        Files.copy( sourceJar, tempJar, StandardCopyOption.REPLACE_EXISTING );
+
         ArtifactMetadata artifact = new ArtifactMetadata();
         artifact.setGroupId( "com.example" );
         artifact.setArtifactId( "test" );
         artifact.setVersion( "4.5" );
-        artifact.setPath( Paths.get( "src/test/resources/example.jar" ).toString() );
+        artifact.setPath( tempJar.toString() );
         return artifact;
     }
 
