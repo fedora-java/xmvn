@@ -37,7 +37,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  */
 @Named
 @Singleton
-public class XMvnJavadocEcecutionListener
+public class XMvnJavadocExecutionListener
     implements MojoExecutionListener
 {
     private static final String JAVADOC_PLUGIN_GROUPID = "org.apache.maven.plugins";
