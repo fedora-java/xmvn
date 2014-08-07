@@ -21,8 +21,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Test;
+
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.Dependency;
 
 /**
  * @author Michael Simacek
@@ -139,11 +144,20 @@ public class InstallationPlanTest
         createInstallationPlan( "no-gid-dep.xml" );
     }
 
-    @Test( expected = ArtifactInstallationException.class )
+    @Test
     public void testNoVersionDep()
         throws Exception
     {
-        createInstallationPlan( "no-version-dep.xml" );
+        InstallationPlan plan = createInstallationPlan( "no-version-dep.xml" );
+
+        List<ArtifactMetadata> artifacts = plan.getArtifacts();
+        assertEquals( 2, artifacts.size() );
+
+        List<Dependency> dependencies = artifacts.get( 1 ).getDependencies();
+        assertEquals( 2, dependencies.size() );
+
+        assertEquals( "4.1", dependencies.get( 0 ).getRequestedVersion() );
+        assertEquals( Artifact.DEFAULT_VERSION, dependencies.get( 1 ).getRequestedVersion() );
     }
 
     @Test( expected = ArtifactInstallationException.class )
