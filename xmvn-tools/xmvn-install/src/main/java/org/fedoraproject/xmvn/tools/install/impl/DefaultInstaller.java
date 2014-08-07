@@ -346,7 +346,11 @@ public class DefaultInstaller
         {
             logger.debug( "Installing {}", pkg );
             pkg.install( request.getInstallRoot() );
+
             Path mfiles = Paths.get( StringUtils.isEmpty( pkg.getId() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
+            if ( request.getDescriptorRoot() != null )
+                mfiles = request.getDescriptorRoot().resolve( mfiles );
+
             logger.debug( "Writing file descriptor {}", mfiles );
             pkg.writeDescriptor( mfiles );
         }

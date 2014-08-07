@@ -30,6 +30,8 @@ public class InstallationRequest
 
     private Path installRoot;
 
+    private Path descriptorRoot;
+
     public boolean isCheckForUnmatchedRules()
     {
         return checkForUnmatchedRules;
@@ -68,5 +70,15 @@ public class InstallationRequest
     public void setInstallRoot( Path installRoot )
     {
         this.installRoot = installRoot;
+    }
+
+    public Path getDescriptorRoot()
+    {
+        return descriptorRoot;
+    }
+
+    public void setDescriptorRoot( Path descriptorRoot )
+    {
+        this.descriptorRoot = descriptorRoot;
     }
 }

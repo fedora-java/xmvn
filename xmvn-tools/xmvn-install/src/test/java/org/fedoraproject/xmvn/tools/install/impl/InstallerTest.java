@@ -176,6 +176,7 @@ public class InstallerTest
         InstallationRequest request = new InstallationRequest();
         request.setBasePackageName( "test-pkg" );
         request.setInstallRoot( installRoot );
+        request.setDescriptorRoot( descriptorRoot );
         request.setInstallationPlan( prepareInstallationPlanFile( planName ) );
 
         Installer installer = lookup( Installer.class );
@@ -238,7 +239,8 @@ public class InstallerTest
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "D /usr/share/maven-metadata",
                                   "F /usr/share/java/test.jar", "F /usr/share/java/test2.jar",
                                   "F /usr/share/maven-metadata/test-pkg.xml" );
-        assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
+        assertDescriptorEquals( descriptorRoot.resolve( ".mfiles" ),
+                                "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
                                 "%attr(0644,root,root) /usr/share/java/test.jar",
                                 "%attr(0644,root,root) /usr/share/java/test2.jar" );
 
@@ -282,9 +284,10 @@ public class InstallerTest
                                   "F /usr/share/maven-metadata/test-pkg.xml",
                                   "F /usr/share/maven-metadata/test-pkg-subpackage.xml" );
 
-        assertDescriptorEquals( Paths.get( ".mfiles" ), "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
+        assertDescriptorEquals( descriptorRoot.resolve( ".mfiles" ),
+                                "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg.xml",
                                 "%attr(0644,root,root) /usr/share/java/test.jar" );
-        assertDescriptorEquals( Paths.get( ".mfiles-subpackage" ),
+        assertDescriptorEquals( descriptorRoot.resolve( ".mfiles-subpackage" ),
                                 "%attr(0644,root,root) /usr/share/maven-metadata/test-pkg-subpackage.xml",
                                 "%attr(0644,root,root) /usr/share/java/test2.jar" );
 

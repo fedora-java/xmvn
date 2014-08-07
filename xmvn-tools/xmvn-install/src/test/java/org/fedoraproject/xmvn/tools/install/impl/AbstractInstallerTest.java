@@ -45,6 +45,8 @@ public abstract class AbstractInstallerTest
 
     protected Path installRoot;
 
+    protected Path descriptorRoot;
+
     protected final List<String> descriptors = new ArrayList<>();
 
     @Before
@@ -57,6 +59,8 @@ public abstract class AbstractInstallerTest
         workdir = Files.createTempDirectory( workPath, testName );
         installRoot = workdir.resolve( "install-root" );
         Files.createDirectory( installRoot );
+        descriptorRoot = workdir.resolve( "descriptor-root" );
+        Files.createDirectory( descriptorRoot );
     }
 
     @After
@@ -152,7 +156,7 @@ public abstract class AbstractInstallerTest
     protected void assertDescriptorEquals( Package pkg, String... expected )
         throws IOException
     {
-        Path mfiles = installRoot.resolve( ".mfiles" );
+        Path mfiles = descriptorRoot.resolve( ".mfiles" );
         pkg.writeDescriptor( mfiles );
         assertDescriptorEquals( mfiles, expected );
     }

@@ -29,7 +29,7 @@ import org.junit.Test;
 public class PackageTest
     extends AbstractFileTest
 {
-    private Path jar = getResource( "example.jar" );
+    private final Path jar = getResource( "example.jar" );
 
     @Test
     public void testSimplePackage()
