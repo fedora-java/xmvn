@@ -90,9 +90,21 @@ public class XMvnMojoExecutionListener
     {
         try
         {
-            Method getter = bean.getClass().getDeclaredMethod( getterName );
-            getter.setAccessible( true );
-            return getter.invoke( bean ).toString();
+            for ( Class<?> clazz = bean.getClass(); clazz != null; clazz = clazz.getSuperclass() )
+            {
+                try
+                {
+                    Method getter = clazz.getDeclaredMethod( getterName );
+                    getter.setAccessible( true );
+                    return getter.invoke( bean ).toString();
+                }
+                catch ( NoSuchMethodException e )
+                {
+
+                }
+            }
+
+            throw new MojoExecutionException( "Unable to find bean property getter method " + getterName );
         }
         catch ( ReflectiveOperationException e )
         {
