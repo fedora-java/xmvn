@@ -42,6 +42,7 @@ import java.util.zip.GZIPInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
@@ -121,7 +122,10 @@ class MetadataReader
                         logger.debug( "Adding metadata from file {}", path );
 
                         for ( ArtifactMetadata artifact : metadata.getArtifacts() )
-                            logger.debug( "Added metadada for {}", artifact );
+                            logger.debug( "Added metadada for {}",
+                                          new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
+                                                               artifact.getExtension(), artifact.getClassifier(),
+                                                               artifact.getVersion() ) );
                     }
                 }
                 catch ( ExecutionException e )
