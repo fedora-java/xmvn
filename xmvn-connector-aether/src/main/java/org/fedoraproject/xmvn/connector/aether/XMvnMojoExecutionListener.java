@@ -90,7 +90,7 @@ public class XMvnMojoExecutionListener
     {
         try
         {
-            Method getter = bean.getClass().getMethod( getterName );
+            Method getter = bean.getClass().getDeclaredMethod( getterName );
             getter.setAccessible( true );
             return getter.invoke( bean ).toString();
         }
