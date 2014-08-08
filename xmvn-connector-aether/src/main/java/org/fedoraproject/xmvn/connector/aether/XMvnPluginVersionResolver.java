@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
+import java.util.List;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -22,6 +24,7 @@ import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
 import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.ArtifactRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 
@@ -40,6 +43,10 @@ public class XMvnPluginVersionResolver
     {
         RepositorySystemSession session = request.getRepositorySession();
         WorkspaceReader reader = session.getWorkspaceReader();
+        List<String> versions =
+            reader.findVersions( new DefaultArtifact( request.getGroupId(), request.getArtifactId(),
+                                                      Artifact.DEFAULT_EXTENSION, Artifact.DEFAULT_VERSION ) );
+        final String version = versions.isEmpty() ? Artifact.DEFAULT_VERSION : versions.iterator().next();
         final ArtifactRepository repository = reader.getRepository();
 
         return new PluginVersionResult()
@@ -53,7 +60,7 @@ public class XMvnPluginVersionResolver
             @Override
             public String getVersion()
             {
-                return Artifact.DEFAULT_VERSION;
+                return version;
             }
         };
     }
