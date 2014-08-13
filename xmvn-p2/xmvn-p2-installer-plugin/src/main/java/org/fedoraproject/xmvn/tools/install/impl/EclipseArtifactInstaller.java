@@ -78,7 +78,7 @@ public class EclipseArtifactInstaller
 
         String commonId = basePackageName.replaceAll( "^eclipse-", "" );
         String subpackageId = targetPackage.getId().replaceAll( "^eclipse-", "" );
-        if ( !subpackageId.startsWith( commonId ) )
+        if ( !subpackageId.isEmpty() && !subpackageId.startsWith( commonId ) )
             subpackageId = commonId + "-" + subpackageId;
         subpackageId = subpackageId.replaceAll( "-+$", "" );
         subpackageId = subpackageId.replaceAll( "^-+", "" );
