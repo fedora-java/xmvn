@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Mikolaj Izdebski
  */
+@Deprecated
 public class SystemIndex
 {
     private final Logger logger = LoggerFactory.getLogger( SystemIndex.class );
