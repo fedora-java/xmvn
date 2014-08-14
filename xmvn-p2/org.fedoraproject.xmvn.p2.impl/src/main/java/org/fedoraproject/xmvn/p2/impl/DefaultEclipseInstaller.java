@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.p2.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,6 +41,7 @@ import org.eclipse.equinox.p2.metadata.IRequirement;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryable;
 import org.eclipse.equinox.p2.query.QueryUtil;
+import org.fedoraproject.p2.FedoraBundleRepository;
 import org.fedoraproject.xmvn.p2.Dropin;
 import org.fedoraproject.xmvn.p2.EclipseInstallationRequest;
 import org.fedoraproject.xmvn.p2.EclipseInstallationResult;
@@ -73,8 +75,7 @@ public class DefaultEclipseInstaller
         throws Exception
     {
         logger.info( "Indexing system bundles and features..." );
-        SystemIndex index = new SystemIndex();
-        index.index();
+        FedoraBundleRepository index = new FedoraBundleRepository( new File( "/" ) );
         platform = index.getPlatformUnits();
         internal = index.getInternalUnits();
         external = index.getExternalUnits();

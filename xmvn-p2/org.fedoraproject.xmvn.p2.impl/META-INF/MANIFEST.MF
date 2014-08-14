@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.p2.repository,
  org.eclipse.equinox.p2.metadata,
  org.eclipse.equinox.p2.publisher,
- org.eclipse.equinox.p2.publisher.eclipse
+ org.eclipse.equinox.p2.publisher.eclipse,
+ org.fedoraproject.p2
 Import-Package: org.fedoraproject.xmvn.p2,
  org.slf4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

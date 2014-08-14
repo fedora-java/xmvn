@@ -307,6 +307,11 @@
       <url>http://download.eclipse.org/releases/luna</url>
     </repository>
     <repository>
+      <id>fedorapeople-p2</id>
+      <layout>p2</layout>
+      <url>http://mizdebsk.fedorapeople.org/xmvn/repo/p2/</url>
+    </repository>
+    <repository>
       <id>fedorapeople-snapshots</id>
       <url>http://mizdebsk.fedorapeople.org/xmvn/repo/</url>
       <snapshots>
