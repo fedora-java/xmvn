@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.tools.install;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
+import static org.fedoraproject.xmvn.tools.install.InstallationPlanLoader.prepareInstallationPlanFile;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -52,8 +52,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.tools.install.InstallationRequest;
-import org.fedoraproject.xmvn.tools.install.Installer;
 
 /**
  * @author Michael Simacek

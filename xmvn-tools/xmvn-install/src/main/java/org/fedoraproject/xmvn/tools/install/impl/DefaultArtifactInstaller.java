@@ -47,6 +47,12 @@ import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryPath;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
+import org.fedoraproject.xmvn.tools.install.File;
+import org.fedoraproject.xmvn.tools.install.JavaPackage;
+import org.fedoraproject.xmvn.tools.install.RegularFile;
+import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 
 @Named
 @Singleton

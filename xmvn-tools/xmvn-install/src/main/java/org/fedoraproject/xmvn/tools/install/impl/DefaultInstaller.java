@@ -51,9 +51,12 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
+import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
 @Named
 @Singleton

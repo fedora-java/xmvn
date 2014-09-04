@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
 @Named
 @Singleton

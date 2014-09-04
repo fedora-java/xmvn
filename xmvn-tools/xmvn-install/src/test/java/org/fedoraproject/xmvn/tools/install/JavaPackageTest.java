@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.tools.install;
 
 import static org.junit.Assert.assertEquals;
 
@@ -56,7 +56,8 @@ public class JavaPackageTest
 
         pkg.install( installRoot );
 
-        PackageMetadata actualMetadata = new MetadataStaxReader().read( installRoot.resolve( metadataPath ).toString(), true );
+        PackageMetadata actualMetadata =
+            new MetadataStaxReader().read( installRoot.resolve( metadataPath ).toString(), true );
         assertEquals( "test-uuid", actualMetadata.getUuid() );
     }
 }

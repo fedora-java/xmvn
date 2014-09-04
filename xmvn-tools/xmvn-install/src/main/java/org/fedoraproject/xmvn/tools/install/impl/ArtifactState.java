@@ -18,6 +18,8 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
+import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
 /**
  * @author Mikolaj Izdebski

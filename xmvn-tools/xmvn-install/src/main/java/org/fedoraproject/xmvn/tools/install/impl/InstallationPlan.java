@@ -32,6 +32,7 @@ import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.metadata.DependencyExclusion;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 
 /**
  * @author Mikolaj Izdebski

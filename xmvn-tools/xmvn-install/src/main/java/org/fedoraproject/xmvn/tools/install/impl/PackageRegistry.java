@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.fedoraproject.xmvn.config.InstallerSettings;
+import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
 /**
  * @author Mikolaj Izdebski

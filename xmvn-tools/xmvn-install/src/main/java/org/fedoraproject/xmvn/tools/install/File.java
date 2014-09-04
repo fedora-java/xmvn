@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +26,7 @@ import java.nio.file.Path;
  * 
  * @author Mikolaj Izdebski
  */
-abstract class File
+public abstract class File
 {
     /**
      * Path to target file. This path must be relative to buildroot (must not be absolute).

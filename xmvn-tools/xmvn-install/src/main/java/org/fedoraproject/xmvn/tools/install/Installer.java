@@ -17,8 +17,6 @@ package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 
-import org.fedoraproject.xmvn.tools.install.impl.ArtifactInstallationException;
-
 /**
  * @author Mikolaj Izdebski
  */

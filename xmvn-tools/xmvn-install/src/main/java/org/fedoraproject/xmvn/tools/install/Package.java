@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -30,7 +30,7 @@ import com.google.common.io.Files;
  * 
  * @author Mikolaj Izdebski
  */
-class Package
+public class Package
 {
     /**
      * ID of main package.

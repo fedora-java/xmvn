@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
-
-import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+package org.fedoraproject.xmvn.tools.install;
 
 /**
  * @author Mikolaj Izdebski
  */
-public interface ArtifactInstaller
+public class ArtifactInstallationException
+    extends Exception
 {
-    void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
-        throws ArtifactInstallationException;
+    private static final long serialVersionUID = 1;
 
-    void postInstallation()
-        throws ArtifactInstallationException;
+    public ArtifactInstallationException( String message )
+    {
+        super( message );
+    }
+
+    public ArtifactInstallationException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
 }

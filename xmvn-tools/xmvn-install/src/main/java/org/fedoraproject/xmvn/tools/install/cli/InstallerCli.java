@@ -31,9 +31,9 @@ import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.Installer;
-import org.fedoraproject.xmvn.tools.install.impl.ArtifactInstallationException;
 
 /**
  * @author Mikolaj Izdebski

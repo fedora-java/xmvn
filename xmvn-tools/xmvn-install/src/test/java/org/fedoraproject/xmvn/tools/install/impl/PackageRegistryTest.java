@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.config.InstallerSettings;
+import org.fedoraproject.xmvn.tools.install.File;
+import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
 /**
  * @author Michael Simacek

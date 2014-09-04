@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.tools.install;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -24,15 +24,15 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
+import org.fedoraproject.xmvn.tools.install.impl.InstallationPlan;
 
 /**
- *
  * @author Michael Simacek
  */
 public class InstallationPlanLoader
 {
     public static Path prepareInstallationPlanFile( String filename )
-            throws Exception
+        throws Exception
     {
         Path metadataPath = Paths.get( "src/test/resources/", filename );
         PackageMetadata metadata = new MetadataStaxReader().read( metadataPath.toString() );
@@ -46,7 +46,7 @@ public class InstallationPlanLoader
             }
         }
         Path newMetadata = Files.createTempFile( filename, "" );
-        try ( OutputStream os = Files.newOutputStream( newMetadata ) )
+        try (OutputStream os = Files.newOutputStream( newMetadata ))
         {
             new MetadataStaxWriter().write( os, metadata );
         }
@@ -54,7 +54,7 @@ public class InstallationPlanLoader
     }
 
     public static InstallationPlan createInstallationPlan( String filename )
-            throws Exception
+        throws Exception
     {
         return new InstallationPlan( prepareInstallationPlanFile( filename ) );
     }

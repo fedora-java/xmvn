@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,7 +25,7 @@ import java.nio.file.Paths;
  * 
  * @author Mikolaj Izdebski
  */
-class SymbolicLink
+public class SymbolicLink
     extends File
 {
     /**
