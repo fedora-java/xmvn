@@ -3,10 +3,57 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2014-06-06
+                    2014-09-04
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.1.0
+
+  XMvn 2.1.0 was released on 2014-09-04.  Most important changes
+  include:
+
+  * Minor features
+
+    * Metadada format improvement
+
+      <<<requestedVersion>>> field in artifact metadada was made
+      optional with default value of "SYSTEM".
+
+    * Temp file cleanup
+
+      Upon JVM termination XMvn will now remove more temporary files
+      to conserve disk space.
+
+    * Eclipse plugin detection
+
+      XMvn 2.1.0 will refuse to install Eclipse plugins if XMvn P2
+      plugin is not installed.  (This plugin is shipped as a part of
+      fedoraproject-p2.)
+
+    * Javadoc report location capture
+
+      Now XMvn will properly detect exact location where Maven Javadoc
+      Plugin saves generated API documentation to allow other tools to
+      refer to this location.
+
+    * Compiler options capture
+
+      During build XMvn now captures compiler source and target used
+      to build each module.  These values can be later used by other
+      tools to generate dependencies on particular Java version.
+
+  * Minor bugfixes
+
+    * Merge dependencies when merging metapackages
+
+      This release of XMvn fixes a bug which prevented artifact
+      dependencies to be merged in package metadata, which could
+      result in incomplete package requires.
+
+    * Fix crashes during artifact installation
+
+      XMvn 2.1.0 fixes some crashes during artifact installation.
 
 * What's new in XMvn 2.0.1
 
