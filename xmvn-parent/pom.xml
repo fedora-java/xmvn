@@ -88,7 +88,6 @@
     <pluginToolsVersion>3.2</pluginToolsVersion>
     <sisuVersion>0.2.0</sisuVersion>
     <slf4jVersion>1.7.6</slf4jVersion>
-    <tychoVersion>0.20.0</tychoVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
@@ -218,11 +217,6 @@
       </dependency>
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
-        <artifactId>org.fedoraproject.xmvn.p2</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.fedoraproject.xmvn</groupId>
         <artifactId>xmvn-install</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -302,16 +296,6 @@
   </dependencies>
   <repositories>
     <repository>
-      <id>eclipse-luna</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/luna</url>
-    </repository>
-    <repository>
-      <id>fedorapeople-p2</id>
-      <layout>p2</layout>
-      <url>http://mizdebsk.fedorapeople.org/xmvn/repo/p2/</url>
-    </repository>
-    <repository>
       <id>fedorapeople-snapshots</id>
       <url>http://mizdebsk.fedorapeople.org/xmvn/repo/</url>
       <snapshots>
@@ -371,12 +355,6 @@
           <groupId>org.codehaus.modello</groupId>
           <artifactId>modello-maven-plugin</artifactId>
           <version>${modelloVersion}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-maven-plugin</artifactId>
-          <version>${tychoVersion}</version>
-          <extensions>true</extensions>
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>

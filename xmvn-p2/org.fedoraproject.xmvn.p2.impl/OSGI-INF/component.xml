@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="XMvn P2 OSGi service">
-   <implementation class="org.fedoraproject.xmvn.p2.impl.DefaultEclipseInstaller"/>
-   <service>
-      <provide interface="org.fedoraproject.xmvn.p2.EclipseInstaller"/>
-   </service>
-</scr:component>
