@@ -213,9 +213,12 @@ public class InstallMojo
             rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
             deployArtifact( rawPomArtifact, type, project.getModel() );
 
+            Set<Artifact> attachedArtifacts = new LinkedHashSet<>();
             for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
+                attachedArtifacts.add( aetherArtifact( mavenArtifact ) );
+
+            for ( Artifact attachedArtifact : attachedArtifacts )
             {
-                Artifact attachedArtifact = aetherArtifact( mavenArtifact );
                 Path attachedArtifactPath = attachedArtifact.getPath();
                 logger.debug( "Installing attached artifact {}", attachedArtifact );
                 logger.debug( "Artifact file is {}", attachedArtifactPath );
