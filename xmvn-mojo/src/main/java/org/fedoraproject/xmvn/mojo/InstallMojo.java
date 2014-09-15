@@ -230,7 +230,7 @@ public class InstallMojo
                     continue;
                 }
 
-                deployArtifact( attachedArtifact, null, project.getModel() );
+                deployArtifact( attachedArtifact, type, project.getModel() );
             }
         }
     }
