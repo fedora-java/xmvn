@@ -22,6 +22,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.ivy.core.cache.ArtifactOrigin;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DefaultArtifact;
@@ -48,6 +55,9 @@ import org.apache.ivy.plugins.repository.file.FileRepository;
 import org.apache.ivy.plugins.repository.file.FileResource;
 import org.apache.ivy.plugins.resolver.AbstractResolver;
 import org.apache.ivy.plugins.resolver.util.ResolvedResource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
@@ -153,6 +163,48 @@ public class IvyResolver
         return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, extension, classifier, version );
     }
 
+    private static void setPomVersion( Document doc, String version )
+    {
+        NodeList childreen = doc.getChildNodes();
+        for ( int i = 0; i < childreen.getLength(); i++ )
+        {
+            Node child = childreen.item( i );
+            if ( child.getNodeName().equals( "version" ) )
+            {
+                child.setTextContent( version );
+                return;
+            }
+        }
+
+        Node child = doc.createElement( "version" );
+        child.setTextContent( version );
+        doc.appendChild( child );
+    }
+
+    private static Path fakePom( Path pom, String version )
+    {
+        try
+        {
+            DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+            Document doc = domFactory.newDocumentBuilder().parse( pom.toFile() );
+            setPomVersion( doc, version );
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+            DOMSource source = new DOMSource( doc );
+
+            Path pom2 = Files.createTempFile( "xmvn-", ".gradle.pom" );
+            StreamResult file = new StreamResult( pom2.toFile() );
+            transformer.transform( source, file );
+            return pom2;
+        }
+        catch ( Exception e )
+        {
+            return null;
+        }
+    }
+
     private static String resolvedVersion( ResolutionResult resolutionResult )
     {
         String version = resolutionResult.getCompatVersion();
@@ -182,6 +234,9 @@ public class IvyResolver
         ResolutionResult result = getResolver().resolve( request );
         Path pomPath = result.getArtifactPath();
 
+        if ( System.getProperty( "org.gradle.appname" ) != null )
+            pomPath = fakePom( pomPath, depId.getRevision() );
+
         String version;
         ModuleDescriptor module;
         if ( pomPath != null )
@@ -197,6 +252,10 @@ public class IvyResolver
             if ( version == null )
                 return null;
         }
+
+        // Gradle implements strict version checks, it fails if resolved version doesn't match requested version.
+        if ( System.getProperty( "org.gradle.appname" ) != null )
+            version = depId.getRevision();
 
         module.setResolvedModuleRevisionId( ModuleRevisionId.newInstance( depId, version ) );
         return module;
