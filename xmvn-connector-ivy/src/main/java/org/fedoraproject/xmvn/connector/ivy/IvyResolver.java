@@ -146,9 +146,9 @@ public class IvyResolver
         ModuleRevisionId revision = artifact.getModuleRevisionId();
 
         String groupId = revision.getOrganisation();
-        String artifactId = revision.getName();
+        String artifactId = artifact.getName();
         String extension = artifact.getExt();
-        String classifier = revision.getExtraAttribute( "classifier" );
+        String classifier = artifact.getExtraAttribute( "classifier" );
         String version = revision.getRevision();
         String type = artifact.getType();
 
