@@ -78,7 +78,6 @@
     <asmVersion>5.0.3</asmVersion>
     <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.3.0</ivyVersion>
-    <equinoxVersion>3.4.0.v20140613-1134</equinoxVersion>
     <jcommanderVersion>1.35</jcommanderVersion>
     <guiceVersion>3.2.4</guiceVersion>
     <guavaVersion>18.0</guavaVersion>
@@ -263,11 +262,6 @@
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
         <version>${asmVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.osgi</groupId>
-        <artifactId>org.eclipse.osgi</artifactId>
-        <version>${equinoxVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
