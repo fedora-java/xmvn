@@ -1,0 +1,9 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="test" module="test"/>
+  <dependencies>
+    <dependency org="org.apache.hadoop" name="hadoop-hdfs" rev="2.4.1">
+      <artifact name="hadoop-hdfs" ext="jar"/>
+      <artifact name="hadoop-hdfs" type="tests" ext="jar" m:classifier="tests"/>
+    </dependency>
+  </dependencies>
+</ivy-module>
