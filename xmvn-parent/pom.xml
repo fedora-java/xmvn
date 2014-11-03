@@ -292,11 +292,11 @@
       <id>fedorapeople-snapshots</id>
       <url>http://mizdebsk.fedorapeople.org/xmvn/repo/</url>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
         <checksumPolicy>fail</checksumPolicy>
       </snapshots>
       <releases>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
         <checksumPolicy>fail</checksumPolicy>
       </releases>
     </repository>
@@ -306,11 +306,11 @@
       <id>fedorapeople-snapshots</id>
       <url>http://mizdebsk.fedorapeople.org/xmvn/repo/</url>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
         <checksumPolicy>fail</checksumPolicy>
       </snapshots>
       <releases>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
         <checksumPolicy>fail</checksumPolicy>
       </releases>
     </pluginRepository>
