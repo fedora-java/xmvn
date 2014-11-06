@@ -94,7 +94,7 @@ public class DefaultArtifactInstaller
         for ( String fileName : rule.getFiles() )
             basePaths.add( Paths.get( fileName ) );
         if ( basePaths.isEmpty() )
-            basePaths.add( Paths.get( basePackageName + "/" + artifact.getArtifactId() ) );
+            basePaths.add( Paths.get( basePackageName ).resolve( artifact.getArtifactId() ) );
 
         Set<Path> relativePaths = new LinkedHashSet<>();
         Set<Path> absolutePaths = new LinkedHashSet<>();
