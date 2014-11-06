@@ -32,11 +32,9 @@ import org.apache.maven.shared.invoker.MavenInvocationException;
 @Named
 @Singleton
 public class DefaultBuildExecutor
-    implements BuildExecutor, InvocationOutputHandler
+    implements BuildExecutor
 {
     private final Invoker invoker;
-
-    private PrintWriter log;
 
     public DefaultBuildExecutor()
     {
@@ -47,12 +45,19 @@ public class DefaultBuildExecutor
     public boolean executeBuild( InvocationRequest request, String logPath, boolean verbose )
         throws MavenInvocationException
     {
-        try
+        try (PrintWriter log = new PrintWriter( logPath ))
         {
-            log = new PrintWriter( logPath );
+            InvocationOutputHandler outputHandler = new InvocationOutputHandler()
+            {
+                @Override
+                public void consumeLine( String line )
+                {
+                    log.println( line );
+                }
+            };
 
-            request.setOutputHandler( this );
-            request.setErrorHandler( this );
+            request.setOutputHandler( outputHandler );
+            request.setErrorHandler( outputHandler );
 
             File mavenHome = new File( request.getProperties().get( "maven.home" ).toString() );
             invoker.setMavenHome( mavenHome );
@@ -64,17 +69,5 @@ public class DefaultBuildExecutor
         {
             throw new RuntimeException( e );
         }
-        finally
-        {
-            if ( log != null )
-                log.close();
-        }
-    }
-
-    @Override
-    public void consumeLine( String line )
-    {
-        log.println( line );
-        // System.out.println( line );
     }
 }
