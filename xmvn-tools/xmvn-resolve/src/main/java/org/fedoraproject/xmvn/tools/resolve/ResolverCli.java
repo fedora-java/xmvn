@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.tools.resolve;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -113,7 +112,7 @@ public class ResolverCli
             while ( it.hasNext() )
             {
                 System.out.print( ':' );
-                System.out.print( it.next() );
+                System.out.print( it.next().getArtifactPath() );
             }
             System.out.println();
         }
@@ -121,8 +120,7 @@ public class ResolverCli
         {
             for ( ResolutionResult result : results )
             {
-                Path path = result.getArtifactPath();
-                System.out.println( path != null ? path : "" );
+                System.out.println( result.getArtifactPath() );
             }
         }
     }
@@ -149,9 +147,10 @@ public class ResolverCli
                 }
             }
 
-            printResults( cliRequest, results );
+            if ( error )
+                System.exit( 1 );
 
-            System.exit( error ? 1 : 0 );
+            printResults( cliRequest, results );
         }
         catch ( IllegalArgumentException e )
         {
