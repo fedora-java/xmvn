@@ -19,7 +19,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.easymock.MockType.NICE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -50,7 +49,6 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 
 /**
  * @author Michael Simacek
@@ -61,9 +59,6 @@ public class ArtifactInstallerTest
 {
     @Mock
     Repository repositoryMock;
-
-    @Mock( type = NICE )
-    private RepositoryPath repositoryPathMock;
 
     @Inject
     private ArtifactInstaller installer;
@@ -92,19 +87,15 @@ public class ArtifactInstallerTest
     private void install( JavaPackage pkg, ArtifactMetadata am, PackagingRule rule )
         throws ArtifactInstallationException
     {
-        expect( repositoryPathMock.getPath() ).andReturn( Paths.get( "com.example-test" ) );
-        expect( repositoryPathMock.getRepository() ).andReturn( repositoryMock );
         expect(
                 repositoryMock.getPrimaryArtifactPath( isA( Artifact.class ), isA( ArtifactContext.class ),
-                                                       isA( String.class ) ) ).andReturn( repositoryPathMock );
+                                                       isA( String.class ) ) ).andReturn( Paths.get( "com.example-test" ) );
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );
-        replay( repositoryPathMock );
         replay( repositoryMock );
 
         installer.install( pkg, am, rule, "foo" );
 
         verify( repositoryMock );
-        verify( repositoryPathMock );
     }
 
     private ArtifactMetadata createArtifact()

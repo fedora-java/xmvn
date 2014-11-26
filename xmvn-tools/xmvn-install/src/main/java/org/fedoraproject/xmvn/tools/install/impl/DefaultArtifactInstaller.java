@@ -46,7 +46,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.fedoraproject.xmvn.tools.install.File;
@@ -112,19 +111,19 @@ public class DefaultArtifactInstaller
         String installedVersion = rule.getVersions().isEmpty() ? null : rule.getVersions().iterator().next();
         Artifact versionedArtifact = artifact.setVersion( installedVersion );
         ArtifactContext context = new ArtifactContext( versionedArtifact, properties );
-        List<RepositoryPath> repoPaths = new ArrayList<>();
+        List<Path> repoPaths = new ArrayList<>();
         for ( Path path : relativePaths )
         {
-            RepositoryPath repoPath = repo.getPrimaryArtifactPath( versionedArtifact, context, path.toString() );
+            Path repoPath = repo.getPrimaryArtifactPath( versionedArtifact, context, path.toString() );
             if ( repoPath == null )
                 throw new ArtifactInstallationException( "Installation repository is incapable of holding artifact "
                     + versionedArtifact );
             repoPaths.add( repoPath );
         }
-        Iterator<RepositoryPath> repoPathIterator = repoPaths.iterator();
+        Iterator<Path> repoPathIterator = repoPaths.iterator();
 
         // Artifact path
-        File artifactFile = new RegularFile( repoPathIterator.next().getPath(), artifactPath );
+        File artifactFile = new RegularFile( repoPathIterator.next(), artifactPath );
         targetPackage.addFile( artifactFile );
         Path primaryPath = Paths.get( "/" ).resolve( artifactFile.getTargetPath() );
         am.setPath( primaryPath.toString() );
@@ -132,7 +131,7 @@ public class DefaultArtifactInstaller
         // Relative symlinks
         while ( repoPathIterator.hasNext() )
         {
-            File symlink = new SymbolicLink( repoPathIterator.next().getPath(), primaryPath );
+            File symlink = new SymbolicLink( repoPathIterator.next(), primaryPath );
             targetPackage.addFile( symlink );
         }
 
@@ -151,7 +150,7 @@ public class DefaultArtifactInstaller
         }
 
         // Namespace
-        am.setNamespace( repoPaths.iterator().next().getRepository().getNamespace() );
+        am.setNamespace( repo.getNamespace() );
 
         // UUID
         am.setUuid( UUID.randomUUID().toString() );

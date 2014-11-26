@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.nio.file.Path;
 import java.util.Properties;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -81,7 +82,7 @@ public class LayoutTest
     private void testPaths( Repository repository, Artifact artifact, String expected )
     {
         ArtifactContext context = new ArtifactContext( artifact );
-        RepositoryPath repoPath =
+        Path repoPath =
             repository.getPrimaryArtifactPath( artifact, context,
                                                artifact.getGroupId() + "/" + artifact.getArtifactId() );
 
@@ -92,8 +93,8 @@ public class LayoutTest
         else
         {
             assertNotNull( repoPath );
-            assertNotNull( repoPath.getPath() );
-            assertEquals( expected, repoPath.getPath().toString() );
+            assertNotNull( repoPath );
+            assertEquals( expected, repoPath.toString() );
         }
     }
 

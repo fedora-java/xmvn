@@ -21,7 +21,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 import org.fedoraproject.xmvn.tools.install.condition.Condition;
 
 /**
@@ -45,7 +44,7 @@ abstract class SimpleRepository
                                              String classifier, String version );
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
+    public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
     {
         if ( !condition.getValue( context ) )
             return null;
@@ -65,6 +64,6 @@ abstract class SimpleRepository
         if ( root != null )
             path = root.resolve( path );
 
-        return new DefaultRepositoryPath( path, this );
+        return path;
     }
 }

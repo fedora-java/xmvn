@@ -54,11 +54,11 @@ public class JppRepositoryTest
         Artifact artifact1 = new DefaultArtifact( "foo.bar", "the-artifact", "baz", "1.2.3" );
         ArtifactContext context1 = new ArtifactContext( artifact1 );
         assertEquals( Paths.get( "my-target/path/aid-1.2.3.baz" ),
-                      repo.getPrimaryArtifactPath( artifact1, context1, "my-target/path/aid" ).getPath() );
+                      repo.getPrimaryArtifactPath( artifact1, context1, "my-target/path/aid" ) );
 
         Artifact artifact2 = artifact1.setVersion( null );
         ArtifactContext context2 = new ArtifactContext( artifact2 );
         assertEquals( Paths.get( "my-target/path/aid.baz" ),
-                      repo.getPrimaryArtifactPath( artifact2, context2, "my-target/path/aid" ).getPath() );
+                      repo.getPrimaryArtifactPath( artifact2, context2, "my-target/path/aid" ) );
     }
 }

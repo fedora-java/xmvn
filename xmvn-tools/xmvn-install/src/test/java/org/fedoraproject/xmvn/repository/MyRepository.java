@@ -17,6 +17,8 @@ package org.fedoraproject.xmvn.repository;
 
 import static org.junit.Assert.fail;
 
+import java.nio.file.Path;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
@@ -26,7 +28,7 @@ class MyRepository
     implements Repository
 {
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
+    public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
     {
         fail( "getPrimaryArtifactPath() was not expected to be called" );
         throw null;

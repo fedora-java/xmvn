@@ -21,7 +21,6 @@ import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryPath;
 
 /**
  * Compound repository.
@@ -48,17 +47,14 @@ class CompoundRepository
     }
 
     @Override
-    public RepositoryPath getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
+    public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
     {
         for ( Repository repository : slaveRepositories )
         {
-            RepositoryPath path = repository.getPrimaryArtifactPath( artifact, context, pattern );
+            Path path = repository.getPrimaryArtifactPath( artifact, context, pattern );
             if ( path != null )
             {
-                DefaultRepositoryPath newPath = new DefaultRepositoryPath( path );
-                if ( prefix != null )
-                    newPath.setPath( prefix.resolve( path.getPath() ) );
-                return newPath;
+                return prefix == null ? path : prefix.resolve( path );
             }
         }
 
