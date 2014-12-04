@@ -59,8 +59,6 @@ public class InstallMojo
 {
     private static final Set<String> TYCHO_PACKAGING_TYPES = new LinkedHashSet<>();
 
-    private static final Set<String> TYCHO_P2_CLASSIFIERS = new LinkedHashSet<>();
-
     static
     {
         TYCHO_PACKAGING_TYPES.add( "eclipse-plugin" );
@@ -69,14 +67,6 @@ public class InstallMojo
         TYCHO_PACKAGING_TYPES.add( "eclipse-update-site" );
         TYCHO_PACKAGING_TYPES.add( "eclipse-application" );
         TYCHO_PACKAGING_TYPES.add( "eclipse-repository" );
-
-        for ( String packaging : TYCHO_PACKAGING_TYPES )
-            TYCHO_P2_CLASSIFIERS.add( "p2." + packaging );
-    }
-
-    private static boolean isTychoInjectedDependency( Dependency dependency )
-    {
-        return TYCHO_P2_CLASSIFIERS.contains( dependency.getGroupId() );
     }
 
     private static boolean isTychoProject( MavenProject project )
@@ -120,7 +110,7 @@ public class InstallMojo
             for ( Dependency dependency : project.getModel().getDependencies() )
             {
                 // Ignore dependencies injected by Tycho
-                if ( isTychoProject( project ) && isTychoInjectedDependency( dependency ) )
+                if ( isTychoProject( project ) )
                     continue;
 
                 if ( dependency.getScope() != null && dependency.getScope().equals( "system" ) )
