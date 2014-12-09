@@ -140,13 +140,16 @@ public class InstallMojo
         }
     }
 
-    private void deployArtifact( Artifact artifact, String type, Model model )
+    private void deployArtifact( Artifact artifact, String type, MavenProject project )
         throws MojoExecutionException
     {
+        Model model = project.getModel();
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact( artifact );
         if ( type != null )
             request.addProperty( "type", type );
+        if ( isTychoProject(project) )
+            request.addProperty( "qualifiedVersion", model.getProperties().getProperty( "qualifiedVersion" ) );
 
         for ( Dependency dependency : model.getDependencies() )
         {
@@ -192,7 +195,7 @@ public class InstallMojo
 
             String type = project.getPackaging();
             if ( mainArtifactPath != null )
-                deployArtifact( mainArtifact, type, project.getModel() );
+                deployArtifact( mainArtifact, type, project );
 
             Artifact rawPomArtifact =
                 new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
@@ -201,7 +204,7 @@ public class InstallMojo
             Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
             logger.debug( "Raw POM path: {}", rawPomPath );
             rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
-            deployArtifact( rawPomArtifact, type, project.getModel() );
+            deployArtifact( rawPomArtifact, type, project );
 
             Set<Artifact> attachedArtifacts = new LinkedHashSet<>();
             for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
@@ -220,7 +223,7 @@ public class InstallMojo
                     continue;
                 }
 
-                deployArtifact( attachedArtifact, type, project.getModel() );
+                deployArtifact( attachedArtifact, type, project );
             }
         }
     }
