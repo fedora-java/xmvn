@@ -148,7 +148,7 @@ public class InstallMojo
         request.setArtifact( artifact );
         if ( type != null )
             request.addProperty( "type", type );
-        if ( isTychoProject(project) )
+        if ( isTychoProject( project ) )
             request.addProperty( "qualifiedVersion", model.getProperties().getProperty( "qualifiedVersion" ) );
 
         for ( Dependency dependency : model.getDependencies() )

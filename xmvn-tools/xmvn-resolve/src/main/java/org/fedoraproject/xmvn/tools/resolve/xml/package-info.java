@@ -27,3 +27,4 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
+

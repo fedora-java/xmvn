@@ -56,7 +56,7 @@ class JavaVersionVisitor
 
     private static void loadVersionMap()
     {
-        try ( InputStream xmlStream = JavaVersionVisitor.class.getResourceAsStream( "/version-map.xml" ) )
+        try (InputStream xmlStream = JavaVersionVisitor.class.getResourceAsStream( "/version-map.xml" ))
         {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse( xmlStream );

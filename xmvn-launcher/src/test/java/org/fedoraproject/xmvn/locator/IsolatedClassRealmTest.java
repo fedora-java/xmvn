@@ -68,9 +68,9 @@ public class IsolatedClassRealmTest
 
     @Test
     public void testImportAll()
-            throws Exception
+        throws Exception
     {
-        try ( IsolatedClassRealm realm = new IsolatedClassRealm( null ) )
+        try (IsolatedClassRealm realm = new IsolatedClassRealm( null ))
         {
             realm.importAllPackages( "org.fedoraproject.xmvn" );
 
