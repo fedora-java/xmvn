@@ -27,8 +27,8 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.StringUtils;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.ArtifactType;
+import org.sonatype.aether.RepositorySystemSession;
+import org.sonatype.aether.artifact.ArtifactType;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;

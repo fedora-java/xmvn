@@ -18,16 +18,10 @@ package org.fedoraproject.xmvn.tools.install.cli;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,19 +32,13 @@ import org.fedoraproject.xmvn.tools.install.Installer;
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = InstallerCli.class )
 public class InstallerCli
 {
     private final Logger logger = LoggerFactory.getLogger( InstallerCli.class );
 
-    private final Installer installer;
-
-    @Inject
-    public InstallerCli( Installer installer )
-    {
-        this.installer = installer;
-    }
+    @Requirement
+    private Installer installer;
 
     private int run( InstallerCliRequest cliRequest )
     {
@@ -78,10 +66,8 @@ public class InstallerCli
         {
             InstallerCliRequest cliRequest = new InstallerCliRequest( args );
 
-            Module module =
-                new WireModule( new SpaceModule( new URLClassSpace( InstallerCli.class.getClassLoader() ) ) );
-            Injector injector = Guice.createInjector( module );
-            InstallerCli cli = injector.getInstance( InstallerCli.class );
+            PlexusContainer container = new DefaultPlexusContainer();
+            InstallerCli cli = container.lookup( InstallerCli.class );
 
             System.exit( cli.run( cliRequest ) );
         }

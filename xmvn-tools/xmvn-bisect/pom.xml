@@ -33,8 +33,8 @@
   </description>
   <dependencies>
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>

@@ -20,18 +20,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import org.eclipse.sisu.EagerSingleton;
-import org.eclipse.sisu.space.BeanScanning;
-import org.eclipse.sisu.space.ClassSpace;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.sonatype.guice.plexus.config.Strategies;
 
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -41,22 +37,19 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@EagerSingleton
+@Component( role = XMvnServiceLocator.class, instantiationStrategy = Strategies.LOAD_ON_START )
 public class XMvnServiceLocator
+    implements Initializable
 {
     private static XMvnServiceLocator instance;
 
     private static synchronized XMvnServiceLocator getInstance()
+        throws PlexusContainerException, ComponentLookupException
     {
         if ( instance == null )
         {
-            ClassLoader classRealm = XMvnServiceLocator.class.getClassLoader();
-            ClassSpace classSpace = new URLClassSpace( classRealm );
-            Module spaceModule = new SpaceModule( classSpace, BeanScanning.CACHE );
-            Module wireModule = new WireModule( spaceModule );
-            Injector injector = Guice.createInjector( wireModule );
-            instance = injector.getInstance( XMvnServiceLocator.class );
+            PlexusContainer container = new DefaultPlexusContainer();
+            instance = container.lookup( XMvnServiceLocator.class );
         }
 
         return instance;
@@ -64,13 +57,19 @@ public class XMvnServiceLocator
 
     private final Map<String, Iterable<?>> knownServices = new HashMap<>();
 
+    @Requirement
+    private List<Resolver> resolvers;
+
+    @Requirement
+    private List<Deployer> deployers;
+
     private <T> void addService( Class<T> service, Iterable<T> serviceProviders )
     {
         knownServices.put( service.getCanonicalName(), serviceProviders );
     }
 
-    @Inject
-    public XMvnServiceLocator( List<Resolver> resolvers, List<Deployer> deployers )
+    @Override
+    public void initialize()
     {
         addService( Resolver.class, resolvers );
         addService( Deployer.class, deployers );
@@ -78,7 +77,14 @@ public class XMvnServiceLocator
 
     public static Object getService( Class<?> role )
     {
-        Iterator<?> iterator = getInstance().knownServices.get( role.getCanonicalName() ).iterator();
-        return iterator.hasNext() ? iterator.next() : null;
+        try
+        {
+            Iterator<?> iterator = getInstance().knownServices.get( role.getCanonicalName() ).iterator();
+            return iterator.hasNext() ? iterator.next() : null;
+        }
+        catch ( PlexusContainerException | ComponentLookupException e )
+        {
+            throw new RuntimeException( "Plexus exception when trying to initialize XMvn service " + role, e );
+        }
     }
 }

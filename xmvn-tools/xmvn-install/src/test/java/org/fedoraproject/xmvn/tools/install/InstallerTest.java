@@ -31,8 +31,6 @@ import java.nio.file.Paths;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.google.inject.Binder;
-import com.google.inject.Provider;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.junit.Before;
@@ -52,6 +50,8 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.tools.install.impl.ArtifactInstallerFactory;
+import org.fedoraproject.xmvn.tools.install.impl.DefaultInstaller;
 
 /**
  * @author Michael Simacek
@@ -97,28 +97,21 @@ public class InstallerTest
         }
     }
 
-    @Override
-    public void configure( Binder binder )
+    public void configure( DefaultInstaller installer )
     {
-        binder.bind( Configurator.class ).toProvider( new Provider<Configurator>()
+        installer.setConfigurator( configuratorMock );
+
+        installer.setInstallerFactory( new ArtifactInstallerFactory()
         {
             @Override
-            public Configurator get()
+            public ArtifactInstaller getInstallerFor( org.fedoraproject.xmvn.artifact.Artifact artifact,
+                                                      java.util.Properties properties )
             {
-                return configuratorMock;
+                return new MockArtifactInstaller();
             }
         } );
 
-        binder.bind( ArtifactInstaller.class ).toInstance( new MockArtifactInstaller() );
-
-        binder.bind( Resolver.class ).toProvider( new Provider<Resolver>()
-        {
-            @Override
-            public Resolver get()
-            {
-                return resolverMock;
-            }
-        } );
+        installer.setResolver( resolverMock );
     }
 
     private void addResolution( String coordinates, final String compatVersion, final String namespace, final Path path )
@@ -177,7 +170,8 @@ public class InstallerTest
         request.setDescriptorRoot( descriptorRoot );
         request.setInstallationPlan( prepareInstallationPlanFile( planName ) );
 
-        Installer installer = lookup( Installer.class );
+        DefaultInstaller installer = new DefaultInstaller();
+        configure( installer );
         assertNotNull( installer );
         installer.install( request );
 

@@ -27,11 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +57,7 @@ import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
-@Named
-@Singleton
+@Component( role = Installer.class )
 public class DefaultInstaller
     implements Installer
 {
@@ -67,18 +65,33 @@ public class DefaultInstaller
 
     private final Set<ArtifactState> reactor = new LinkedHashSet<>();
 
-    @Inject
+    @Requirement
     private Configurator configurator;
 
-    @Inject
+    @Requirement
     private Resolver resolver;
 
-    @Inject
+    @Requirement
     private ArtifactInstallerFactory installerFactory;
 
     private Configuration configuration;
 
     private PackageRegistry packageRegistry;
+
+    public void setConfigurator( Configurator configurator )
+    {
+        this.configurator = configurator;
+    }
+
+    public void setResolver( Resolver resolver )
+    {
+        this.resolver = resolver;
+    }
+
+    public void setInstallerFactory( ArtifactInstallerFactory installerFactory )
+    {
+        this.installerFactory = installerFactory;
+    }
 
     /**
      * Build initial reactor state from installation plan.

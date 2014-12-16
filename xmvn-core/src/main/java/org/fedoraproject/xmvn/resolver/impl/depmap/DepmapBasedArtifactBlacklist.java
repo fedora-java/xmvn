@@ -19,10 +19,9 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,24 +40,22 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "depmap" )
-@Singleton
+@Component( role = ArtifactBlacklist.class, hint = "depmap" )
 @Deprecated
 public class DepmapBasedArtifactBlacklist
-    implements ArtifactBlacklist
+    implements ArtifactBlacklist, Initializable
 {
     private final Logger logger = LoggerFactory.getLogger( DepmapBasedArtifactBlacklist.class );
 
-    private final Configurator configurator;
+    @Requirement
+    private Configurator configurator;
 
-    private final DefaultDependencyMap depmap;
+    @Requirement
+    private DefaultDependencyMap depmap;
 
-    @Inject
-    public DepmapBasedArtifactBlacklist( Configurator configurator, DefaultDependencyMap depmap )
+    @Override
+    public void initialize()
     {
-        this.configurator = configurator;
-        this.depmap = depmap;
-
         createInitialBlacklist();
         blacklistAliases();
     }

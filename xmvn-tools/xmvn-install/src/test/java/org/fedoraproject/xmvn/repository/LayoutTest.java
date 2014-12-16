@@ -15,16 +15,11 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.nio.file.Path;
 import java.util.Properties;
 
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.eclipse.sisu.launch.InjectedTest;
-import org.junit.Before;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -34,13 +29,14 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
  * @author Mikolaj Izdebski
  */
 public class LayoutTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     private Repository mavenRepository;
 
     private Repository jppRepository;
 
     private Repository getRepositoryInstance( String type )
+        throws Exception
     {
         RepositoryFactory factory = lookup( RepositoryFactory.class, type );
         assertNotNull( factory );
@@ -55,7 +51,6 @@ public class LayoutTest
         return repository;
     }
 
-    @Before
     @Override
     public void setUp()
         throws Exception

@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.After;
 import org.junit.Before;
 
@@ -39,7 +38,6 @@ import org.junit.Before;
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractInstallerTest
-    extends InjectedTest
 {
     protected Path workdir;
 

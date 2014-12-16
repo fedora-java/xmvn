@@ -17,17 +17,11 @@ package org.fedoraproject.xmvn.tools.bisect;
 
 import java.util.Map.Entry;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import org.apache.maven.shared.invoker.InvocationRequest;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,20 +30,13 @@ import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = BisectCli.class )
 public class BisectCli
 {
     private final Logger logger = LoggerFactory.getLogger( BisectCli.class );
 
-    private final BuildExecutor buildExecutor;
-
-    @Inject
-    public BisectCli( BuildExecutor buildExecutor )
-        throws Exception
-    {
-        this.buildExecutor = buildExecutor;
-    }
+    @Requirement
+    private BuildExecutor buildExecutor;
 
     private static String getBuildLogName( int buildId )
     {
@@ -145,9 +132,8 @@ public class BisectCli
         {
             BisectCliRequest cliRequest = new BisectCliRequest( args );
 
-            Module module = new WireModule( new SpaceModule( new URLClassSpace( BisectCli.class.getClassLoader() ) ) );
-            Injector injector = Guice.createInjector( module );
-            BisectCli cli = injector.getInstance( BisectCli.class );
+            PlexusContainer container = new DefaultPlexusContainer();
+            BisectCli cli = container.lookup( BisectCli.class );
 
             cli.run( cliRequest );
         }

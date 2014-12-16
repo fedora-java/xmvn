@@ -27,12 +27,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -54,24 +52,17 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  * @author Mikolaj Izdebski
  */
 @Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
-@Named
 public class BuilddepMojo
     extends AbstractMojo
 {
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
-    private final Resolver resolver;
+    @Component
+    private Resolver resolver;
 
-    private final DependencyExtractor buildDependencyExtractor;
-
-    @Inject
-    public BuilddepMojo( Resolver resolver,
-                         @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor )
-    {
-        this.resolver = resolver;
-        this.buildDependencyExtractor = buildDependencyExtractor;
-    }
+    @Component( hint = DependencyExtractor.BUILD )
+    private DependencyExtractor buildDependencyExtractor;
 
     private static void addOptionalChild( Xpp3Dom parent, String tag, String value, String defaultValue )
     {

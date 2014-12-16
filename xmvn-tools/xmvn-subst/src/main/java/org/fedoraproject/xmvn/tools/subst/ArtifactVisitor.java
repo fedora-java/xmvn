@@ -25,10 +25,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +36,7 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 import org.fedoraproject.xmvn.utils.FileUtils;
 
-@Named
-@Singleton
+@Component( role = ArtifactVisitor.class )
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
@@ -47,19 +44,14 @@ public class ArtifactVisitor
 
     private final Set<String> types = new LinkedHashSet<>();
 
-    private final Resolver resolver;
+    @Requirement
+    private Resolver resolver;
 
     private boolean followSymlinks;
 
     private boolean dryRun;
 
     private int failureCount;
-
-    @Inject
-    public ArtifactVisitor( Resolver resolver )
-    {
-        this.resolver = resolver;
-    }
 
     public void setTypes( Collection<String> types )
     {

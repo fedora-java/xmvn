@@ -19,10 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.config.Configurator;
@@ -35,22 +33,16 @@ import org.fedoraproject.xmvn.config.Stereotype;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = RepositoryConfigurator.class )
 @Deprecated
 public class DefaultRepositoryConfigurator
     implements RepositoryConfigurator
 {
-    private final Configurator configurator;
+    @Requirement
+    private Configurator configurator;
 
-    private final Map<String, RepositoryFactory> repositoryFactories;
-
-    @Inject
-    public DefaultRepositoryConfigurator( Configurator configurator, Map<String, RepositoryFactory> repositoryFactories )
-    {
-        this.configurator = configurator;
-        this.repositoryFactories = repositoryFactories;
-    }
+    @Requirement
+    private Map<String, RepositoryFactory> repositoryFactories;
 
     private org.fedoraproject.xmvn.config.Repository findDescriptor( String repoId )
     {

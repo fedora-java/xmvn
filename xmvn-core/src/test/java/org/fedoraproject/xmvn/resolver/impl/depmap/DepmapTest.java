@@ -15,9 +15,6 @@
  */
 package org.fedoraproject.xmvn.resolver.impl.depmap;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -39,7 +36,7 @@ import org.fedoraproject.xmvn.config.ResolverSettings;
  */
 @Deprecated
 public class DepmapTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     private DefaultDependencyMap readDepmap( Path fragment )
         throws Exception

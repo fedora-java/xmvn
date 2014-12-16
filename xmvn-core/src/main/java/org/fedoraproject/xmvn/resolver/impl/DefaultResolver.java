@@ -20,10 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,30 +45,30 @@ import org.fedoraproject.xmvn.utils.FileUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = Resolver.class )
 public class DefaultResolver
-    implements Resolver
+    implements Resolver, Initializable
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultResolver.class );
 
-    private final MetadataResolver metadataResolver;
+    private MetadataResolver metadataResolver;
 
     private static final RpmDb rpmdb = new RpmDb();
 
-    private final Resolver localRepoResolver;
+    @Requirement( hint = "local-repo" )
+    private Resolver localRepoResolver;
 
-    private final Resolver depmapResolver;
+    @Requirement( hint = "depmap" )
+    private Resolver depmapResolver;
 
-    private final EffectivePomGenerator pomGenerator;
+    private EffectivePomGenerator pomGenerator;
 
-    @Inject
-    public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver,
-                            @Named( "depmap" ) Resolver depmapResolver, Configurator configurator )
+    @Requirement
+    private Configurator configurator;
+
+    @Override
+    public void initialize()
     {
-        this.localRepoResolver = localRepoResolver;
-        this.depmapResolver = depmapResolver;
-
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         metadataResolver = new MetadataResolver( settings.getMetadataRepositories() );
         pomGenerator = new EffectivePomGenerator();

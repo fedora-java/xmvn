@@ -21,13 +21,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.repository.WorkspaceReader;
-import org.eclipse.aether.repository.WorkspaceRepository;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.repository.WorkspaceReader;
+import org.sonatype.aether.repository.WorkspaceRepository;
 
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -36,22 +34,16 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 /**
  * @author Mikolaj Izdebski
  */
-@Named( "ide" )
-@Singleton
+@Component( role = WorkspaceReader.class, hint = "ide" )
 public class XMvnWorkspaceReader
     implements WorkspaceReader
 {
-    private final Resolver resolver;
+    @Requirement
+    private Resolver resolver;
 
     private static final WorkspaceRepository repository = new WorkspaceRepository();
 
     private final List<ResolutionListener> listeners = new ArrayList<>();
-
-    @Inject
-    public XMvnWorkspaceReader( Resolver resolver )
-    {
-        this.resolver = resolver;
-    }
 
     public void addResolutionListener( ResolutionListener listener )
     {

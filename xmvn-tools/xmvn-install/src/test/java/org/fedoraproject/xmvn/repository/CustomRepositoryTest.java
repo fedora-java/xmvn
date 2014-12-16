@@ -15,10 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.config.Configuration;
@@ -29,7 +26,7 @@ import org.fedoraproject.xmvn.config.Repository;
  * @author Mikolaj Izdebski
  */
 public class CustomRepositoryTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     /**
      * Test if simple (non-composite) repository configuration works as expected.

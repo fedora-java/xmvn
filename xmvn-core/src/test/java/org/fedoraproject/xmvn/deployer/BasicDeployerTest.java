@@ -15,16 +15,14 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
-import static org.junit.Assert.assertNotNull;
-
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class BasicDeployerTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     /**
      * Test if Sisu can load deployer component.

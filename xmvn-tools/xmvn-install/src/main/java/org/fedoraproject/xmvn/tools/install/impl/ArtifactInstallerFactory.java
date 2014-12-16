@@ -19,29 +19,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.eclipse.sisu.Nullable;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
-@Named
-@Singleton
+@Component( role = ArtifactInstallerFactory.class )
 public class ArtifactInstallerFactory
 {
     private final Logger logger = LoggerFactory.getLogger( ArtifactInstallerFactory.class );
 
-    @Inject
+    @Requirement
     private ArtifactInstaller defaultArtifactInstaller;
 
-    @Inject
-    @Nullable
-    @Named( "eclipse" )
+    @Requirement( hint = "eclipse", optional = true )
     private ArtifactInstaller eclipseArtifactInstaller;
 
     /**

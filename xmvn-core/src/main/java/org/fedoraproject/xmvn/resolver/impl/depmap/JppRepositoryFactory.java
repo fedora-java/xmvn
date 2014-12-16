@@ -18,8 +18,7 @@ package org.fedoraproject.xmvn.resolver.impl.depmap;
 import java.nio.file.Path;
 import java.util.List;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.fedoraproject.xmvn.config.Stereotype;
 
@@ -32,8 +31,7 @@ import org.fedoraproject.xmvn.config.Stereotype;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "jpp" )
-@Singleton
+@Component( role = RepositoryFactory.class, hint = "jpp" )
 @Deprecated
 public class JppRepositoryFactory
     extends SimpleRepositoryFactory

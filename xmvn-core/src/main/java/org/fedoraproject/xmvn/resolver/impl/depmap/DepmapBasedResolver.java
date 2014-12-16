@@ -28,10 +28,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,32 +53,30 @@ import org.fedoraproject.xmvn.utils.FileUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "depmap" )
-@Singleton
+@Component( role = Resolver.class, hint = "depmap" )
 @Deprecated
 public class DepmapBasedResolver
-    implements Resolver
+    implements Resolver, Initializable
 {
     private final Logger logger = LoggerFactory.getLogger( DepmapBasedResolver.class );
 
-    private final RepositoryConfigurator repositoryConfigurator;
+    @Requirement
+    private RepositoryConfigurator repositoryConfigurator;
 
     private Repository bisectRepo;
 
-    private final Repository systemRepo;
+    private Repository systemRepo;
 
-    private final DefaultDependencyMap depmap;
+    @Requirement
+    private DefaultDependencyMap depmap;
 
     private AtomicFileCounter bisectCounter;
 
     private static final RpmDb rpmdb = new RpmDb();
 
-    @Inject
-    public DepmapBasedResolver( RepositoryConfigurator repositoryConfigurator, DefaultDependencyMap depmap )
+    @Override
+    public void initialize()
     {
-        this.repositoryConfigurator = repositoryConfigurator;
-        this.depmap = depmap;
-
         initializeBisect();
 
         systemRepo = repositoryConfigurator.configureRepository( "resolve" );

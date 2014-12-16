@@ -15,29 +15,20 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.ConfigurationMerger;
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named( "default" )
-@Singleton
+@Component( role = Configurator.class )
 public class TestConfigurator
     extends DefaultConfigurator
 {
-    @Inject
-    public TestConfigurator( ConfigurationMerger merger )
-    {
-        super( merger );
-    }
-
     @Override
     public synchronized Configuration getConfiguration()
     {

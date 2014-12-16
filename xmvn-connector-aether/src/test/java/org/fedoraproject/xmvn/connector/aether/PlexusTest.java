@@ -23,8 +23,8 @@ import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.eclipse.aether.repository.WorkspaceReader;
 import org.junit.Test;
+import org.sonatype.aether.repository.WorkspaceReader;
 
 /**
  * @author Mikolaj Izdebski

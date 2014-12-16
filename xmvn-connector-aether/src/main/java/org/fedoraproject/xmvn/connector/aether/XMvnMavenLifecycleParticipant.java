@@ -15,32 +15,25 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.sonatype.aether.repository.WorkspaceReader;
 
 /**
  * Installs some of XMvn extensions for Maven.
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "XMvn" )
-@Singleton
+@Component( role = AbstractMavenLifecycleParticipant.class, hint = "XMvn" )
 public class XMvnMavenLifecycleParticipant
     extends AbstractMavenLifecycleParticipant
 {
-    private final XMvnWorkspaceReader workspaceReader;
-
-    @Inject
-    public XMvnMavenLifecycleParticipant( XMvnWorkspaceReader workspaceReader )
-    {
-        this.workspaceReader = workspaceReader;
-    }
+    @Requirement( role = WorkspaceReader.class, hint = "ide" )
+    private XMvnWorkspaceReader workspaceReader;
 
     @Override
     public void afterSessionStart( MavenSession session )

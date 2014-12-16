@@ -15,17 +15,11 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.eclipse.sisu.launch.InjectedTest;
-import org.junit.After;
-import org.junit.Before;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -39,11 +33,10 @@ import org.fedoraproject.xmvn.utils.AtomicFileCounter;
  * @author Michael Simacek
  */
 public class BisectResolverTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     private AtomicFileCounter counter;
 
-    @Before
     @Override
     public void setUp()
         throws Exception
@@ -56,7 +49,6 @@ public class BisectResolverTest
         counter = new AtomicFileCounter( counterPath.toString(), 1000 );
     }
 
-    @After
     @Override
     public void tearDown()
         throws Exception

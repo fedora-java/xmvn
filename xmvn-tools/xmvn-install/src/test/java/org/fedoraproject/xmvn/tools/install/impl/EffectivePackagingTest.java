@@ -15,14 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.config.Artifact;
@@ -34,7 +29,7 @@ import org.fedoraproject.xmvn.config.PackagingRule;
  * @author Mikolaj Izdebski
  */
 public class EffectivePackagingTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     /**
      * Test if multiple rules are correctly aggregated into single effective rule.

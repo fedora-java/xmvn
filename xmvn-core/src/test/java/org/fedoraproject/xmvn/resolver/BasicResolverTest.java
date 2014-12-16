@@ -15,10 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -30,7 +27,7 @@ import org.fedoraproject.xmvn.config.ResolverSettings;
  * @author Mikolaj Izdebski
  */
 public class BasicResolverTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     /**
      * Test if Plexus can load resolver component.

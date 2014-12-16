@@ -28,11 +28,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,26 +51,20 @@ import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = Configurator.class )
 public class DefaultConfigurator
     implements Configurator
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultConfigurator.class );
 
-    private final ConfigurationMerger merger;
+    @Requirement
+    private ConfigurationMerger merger;
 
     private Configuration cachedConfiguration;
 
     private Configuration cachedDefaultConfiguration;
 
     private List<Path> configFiles;
-
-    @Inject
-    public DefaultConfigurator( ConfigurationMerger merger )
-    {
-        this.merger = merger;
-    }
 
     private Configuration loadConfigurationFromStream( InputStream stream )
         throws IOException

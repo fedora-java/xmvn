@@ -74,18 +74,18 @@
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
-    <aetherVersion>1.0.0.v20140518</aetherVersion>
+    <aetherVersion>1.13.1</aetherVersion>
     <asmVersion>5.0.3</asmVersion>
-    <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.3.0</ivyVersion>
     <jcommanderVersion>1.35</jcommanderVersion>
-    <guiceVersion>3.2.4</guiceVersion>
-    <guavaVersion>18.0</guavaVersion>
+    <guiceVersion>3.1.3</guiceVersion>
+    <guavaVersion>13.0</guavaVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
-    <mavenVersion>3.2.3</mavenVersion>
+    <mavenVersion>3.0.5</mavenVersion>
     <plexusUtilsVersion>3.0.20</plexusUtilsVersion>
+    <plexusVersion>1.5.5</plexusVersion>
     <pluginToolsVersion>3.3</pluginToolsVersion>
-    <sisuVersion>0.2.0</sisuVersion>
+    <sisuVersion>2.3.0</sisuVersion>
     <slf4jVersion>1.7.7</slf4jVersion>
 
     <!-- Build dependencies -->
@@ -141,8 +141,13 @@
         <version>${mavenVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.aether</groupId>
+        <groupId>org.sonatype.aether</groupId>
         <artifactId>aether-api</artifactId>
+        <version>${aetherVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-util</artifactId>
         <version>${aetherVersion}</version>
       </dependency>
       <dependency>
@@ -151,13 +156,13 @@
         <version>${pluginToolsVersion}</version>
       </dependency>
       <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>${atinjectVersion}</version>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-annotations</artifactId>
+        <version>${plexusVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>org.eclipse.sisu.inject</artifactId>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-inject-plexus</artifactId>
         <version>${sisuVersion}</version>
         <exclusions>
           <exclusion>
@@ -319,9 +324,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.eclipse.sisu</groupId>
-          <artifactId>sisu-maven-plugin</artifactId>
-          <version>${sisuVersion}</version>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-component-metadata</artifactId>
+          <version>${plexusVersion}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -433,19 +438,13 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>sisu-maven-plugin</artifactId>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
         <executions>
           <execution>
-            <id>process-classes</id>
             <goals>
-              <goal>main-index</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>process-test-classes</id>
-            <goals>
-              <goal>test-index</goal>
+              <goal>generate-metadata</goal>
+              <goal>generate-test-metadata</goal>
             </goals>
           </execution>
         </executions>

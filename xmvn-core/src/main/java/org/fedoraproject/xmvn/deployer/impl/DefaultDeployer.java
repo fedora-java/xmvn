@@ -24,9 +24,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map.Entry;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
+
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -49,8 +49,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = Deployer.class )
 public class DefaultDeployer
     implements Deployer
 {

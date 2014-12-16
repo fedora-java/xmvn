@@ -20,20 +20,15 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,19 +48,13 @@ import org.fedoraproject.xmvn.tools.resolve.xml.CompoundResult;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = ResolverCli.class )
 public class ResolverCli
 {
     private final Logger logger = LoggerFactory.getLogger( ResolverCli.class );
 
-    private final Resolver resolver;
-
-    @Inject
-    public ResolverCli( Resolver resolver )
-    {
-        this.resolver = resolver;
-    }
+    @Requirement
+    private Resolver resolver;
 
     private List<ResolutionRequest> parseRequests( ResolverCliRequest cli )
         throws JAXBException
@@ -165,9 +154,8 @@ public class ResolverCli
         {
             ResolverCliRequest cliRequest = new ResolverCliRequest( args );
 
-            Module module = new WireModule( new SpaceModule( new URLClassSpace( ResolverCli.class.getClassLoader() ) ) );
-            Injector injector = Guice.createInjector( module );
-            ResolverCli cli = injector.getInstance( ResolverCli.class );
+            PlexusContainer container = new DefaultPlexusContainer();
+            ResolverCli cli = container.lookup( ResolverCli.class );
 
             cli.run( cliRequest );
         }

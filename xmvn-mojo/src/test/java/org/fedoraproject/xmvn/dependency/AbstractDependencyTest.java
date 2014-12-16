@@ -15,16 +15,12 @@
  */
 package org.fedoraproject.xmvn.dependency;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -34,7 +30,7 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractDependencyTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     private Path modelPath;
 

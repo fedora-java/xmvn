@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
 import org.junit.Assert;
 
 import org.fedoraproject.xmvn.config.Configuration;
@@ -26,8 +24,7 @@ import org.fedoraproject.xmvn.config.Configurator;
 /**
  * @author Mikolaj Izdebski
  */
-@Singleton
-@Named( "default" )
+@Component( role = Configurator.class )
 public class DefaultConfigurator
     implements Configurator
 {

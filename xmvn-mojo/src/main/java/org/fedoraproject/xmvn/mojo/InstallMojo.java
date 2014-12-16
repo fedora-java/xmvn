@@ -25,22 +25,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.RepositorySystemSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonatype.aether.RepositorySystemSession;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -53,7 +51,6 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * @author Mikolaj Izdebski
  */
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
-@Named
 public class InstallMojo
     extends AbstractMojo
 {
@@ -82,17 +79,17 @@ public class InstallMojo
     @Parameter( readonly = true, defaultValue = "${repositorySystemSession}" )
     private RepositorySystemSession repoSession;
 
-    private final Deployer deployer;
-
-    @Inject
-    public InstallMojo( Deployer deployer )
-    {
-        this.deployer = deployer;
-    }
+    @Component
+    private Deployer deployer;
 
     void setReactorProjects( List<MavenProject> reactorProjects )
     {
         this.reactorProjects = reactorProjects;
+    }
+
+    public void setDeployer( Deployer deployer )
+    {
+        this.deployer = deployer;
     }
 
     /**

@@ -19,8 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
@@ -36,8 +35,7 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "local-repo" )
-@Singleton
+@Component( role = Resolver.class, hint = "local-repo" )
 public class LocalRepositoryResolver
     implements Resolver
 {

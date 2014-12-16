@@ -88,7 +88,8 @@ public class NullFileInstallationTest
         getProject().setArtifact( getArtifact() );
         getProject().setFile( pomPath.toFile() );
 
-        InstallMojo mojo = new InstallMojo( new DeployerMock() );
+        InstallMojo mojo = new InstallMojo();
+        mojo.setDeployer( new DeployerMock() );
         mojo.setReactorProjects( Collections.singletonList( getProject() ) );
         deployed = false;
         mojo.execute();

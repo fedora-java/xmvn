@@ -24,14 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.apache.maven.execution.MojoExecutionEvent;
-import org.apache.maven.execution.MojoExecutionListener;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -39,10 +33,7 @@ import org.apache.maven.project.MavenProject;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
-public class XMvnMojoExecutionListener
-    implements MojoExecutionListener
+class XMvnMojoExecutionListener
 {
     private static class MojoGoal
     {
@@ -86,7 +77,6 @@ public class XMvnMojoExecutionListener
     private static final Path PROPERTIES_FILE = XMVN_STATE_DIR.resolve( "properties" );
 
     private static String getBeanProperty( Object bean, String getterName )
-        throws MojoExecutionException
     {
         try
         {
@@ -104,16 +94,15 @@ public class XMvnMojoExecutionListener
                 }
             }
 
-            throw new MojoExecutionException( "Unable to find bean property getter method " + getterName );
+            throw new RuntimeException( "Unable to find bean property getter method " + getterName );
         }
         catch ( ReflectiveOperationException e )
         {
-            throw new MojoExecutionException( "Failed to get bean property", e );
+            throw new RuntimeException( "Failed to get bean property", e );
         }
     }
 
     private static void createApidocsSymlink( Path javadocDir )
-        throws MojoExecutionException
     {
         try
         {
@@ -127,12 +116,11 @@ public class XMvnMojoExecutionListener
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Failed to create apidocs symlink", e );
+            throw new RuntimeException( "Failed to create apidocs symlink", e );
         }
     }
 
     private void setProjectProperty( MavenProject project, String key, String value )
-        throws MojoExecutionException
     {
         Properties properties = new Properties();
 
@@ -159,18 +147,12 @@ public class XMvnMojoExecutionListener
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Failed to set project property", e );
+            throw new RuntimeException( "Failed to set project property", e );
         }
     }
 
-    @Override
-    public void afterMojoExecutionSuccess( MojoExecutionEvent event )
-        throws MojoExecutionException
+    public void afterMojoExecutionSuccess( Mojo mojo, MojoExecution execution, MavenProject project )
     {
-        Mojo mojo = event.getMojo();
-        MojoExecution execution = event.getExecution();
-        MavenProject project = event.getProject();
-
         if ( JAVADOC_AGGREGATE.equals( execution ) )
         {
             String javadocDir = getBeanProperty( mojo, "getReportOutputDirectory" );
@@ -186,17 +168,5 @@ public class XMvnMojoExecutionListener
             setProjectProperty( project, "compilerSource", getBeanProperty( mojo, "getSourceLevel" ) );
             setProjectProperty( project, "compilerTarget", getBeanProperty( mojo, "getTargetLevel" ) );
         }
-    }
-
-    @Override
-    public void beforeMojoExecution( MojoExecutionEvent event )
-    {
-        // Nothing to do
-    }
-
-    @Override
-    public void afterExecutionFailure( MojoExecutionEvent event )
-    {
-        // Nothing to do
     }
 }

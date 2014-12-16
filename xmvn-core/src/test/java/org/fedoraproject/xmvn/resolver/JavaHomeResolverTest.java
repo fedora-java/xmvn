@@ -15,13 +15,9 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.nio.file.Files;
 
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -33,7 +29,7 @@ import org.fedoraproject.xmvn.utils.FileUtils;
  * @author Mikolaj Izdebski
  */
 public class JavaHomeResolverTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     /**
      * Test if artifacts are resolved correctly from Java home.

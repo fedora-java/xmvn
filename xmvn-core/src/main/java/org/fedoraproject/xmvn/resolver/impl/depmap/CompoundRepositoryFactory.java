@@ -21,10 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -39,19 +37,13 @@ import org.fedoraproject.xmvn.config.Stereotype;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "compound" )
-@Singleton
+@Component( role = RepositoryFactory.class, hint = "compound" )
 @Deprecated
 public class CompoundRepositoryFactory
     extends AbstractRepositoryFactory
 {
-    private final RepositoryConfigurator configurator;
-
-    @Inject
-    public CompoundRepositoryFactory( RepositoryConfigurator configurator )
-    {
-        this.configurator = configurator;
-    }
+    @Requirement
+    private RepositoryConfigurator configurator;
 
     @Override
     public Repository getInstance( List<Stereotype> stereotypes, Properties properties, Xpp3Dom configuration,

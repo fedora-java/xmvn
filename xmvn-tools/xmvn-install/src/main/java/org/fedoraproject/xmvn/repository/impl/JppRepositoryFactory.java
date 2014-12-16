@@ -17,12 +17,11 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.repository.Repository;
+import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**
  * Factory creating JPP repositories.
@@ -33,8 +32,7 @@ import org.fedoraproject.xmvn.repository.Repository;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "jpp" )
-@Singleton
+@Component( role = RepositoryFactory.class, hint = "jpp" )
 public class JppRepositoryFactory
     extends SimpleRepositoryFactory
 {

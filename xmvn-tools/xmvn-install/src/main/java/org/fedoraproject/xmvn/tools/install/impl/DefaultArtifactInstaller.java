@@ -30,10 +30,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,15 +51,19 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 
-@Named
-@Singleton
+@Component( role = ArtifactInstaller.class )
 public class DefaultArtifactInstaller
     implements ArtifactInstaller
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultArtifactInstaller.class );
 
-    @Inject
+    @Requirement
     private RepositoryConfigurator repositoryConfigurator;
+
+    public void setRepositoryConfigurator( RepositoryConfigurator repositoryConfigurator )
+    {
+        this.repositoryConfigurator = repositoryConfigurator;
+    }
 
     @Override
     public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )

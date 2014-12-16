@@ -19,18 +19,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationOutputHandler;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.codehaus.plexus.component.annotations.Component;
 
-@Named
-@Singleton
+@Component( role = BuildExecutor.class )
 public class DefaultBuildExecutor
     implements BuildExecutor
 {

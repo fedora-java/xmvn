@@ -28,10 +28,8 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +46,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = DefaultDependencyMap.class )
 @Deprecated
 public class DefaultDependencyMap
 {
@@ -61,16 +58,16 @@ public class DefaultDependencyMap
 
     private final Map<Artifact, Set<Artifact>> reverseMapping = new LinkedHashMap<>();
 
+    @Requirement
     private final Configurator configurator;
 
     private final String depmapFragmentDir;
 
     private boolean initialized;
 
-    @Inject
-    public DefaultDependencyMap( Configurator configurator )
+    public DefaultDependencyMap()
     {
-        this( configurator, "usr/share/maven-fragments" );
+        this( null, "usr/share/maven-fragments" );
     }
 
     DefaultDependencyMap( Configurator configurator, String depmapFragmentDir )

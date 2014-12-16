@@ -19,9 +19,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,12 +29,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import com.google.inject.Binder;
+import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,24 +44,24 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
+import org.fedoraproject.xmvn.tools.install.impl.DefaultArtifactInstaller;
 
 /**
  * @author Michael Simacek
  */
 @RunWith( EasyMockRunner.class )
 public class ArtifactInstallerTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     @Mock
     Repository repositoryMock;
 
-    @Inject
-    private ArtifactInstaller installer;
+    @Requirement
+    private RepositoryConfigurator repositoryConfigurator;
 
-    @Override
-    public void configure( Binder binder )
+    private void configure( DefaultArtifactInstaller installer )
     {
-        binder.bind( RepositoryConfigurator.class ).toInstance( new RepositoryConfigurator()
+        installer.setRepositoryConfigurator( new RepositoryConfigurator()
         {
             @Override
             public Repository configureRepository( String repoId )
@@ -93,6 +88,8 @@ public class ArtifactInstallerTest
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );
         replay( repositoryMock );
 
+        DefaultArtifactInstaller installer = new DefaultArtifactInstaller();
+        configure( installer );
         installer.install( pkg, am, rule, "foo" );
 
         verify( repositoryMock );

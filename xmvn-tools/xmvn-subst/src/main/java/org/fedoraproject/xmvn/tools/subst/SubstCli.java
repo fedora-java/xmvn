@@ -19,35 +19,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = SubstCli.class )
 public class SubstCli
 {
     private final Logger logger = LoggerFactory.getLogger( SubstCli.class );
 
-    private final ArtifactVisitor visitor;
-
-    @Inject
-    public SubstCli( ArtifactVisitor visitor )
-    {
-        this.visitor = visitor;
-    }
+    @Requirement
+    private ArtifactVisitor visitor;
 
     private void run( SubstCliRequest cliRequest )
     {
@@ -77,9 +65,8 @@ public class SubstCli
         {
             SubstCliRequest cliRequest = new SubstCliRequest( args );
 
-            Module module = new WireModule( new SpaceModule( new URLClassSpace( SubstCli.class.getClassLoader() ) ) );
-            Injector injector = Guice.createInjector( module );
-            SubstCli cli = injector.getInstance( SubstCli.class );
+            PlexusContainer container = new DefaultPlexusContainer();
+            SubstCli cli = container.lookup( SubstCli.class );
 
             cli.run( cliRequest );
         }

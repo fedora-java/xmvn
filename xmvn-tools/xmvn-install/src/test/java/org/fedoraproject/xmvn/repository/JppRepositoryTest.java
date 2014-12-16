@@ -15,12 +15,9 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.nio.file.Paths;
 
-import org.eclipse.sisu.launch.InjectedTest;
+import org.codehaus.plexus.PlexusTestCase;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -33,7 +30,7 @@ import org.fedoraproject.xmvn.config.Repository;
  * @author Mikolaj Izdebski
  */
 public class JppRepositoryTest
-    extends InjectedTest
+    extends PlexusTestCase
 {
     @Test
     public void testJppRepository()

@@ -17,24 +17,21 @@ package org.fedoraproject.xmvn.connector.aether;
 
 import java.util.List;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.repository.ArtifactRepository;
-import org.eclipse.aether.repository.WorkspaceReader;
+import org.codehaus.plexus.component.annotations.Component;
+import org.sonatype.aether.RepositorySystemSession;
+import org.sonatype.aether.repository.ArtifactRepository;
+import org.sonatype.aether.repository.WorkspaceReader;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named( "default" )
-@Singleton
+@Component( role = PluginVersionResolver.class )
 public class XMvnPluginVersionResolver
     implements PluginVersionResolver
 {

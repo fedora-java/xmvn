@@ -21,11 +21,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import org.fedoraproject.xmvn.model.ModelFormatException;
@@ -38,8 +36,7 @@ import org.fedoraproject.xmvn.model.ModelReader;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = ModelReader.class )
 public class DefaultModelReader
     implements ModelReader
 {

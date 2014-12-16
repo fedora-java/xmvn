@@ -22,16 +22,13 @@ import static org.junit.Assert.fail;
 
 import java.util.Properties;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named( "my-type" )
-@Singleton
+@Component( role = RepositoryFactory.class, hint = "my-type" )
 public class MyRepositoryFactory
     implements RepositoryFactory
 {
