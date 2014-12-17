@@ -199,6 +199,11 @@ public class DepmapBasedResolver
                     DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
                     result.setCompatVersion( version );
                     result.setNamespace( repo != null ? repo.getNamespace() : null );
+
+                    // XXX an ugly hack
+                    if ( artifactPath.startsWith( Paths.get( "/opt/rh" ) ) )
+                        result.setNamespace( artifactPath.getName( 2 ).toString() );
+
                     return result;
                 }
             }
