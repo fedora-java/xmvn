@@ -112,4 +112,10 @@ public class ResolutionRequest
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return ResolutionRequest.class + "{artifact=" + artifact + ",isProviderNeeded=" + isProviderNeeded + "}";
+    }
 }
