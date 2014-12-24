@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.connector.ivy;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createStrictMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
@@ -99,6 +100,7 @@ public class Bug1127804Test
         Artifact artifact = new DefaultArtifact( coordinates );
         artifact = artifact.setPath( getResource( resource ) );
         visitor.visitArtifact( artifact );
+        expectLastCall();
     }
 
     private void performTest( String module )
