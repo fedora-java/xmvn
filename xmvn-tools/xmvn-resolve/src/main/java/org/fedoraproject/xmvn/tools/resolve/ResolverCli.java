@@ -147,7 +147,7 @@ public class ResolverCli
                 }
             }
 
-            if ( error )
+            if ( error && !cliRequest.isRaw() )
                 System.exit( 1 );
 
             printResults( cliRequest, results );
