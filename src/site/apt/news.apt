@@ -3,10 +3,32 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2014-09-04
+                    2015-09-04
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.1.1
+
+  XMvn 2.1.1 was released on 2015-01-05.  Most important changes
+  include:
+
+  * Minor bugfixes
+
+    * Software collection support
+
+      Several bugs related to support for software collections were
+      fixed.
+
+    * OSGi artifact installation
+
+      XMvn MOJO now correctly passes fully qualified OSGi artifact
+      verions to Eclipse P2 installer.
+
+   * Resolution of Ivy artifacts with classifiers
+
+      XMvn 2.1.1 fixes a bug which could cause some Ivy artifacts with
+      classifiers not to be resolved correctly in some cases.
 
 * What's new in XMvn 2.1.0
 
