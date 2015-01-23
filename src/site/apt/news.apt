@@ -3,10 +3,23 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2015-09-04
+                    2015-01-23
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.2.0
+
+  XMvn 2.2.0 was released on 2015-01-23.  Most important changes
+  include:
+
+  * Major features
+
+    * Gradle connector
+
+      XMvn 2.2.0 includes connector for Gradle, which provides
+      integration of Gradle with XMvn.  It provides an adapter which
+      allows XMvn resolver to be used as Gradle resolver.
 
 * What's new in XMvn 2.1.1
 
