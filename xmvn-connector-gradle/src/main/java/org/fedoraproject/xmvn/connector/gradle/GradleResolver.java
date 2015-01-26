@@ -29,13 +29,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
-import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
-import org.fedoraproject.xmvn.resolver.ResolutionRequest;
-import org.fedoraproject.xmvn.resolver.ResolutionResult;
-import org.fedoraproject.xmvn.resolver.Resolver;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
 import org.gradle.api.artifacts.repositories.ArtifactRepository;
@@ -71,6 +64,14 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
+import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
+import org.fedoraproject.xmvn.resolver.ResolutionRequest;
+import org.fedoraproject.xmvn.resolver.ResolutionResult;
+import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
  * @author Mikolaj Izdebski
