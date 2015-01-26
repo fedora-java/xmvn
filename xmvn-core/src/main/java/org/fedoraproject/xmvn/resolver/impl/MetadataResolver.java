@@ -40,13 +40,13 @@ class MetadataResolver
 
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
-    private final List<String> depmapLocations;
+    private final List<String> metadataLocations;
 
     boolean initialized;
 
-    public MetadataResolver( List<String> depmapLocations )
+    public MetadataResolver( List<String> metadataLocations )
     {
-        this.depmapLocations = depmapLocations;
+        this.metadataLocations = metadataLocations;
     }
 
     private synchronized void initArtifactMap()
@@ -56,7 +56,7 @@ class MetadataResolver
         initialized = true;
 
         MetadataReader reader = new MetadataReader();
-        List<PackageMetadata> metadataList = reader.readMetadata( depmapLocations );
+        List<PackageMetadata> metadataList = reader.readMetadata( metadataLocations );
 
         PathInterpolator interpolator = new PathInterpolator();
 

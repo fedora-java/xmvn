@@ -59,19 +59,7 @@ public class JavaHomeResolverTest
         assertNotNull( comSunToolsResult.getArtifactPath() );
         assertTrue( Files.exists( comSunToolsResult.getArtifactPath() ) );
 
-        ResolutionRequest toolsRequest =
-            new ResolutionRequest( new DefaultArtifact( "JAVA_HOME", "../lib/tools", "jar", "SYSTEM" ) );
-        ResolutionResult toolsResult = javaHomeResolver.resolve( toolsRequest );
-        assertNotNull( toolsResult.getArtifactPath() );
-        assertTrue( Files.exists( toolsResult.getArtifactPath() ) );
-
-        ResolutionRequest toolzRequest =
-            new ResolutionRequest( new DefaultArtifact( "JAVA_HOME", "../lib/toolz", "jar", "SYSTEM" ) );
-        ResolutionResult toolzResult = javaHomeResolver.resolve( toolzRequest );
-        assertNull( toolzResult.getArtifactPath() );
-
-        ResolutionRequest xpp3Request =
-            new ResolutionRequest( new DefaultArtifact( "JPP/xpp3", "xpp3", "jar", "SYSTEM" ) );
+        ResolutionRequest xpp3Request = new ResolutionRequest( new DefaultArtifact( "xpp3", "xpp3", "jar", "SYSTEM" ) );
         ResolutionResult xpp3Result = javaHomeResolver.resolve( xpp3Request );
         assertNull( xpp3Result.getArtifactPath() );
     }

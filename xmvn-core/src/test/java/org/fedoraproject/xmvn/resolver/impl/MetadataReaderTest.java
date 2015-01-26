@@ -80,21 +80,6 @@ public class MetadataReaderTest
     }
 
     /**
-     * Test if trying to read metadata from depmap file empty result.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testReadingDepmap()
-        throws Exception
-    {
-        List<String> pathList = Collections.singletonList( "src/test/resources/xml-depmap.xml" );
-        List<PackageMetadata> list = reader.readMetadata( pathList );
-        assertNotNull( list );
-        assertTrue( list.isEmpty() );
-    }
-
-    /**
      * Test reading metadata from a file.
      * 
      * @throws Exception

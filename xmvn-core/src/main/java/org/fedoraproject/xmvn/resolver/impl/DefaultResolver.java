@@ -59,16 +59,12 @@ public class DefaultResolver
 
     private final Resolver localRepoResolver;
 
-    private final Resolver depmapResolver;
-
     private final EffectivePomGenerator pomGenerator;
 
     @Inject
-    public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver,
-                            @Named( "depmap" ) Resolver depmapResolver, Configurator configurator )
+    public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator )
     {
         this.localRepoResolver = localRepoResolver;
-        this.depmapResolver = depmapResolver;
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         metadataResolver = new MetadataResolver( settings.getMetadataRepositories() );
@@ -136,12 +132,6 @@ public class DefaultResolver
 
             logger.debug( "Artifact {} was resolved to {}", artifact, artifactPath );
             return result;
-        }
-
-        // TODO: drop support for depmaps
-        if ( properties.getProperty( "xmvn.resolver.disableDepmap" ) == null )
-        {
-            return depmapResolver.resolve( request );
         }
 
         logger.debug( "Failed to resolve artifact: {}", artifact );

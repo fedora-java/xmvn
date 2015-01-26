@@ -76,11 +76,11 @@ class MetadataReader
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, new DaemonFactory() );
     }
 
-    public List<PackageMetadata> readMetadata( List<String> depmapLocations )
+    public List<PackageMetadata> readMetadata( List<String> metadataLocations )
     {
         Map<Path, Future<PackageMetadata>> futures = new LinkedHashMap<>();
 
-        for ( String pathString : depmapLocations )
+        for ( String pathString : metadataLocations )
         {
             Path path = Paths.get( pathString );
 

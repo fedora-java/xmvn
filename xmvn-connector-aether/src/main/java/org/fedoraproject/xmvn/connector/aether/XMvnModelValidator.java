@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.resolver.ArtifactBlacklist;
 
 /**
  * Custom Maven object model (POM) validator that overrides default Maven model validator.
@@ -59,13 +58,10 @@ public class XMvnModelValidator
 
     private final Configurator configurator;
 
-    private final ArtifactBlacklist blacklist;
-
     @Inject
-    public XMvnModelValidator( Configurator configurator, ArtifactBlacklist blacklist )
+    public XMvnModelValidator( Configurator configurator )
     {
         this.configurator = configurator;
-        this.blacklist = blacklist;
     }
 
     @Override
@@ -93,13 +89,6 @@ public class XMvnModelValidator
             String artifactId = dependency.getArtifactId();
             String scope = dependency.getScope();
 
-            if ( blacklist.contains( groupId, artifactId ) )
-            {
-                logger.debug( "Removed dependency {}:{} because it was blacklisted.", groupId, artifactId );
-                iter.remove();
-                continue;
-            }
-
             if ( settings.isSkipTests() && scope != null && scope.equals( "test" ) )
             {
                 logger.debug( "Dropped dependency on {}:{} because tests are skipped.", groupId, artifactId );
@@ -123,13 +112,6 @@ public class XMvnModelValidator
             String groupId = extension.getGroupId();
             String artifactId = extension.getArtifactId();
 
-            if ( blacklist.contains( groupId, artifactId ) )
-            {
-                logger.debug( "Removed extension {}:{} because it was blacklisted.", groupId, artifactId );
-                iter.remove();
-                continue;
-            }
-
             extension.setVersion( replaceVersion( groupId, artifactId, extension.getVersion() ) );
         }
     }
@@ -145,13 +127,6 @@ public class XMvnModelValidator
             Plugin plugin = iter.next();
             String groupId = plugin.getGroupId();
             String artifactId = plugin.getArtifactId();
-
-            if ( blacklist.contains( groupId, artifactId ) )
-            {
-                logger.debug( "Removed plugin {}:{} because it was blacklisted.", groupId, artifactId );
-                iter.remove();
-                continue;
-            }
 
             plugin.setVersion( replaceVersion( groupId, artifactId, plugin.getVersion() ) );
 

@@ -56,19 +56,6 @@ public class ArtifactUtils
     public static final String MF_KEY_VERSION = "JavaPackages-Version";
 
     /**
-     * Dummy artifact. Any dependencies on this artifact will be removed during model validation.
-     */
-    @Deprecated
-    public static final Artifact DUMMY = new DefaultArtifact( "org.fedoraproject.xmvn:xmvn-void:SYSTEM" );
-
-    /**
-     * The same as {@code DUMMY}, but in JPP style. Any dependencies on this artifact will be removed during model
-     * validation.
-     */
-    @Deprecated
-    public static final Artifact DUMMY_JPP = new DefaultArtifact( "JPP/maven:empty-dep:SYSTEM" );
-
-    /**
      * Convert a collection of artifacts to a human-readable string. This function uses single-line representation.
      * 
      * @param collection collection of artifacts

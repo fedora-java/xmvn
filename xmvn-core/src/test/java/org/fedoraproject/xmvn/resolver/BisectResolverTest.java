@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -72,6 +73,7 @@ public class BisectResolverTest
      * @throws Exception
      */
     @Test
+    @Ignore
     public void testBisectResolverNoFile()
         throws Exception
     {
