@@ -97,13 +97,15 @@ public class DefaultResolver
             compatVersion = artifact.getVersion();
         }
 
-        if ( metadata != null )
+        if ( metadata == null )
         {
-            properties.putAll( metadata.getProperties() );
+            logger.debug( "Failed to resolve artifact: {}", artifact );
+            return new DefaultResolutionResult();
         }
 
-        if ( metadata != null
-            && !StringUtils.equals( properties.getProperty( "xmvn.resolver.disableEffectivePom" ), "true" )
+        properties.putAll( metadata.getProperties() );
+
+        if ( !StringUtils.equals( properties.getProperty( "xmvn.resolver.disableEffectivePom" ), "true" )
             && StringUtils.equals( metadata.getExtension(), "pom" )
             && ( !StringUtils.equals( properties.getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
         {
@@ -119,22 +121,16 @@ public class DefaultResolver
             }
         }
 
-        if ( metadata != null )
-        {
-            Path artifactPath = Paths.get( metadata.getPath() );
-            artifactPath = FileUtils.followSymlink( artifactPath );
+        Path artifactPath = Paths.get( metadata.getPath() );
+        artifactPath = FileUtils.followSymlink( artifactPath );
 
-            DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
-            result.setNamespace( metadata.getNamespace() );
-            result.setCompatVersion( compatVersion );
-            if ( request.isProviderNeeded() )
-                result.setProvider( rpmdb.lookupPath( artifactPath ) );
+        DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
+        result.setNamespace( metadata.getNamespace() );
+        result.setCompatVersion( compatVersion );
+        if ( request.isProviderNeeded() )
+            result.setProvider( rpmdb.lookupPath( artifactPath ) );
 
-            logger.debug( "Artifact {} was resolved to {}", artifact, artifactPath );
-            return result;
-        }
-
-        logger.debug( "Failed to resolve artifact: {}", artifact );
-        return new DefaultResolutionResult();
+        logger.debug( "Artifact {} was resolved to {}", artifact, artifactPath );
+        return result;
     }
 }
