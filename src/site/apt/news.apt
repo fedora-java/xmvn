@@ -50,9 +50,9 @@ Release notes for XMvn
 
   * Minor features
 
-    * Metadada format improvement
+    * Metadata format improvement
 
-      <<<requestedVersion>>> field in artifact metadada was made
+      <<<requestedVersion>>> field in artifact metadata was made
       optional with default value of "SYSTEM".
 
     * Temp file cleanup

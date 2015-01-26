@@ -122,7 +122,7 @@ class MetadataReader
                         logger.debug( "Adding metadata from file {}", path );
 
                         for ( ArtifactMetadata artifact : metadata.getArtifacts() )
-                            logger.debug( "Added metadada for {}",
+                            logger.debug( "Added metadata for {}",
                                           new DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
                                                                artifact.getExtension(), artifact.getClassifier(),
                                                                artifact.getVersion() ) );
