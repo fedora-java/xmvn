@@ -15,13 +15,12 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.maven.execution.AbstractExecutionListener;
 import org.apache.maven.execution.ExecutionEvent;
@@ -66,11 +65,7 @@ class DependencyVersionReportGenerator
 
         logger.debug( "Full XMvn dependency report:" );
         logger.debug( "<gId>:<aId>:<ext>[:<classifier>:]<version> => <compat-version>, provided by <pkg-name> (<rpm-version>)" );
-        for ( Entry<Artifact, ResolutionResult> entry : data.entrySet() )
-        {
-            Artifact artifact = entry.getKey();
-            ResolutionResult result = entry.getValue();
-
+        data.forEach( ( artifact, result ) -> {
             String provider = result.getProvider();
             if ( provider == null )
                 provider = "(none)";
@@ -83,27 +78,12 @@ class DependencyVersionReportGenerator
             requestedVersions.add( artifact.getVersion() );
 
             logger.debug( "  {} => {}, provided by {}", artifact, result.getCompatVersion(), provider );
-        }
+        } );
 
         logger.debug( "Simplified XMvn dependency report:" );
         logger.debug( "<pkg-name> (<rpm-version>): <requested-versions>" );
-        StringBuilder sb = new StringBuilder();
-        for ( Entry<String, Set<String>> entry : shortReport.entrySet() )
-        {
-            sb.setLength( 0 );
-            sb.append( "  " );
-            sb.append( entry.getKey() );
-            sb.append( ": " );
-
-            Iterator<String> it = entry.getValue().iterator();
-            sb.append( it.next() );
-            while ( it.hasNext() )
-            {
-                sb.append( ", " );
-                sb.append( it.next() );
-            }
-
-            logger.debug( "{}", sb );
-        }
+        shortReport.forEach( ( provider, versions ) -> {
+            logger.debug( "  {}: {}", provider, versions.stream().collect( Collectors.joining( ", " ) ) );
+        } );
     }
 }
