@@ -17,8 +17,8 @@ package org.fedoraproject.xmvn.connector.aether;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,66 +73,21 @@ public class XMvnModelValidator
 
     private void customizeModel( Model model )
     {
-        customizeDependencies( model );
-        customizeExtensions( model );
-        customizePlugins( model );
-    }
-
-    private void customizeDependencies( Model model )
-    {
         BuildSettings settings = configurator.getConfiguration().getBuildSettings();
+        Build build = model.getBuild() != null ? model.getBuild() : null;
+        List<Dependency> dependencies = model.getDependencies();
+        List<Extension> extensions = build.getExtensions();
+        List<Plugin> plugins = build.getPlugins();
 
-        for ( Iterator<Dependency> iter = model.getDependencies().iterator(); iter.hasNext(); )
-        {
-            Dependency dependency = iter.next();
-            String groupId = dependency.getGroupId();
-            String artifactId = dependency.getArtifactId();
-            String scope = dependency.getScope();
+        if ( settings.isSkipTests() )
+            dependencies.removeIf( d -> StringUtils.equals( d.getScope(), "test" ) );
 
-            if ( settings.isSkipTests() && scope != null && scope.equals( "test" ) )
-            {
-                logger.debug( "Dropped dependency on {}:{} because tests are skipped.", groupId, artifactId );
-                iter.remove();
-                continue;
-            }
+        dependencies.forEach( d -> d.setVersion( replaceVersion( d.getGroupId(), d.getArtifactId(), d.getVersion() ) ) );
+        extensions.forEach( e -> e.setVersion( replaceVersion( e.getGroupId(), e.getArtifactId(), e.getVersion() ) ) );
+        plugins.forEach( p -> p.setVersion( replaceVersion( p.getGroupId(), p.getArtifactId(), p.getVersion() ) ) );
 
-            dependency.setVersion( replaceVersion( groupId, artifactId, dependency.getVersion() ) );
-        }
-    }
-
-    private void customizeExtensions( Model model )
-    {
-        Build build = model.getBuild();
-        if ( build == null )
-            return;
-
-        for ( Iterator<Extension> iter = build.getExtensions().iterator(); iter.hasNext(); )
-        {
-            Extension extension = iter.next();
-            String groupId = extension.getGroupId();
-            String artifactId = extension.getArtifactId();
-
-            extension.setVersion( replaceVersion( groupId, artifactId, extension.getVersion() ) );
-        }
-    }
-
-    private void customizePlugins( Model model )
-    {
-        Build build = model.getBuild();
-        if ( build == null )
-            return;
-
-        for ( Iterator<Plugin> iter = build.getPlugins().iterator(); iter.hasNext(); )
-        {
-            Plugin plugin = iter.next();
-            String groupId = plugin.getGroupId();
-            String artifactId = plugin.getArtifactId();
-
-            plugin.setVersion( replaceVersion( groupId, artifactId, plugin.getVersion() ) );
-
-            if ( groupId.equals( "org.apache.maven.plugins" ) && artifactId.equals( "maven-compiler-plugin" ) )
-                configureCompiler( plugin );
-        }
+        plugins.stream().filter( p -> p.getGroupId().equals( "org.apache.maven.plugins" )
+                                     && p.getArtifactId().equals( "maven-compiler-plugin" ) ).forEach( p -> configureCompiler( p ) );
     }
 
     private String replaceVersion( String groupId, String artifactId, String version )
