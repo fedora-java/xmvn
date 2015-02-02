@@ -19,12 +19,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -81,20 +80,9 @@ public class ArtifactUtils
         String separator = multiLine ? System.lineSeparator() : " ";
         String indent = multiLine ? "  " : "";
 
-        StringBuilder sb = new StringBuilder();
-        sb.append( "[" + separator );
+        String str = collection.stream().map( a -> indent + a ).collect( Collectors.joining( "," + separator ) );
 
-        Iterator<Artifact> iter = collection.iterator();
-        sb.append( indent + iter.next() );
-
-        while ( iter.hasNext() )
-        {
-            sb.append( "," + separator );
-            sb.append( indent + iter.next() );
-        }
-
-        sb.append( separator + "]" );
-        return sb.toString();
+        return "[" + separator + str + separator + "]";
     }
 
     private static Artifact getArtifactFromManifest( Path path )
@@ -179,10 +167,7 @@ public class ArtifactUtils
     {
         Properties properties = new Properties();
 
-        for ( Entry<String, String> entry : map.entrySet() )
-        {
-            properties.setProperty( entry.getKey(), entry.getValue() );
-        }
+        map.forEach( ( key, value ) -> properties.setProperty( key, value ) );
 
         return properties;
     }
