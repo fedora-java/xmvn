@@ -51,8 +51,8 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-  <!-- Skip running DependencyResolverTest on Travis CI - for some
-       reason it' sunstable there (not reproducible locally). -->
+  <!-- Skip running tests on Travis CI - for some they are unstable
+       there (not reproducible locally). -->
   <profiles>
     <profile>
       <activation>
@@ -66,9 +66,7 @@
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <excludes>
-                <exclude>**/DependencyResolverTest.java</exclude>
-              </excludes>
+              <skip>true</skip>
             </configuration>
           </plugin>
         </plugins>
