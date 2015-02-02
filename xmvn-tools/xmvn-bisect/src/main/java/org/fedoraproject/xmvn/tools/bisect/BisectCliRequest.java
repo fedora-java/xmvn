@@ -20,7 +20,6 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -248,8 +247,7 @@ public class BisectCliRequest
         request.setUserSettingsFile( stringToFile( userSettings ) );
 
         Properties properties = new Properties();
-        for ( Entry<String, String> entry : defines.entrySet() )
-            properties.put( entry.getKey(), entry.getValue() );
+        defines.forEach( ( key, value ) -> properties.put( key, value ) );
         request.setProperties( properties );
 
         return request;

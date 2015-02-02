@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.xmvn.tools.bisect;
 
-import java.util.Map.Entry;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -69,8 +67,7 @@ public class BisectCli
         InvocationRequest request = commandLineParser.createInvocationRequest();
         request.setShellEnvironmentInherited( true );
 
-        for ( Entry<String, String> entry : commandLineParser.getSystemProperties().entrySet() )
-            System.setProperty( entry.getKey(), entry.getValue() );
+        commandLineParser.getSystemProperties().forEach( ( key, value ) -> System.setProperty( key, value ) );
 
         request.addShellEnvironment( "M2_HOME", commandLineParser.getSystemProperties().get( "maven.home" ) );
 
