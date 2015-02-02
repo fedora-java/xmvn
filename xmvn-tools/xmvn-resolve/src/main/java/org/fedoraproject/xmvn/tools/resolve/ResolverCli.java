@@ -17,8 +17,8 @@ package org.fedoraproject.xmvn.tools.resolve;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -107,21 +107,11 @@ public class ResolverCli
         }
         else if ( cli.isClasspath() )
         {
-            Iterator<ResolutionResult> it = results.iterator();
-            System.out.print( it.next().getArtifactPath() );
-            while ( it.hasNext() )
-            {
-                System.out.print( ':' );
-                System.out.print( it.next().getArtifactPath() );
-            }
-            System.out.println();
+            System.out.println( results.stream().map( r -> r.getArtifactPath().toString() ).collect( Collectors.joining( ":" ) ) );
         }
         else
         {
-            for ( ResolutionResult result : results )
-            {
-                System.out.println( result.getArtifactPath() );
-            }
+            results.forEach( r -> System.out.println( r.getArtifactPath() ) );
         }
     }
 
