@@ -74,20 +74,20 @@
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
-    <aetherVersion>1.0.0.v20140518</aetherVersion>
+    <aetherVersion>1.0.2.v20150114</aetherVersion>
     <asmVersion>5.0.3</asmVersion>
     <atinjectVersion>1</atinjectVersion>
-    <ivyVersion>2.3.0</ivyVersion>
-    <jcommanderVersion>1.35</jcommanderVersion>
+    <ivyVersion>2.4.0</ivyVersion>
+    <jcommanderVersion>1.47</jcommanderVersion>
     <gradleVersion>2.2.1</gradleVersion>
-    <guiceVersion>3.2.4</guiceVersion>
+    <guiceVersion>3.2.5</guiceVersion>
     <guavaVersion>18.0</guavaVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
-    <mavenVersion>3.2.3</mavenVersion>
-    <plexusUtilsVersion>3.0.20</plexusUtilsVersion>
-    <pluginToolsVersion>3.3</pluginToolsVersion>
-    <sisuVersion>0.2.0</sisuVersion>
-    <slf4jVersion>1.7.7</slf4jVersion>
+    <mavenVersion>3.2.5</mavenVersion>
+    <plexusUtilsVersion>3.0.21</plexusUtilsVersion>
+    <pluginToolsVersion>3.4</pluginToolsVersion>
+    <sisuVersion>0.3.0.M1</sisuVersion>
+    <slf4jVersion>1.7.10</slf4jVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
@@ -97,12 +97,12 @@
     <compilerPluginVersion>3.1</compilerPluginVersion>
     <dependencyPluginVersion>2.9</dependencyPluginVersion>
     <deployPluginVersion>2.8.2</deployPluginVersion>
-    <easymockVersion>3.2</easymockVersion>
+    <easymockVersion>3.3.1</easymockVersion>
     <installPluginVersion>2.5.2</installPluginVersion>
     <invokerPluginVersion>1.9</invokerPluginVersion>
     <jarPluginVersion>2.5</jarPluginVersion>
     <javadocPluginVersion>2.10.1</javadocPluginVersion>
-    <junitVersion>4.11</junitVersion>
+    <junitVersion>4.12</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <modelloVersion>1.8.2</modelloVersion>
@@ -111,7 +111,7 @@
     <resourcesPluginVersion>2.7</resourcesPluginVersion>
     <sitePluginVersion>3.4</sitePluginVersion>
     <surefireVersion>2.17</surefireVersion>
-    <xmlunitVersion>1.5</xmlunitVersion>
+    <xmlunitVersion>1.6</xmlunitVersion>
 
   </properties>
   <dependencyManagement>
