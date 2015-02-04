@@ -16,6 +16,8 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Set;
 
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -65,5 +67,11 @@ abstract class SimpleRepository
             path = root.resolve( path );
 
         return path;
+    }
+
+    @Override
+    public Set<Path> getRootPaths()
+    {
+        return Collections.singleton( root );
     }
 }

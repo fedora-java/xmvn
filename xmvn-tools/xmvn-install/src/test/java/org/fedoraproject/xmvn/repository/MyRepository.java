@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.repository;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Path;
+import java.util.Set;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 
@@ -38,6 +39,13 @@ class MyRepository
     public String getNamespace()
     {
         fail( "getNamespace was not expected to be called" );
+        throw null;
+    }
+
+    @Override
+    public Set<Path> getRootPaths()
+    {
+        fail( "getRootPaths was not expected to be called" );
         throw null;
     }
 }

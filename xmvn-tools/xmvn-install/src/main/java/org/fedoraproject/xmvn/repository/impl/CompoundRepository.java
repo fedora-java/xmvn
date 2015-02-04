@@ -16,7 +16,10 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
@@ -59,5 +62,18 @@ class CompoundRepository
         }
 
         return null;
+    }
+
+    @Override
+    public Set<Path> getRootPaths()
+    {
+        Set<Path> rootPaths = new LinkedHashSet<>();
+
+        for ( Repository repository : slaveRepositories )
+        {
+            rootPaths.addAll( repository.getRootPaths() );
+        }
+
+        return Collections.unmodifiableSet( rootPaths );
     }
 }

@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.repository;
 
 import java.nio.file.Path;
+import java.util.Set;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 
@@ -41,6 +42,8 @@ public interface Repository
      * @return preferred artifact path
      */
     Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern );
+
+    Set<Path> getRootPaths();
 
     String getNamespace();
 }

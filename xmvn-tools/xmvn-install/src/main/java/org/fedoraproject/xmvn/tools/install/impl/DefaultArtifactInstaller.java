@@ -48,6 +48,7 @@ import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
+import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.File;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
@@ -119,6 +120,10 @@ public class DefaultArtifactInstaller
                 throw new ArtifactInstallationException( "Installation repository is incapable of holding artifact "
                     + versionedArtifact );
             repoPaths.add( repoPath );
+
+            Set<Path> repoRoots = repo.getRootPaths();
+            for ( Path dir = repoPath.getParent(); dir != null && !repoRoots.contains( dir ); dir = dir.getParent() )
+                targetPackage.addFile( new Directory( dir ) );
         }
         Iterator<Path> repoPathIterator = repoPaths.iterator();
 
