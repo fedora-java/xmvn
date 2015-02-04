@@ -44,7 +44,6 @@ public class SymbolicLinkTest
         assertEquals( Files.readSymbolicLink( link ), Paths.get( "foobar.jar" ) );
 
         assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/share/java",
-                                "%attr(0644,root,root) /usr/share/java/foobar.jar",
-                                "%attr(0644,root,root) /usr/share/java/link.jar" );
+                                "%attr(0644,root,root) /usr/share/java/foobar.jar", "/usr/share/java/link.jar" );
     }
 }

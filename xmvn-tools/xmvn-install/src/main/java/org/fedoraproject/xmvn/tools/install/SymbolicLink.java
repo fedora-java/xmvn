@@ -41,7 +41,7 @@ public class SymbolicLink
      */
     public SymbolicLink( Path targetPath, Path referencedPath )
     {
-        super( targetPath );
+        super( targetPath, -1 );
 
         if ( referencedPath.isAbsolute() )
         {

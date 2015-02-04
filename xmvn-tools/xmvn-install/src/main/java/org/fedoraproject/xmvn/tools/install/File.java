@@ -82,8 +82,8 @@ public abstract class File
     {
         if ( targetPath.isAbsolute() )
             throw new IllegalArgumentException( "target path must not be absolute" );
-        if ( accessMode < 0 || accessMode > 0777 )
-            throw new IllegalArgumentException( "access mode must be in range from 0 to 0777" );
+        if ( accessMode < -1 || accessMode > 0777 )
+            throw new IllegalArgumentException( "access mode must be in range from 0 to 0777 or equal to -1" );
 
         this.targetPath = targetPath;
         this.accessMode = accessMode;
@@ -148,16 +148,19 @@ public abstract class File
     {
         StringBuilder sb = new StringBuilder();
 
-        sb.append( String.format( "%%attr(0%o,root,root)", accessMode ) );
+        if ( accessMode >= 0 )
+        {
+            sb.append( String.format( "%%attr(0%o,root,root)", accessMode ) );
+            sb.append( ' ' );
+        }
 
         String extra = getDescriptorExtra();
         if ( extra != null )
         {
-            sb.append( ' ' );
             sb.append( extra );
+            sb.append( ' ' );
         }
 
-        sb.append( ' ' );
         sb.append( '/' );
         sb.append( targetPath );
 

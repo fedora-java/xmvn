@@ -62,8 +62,7 @@ public class PackageTest
         assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar",
                                   "L /usr/share/java/link.jar" );
         assertDescriptorEquals( pkg, "%attr(0755,root,root) %dir /usr/share/java",
-                                "%attr(0600,root,root) /usr/share/java/foobar.jar",
-                                "%attr(0644,root,root) /usr/share/java/link.jar" );
+                                "%attr(0600,root,root) /usr/share/java/foobar.jar", "/usr/share/java/link.jar" );
     }
 
     @Test
