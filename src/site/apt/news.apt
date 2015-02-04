@@ -3,10 +3,23 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2015-01-23
+                    2015-02-04
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.2.1
+
+  XMvn 2.2.1 was released on 2015-02-04.  Most important changes
+  include:
+
+  * Major bugfixes
+
+    * Ivy connector regression bugfix
+
+      XMvn 2.1.1 introduced regression in Ivy connector, which
+      prevented parent POMs from being resolved correctly.  Version
+      2.2.1 fixes this regression.
 
 * What's new in XMvn 2.2.0
 
