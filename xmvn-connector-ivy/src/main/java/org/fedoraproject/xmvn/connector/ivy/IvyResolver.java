@@ -43,7 +43,6 @@ import org.apache.ivy.core.report.MetadataArtifactDownloadReport;
 import org.apache.ivy.core.resolve.DownloadOptions;
 import org.apache.ivy.core.resolve.ResolveData;
 import org.apache.ivy.core.resolve.ResolvedModuleRevision;
-import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.ModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.m2.PomModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.m2.PomModuleDescriptorWriter;
@@ -99,8 +98,6 @@ public class IvyResolver
     {
         static final Deployer deployer = LazyLocatorProvider.locator.getService( Deployer.class );
     }
-
-    private final IvySettings settings = new IvySettings();
 
     private Resolver resolver;
 
@@ -242,7 +239,7 @@ public class IvyResolver
         if ( pomPath != null )
         {
             ModuleDescriptorParser parser = PomModuleDescriptorParser.getInstance();
-            module = parser.parseDescriptor( settings, pomPath.toFile().toURI().toURL(), false );
+            module = parser.parseDescriptor( getSettings(), pomPath.toFile().toURI().toURL(), false );
             version = resolvedVersion( result );
         }
         else
@@ -303,7 +300,7 @@ public class IvyResolver
         {
             File ivyPath = Files.createTempFile( "xmvn-", ".ivy.xml" ).toFile();
             ModuleDescriptorParser parser = PomModuleDescriptorParser.getInstance();
-            ModuleDescriptor module = parser.parseDescriptor( settings, pomPath.toFile().toURI().toURL(), false );
+            ModuleDescriptor module = parser.parseDescriptor( getSettings(), pomPath.toFile().toURI().toURL(), false );
             XmlModuleDescriptorWriter.write( module, ivyPath );
         }
         catch ( IOException | ParseException e )
@@ -364,7 +361,8 @@ public class IvyResolver
         {
             File pomFile = Files.createTempFile( "xmvn-", ".pom" ).toFile();
             ModuleDescriptorParser parser = XmlModuleDescriptorParser.getInstance();
-            ModuleDescriptor module = parser.parseDescriptor( settings, artifactPath.toFile().toURI().toURL(), false );
+            ModuleDescriptor module =
+                parser.parseDescriptor( getSettings(), artifactPath.toFile().toURI().toURL(), false );
             PomModuleDescriptorWriter.write( module, pomFile, new PomWriterOptions() );
 
             org.fedoraproject.xmvn.artifact.Artifact artifact = ivy2aether( moduleRevisionId, "pom" );
