@@ -41,7 +41,7 @@ git archive -v --prefix=${name}-${ver}/ ${ver} | xz >${tarball}
 read -e -p "Upload ${tarball} to fedorahosted.org? (y/N): "
 if [ "$REPLY" = y ]; then
     git push --tags
-    scp ${tarball} fedorahosted.org:${name}
+    scp ${tarball} fedorahosted.org:/srv/web/releases/x/m/xmvn/
 fi
 
 news=$(sed -n '
