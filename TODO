@@ -8,6 +8,10 @@ submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
 http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
 
 
+* User-visible features
+
+** Use cache manager instead of storing stuff in /tmp
+
 * Internal features
 
 ** Test cases for Ivy support
