@@ -145,7 +145,7 @@ public class XMvnModelValidator
                 BigDecimal source = new BigDecimal( config.getChild( "source" ).getValue().trim() );
                 BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
 
-                // Source must be at least 1.5
+                // Source must be at least 1.6
                 if ( minSourceSpecified || source.compareTo( minSource ) < 0 )
                     source = minSource;
 
