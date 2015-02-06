@@ -122,7 +122,7 @@ public class XMvnModelValidator
     private void configureCompiler( Plugin plugin )
     {
         boolean minSourceSpecified = false;
-        BigDecimal minSource = new BigDecimal( "1.5" );
+        BigDecimal minSource = new BigDecimal( "1.6" );
         String compilerSource = configurator.getConfiguration().getBuildSettings().getCompilerSource();
         if ( compilerSource != null )
         {
