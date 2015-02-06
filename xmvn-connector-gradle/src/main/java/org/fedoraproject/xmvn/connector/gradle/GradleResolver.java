@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.connector.gradle;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -187,23 +186,6 @@ public class GradleResolver
             result.failed( new ArtifactResolveException( artifact.getId(), "XMvn was unable to resolve artifact "
                 + artifact2 ) );
             return;
-        }
-
-        // Gradle expects resolved file to be named like in Maven/Ivy repo...
-        try
-        {
-            Path dir = Files.createTempDirectory( "xmvn-gradle-" );
-            String baseName =
-                artifact2.getArtifactId() + "-" + artifact2.getVersion()
-                    + ( artifact2.getClassifier().isEmpty() ? "" : "-" + artifact2.getClassifier() ) + "."
-                    + artifact2.getExtension();
-            Path origpPath = path;
-            path = dir.resolve( baseName );
-            Files.createSymbolicLink( path, origpPath );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( e );
         }
 
         logger.debug( "Artifact {} was resolved to {}", artifact2, path );
