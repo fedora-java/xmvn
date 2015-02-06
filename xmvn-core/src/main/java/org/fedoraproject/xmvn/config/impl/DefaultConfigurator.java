@@ -117,7 +117,7 @@ public class DefaultConfigurator
         return compatLevel;
     }
 
-    private String getEvnDefault( String key, Object defaultValue )
+    private String getEnvDefault( String key, Object defaultValue )
     {
         String value = System.getenv( key );
         if ( !StringUtils.isNotEmpty( value ) )
@@ -204,7 +204,7 @@ public class DefaultConfigurator
         try
         {
             Path reactorConfDir = Paths.get( ".xmvn" ).toAbsolutePath();
-            Path xdgHome = Paths.get( getEvnDefault( "HOME", System.getProperty( "user.home" ) ) );
+            Path xdgHome = Paths.get( getEnvDefault( "HOME", System.getProperty( "user.home" ) ) );
 
             // 1. artifact configuration: pom.xml
             configFiles = new ArrayList<>();
@@ -216,20 +216,20 @@ public class DefaultConfigurator
 
             // 4. user configuration directory: $XDG_CONFIG_HOME/xmvn/conf.d/
             // 5. user configuration file: $XDG_CONFIG_HOME/xmvn/configuration.xml
-            addXdgBasePath( getEvnDefault( "XDG_CONFIG_HOME", xdgHome.resolve( ".config" ) ) );
+            addXdgBasePath( getEnvDefault( "XDG_CONFIG_HOME", xdgHome.resolve( ".config" ) ) );
 
             // 6. user data directory: $XDG_DATA_HOME/xmvn/conf.d/
             // 7. user data file: $XDG_DATA_HOME/xmvn/configuration.xml
-            addXdgBasePath( getEvnDefault( "XDG_DATA_HOME", xdgHome.resolve( ".local" ).resolve( "share" ) ) );
+            addXdgBasePath( getEnvDefault( "XDG_DATA_HOME", xdgHome.resolve( ".local" ).resolve( "share" ) ) );
 
             // 8. system configuration directories: $XDG_CONFIG_DIRS/xmvn/conf.d/
             // 9. system configuration files: $XDG_CONFIG_DIRS/xmvn/configuration.xml
-            for ( String part : StringUtils.split( getEvnDefault( "XDG_CONFIG_DIRS", "/etc/xdg" ), ":" ) )
+            for ( String part : StringUtils.split( getEnvDefault( "XDG_CONFIG_DIRS", "/etc/xdg" ), ":" ) )
                 addXdgBasePath( part );
 
             // 10. system data directories: $XDG_DATA_DIRS/xmvn/conf.d/
             // 11. system data files: $XDG_DATA_DIRS/xmvn/configuration.xml
-            for ( String part : StringUtils.split( getEvnDefault( "XDG_DATA_DIRS", "/usr/local/share:/usr/share" ), ":" ) )
+            for ( String part : StringUtils.split( getEnvDefault( "XDG_DATA_DIRS", "/usr/local/share:/usr/share" ), ":" ) )
                 addXdgBasePath( part );
 
             // 12. built-in xmvn-core.jar
