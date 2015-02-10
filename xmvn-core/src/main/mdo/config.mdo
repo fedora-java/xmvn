@@ -22,9 +22,7 @@
   <id>config</id>
   <name>Configuration</name>
   <description>
-    <![CDATA[
-<p>This is a reference for the configuration for XMvn.</p>
-    ]]>
+    <![CDATA[<p>This is a reference for the configuration for XMvn.</p>]]>
   </description>
   <defaults>
     <default>
@@ -42,28 +40,19 @@
         <field>
           <name>debug</name>
           <version>0.4.0+</version>
-          <description>
-            Whether detailed debugging information about the build
-            process should be logged.
-          </description>
+          <description>Whether detailed debugging information about the build process should be logged.</description>
           <type>Boolean</type>
         </field>
         <field>
           <name>skipTests</name>
           <version>0.4.0+</version>
-          <description>
-            Whether compilation and execution of unit and integration tests should be skipped.
-          </description>
+          <description>Whether compilation and execution of unit and integration tests should be skipped.</description>
           <type>Boolean</type>
         </field>
         <field>
           <name>compilerSource</name>
           <version>0.4.0+</version>
-          <description>
-            Compatibility version of Java sources in the reactor. If
-            not specified then it defaults to 1.5 or whatever is
-            specified in configuration of Maven Compiler Plugin.
-          </description>
+          <description>Compatibility version of Java sources in the reactor. If not specified then it defaults to 1.5 or whatever is specified in configuration of Maven Compiler Plugin.</description>
           <type>String</type>
         </field>
       </fields>
@@ -159,19 +148,13 @@
         <field>
           <name>type</name>
           <version>1.0.0+</version>
-          <description>
-            Role hint of Plexus component implementing the repository.
-          </description>
+          <description>Role hint of Plexus component implementing the repository.</description>
           <type>String</type>
         </field>
         <field>
           <name>stereotypes</name>
           <version>1.0.0+</version>
-          <description>
-            List of artifact types that can be stored in this
-            repository.  Empty list means that this repository can
-            store any artifact type.
-          </description>
+          <description>List of artifact types that can be stored in this repository. Empty list means that this repository can store any artifact type.</description>
           <association xml.tagName="stereotype">
             <type>Stereotype</type>
             <multiplicity>*</multiplicity>
@@ -180,12 +163,7 @@
         <field>
           <name>properties</name>
           <version>1.0.0+</version>
-          <description>
-            Properties associated with this repository.  Properties
-            can be freely used by the implementation, so their exact
-            meaning depends on repository type.  See documentation for
-            repository types to see list of supported properties.
-          </description>
+          <description>Properties associated with this repository. Properties can be freely used by the implementation, so their exact meaning depends on repository type. See documentation for repository types to see list of supported properties.</description>
           <type>Properties</type>
           <association>
             <type>String</type>
@@ -195,22 +173,13 @@
         <field>
           <name>configuration</name>
           <version>1.0.0+</version>
-          <description>
-            Arbitrary XML used to configure structure of the
-            repository.  Configuration can be freely used by the
-            implementation, so their exact meaning depends on
-            repository type.  See documentation for repository types
-            to see the format of supported configuration (if any).
-          </description>
+          <description>Arbitrary XML used to configure structure of the repository. Configuration can be freely used by the implementation, so their exact meaning depends on repository type. See documentation for repository types to see the format of supported configuration (if any).</description>
           <type>DOM</type>
         </field>
         <field>
           <name>filter</name>
           <version>2.0.0+</version>
-          <description>
-            A boolean expression describing which artifacts can be
-            stored in this repository.
-          </description>
+          <description>A boolean expression describing which artifacts can be stored in this repository.</description>
           <type>DOM</type>
         </field>
       </fields>
@@ -239,9 +208,7 @@
         <field>
           <name>targetRepository</name>
           <version>1.0.0+</version>
-          <description>
-            ID of repository into which artifacts are installed.
-          </description>
+          <description>ID of repository into which artifacts are installed.  </description>
           <type>String</type>
         </field>
         <field>
@@ -277,21 +244,14 @@
         <field>
           <name>optional</name>
           <version>0.5.0+</version>
-          <description>
-            Whether this rule is optional.  Non-optional rules cause
-            build failure if they are not matched.
-          </description>
+          <description>Whether this rule is optional. Non-optional rules cause uild failure if they are not matched.</description>
           <type>Boolean</type>
           <defaultValue>false</defaultValue>
         </field>
         <field xml.transient="true">
           <name>matched</name>
           <version>0.5.0+</version>
-          <description>
-            Whether any reactor artifact matches artifact glob pattern
-            for this rule.  Non-optional rules cause build failure if
-            they are not matched.
-          </description>
+          <description>Whether any reactor artifact matches artifact glob pattern or this rule. Non-optional rules cause build failure if hey are not matched.</description>
           <type>Boolean</type>
           <defaultValue>false</defaultValue>
         </field>
@@ -300,8 +260,7 @@
         <codeSegment>
           <version>0.4.0+</version>
           <code>
-            <![CDATA[
-    /**
+            <![CDATA[    /**
      * Add an alias.
      * @param artifact alias to be added
      */
@@ -318,7 +277,7 @@
     {
         getAliases().remove( artifact );
     }
-            ]]>
+]]>
           </code>
         </codeSegment>
       </codeSegments>
@@ -332,19 +291,14 @@
         <field>
           <name>debug</name>
           <version>0.4.0+</version>
-          <description>
-            Whether additional debugging information about artifact
-            installation should be printed.
-          </description>
+          <description>Whether additional debugging information about artifact nstallation should be printed.</description>
           <type>Boolean</type>
         </field>
         <field>
           <name>metadataDir</name>
           <version>0.4.0+</version>
           <required>true</required>
-          <description>
-            Directory into which XMvn metadata files are be installed.
-          </description>
+          <description>Directory into which XMvn metadata files are be installed.</description>
           <type>String</type>
         </field>
       </fields>
@@ -358,18 +312,13 @@
         <field>
           <name>debug</name>
           <version>0.4.0+</version>
-          <description>
-            Whether detailed debugging information about artifact
-            resolution process should be logged.
-          </description>
+          <description>Whether detailed debugging information about artifact resolution process should be logged.</description>
           <type>Boolean</type>
         </field>
         <field>
           <name>localRepositories</name>
           <version>0.4.0+</version>
-          <description>
-            List of local repositories where XMvn will look for artifacts.
-          </description>
+          <description>List of local repositories where XMvn will look for artifacts.</description>
           <association xml.tagName="repository">
             <type>String</type>
             <multiplicity>*</multiplicity>
@@ -378,10 +327,7 @@
         <field>
           <name>metadataRepositories</name>
           <version>0.4.0+</version>
-          <description>
-            List of repositories where XMvn will look for metadata
-            files.
-          </description>
+          <description>List of repositories where XMvn will look for metadata files.</description>
           <association xml.tagName="repository">
             <type>String</type>
             <multiplicity>*</multiplicity>
@@ -390,10 +336,7 @@
         <field>
           <name>prefixes</name>
           <version>0.4.0+</version>
-          <description>
-            List of prefixes that XMvn resolver will prepend to system
-            repositories.
-          </description>
+          <description>List of prefixes that XMvn resolver will prepend to system repositories.</description>
           <association xml.tagName="prefix">
             <type>String</type>
             <multiplicity>*</multiplicity>
@@ -402,9 +345,7 @@
         <field>
           <name>blacklist</name>
           <version>0.4.0+</version>
-          <description>
-            List of blacklisted artifacts which will not be resolved.
-          </description>
+          <description>List of blacklisted artifacts which will not be resolved.</description>
           <association xml.tagName="artifact">
             <type>Artifact</type>
             <multiplicity>*</multiplicity>
@@ -424,9 +365,7 @@
         <field>
           <name>properties</name>
           <version>0.4.0+</version>
-          <description>
-            This element lists system Java properties that should be set before XMvn build is started.
-          </description>
+          <description>This element lists system Java properties that should be set before XMvn build is started.</description>
           <type>Properties</type>
           <association>
             <type>String</type>
@@ -437,12 +376,7 @@
         <field>
           <name>repositories</name>
           <version>1.0.0+</version>
-          <description>
-            List of repositories.  Repositories can be used by
-            resolvers as source of artifacts, by installers as target
-            where artifacts should be installed, or by any other
-            component.
-          </description>
+          <description>List of repositories. Repositories can be used by resolvers as source of artifacts, by installers as target where artifacts should be installed, or by any other component.</description>
           <association>
             <type>Repository</type>
             <multiplicity>*</multiplicity>
@@ -452,9 +386,7 @@
         <field>
           <name>buildSettings</name>
           <version>0.4.0+</version>
-          <description>
-            This element contains basic XMvn settings.
-          </description>
+          <description>This element contains basic XMvn settings.</description>
           <association>
             <type>BuildSettings</type>
           </association>
@@ -463,10 +395,7 @@
         <field>
           <name>artifactManagement</name>
           <version>0.4.0+</version>
-          <description>
-            This element configures how artifacts should be assigned
-            to individual packages.
-          </description>
+          <description>This element configures how artifacts should be assigned to individual packages.</description>
           <association xml.tagName="rule">
             <type>PackagingRule</type>
             <multiplicity>*</multiplicity>
@@ -476,9 +405,7 @@
         <field>
           <name>resolverSettings</name>
           <version>0.4.0+</version>
-          <description>
-            This element contains configuration of XMvn resolver.
-          </description>
+          <description>This element contains configuration of XMvn resolver.</description>
           <association>
             <type>ResolverSettings</type>
           </association>
@@ -487,9 +414,7 @@
         <field>
           <name>installerSettings</name>
           <version>0.4.0+</version>
-          <description>
-            This element contains configuration of XMvn installer.
-          </description>
+          <description>This element contains configuration of XMvn installer.</description>
           <association>
             <type>InstallerSettings</type>
           </association>

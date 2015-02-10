@@ -22,9 +22,7 @@
   <id>metadata</id>
   <name>Metadata</name>
   <description>
-    <![CDATA[
-<p>This is a reference for the metadata file format used by Javapackages.</p>
-    ]]>
+    <![CDATA[<p>This is a reference for the metadata file format used by Javapackages.</p>]]>
   </description>
   <defaults>
     <default>
@@ -37,36 +35,27 @@
     <class xml.tagName="skippedArtifact" java.clone="deep">
       <name>SkippedArtifactMetadata</name>
       <version>2.0.0+</version>
-      <description>
-        Information about artifact which was built, but not installed
-        into any package.
-      </description>
+      <description>Information about artifact which was built, but not installed into any package.</description>
       <fields>
 
         <field>
           <name>groupId</name>
           <version>2.0.0+</version>
-          <description>
-            Group ID of skipped artifact.
-          </description>
+          <description>Group ID of skipped artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>artifactId</name>
           <version>2.0.0+</version>
-          <description>
-            Artifact ID of skipped artifact.
-          </description>
+          <description>Artifact ID of skipped artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>extension</name>
           <version>2.0.0+</version>
-          <description>
-            Extension of skipped artifact.
-          </description>
+          <description>Extension of skipped artifact.</description>
           <type>String</type>
           <defaultValue>jar</defaultValue>
         </field>
@@ -74,9 +63,7 @@
         <field>
           <name>classifier</name>
           <version>2.0.0+</version>
-          <description>
-            Classifier of skipped artifact.
-          </description>
+          <description>Classifier of skipped artifact.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
@@ -86,35 +73,27 @@
     <class xml.tagName="alias" java.clone="deep">
       <name>ArtifactAlias</name>
       <version>2.0.0+</version>
-      <description>
-        Alternative artifact identification coordinates.
-      </description>
+      <description>Alternative artifact identification coordinates.</description>
       <fields>
 
         <field>
           <name>groupId</name>
           <version>2.0.0+</version>
-          <description>
-            Group ID of the artifact alias.
-          </description>
+          <description>Group ID of the artifact alias.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>artifactId</name>
           <version>2.0.0+</version>
-          <description>
-            Artifact ID of the artifact alias.
-          </description>
+          <description>Artifact ID of the artifact alias.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>extension</name>
           <version>2.0.0+</version>
-          <description>
-            Extension of the artifact alias.
-          </description>
+          <description>Extension of the artifact alias.</description>
           <type>String</type>
           <defaultValue>jar</defaultValue>
         </field>
@@ -122,9 +101,7 @@
         <field>
           <name>classifier</name>
           <version>2.0.0+</version>
-          <description>
-            Classifier of the artifact alias.
-          </description>
+          <description>Classifier of the artifact alias.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
@@ -134,26 +111,20 @@
     <class xml.tagName="exclusion" java.clone="deep">
       <name>DependencyExclusion</name>
       <version>2.0.0+</version>
-      <description>
-        Description of artifact excluded from dependency tree.
-      </description>
+      <description>Description of artifact excluded from dependency tree.</description>
       <fields>
 
         <field>
           <name>groupId</name>
           <version>2.0.0+</version>
-          <description>
-            Group ID of the excluded artifact.
-          </description>
+          <description>Group ID of the excluded artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>artifactId</name>
           <version>2.0.0+</version>
-          <description>
-            Artifact ID of the excluded artifact.
-          </description>
+          <description>Artifact ID of the excluded artifact.</description>
           <type>String</type>
         </field>
       </fields>
@@ -162,34 +133,26 @@
     <class xml.tagName="dependency" java.clone="deep">
       <name>Dependency</name>
       <version>2.0.0+</version>
-      <description>
-        Description of dependency artifact.
-      </description>
+      <description>Description of dependency artifact.</description>
       <fields>
         <field>
           <name>groupId</name>
           <version>2.0.0+</version>
-          <description>
-            Group ID of the dependency artifact.
-          </description>
+          <description>Group ID of the dependency artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>artifactId</name>
           <version>2.0.0+</version>
-          <description>
-            Artifact ID of the dependency artifact.
-          </description>
+          <description>Artifact ID of the dependency artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>extension</name>
           <version>2.0.0+</version>
-          <description>
-            Extension of the dependency artifact.
-          </description>
+          <description>Extension of the dependency artifact.</description>
           <type>String</type>
           <defaultValue>jar</defaultValue>
         </field>
@@ -197,9 +160,7 @@
         <field>
           <name>classifier</name>
           <version>2.0.0+</version>
-          <description>
-            Classifier of the dependency artifact.
-          </description>
+          <description>Classifier of the dependency artifact.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
@@ -207,11 +168,7 @@
         <field>
           <name>requestedVersion</name>
           <version>2.0.0+</version>
-          <description>
-            Version of the dependency artifact as defined in the main
-            artifact descriptor.  This may be a version range as
-            supported by Aether.
-          </description>
+          <description>Version of the dependency artifact as defined in the main artifact descriptor. This may be a version range as supported by Aether.</description>
           <type>String</type>
           <defaultValue>SYSTEM</defaultValue>
         </field>
@@ -219,11 +176,7 @@
         <field>
           <name>resolvedVersion</name>
           <version>2.0.0+</version>
-          <description>
-            Version of the dependency artifact, as resolved during
-            build.  Absence of this field indicates a dependency on
-            default artifact version.
-          </description>
+          <description>Version of the dependency artifact, as resolved during build. Absence of this field indicates a dependency on default artifact version.</description>
           <type>String</type>
           <defaultValue>SYSTEM</defaultValue>
         </field>
@@ -231,10 +184,7 @@
         <field>
           <name>namespace</name>
           <version>2.0.0+</version>
-          <description>
-            A namespace within which this artifact is stored.  This
-            usually is an identifier of software collection.
-          </description>
+          <description>A namespace within which this artifact is stored. This usually is an identifier of software collection.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
@@ -242,9 +192,7 @@
         <field>
           <name>exclusions</name>
           <version>2.0.0+</version>
-          <description>
-            List of dependency exclusions.
-          </description>
+          <description>List of dependency exclusions.</description>
           <association xml.tagName="exclusion">
             <type>DependencyExclusion</type>
             <multiplicity>*</multiplicity>
@@ -256,35 +204,27 @@
     <class xml.tagName="artifact" java.clone="deep">
       <name>ArtifactMetadata</name>
       <version>2.0.0+</version>
-      <description>
-        Information about a single artifact.
-      </description>
+      <description>Information about a single artifact.</description>
       <fields>
 
         <field>
           <name>groupId</name>
           <version>2.0.0+</version>
-          <description>
-            Group identifier of the artifact.
-          </description>
+          <description>Group identifier of the artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>artifactId</name>
           <version>2.0.0+</version>
-          <description>
-            Identifier of the artifact.
-          </description>
+          <description>Identifier of the artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>extension</name>
           <version>2.0.0+</version>
-          <description>
-            Extension of artifact file.
-          </description>
+          <description>Extension of artifact file.</description>
           <type>String</type>
           <defaultValue>jar</defaultValue>
         </field>
@@ -292,9 +232,7 @@
         <field>
           <name>classifier</name>
           <version>2.0.0+</version>
-          <description>
-            Classifier of the artifact.
-          </description>
+          <description>Classifier of the artifact.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
@@ -302,30 +240,21 @@
         <field>
           <name>version</name>
           <version>2.0.0+</version>
-          <description>
-            Artifact version.  This is always upstream version, never
-            compat version nor SYSTEM.
-          </description>
+          <description>Artifact version. This is always upstream version, never compat version nor SYSTEM.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>path</name>
           <version>2.0.0+</version>
-          <description>
-            Absolute path to artifact file stored in the local file
-            system.
-          </description>
+          <description>Absolute path to artifact file stored in the local file system.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>namespace</name>
           <version>2.0.0+</version>
-          <description>
-            A namespace within which this artifact is stored.  This
-            usually is an identifier of software collection.
-          </description>
+          <description>A namespace within which this artifact is stored. This usually is an identifier of software collection.</description>
           <type>String</type>
           <defaultValue></defaultValue>
         </field>
@@ -333,18 +262,14 @@
         <field>
           <name>uuid</name>
           <version>2.0.0+</version>
-          <description>
-            Universally unique identifier of this artifact.
-          </description>
+          <description>Universally unique identifier of this artifact.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>properties</name>
           <version>2.0.0+</version>
-          <description>
-            Extra properties of this artifact.
-          </description>
+          <description>Extra properties of this artifact.</description>
           <type>Properties</type>
           <association>
             <type>String</type>
@@ -355,11 +280,7 @@
         <field>
           <name>compatVersions</name>
           <version>2.0.0+</version>
-          <description>
-            Compatibility versions of this artifact.  If the list is
-            empty then this artifact is not considered as
-            compatibility artifact.
-          </description>
+          <description>Compatibility versions of this artifact. If the list is empty then this artifact is not considered as compatibility artifact.</description>
           <association xml.tagName="version">
             <type>String</type>
             <multiplicity>*</multiplicity>
@@ -369,9 +290,7 @@
         <field>
           <name>aliases</name>
           <version>2.0.0+</version>
-          <description>
-            Alternative identifiers of the artifact.
-          </description>
+          <description>Alternative identifiers of the artifact.</description>
           <!-- Modello would generate methods addAliase() and removeAliase()
                instead of addAlias() and removeALias(). To workaround this we
                skip generating of adders and generate them manually. -->
@@ -384,9 +303,7 @@
         <field>
           <name>dependencies</name>
           <version>2.0.0+</version>
-          <description>
-            List of artifact dependencies.
-          </description>
+          <description>List of artifact dependencies.</description>
           <association xml.tagName="dependency">
             <type>Dependency</type>
             <multiplicity>*</multiplicity>
@@ -397,8 +314,7 @@
         <codeSegment>
           <version>2.0.0+</version>
           <code>
-            <![CDATA[
-    /**
+            <![CDATA[    /**
      * Add an alias.
      * @param alias alias to be added
      */
@@ -419,7 +335,7 @@
     /**
      * Return list of versions from which this artifact can be resolved.
      * <p>
-     * For non-compat artifacts this method returns a singleton list containing default artfact version.
+     * For non-compat artifacts this method returns a singleton list containing default artifact version.
      * Otherwise it returns a list of compat versions.
      * 
      * @return non-empty list of versions, never {@code null}
@@ -433,7 +349,7 @@
 
         return versions;
     }
-            ]]>
+     ]]>
           </code>
         </codeSegment>
       </codeSegments>
@@ -450,18 +366,14 @@
         <field>
           <name>uuid</name>
           <version>2.0.0+</version>
-          <description>
-            Universally unique identifier of this piece of metadata.
-          </description>
+          <description>Universally unique identifier of this piece of metadata.</description>
           <type>String</type>
         </field>
 
         <field>
           <name>properties</name>
           <version>2.0.0+</version>
-          <description>
-            Properties of this piece of metadata.
-          </description>
+          <description>Properties of this piece of metadata.</description>
           <type>Properties</type>
           <association>
             <type>String</type>
@@ -472,10 +384,7 @@
         <field>
           <name>artifacts</name>
           <version>2.0.0+</version>
-          <description>
-            List of installed artifacts described by this piece of
-            metadata.
-          </description>
+          <description>List of installed artifacts described by this piece of metadata.</description>
           <association>
             <type>ArtifactMetadata</type>
             <multiplicity>*</multiplicity>
@@ -485,10 +394,7 @@
         <field>
           <name>skippedArtifacts</name>
           <version>2.0.0+</version>
-          <description>
-            List of artifacts built but not installed in any package.
-            Useful for detecting broken package dependencies.
-          </description>
+          <description>List of artifacts built but not installed in any package. Useful for detecting broken package dependencies.</description>
           <association>
             <type>SkippedArtifactMetadata</type>
             <multiplicity>*</multiplicity>
