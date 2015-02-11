@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.deployer;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -34,7 +35,7 @@ public class DeploymentRequest
 
     private Artifact artifact;
 
-    private final Map<Artifact, List<Artifact>> dependencies = new LinkedHashMap<>();
+    private final List<DependencyDescriptor> dependencies = new ArrayList<>();
 
     private final Map<String, String> properties = new LinkedHashMap<>();
 
@@ -50,9 +51,9 @@ public class DeploymentRequest
         this.artifact = artifact;
     }
 
-    public Map<Artifact, List<Artifact>> getDependencies()
+    public List<DependencyDescriptor> getDependencies()
     {
-        return Collections.unmodifiableMap( dependencies );
+        return Collections.unmodifiableList( dependencies );
     }
 
     public void addDependency( Artifact dependencyArtifact, Artifact... exclusions )
@@ -62,7 +63,12 @@ public class DeploymentRequest
 
     public void addDependency( Artifact dependencyArtifact, List<Artifact> exclusions )
     {
-        dependencies.put( dependencyArtifact, Collections.unmodifiableList( exclusions ) );
+        addDependency( dependencyArtifact, false, exclusions );
+    }
+
+    public void addDependency( Artifact dependencyArtifact, boolean optional, List<Artifact> exclusions )
+    {
+        dependencies.add( new DependencyDescriptor( dependencyArtifact, optional, exclusions ) );
     }
 
     public void removeDependency( Artifact dependencyArtifact )

@@ -190,6 +190,13 @@
         </field>
 
         <field>
+          <name>optional</name>
+          <version>2.3.0+</version>
+          <description>Specifies whether given dependency is optional or not.</description>
+          <type>Boolean</type>
+        </field>
+
+        <field>
           <name>exclusions</name>
           <version>2.0.0+</version>
           <description>List of dependency exclusions.</description>

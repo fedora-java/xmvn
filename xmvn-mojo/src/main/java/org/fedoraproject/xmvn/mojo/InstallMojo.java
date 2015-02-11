@@ -161,7 +161,7 @@ public class InstallMojo
                     exclusions.add( new DefaultArtifact( e.getGroupId(), e.getArtifactId() ) );
                 }
 
-                request.addDependency( dependencyArtifact, exclusions );
+                request.addDependency( dependencyArtifact, dependency.isOptional(), exclusions );
             }
         }
 

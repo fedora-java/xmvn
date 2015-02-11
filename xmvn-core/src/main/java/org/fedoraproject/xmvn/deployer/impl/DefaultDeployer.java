@@ -21,14 +21,13 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map.Entry;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.deployer.DependencyDescriptor;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
@@ -75,19 +74,21 @@ public class DefaultDeployer
             am.setPath( artifact.getPath().toString() );
             am.setProperties( ArtifactUtils.convertProperties( request.getProperties() ) );
 
-            for ( Entry<Artifact, List<Artifact>> entry : request.getDependencies().entrySet() )
+            for ( DependencyDescriptor depDescriptor : request.getDependencies() )
             {
                 Dependency dependency = new Dependency();
                 am.addDependency( dependency );
 
-                Artifact dependencyArtifact = entry.getKey();
+                Artifact dependencyArtifact = depDescriptor.getDependencyArtifact();
                 dependency.setGroupId( dependencyArtifact.getGroupId() );
                 dependency.setArtifactId( dependencyArtifact.getArtifactId() );
                 dependency.setExtension( dependencyArtifact.getExtension() );
                 dependency.setClassifier( dependencyArtifact.getClassifier() );
                 dependency.setRequestedVersion( dependencyArtifact.getVersion() );
+                if ( depDescriptor.isOptional() )
+                    dependency.setOptional( true );
 
-                for ( Artifact exclusionArtifact : entry.getValue() )
+                for ( Artifact exclusionArtifact : depDescriptor.getExclusions() )
                 {
                     DependencyExclusion exclusion = new DependencyExclusion();
                     dependency.addExclusion( exclusion );
