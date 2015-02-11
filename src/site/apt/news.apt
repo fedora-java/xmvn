@@ -25,6 +25,15 @@ Release notes for XMvn
       XMvn now enforces source and target values of at least 1.6 in
       Maven Compiler Plugin.
 
+  * Minor bugfixes
+
+    * Skip generating %attr for symbolic links
+
+      XMvn 2.3.0 doesn't generate RPM file attributes (%attr) for
+      symbolic links it creates, which prevents RPM warnings.
+
+  * Other changes
+
     * Depmap support dropped
 
       XMvn 2.3.0 removes support for depmaps, which was deprecated for
@@ -33,13 +42,6 @@ Release notes for XMvn
     * Dependecy on Java 8
 
       XMvn now requires Java 8 to run.
-
-* Minor bugfixes
-
-    * Skip generating %attr for symbolic links
-
-      XMvn 2.3.0 doesn't generate RPM file attributes (%attr) for
-      symbolic links it creates, which prevents RPM warnings.
 
 * What's new in XMvn 2.2.1
 
