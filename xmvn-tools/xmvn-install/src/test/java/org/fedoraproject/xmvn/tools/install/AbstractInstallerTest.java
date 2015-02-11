@@ -20,20 +20,19 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.sisu.launch.InjectedTest;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 /**
  * @author Mikolaj Izdebski
@@ -49,42 +48,31 @@ public abstract class AbstractInstallerTest
 
     protected final List<String> descriptors = new ArrayList<>();
 
+    @Rule
+    public TestName testName = new TestName();
+
     @Before
     public void setUpWorkdir()
         throws IOException
     {
-        String testName = getClass().getName();
         Path workPath = Paths.get( "target" ).resolve( "test-work" );
-        Files.createDirectories( workPath );
-        workdir = Files.createTempDirectory( workPath, testName );
+        workdir = workPath.resolve( testName.getMethodName() ).toAbsolutePath();
+        delete( workdir );
+        Files.createDirectories( workdir );
         installRoot = workdir.resolve( "install-root" );
         Files.createDirectory( installRoot );
         descriptorRoot = workdir.resolve( "descriptor-root" );
         Files.createDirectory( descriptorRoot );
     }
 
-    @After
-    public void tearDownWorkdir()
+    private void delete( Path path )
         throws IOException
     {
-        Files.walkFileTree( workdir, new SimpleFileVisitor<Path>()
-        {
-            @Override
-            public FileVisitResult visitFile( Path file, BasicFileAttributes attrs )
-                throws IOException
-            {
-                Files.delete( file );
-                return FileVisitResult.CONTINUE;
-            }
+        if ( Files.isDirectory( path, LinkOption.NOFOLLOW_LINKS ) )
+            for ( Path child : Files.newDirectoryStream( path ) )
+                delete( child );
 
-            @Override
-            public FileVisitResult postVisitDirectory( Path dir, IOException exc )
-                throws IOException
-            {
-                Files.delete( dir );
-                return FileVisitResult.CONTINUE;
-            }
-        } );
+        Files.deleteIfExists( path );
     }
 
     protected void assertDirectoryStructure( String... expected )
