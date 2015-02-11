@@ -3,10 +3,43 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2015-02-04
+                    2015-02-11
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.3.0
+
+  XMvn 2.3.0 was released on 2015-02-11.  Most important changes
+  include:
+
+  * Major features
+
+    * Ownership of generated directories
+
+      XMvn Install 2.3.0 generates RPM directory ownership (%dir) for
+      subdirectories it creates.
+
+    * Minimal compiler source/target 1.6
+
+      XMvn now enforces source and target values of at least 1.6 in
+      Maven Compiler Plugin.
+
+    * Depmap support dropped
+
+      XMvn 2.3.0 removes support for depmaps, which was deprecated for
+      some time.
+
+    * Dependecy on Java 8
+
+      XMvn now requires Java 8 to run.
+
+* Minor bugfixes
+
+    * Skip generating %attr for symbolic links
+
+      XMvn 2.3.0 doesn't generate RPM file attributes (%attr) for
+      symbolic links it creates, which prevents RPM warnings.
 
 * What's new in XMvn 2.2.1
 
