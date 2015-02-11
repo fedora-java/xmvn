@@ -25,6 +25,13 @@ Release notes for XMvn
       XMvn now enforces source and target values of at least 1.6 in
       Maven Compiler Plugin.
 
+    * Deployer optional dependencies
+
+      Metadata format used in 2.3.0 contains new field, which can be
+      used to flag any artifact dependency as optional.  XMvn deployer
+      and installer were modified to set this flag for generated
+      metadata.
+
   * Minor bugfixes
 
     * Skip generating %attr for symbolic links
