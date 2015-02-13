@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.fedoraproject.xmvn</groupId>
     <artifactId>xmvn-tools</artifactId>
-    <version>2.4.0-SNAPSHOT</version>
+    <version>2.3.1</version>
   </parent>
   <artifactId>xmvn-install</artifactId>
   <name>XMvn Install</name>
