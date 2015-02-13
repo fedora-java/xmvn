@@ -123,7 +123,7 @@ public class DefaultArtifactInstaller
 
             Set<Path> repoRoots = repo.getRootPaths();
             for ( Path dir = repoPath.getParent(); dir != null && !repoRoots.contains( dir ); dir = dir.getParent() )
-                targetPackage.addFile( new Directory( dir ) );
+                targetPackage.addFileIfNotExists( new Directory( dir ) );
         }
         Iterator<Path> repoPathIterator = repoPaths.iterator();
 

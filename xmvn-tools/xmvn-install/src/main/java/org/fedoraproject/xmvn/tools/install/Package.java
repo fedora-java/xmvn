@@ -91,6 +91,17 @@ public class Package
     }
 
     /**
+     * Add a file to this package if id doesn't already exist in the package.
+     * 
+     * @param file file to be added
+     */
+    public void addFileIfNotExists( File file )
+    {
+        if ( !files.contains( file ) )
+            files.add( file );
+    }
+
+    /**
      * Install this package into specified root.
      * <p>
      * Package installation is equivalent to installation of all files it contains.
