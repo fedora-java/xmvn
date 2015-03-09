@@ -74,7 +74,7 @@ public class XMvnModelValidator
     void customizeModel( Model model )
     {
         BuildSettings settings = configurator.getConfiguration().getBuildSettings();
-        Build build = model.getBuild() != null ? model.getBuild() : null;
+        Build build = model.getBuild() != null ? model.getBuild() : new Build();
         List<Dependency> dependencies = model.getDependencies();
         List<Extension> extensions = build.getExtensions();
         List<Plugin> plugins = build.getPlugins();
