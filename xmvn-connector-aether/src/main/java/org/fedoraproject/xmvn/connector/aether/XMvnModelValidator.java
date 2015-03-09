@@ -71,7 +71,7 @@ public class XMvnModelValidator
         super.validateEffectiveModel( model, request, problems );
     }
 
-    private void customizeModel( Model model )
+    void customizeModel( Model model )
     {
         BuildSettings settings = configurator.getConfiguration().getBuildSettings();
         Build build = model.getBuild() != null ? model.getBuild() : null;
