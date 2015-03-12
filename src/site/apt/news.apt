@@ -8,6 +8,19 @@
 
 Release notes for XMvn
 
+* What's new in XMvn 2.3.2
+
+  XMvn 2.3.2 was released on 2015-03-12.  Most important changes
+  include:
+
+  * Minor bugfixes
+
+    * NullPointerException during model validation
+
+      XMvn 2.3.2 fixes a NullPointerException regression in
+      XMvnModelValidator, which occured during validation of models
+      without build instructions.
+
 * What's new in XMvn 2.3.1
 
   XMvn 2.3.1 was released on 2015-02-13.  Most important changes
