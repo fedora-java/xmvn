@@ -88,7 +88,8 @@ public class DeploymentRequest
 
     public void addProperty( String key, String value )
     {
-        properties.put( key, value );
+        if ( value != null )
+            properties.put( key, value );
     }
 
     public void removeProperty( String key )

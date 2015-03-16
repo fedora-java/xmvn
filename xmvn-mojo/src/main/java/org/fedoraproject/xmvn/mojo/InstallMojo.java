@@ -18,11 +18,15 @@ package org.fedoraproject.xmvn.mojo;
 import static org.fedoraproject.xmvn.mojo.Utils.aetherArtifact;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -140,13 +144,33 @@ public class InstallMojo
         }
     }
 
+    private String getProjectProperty( Artifact artifact, String key )
+    {
+        Path propertiesPath = Paths.get( ".xmvn/properties" );
+        if ( !Files.exists( propertiesPath ) )
+            return null;
+
+        Properties properties = new Properties();
+        try (InputStream stream = Files.newInputStream( propertiesPath ))
+        {
+            properties.load( stream );
+        }
+        catch ( IOException e )
+        {
+            return null;
+        }
+
+        String artifactKey = artifact.getGroupId() + "/" + artifact.getArtifactId() + "/" + artifact.getVersion();
+        return properties.getProperty( artifactKey + "/" + key );
+    }
+
     private void deployArtifact( Artifact artifact, String type, Model model )
         throws MojoExecutionException
     {
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact( artifact );
-        if ( type != null )
-            request.addProperty( "type", type );
+        request.addProperty( "type", type );
+        request.addProperty( "requiresJava", getProjectProperty( artifact, "compilerTarget" ) );
 
         for ( Dependency dependency : model.getDependencies() )
         {
