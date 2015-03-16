@@ -83,7 +83,7 @@
     <guiceVersion>3.2.5</guiceVersion>
     <guavaVersion>18.0</guavaVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
-    <mavenVersion>3.3.0</mavenVersion>
+    <mavenVersion>3.3.1</mavenVersion>
     <plexusUtilsVersion>3.0.21</plexusUtilsVersion>
     <pluginToolsVersion>3.4</pluginToolsVersion>
     <sisuVersion>0.3.0</sisuVersion>
