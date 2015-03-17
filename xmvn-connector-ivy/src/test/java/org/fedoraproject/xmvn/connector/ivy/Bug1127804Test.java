@@ -127,6 +127,10 @@ public class Bug1127804Test
         throws Exception
     {
         addArtifact( "org.apache.hadoop:hadoop-hdfs:pom:2.4.1", "hadoop-hdfs-2.4.1.pom" );
+        addArtifact( "org.apache.hadoop:hadoop-hdfs:2.4.1", "hdfs.jar" );
+        addArtifact( "org.apache.hadoop:hadoop-hdfs::sources:2.4.1", null );
+        addArtifact( "org.apache.hadoop:hadoop-hdfs::src:2.4.1", null );
+        addArtifact( "org.apache.hadoop:hadoop-hdfs::javadoc:2.4.1", null );
         addArtifact( "org.apache.hadoop:hadoop-hdfs", "hdfs.jar" );
         addArtifact( "org.apache.hadoop:hadoop-hdfs::tests:", "hdfs-tests.jar" );
         expectArtifact( "org.apache.hadoop:hadoop-hdfs", "hdfs.jar" );
