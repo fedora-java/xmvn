@@ -36,6 +36,7 @@ import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ModuleComponentRe
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DescriptorParseContext;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.GradlePomModuleDescriptorParser;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.MetaDataParser;
+import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionSelectorScheme;
 import org.gradle.api.internal.artifacts.repositories.ResolutionAwareRepository;
 import org.gradle.api.internal.component.ArtifactType;
 import org.gradle.internal.component.external.model.DefaultMavenModuleResolveMetaData;
@@ -207,7 +208,7 @@ public class GradleResolver
             Path fakePom = fakePom( pomPath, id );
             logger.debug( "Created fake POM: {}", fakePom );
 
-            MetaDataParser parser = new GradlePomModuleDescriptorParser();
+            MetaDataParser parser = new GradlePomModuleDescriptorParser( new DefaultVersionSelectorScheme() );
             MutableModuleComponentResolveMetaData metaData = parser.parseMetaData( this, fakePom.toFile() );
 
             result.resolved( metaData );

@@ -79,7 +79,7 @@
     <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.4.0</ivyVersion>
     <jcommanderVersion>1.47</jcommanderVersion>
-    <gradleVersion>2.2.1</gradleVersion>
+    <gradleVersion>2.3</gradleVersion>
     <guiceVersion>3.2.5</guiceVersion>
     <guavaVersion>18.0</guavaVersion>
     <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
