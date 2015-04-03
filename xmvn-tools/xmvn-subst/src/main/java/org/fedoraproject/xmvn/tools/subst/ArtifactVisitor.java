@@ -36,7 +36,6 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.fedoraproject.xmvn.utils.FileUtils;
 
 @Named
 @Singleton
@@ -152,7 +151,11 @@ public class ArtifactVisitor
         }
 
         if ( !dryRun )
-            FileUtils.replaceFileWithSymlink( path, artifactPath );
+        {
+            Files.delete( path );
+            Files.createSymbolicLink( path, artifactPath );
+        }
+
         logger.info( "Linked {} to {}", path, artifactPath );
     }
 }

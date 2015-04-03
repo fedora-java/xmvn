@@ -17,11 +17,8 @@ package org.fedoraproject.xmvn.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
@@ -77,41 +74,6 @@ public class FileUtils
     }
 
     /**
-     * Create hard link or copy file if creating hard link is not possible.
-     * 
-     * @param source source file
-     * @param target link target or destination file
-     * @throws IOException if any I/O exception occurs
-     */
-    public static void linkOrCopy( Path source, Path target )
-        throws IOException
-    {
-        try
-        {
-            Files.createLink( target, source );
-        }
-        catch ( IOException | UnsupportedOperationException e )
-        {
-            Files.copy( source, target, StandardCopyOption.COPY_ATTRIBUTES, LinkOption.NOFOLLOW_LINKS );
-        }
-    }
-
-    /**
-     * Create a temporary symbolic link pointing to specified target path.
-     * 
-     * @param target target of the symbolic link
-     * @return path to created symlink
-     * @throws IOException if any I/O exception occurs
-     */
-    public static Path createAnonymousSymlink( Path target )
-        throws IOException
-    {
-        Path symlink = Files.createTempFile( "xmvn", ".symlink" );
-        replaceFileWithSymlink( symlink, target );
-        return symlink;
-    }
-
-    /**
      * Convert POSIX permissions from integer to string format.
      * 
      * @param perm POSIX file permissions in integer format, for example {@code 0764}
@@ -148,41 +110,5 @@ public class FileUtils
     {
         if ( !Files.isSymbolicLink( path ) )
             Files.setPosixFilePermissions( path, getPermissions( mode ) );
-    }
-
-    /**
-     * Try to atomically replace regular file with a symbolic link. If atomic replacement is not supported then try to
-     * replace the file anyways, hoping that race condition doesn't occur.
-     * 
-     * @param file file to be replaced
-     * @param target symbolic link target
-     * @throws IOException if an I/O exception occurs
-     */
-    public static void replaceFileWithSymlink( Path file, Path target )
-        throws IOException
-    {
-        Path tempDir = null;
-
-        try
-        {
-            Path baseDir = file.toAbsolutePath().getParent();
-            tempDir = Files.createTempDirectory( baseDir, "xmvn" );
-            Path symlink = tempDir.resolve( "symlink" );
-            Files.createSymbolicLink( symlink, target );
-
-            try
-            {
-                Files.move( symlink, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE );
-            }
-            catch ( AtomicMoveNotSupportedException exception )
-            {
-                Files.move( symlink, file, StandardCopyOption.REPLACE_EXISTING );
-            }
-        }
-        finally
-        {
-            if ( tempDir != null )
-                Files.deleteIfExists( tempDir );
-        }
     }
 }
