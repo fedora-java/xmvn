@@ -111,7 +111,7 @@ public class DefaultResolver
         {
             try
             {
-                Path pomPath = pomGenerator.generateEffectivePom( metadata );
+                Path pomPath = pomGenerator.generateEffectivePom( metadata, artifact );
                 metadata.setPath( pomPath.toString() );
             }
             catch ( IOException e )

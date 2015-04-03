@@ -86,7 +86,7 @@ class EffectivePomGenerator
         addTextElement( document, dependencyNode, "artifactId", dependency.getArtifactId() );
         addTextElement( document, dependencyNode, "type", dependency.getExtension(), Artifact.DEFAULT_EXTENSION );
         addTextElement( document, dependencyNode, "classifier", dependency.getClassifier(), "" );
-        addTextElement( document, dependencyNode, "version", dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION );
+        addTextElement( document, dependencyNode, "version", dependency.getRequestedVersion() );
         Boolean optional = Boolean.valueOf( dependency.isOptional() != null && dependency.isOptional() );
         addTextElement( document, dependencyNode, "optional", optional.toString(), "false" );
 
@@ -97,14 +97,14 @@ class EffectivePomGenerator
             dependencyNode.appendChild( exclusions );
     }
 
-    private void addProject( Document document, ArtifactMetadata metadata )
+    private void addProject( Document document, ArtifactMetadata metadata, Artifact artifact )
     {
         Element project = document.createElement( "project" );
         document.appendChild( project );
         addTextElement( document, project, "modelVersion", "4.0.0" );
-        addTextElement( document, project, "groupId", metadata.getGroupId() );
-        addTextElement( document, project, "artifactId", metadata.getArtifactId() );
-        addTextElement( document, project, "version", metadata.getVersion() );
+        addTextElement( document, project, "groupId", artifact.getGroupId() );
+        addTextElement( document, project, "artifactId", artifact.getArtifactId() );
+        addTextElement( document, project, "version", artifact.getVersion() );
 
         Element dependencies = document.createElement( "dependencies" );
         for ( Dependency dependency : metadata.getDependencies() )
@@ -113,7 +113,7 @@ class EffectivePomGenerator
             project.appendChild( dependencies );
     }
 
-    public Path generateEffectivePom( ArtifactMetadata metadata )
+    public Path generateEffectivePom( ArtifactMetadata metadata, Artifact artifact )
         throws IOException
     {
         Path pomPath = Files.createTempFile( "xmvn-" + metadata.getUuid(), ".pom" );
@@ -123,7 +123,7 @@ class EffectivePomGenerator
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
             document.setXmlStandalone( true );
-            addProject( document, metadata );
+            addProject( document, metadata, artifact );
 
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty( OutputKeys.INDENT, "yes" );

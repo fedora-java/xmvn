@@ -15,18 +15,10 @@
  */
 package org.fedoraproject.xmvn.connector.gradle;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
@@ -61,9 +53,6 @@ import org.gradle.internal.resource.LocallyAvailableExternalResource;
 import org.gradle.internal.resource.local.DefaultLocallyAvailableResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -205,11 +194,9 @@ public class GradleResolver
         if ( pomPath != null )
         {
             logger.debug( "Found Maven POM: {}", pomPath );
-            Path fakePom = fakePom( pomPath, id );
-            logger.debug( "Created fake POM: {}", fakePom );
 
             MetaDataParser parser = new GradlePomModuleDescriptorParser( new DefaultVersionSelectorScheme() );
-            MutableModuleComponentResolveMetaData metaData = parser.parseMetaData( this, fakePom.toFile() );
+            MutableModuleComponentResolveMetaData metaData = parser.parseMetaData( this, pomPath.toFile() );
 
             result.resolved( metaData );
             return;
@@ -255,67 +242,6 @@ public class GradleResolver
         }
 
         return artifactSet;
-    }
-
-    private static void setElement( Document doc, String name, String value )
-    {
-        NodeList childreen = doc.getDocumentElement().getChildNodes();
-        for ( int i = 0; i < childreen.getLength(); i++ )
-        {
-            Node child = childreen.item( i );
-            if ( child.getNodeName().equals( name ) )
-            {
-                child.setTextContent( value );
-                return;
-            }
-        }
-
-        Node child = doc.createElement( name );
-        child.setTextContent( value );
-        doc.getDocumentElement().appendChild( child );
-    }
-
-    private static Path fakePom( Path pom, ModuleComponentIdentifier moduleVersionIdentifier )
-    {
-        try
-        {
-            DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-            Document doc = domFactory.newDocumentBuilder().parse( pom.toFile() );
-            setElement( doc, "groupId", moduleVersionIdentifier.getGroup() );
-            setElement( doc, "artifactId", moduleVersionIdentifier.getModule() );
-            setElement( doc, "version", moduleVersionIdentifier.getVersion() );
-
-            NodeList dependencies = doc.getElementsByTagName( "dependency" );
-            outer: for ( int i = 0; i < dependencies.getLength(); i++ )
-            {
-                Node dependency = dependencies.item( i );
-                NodeList childreen = dependency.getChildNodes();
-                for ( int j = 0; j < childreen.getLength(); j++ )
-                {
-                    Node child = childreen.item( j );
-                    if ( child.getNodeName().equals( "version" ) )
-                        continue outer;
-                }
-
-                Node child = doc.createElement( "version" );
-                child.setTextContent( "SYSTEM" );
-                dependency.appendChild( child );
-            }
-
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
-            DOMSource source = new DOMSource( doc );
-
-            Path fakePom = Files.createTempFile( "xmvn-", ".gradle.pom" );
-            StreamResult file = new StreamResult( fakePom.toFile() );
-            transformer.transform( source, file );
-            return fakePom;
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
-        }
     }
 
     @Override
