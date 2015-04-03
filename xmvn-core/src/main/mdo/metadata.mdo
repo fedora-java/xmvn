@@ -206,7 +206,26 @@
           </association>
         </field>
       </fields>
+      <codeSegments>
+        <codeSegment>
+          <version>2.0.0+</version>
+          <code>
+            <![CDATA[
+    public org.fedoraproject.xmvn.artifact.Artifact toArtifact()
+    {
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( getGroupId(), getArtifactId(), getExtension(), getClassifier(), getRequestedVersion() );
+    }
+
+    public String toString()
+    {
+        return toArtifact().toString();
+    }
+     ]]>
+          </code>
+        </codeSegment>
+      </codeSegments>
     </class>
+
 
     <class xml.tagName="artifact" java.clone="deep">
       <name>ArtifactMetadata</name>
@@ -339,22 +358,14 @@
         getAliases().remove( alias );
     }
 
-    /**
-     * Return list of versions from which this artifact can be resolved.
-     * <p>
-     * For non-compat artifacts this method returns a singleton list containing default artifact version.
-     * Otherwise it returns a list of compat versions.
-     * 
-     * @return non-empty list of versions, never {@code null}
-     */
-    public java.util.List<String> getResolvableVersions()
+    public org.fedoraproject.xmvn.artifact.Artifact toArtifact()
     {
-        java.util.List<String> versions = java.util.Collections.unmodifiableList( getCompatVersions() );
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( getGroupId(), getArtifactId(), getExtension(), getClassifier(), getVersion() );
+    }
 
-        if ( versions.isEmpty() )
-            versions = java.util.Collections.singletonList( org.fedoraproject.xmvn.artifact.Artifact.DEFAULT_VERSION );
-
-        return versions;
+    public String toString()
+    {
+        return toArtifact().toString();
     }
      ]]>
           </code>

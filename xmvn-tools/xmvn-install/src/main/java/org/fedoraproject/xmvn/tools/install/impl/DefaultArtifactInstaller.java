@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -68,9 +67,7 @@ public class DefaultArtifactInstaller
     public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
         throws ArtifactInstallationException
     {
-        Artifact artifact =
-            new DefaultArtifact( am.getGroupId(), am.getArtifactId(), am.getExtension(), am.getClassifier(),
-                                 am.getVersion() );
+        Artifact artifact = am.toArtifact();
 
         // Handle native JARs/WARs etc
         Path artifactPath = Paths.get( am.getPath() );

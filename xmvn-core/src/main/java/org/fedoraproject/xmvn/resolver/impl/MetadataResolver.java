@@ -72,9 +72,7 @@ class MetadataResolver
 
     private void processArtifactMetadata( ArtifactMetadata metadata )
     {
-        Artifact baseArtifact =
-            new DefaultArtifact( metadata.getGroupId(), metadata.getArtifactId(), metadata.getExtension(),
-                                 metadata.getClassifier(), metadata.getVersion() );
+        Artifact baseArtifact = metadata.toArtifact();
 
         List<String> versions = metadata.getCompatVersions();
         if ( versions.isEmpty() )

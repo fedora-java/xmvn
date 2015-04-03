@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
@@ -93,10 +92,7 @@ public class DefaultInstaller
 
         for ( ArtifactMetadata artifactMetadata : installationPlan.getArtifacts() )
         {
-            Artifact artifact =
-                new DefaultArtifact( artifactMetadata.getGroupId(), artifactMetadata.getArtifactId(),
-                                     artifactMetadata.getExtension(), artifactMetadata.getClassifier(),
-                                     artifactMetadata.getVersion() );
+            Artifact artifact = artifactMetadata.toArtifact();
 
             if ( !reactor.add( new ArtifactState( artifact, artifactMetadata ) ) )
                 throw new ArtifactInstallationException( "Installation plan contains duplicate artifact: " + artifact );
@@ -234,12 +230,16 @@ public class DefaultInstaller
         {
             for ( ArtifactMetadata artifactMetadata : pkg.getMetadata().getArtifacts() )
             {
-                for ( String version : artifactMetadata.getResolvableVersions() )
+                Artifact artifact = artifactMetadata.toArtifact();
+
+                for ( String version : artifactMetadata.getCompatVersions() )
                 {
-                    Artifact artifact =
-                        new DefaultArtifact( artifactMetadata.getGroupId(), artifactMetadata.getArtifactId(),
-                                             artifactMetadata.getExtension(), artifactMetadata.getClassifier(), version );
-                    installedArtifacts.put( artifact, artifactMetadata );
+                    installedArtifacts.put( artifact.setVersion( version ), artifactMetadata );
+                }
+
+                if ( artifactMetadata.getCompatVersions().isEmpty() )
+                {
+                    installedArtifacts.put( artifact.setVersion( Artifact.DEFAULT_VERSION ), artifactMetadata );
                 }
             }
         }
@@ -260,9 +260,7 @@ public class DefaultInstaller
     {
         for ( String version : Arrays.asList( dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION ) )
         {
-            Artifact dependencyArtifact =
-                new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getExtension(),
-                                     dependency.getClassifier(), version );
+            Artifact dependencyArtifact = dependency.toArtifact().setVersion( version );
 
             // First try to resolve dependency from installed artifact
             ArtifactMetadata resolvedMetadata = installedArtifacts.get( dependencyArtifact );
