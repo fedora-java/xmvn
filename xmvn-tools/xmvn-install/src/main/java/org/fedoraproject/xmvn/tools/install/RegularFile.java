@@ -15,11 +15,11 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import javax.inject.Provider;
 
 /**
  * A regular file created installed in target package.
@@ -38,10 +38,10 @@ public class RegularFile
     private final Path sourcePath;
 
     /**
-     * Array of bytes using which contents of target files will be populated. It is used only if source path is not
-     * provided (is {@code null}).
+     * Provider of byte array used to populate target file. It is used only if source path is not provided (is
+     * {@code null}).
      */
-    private final byte[] content;
+    private final Provider<byte[]> content;
 
     /**
      * Create a regular file object, which contents will be populated from a source file. Target file will have default
@@ -60,9 +60,21 @@ public class RegularFile
      * access mode (0644).
      * 
      * @param targetPath file path, relative to installation root
-     * @param content array of bytes using to populate target file contents with
+     * @param content array of bytes used to populate target file contents with
      */
     public RegularFile( Path targetPath, byte[] content )
+    {
+        this( targetPath, content, 0644 );
+    }
+
+    /**
+     * Create a regular file object, which contents will be populated from a byte array. Target file will have default
+     * access mode (0644).
+     * 
+     * @param targetPath file path, relative to installation root
+     * @param content provider of array of bytes used to populate target file contents with
+     */
+    public RegularFile( Path targetPath, Provider<byte[]> content )
     {
         this( targetPath, content, 0644 );
     }
@@ -84,14 +96,30 @@ public class RegularFile
     }
 
     /**
-     * Create a regular file object, which contents will be populated from a byte array.Target file will have specified
+     * Create a regular file object, which contents will be populated from a byte array. Target file will have specified
      * access mode
      * 
      * @param targetPath file path, relative to installation root
-     * @param content array of bytes using to populate target file contents with
+     * @param content array of bytes used to populate target file contents with
      * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
     public RegularFile( Path targetPath, byte[] content, int accessMode )
+    {
+        super( targetPath, accessMode );
+
+        this.sourcePath = null;
+        this.content = ( ) -> content;
+    }
+
+    /**
+     * Create a regular file object, which contents will be populated from an input stream. Target file will have
+     * specified access mode
+     * 
+     * @param targetPath file path, relative to installation root
+     * @param content provider of array of bytes used to populate target file contents with
+     * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
+     */
+    public RegularFile( Path targetPath, Provider<byte[]> content, int accessMode )
     {
         super( targetPath, accessMode );
 
@@ -109,10 +137,7 @@ public class RegularFile
         }
         else
         {
-            try (InputStream stream = new ByteArrayInputStream( content ))
-            {
-                Files.copy( stream, targetPath );
-            }
+            Files.write( targetPath, content.get() );
         }
     }
 }

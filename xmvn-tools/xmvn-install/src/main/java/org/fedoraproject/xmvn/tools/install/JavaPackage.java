@@ -15,13 +15,10 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
-
-import javax.xml.stream.XMLStreamException;
 
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
@@ -40,8 +37,6 @@ public class JavaPackage
      */
     private final PackageMetadata metadata = new PackageMetadata();
 
-    private final Path sourcePath;
-
     /**
      * Create an empty Java package with given ID.
      * 
@@ -55,15 +50,21 @@ public class JavaPackage
 
         metadata.setUuid( UUID.randomUUID().toString() );
 
+        File metadataFile = new RegularFile( metadataPath, ( ) -> getMetadataContents() );
+        addFile( metadataFile );
+    }
+
+    private byte[] getMetadataContents()
+    {
         try
         {
-            this.sourcePath = Files.createTempFile( "xmvn-metadata", "xml" );
-            File metadataFile = new RegularFile( metadataPath, sourcePath );
-            addFile( metadataFile );
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            new MetadataStaxWriter().write( bos, metadata );
+            return bos.toByteArray();
         }
-        catch ( IOException e )
+        catch ( Exception e )
         {
-            throw new RuntimeException( e );
+            throw new RuntimeException( "Failed to generate package metadata", e );
         }
     }
 
@@ -81,21 +82,6 @@ public class JavaPackage
     public void install( Path installRoot )
         throws IOException
     {
-        writeMetadataFile();
-
         super.install( installRoot );
-    }
-
-    private void writeMetadataFile()
-        throws IOException
-    {
-        try (OutputStream stream = Files.newOutputStream( sourcePath ))
-        {
-            new MetadataStaxWriter().write( stream, metadata );
-        }
-        catch ( XMLStreamException e )
-        {
-            throw new IOException( "Failed to write package metadata", e );
-        }
     }
 }
