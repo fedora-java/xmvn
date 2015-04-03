@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.nio.file.Files;
 
 import org.eclipse.sisu.launch.InjectedTest;
@@ -27,7 +28,6 @@ import org.junit.Test;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.utils.FileUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -48,7 +48,7 @@ public class JavaHomeResolverTest
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         assertTrue( settings.getPrefixes().isEmpty() );
         assertTrue( settings.getMetadataRepositories().isEmpty() );
-        settings.addPrefix( FileUtils.CWD.getAbsolutePath() );
+        settings.addPrefix( new File( "." ).getAbsolutePath() );
         settings.addMetadataRepository( "src/test/resources/java-home-resolver-metadata" );
 
         Resolver javaHomeResolver = lookup( Resolver.class );

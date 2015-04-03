@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
-import org.fedoraproject.xmvn.utils.FileUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -175,8 +174,6 @@ class JarUtils
     {
         logger.trace( "Trying to inject manifest to {}", artifact );
 
-        targetJar = FileUtils.followSymlink( targetJar );
-
         try (JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ))
         {
             Manifest mf = jis.getManifest();
@@ -192,6 +189,7 @@ class JarUtils
             putAttribute( mf, ArtifactUtils.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
             putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
 
+            targetJar = targetJar.toRealPath();
             Files.delete( targetJar );
 
             try (JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ))

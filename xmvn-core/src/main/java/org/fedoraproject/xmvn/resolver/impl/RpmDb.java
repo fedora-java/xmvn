@@ -15,9 +15,8 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import static org.fedoraproject.xmvn.utils.FileUtils.followSymlink;
-
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -27,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.fedoraproject.xmvn.utils.FileUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,7 +42,7 @@ class RpmDb
         String[] cmdLine = new String[] { "/bin/rpm", "-qa", "--qf", query };
 
         ProcessBuilder builder = new ProcessBuilder( cmdLine );
-        builder.redirectError( FileUtils.BIT_BUCKET );
+        builder.redirectError( new File( "/dev/null" ) );
         Process child = builder.start();
         child.getOutputStream().close();
 
@@ -103,7 +100,14 @@ class RpmDb
 
     public String lookupPath( Path path )
     {
-        path = followSymlink( path );
+        try
+        {
+            path = path.toRealPath();
+        }
+        catch ( IOException e )
+        {
+            // Ignore
+        }
 
         synchronized ( lock )
         {

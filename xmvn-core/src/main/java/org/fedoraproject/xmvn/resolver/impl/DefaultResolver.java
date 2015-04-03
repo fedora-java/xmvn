@@ -35,7 +35,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.utils.FileUtils;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
@@ -122,7 +121,14 @@ public class DefaultResolver
         }
 
         Path artifactPath = Paths.get( metadata.getPath() );
-        artifactPath = FileUtils.followSymlink( artifactPath );
+        try
+        {
+            artifactPath = artifactPath.toRealPath();
+        }
+        catch ( IOException e )
+        {
+            // Ignore
+        }
 
         DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
         result.setNamespace( metadata.getNamespace() );

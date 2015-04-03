@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import static org.fedoraproject.xmvn.utils.FileUtils.followSymlink;
-
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -33,8 +32,20 @@ class PathInterpolator
 
     public PathInterpolator()
     {
-        String javaHome = System.getProperty( "java.home" );
-        javaHomeDir = javaHome != null ? followSymlink( Paths.get( javaHome ) ) : null;
+        javaHomeDir = getJavaHome();
+    }
+
+    private Path getJavaHome()
+    {
+        try
+        {
+            String javaHome = System.getProperty( "java.home" );
+            return javaHome != null ? Paths.get( javaHome ).toRealPath() : null;
+        }
+        catch ( IOException e )
+        {
+            return null;
+        }
     }
 
     public void interpolate( ArtifactMetadata metadata )
