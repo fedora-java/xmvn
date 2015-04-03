@@ -41,7 +41,6 @@ import org.apache.ivy.plugins.parser.m2.PomModuleDescriptorParser;
 import org.apache.ivy.plugins.parser.m2.PomModuleDescriptorWriter;
 import org.apache.ivy.plugins.parser.m2.PomWriterOptions;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
-import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorWriter;
 import org.apache.ivy.plugins.repository.Resource;
 import org.apache.ivy.plugins.repository.file.FileRepository;
 import org.apache.ivy.plugins.repository.file.FileResource;
@@ -236,18 +235,6 @@ public class IvyResolver
         Path pomPath = result.getArtifactPath();
         if ( pomPath == null )
             return null;
-
-        try
-        {
-            File ivyPath = Files.createTempFile( "xmvn-", ".ivy.xml" ).toFile();
-            ModuleDescriptorParser parser = PomModuleDescriptorParser.getInstance();
-            ModuleDescriptor module = parser.parseDescriptor( getSettings(), pomPath.toFile().toURI().toURL(), false );
-            XmlModuleDescriptorWriter.write( module, ivyPath );
-        }
-        catch ( IOException | ParseException e )
-        {
-            throw new RuntimeException( e );
-        }
 
         Resource fileResource = new FileResource( new FileRepository(), pomPath.toFile() );
         return new ResolvedResource( fileResource, resolvedVersion( result ) );
