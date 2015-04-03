@@ -30,11 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
@@ -56,24 +54,16 @@ class MetadataReader
 
     private final ThreadPoolExecutor executor;
 
-    static class DaemonFactory
-        implements ThreadFactory
-    {
-        @Override
-        public Thread newThread( Runnable runnable )
-        {
-            Thread thread = new Thread( runnable );
-            thread.setName( MetadataReader.class.getCanonicalName() + ".worker" );
-            thread.setDaemon( true );
-            return thread;
-        }
-    }
-
     public MetadataReader()
     {
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
-        executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, new DaemonFactory() );
+        executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, ( runnable ) -> {
+            Thread thread = new Thread( runnable );
+            thread.setName( MetadataReader.class.getCanonicalName() + ".worker" );
+            thread.setDaemon( true );
+            return thread;
+        } );
     }
 
     public List<PackageMetadata> readMetadata( List<String> metadataLocations )
@@ -93,13 +83,13 @@ class MetadataReader
                     for ( String fragFilename : flist )
                     {
                         Path xmlPath = path.resolve( fragFilename );
-                        futures.put( xmlPath, executor.submit( new Task( xmlPath ) ) );
+                        futures.put( xmlPath, executor.submit( ( ) -> readMetadata( xmlPath ) ) );
                     }
                 }
             }
             else
             {
-                futures.put( path, executor.submit( new Task( path ) ) );
+                futures.put( path, executor.submit( ( ) -> readMetadata( path ) ) );
             }
         }
 
@@ -144,51 +134,39 @@ class MetadataReader
         }
     }
 
-    class Task
-        implements Callable<PackageMetadata>
+    private static PackageMetadata readMetadata( Path path )
+        throws Exception
     {
-        private final Path path;
-
-        public Task( Path path )
+        try (InputStream fis = Files.newInputStream( path ))
         {
-            this.path = path;
-        }
-
-        @Override
-        public PackageMetadata call()
-            throws Exception
-        {
-            try (InputStream fis = Files.newInputStream( path ))
+            try (BufferedInputStream bis = new BufferedInputStream( fis, 128 ))
             {
-                try (BufferedInputStream bis = new BufferedInputStream( fis, 128 ))
+                try (InputStream is = isCompressed( bis ) ? new GZIPInputStream( bis ) : bis)
                 {
-                    try (InputStream is = isCompressed( bis ) ? new GZIPInputStream( bis ) : bis)
-                    {
-                        MetadataStaxReader reader = new MetadataStaxReader();
-                        return reader.read( is );
-                    }
+                    MetadataStaxReader reader = new MetadataStaxReader();
+                    return reader.read( is );
                 }
             }
         }
+    }
 
-        private boolean isCompressed( BufferedInputStream bis )
-            throws IOException
+    private static boolean isCompressed( BufferedInputStream bis )
+        throws IOException
+    {
+        try
         {
-            try
-            {
-                bis.mark( 2 );
-                DataInputStream ois = new DataInputStream( bis );
-                int magic = Short.reverseBytes( ois.readShort() ) & 0xFFFF;
-                return magic == GZIPInputStream.GZIP_MAGIC;
-            }
-            catch ( EOFException e )
-            {
-                return false;
-            }
-            finally
-            {
-                bis.reset();
-            }
+            bis.mark( 2 );
+            DataInputStream ois = new DataInputStream( bis );
+            int magic = Short.reverseBytes( ois.readShort() ) & 0xFFFF;
+            return magic == GZIPInputStream.GZIP_MAGIC;
+        }
+        catch ( EOFException e )
+        {
+            return false;
+        }
+        finally
+        {
+            bis.reset();
         }
     }
 }
