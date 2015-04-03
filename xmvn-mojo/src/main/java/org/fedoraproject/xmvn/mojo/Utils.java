@@ -16,16 +16,10 @@
 package org.fedoraproject.xmvn.mojo;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.ArtifactType;
@@ -76,23 +70,5 @@ class Utils
 
         return registry.createTypedArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(),
                                              dependency.getClassifier(), dependency.getVersion() );
-    }
-
-    private static void writeModel( Model model, Path path )
-        throws IOException
-    {
-        try (Writer writer = Files.newBufferedWriter( path, StandardCharsets.UTF_8 ))
-        {
-            MavenXpp3Writer pomWriter = new MavenXpp3Writer();
-            pomWriter.write( writer, model );
-        }
-    }
-
-    public static Path saveEffectivePom( Model model )
-        throws IOException
-    {
-        Path source = Files.createTempFile( "xmvn", ".pom.xml" );
-        writeModel( model, source );
-        return source;
     }
 }
