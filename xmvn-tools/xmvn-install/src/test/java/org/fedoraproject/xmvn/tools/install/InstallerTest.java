@@ -32,7 +32,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import com.google.inject.Binder;
-import com.google.inject.Provider;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.junit.Before;
@@ -100,25 +99,11 @@ public class InstallerTest
     @Override
     public void configure( Binder binder )
     {
-        binder.bind( Configurator.class ).toProvider( new Provider<Configurator>()
-        {
-            @Override
-            public Configurator get()
-            {
-                return configuratorMock;
-            }
-        } );
+        binder.bind( Configurator.class ).toProvider( ( ) -> configuratorMock );
 
         binder.bind( ArtifactInstaller.class ).toInstance( new MockArtifactInstaller() );
 
-        binder.bind( Resolver.class ).toProvider( new Provider<Resolver>()
-        {
-            @Override
-            public Resolver get()
-            {
-                return resolverMock;
-            }
-        } );
+        binder.bind( Resolver.class ).toProvider( ( ) -> resolverMock );
     }
 
     private void addResolution( String coordinates, final String compatVersion, final String namespace, final Path path )
