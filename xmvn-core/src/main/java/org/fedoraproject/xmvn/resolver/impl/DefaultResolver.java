@@ -60,6 +60,8 @@ public class DefaultResolver
 
     private final EffectivePomGenerator pomGenerator;
 
+    private final CacheManager cacheManager;
+
     @Inject
     public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator )
     {
@@ -68,6 +70,7 @@ public class DefaultResolver
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         metadataResolver = new MetadataResolver( settings.getMetadataRepositories() );
         pomGenerator = new EffectivePomGenerator();
+        cacheManager = new CacheManager();
     }
 
     @Override
@@ -111,6 +114,12 @@ public class DefaultResolver
             try
             {
                 Path pomPath = pomGenerator.generateEffectivePom( metadata, artifact );
+
+                if ( request.isPersistentFileNeeded() )
+                {
+                    pomPath = cacheManager.cacheFile( pomPath );
+                }
+
                 metadata.setPath( pomPath.toString() );
             }
             catch ( IOException e )

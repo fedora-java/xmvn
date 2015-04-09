@@ -28,6 +28,8 @@ public class ResolutionRequest
 
     private boolean isProviderNeeded;
 
+    private boolean isPersistentFileNeeded;
+
     public ResolutionRequest()
     {
     }
@@ -81,6 +83,32 @@ public class ResolutionRequest
         this.isProviderNeeded = isProviderNeeded;
     }
 
+    /**
+     * Determine whether resolved artifact file should be persistent or not.
+     * <p>
+     * Non-persistent files may be removed during JVM shutdown, while persistent files are not cleaned up during JVM
+     * shutdown.
+     * 
+     * @return whether resolved artifact file should be persistent
+     */
+    public boolean isPersistentFileNeeded()
+    {
+        return isPersistentFileNeeded;
+    }
+
+    /**
+     * Set whether resolved artifact file should be persistent or not.
+     * <p>
+     * Non-persistent files may be removed during JVM shutdown, while persistent files are not cleaned up during JVM
+     * shutdown.
+     * 
+     * @param isPersistentFileNeeded
+     */
+    public void setPersistentFileNeeded( boolean isPersistentFileNeeded )
+    {
+        this.isPersistentFileNeeded = isPersistentFileNeeded;
+    }
+
     @Override
     public int hashCode()
     {
@@ -88,6 +116,7 @@ public class ResolutionRequest
         int result = 1;
         result = prime * result + ( ( artifact == null ) ? 0 : artifact.hashCode() );
         result = prime * result + ( isProviderNeeded ? 1231 : 1237 );
+        result = prime * result + ( isPersistentFileNeeded ? 1231 : 1237 );
         return result;
     }
 
@@ -109,6 +138,8 @@ public class ResolutionRequest
         else if ( !artifact.equals( other.artifact ) )
             return false;
         if ( isProviderNeeded != other.isProviderNeeded )
+            return false;
+        if ( isPersistentFileNeeded != other.isPersistentFileNeeded )
             return false;
         return true;
     }

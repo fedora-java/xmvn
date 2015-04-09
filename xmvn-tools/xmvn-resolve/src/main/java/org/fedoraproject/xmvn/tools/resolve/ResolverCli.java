@@ -89,7 +89,9 @@ public class ResolverCli
                 s += "SYSTEM";
 
             Artifact artifact = new DefaultArtifact( s );
-            requests.add( new ResolutionRequest( artifact ) );
+            ResolutionRequest request = new ResolutionRequest( artifact );
+            request.setPersistentFileNeeded( true );
+            requests.add( request );
         }
 
         return requests;
