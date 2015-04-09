@@ -116,7 +116,9 @@ class EffectivePomGenerator
     public Path generateEffectivePom( ArtifactMetadata metadata, Artifact artifact )
         throws IOException
     {
-        Path pomPath = TempManager.createTempFile( "xmvn-" + metadata.getUuid(), ".pom" );
+        String artifactFileName = artifact.getArtifactId() + "-" + artifact.getVersion() + ".pom";
+        Path pomDir = TempManager.createTempDirectory( "xmvn-" + metadata.getUuid() );
+        Path pomPath = pomDir.resolve( artifactFileName );
 
         try (OutputStream os = Files.newOutputStream( pomPath ))
         {
