@@ -126,4 +126,10 @@ class MetadataResolver
         initArtifactMap();
         return artifactMap.get( artifact );
     }
+
+    public synchronized void invalidateMappings()
+    {
+        initialized = false;
+        artifactMap.clear();
+    }
 }

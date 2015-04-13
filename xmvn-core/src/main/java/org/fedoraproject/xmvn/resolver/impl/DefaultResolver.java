@@ -62,6 +62,8 @@ public class DefaultResolver
 
     private final CacheManager cacheManager;
 
+    private final MockAgent mockAgent;
+
     @Inject
     public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator )
     {
@@ -71,6 +73,7 @@ public class DefaultResolver
         metadataResolver = new MetadataResolver( settings.getMetadataRepositories() );
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
+        mockAgent = new MockAgent();
     }
 
     @Override
@@ -97,6 +100,23 @@ public class DefaultResolver
         else
         {
             compatVersion = artifact.getVersion();
+        }
+
+        if ( metadata == null && mockAgent.isPresent() )
+        {
+            mockAgent.tryInstallArtifact( artifact );
+            metadataResolver.invalidateMappings();
+            metadata = metadataResolver.resolveArtifactMetadata( artifact );
+
+            if ( metadata == null )
+            {
+                metadata = metadataResolver.resolveArtifactMetadata( artifact.setVersion( Artifact.DEFAULT_VERSION ) );
+                compatVersion = null;
+            }
+            else
+            {
+                compatVersion = artifact.getVersion();
+            }
         }
 
         if ( metadata == null )
