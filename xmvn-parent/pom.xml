@@ -78,16 +78,16 @@
     <asmVersion>5.0.3</asmVersion>
     <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.4.0</ivyVersion>
-    <jcommanderVersion>1.47</jcommanderVersion>
+    <jcommanderVersion>1.48</jcommanderVersion>
     <gradleVersion>2.3</gradleVersion>
     <guiceVersion>3.2.5</guiceVersion>
     <guavaVersion>18.0</guavaVersion>
-    <mavenInvokerVersion>2.1.1</mavenInvokerVersion>
+    <mavenInvokerVersion>2.2</mavenInvokerVersion>
     <mavenVersion>3.3.1</mavenVersion>
-    <plexusUtilsVersion>3.0.21</plexusUtilsVersion>
+    <plexusUtilsVersion>3.0.22</plexusUtilsVersion>
     <pluginToolsVersion>3.4</pluginToolsVersion>
     <sisuVersion>0.3.0</sisuVersion>
-    <slf4jVersion>1.7.10</slf4jVersion>
+    <slf4jVersion>1.7.12</slf4jVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
