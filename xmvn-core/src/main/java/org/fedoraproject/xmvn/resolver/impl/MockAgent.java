@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.Files;
@@ -64,8 +63,7 @@ class MockAgent
             {
                 try (FileLock lock = channel.lock())
                 {
-                    channel.write( ByteBuffer.wrap( request.getBytes() ) );
-                    channel.force( true );
+                    Files.write( REQUEST_PIPE, request.getBytes() );
 
                     return Files.readAllLines( REPLY_PIPE ).iterator().next();
                 }
