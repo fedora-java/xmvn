@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -66,11 +65,9 @@ class MockAgent
                 try (FileLock lock = channel.lock())
                 {
                     channel.write( ByteBuffer.wrap( request.getBytes() ) );
+                    channel.force( true );
 
-                    try (BufferedReader br = Files.newBufferedReader( REPLY_PIPE ))
-                    {
-                        return br.readLine();
-                    }
+                    return Files.readAllLines( REPLY_PIPE ).iterator().next();
                 }
             }
         }
@@ -80,8 +77,8 @@ class MockAgent
     {
         try
         {
-            logger.info( "Requesting installation of artifact {} in mock", artifact );
-            String reply = communicate( artifact.toString() );
+            logger.info( "Requesting Mock to install artifact {}", artifact );
+            String reply = communicate( artifact.toString() + "\n" );
             logger.info( "Mock replied: {}", reply );
         }
         catch ( IOException e )
