@@ -91,26 +91,26 @@
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
-    <assemblyPluginVersion>2.5</assemblyPluginVersion>
+    <assemblyPluginVersion>2.5.3</assemblyPluginVersion>
     <buildHelperPluginVersion>1.9.1</buildHelperPluginVersion>
-    <cleanPluginVersion>2.6</cleanPluginVersion>
-    <compilerPluginVersion>3.1</compilerPluginVersion>
-    <dependencyPluginVersion>2.9</dependencyPluginVersion>
+    <cleanPluginVersion>2.6.1</cleanPluginVersion>
+    <compilerPluginVersion>3.3</compilerPluginVersion>
+    <dependencyPluginVersion>2.10</dependencyPluginVersion>
     <deployPluginVersion>2.8.2</deployPluginVersion>
     <easymockVersion>3.3.1</easymockVersion>
     <installPluginVersion>2.5.2</installPluginVersion>
-    <invokerPluginVersion>1.9</invokerPluginVersion>
-    <jarPluginVersion>2.5</jarPluginVersion>
-    <javadocPluginVersion>2.10.1</javadocPluginVersion>
+    <invokerPluginVersion>1.10</invokerPluginVersion>
+    <jarPluginVersion>2.6</jarPluginVersion>
+    <javadocPluginVersion>2.10.2</javadocPluginVersion>
     <junitVersion>4.12</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <modelloVersion>1.8.2</modelloVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
-    <projectInfoReportsPluginVersion>2.7</projectInfoReportsPluginVersion>
+    <projectInfoReportsPluginVersion>2.8</projectInfoReportsPluginVersion>
     <resourcesPluginVersion>2.7</resourcesPluginVersion>
     <sitePluginVersion>3.4</sitePluginVersion>
-    <surefireVersion>2.17</surefireVersion>
+    <surefireVersion>2.18.1</surefireVersion>
     <xmlunitVersion>1.6</xmlunitVersion>
 
   </properties>
