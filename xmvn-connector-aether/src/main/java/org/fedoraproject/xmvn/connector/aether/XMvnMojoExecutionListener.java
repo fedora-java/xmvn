@@ -33,6 +33,8 @@ import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.sisu.bean.BeanProperties;
+import org.eclipse.sisu.bean.BeanProperty;
 
 /**
  * Listens to various MOJO executions and captures useful information.
@@ -191,7 +193,18 @@ public class XMvnMojoExecutionListener
     @Override
     public void beforeMojoExecution( MojoExecutionEvent event )
     {
-        // Nothing to do
+        Mojo mojo = event.getMojo();
+        MojoExecution execution = event.getExecution();
+
+        // Disable doclint
+        if ( JAVADOC_AGGREGATE.equals( execution ) )
+        {
+            for ( BeanProperty<Object> property : new BeanProperties( mojo.getClass() ) )
+            {
+                if ( property.getName().equals( "additionalparam" ) )
+                    property.set( mojo, "-Xdoclint:none" );
+            }
+        }
     }
 
     @Override
