@@ -102,9 +102,8 @@ public class DefaultResolver
             compatVersion = artifact.getVersion();
         }
 
-        if ( metadata == null && mockAgent.isPresent() )
+        if ( metadata == null && mockAgent.tryInstallArtifact( artifact ) )
         {
-            mockAgent.tryInstallArtifact( artifact );
             metadataResolver.invalidateMappings();
             metadata = metadataResolver.resolveArtifactMetadata( artifact );
 

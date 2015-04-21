@@ -16,12 +16,6 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,55 +27,45 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  */
 class MockAgent
 {
-    private static final Path REQUEST_PIPE = Paths.get( "/var/run/xmvn/mock-request" );
-
-    private static final Path REPLY_PIPE = Paths.get( "/var/run/xmvn/mock-reply" );
+    private static final String REQUEST_CMD = System.getenv( "XMVN_REQUEST_ARTIFACT_CMD" );
 
     private final Logger logger = LoggerFactory.getLogger( MockAgent.class );
 
-    private volatile Boolean present;
-
-    public boolean isPresent()
+    public boolean tryInstallArtifact( Artifact artifact )
     {
-        if ( present == null )
-        {
-            present =
-                Files.isWritable( REQUEST_PIPE ) && !Files.isRegularFile( REQUEST_PIPE )
-                    && !Files.isDirectory( REQUEST_PIPE ) && Files.isReadable( REPLY_PIPE )
-                    && !Files.isRegularFile( REPLY_PIPE ) && !Files.isDirectory( REPLY_PIPE );
-        }
+        if ( REQUEST_CMD == null )
+            return false;
 
-        return present;
-    }
-
-    private String communicate( String request )
-        throws IOException
-    {
-        try (RandomAccessFile raf = new RandomAccessFile( REQUEST_PIPE.toString(), "rw" ))
-        {
-            try (FileChannel channel = raf.getChannel())
-            {
-                try (FileLock lock = channel.lock())
-                {
-                    Files.write( REQUEST_PIPE, request.getBytes() );
-
-                    return Files.readAllLines( REPLY_PIPE ).iterator().next();
-                }
-            }
-        }
-    }
-
-    public void tryInstallArtifact( Artifact artifact )
-    {
         try
         {
-            logger.info( "Requesting Mock to install artifact {}", artifact );
-            String reply = communicate( artifact.toString() + "\n" );
-            logger.info( "Mock replied: {}", reply );
+            String cmd = String.format( "%s maven '%s'", REQUEST_CMD, artifact.toString() );
+            logger.debug( "Trying to install artifact with external command: {}", cmd );
+
+            ProcessBuilder pb = new ProcessBuilder( "sh", "-c", cmd );
+            pb.redirectInput();
+            pb.redirectOutput();
+            pb.redirectError();
+            int exit = pb.start().waitFor();
+
+            if ( exit == 0 )
+            {
+                logger.info( "Artifact installed with external command: {}", artifact );
+                return true;
+            }
+            else
+            {
+                logger.info( "External command failed, exit code is {}", exit );
+                return false;
+            }
         }
         catch ( IOException e )
         {
-            logger.error( "Failed to communicate with XMvn Mock plugin", e );
+            logger.debug( "Failed to launch subprocess", e );
+            return false;
+        }
+        catch ( InterruptedException e )
+        {
+            throw new RuntimeException( "Interrupted when waiting for subprocess to complete", e );
         }
     }
 }
