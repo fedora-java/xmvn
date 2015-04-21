@@ -27,7 +27,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  */
 class MockAgent
 {
-    private static final String REQUEST_CMD = System.getenv( "XMVN_REQUEST_ARTIFACT_CMD" );
+    private static final String REQUEST_CMD = System.getProperty( "xmvn.resolver.requestArtifactCmd" );
 
     private final Logger logger = LoggerFactory.getLogger( MockAgent.class );
 
