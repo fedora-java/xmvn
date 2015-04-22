@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install.impl;
+package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,7 +39,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 /**
  * @author Mikolaj Izdebski
  */
-class JarUtils
+public class JarUtils
 {
     private static final Logger logger = LoggerFactory.getLogger( JarUtils.class );
 

@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.containsNativeCode;
-import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.injectManifest;
-import static org.fedoraproject.xmvn.tools.install.impl.JarUtils.usesNativeCode;
+import static org.fedoraproject.xmvn.tools.install.JarUtils.containsNativeCode;
+import static org.fedoraproject.xmvn.tools.install.JarUtils.injectManifest;
+import static org.fedoraproject.xmvn.tools.install.JarUtils.usesNativeCode;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
