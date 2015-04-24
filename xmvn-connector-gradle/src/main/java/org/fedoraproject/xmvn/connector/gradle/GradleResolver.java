@@ -28,6 +28,7 @@ import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ModuleComponentRe
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DescriptorParseContext;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.GradlePomModuleDescriptorParser;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.MetaDataParser;
+import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionComparator;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionSelectorScheme;
 import org.gradle.api.internal.artifacts.repositories.ResolutionAwareRepository;
 import org.gradle.api.internal.component.ArtifactType;
@@ -47,10 +48,10 @@ import org.gradle.internal.resolve.ModuleVersionResolveException;
 import org.gradle.internal.resolve.result.BuildableArtifactResolveResult;
 import org.gradle.internal.resolve.result.BuildableArtifactSetResolveResult;
 import org.gradle.internal.resolve.result.BuildableModuleComponentMetaDataResolveResult;
-import org.gradle.internal.resolve.result.BuildableModuleComponentVersionSelectionResolveResult;
-import org.gradle.internal.resource.DefaultLocallyAvailableExternalResource;
-import org.gradle.internal.resource.LocallyAvailableExternalResource;
+import org.gradle.internal.resolve.result.BuildableModuleVersionListingResolveResult;
+import org.gradle.internal.resource.local.DefaultLocallyAvailableExternalResource;
 import org.gradle.internal.resource.local.DefaultLocallyAvailableResource;
+import org.gradle.internal.resource.local.LocallyAvailableExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,7 +150,7 @@ public class GradleResolver
     }
 
     @Override
-    public void listModuleVersions( DependencyMetaData arg0, BuildableModuleComponentVersionSelectionResolveResult arg1 )
+    public void listModuleVersions( DependencyMetaData arg0, BuildableModuleVersionListingResolveResult arg1 )
     {
         logger.debug( "listModuleVersions() called, but it is NOT IMPLEMENTED" );
     }
@@ -195,7 +196,8 @@ public class GradleResolver
         {
             logger.debug( "Found Maven POM: {}", pomPath );
 
-            MetaDataParser parser = new GradlePomModuleDescriptorParser( new DefaultVersionSelectorScheme() );
+            MetaDataParser<DefaultMavenModuleResolveMetaData> parser =
+                new GradlePomModuleDescriptorParser( new DefaultVersionSelectorScheme( new DefaultVersionComparator() ) );
             MutableModuleComponentResolveMetaData metaData = parser.parseMetaData( this, pomPath.toFile() );
 
             result.resolved( metaData );
