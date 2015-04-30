@@ -147,6 +147,7 @@ public class ResolutionRequest
     @Override
     public String toString()
     {
-        return ResolutionRequest.class + "{artifact=" + artifact + ",isProviderNeeded=" + isProviderNeeded + "}";
+        return ResolutionRequest.class + "{artifact=" + artifact + ",isProviderNeeded=" + isProviderNeeded
+            + ",isPersistentFileNeeded=" + isPersistentFileNeeded + "}";
     }
 }
