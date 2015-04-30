@@ -64,7 +64,7 @@ public class Bug1127804Test
     public void setUp()
         throws Exception
     {
-        resolver = createStrictMock( Resolver.class );
+        resolver = createMock( Resolver.class );
         deployer = createStrictMock( Deployer.class );
         visitor = createMock( ReportVisitor.class );
 
