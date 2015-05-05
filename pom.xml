@@ -44,6 +44,7 @@
     <module>xmvn-connector-ivy</module>
     <module>xmvn-mojo</module>
     <module>xmvn-tools</module>
+    <module>xmvn-it</module>
   </modules>
   <dependencies>
     <dependency>
