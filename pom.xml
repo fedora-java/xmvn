@@ -172,26 +172,6 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-invoker-plugin</artifactId>
-        <configuration>
-          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-          <settingsFile>src/it/settings.xml</settingsFile>
-          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-          <postBuildHookScript>verify</postBuildHookScript>
-          <mavenHome>${project.build.directory}/dependency/${project.artifactId}-${project.version}</mavenHome>
-          <mavenExecutable>xmvn</mavenExecutable>
-        </configuration>
-        <executions>
-          <execution>
-            <id>integration-test</id>
-            <goals>
-              <goal>install</goal>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
           <skip>false</skip>

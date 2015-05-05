@@ -41,7 +41,7 @@ import org.junit.rules.TestName;
 /**
  * @author Mikolaj Izdebski
  */
-public class AbstractIntegrationTest
+public abstract class AbstractIntegrationTest
 {
     private static final String STDOUT = "stdout.txt";
 
@@ -74,7 +74,15 @@ public class AbstractIntegrationTest
 
         baseDir = Paths.get( "target/it" ).resolve( testName.getMethodName() ).toAbsolutePath();
         delete( baseDir );
-        Files.createDirectories( baseDir );
+        Path baseDirTemplate = Paths.get( "src/test/resources" ).resolve( testName.getMethodName() );
+        if ( Files.isDirectory( baseDirTemplate, LinkOption.NOFOLLOW_LINKS ) )
+        {
+            copy( baseDirTemplate, baseDir );
+        }
+        else
+        {
+            Files.createDirectories( baseDir );
+        }
 
         expectFailure = false;
     }
@@ -92,6 +100,18 @@ public class AbstractIntegrationTest
                 delete( child );
 
         Files.deleteIfExists( path );
+    }
+
+    private void copy( Path source, Path target )
+        throws Exception
+    {
+        Files.copy( source, target );
+
+        if ( Files.isDirectory( source, LinkOption.NOFOLLOW_LINKS ) )
+        {
+            for ( Path child : Files.newDirectoryStream( source ) )
+                copy( child, target.resolve( child.getFileName() ) );
+        }
     }
 
     private URL[] getBootClasspath()

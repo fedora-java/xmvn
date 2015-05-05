@@ -99,7 +99,6 @@
     <deployPluginVersion>2.8.2</deployPluginVersion>
     <easymockVersion>3.3.1</easymockVersion>
     <installPluginVersion>2.5.2</installPluginVersion>
-    <invokerPluginVersion>1.10</invokerPluginVersion>
     <jarPluginVersion>2.6</jarPluginVersion>
     <javadocPluginVersion>2.10.2</javadocPluginVersion>
     <junitVersion>4.12</junitVersion>
@@ -397,36 +396,6 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefireVersion}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-invoker-plugin</artifactId>
-          <version>${invokerPluginVersion}</version>
-        </plugin>
-        <!-- This plugin's configuration is used to store Eclipse m2e settings
-             only. It has no influence on the Maven build itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <versionRange>[2.7,)</versionRange>
-                    <goals>
-                      <goal>copy-dependencies</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
