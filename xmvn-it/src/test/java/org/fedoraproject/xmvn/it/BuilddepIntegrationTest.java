@@ -70,4 +70,19 @@ public class BuilddepIntegrationTest
 
         assertBuilddepEqual( "<dependencies/>" );
     }
+
+    @Test
+    @Ignore
+    public void testBuilddepSkippedTestDependencies()
+        throws Exception
+    {
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+
+        assertBuilddepEqual( "<dependencies>", //
+                             "  <dependency>", //
+                             "    <groupId>xpp3</groupId>", //
+                             "    <artifactId>xpp3</artifactId>", //
+                             "  </dependency>", //
+                             "</dependencies>" );
+    }
 }

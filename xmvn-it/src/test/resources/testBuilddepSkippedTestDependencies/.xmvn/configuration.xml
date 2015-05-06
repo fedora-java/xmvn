@@ -1,0 +1,5 @@
+<configuration>
+  <buildSettings>
+    <skipTests>true</skipTests>
+  </buildSettings>
+</configuration>
