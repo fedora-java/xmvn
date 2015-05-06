@@ -15,13 +15,10 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,9 +27,9 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -42,13 +39,8 @@ import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.dependency.DependencyExtractionRequest;
-import org.fedoraproject.xmvn.dependency.DependencyExtractionResult;
-import org.fedoraproject.xmvn.dependency.DependencyExtractor;
-import org.fedoraproject.xmvn.model.ModelFormatException;
-import org.fedoraproject.xmvn.resolver.ResolutionRequest;
-import org.fedoraproject.xmvn.resolver.ResolutionResult;
-import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.model.ModelProcessor;
 
 /**
  * @author Mikolaj Izdebski
@@ -58,19 +50,44 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 public class BuilddepMojo
     extends AbstractMojo
 {
+    static class NamespacedArtifact
+    {
+        String namespace;
+
+        Artifact artifact;
+
+        public NamespacedArtifact( String namespace, Artifact artifact )
+        {
+            this.namespace = namespace != null ? namespace : "";
+            this.artifact = artifact;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return artifact.hashCode() ^ namespace.hashCode();
+        }
+
+        @Override
+        public boolean equals( Object rhs )
+        {
+            NamespacedArtifact other = (NamespacedArtifact) rhs;
+            return namespace.equals( other.namespace ) && artifact.equals( other.artifact );
+        }
+    }
+
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
-    private final Resolver resolver;
+    private final ModelProcessor modelProcessor;
 
-    private final DependencyExtractor buildDependencyExtractor;
+    // Injected through reflection by XMvn lifecycle participant
+    private List<String[]> resolutions;
 
     @Inject
-    public BuilddepMojo( Resolver resolver,
-                         @Named( DependencyExtractor.BUILD ) DependencyExtractor buildDependencyExtractor )
+    public BuilddepMojo( ModelProcessor modelProcessor )
     {
-        this.resolver = resolver;
-        this.buildDependencyExtractor = buildDependencyExtractor;
+        this.modelProcessor = modelProcessor;
     }
 
     private static void addOptionalChild( Xpp3Dom parent, String tag, String value, String defaultValue )
@@ -83,10 +100,12 @@ public class BuilddepMojo
         }
     }
 
-    private static Xpp3Dom toXpp3Dom( Artifact artifact, String tag )
+    private static Xpp3Dom toXpp3Dom( NamespacedArtifact namespacedArtifact, String tag )
     {
+        Artifact artifact = namespacedArtifact.artifact;
         Xpp3Dom parent = new Xpp3Dom( tag );
 
+        addOptionalChild( parent, "namespace", namespacedArtifact.namespace, "" );
         addOptionalChild( parent, "groupId", artifact.getGroupId(), null );
         addOptionalChild( parent, "artifactId", artifact.getArtifactId(), null );
         addOptionalChild( parent, "extension", artifact.getExtension(), "jar" );
@@ -96,7 +115,7 @@ public class BuilddepMojo
         return parent;
     }
 
-    private static void serialize( Artifact artifact, XmlSerializer serializer, String namespace, String tag )
+    private static void serialize( NamespacedArtifact artifact, XmlSerializer serializer, String namespace, String tag )
         throws IOException
     {
         Xpp3Dom dom = toXpp3Dom( artifact, tag );
@@ -105,85 +124,56 @@ public class BuilddepMojo
 
     @Override
     public void execute()
-        throws MojoExecutionException, MojoFailureException
+        throws MojoExecutionException
     {
-        try
+        Set<Artifact> artifacts = new LinkedHashSet<>();
+        for ( MavenProject project : reactorProjects )
         {
-            Set<Artifact> reactorArtifacts = new LinkedHashSet<>();
-            Set<Artifact> dependencies = new LinkedHashSet<>();
-            Set<Artifact> resolvedDependencies = new LinkedHashSet<>();
-            BigDecimal javaVersion = null;
+            Model model = project.getModel();
+            String modelId = model.getLocation( "" ).getSource().getModelId();
+            BuildDependencyVisitor visitor = new BuildDependencyVisitor( modelId );
+            modelProcessor.processModel( model, visitor );
+            artifacts.addAll( visitor.getArtifacts() );
+        }
 
-            for ( MavenProject project : reactorProjects )
+        Set<NamespacedArtifact> deps = new LinkedHashSet<>();
+        for ( String[] resolution : resolutions )
+        {
+            Artifact artifact = new DefaultArtifact( resolution[0] );
+            String compatVersion = resolution[1];
+            String namespace = resolution[2];
+
+            if ( artifacts.contains( artifact ) )
             {
-                Artifact projectArtifact = Utils.aetherArtifact( project.getArtifact() );
-                File projectFile = project.getFile();
-                Path artifactPath = projectFile != null ? projectFile.toPath() : null;
-                projectArtifact = projectArtifact.setPath( artifactPath );
-
-                DependencyExtractionRequest request = new DependencyExtractionRequest();
-                request.setModelPath( artifactPath );
-                DependencyExtractionResult result = buildDependencyExtractor.extract( request );
-
-                dependencies.addAll( result.getDependencyArtifacts() );
-
-                if ( result.getJavaVersion() != null )
-                {
-                    BigDecimal thisVersion = new BigDecimal( result.getJavaVersion() );
-                    if ( javaVersion == null || javaVersion.compareTo( thisVersion ) < 0 )
-                        javaVersion = thisVersion;
-                }
-
-                reactorArtifacts.add( projectArtifact );
-                for ( org.apache.maven.artifact.Artifact attachedArtifact : project.getAttachedArtifacts() )
-                    reactorArtifacts.add( Utils.aetherArtifact( attachedArtifact ) );
+                deps.add( new NamespacedArtifact( namespace, artifact.setVersion( compatVersion ) ) );
             }
+        }
 
-            dependencies.removeAll( reactorArtifacts );
+        serializeArtifacts( deps );
+    }
 
-            for ( Artifact dependencyArtifact : dependencies )
-            {
-                ResolutionRequest request = new ResolutionRequest();
-                request.setArtifact( dependencyArtifact );
-                ResolutionResult result = resolver.resolve( request );
+    private void serializeArtifacts( Set<NamespacedArtifact> artifacts )
+        throws MojoExecutionException
+    {
+        try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-builddep" ), StandardCharsets.UTF_8 ))
+        {
+            XmlSerializer s = new MXSerializer();
+            s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );
+            s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-line-separator", "\n" );
+            s.setOutput( writer );
+            s.startDocument( "US-ASCII", null );
+            s.comment( " Build dependencies generated by XMvn " );
+            s.text( "\n" );
+            s.startTag( null, "dependencies" );
 
-                if ( result.getArtifactPath() != null )
-                {
-                    dependencyArtifact = dependencyArtifact.setPath( result.getArtifactPath() );
-                    dependencyArtifact = dependencyArtifact.setVersion( result.getCompatVersion() );
-                }
-                else
-                {
-                    dependencyArtifact = dependencyArtifact.setVersion( Artifact.DEFAULT_VERSION );
-                }
+            for ( NamespacedArtifact dependencyArtifact : artifacts )
+                serialize( dependencyArtifact, s, null, "dependency" );
 
-                resolvedDependencies.add( dependencyArtifact );
-            }
-
-            try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-builddep" ), StandardCharsets.UTF_8 ))
-            {
-                XmlSerializer s = new MXSerializer();
-                s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );
-                s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-line-separator", "\n" );
-                s.setOutput( writer );
-                s.startDocument( "US-ASCII", null );
-                s.comment( " Build dependencies generated by XMvn " );
-                s.text( "\n" );
-                s.startTag( null, "dependencies" );
-
-                for ( Artifact dependencyArtifact : resolvedDependencies )
-                    serialize( dependencyArtifact, s, null, "dependency" );
-
-                s.endTag( null, "dependencies" );
-            }
+            s.endTag( null, "dependencies" );
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Failed to generate build dependencies", e );
-        }
-        catch ( ModelFormatException e )
-        {
-            throw new MojoExecutionException( "Failed to generate build dependencies", e );
+            throw new MojoExecutionException( "Unable to write builddep file", e );
         }
     }
 }

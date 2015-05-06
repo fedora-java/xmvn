@@ -37,9 +37,11 @@ public class XMvnMavenLifecycleParticipant
     private final XMvnWorkspaceReader workspaceReader;
 
     @Inject
-    public XMvnMavenLifecycleParticipant( XMvnWorkspaceReader workspaceReader )
+    public XMvnMavenLifecycleParticipant( XMvnWorkspaceReader workspaceReader,
+                                          XMvnMojoExecutionListener mojoExecutionListener )
     {
         this.workspaceReader = workspaceReader;
+        workspaceReader.addResolutionListener( mojoExecutionListener );
     }
 
     @Override

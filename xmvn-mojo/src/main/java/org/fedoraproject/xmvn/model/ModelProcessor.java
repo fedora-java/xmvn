@@ -15,14 +15,12 @@
  */
 package org.fedoraproject.xmvn.model;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import org.apache.maven.model.Model;
 
 /**
  * @author Mikolaj Izdebski
  */
 public interface ModelProcessor
 {
-    void processModel( Path modelPath, ModelVisitor visitor )
-        throws IOException, ModelFormatException;
+    void processModel( Model model, ModelVisitor visitor );
 }

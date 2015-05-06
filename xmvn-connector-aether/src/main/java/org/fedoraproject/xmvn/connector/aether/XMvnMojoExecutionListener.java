@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Named;
@@ -36,6 +39,9 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.bean.BeanProperties;
 import org.eclipse.sisu.bean.BeanProperty;
 
+import org.fedoraproject.xmvn.resolver.ResolutionRequest;
+import org.fedoraproject.xmvn.resolver.ResolutionResult;
+
 /**
  * Listens to various MOJO executions and captures useful information.
  * 
@@ -44,7 +50,7 @@ import org.eclipse.sisu.bean.BeanProperty;
 @Named
 @Singleton
 public class XMvnMojoExecutionListener
-    implements MojoExecutionListener
+    implements MojoExecutionListener, ResolutionListener
 {
     private static class MojoGoal
     {
@@ -81,11 +87,17 @@ public class XMvnMojoExecutionListener
                                                                 "tycho-compiler-plugin", //
                                                                 "compile" );
 
+    private static final MojoGoal XMVN_BUILDDEP = new MojoGoal( "org.fedoraproject.xmvn", //
+                                                                "xmvn-mojo", //
+                                                                "builddep" );
+
     private static final Path XMVN_STATE_DIR = Paths.get( ".xmvn" );
 
     private static final Path APIDOCS_SYMLINK = XMVN_STATE_DIR.resolve( "apidocs" );
 
     private static final Path PROPERTIES_FILE = XMVN_STATE_DIR.resolve( "properties" );
+
+    private final List<String[]> resolutions = new ArrayList<>();
 
     private static String getBeanProperty( Object bean, String getterName )
         throws MojoExecutionException
@@ -205,11 +217,36 @@ public class XMvnMojoExecutionListener
                     property.set( mojo, "-Xdoclint:none" );
             }
         }
+        else if ( XMVN_BUILDDEP.equals( execution ) )
+        {
+            for ( BeanProperty<Object> property : new BeanProperties( mojo.getClass() ) )
+            {
+                if ( property.getName().equals( "resolutions" ) )
+                    property.set( mojo, Collections.unmodifiableList( resolutions ) );
+            }
+        }
     }
 
     @Override
     public void afterExecutionFailure( MojoExecutionEvent event )
     {
         // Nothing to do
+    }
+
+    @Override
+    public void resolutionRequested( ResolutionRequest request )
+    {
+        // Nothing to do
+    }
+
+    @Override
+    public void resolutionCompleted( ResolutionRequest request, ResolutionResult result )
+    {
+        if ( result.getArtifactPath() != null )
+        {
+            String[] tuple =
+                new String[] { request.getArtifact().toString(), result.getCompatVersion(), result.getNamespace() };
+            resolutions.add( tuple );
+        }
     }
 }

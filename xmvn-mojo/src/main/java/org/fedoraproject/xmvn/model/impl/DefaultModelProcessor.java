@@ -15,15 +15,12 @@
  */
 package org.fedoraproject.xmvn.model.impl;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -64,9 +61,7 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.model.Scm;
 import org.apache.maven.model.Site;
 
-import org.fedoraproject.xmvn.model.ModelFormatException;
 import org.fedoraproject.xmvn.model.ModelProcessor;
-import org.fedoraproject.xmvn.model.ModelReader;
 import org.fedoraproject.xmvn.model.ModelVisitor;
 
 /**
@@ -81,19 +76,9 @@ import org.fedoraproject.xmvn.model.ModelVisitor;
 public class DefaultModelProcessor
     implements ModelProcessor
 {
-    private final ModelReader modelReader;
-
-    @Inject
-    public DefaultModelProcessor( ModelReader modelReader )
-    {
-        this.modelReader = modelReader;
-    }
-
     @Override
-    public void processModel( Path modelPath, ModelVisitor visitor )
-        throws IOException, ModelFormatException
+    public void processModel( Model model, ModelVisitor visitor )
     {
-        Model model = modelReader.readModel( modelPath );
         visitor.visitProject( model );
         visit( visitor, model );
     }

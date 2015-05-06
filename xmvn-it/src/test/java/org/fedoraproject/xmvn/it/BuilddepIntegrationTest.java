@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -47,11 +46,10 @@ public class BuilddepIntegrationTest
     }
 
     @Test
-    @Ignore
     public void testBuilddepExpandVariables()
         throws Exception
     {
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.5.0-SNAPSHOT:builddep" );
 
         assertBuilddepEqual( "<dependencies>", //
                              "  <dependency>", //
@@ -62,21 +60,19 @@ public class BuilddepIntegrationTest
     }
 
     @Test
-    @Ignore
     public void testBuilddepReactorDependencies()
         throws Exception
     {
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.5.0-SNAPSHOT:builddep" );
 
         assertBuilddepEqual( "<dependencies/>" );
     }
 
     @Test
-    @Ignore
     public void testBuilddepSkippedTestDependencies()
         throws Exception
     {
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.5.0-SNAPSHOT:builddep" );
 
         assertBuilddepEqual( "<dependencies>", //
                              "  <dependency>", //
@@ -87,11 +83,10 @@ public class BuilddepIntegrationTest
     }
 
     @Test
-    @Ignore
     public void testBuilddepUnusedPlugins()
         throws Exception
     {
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.5.0-SNAPSHOT:builddep" );
 
         assertBuilddepEqual( "<dependencies/>" );
     }
