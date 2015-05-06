@@ -68,6 +68,6 @@ public class BuilddepIntegrationTest
     {
         performTest( "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
 
-        assertBuilddepEqual( "</dependencies>" );
+        assertBuilddepEqual( "<dependencies/>" );
     }
 }
