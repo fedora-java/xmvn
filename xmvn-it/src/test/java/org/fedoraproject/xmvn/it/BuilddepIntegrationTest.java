@@ -60,4 +60,14 @@ public class BuilddepIntegrationTest
                              "  </dependency>", //
                              "</dependencies>" );
     }
+
+    @Test
+    @Ignore
+    public void testBuilddepReactorDependencies()
+        throws Exception
+    {
+        performTest( "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+
+        assertBuilddepEqual( "</dependencies>" );
+    }
 }

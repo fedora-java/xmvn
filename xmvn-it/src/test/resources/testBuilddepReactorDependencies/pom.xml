@@ -1,0 +1,11 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmvn.it.gid</groupId>
+  <artifactId>parent</artifactId>
+  <version>42</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>foo</module>
+    <module>bar</module>
+  </modules>
+</project>
