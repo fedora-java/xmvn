@@ -126,6 +126,9 @@ public class BuilddepMojo
     public void execute()
         throws MojoExecutionException
     {
+        if ( resolutions == null )
+            return;
+
         Set<Artifact> artifacts = new LinkedHashSet<>();
         for ( MavenProject project : reactorProjects )
         {
