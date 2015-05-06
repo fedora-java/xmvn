@@ -51,12 +51,12 @@ public class BuilddepIntegrationTest
     public void testBuilddepExpandVariables()
         throws Exception
     {
-        performTest( "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
 
         assertBuilddepEqual( "<dependencies>", //
                              "  <dependency>", //
-                             "    <groupId>gid</groupId>", //
-                             "    <artifactId>dep</artifactId>", //
+                             "    <groupId>junit</groupId>", //
+                             "    <artifactId>junit</artifactId>", //
                              "  </dependency>", //
                              "</dependencies>" );
     }
@@ -66,7 +66,7 @@ public class BuilddepIntegrationTest
     public void testBuilddepReactorDependencies()
         throws Exception
     {
-        performTest( "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
 
         assertBuilddepEqual( "<dependencies/>" );
     }

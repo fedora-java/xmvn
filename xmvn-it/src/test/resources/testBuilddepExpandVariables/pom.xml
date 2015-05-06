@@ -1,13 +1,13 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>gid</groupId>
+  <groupId>junit</groupId>
   <artifactId>aid</artifactId>
   <version>1.2.3</version>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>dep</artifactId>
-      <version>4.5.6</version>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
     </dependency>
   </dependencies>
 </project>
