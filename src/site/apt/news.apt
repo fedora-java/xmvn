@@ -3,10 +3,38 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2015-02-13
+                    2015-05-06
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.4.0
+
+  XMvn 2.4.0 was released on 2015-05-06.  Most important changes
+  include:
+
+  * Major features
+
+    * Support for Mock pm_request plugin
+
+      XMvn 2.4.0 supports on-demand artifact installation via Mock
+      pm_request plugin.  When this plugin is enabled then XMvn will
+      try to install any missing artifacts instead of failing.
+
+  * Major bugfixes
+
+    * Java requires
+
+      Generation of Java requires (rhbz#1086335) was fixed in this
+      XMvn release.
+
+  * Minor features
+
+    * Effective POM caching
+
+      XMvn 2.4.0 fixes tries to avoid creating polluting system with
+      temporary files.  In particular effective POMs are cached in XDG
+      cache directory.
 
 * What's new in XMvn 2.3.2
 
