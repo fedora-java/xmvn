@@ -34,7 +34,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
@@ -66,15 +68,24 @@ public abstract class AbstractIntegrationTest
         return baseDir;
     }
 
+    @BeforeClass
+    public static void ensureCorrectWorkingDirectory()
+        throws Exception
+    {
+        Path cwd = Paths.get( "." ).toRealPath();
+        if ( !cwd.endsWith( "xmvn-it/target/work" ) )
+            throw new RuntimeException( "XMvn integration tests must be ran from xmvn-it/target/work directory" );
+    }
+
     @Before
     public void createBaseDir()
         throws Exception
     {
-        mavenHome = Paths.get( "target/dependency/xmvn-2.5.0-SNAPSHOT" ).toAbsolutePath();
+        mavenHome = Paths.get( "../dependency/xmvn-2.5.0-SNAPSHOT" ).toAbsolutePath();
 
-        baseDir = Paths.get( "target/it" ).resolve( testName.getMethodName() ).toAbsolutePath();
+        baseDir = Paths.get( "." ).toRealPath();
         delete( baseDir );
-        Path baseDirTemplate = Paths.get( "src/test/resources" ).resolve( testName.getMethodName() );
+        Path baseDirTemplate = Paths.get( "../../src/test/resources" ).resolve( testName.getMethodName() );
         if ( Files.isDirectory( baseDirTemplate, LinkOption.NOFOLLOW_LINKS ) )
         {
             copy( baseDirTemplate, baseDir );
@@ -87,6 +98,17 @@ public abstract class AbstractIntegrationTest
         expectFailure = false;
     }
 
+    @After
+    public void saveBaseDir()
+        throws Exception
+    {
+        Path saveDir = Paths.get( "../saved-work" ).resolve( testName.getMethodName() ).toAbsolutePath();
+        Files.createDirectories( saveDir );
+        delete( saveDir );
+        copy( baseDir, saveDir );
+        delete( baseDir );
+    }
+
     public void expectFailure()
     {
         expectFailure = true;
@@ -95,22 +117,25 @@ public abstract class AbstractIntegrationTest
     private void delete( Path path )
         throws IOException
     {
-        if ( Files.isDirectory( path, LinkOption.NOFOLLOW_LINKS ) )
-            for ( Path child : Files.newDirectoryStream( path ) )
+        for ( Path child : Files.newDirectoryStream( path ) )
+        {
+            if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
                 delete( child );
 
-        Files.deleteIfExists( path );
+            Files.deleteIfExists( child );
+        }
     }
 
     private void copy( Path source, Path target )
         throws Exception
     {
-        Files.copy( source, target );
-
-        if ( Files.isDirectory( source, LinkOption.NOFOLLOW_LINKS ) )
+        for ( Path child : Files.newDirectoryStream( source ) )
         {
-            for ( Path child : Files.newDirectoryStream( source ) )
-                copy( child, target.resolve( child.getFileName() ) );
+            Path targetChild = target.resolve( child.getFileName() );
+            Files.copy( child, targetChild );
+
+            if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
+                copy( child, targetChild );
         }
     }
 

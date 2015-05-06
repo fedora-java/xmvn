@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.it;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -90,7 +89,6 @@ public class BasicIntegrationTest
      * @throws Exception
      */
     @Test
-    @Ignore
     public void testOverrideCompilerSource()
         throws Exception
     {
