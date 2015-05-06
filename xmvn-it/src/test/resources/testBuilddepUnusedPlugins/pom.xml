@@ -1,0 +1,24 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmvn.its</groupId>
+  <artifactId>non-existent-plugin</artifactId>
+  <version>0.0.0-SNAPSHOT</version>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>dummy</groupId>
+        <artifactId>non-existent-plugin</artifactId>
+        <version>1.2.3</version>
+        <executions>
+          <execution>
+            <id>dummy</id>
+            <phase>site</phase>
+            <goals>
+              <goal>dummy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

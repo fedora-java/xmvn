@@ -85,4 +85,14 @@ public class BuilddepIntegrationTest
                              "  </dependency>", //
                              "</dependencies>" );
     }
+
+    @Test
+    @Ignore
+    public void testBuilddepUnusedPlugins()
+        throws Exception
+    {
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+
+        assertBuilddepEqual( "<dependencies/>" );
+    }
 }
