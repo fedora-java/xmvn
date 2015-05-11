@@ -144,7 +144,7 @@ public class DefaultResolver
             catch ( IOException e )
             {
                 logger.warn( "Failed to generate effective POM", e );
-                metadata = null;
+                return new DefaultResolutionResult();
             }
         }
 
