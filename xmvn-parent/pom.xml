@@ -80,13 +80,13 @@
     <ivyVersion>2.4.0</ivyVersion>
     <jcommanderVersion>1.48</jcommanderVersion>
     <gradleVersion>2.4</gradleVersion>
-    <guiceVersion>3.2.5</guiceVersion>
+    <guiceVersion>4.0</guiceVersion>
     <guavaVersion>18.0</guavaVersion>
     <mavenInvokerVersion>2.2</mavenInvokerVersion>
     <mavenVersion>3.3.1</mavenVersion>
     <plexusUtilsVersion>3.0.22</plexusUtilsVersion>
     <pluginToolsVersion>3.4</pluginToolsVersion>
-    <sisuVersion>0.3.0</sisuVersion>
+    <sisuVersion>0.3.1</sisuVersion>
     <slf4jVersion>1.7.12</slf4jVersion>
 
     <!-- Build dependencies -->
@@ -159,16 +159,10 @@
         <groupId>org.eclipse.sisu</groupId>
         <artifactId>org.eclipse.sisu.inject</artifactId>
         <version>${sisuVersion}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.sonatype.sisu</groupId>
-        <artifactId>sisu-guice</artifactId>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
         <version>${guiceVersion}</version>
         <classifier>no_aop</classifier>
         <exclusions>
