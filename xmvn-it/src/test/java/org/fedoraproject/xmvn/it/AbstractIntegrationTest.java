@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -96,6 +97,11 @@ public abstract class AbstractIntegrationTest
         }
 
         expectFailure = false;
+
+        Path metadataPath = Paths.get( "../../src/test/resources/metadata.xml" );
+        String metadata = new String( Files.readAllBytes( metadataPath ), StandardCharsets.UTF_8 );
+        metadata = metadata.replaceAll( "@@@", baseDir.toString() );
+        Files.write( Paths.get( "metadata.xml" ), metadata.getBytes( StandardCharsets.UTF_8 ) );
     }
 
     @After
@@ -215,12 +221,12 @@ public abstract class AbstractIntegrationTest
     public Stream<String> getStdout()
         throws Exception
     {
-        return Files.readAllLines( baseDir.resolve( STDOUT ) ).stream();
+        return Files.lines( baseDir.resolve( STDOUT ) );
     }
 
     public Stream<String> getStderr()
         throws Exception
     {
-        return Files.readAllLines( baseDir.resolve( STDERR ) ).stream();
+        return Files.lines( baseDir.resolve( STDERR ) );
     }
 }

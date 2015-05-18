@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/2.3.0">
+  <uuid>e5f95774-0533-44cd-807f-dddb67fc42de</uuid>
+  <artifacts>
+    <artifact>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>SYSTEM</version>
+      <path>@@@/../../src/test/resources/empty.jar</path>
+      <uuid>3bdab429-d4fc-4471-b238-52855e5a39fe</uuid>
+    </artifact>
+    <artifact>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
+      <version>SYSTEM</version>
+      <path>@@@/../../src/test/resources/empty.jar</path>
+      <uuid>dfd47753-4a98-4197-bb9b-f89718d8496b</uuid>
+    </artifact>
+  </artifacts>
+</metadata>

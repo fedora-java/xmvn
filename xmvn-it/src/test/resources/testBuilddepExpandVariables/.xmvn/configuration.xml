@@ -1,7 +1,4 @@
 <configuration>
-  <buildSettings>
-    <skipTests>true</skipTests>
-  </buildSettings>
   <resolverSettings>
     <metadataRepositories>
       <repository>metadata.xml</repository>
