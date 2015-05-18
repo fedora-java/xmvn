@@ -169,6 +169,11 @@ public class DefaultConfigurator
             logger.debug( "Skipping XDG configuration directory {}: path is not absolute", base );
             return;
         }
+        if ( System.getProperty( "xmvn.config.sandbox" ) != null )
+        {
+            logger.debug( "Skipping XDG configuration directory {}: running in sandbox environment", base );
+            return;
+        }
 
         base = base.resolve( "xmvn" );
         addConfigDir( base.resolve( "config.d" ) );

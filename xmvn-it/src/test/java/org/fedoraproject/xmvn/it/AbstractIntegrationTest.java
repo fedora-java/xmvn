@@ -179,6 +179,7 @@ public abstract class AbstractIntegrationTest
         System.setProperty( "maven.home", mavenHome.toString() );
         System.setProperty( "user.dir", baseDir.toString() );
         System.setProperty( "maven.multiModuleProjectDirectory", baseDir.toString() );
+        System.setProperty( "xmvn.config.sandbox", "true" );
 
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
