@@ -37,6 +37,8 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -75,6 +77,8 @@ public class BuilddepMojo
             return namespace.equals( other.namespace ) && artifact.equals( other.artifact );
         }
     }
+
+    private final Logger logger = LoggerFactory.getLogger( BuilddepMojo.class );
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
@@ -127,7 +131,10 @@ public class BuilddepMojo
         throws MojoExecutionException
     {
         if ( resolutions == null )
+        {
+            logger.warn( "Skipping buiddep: XMvn lifecycle participant is absent" );
             return;
+        }
 
         Set<Artifact> artifacts = new LinkedHashSet<>();
         for ( MavenProject project : reactorProjects )
