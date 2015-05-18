@@ -109,14 +109,6 @@ public class DefaultConfigurator
         }
     }
 
-    private String getCompatLevelSuffix()
-    {
-        String compatLevel = System.getProperty( "xmvn.compat" );
-        if ( compatLevel == null )
-            compatLevel = System.getenv( "XMVN_COMPAT" );
-        return compatLevel;
-    }
-
     private String getEnvDefault( String key, Object defaultValue )
     {
         String value = System.getenv( key );
@@ -129,16 +121,8 @@ public class DefaultConfigurator
         return value;
     }
 
-    private void addConfigFile( Path file, boolean useCompat )
+    private void addConfigFile( Path file )
     {
-        String suffix = getCompatLevelSuffix();
-        if ( suffix != null && useCompat )
-        {
-            Path compatFile = Paths.get( file + "-" + suffix );
-            if ( Files.isRegularFile( compatFile ) )
-                file = compatFile;
-        }
-
         if ( !Files.isRegularFile( file ) )
         {
             String reason = "not a regular file";
@@ -152,17 +136,9 @@ public class DefaultConfigurator
         configFiles.add( file );
     }
 
-    private void addConfigDir( Path directory, boolean useCompat )
+    private void addConfigDir( Path directory )
         throws IOException
     {
-        String suffix = getCompatLevelSuffix();
-        if ( suffix != null && useCompat )
-        {
-            Path compatDirectory = Paths.get( directory + "-" + suffix );
-            if ( Files.isDirectory( compatDirectory ) )
-                directory = compatDirectory;
-        }
-
         if ( !Files.isDirectory( directory ) )
         {
             String reason = "not a directory";
@@ -180,7 +156,7 @@ public class DefaultConfigurator
                 childreen.add( file );
 
             for ( Path file : childreen )
-                addConfigFile( file, false );
+                addConfigFile( file );
         }
     }
 
@@ -195,8 +171,8 @@ public class DefaultConfigurator
         }
 
         base = base.resolve( "xmvn" );
-        addConfigDir( base.resolve( "config.d" ), true );
-        addConfigFile( base.resolve( "configuration.xml" ), true );
+        addConfigDir( base.resolve( "config.d" ) );
+        addConfigFile( base.resolve( "configuration.xml" ) );
     }
 
     private Configuration loadConfiguration()
@@ -210,9 +186,9 @@ public class DefaultConfigurator
             configFiles = new ArrayList<>();
 
             // 2. reactor configuration directory: $PWD/.xmvn/conf.d/
-            addConfigDir( reactorConfDir.resolve( "config.d" ), true );
+            addConfigDir( reactorConfDir.resolve( "config.d" ) );
             // 3. reactor configuration file: $PWD/.xmvn/configuration.xml
-            addConfigFile( reactorConfDir.resolve( "configuration.xml" ), true );
+            addConfigFile( reactorConfDir.resolve( "configuration.xml" ) );
 
             // 4. user configuration directory: $XDG_CONFIG_HOME/xmvn/conf.d/
             // 5. user configuration file: $XDG_CONFIG_HOME/xmvn/configuration.xml
