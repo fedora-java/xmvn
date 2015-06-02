@@ -22,8 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -41,7 +43,7 @@ public class ArtifactVisitor
 
     private final Set<String> types = new LinkedHashSet<>();
 
-    private final MetadataResolver metadataResolver;
+    private final List<MetadataResolver> metadataResolvers;
 
     private boolean followSymlinks;
 
@@ -49,9 +51,9 @@ public class ArtifactVisitor
 
     private int failureCount;
 
-    public ArtifactVisitor( MetadataResolver metadataResolver )
+    public ArtifactVisitor( List<MetadataResolver> metadataResolvers )
     {
-        this.metadataResolver = metadataResolver;
+        this.metadataResolvers = metadataResolvers;
     }
 
     public void setTypes( Collection<String> types )
@@ -136,9 +138,7 @@ public class ArtifactVisitor
             return;
         }
 
-        ArtifactMetadata metadata = metadataResolver.resolveArtifactMetadata( artifact );
-        if ( metadata == null )
-            metadata = metadataResolver.resolveArtifactMetadata( artifact.setVersion( null ) );
+        ArtifactMetadata metadata = resolveMetadata( artifact );
         if ( metadata == null )
         {
             logger.warn( "Skipping file {}: Artifact {} not found in repository", path, artifact );
@@ -155,5 +155,22 @@ public class ArtifactVisitor
         }
 
         logger.info( "Linked {} to {}", path, artifactPath );
+    }
+
+    private ArtifactMetadata resolveMetadata( Artifact artifact )
+    {
+        List<Artifact> versionedArtifacts = Arrays.asList( artifact, artifact.setVersion( null ) );
+
+        for ( MetadataResolver resolver : metadataResolvers )
+        {
+            for ( Artifact versionedArtifact : versionedArtifacts )
+            {
+                ArtifactMetadata metadata = resolver.resolveArtifactMetadata( versionedArtifact );
+                if ( metadata != null )
+                    return metadata;
+            }
+        }
+
+        return null;
     }
 }

@@ -57,10 +57,11 @@ public class SubstCli
 
     private void run( SubstCliRequest cliRequest )
     {
-        List<String> metadataRepos = new ArrayList<>();
+        List<MetadataResolver> metadataResolvers = new ArrayList<>();
 
         if ( cliRequest.getRoot() != null )
         {
+            List<String> metadataRepos = new ArrayList<>();
             Path root = Paths.get( cliRequest.getRoot() );
 
             for ( String configuredRepo : configuredMetadataRepos )
@@ -71,11 +72,13 @@ public class SubstCli
                     metadataRepos.add( root.resolve( Paths.get( "/" ).relativize( repoPath ) ).toString() );
                 }
             }
+
+            metadataResolvers.add( new MetadataResolver( metadataRepos ) );
         }
 
-        metadataRepos.addAll( configuredMetadataRepos );
+        metadataResolvers.add( new MetadataResolver( configuredMetadataRepos ) );
 
-        ArtifactVisitor visitor = new ArtifactVisitor( new MetadataResolver( metadataRepos ) );
+        ArtifactVisitor visitor = new ArtifactVisitor( metadataResolvers );
 
         visitor.setTypes( cliRequest.getTypes() );
         visitor.setFollowSymlinks( cliRequest.isFollowSymlinks() );
