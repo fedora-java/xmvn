@@ -34,7 +34,7 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 /**
  * @author Mikolaj Izdebski
  */
-class MetadataResolver
+public class MetadataResolver
 {
     private final Logger logger = LoggerFactory.getLogger( MetadataResolver.class );
 

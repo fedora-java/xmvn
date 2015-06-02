@@ -17,7 +17,10 @@ package org.fedoraproject.xmvn.tools.subst;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,6 +35,9 @@ import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.resolver.impl.MetadataResolver;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -41,16 +47,36 @@ public class SubstCli
 {
     private final Logger logger = LoggerFactory.getLogger( SubstCli.class );
 
-    private final ArtifactVisitor visitor;
+    private final List<String> configuredMetadataRepos;
 
     @Inject
-    public SubstCli( ArtifactVisitor visitor )
+    public SubstCli( Configurator configurator )
     {
-        this.visitor = visitor;
+        configuredMetadataRepos = configurator.getConfiguration().getResolverSettings().getMetadataRepositories();
     }
 
     private void run( SubstCliRequest cliRequest )
     {
+        List<String> metadataRepos = new ArrayList<>();
+
+        if ( cliRequest.getRoot() != null )
+        {
+            Path root = Paths.get( cliRequest.getRoot() );
+
+            for ( String configuredRepo : configuredMetadataRepos )
+            {
+                Path repoPath = Paths.get( configuredRepo );
+                if ( repoPath.isAbsolute() )
+                {
+                    metadataRepos.add( root.resolve( Paths.get( "/" ).relativize( repoPath ) ).toString() );
+                }
+            }
+        }
+
+        metadataRepos.addAll( configuredMetadataRepos );
+
+        ArtifactVisitor visitor = new ArtifactVisitor( new MetadataResolver( metadataRepos ) );
+
         visitor.setTypes( cliRequest.getTypes() );
         visitor.setFollowSymlinks( cliRequest.isFollowSymlinks() );
         visitor.setDryRun( cliRequest.isDryRun() );

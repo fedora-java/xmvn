@@ -20,25 +20,20 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.resolver.ResolutionRequest;
-import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.resolver.impl.MetadataResolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
-@Named
-@Singleton
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
@@ -46,7 +41,7 @@ public class ArtifactVisitor
 
     private final Set<String> types = new LinkedHashSet<>();
 
-    private final Resolver resolver;
+    private final MetadataResolver metadataResolver;
 
     private boolean followSymlinks;
 
@@ -54,10 +49,9 @@ public class ArtifactVisitor
 
     private int failureCount;
 
-    @Inject
-    public ArtifactVisitor( Resolver resolver )
+    public ArtifactVisitor( MetadataResolver metadataResolver )
     {
-        this.resolver = resolver;
+        this.metadataResolver = metadataResolver;
     }
 
     public void setTypes( Collection<String> types )
@@ -142,13 +136,17 @@ public class ArtifactVisitor
             return;
         }
 
-        Path artifactPath = resolver.resolve( new ResolutionRequest( artifact ) ).getArtifactPath();
-        if ( artifactPath == null )
+        ArtifactMetadata metadata = metadataResolver.resolveArtifactMetadata( artifact );
+        if ( metadata == null )
+            metadata = metadataResolver.resolveArtifactMetadata( artifact.setVersion( null ) );
+        if ( metadata == null )
         {
             logger.warn( "Skipping file {}: Artifact {} not found in repository", path, artifact );
             failureCount++;
             return;
         }
+
+        Path artifactPath = Paths.get( metadata.getPath() );
 
         if ( !dryRun )
         {

@@ -53,6 +53,9 @@ class SubstCliRequest
     @Parameter( names = { "-t", "--type" }, description = "Consider artifacts with given type" )
     private List<String> types = new ArrayList<>( Arrays.asList( "jar", "war" ) );
 
+    @Parameter( names = { "-R", "--root" }, description = "Consider another root when looking for artifacts" )
+    private String root;
+
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
@@ -141,6 +144,16 @@ class SubstCliRequest
     public void setTypes( List<String> types )
     {
         this.types = types;
+    }
+
+    public String getRoot()
+    {
+        return root;
+    }
+
+    public void setRoot( String root )
+    {
+        this.root = root;
     }
 
     public Map<String, String> getDefines()
