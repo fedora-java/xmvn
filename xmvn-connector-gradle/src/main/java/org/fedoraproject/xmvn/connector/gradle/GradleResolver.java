@@ -207,7 +207,7 @@ public class GradleResolver
         else
         {
             logger.debug( "POM not found, trying non-POM artifacts" );
-            for ( IvyArtifactName artifact : getDependencyArtifactNames( request ) )
+            for ( IvyArtifactName artifact : getDependencyArtifactNames( id, request ) )
             {
                 String groupId = id.getGroup();
                 String artifactId = artifact.getName();
@@ -233,15 +233,15 @@ public class GradleResolver
         result.failed( new ModuleVersionResolveException( id, "XMvn was unable to resolve artifact " + artifact2 ) );
     }
 
-    private Set<IvyArtifactName> getDependencyArtifactNames( ComponentOverrideMetadata request )
+    private Set<IvyArtifactName> getDependencyArtifactNames( ModuleComponentIdentifier id,
+                                                             ComponentOverrideMetadata request )
     {
-        String moduleName = request.getClientModule().getName();
         Set<IvyArtifactName> artifactSet = new LinkedHashSet<>();
         artifactSet.addAll( request.getArtifacts() );
 
         if ( artifactSet.isEmpty() )
         {
-            artifactSet.add( new DefaultIvyArtifactName( moduleName, "jar", "jar",
+            artifactSet.add( new DefaultIvyArtifactName( id.getModule(), "jar", "jar",
                                                          Collections.<String, String> emptyMap() ) );
         }
 
