@@ -71,6 +71,7 @@ public class ResolutionRequestBean
 
             request.setArtifact( bean.getArtifact() );
             request.setProviderNeeded( bean.isProviderNeeded() );
+            request.setPersistentFileNeeded( true );
 
             return request;
         }
