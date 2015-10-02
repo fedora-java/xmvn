@@ -69,7 +69,7 @@ public class CompoundRepositoryFactory
         for ( Xpp3Dom child : configuration.getChildren() )
         {
             if ( !child.getName().equals( "repository" ) || child.getChildCount() > 0 )
-                throw new RuntimeException( "All childreen of <repositories> must be <repository> text nodes" );
+                throw new RuntimeException( "All children of <repositories> must be <repository> text nodes" );
 
             Repository slaveRepository = configurator.configureRepository( child.getValue().trim(), namespace );
             slaveRepositories.add( slaveRepository );

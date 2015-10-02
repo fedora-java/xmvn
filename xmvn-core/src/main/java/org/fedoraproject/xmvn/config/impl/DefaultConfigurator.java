@@ -151,11 +151,11 @@ public class DefaultConfigurator
 
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream( directory ))
         {
-            Set<Path> childreen = new TreeSet<>();
+            Set<Path> children = new TreeSet<>();
             for ( Path file : directoryStream )
-                childreen.add( file );
+                children.add( file );
 
-            for ( Path file : childreen )
+            for ( Path file : children )
                 addConfigFile( file );
         }
     }

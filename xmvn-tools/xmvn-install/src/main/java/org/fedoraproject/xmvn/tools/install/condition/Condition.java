@@ -49,12 +49,12 @@ public class Condition
         String name = dom.getName();
 
         if ( n == 0 )
-            throw new RuntimeException( "XML node " + name + " doesn't allow any childreen." );
+            throw new RuntimeException( "XML node " + name + " doesn't allow any children." );
 
         if ( n == 1 )
             throw new RuntimeException( "XML node " + name + " requires exactly one child node." );
 
-        throw new RuntimeException( "XML node " + name + " must have exactly " + n + " childreen." );
+        throw new RuntimeException( "XML node " + name + " must have exactly " + n + " children." );
     }
 
     private StringExpression parseString( Xpp3Dom dom )

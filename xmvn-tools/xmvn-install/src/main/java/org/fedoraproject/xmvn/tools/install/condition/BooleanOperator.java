@@ -27,12 +27,12 @@ abstract class BooleanOperator
 {
     private final boolean neutralValue;
 
-    private final List<BooleanExpression> childreen;
+    private final List<BooleanExpression> children;
 
     public BooleanOperator( boolean neutralValue, List<BooleanExpression> children )
     {
         this.neutralValue = neutralValue;
-        this.childreen = children;
+        this.children = children;
     }
 
     @Override
@@ -40,7 +40,7 @@ abstract class BooleanOperator
     {
         boolean value = neutralValue;
 
-        for ( BooleanExpression child : childreen )
+        for ( BooleanExpression child : children )
         {
             value = evaluate( value, child.getValue( context ) );
         }
