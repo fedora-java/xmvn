@@ -264,6 +264,11 @@
       </dependency>
       <dependency>
         <groupId>org.gradle</groupId>
+        <artifactId>gradle-base-services-groovy</artifactId>
+        <version>${gradleVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gradle</groupId>
         <artifactId>gradle-core</artifactId>
         <version>${gradleVersion}</version>
       </dependency>
