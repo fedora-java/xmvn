@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.connector.gradle;
 
 import org.gradle.api.Plugin;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.invocation.Gradle;
 
@@ -34,6 +35,10 @@ public class XMvnGradlePlugin
         gradle.allprojects( project -> {
             project.getRepositories().addFirst( repo );
             project.getBuildscript().getRepositories().addFirst( repo );
+
+            Task upload = project.getTasks().create( "xmvnInstall", XMvnInstallTask.class );
+            upload.setDescription( "Installs all artifacts through XMvn" );
+            upload.setGroup( "upload" );
         } );
     }
 }

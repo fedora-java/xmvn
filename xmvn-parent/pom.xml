@@ -80,6 +80,7 @@
     <ivyVersion>2.4.0</ivyVersion>
     <jcommanderVersion>1.48</jcommanderVersion>
     <gradleVersion>2.8</gradleVersion>
+    <groovyVersion>2.4.4</groovyVersion>
     <guiceVersion>4.0</guiceVersion>
     <guavaVersion>18.0</guavaVersion>
     <mavenInvokerVersion>2.2</mavenInvokerVersion>
@@ -281,6 +282,11 @@
         <groupId>org.gradle</groupId>
         <artifactId>gradle-resources</artifactId>
         <version>${gradleVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>${groovyVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
