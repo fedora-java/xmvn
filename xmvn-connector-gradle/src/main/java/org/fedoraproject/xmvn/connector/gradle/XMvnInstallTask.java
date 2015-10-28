@@ -20,12 +20,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ModuleDependency;
+import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.artifacts.PublishArtifact;
 import org.gradle.api.artifacts.PublishException;
 import org.gradle.api.component.SoftwareComponent;
@@ -75,6 +77,18 @@ class XMvnInstallTask
 
     private List<Artifact> getDependencyArtifacts( ModuleDependency dependency )
     {
+        if ( dependency instanceof ProjectDependency )
+        {
+            ProjectDependency projectDependency = (ProjectDependency) dependency;
+            Project dependencyProject = projectDependency.getDependencyProject();
+            Stream<SoftwareComponent> components = dependencyProject.getComponents().stream();
+            Stream<SoftwareComponentInternal> internalComponents = components.map( c -> (SoftwareComponentInternal) c );
+            Stream<Usage> usages = internalComponents.flatMap( ic -> ic.getUsages().stream() );
+            Stream<PublishArtifact> publishArtifacts = usages.flatMap( usage -> usage.getArtifacts().stream() );
+            Stream<Artifact> artifacts = publishArtifacts.map( pa -> getPublishArtifact( dependencyProject, pa ) );
+            return artifacts.collect( Collectors.toList() );
+        }
+
         String groupId = dependency.getGroup();
         String version = dependency.getVersion();
 
