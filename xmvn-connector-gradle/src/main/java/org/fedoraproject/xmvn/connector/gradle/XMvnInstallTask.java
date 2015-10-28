@@ -101,11 +101,11 @@ class XMvnInstallTask
         } ).collect( Collectors.toList() );
     }
 
-    private void deploy( Project project, PublishArtifact gradleArtifact, Set<ModuleDependency> dependencies )
+    private void deploy( PublishArtifact gradleArtifact, Set<ModuleDependency> dependencies )
     {
         DeploymentRequest request = new DeploymentRequest();
 
-        Artifact publishArtifact = getPublishArtifact( project, gradleArtifact );
+        Artifact publishArtifact = getPublishArtifact( getProject(), gradleArtifact );
         publishArtifact = publishArtifact.setPath( gradleArtifact.getFile().toPath() );
         request.setArtifact( publishArtifact );
 
@@ -138,9 +138,10 @@ class XMvnInstallTask
         }
     }
 
-    private void deployProject( Project project )
+    @TaskAction
+    protected void deployProject()
     {
-        for ( SoftwareComponent component : project.getComponents() )
+        for ( SoftwareComponent component : getProject().getComponents() )
         {
             SoftwareComponentInternal internalComponent = (SoftwareComponentInternal) component;
 
@@ -150,15 +151,9 @@ class XMvnInstallTask
 
                 for ( PublishArtifact artifact : usage.getArtifacts() )
                 {
-                    deploy( project, artifact, dependencies );
+                    deploy( artifact, dependencies );
                 }
             }
         }
-    }
-
-    @TaskAction
-    protected void upload()
-    {
-        deployProject( getProject() );
     }
 }
