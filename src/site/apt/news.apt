@@ -3,10 +3,80 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2015-05-06
+                    2015-10-28
 
 
 Release notes for XMvn
+
+* What's new in XMvn 2.5.0
+
+  XMvn 2.5.0 was released on 2015-10-28.  Most important changes
+  include:
+
+  * Major features
+
+    * XMvn Gradle plugin
+
+      XMvn Gradle plugin was implemented in version 2.5.0.  When
+      applied on a project, this plugin automatically configures
+      repositories in local mode, so that project dependencies can be
+      resolved from system repository.  It also provides
+      <<<xmvnInstall>>> task, which can be used to install artifacts
+      produced by the build with XMvn Installer.
+
+    * Custom buildroot option for XMvn Subst
+
+      XMvn Subst now accepts a new option, <<<--root>>>, which
+      specifies buildroot from which XMvn should resolve artifacts, in
+      addition to standard locations.  This option can be used for
+      symlinking JARs produced during build.  (Bug: 1226251)
+
+  * Major bugfixes
+
+    * Builddep MOJO fixes
+
+      Builddep MOJO was rewritten from scratch.  The new code is more
+      generic and supports many corner case in which the previous
+      version produced incorrect results (bugs: 1217422, 1217425,
+      1217462, 1217473).
+
+  * Minor features
+
+    * Warning when builddep MOJO is ran with pure Maven
+
+      XMvn builddep MOJO 2.5.0 will print a warning when it's ran
+      outsides of XMvn.
+
+    * Allowing manifacs injection for invalid JAR files
+
+      OpenJDK has a sanity check that prevents adding duplicate
+      entries to ZIP streams.  When trying to inject manifests to JAR
+      files with duplicate entries XMvn would previously fail with
+      "ZipException: duplicate entry".  XMvn 2.5.0 added a workaround
+      that allows manifest injection to such invalid JAR files.
+
+  * Minor bugfixes
+
+    * GradleResolver crash when resolving tools.jar
+
+      XMvn 2.5.0 fixes a bug that caused Gradle resolver crash when
+      trying to resolve tools.jar artifact.
+
+    * Crash when effective POM generation failed
+
+      XMvn 2.5.0 fixes a bug that caused crash with
+      NullPointerException uppon failure to generate effective POM.
+
+    * Slashes in effective POM names are replaced with dots
+
+      XMvn versions prior to 2.5.0 would try to create effective POM
+      files with artifactID as name, even if it contain slash
+      character.  XMvn 2.5.0 fixes this bug.
+
+  * Other changes
+
+      XMvn 2.5.0 drops support for rarely-used compatibility
+      configuration suffixes.
 
 * What's new in XMvn 2.4.0
 
