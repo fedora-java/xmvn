@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.connector.gradle;
 
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -107,6 +108,11 @@ class XMvnInstallTask
         Artifact publishArtifact = getPublishArtifact( project, gradleArtifact );
         publishArtifact = publishArtifact.setPath( gradleArtifact.getFile().toPath() );
         request.setArtifact( publishArtifact );
+
+        if ( !Files.exists( publishArtifact.getPath() ) )
+        {
+            return;
+        }
 
         if ( gradleArtifact.getType() != null )
         {
