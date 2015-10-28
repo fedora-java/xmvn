@@ -16,8 +16,10 @@
 package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -25,6 +27,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -164,6 +167,31 @@ public class JarUtils
     }
 
     /**
+     * OpenJDK has a sanity check that prevents adding duplicate entries to ZIP streams. The problem is that some of
+     * JARs we try to inject manifests to (especially the ones created by Gradle) already contain duplicate entries, so
+     * manifest injection would always fail for them with "ZipException: duplicate entry".
+     * <p>
+     * This function tries to work around this OpenJDK sanity check, effectively allowing creating ZIP files with
+     * duplicated entries. It should be called on particular ZIP output stream before adding each duplicate entry.
+     * 
+     * @param zipOutputStream ZIP stream to hack
+     */
+    private static void openJdkAvoidDuplicateEntryHack( ZipOutputStream zipOutputStream )
+    {
+        try
+        {
+            Field namesField = ZipOutputStream.class.getDeclaredField( "names" );
+            namesField.setAccessible( true );
+            Collection<?> names = (Collection<?>) namesField.get( zipOutputStream );
+            names.clear();
+        }
+        catch ( ReflectiveOperationException e )
+        {
+            // This hack relies on OpenJDK internals and therefore is not ugarranteed to work. Ignore failures.
+        }
+    }
+
+    /**
      * Inject artifact coordinates into manifest of specified JAR (or WAR, EAR, ...) file. The file is modified
      * in-place.
      * 
@@ -198,6 +226,7 @@ public class JarUtils
                 JarEntry entry;
                 while ( ( entry = jis.getNextJarEntry() ) != null )
                 {
+                    openJdkAvoidDuplicateEntryHack( jos );
                     jos.putNextEntry( entry );
 
                     int sz;
