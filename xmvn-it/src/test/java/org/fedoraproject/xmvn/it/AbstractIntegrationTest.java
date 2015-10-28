@@ -82,7 +82,7 @@ public abstract class AbstractIntegrationTest
     public void createBaseDir()
         throws Exception
     {
-        mavenHome = Paths.get( "../dependency/xmvn-2.5.0-SNAPSHOT" ).toAbsolutePath();
+        mavenHome = Paths.get( "../dependency/xmvn-2.5.0" ).toAbsolutePath();
 
         baseDir = Paths.get( "." ).toRealPath();
         delete( baseDir );
