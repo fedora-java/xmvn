@@ -8,4 +8,4 @@ if [ ! -d target/site ]; then
     exit 1
 fi
 
-tar cC target site | lbzip2 -u | ssh fedorapeople.org "cd public_html/xmvn/stage && rm -rf site && tar xjv"
+tar cC target site | gzip -9 | ssh fedorapeople.org "cd public_html/xmvn/stage && rm -rf site && tar xzv"
