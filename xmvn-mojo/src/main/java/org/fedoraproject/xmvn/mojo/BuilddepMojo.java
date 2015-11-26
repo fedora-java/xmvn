@@ -139,7 +139,7 @@ public class BuilddepMojo
         Set<Artifact> artifacts = new LinkedHashSet<>();
         for ( MavenProject project : reactorProjects )
         {
-            Model model = project.getModel();
+            Model model = project.getModel().clone();
             String modelId = model.getLocation( "" ).getSource().getModelId();
             BuildDependencyVisitor visitor = new BuildDependencyVisitor( modelId );
             modelProcessor.processModel( model, visitor );
@@ -149,6 +149,9 @@ public class BuilddepMojo
         Set<NamespacedArtifact> deps = new LinkedHashSet<>();
         for ( String[] resolution : resolutions )
         {
+            if ( resolution == null )
+                continue;
+
             Artifact artifact = new DefaultArtifact( resolution[0] );
             String compatVersion = resolution[1];
             String namespace = resolution[2];

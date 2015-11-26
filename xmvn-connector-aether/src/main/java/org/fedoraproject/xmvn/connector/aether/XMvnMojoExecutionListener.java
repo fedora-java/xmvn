@@ -222,7 +222,7 @@ public class XMvnMojoExecutionListener
             for ( BeanProperty<Object> property : new BeanProperties( mojo.getClass() ) )
             {
                 if ( property.getName().equals( "resolutions" ) )
-                    property.set( mojo, Collections.unmodifiableList( resolutions ) );
+                    property.set( mojo, Collections.unmodifiableList( new ArrayList<>( resolutions ) ) );
             }
         }
     }
