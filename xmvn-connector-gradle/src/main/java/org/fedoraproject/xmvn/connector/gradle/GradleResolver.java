@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
-import org.gradle.api.artifacts.repositories.ArtifactRepository;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ConfiguredModuleComponentRepository;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ModuleComponentRepositoryAccess;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DescriptorParseContext;
@@ -30,6 +29,7 @@ import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.GradlePomM
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.MetaDataParser;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionComparator;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionSelectorScheme;
+import org.gradle.api.internal.artifacts.repositories.AbstractArtifactRepository;
 import org.gradle.api.internal.artifacts.repositories.ResolutionAwareRepository;
 import org.gradle.api.internal.component.ArtifactType;
 import org.gradle.internal.component.external.model.DefaultMavenModuleResolveMetaData;
@@ -68,8 +68,9 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  * @author Mikolaj Izdebski
  */
 public class GradleResolver
-    implements ArtifactRepository, ResolutionAwareRepository, ConfiguredModuleComponentRepository,
-    ModuleComponentRepositoryAccess, DescriptorParseContext
+    extends AbstractArtifactRepository
+    implements ResolutionAwareRepository, ConfiguredModuleComponentRepository, ModuleComponentRepositoryAccess,
+    DescriptorParseContext
 {
     private final Logger logger = LoggerFactory.getLogger( GradleResolver.class );
 
@@ -98,20 +99,6 @@ public class GradleResolver
         Resolver resolver = LazyResolverProvider.resolver;
         ResolutionResult result = resolver.resolve( request );
         return result.getArtifactPath();
-    }
-
-    private String name;
-
-    @Override
-    public String getName()
-    {
-        return name;
-    }
-
-    @Override
-    public void setName( String name )
-    {
-        this.name = name;
     }
 
     @Override
