@@ -1,9 +1,9 @@
-___  ___ __  __
-\  \/  /|  \/  |__ __ ___
- \    / | |\/| |\ V /| ' \
- /    \ |_|  |_| \_/ |_||_|  v. 2.6.0-SNAPSHOT
-/__/\  \
-     \_/   ~ intelligent packaging ~
+    ___  ___ __  __
+    \  \/  /|  \/  |__ __ ___
+     \    / | |\/| |\ V /| ' \
+     /    \ |_|  |_| \_/ |_||_|  v. 2.6.0-SNAPSHOT
+    /__/\  \
+         \_/   ~ intelligent packaging ~
 
 http://mizdebsk.fedorapeople.org/xmvn/
 
@@ -17,7 +17,8 @@ terms of Apache License Version 2.0.
 
 XMvn was written by Mikolaj Izdebski.
 
-* Contact
+Contact
+-------
 
 XMvn is a community project, new contributotrs are welcome. The most
 straightforward way to introduce new features is writting them yourself.
