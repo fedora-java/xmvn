@@ -31,7 +31,7 @@
     <fileSet>
       <includes>
         <include>AUTHORS</include>
-        <include>README</include>
+        <include>README.md</include>
         <include>LICENSE</include>
         <include>NOTICE</include>
       </includes>
