@@ -312,20 +312,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>mizdebsk-redhat</id>
-      <url>http://people.redhat.com/~mizdebsk/xmvn/repo/</url>
-      <snapshots>
-        <enabled>false</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-    </repository>
-  </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>fedorapeople-snapshots</id>
