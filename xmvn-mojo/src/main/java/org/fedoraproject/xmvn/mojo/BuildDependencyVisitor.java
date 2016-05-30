@@ -27,7 +27,6 @@ import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.util.StringUtils;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.model.AbstractModelVisitor;
@@ -40,6 +39,7 @@ class BuildDependencyVisitor
     extends AbstractModelVisitor
 {
     private static final Set<Artifact> COMMON_PLUGINS = new LinkedHashSet<>();
+
     static
     {
         // FIXME: don't hardcode this
@@ -54,7 +54,7 @@ class BuildDependencyVisitor
         COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-javadoc-plugin" ) );
     }
 
-    private static final List<String> BUILD_SCOPES = Arrays.asList( null, "compile", "provided", "test" );
+    private static final List<String> BUILD_SCOPES = Arrays.asList( null, "compile", "provided", "test", "runtime" );
 
     private static final List<String> RUNTIME_SCOPES = Arrays.asList( null, "compile", "runtime" );
 
@@ -101,7 +101,8 @@ class BuildDependencyVisitor
     @Override
     public void visitBuildExtension( Extension extension )
     {
-        artifacts.add( new DefaultArtifact( extension.getGroupId(), extension.getArtifactId(), extension.getVersion() ) );
+        artifacts.add( new DefaultArtifact( extension.getGroupId(), extension.getArtifactId(),
+                                            extension.getVersion() ) );
     }
 
     @Override
