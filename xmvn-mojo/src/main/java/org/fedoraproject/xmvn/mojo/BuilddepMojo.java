@@ -37,12 +37,11 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.model.ModelProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -79,6 +78,9 @@ public class BuilddepMojo
     }
 
     private final Logger logger = LoggerFactory.getLogger( BuilddepMojo.class );
+
+    @Parameter( defaultValue = "xmvn.builddep.skip" )
+    private boolean skip;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
@@ -130,6 +132,12 @@ public class BuilddepMojo
     public void execute()
         throws MojoExecutionException
     {
+        if ( skip )
+        {
+            logger.info( "Skipping buiddep: xmvn.builddep.skip property was set" );
+            return;
+        }
+
         if ( resolutions == null )
         {
             logger.warn( "Skipping buiddep: XMvn lifecycle participant is absent" );
