@@ -90,4 +90,13 @@ public class BuilddepIntegrationTest
 
         assertBuilddepEqual( "<dependencies/>" );
     }
+
+    @Test
+    public void testBuilddepTychoPomless()
+        throws Exception
+    {
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.6.0-SNAPSHOT:builddep" );
+
+        assertBuilddepEqual( "<dependencies/>" );
+    }
 }
