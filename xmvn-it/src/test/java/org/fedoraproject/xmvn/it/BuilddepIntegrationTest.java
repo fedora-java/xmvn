@@ -187,4 +187,11 @@ public class BuilddepIntegrationTest
         expectBuildDependency( "org.codehaus.plexus", "plexus-component-metadata" );
         performBuilddepTest();
     }
+
+    @Test
+    public void testBuilddepTychoPomless()
+        throws Exception
+    {
+        performBuilddepTest();
+    }
 }
