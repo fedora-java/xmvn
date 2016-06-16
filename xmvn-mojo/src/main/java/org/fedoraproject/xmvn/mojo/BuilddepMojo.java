@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.mojo;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -27,6 +28,9 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.maven.lifecycle.mapping.Lifecycle;
 import org.apache.maven.lifecycle.mapping.LifecycleMapping;
@@ -45,8 +49,13 @@ import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.model.ModelProcessor;
+import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * @author Mikolaj Izdebski
@@ -98,10 +107,30 @@ public class BuilddepMojo
     // Injected through reflection by XMvn lifecycle participant
     private List<String[]> resolutions;
 
+    private Set<Artifact> commonDeps = new LinkedHashSet<>();
+
     @Inject
     public BuilddepMojo( ModelProcessor modelProcessor )
     {
         this.modelProcessor = modelProcessor;
+
+        try (InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/common-deps.xml" ))
+        {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = builder.parse( xmlStream );
+            NodeList dependencies = doc.getElementsByTagName( "dependency" );
+            for ( int i = 0; i < dependencies.getLength(); i++ )
+            {
+                Element dependency = (Element) dependencies.item( i );
+                String groupId = dependency.getAttribute( "groupId" );
+                String artifactId = dependency.getAttribute( "artifactId" );
+                commonDeps.add( new DefaultArtifact( groupId, artifactId ) );
+            }
+        }
+        catch ( ParserConfigurationException | IOException | SAXException ex )
+        {
+            throw new RuntimeException( "Couldnt load resource 'common-deps.xml'", ex );
+        }
     }
 
     private static void addOptionalChild( Xpp3Dom parent, String tag, String value, String defaultValue )
@@ -136,6 +165,37 @@ public class BuilddepMojo
         dom.writeToSerializer( namespace, serializer );
     }
 
+    private Set<Artifact> getModelDependencies( Model model )
+    {
+        String modelId = model.getLocation( "" ).getSource().getModelId();
+        BuildDependencyVisitor visitor = new BuildDependencyVisitor( modelId );
+        modelProcessor.processModel( model.clone(), visitor );
+        return visitor.getArtifacts();
+    }
+
+    private void addLifecycleDependencies( Set<Artifact> artifacts, String packaging )
+    {
+        LifecycleMapping lifecycleMapping = lifecycleMappings.get( packaging != null ? packaging : "jar" );
+        Lifecycle defaultLifecycle = lifecycleMapping.getLifecycles().get( "default" );
+        if ( defaultLifecycle == null )
+            return;
+
+        for ( LifecyclePhase phase : defaultLifecycle.getLifecyclePhases().values() )
+        {
+            if ( phase.getMojos() == null )
+                continue;
+
+            for ( LifecycleMojo mojo : phase.getMojos() )
+            {
+                String[] goalCoords = mojo.getGoal().split( ":" );
+                if ( goalCoords.length == 4 )
+                {
+                    artifacts.add( new DefaultArtifact( goalCoords[0], goalCoords[1], goalCoords[2] ) );
+                }
+            }
+        }
+    }
+
     @Override
     public void execute()
         throws MojoExecutionException
@@ -155,34 +215,11 @@ public class BuilddepMojo
         Set<Artifact> artifacts = new LinkedHashSet<>();
         for ( MavenProject project : reactorProjects )
         {
-            Model model = project.getModel().clone();
-            String modelId = model.getLocation( "" ).getSource().getModelId();
-            BuildDependencyVisitor visitor = new BuildDependencyVisitor( modelId );
-            modelProcessor.processModel( model, visitor );
-            artifacts.addAll( visitor.getArtifacts() );
-
-            String packaging = project.getPackaging() != null ? project.getPackaging() : "jar";
-            LifecycleMapping lifecycleMapping = lifecycleMappings.get( packaging );
-            Lifecycle defaultLifecycle = lifecycleMapping.getLifecycles().get( "default" );
-            if ( defaultLifecycle != null )
-            {
-                for ( LifecyclePhase phase : defaultLifecycle.getLifecyclePhases().values() )
-                {
-                    if ( phase.getMojos() != null )
-                    {
-                        for ( LifecycleMojo mojo : phase.getMojos() )
-                        {
-                            String goal = mojo.getGoal();
-                            String[] coords = goal.split( ":" );
-                            if ( coords.length == 4 )
-                            {
-                                artifacts.add( new DefaultArtifact( coords[0], coords[1], coords[2] ) );
-                            }
-                        }
-                    }
-                }
-            }
+            artifacts.addAll( getModelDependencies( project.getModel() ) );
+            addLifecycleDependencies( artifacts, project.getPackaging() );
         }
+
+        artifacts.removeIf( dep -> commonDeps.contains( dep.setVersion( Artifact.DEFAULT_VERSION ) ) );
 
         Set<NamespacedArtifact> deps = new LinkedHashSet<>();
         for ( String[] resolution : resolutions )
@@ -198,24 +235,6 @@ public class BuilddepMojo
             {
                 deps.add( new NamespacedArtifact( namespace, artifact.setVersion( compatVersion ) ) );
             }
-        }
-
-        // Remove common deps
-        {
-            Set<Artifact> COMMON_PLUGINS = new LinkedHashSet<>();
-
-            // FIXME: don't hardcode this
-
-            // Default lifecycle mappings for packaging "jar"
-            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-resources-plugin" ) );
-            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-compiler-plugin" ) );
-            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-surefire-plugin" ) );
-            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-jar-plugin" ) );
-
-            // Called by XMvn directly
-            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-javadoc-plugin" ) );
-
-            deps.removeIf( dep -> COMMON_PLUGINS.contains( dep.artifact.setVersion( Artifact.DEFAULT_VERSION ) ) );
         }
 
         serializeArtifacts( deps );

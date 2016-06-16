@@ -1,0 +1,12 @@
+<!-- This file contains list of dependencies which are ignored by builddep
+     MOJO - they are assumed to be always available. -->
+<dependencies>
+  <!-- Plugins in default lifecycle for packaging "jar" -->
+  <dependency groupId="org.apache.maven.plugins" artifactId="maven-resources-plugin" />
+  <dependency groupId="org.apache.maven.plugins" artifactId="maven-compiler-plugin" />
+  <dependency groupId="org.apache.maven.plugins" artifactId="maven-surefire-plugin" />
+  <dependency groupId="org.apache.maven.plugins" artifactId="maven-jar-plugin" />
+
+  <!-- Plugins called by XMvn directly -->
+  <dependency groupId="org.apache.maven.plugins" artifactId="maven-javadoc-plugin" />
+</dependencies>
