@@ -164,15 +164,21 @@ public class BuilddepMojo
             String packaging = project.getPackaging() != null ? project.getPackaging() : "jar";
             LifecycleMapping lifecycleMapping = lifecycleMappings.get( packaging );
             Lifecycle defaultLifecycle = lifecycleMapping.getLifecycles().get( "default" );
-            for ( LifecyclePhase phase : defaultLifecycle.getLifecyclePhases().values() )
+            if ( defaultLifecycle != null )
             {
-                for ( LifecycleMojo mojo : phase.getMojos() )
+                for ( LifecyclePhase phase : defaultLifecycle.getLifecyclePhases().values() )
                 {
-                    String goal = mojo.getGoal();
-                    String[] coords = goal.split( ":" );
-                    if ( coords.length == 4 )
+                    if ( phase.getMojos() != null )
                     {
-                        artifacts.add( new DefaultArtifact( coords[0], coords[1], coords[2] ) );
+                        for ( LifecycleMojo mojo : phase.getMojos() )
+                        {
+                            String goal = mojo.getGoal();
+                            String[] coords = goal.split( ":" );
+                            if ( coords.length == 4 )
+                            {
+                                artifacts.add( new DefaultArtifact( coords[0], coords[1], coords[2] ) );
+                            }
+                        }
                     }
                 }
             }
