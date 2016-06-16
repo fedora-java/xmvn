@@ -22,11 +22,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.maven.lifecycle.mapping.Lifecycle;
+import org.apache.maven.lifecycle.mapping.LifecycleMapping;
+import org.apache.maven.lifecycle.mapping.LifecycleMojo;
+import org.apache.maven.lifecycle.mapping.LifecyclePhase;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -84,6 +89,9 @@ public class BuilddepMojo
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
+
+    @Inject
+    private Map<String, LifecycleMapping> lifecycleMappings;
 
     private final ModelProcessor modelProcessor;
 
@@ -152,6 +160,22 @@ public class BuilddepMojo
             BuildDependencyVisitor visitor = new BuildDependencyVisitor( modelId );
             modelProcessor.processModel( model, visitor );
             artifacts.addAll( visitor.getArtifacts() );
+
+            String packaging = project.getPackaging() != null ? project.getPackaging() : "jar";
+            LifecycleMapping lifecycleMapping = lifecycleMappings.get( packaging );
+            Lifecycle defaultLifecycle = lifecycleMapping.getLifecycles().get( "default" );
+            for ( LifecyclePhase phase : defaultLifecycle.getLifecyclePhases().values() )
+            {
+                for ( LifecycleMojo mojo : phase.getMojos() )
+                {
+                    String goal = mojo.getGoal();
+                    String[] coords = goal.split( ":" );
+                    if ( coords.length == 4 )
+                    {
+                        artifacts.add( new DefaultArtifact( coords[0], coords[1], coords[2] ) );
+                    }
+                }
+            }
         }
 
         Set<NamespacedArtifact> deps = new LinkedHashSet<>();

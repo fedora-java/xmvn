@@ -77,6 +77,23 @@
               </artifactItems>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-artifacts</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-plugin-plugin</artifactId>
+                  <version>3.2</version>
+                  <type>maven-plugin</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
