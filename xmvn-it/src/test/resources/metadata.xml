@@ -18,6 +18,13 @@
     </artifact>
     <artifact>
       <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>SYSTEM</version>
+      <path>@@@/../dependency/maven-jar-plugin-2.4.jar</path>
+      <uuid>b625beec-f3a2-4161-91ce-45f788ef2664</uuid>
+    </artifact>
+    <artifact>
+      <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-plugin-plugin</artifactId>
       <version>SYSTEM</version>
       <path>@@@/../dependency/maven-plugin-plugin-3.2.jar</path>

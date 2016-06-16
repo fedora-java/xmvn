@@ -194,6 +194,24 @@ public class BuilddepMojo
             }
         }
 
+        // Remove common deps
+        {
+            Set<Artifact> COMMON_PLUGINS = new LinkedHashSet<>();
+
+            // FIXME: don't hardcode this
+
+            // Default lifecycle mappings for packaging "jar"
+            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-resources-plugin" ) );
+            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-compiler-plugin" ) );
+            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-surefire-plugin" ) );
+            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-jar-plugin" ) );
+
+            // Called by XMvn directly
+            COMMON_PLUGINS.add( new DefaultArtifact( "org.apache.maven.plugins", "maven-javadoc-plugin" ) );
+
+            deps.removeIf( dep -> COMMON_PLUGINS.contains( dep.artifact.setVersion( Artifact.DEFAULT_VERSION ) ) );
+        }
+
         serializeArtifacts( deps );
     }
 
