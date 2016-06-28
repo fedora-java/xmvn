@@ -25,7 +25,7 @@ import java.util.Properties;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.w3c.dom.Node;
 
 /**
  * @author Mikolaj Izdebski
@@ -36,10 +36,9 @@ public class MyRepositoryFactory
     implements RepositoryFactory
 {
     @Override
-    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration )
+    public Repository getInstance( Node filter, Properties properties, Node configuration )
     {
         assertNotNull( properties );
-        assertNotNull( configuration );
         assertEquals( "bar", properties.get( "foo" ) );
         assertNull( properties.get( "baz" ) );
 
@@ -47,7 +46,7 @@ public class MyRepositoryFactory
     }
 
     @Override
-    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration, String namespace )
+    public Repository getInstance( Node filter, Properties properties, Node configuration, String namespace )
     {
         fail( "getInstance was not expected to be called" );
         return null;

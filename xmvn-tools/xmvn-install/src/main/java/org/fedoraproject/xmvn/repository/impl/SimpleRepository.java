@@ -19,11 +19,10 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.tools.install.condition.Condition;
+import org.w3c.dom.Node;
 
 /**
  * @author Mikolaj Izdebski
@@ -35,7 +34,7 @@ abstract class SimpleRepository
 
     private final Condition condition;
 
-    public SimpleRepository( String namespace, Path root, Xpp3Dom filter )
+    public SimpleRepository( String namespace, Path root, Node filter )
     {
         super( namespace );
         this.root = root;

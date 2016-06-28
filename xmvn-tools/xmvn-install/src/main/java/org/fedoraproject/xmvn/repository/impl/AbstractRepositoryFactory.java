@@ -17,10 +17,9 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.util.Properties;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
+import org.w3c.dom.Node;
 
 /**
  * @author Mikolaj Izdebski
@@ -29,7 +28,7 @@ abstract class AbstractRepositoryFactory
     implements RepositoryFactory
 {
     @Override
-    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration )
+    public Repository getInstance( Node filter, Properties properties, Node configuration )
     {
         return getInstance( filter, properties, configuration, "" );
     }

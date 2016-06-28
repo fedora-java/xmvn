@@ -20,9 +20,8 @@ import java.nio.file.Path;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-
 import org.fedoraproject.xmvn.repository.Repository;
+import org.w3c.dom.Node;
 
 /**
  * Factory creating JPP repositories.
@@ -39,7 +38,7 @@ public class JppRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
-    protected Repository newInstance( String namespace, Path root, Xpp3Dom filter )
+    protected Repository newInstance( String namespace, Path root, Node filter )
     {
         return new JppRepository( namespace, root, filter );
     }

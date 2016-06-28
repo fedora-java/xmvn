@@ -22,13 +22,12 @@ import static org.junit.Assert.assertNull;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.sisu.launch.InjectedTest;
-import org.junit.Before;
-import org.junit.Test;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Node;
 
 /**
  * @author Mikolaj Izdebski
@@ -45,9 +44,9 @@ public class LayoutTest
         RepositoryFactory factory = lookup( RepositoryFactory.class, type );
         assertNotNull( factory );
 
-        Xpp3Dom filter = null;
+        Node filter = null;
         Properties properties = new Properties();
-        Xpp3Dom configuration = new Xpp3Dom( "configuration" );
+        Node configuration = null;
 
         Repository repository = factory.getInstance( filter, properties, configuration );
         assertNotNull( repository );
@@ -82,9 +81,8 @@ public class LayoutTest
     private void testPaths( Repository repository, Artifact artifact, String expected )
     {
         ArtifactContext context = new ArtifactContext( artifact );
-        Path repoPath =
-            repository.getPrimaryArtifactPath( artifact, context,
-                                               artifact.getGroupId() + "/" + artifact.getArtifactId() );
+        Path repoPath = repository.getPrimaryArtifactPath( artifact, context,
+                                                           artifact.getGroupId() + "/" + artifact.getArtifactId() );
 
         if ( expected == null )
         {
@@ -113,7 +111,8 @@ public class LayoutTest
                    "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
         testPaths( mavenRepository, artifact.setVersion( "SYSTEM" ), null );
         testPaths( jppRepository, artifact, "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion" );
-        testPaths( jppRepository, artifact.setVersion( "SYSTEM" ), "an-example.artifact/used-FOR42.testing.ext-ens.ion" );
+        testPaths( jppRepository, artifact.setVersion( "SYSTEM" ),
+                   "an-example.artifact/used-FOR42.testing.ext-ens.ion" );
     }
 
     /**

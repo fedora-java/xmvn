@@ -22,8 +22,6 @@ import java.util.Set;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.codehaus.plexus.util.StringUtils;
-
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;
@@ -31,6 +29,8 @@ import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.ResolverSettings;
+
+import com.google.common.base.Strings;
 
 /**
  * Default implementation of configuration merger.
@@ -67,7 +67,7 @@ public class DefaultConfigurationMerger
         if ( dominant.isSkipTests() == null )
             dominant.setSkipTests( recessive.isSkipTests() );
 
-        if ( StringUtils.isEmpty( dominant.getCompilerSource() ) )
+        if ( Strings.isNullOrEmpty( dominant.getCompilerSource() ) )
             dominant.setCompilerSource( recessive.getCompilerSource() );
     }
 
@@ -95,7 +95,7 @@ public class DefaultConfigurationMerger
         if ( dominant.isDebug() == null )
             dominant.setDebug( recessive.isDebug() );
 
-        if ( StringUtils.isEmpty( dominant.getMetadataDir() ) )
+        if ( Strings.isNullOrEmpty( dominant.getMetadataDir() ) )
             dominant.setMetadataDir( recessive.getMetadataDir() );
     }
 

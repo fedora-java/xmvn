@@ -33,15 +33,15 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
-import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 /**
  * Default implementation of XMvn configurator.
@@ -112,7 +112,7 @@ public class DefaultConfigurator
     private String getEnvDefault( String key, Object defaultValue )
     {
         String value = System.getenv( key );
-        if ( !StringUtils.isNotEmpty( value ) )
+        if ( Strings.isNullOrEmpty( value ) )
         {
             logger.debug( "Environmental variable ${} is unset or empty, using default value: {}", key, defaultValue );
             return defaultValue.toString();
@@ -205,12 +205,12 @@ public class DefaultConfigurator
 
             // 8. system configuration directories: $XDG_CONFIG_DIRS/xmvn/conf.d/
             // 9. system configuration files: $XDG_CONFIG_DIRS/xmvn/configuration.xml
-            for ( String part : StringUtils.split( getEnvDefault( "XDG_CONFIG_DIRS", "/etc/xdg" ), ":" ) )
+            for ( String part : getEnvDefault( "XDG_CONFIG_DIRS", "/etc/xdg" ).split( ":+" ) )
                 addXdgBasePath( part );
 
             // 10. system data directories: $XDG_DATA_DIRS/xmvn/conf.d/
             // 11. system data files: $XDG_DATA_DIRS/xmvn/configuration.xml
-            for ( String part : StringUtils.split( getEnvDefault( "XDG_DATA_DIRS", "/usr/local/share:/usr/share" ), ":" ) )
+            for ( String part : getEnvDefault( "XDG_DATA_DIRS", "/usr/local/share:/usr/share" ).split( ":+" ) )
                 addXdgBasePath( part );
 
             // 12. built-in xmvn-core.jar

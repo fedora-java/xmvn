@@ -19,16 +19,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.util.Collections;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Node;
 
 /**
  * @author Mikolaj Izdebski
@@ -42,13 +46,26 @@ public class ConditionTest
     @Before
     public void setUp()
     {
-        context1 =
-            new ArtifactContext( new DefaultArtifact( "some-gid", "the-aid", "zip", "xyzzy", "1.2.3" ),
-                                 Collections.singletonMap( "foo", "bar" ) );
+        context1 = new ArtifactContext( new DefaultArtifact( "some-gid", "the-aid", "zip", "xyzzy", "1.2.3" ),
+                                        Collections.singletonMap( "foo", "bar" ) );
 
-        context2 =
-            new ArtifactContext( new DefaultArtifact( "org.apache.maven", "maven-model", "3.0.5" ),
-                                 Collections.singletonMap( "native", "true" ) );
+        context2 = new ArtifactContext( new DefaultArtifact( "org.apache.maven", "maven-model", "3.0.5" ),
+                                        Collections.singletonMap( "native", "true" ) );
+    }
+
+    private Node buildDom( CharSequence data )
+        throws Exception
+    {
+        Reader stringReader = new StringReader( data.toString() );
+        XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader( stringReader );
+        ConfigurationStaxReader modelloReader = new ConfigurationStaxReader();
+        Method initDocMethod = ConfigurationStaxReader.class.getDeclaredMethod( "initDoc" );
+        initDocMethod.setAccessible( true );
+        initDocMethod.invoke( modelloReader );
+        Method buildDomMethod =
+            ConfigurationStaxReader.class.getDeclaredMethod( "buildDom", XMLStreamReader.class, boolean.class );
+        buildDomMethod.setAccessible( true );
+        return (Node) buildDomMethod.invoke( modelloReader, xmlReader, true );
     }
 
     /**
@@ -100,8 +117,7 @@ public class ConditionTest
         sb.append( "  </or>" );
         sb.append( "</filter>" );
 
-        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( sb.toString() ) );
-        Condition cond = new Condition( dom );
+        Condition cond = new Condition( buildDom( sb ) );
         assertTrue( cond.getValue( context1 ) );
         assertFalse( cond.getValue( context2 ) );
     }
@@ -132,8 +148,7 @@ public class ConditionTest
         sb.append( "  </or>" );
         sb.append( "</filter>" );
 
-        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( sb.toString() ) );
-        Condition cond = new Condition( dom );
+        Condition cond = new Condition( buildDom( sb ) );
         assertTrue( cond.getValue( context1 ) );
         assertTrue( cond.getValue( context2 ) );
     }
@@ -156,11 +171,9 @@ public class ConditionTest
         sb.append( "  </not>" );
         sb.append( "</filter>" );
 
-        Xpp3Dom dom = Xpp3DomBuilder.build( new StringReader( sb.toString() ) );
-
         try
         {
-            new Condition( dom );
+            new Condition( buildDom( sb ) );
             fail();
         }
         catch ( RuntimeException e )

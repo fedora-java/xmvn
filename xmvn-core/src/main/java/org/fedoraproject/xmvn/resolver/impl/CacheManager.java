@@ -24,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
-import org.codehaus.plexus.util.StringUtils;
+import com.google.common.base.Strings;
 
 /**
  * @author Mikolaj Izdebski
@@ -61,7 +61,7 @@ class CacheManager
     private static Path getPathDefault( String key, Object defaultValue )
     {
         String value = System.getenv( key );
-        if ( !StringUtils.isNotEmpty( value ) )
+        if ( Strings.isNullOrEmpty( value ) )
         {
             value = defaultValue.toString();
         }

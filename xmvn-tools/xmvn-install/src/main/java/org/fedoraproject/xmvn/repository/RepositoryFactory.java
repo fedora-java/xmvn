@@ -17,7 +17,7 @@ package org.fedoraproject.xmvn.repository;
 
 import java.util.Properties;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.w3c.dom.Node;
 
 /**
  * @author Mikolaj Izdebski
@@ -33,7 +33,7 @@ public interface RepositoryFactory
      * @param properties
      * @param configuration
      */
-    Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration );
+    Repository getInstance( Node filter, Properties properties, Node configuration );
 
     /**
      * Create a resolver instance configured with given set of properties and repository-specific XML configuration.
@@ -45,5 +45,5 @@ public interface RepositoryFactory
      * @param configuration
      * @param namespace
      */
-    Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration, String namespace );
+    Repository getInstance( Node filter, Properties properties, Node configuration, String namespace );
 }

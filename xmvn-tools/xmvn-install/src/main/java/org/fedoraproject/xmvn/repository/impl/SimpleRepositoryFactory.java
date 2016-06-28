@@ -19,10 +19,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-
 import org.fedoraproject.xmvn.repository.Repository;
+import org.w3c.dom.Node;
+
+import com.google.common.base.Strings;
 
 /**
  * @author Mikolaj Izdebski
@@ -30,15 +30,15 @@ import org.fedoraproject.xmvn.repository.Repository;
 abstract class SimpleRepositoryFactory
     extends AbstractRepositoryFactory
 {
-    protected abstract Repository newInstance( String namespace, Path root, Xpp3Dom filter );
+    protected abstract Repository newInstance( String namespace, Path root, Node filter );
 
     @Override
-    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration, String namespace )
+    public Repository getInstance( Node filter, Properties properties, Node configuration, String namespace )
     {
         String rootProperty = properties.getProperty( "root" );
         Path root = rootProperty != null ? Paths.get( rootProperty ) : null;
 
-        if ( StringUtils.isEmpty( namespace ) )
+        if ( Strings.isNullOrEmpty( namespace ) )
             namespace = properties.getProperty( "namespace", "" );
 
         return newInstance( namespace, root, filter );

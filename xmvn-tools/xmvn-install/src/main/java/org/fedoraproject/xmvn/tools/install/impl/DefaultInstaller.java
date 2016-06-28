@@ -32,10 +32,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
-import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -56,6 +52,10 @@ import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 @Named
 @Singleton
@@ -108,10 +108,9 @@ public class DefaultInstaller
     {
         Artifact artifact = artifactState.getArtifact();
 
-        PackagingRule rule =
-            new EffectivePackagingRule( configuration.getArtifactManagement(), artifact.getGroupId(),
-                                        artifact.getArtifactId(), artifact.getExtension(), artifact.getClassifier(),
-                                        artifact.getVersion() );
+        PackagingRule rule = new EffectivePackagingRule( configuration.getArtifactManagement(), artifact.getGroupId(),
+                                                         artifact.getArtifactId(), artifact.getExtension(),
+                                                         artifact.getClassifier(), artifact.getVersion() );
 
         artifactState.setPackagingRule( rule );
 
@@ -348,7 +347,7 @@ public class DefaultInstaller
             logger.debug( "Installing {}", pkg );
             pkg.install( request.getInstallRoot() );
 
-            Path mfiles = Paths.get( StringUtils.isEmpty( pkg.getId() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
+            Path mfiles = Paths.get( Strings.isNullOrEmpty( pkg.getId() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
             if ( request.getDescriptorRoot() != null )
                 mfiles = request.getDescriptorRoot().resolve( mfiles );
 

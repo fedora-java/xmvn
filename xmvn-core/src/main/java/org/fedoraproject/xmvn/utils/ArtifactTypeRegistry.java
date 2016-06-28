@@ -24,14 +24,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import com.google.common.base.Strings;
 
 /**
  * @author Mikolaj Izdebski
@@ -96,7 +96,7 @@ public class ArtifactTypeRegistry
         if ( type == null || EXTENSIONS.get( type ) == null )
             return new DefaultArtifact( groupId, artifactId, type, customClassifier, version );
 
-        String classifier = StringUtils.isNotEmpty( customClassifier ) ? customClassifier : CLASSIFIERS.get( type );
+        String classifier = Strings.isNullOrEmpty( customClassifier ) ? CLASSIFIERS.get( type ) : customClassifier;
         return new DefaultArtifact( groupId, artifactId, EXTENSIONS.get( type ), classifier, version );
     }
 }

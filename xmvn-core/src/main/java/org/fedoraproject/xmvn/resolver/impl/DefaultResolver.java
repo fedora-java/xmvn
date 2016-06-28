@@ -24,10 +24,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.codehaus.plexus.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
@@ -35,6 +31,10 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Objects;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
@@ -126,9 +126,9 @@ public class DefaultResolver
 
         properties.putAll( metadata.getProperties() );
 
-        if ( !StringUtils.equals( properties.getProperty( "xmvn.resolver.disableEffectivePom" ), "true" )
-            && StringUtils.equals( metadata.getExtension(), "pom" )
-            && ( !StringUtils.equals( properties.getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
+        if ( !Objects.equal( properties.getProperty( "xmvn.resolver.disableEffectivePom" ), "true" )
+            && Objects.equal( metadata.getExtension(), "pom" )
+            && ( !Objects.equal( properties.getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
         {
             try
             {

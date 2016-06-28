@@ -25,11 +25,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.google.common.base.Strings;
 
 /**
  * Factory creating compound repositories.
@@ -54,28 +55,31 @@ public class CompoundRepositoryFactory
     }
 
     @Override
-    public Repository getInstance( Xpp3Dom filter, Properties properties, Xpp3Dom configuration, String namespace )
+    public Repository getInstance( Node filter, Properties properties, Node configuration, String namespace )
     {
         Path prefix = null;
         if ( properties.containsKey( "prefix" ) )
             prefix = Paths.get( properties.getProperty( "prefix" ) );
 
-        if ( configuration.getChildCount() != 1 || !configuration.getChild( 0 ).getName().equals( "repositories" ) )
+        if ( configuration == null || configuration.getChildNodes().item( 0 ) == null )
+        {
             throw new RuntimeException( "compound repository expects configuration "
                 + "with exactly one child element: <repositories>" );
-        configuration = configuration.getChild( 0 );
+        }
+        NodeList repositoryNodes = configuration.getChildNodes().item( 0 ).getChildNodes();
 
         List<Repository> slaveRepositories = new ArrayList<>();
-        for ( Xpp3Dom child : configuration.getChildren() )
+        for ( int i = 0; i < repositoryNodes.getLength(); i++ )
         {
-            if ( !child.getName().equals( "repository" ) || child.getChildCount() > 0 )
+            Node child = repositoryNodes.item( i );
+            if ( !child.getNodeName().equals( "repository" ) || child.getChildNodes().getLength() > 0 )
                 throw new RuntimeException( "All children of <repositories> must be <repository> text nodes" );
 
-            Repository slaveRepository = configurator.configureRepository( child.getValue().trim(), namespace );
+            Repository slaveRepository = configurator.configureRepository( child.getTextContent().trim(), namespace );
             slaveRepositories.add( slaveRepository );
         }
 
-        if ( StringUtils.isEmpty( namespace ) )
+        if ( Strings.isNullOrEmpty( namespace ) )
             namespace = properties.getProperty( "namespace", "" );
 
         return new CompoundRepository( namespace, prefix, slaveRepositories );

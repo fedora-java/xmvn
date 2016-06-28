@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.w3c.dom.Node;
 
 /**
  * JPP-style repository JPP layout, either versioned or versionless, depending on properties.
@@ -30,7 +30,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 class JppRepository
     extends SimpleRepository
 {
-    public JppRepository( String namespace, Path root, Xpp3Dom filter )
+    public JppRepository( String namespace, Path root, Node filter )
     {
         super( namespace, root, filter );
     }

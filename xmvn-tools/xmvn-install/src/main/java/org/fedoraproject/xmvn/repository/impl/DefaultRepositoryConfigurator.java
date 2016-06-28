@@ -22,12 +22,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
+import org.w3c.dom.Node;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -46,7 +45,8 @@ public class DefaultRepositoryConfigurator
     private final Map<String, RepositoryFactory> repositoryFactories;
 
     @Inject
-    public DefaultRepositoryConfigurator( Configurator configurator, Map<String, RepositoryFactory> repositoryFactories )
+    public DefaultRepositoryConfigurator( Configurator configurator,
+                                          Map<String, RepositoryFactory> repositoryFactories )
     {
         this.configurator = configurator;
         this.repositoryFactories = repositoryFactories;
@@ -76,19 +76,18 @@ public class DefaultRepositoryConfigurator
 
         Properties properties = desc.getProperties();
 
-        Xpp3Dom configurationXml = (Xpp3Dom) desc.getConfiguration();
-        if ( configurationXml == null )
-            configurationXml = new Xpp3Dom( "configuration" );
+        Node configurationXml = (Node) desc.getConfiguration();
 
         String type = desc.getType();
         if ( type == null )
             throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
 
-        Xpp3Dom filter = (Xpp3Dom) desc.getFilter();
+        Node filter = (Node) desc.getFilter();
 
         RepositoryFactory factory = repositoryFactories.get( type );
         if ( factory == null )
-            throw new RuntimeException( "Unable to create repository of type '" + type + "': no suitable factory found" );
+            throw new RuntimeException( "Unable to create repository of type '" + type
+                + "': no suitable factory found" );
 
         return factory.getInstance( filter, properties, configurationXml );
     }

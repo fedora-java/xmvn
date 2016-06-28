@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.w3c.dom.Node;
 
 /**
  * Maven repository layout, as used by upstream Maven.
@@ -30,7 +30,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 class MavenRepository
     extends SimpleRepository
 {
-    public MavenRepository( String namespace, Path root, Xpp3Dom filter )
+    public MavenRepository( String namespace, Path root, Node filter )
     {
         super( namespace, root, filter );
     }
