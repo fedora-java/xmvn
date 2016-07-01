@@ -25,7 +25,7 @@ import java.util.Properties;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski
@@ -36,7 +36,7 @@ public class MyRepositoryFactory
     implements RepositoryFactory
 {
     @Override
-    public Repository getInstance( Node filter, Properties properties, Node configuration )
+    public Repository getInstance( Element filter, Properties properties, Element configuration )
     {
         assertNotNull( properties );
         assertEquals( "bar", properties.get( "foo" ) );
@@ -46,7 +46,7 @@ public class MyRepositoryFactory
     }
 
     @Override
-    public Repository getInstance( Node filter, Properties properties, Node configuration, String namespace )
+    public Repository getInstance( Element filter, Properties properties, Element configuration, String namespace )
     {
         fail( "getInstance was not expected to be called" );
         return null;

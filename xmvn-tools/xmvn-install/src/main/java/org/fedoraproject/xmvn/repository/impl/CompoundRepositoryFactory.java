@@ -27,8 +27,8 @@ import javax.inject.Singleton;
 
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.fedoraproject.xmvn.utils.DomUtils;
+import org.w3c.dom.Element;
 
 import com.google.common.base.Strings;
 
@@ -55,27 +55,27 @@ public class CompoundRepositoryFactory
     }
 
     @Override
-    public Repository getInstance( Node filter, Properties properties, Node configuration, String namespace )
+    public Repository getInstance( Element filter, Properties properties, Element configuration, String namespace )
     {
         Path prefix = null;
         if ( properties.containsKey( "prefix" ) )
             prefix = Paths.get( properties.getProperty( "prefix" ) );
 
-        if ( configuration == null || configuration.getChildNodes().item( 0 ) == null )
+        Element repositories = DomUtils.parseAsWrapper( configuration );
+        if ( !repositories.getNodeName().equals( "repositories" ) )
         {
             throw new RuntimeException( "compound repository expects configuration "
                 + "with exactly one child element: <repositories>" );
         }
-        NodeList repositoryNodes = configuration.getChildNodes().item( 0 ).getChildNodes();
 
         List<Repository> slaveRepositories = new ArrayList<>();
-        for ( int i = 0; i < repositoryNodes.getLength(); i++ )
+        for ( Element child : DomUtils.parseAsParent( repositories ) )
         {
-            Node child = repositoryNodes.item( i );
-            if ( !child.getNodeName().equals( "repository" ) || child.getChildNodes().getLength() > 0 )
+            String text = DomUtils.parseAsText( child );
+            if ( !child.getNodeName().equals( "repository" ) )
                 throw new RuntimeException( "All children of <repositories> must be <repository> text nodes" );
 
-            Repository slaveRepository = configurator.configureRepository( child.getTextContent().trim(), namespace );
+            Repository slaveRepository = configurator.configureRepository( text, namespace );
             slaveRepositories.add( slaveRepository );
         }
 

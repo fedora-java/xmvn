@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski
@@ -28,7 +28,7 @@ abstract class AbstractRepositoryFactory
     implements RepositoryFactory
 {
     @Override
-    public Repository getInstance( Node filter, Properties properties, Node configuration )
+    public Repository getInstance( Element filter, Properties properties, Element configuration )
     {
         return getInstance( filter, properties, configuration, "" );
     }

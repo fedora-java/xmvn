@@ -21,7 +21,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.fedoraproject.xmvn.repository.Repository;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * Factory creating JPP repositories.
@@ -38,7 +38,7 @@ public class JppRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
-    protected Repository newInstance( String namespace, Path root, Node filter )
+    protected Repository newInstance( String namespace, Path root, Element filter )
     {
         return new JppRepository( namespace, root, filter );
     }

@@ -15,6 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
 /**
@@ -31,6 +34,15 @@ class Equals
     {
         this.lhs = lhs;
         this.rhs = rhs;
+    }
+
+    public Equals( List<StringExpression> args )
+    {
+        Iterator<StringExpression> iterator = args.iterator();
+        this.lhs = iterator.next();
+        this.rhs = iterator.next();
+        if ( iterator.hasNext() )
+            throw new IllegalArgumentException();
     }
 
     @Override

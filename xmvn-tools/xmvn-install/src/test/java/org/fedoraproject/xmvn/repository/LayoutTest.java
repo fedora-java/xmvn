@@ -27,7 +27,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski
@@ -44,9 +44,9 @@ public class LayoutTest
         RepositoryFactory factory = lookup( RepositoryFactory.class, type );
         assertNotNull( factory );
 
-        Node filter = null;
+        Element filter = null;
         Properties properties = new Properties();
-        Node configuration = null;
+        Element configuration = null;
 
         Repository repository = factory.getInstance( filter, properties, configuration );
         assertNotNull( repository );

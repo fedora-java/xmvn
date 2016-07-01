@@ -32,7 +32,7 @@ import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski
@@ -53,7 +53,7 @@ public class ConditionTest
                                         Collections.singletonMap( "native", "true" ) );
     }
 
-    private Node buildDom( CharSequence data )
+    private Element buildDom( CharSequence data )
         throws Exception
     {
         Reader stringReader = new StringReader( data.toString() );
@@ -65,7 +65,7 @@ public class ConditionTest
         Method buildDomMethod =
             ConfigurationStaxReader.class.getDeclaredMethod( "buildDom", XMLStreamReader.class, boolean.class );
         buildDomMethod.setAccessible( true );
-        return (Node) buildDomMethod.invoke( modelloReader, xmlReader, true );
+        return (Element) buildDomMethod.invoke( modelloReader, xmlReader, true );
     }
 
     /**

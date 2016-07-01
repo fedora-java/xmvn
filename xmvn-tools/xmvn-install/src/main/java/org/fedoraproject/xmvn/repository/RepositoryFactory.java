@@ -17,7 +17,7 @@ package org.fedoraproject.xmvn.repository;
 
 import java.util.Properties;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski
@@ -33,7 +33,7 @@ public interface RepositoryFactory
      * @param properties
      * @param configuration
      */
-    Repository getInstance( Node filter, Properties properties, Node configuration );
+    Repository getInstance( Element filter, Properties properties, Element configuration );
 
     /**
      * Create a resolver instance configured with given set of properties and repository-specific XML configuration.
@@ -45,5 +45,5 @@ public interface RepositoryFactory
      * @param configuration
      * @param namespace
      */
-    Repository getInstance( Node filter, Properties properties, Node configuration, String namespace );
+    Repository getInstance( Element filter, Properties properties, Element configuration, String namespace );
 }

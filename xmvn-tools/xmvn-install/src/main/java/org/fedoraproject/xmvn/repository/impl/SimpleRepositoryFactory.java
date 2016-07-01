@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.fedoraproject.xmvn.repository.Repository;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 import com.google.common.base.Strings;
 
@@ -30,10 +30,10 @@ import com.google.common.base.Strings;
 abstract class SimpleRepositoryFactory
     extends AbstractRepositoryFactory
 {
-    protected abstract Repository newInstance( String namespace, Path root, Node filter );
+    protected abstract Repository newInstance( String namespace, Path root, Element filter );
 
     @Override
-    public Repository getInstance( Node filter, Properties properties, Node configuration, String namespace )
+    public Repository getInstance( Element filter, Properties properties, Element configuration, String namespace )
     {
         String rootProperty = properties.getProperty( "root" );
         Path root = rootProperty != null ? Paths.get( rootProperty ) : null;

@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * Maven repository layout, as used by upstream Maven.
@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
 class MavenRepository
     extends SimpleRepository
 {
-    public MavenRepository( String namespace, Path root, Node filter )
+    public MavenRepository( String namespace, Path root, Element filter )
     {
         super( namespace, root, filter );
     }

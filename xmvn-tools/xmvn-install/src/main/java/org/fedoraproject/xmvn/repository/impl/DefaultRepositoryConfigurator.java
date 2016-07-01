@@ -26,7 +26,7 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
@@ -76,13 +76,13 @@ public class DefaultRepositoryConfigurator
 
         Properties properties = desc.getProperties();
 
-        Node configurationXml = (Node) desc.getConfiguration();
+        Element configurationXml = (Element) desc.getConfiguration();
 
         String type = desc.getType();
         if ( type == null )
             throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
 
-        Node filter = (Node) desc.getFilter();
+        Element filter = (Element) desc.getFilter();
 
         RepositoryFactory factory = repositoryFactories.get( type );
         if ( factory == null )

@@ -15,12 +15,13 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.fedoraproject.xmvn.utils.DomUtils;
+import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski
@@ -29,86 +30,38 @@ public class Condition
 {
     private final BooleanExpression expr;
 
-    private List<Node> childrenWithType( Node parent, short type )
-    {
-        List<Node> children = new ArrayList<>();
-
-        for ( int i = 0; i < parent.getChildNodes().getLength(); i++ )
-        {
-            if ( parent.getChildNodes().item( i ).getNodeType() == type )
-                children.add( parent.getChildNodes().item( i ) );
-        }
-
-        return children;
-    }
-
-    private void requireText( Node dom, boolean require )
-    {
-        if ( require == childrenWithType( dom, Node.TEXT_NODE ).isEmpty() )
-        {
-            String msg = require ? "must have text content" : "doesn't allow text content";
-            throw new RuntimeException( "XML node " + dom.getNodeName() + " " + msg + "." );
-        }
-    }
-
-    private void requireChildreen( Node dom, int n )
-    {
-        if ( childrenWithType( dom, Node.ELEMENT_NODE ).size() == n )
-            return;
-
-        String name = dom.getNodeName();
-
-        if ( n == 0 )
-            throw new RuntimeException( "XML node " + name + " doesn't allow any children." );
-
-        if ( n == 1 )
-            throw new RuntimeException( "XML node " + name + " requires exactly one child node." );
-
-        throw new RuntimeException( "XML node " + name + " must have exactly " + n + " children." );
-    }
-
-    private StringExpression parseString( Node dom )
+    private StringExpression parseString( Element dom )
     {
         switch ( dom.getNodeName() )
         {
             case "groupId":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new GroupId();
 
             case "artifactId":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new ArtifactId();
 
             case "extension":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new Extension();
 
             case "classifier":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new Classifier();
 
             case "version":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new Version();
 
             case "string":
-                requireText( dom, true );
-                requireChildreen( dom, 0 );
-                return new StringLiteral( dom.getTextContent() );
+                return new StringLiteral( DomUtils.parseAsText( dom ) );
 
             case "property":
-                requireText( dom, true );
-                requireChildreen( dom, 0 );
-                return new Property( dom.getTextContent() );
+                return new Property( DomUtils.parseAsText( dom ) );
 
             case "null":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new Null();
 
             default:
@@ -117,47 +70,35 @@ public class Condition
         }
     }
 
-    private BooleanExpression parseBoolean( Node dom )
+    private BooleanExpression parseBoolean( Element dom )
     {
         switch ( dom.getNodeName() )
         {
             case "true":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new BooleanLiteral( true );
 
             case "false":
-                requireText( dom, false );
-                requireChildreen( dom, 0 );
+                DomUtils.parseAsEmpty( dom );
                 return new BooleanLiteral( true );
 
             case "not":
-                requireText( dom, false );
-                requireChildreen( dom, 1 );
-                return new Not( parseBoolean( dom.getChildNodes().item( 0 ) ) );
+                return new Not( parseBoolean( DomUtils.parseAsWrapper( dom ) ) );
 
             case "and":
-                requireText( dom, false );
-                return new And( parseBooleans( dom.getChildNodes() ) );
+                return new And( parseList( dom, this::parseBoolean ) );
 
             case "or":
-                requireText( dom, false );
-                return new Or( parseBooleans( dom.getChildNodes() ) );
+                return new Or( parseList( dom, this::parseBoolean ) );
 
             case "xor":
-                requireText( dom, false );
-                return new Xor( parseBooleans( dom.getChildNodes() ) );
+                return new Xor( parseList( dom, this::parseBoolean ) );
 
             case "equals":
-                requireText( dom, false );
-                requireChildreen( dom, 2 );
-                return new Equals( parseString( dom.getChildNodes().item( 0 ) ),
-                                   parseString( dom.getChildNodes().item( 1 ) ) );
+                return new Equals( parseList( dom, this::parseString ) );
 
             case "defined":
-                requireText( dom, true );
-                requireChildreen( dom, 0 );
-                return new Defined( dom.getTextContent() );
+                return new Defined( DomUtils.parseAsText( dom ) );
 
             default:
                 throw new RuntimeException( "Unable to parse string expression: unknown XML node name: "
@@ -165,19 +106,14 @@ public class Condition
         }
     }
 
-    private List<BooleanExpression> parseBooleans( NodeList doms )
+    private static <T> List<T> parseList( Element dom, Function<Element, T> parser )
     {
-        List<BooleanExpression> result = new ArrayList<>();
-
-        for ( int i = 0; i < doms.getLength(); i++ )
-        {
-            result.add( parseBoolean( doms.item( i ) ) );
-        }
-
-        return result;
+        return DomUtils.parseAsParent( dom ).stream() //
+                       .map( child -> parser.apply( child ) ) //
+                       .collect( Collectors.toList() );
     }
 
-    public Condition( Node dom )
+    public Condition( Element dom )
     {
         if ( dom == null )
         {
@@ -185,8 +121,7 @@ public class Condition
         }
         else
         {
-            requireChildreen( dom, 1 );
-            this.expr = parseBoolean( dom.getChildNodes().item( 0 ) );
+            this.expr = parseBoolean( DomUtils.parseAsWrapper( dom ) );
         }
     }
 
