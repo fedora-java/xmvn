@@ -38,7 +38,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.bean.BeanProperties;
 import org.eclipse.sisu.bean.BeanProperty;
-
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
@@ -90,6 +89,10 @@ public class XMvnMojoExecutionListener
     private static final MojoGoal XMVN_BUILDDEP = new MojoGoal( "org.fedoraproject.xmvn", //
                                                                 "xmvn-mojo", //
                                                                 "builddep" );
+
+    private static final MojoGoal XMVN_JAVADOC = new MojoGoal( "org.fedoraproject.xmvn", //
+                                                               "xmvn-mojo", //
+                                                               "javadoc" );
 
     private static final Path XMVN_STATE_DIR = Paths.get( ".xmvn" );
 
@@ -188,6 +191,11 @@ public class XMvnMojoExecutionListener
         if ( JAVADOC_AGGREGATE.equals( execution ) )
         {
             String javadocDir = getBeanProperty( mojo, "getReportOutputDirectory" );
+            createApidocsSymlink( Paths.get( javadocDir ) );
+        }
+        else if ( XMVN_JAVADOC.equals( execution ) )
+        {
+            String javadocDir = getBeanProperty( mojo, "getOutputDir" );
             createApidocsSymlink( Paths.get( javadocDir ) );
         }
         else if ( MAVEN_COMPILE.equals( execution ) )

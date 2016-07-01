@@ -108,6 +108,11 @@ public class JavadocMojo
         }
     }
 
+    private Path getOutputDir()
+    {
+        return buildDirectory.toPath().resolve( "apidocs" );
+    }
+
     private List<Path> getClasspath()
         throws MojoExecutionException
     {
@@ -193,7 +198,7 @@ public class JavadocMojo
             for ( Path sourcePath : sourcePaths )
                 findJavaSources( files, sourcePath );
 
-            Path outputDir = buildDirectory.toPath().resolve( "apidocs" );
+            Path outputDir = getOutputDir();
             if ( !Files.isDirectory( outputDir ) )
                 Files.createDirectories( outputDir );
             outputDir = outputDir.toRealPath();
