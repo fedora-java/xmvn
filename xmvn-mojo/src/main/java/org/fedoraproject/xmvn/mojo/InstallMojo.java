@@ -218,14 +218,17 @@ public class InstallMojo
             if ( mainArtifactPath != null )
                 deployArtifact( mainArtifact, type, project.getModel() );
 
-            Artifact rawPomArtifact =
-                new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
-                                     mainArtifact.getClassifier(), mainArtifact.getVersion() );
-            File rawPomFile = project.getFile();
-            Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
-            logger.debug( "Raw POM path: {}", rawPomPath );
-            rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
-            deployArtifact( rawPomArtifact, type, project.getModel() );
+            if ( !isTychoProject( project ) )
+            {
+                Artifact rawPomArtifact =
+                    new DefaultArtifact( mainArtifact.getGroupId(), mainArtifact.getArtifactId(), "pom",
+                                         mainArtifact.getClassifier(), mainArtifact.getVersion() );
+                File rawPomFile = project.getFile();
+                Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
+                logger.debug( "Raw POM path: {}", rawPomPath );
+                rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
+                deployArtifact( rawPomArtifact, type, project.getModel() );
+            }
 
             Set<Artifact> attachedArtifacts = new LinkedHashSet<>();
             for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
