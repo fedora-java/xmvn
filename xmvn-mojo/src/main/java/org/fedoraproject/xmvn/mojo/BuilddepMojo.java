@@ -190,7 +190,7 @@ public class BuilddepMojo
                 String[] goalCoords = mojo.getGoal().split( ":" );
                 if ( goalCoords.length == 4 )
                 {
-                    artifacts.add( new DefaultArtifact( goalCoords[0], goalCoords[1], goalCoords[2] ) );
+                    artifacts.add( new DefaultArtifact( goalCoords[0], goalCoords[1] ) );
                 }
             }
         }
@@ -213,13 +213,15 @@ public class BuilddepMojo
         }
 
         Set<Artifact> artifacts = new LinkedHashSet<>();
+        Set<Artifact> lifecycleArtifacts = new LinkedHashSet<>();
         for ( MavenProject project : reactorProjects )
         {
             artifacts.addAll( getModelDependencies( project.getModel() ) );
-            addLifecycleDependencies( artifacts, project.getPackaging() );
+            addLifecycleDependencies( lifecycleArtifacts, project.getPackaging() );
         }
 
         artifacts.removeIf( dep -> commonDeps.contains( dep.setVersion( Artifact.DEFAULT_VERSION ) ) );
+        lifecycleArtifacts.removeIf( dep -> commonDeps.contains( dep ) );
 
         Set<NamespacedArtifact> deps = new LinkedHashSet<>();
         for ( String[] resolution : resolutions )
@@ -228,10 +230,11 @@ public class BuilddepMojo
                 continue;
 
             Artifact artifact = new DefaultArtifact( resolution[0] );
+            Artifact versionlessArtifact = artifact.setVersion( Artifact.DEFAULT_VERSION );
             String compatVersion = resolution[1];
             String namespace = resolution[2];
 
-            if ( artifacts.contains( artifact ) )
+            if ( artifacts.contains( artifact ) || lifecycleArtifacts.contains( versionlessArtifact ) )
             {
                 deps.add( new NamespacedArtifact( namespace, artifact.setVersion( compatVersion ) ) );
             }
