@@ -47,6 +47,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
 import org.codehaus.plexus.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -56,6 +58,8 @@ import org.codehaus.plexus.util.StringUtils;
 public class JavadocMojo
     extends AbstractMojo
 {
+    private final Logger logger = LoggerFactory.getLogger( JavadocMojo.class );
+
     @Inject
     private RepositorySystem repositorySystem;
 
@@ -197,6 +201,12 @@ public class JavadocMojo
             Set<Path> files = new LinkedHashSet<>();
             for ( Path sourcePath : sourcePaths )
                 findJavaSources( files, sourcePath );
+
+            if ( files.isEmpty() )
+            {
+                logger.info( "Skipping Javadoc generation: no Java sources found" );
+                return;
+            }
 
             Path outputDir = getOutputDir();
             if ( !Files.isDirectory( outputDir ) )
