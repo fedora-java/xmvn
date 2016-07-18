@@ -1,0 +1,10 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmvn.its</groupId>
+  <artifactId>aggregator</artifactId>
+  <version>0.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>child</module>
+  </modules>
+</project>
