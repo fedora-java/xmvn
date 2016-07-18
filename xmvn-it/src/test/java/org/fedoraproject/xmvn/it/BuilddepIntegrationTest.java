@@ -118,4 +118,18 @@ public class BuilddepIntegrationTest
                              "  </dependency>", //
                              "</dependencies>" );
     }
+
+    @Test
+    public void testBuilddepSubmodule()
+        throws Exception
+    {
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.6.0-SNAPSHOT:builddep" );
+
+        assertBuilddepEqual( "<dependencies>", //
+                             "  <dependency>", //
+                             "    <groupId>org.codehaus.plexus</groupId>", //
+                             "    <artifactId>plexus-component-metadata</artifactId>", //
+                             "  </dependency>", //
+                             "</dependencies>" );
+    }
 }

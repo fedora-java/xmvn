@@ -30,5 +30,12 @@
       <path>@@@/../dependency/maven-plugin-plugin-3.2.jar</path>
       <uuid>12c74360-c58a-4a89-86ff-1e1e39caca5d</uuid>
     </artifact>
+    <artifact>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-component-metadata</artifactId>
+      <version>SYSTEM</version>
+      <path>@@@/../dependency/plexus-component-metadata-1.6.jar</path>
+      <uuid>4fdcec13-40df-428f-a921-089b1177763b</uuid>
+    </artifact>
   </artifacts>
 </metadata>

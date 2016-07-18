@@ -97,6 +97,12 @@
                   <version>2.4</version>
                   <type>maven-plugin</type>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>org.codehaus.plexus</groupId>
+                  <artifactId>plexus-component-metadata</artifactId>
+                  <version>1.6</version>
+                  <type>maven-plugin</type>
+                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
