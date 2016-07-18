@@ -157,4 +157,13 @@ public class BuilddepIntegrationTest
         expectBuildDependency( "org.codehaus.plexus", "plexus-component-metadata" );
         performBuilddepTest();
     }
+
+    @Test
+    public void testBuilddepProfileActivation()
+        throws Exception
+    {
+        expectBuildDependency( "junit", "junit" );
+        expectBuildDependency( "org.codehaus.plexus", "plexus-component-metadata" );
+        performBuilddepTest();
+    }
 }
