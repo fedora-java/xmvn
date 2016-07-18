@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
@@ -42,13 +43,13 @@ class BuildDependencyVisitor
 
     private static final List<String> RUNTIME_SCOPES = Arrays.asList( null, "compile", "runtime" );
 
-    private final String modelId;
+    private final Function<InputLocation, Boolean> isExternalLocation;
 
     private final Set<Artifact> artifacts = new LinkedHashSet<>();
 
-    public BuildDependencyVisitor( String modelId )
+    public BuildDependencyVisitor( Function<InputLocation, Boolean> isExternalLocation )
     {
-        this.modelId = modelId;
+        this.isExternalLocation = isExternalLocation;
     }
 
     public Set<Artifact> getArtifacts()
@@ -56,9 +57,9 @@ class BuildDependencyVisitor
         return Collections.unmodifiableSet( artifacts );
     }
 
-    private boolean isInherited( InputLocation location )
+    private boolean isExternal( InputLocation location )
     {
-        return location == null || !location.getSource().getModelId().equals( modelId );
+        return location == null || isExternalLocation.apply( location );
     }
 
     @Override
@@ -70,7 +71,7 @@ class BuildDependencyVisitor
     @Override
     public void visitDependency( Dependency dependency )
     {
-        if ( isInherited( dependency.getLocation( "" ) ) )
+        if ( isExternal( dependency.getLocation( "" ) ) )
             return;
         if ( !BUILD_SCOPES.contains( dependency.getScope() ) )
             return;
@@ -92,7 +93,7 @@ class BuildDependencyVisitor
     @Override
     public void visitBuildPlugin( Plugin plugin )
     {
-        if ( isInherited( plugin.getLocation( "" ) ) )
+        if ( isExternal( plugin.getLocation( "" ) ) )
             return;
 
         String groupId = plugin.getGroupId();
@@ -110,7 +111,7 @@ class BuildDependencyVisitor
     @Override
     public void visitBuildPluginDependency( Dependency dependency )
     {
-        if ( isInherited( dependency.getLocation( "" ) ) )
+        if ( isExternal( dependency.getLocation( "" ) ) )
             return;
         if ( !RUNTIME_SCOPES.contains( dependency.getScope() ) )
             return;

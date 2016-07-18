@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,6 +37,7 @@ import org.apache.maven.lifecycle.mapping.Lifecycle;
 import org.apache.maven.lifecycle.mapping.LifecycleMapping;
 import org.apache.maven.lifecycle.mapping.LifecycleMojo;
 import org.apache.maven.lifecycle.mapping.LifecyclePhase;
+import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -167,8 +169,12 @@ public class BuilddepMojo
 
     private Set<Artifact> getModelDependencies( Model model )
     {
-        String modelId = model.getLocation( "" ).getSource().getModelId();
-        BuildDependencyVisitor visitor = new BuildDependencyVisitor( modelId );
+        Function<InputLocation, Boolean> isExternalLocation =
+            location -> !reactorProjects.stream() //
+                                        .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
+                                        .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
+                                        .findAny().isPresent();
+        BuildDependencyVisitor visitor = new BuildDependencyVisitor( isExternalLocation );
         modelProcessor.processModel( model.clone(), visitor );
         return visitor.getArtifacts();
     }
