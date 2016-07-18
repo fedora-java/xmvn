@@ -30,6 +30,9 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -163,6 +166,10 @@ public abstract class AbstractIntegrationTest
     public void performTest( String... args )
         throws Exception
     {
+        Deque<String> argList = new ArrayDeque<>( Arrays.asList( args ) );
+        argList.addFirst( "--batch-mode" );
+        args = argList.toArray( args );
+
         try (PrintStream out = new PrintStream( Files.newOutputStream( baseDir.resolve( STDOUT ) ) );
                         PrintStream err = new PrintStream( Files.newOutputStream( baseDir.resolve( STDERR ) ) ))
         {
