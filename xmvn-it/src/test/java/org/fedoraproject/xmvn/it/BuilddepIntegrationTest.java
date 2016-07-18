@@ -155,4 +155,22 @@ public class BuilddepIntegrationTest
 
         assertBuilddepEqual( "<dependencies/>" );
     }
+
+    @Test
+    public void testBuilddepProfiles()
+        throws Exception
+    {
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.6.0-SNAPSHOT:builddep" );
+
+        assertBuilddepEqual( "<dependencies>", //
+                             "  <dependency>", //
+                             "    <groupId>org.codehaus.plexus</groupId>", //
+                             "    <artifactId>plexus-component-metadata</artifactId>", //
+                             "  </dependency>", //
+                             "  <dependency>", //
+                             "    <groupId>junit</groupId>", //
+                             "    <artifactId>junit</artifactId>", //
+                             "  </dependency>", //
+                             "</dependencies>" );
+    }
 }
