@@ -104,4 +104,18 @@ public class BuilddepIntegrationTest
                              "  </dependency>", //
                              "</dependencies>" );
     }
+
+    @Test
+    public void testBuilddepMavenPluginPluginManaged()
+        throws Exception
+    {
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.6.0-SNAPSHOT:builddep" );
+
+        assertBuilddepEqual( "<dependencies>", //
+                             "  <dependency>", //
+                             "    <groupId>org.apache.maven.plugins</groupId>", //
+                             "    <artifactId>maven-plugin-plugin</artifactId>", //
+                             "  </dependency>", //
+                             "</dependencies>" );
+    }
 }
