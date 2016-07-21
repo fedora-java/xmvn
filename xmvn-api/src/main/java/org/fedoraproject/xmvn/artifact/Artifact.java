@@ -21,7 +21,7 @@ import java.nio.file.Path;
  * An abstract entity uniquely identified by its coordinates &ndash; group identifier, artifact identifier, extension,
  * classifier and version, with optionally associated artifact file.
  * <p>
- * Artifact objects immutable &ndash; all methods which modify artifact return a new object and keep the original
+ * Artifact objects are immutable &ndash; all methods which modify artifact return a new object and keep the original
  * unmodified.
  * 
  * @author Mikolaj Izdebski
