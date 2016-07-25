@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.connector.ivy;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 
@@ -287,7 +286,8 @@ public class IvyResolver
     {
         try
         {
-            File pomFile = Files.createTempFile( "xmvn-", ".pom" ).toFile();
+            File pomFile = artifactPath.resolveSibling( 
+                    artifactPath.getName( artifactPath.getNameCount() - 1 ) + "-xmvn.pom" ).toFile();
             ModuleDescriptorParser parser = XmlModuleDescriptorParser.getInstance();
             ModuleDescriptor module =
                 parser.parseDescriptor( getSettings(), artifactPath.toFile().toURI().toURL(), false );
