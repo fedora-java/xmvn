@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,15 @@ public class DeploymentRequest
 
     public void removeDependency( Artifact dependencyArtifact )
     {
-        dependencies.remove( dependencyArtifact );
+        Iterator<DependencyDescriptor> ddl = dependencies.iterator();
+        while ( ddl.hasNext() )
+        {
+            DependencyDescriptor dd = ddl.next();
+            if ( dd.getDependencyArtifact().equals( dependencyArtifact ) )
+            {
+                dependencies.remove( dd );
+            }
+        }
     }
 
     public Map<String, String> getProperties()
