@@ -63,9 +63,9 @@
     <maven>${mavenVersion}</maven>
   </prerequisites>
   <scm>
-    <url>http://git.fedorahosted.org/git/xmvn.git</url>
-    <connection>scm:git:git://git.fedorahosted.org/xmvn.git</connection>
-    <developerConnection>scm:git:ssh://git.fedorahosted.org/git/xmvn.git</developerConnection>
+    <url>https://github.com/fedora-java/xmvn</url>
+    <connection>scm:git:https://github.com/fedora-java/xmvn.git</connection>
+    <developerConnection>scm:git:git@github.com:fedora-java/xmvn.git</developerConnection>
   </scm>
   <issueManagement>
     <system>Bugzilla</system>

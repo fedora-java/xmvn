@@ -76,7 +76,7 @@ Private mail
 
   As the last resort way of contacting XMvn authors you can send them
   private email.  You can find their addresses in
-  {{{https://git.fedorahosted.org/cgit/xmvn.git/plain/AUTHORS}AUTHORS
+  {{{https://raw.githubusercontent.com/fedora-java/xmvn/master/AUTHORS}AUTHORS
   file}}, which is available in source distribution.
 
   Please do <<not>> send private emails asking for support.  The
