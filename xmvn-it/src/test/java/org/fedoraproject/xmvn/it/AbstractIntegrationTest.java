@@ -49,9 +49,9 @@ import org.junit.rules.TestName;
  */
 public abstract class AbstractIntegrationTest
 {
-    private static final String STDOUT = "stdout.txt";
+    public static final String STDOUT = "stdout.txt";
 
-    private static final String STDERR = "stderr.txt";
+    public static final String STDERR = "stderr.txt";
 
     @Rule
     public TestName testName = new TestName();

@@ -25,6 +25,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
@@ -64,6 +66,8 @@ public class DefaultResolver
 
     private final MockAgent mockAgent;
 
+    private final AtomicFileCounter counter;
+
     @Inject
     public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator )
     {
@@ -74,11 +78,17 @@ public class DefaultResolver
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
         mockAgent = new MockAgent();
+
+        String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
+        counter = Strings.isNullOrEmpty( bisectCounterPath ) ? null : new AtomicFileCounter( bisectCounterPath );
     }
 
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
+        if ( counter != null && counter.tryDecrement() > 0 )
+            return new DefaultResolutionResult();
+
         Properties properties = new Properties();
         properties.putAll( System.getProperties() );
 

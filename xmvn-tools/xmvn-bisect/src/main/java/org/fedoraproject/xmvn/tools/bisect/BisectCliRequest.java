@@ -45,12 +45,6 @@ public class BisectCliRequest
     @Parameter( names = { "-l", "--linear" }, description = "Use linear search instead of binary search" )
     private boolean linearSearch;
 
-    @Parameter( names = { "-v", "--verbose" }, description = "Print build logs to standard output" )
-    private boolean verbose;
-
-    @Parameter( names = { "-R", "--repository" }, description = "Path to alternative bisection repository" )
-    private String repoPath;
-
     @Parameter( names = { "-C", "--counter" }, description = "Path to temporary semaphore file" )
     private String counterPath;
 
@@ -188,8 +182,6 @@ public class BisectCliRequest
 
     private void setDefaultValues()
     {
-        defines.put( "maven.home", "/usr/share/xmvn" );
-
         String userHome = System.getProperty( "user.home" );
         if ( userHome == null )
             userHome = System.getenv( "HOME" );
@@ -197,7 +189,6 @@ public class BisectCliRequest
             throw new RuntimeException( "Failed to obtain user home path" );
 
         counterPath = Paths.get( "bisect-counter" ).toAbsolutePath().toString();
-        repoPath = Paths.get( userHome ).resolve( ".m2" ).toAbsolutePath().toString();
 
         InvocationRequest request = new DefaultInvocationRequest();
 
@@ -269,16 +260,6 @@ public class BisectCliRequest
     public boolean useBinarySearch()
     {
         return !linearSearch;
-    }
-
-    public boolean isVerbose()
-    {
-        return verbose;
-    }
-
-    public String getRepoPath()
-    {
-        return repoPath;
     }
 
     public String getCounterPath()

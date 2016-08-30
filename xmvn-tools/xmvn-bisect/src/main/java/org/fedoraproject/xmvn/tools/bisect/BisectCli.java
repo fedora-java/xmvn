@@ -15,14 +15,19 @@
  */
 package org.fedoraproject.xmvn.tools.bisect;
 
-import javax.inject.Inject;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.Invoker;
+import org.apache.maven.shared.invoker.MavenInvocationException;
 import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
@@ -42,13 +47,24 @@ public class BisectCli
 
     private static final int BISECT_MAX = 1000000000;
 
-    private final BuildExecutor buildExecutor;
+    private final Invoker invoker = new DefaultInvoker();
 
-    @Inject
-    public BisectCli( BuildExecutor buildExecutor )
-        throws Exception
+    private InvocationRequest request;
+
+    private boolean executeBuild( String logPath )
+        throws MavenInvocationException
     {
-        this.buildExecutor = buildExecutor;
+        try ( PrintWriter log = new PrintWriter( logPath ) )
+        {
+            request.setOutputHandler( log::println );
+            request.setErrorHandler( log::println );
+
+            return invoker.execute( request ).getExitCode() == 0;
+        }
+        catch ( FileNotFoundException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 
     private static String getBuildLogName( int buildId )
@@ -64,16 +80,13 @@ public class BisectCli
     private void run( BisectCliRequest commandLineParser )
         throws Exception
     {
-        boolean verbose = commandLineParser.isVerbose();
-
-        InvocationRequest request = commandLineParser.createInvocationRequest();
+        request = commandLineParser.createInvocationRequest();
         request.setShellEnvironmentInherited( true );
 
         commandLineParser.getSystemProperties().forEach( ( key, value ) -> System.setProperty( key, value ) );
 
-        request.addShellEnvironment( "M2_HOME", commandLineParser.getSystemProperties().get( "maven.home" ) );
+        logger.info( "Using XMvn at {}", System.getProperty( "maven.home" ) );
 
-        request.getProperties().put( "xmvn.bisect.repository", commandLineParser.getRepoPath() );
         request.getProperties().put( "xmvn.bisect.counter", commandLineParser.getCounterPath() );
 
         int counterInitialValue = BISECT_MAX;
@@ -82,7 +95,7 @@ public class BisectCli
         if ( !commandLineParser.isSkipSanityChecks() )
         {
             logger.info( "Checking if standard local build really fails" );
-            boolean success = buildExecutor.executeBuild( request, getBuildLogName( 0 ), verbose );
+            boolean success = executeBuild( getBuildLogName( 0 ) );
             if ( success )
             {
                 logger.error( "Standard local build was successful, expected failure." );
@@ -94,7 +107,7 @@ public class BisectCli
         int badId = 0;
         logger.info( "Running initial upstream build" );
         counter.setValue( counterInitialValue );
-        boolean success = buildExecutor.executeBuild( request, getInitialBuildName(), verbose );
+        boolean success = executeBuild( getInitialBuildName() );
         int goodId = counterInitialValue - counter.getValue();
         if ( !success )
         {
@@ -114,7 +127,7 @@ public class BisectCli
             logger.info( "Bisection iteration: current range is [{},{}], trying {}", badId + 1, goodId - 1, tryId );
             counter.setValue( tryId );
 
-            success = buildExecutor.executeBuild( request, getBuildLogName( tryId ), commandLineParser.isVerbose() );
+            success = executeBuild( getBuildLogName( tryId ) );
             logger.info( "Bisection build number {} {}", tryId, success ? "succeeded" : "failed" );
 
             if ( success )

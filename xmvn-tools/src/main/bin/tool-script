@@ -78,4 +78,4 @@ for jar in "${home}/lib/${tool}"/*; do
 done
 
 # 4. Execute the tool
-exec java -classpath "${cp}" "${class}" "${@}"
+exec java -classpath "${cp}" -Dmaven.home="${home}" "${class}" "${@}"

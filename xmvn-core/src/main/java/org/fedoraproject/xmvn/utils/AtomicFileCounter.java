@@ -40,9 +40,16 @@ public class AtomicFileCounter
      * @throws IOException
      */
     public AtomicFileCounter( String path )
-        throws IOException
     {
-        file = new RandomAccessFile( new File( path ), "rw" );
+        try
+        {
+            file = new RandomAccessFile( new File( path ), "rw" );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+
     }
 
     /**
@@ -89,10 +96,8 @@ public class AtomicFileCounter
      * If counter is positive then decrement it.
      * 
      * @return the initial value of the counter (before decrementing)
-     * @throws IOException
      */
     public int tryDecrement()
-        throws IOException
     {
         try ( FileLock lock = lock() )
         {
@@ -101,20 +106,26 @@ public class AtomicFileCounter
                 writeValue( value - 1 );
             return value;
         }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
     }
 
     /**
      * Get value of the counter.
      * 
      * @return value of the counter
-     * @throws IOException
      */
     public int getValue()
-        throws IOException
     {
         try ( FileLock lock = lock() )
         {
             return readValue();
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
         }
     }
 
@@ -122,14 +133,16 @@ public class AtomicFileCounter
      * Set value of the counter.
      * 
      * @param value value of the counter
-     * @throws IOException
      */
     public void setValue( int value )
-        throws IOException
     {
         try ( FileLock lock = lock() )
         {
             writeValue( value );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
         }
     }
 }
