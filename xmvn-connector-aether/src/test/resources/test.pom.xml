@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<test>
+  <basic>
+    <configuration>
+      <source>1.6</source>
+      <target>1.6</target>
+    </configuration>
+  </basic>
+  <empty>
+    <configuration>
+    </configuration>
+  </empty>
+  <invalidst>
+    <configuration>
+      <source>1.6</source>
+      <target>1.2</target>
+    </configuration>
+  </invalidst>
+  <invalidnd>
+    <configuration>
+      <source>1.0</source>
+      <target>1.0</target>
+    </configuration>
+  </invalidnd>
+</test>
