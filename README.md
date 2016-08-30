@@ -17,7 +17,7 @@ terms of Apache License Version 2.0.
 
 XMvn was written by Mikolaj Izdebski.
 
-[![Build Status](https://travis-ci.org/mizdebsk/xmvn.svg?branch=master)](https://travis-ci.org/mizdebsk/xmvn)
+[![Build Status](https://travis-ci.org/fedora-java/xmvn.svg?branch=master)](https://travis-ci.org/fedora-java/xmvn)
 
 
 Building
