@@ -148,5 +148,4 @@ public abstract class AbstractInstallerTest
         pkg.writeDescriptor( mfiles );
         assertDescriptorEquals( mfiles, expected );
     }
-
 }

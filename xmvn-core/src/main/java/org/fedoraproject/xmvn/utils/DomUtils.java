@@ -88,5 +88,4 @@ public class DomUtils
 
         return childrenOfType( dom, Element.class ).findAny().get();
     }
-
 }

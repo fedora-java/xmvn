@@ -261,5 +261,4 @@ public class JavadocMojo
             throw new MojoExecutionException( "Unable to execute javadoc command: " + e.getMessage(), e );
         }
     }
-
 }

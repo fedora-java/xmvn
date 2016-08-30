@@ -70,7 +70,6 @@ public class XMvnMojoExecutionListener
         {
             return execution.getGroupId().equals( groupId ) && execution.getArtifactId().equals( artifactId )
                 && execution.getGoal().equals( goal );
-
         }
     }
 
@@ -117,7 +116,6 @@ public class XMvnMojoExecutionListener
                 }
                 catch ( NoSuchMethodException e )
                 {
-
                 }
             }
 

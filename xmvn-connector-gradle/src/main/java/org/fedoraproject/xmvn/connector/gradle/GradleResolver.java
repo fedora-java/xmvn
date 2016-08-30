@@ -147,7 +147,6 @@ public class GradleResolver
     public void resolveArtifact( ComponentArtifactMetaData artifact, ModuleSource module,
                                  BuildableArtifactResolveResult result )
     {
-
         ModuleVersionIdentifier moduleId =
             ( (DefaultModuleComponentArtifactMetaData) artifact ).toArtifactIdentifier().getModuleVersionIdentifier();
         String groupId = moduleId.getGroup();

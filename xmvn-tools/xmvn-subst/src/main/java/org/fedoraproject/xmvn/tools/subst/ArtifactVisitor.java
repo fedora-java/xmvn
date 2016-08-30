@@ -36,6 +36,9 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.impl.MetadataResolver;
 import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
