@@ -59,6 +59,7 @@ BuildRequires:  junit
 BuildRequires:  easymock
 BuildRequires:  gradle >= 2.5
 BuildRequires:  maven-invoker
+BuildRequires:  maven-checkstyle-plugin
 
 Requires:       xmvn-minimal = %{version}-%{release}
 

@@ -94,6 +94,7 @@
     <apivizVersion>1.3.2.GA</apivizVersion>
     <assemblyPluginVersion>2.5.3</assemblyPluginVersion>
     <buildHelperPluginVersion>1.9.1</buildHelperPluginVersion>
+    <checkstylePluginVersion>2.17</checkstylePluginVersion>
     <cleanPluginVersion>2.6.1</cleanPluginVersion>
     <compilerPluginVersion>3.3</compilerPluginVersion>
     <dependencyPluginVersion>2.10</dependencyPluginVersion>
@@ -388,6 +389,17 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefireVersion}</version>
         </plugin>
+        <plugin>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${checkstylePluginVersion}</version>
+          <configuration>
+            <sourceDirectory>src/main/java</sourceDirectory>
+            <testSourceDirectory>src/test/java</testSourceDirectory>
+	    <configLocation>../aux/checkstyle.xml</configLocation>
+	    <headerLocation>../aux/license-header.txt</headerLocation>
+	    <excludes>**/package-info.java</excludes>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -418,6 +430,17 @@
             <id>process-test-classes</id>
             <goals>
               <goal>test-index</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>checkstyle-check</id>
+            <goals>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
