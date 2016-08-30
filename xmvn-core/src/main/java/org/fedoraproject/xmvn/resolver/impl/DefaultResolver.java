@@ -64,6 +64,8 @@ public class DefaultResolver
 
     private final MockAgent mockAgent;
 
+    private final Bisect bisect;
+
     @Inject
     public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator )
     {
@@ -74,11 +76,15 @@ public class DefaultResolver
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
         mockAgent = new MockAgent();
+        bisect = new Bisect();
     }
 
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
+        if ( bisect.tryBisect() )
+            return new DefaultResolutionResult();
+
         Properties properties = new Properties();
         properties.putAll( System.getProperties() );
 
