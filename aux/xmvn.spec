@@ -58,6 +58,7 @@ BuildRequires:  sisu-mojos
 BuildRequires:  junit
 BuildRequires:  easymock
 BuildRequires:  gradle >= 2.5
+BuildRequires:  maven-invoker
 
 Requires:       xmvn-minimal = %{version}-%{release}
 
