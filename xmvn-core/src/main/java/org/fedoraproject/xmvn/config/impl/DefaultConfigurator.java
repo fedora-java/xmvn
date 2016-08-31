@@ -90,7 +90,7 @@ public class DefaultConfigurator
     private Configuration loadDefaultConfiguration()
     {
         ClassLoader loader = getClass().getClassLoader();
-        try (InputStream stream = loader.getResourceAsStream( "default-configuration.xml" ))
+        try ( InputStream stream = loader.getResourceAsStream( "default-configuration.xml" ) )
         {
             return loadConfigurationFromStream( stream );
         }
@@ -103,7 +103,7 @@ public class DefaultConfigurator
     private Configuration loadConfiguration( Path path )
         throws IOException
     {
-        try (InputStream childStream = Files.newInputStream( path ))
+        try ( InputStream childStream = Files.newInputStream( path ) )
         {
             return loadConfigurationFromStream( childStream );
         }
@@ -149,7 +149,7 @@ public class DefaultConfigurator
             return;
         }
 
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream( directory ))
+        try ( DirectoryStream<Path> directoryStream = Files.newDirectoryStream( directory ) )
         {
             Set<Path> children = new TreeSet<>();
             for ( Path file : directoryStream )
@@ -263,7 +263,7 @@ public class DefaultConfigurator
     {
         Configuration configuration = getConfiguration();
 
-        try (StringWriter writer = new StringWriter())
+        try ( StringWriter writer = new StringWriter() )
         {
             ConfigurationStaxWriter dumper = new ConfigurationStaxWriter();
             dumper.write( writer, configuration );

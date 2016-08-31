@@ -122,7 +122,7 @@ class EffectivePomGenerator
         Path pomDir = TempManager.createTempDirectory( "xmvn-" + metadata.getUuid() );
         Path pomPath = pomDir.resolve( artifactFileName );
 
-        try (OutputStream os = Files.newOutputStream( pomPath ))
+        try ( OutputStream os = Files.newOutputStream( pomPath ) )
         {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();

@@ -35,7 +35,7 @@ public class XMvnHomeClassLoaderTest
     public void testHome()
         throws Exception
     {
-        try (XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, null ))
+        try ( XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, null ) )
         {
             assertEquals( resourceDir, loader.getHome() );
         }
@@ -49,7 +49,7 @@ public class XMvnHomeClassLoaderTest
         try
         {
             System.setProperty( "xmvn.home", resourceDir.toString() );
-            try (XMvnHomeClassLoader loader = new XMvnHomeClassLoader( null ))
+            try ( XMvnHomeClassLoader loader = new XMvnHomeClassLoader( null ) )
             {
                 assertEquals( resourceDir, loader.getHome() );
             }
@@ -65,8 +65,8 @@ public class XMvnHomeClassLoaderTest
     public void testLoadJar()
         throws Exception
     {
-        try (XMvnHomeClassLoader loader =
-            new XMvnHomeClassLoader( resourceDir, XMvnHomeClassLoaderTest.class.getClassLoader() ))
+        try ( XMvnHomeClassLoader loader =
+            new XMvnHomeClassLoader( resourceDir, XMvnHomeClassLoaderTest.class.getClassLoader() ) )
         {
             loader.addJar( jarPath );
             Class<?> clazz = loader.loadClass( "com.example.Example" );
@@ -79,11 +79,10 @@ public class XMvnHomeClassLoaderTest
     public void testImports()
         throws Exception
     {
-        try (XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, new MockClassLoader() ))
+        try ( XMvnHomeClassLoader loader = new XMvnHomeClassLoader( resourceDir, new MockClassLoader() ) )
         {
-            String[] imports =
-                { "org.fedoraproject.xmvn", "org.fedoraproject.xmvn.artifact", "org.fedoraproject.xmvn.deployer",
-                    "org.fedoraproject.xmvn.resolver" };
+            String[] imports = { "org.fedoraproject.xmvn", "org.fedoraproject.xmvn.artifact",
+                "org.fedoraproject.xmvn.deployer", "org.fedoraproject.xmvn.resolver" };
             for ( String imp : imports )
             {
                 Class<?> clazz = loader.loadClass( imp + ".Example" );

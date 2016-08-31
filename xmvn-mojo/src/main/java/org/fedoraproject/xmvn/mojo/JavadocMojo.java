@@ -91,7 +91,7 @@ public class JavadocMojo
     {
         List<Path> paths = new ArrayList<>();
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream( dir ))
+        try ( DirectoryStream<Path> stream = Files.newDirectoryStream( dir ) )
         {
             for ( Path path : stream )
             {

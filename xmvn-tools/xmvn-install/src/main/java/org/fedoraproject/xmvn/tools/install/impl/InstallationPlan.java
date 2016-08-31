@@ -50,7 +50,7 @@ public class InstallationPlan
         }
         else
         {
-            try (InputStream stream = Files.newInputStream( planPath ))
+            try ( InputStream stream = Files.newInputStream( planPath ) )
             {
                 metadata = new MetadataStaxReader().read( stream );
                 validate( metadata );

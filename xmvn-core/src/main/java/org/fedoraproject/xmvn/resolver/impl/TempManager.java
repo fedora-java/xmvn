@@ -54,7 +54,7 @@ class TempManager
         if ( tempDir == null )
         {
             tempDir = Files.createTempDirectory( "xmvn-" );
-            Runtime.getRuntime().addShutdownHook( new Thread( ( ) -> delete( tempDir ) ) );
+            Runtime.getRuntime().addShutdownHook( new Thread( () -> delete( tempDir ) ) );
         }
 
         return tempDir;

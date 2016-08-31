@@ -62,7 +62,7 @@ public class JarUtils
         final int ELFMAG2 = 'L';
         final int ELFMAG3 = 'F';
 
-        try (ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ))
+        try ( ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ) )
         {
             ZipEntry ent;
             while ( ( ent = jis.getNextEntry() ) != null )
@@ -81,7 +81,8 @@ public class JarUtils
         }
         catch ( IOException e )
         {
-            logger.debug( "I/O exception caught when trying to determine whether JAR contains native code: {}", jar, e );
+            logger.debug( "I/O exception caught when trying to determine whether JAR contains native code: {}", jar,
+                          e );
             return false;
         }
     }
@@ -116,7 +117,7 @@ public class JarUtils
      */
     public static boolean usesNativeCode( Path jar )
     {
-        try (ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ))
+        try ( ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ) )
         {
             ZipEntry ent;
             while ( ( ent = jis.getNextEntry() ) != null )
@@ -202,7 +203,7 @@ public class JarUtils
     {
         logger.trace( "Trying to inject manifest to {}", artifact );
 
-        try (JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ))
+        try ( JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ) )
         {
             Manifest mf = jis.getManifest();
             if ( mf == null )
@@ -220,7 +221,7 @@ public class JarUtils
             targetJar = targetJar.toRealPath();
             Files.delete( targetJar );
 
-            try (JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ))
+            try ( JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ) )
             {
                 byte[] buf = new byte[512];
                 JarEntry entry;

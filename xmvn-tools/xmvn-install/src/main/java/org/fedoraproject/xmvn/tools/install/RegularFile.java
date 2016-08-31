@@ -108,7 +108,7 @@ public class RegularFile
         super( targetPath, accessMode );
 
         this.sourcePath = null;
-        this.content = ( ) -> content;
+        this.content = () -> content;
     }
 
     /**

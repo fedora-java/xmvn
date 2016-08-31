@@ -159,7 +159,7 @@ public class XMvnMojoExecutionListener
 
             if ( Files.exists( PROPERTIES_FILE ) )
             {
-                try (InputStream stream = Files.newInputStream( PROPERTIES_FILE ))
+                try ( InputStream stream = Files.newInputStream( PROPERTIES_FILE ) )
                 {
                     properties.load( stream );
                 }
@@ -168,7 +168,7 @@ public class XMvnMojoExecutionListener
             String projectKey = project.getGroupId() + "/" + project.getArtifactId() + "/" + project.getVersion();
             properties.setProperty( projectKey + "/" + key, value );
 
-            try (OutputStream stream = Files.newOutputStream( PROPERTIES_FILE ))
+            try ( OutputStream stream = Files.newOutputStream( PROPERTIES_FILE ) )
             {
                 properties.store( stream, "XMvn project properties" );
             }

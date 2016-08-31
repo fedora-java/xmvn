@@ -40,12 +40,12 @@ class IvyLoggerAdapter
         if ( exception == null )
             return message;
 
-        try (StringWriter stringWriter = new StringWriter())
+        try ( StringWriter stringWriter = new StringWriter() )
         {
             stringWriter.write( message );
             stringWriter.write( ": " );
 
-            try (PrintWriter printWriter = new PrintWriter( stringWriter ))
+            try ( PrintWriter printWriter = new PrintWriter( stringWriter ) )
             {
                 exception.printStackTrace( printWriter );
             }

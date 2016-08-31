@@ -46,7 +46,7 @@ public class InstallationPlanLoader
             }
         }
         Path newMetadata = Files.createTempFile( filename, "" );
-        try (OutputStream os = Files.newOutputStream( newMetadata ))
+        try ( OutputStream os = Files.newOutputStream( newMetadata ) )
         {
             new MetadataStaxWriter().write( os, metadata );
         }

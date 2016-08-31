@@ -43,7 +43,7 @@ public class IsolatedClassRealmTest
     public void testImports()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( null ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( null ) )
         {
             realm.importPackage( "java.lang" );
             realm.importPackage( "junit" );
@@ -70,7 +70,7 @@ public class IsolatedClassRealmTest
     public void testImportAll()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( null ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( null ) )
         {
             realm.importAllPackages( "org.fedoraproject.xmvn" );
 
@@ -86,7 +86,7 @@ public class IsolatedClassRealmTest
     public void testLoadJar()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
         {
             realm.addJar( jarPath );
             Class<?> clazz = realm.loadClass( "com.example.Example" );
@@ -99,7 +99,7 @@ public class IsolatedClassRealmTest
     public void testLoadJarDirectory()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
         {
             realm.addJarDirectory( resourceDir );
             Class<?> clazz = realm.loadClass( "com.example.Example" );
@@ -115,10 +115,10 @@ public class IsolatedClassRealmTest
     public void testGetResource()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
         {
             realm.addJar( jarPath );
-            try (InputStream resourceStream = realm.getResourceAsStream( "secret-file" ))
+            try ( InputStream resourceStream = realm.getResourceAsStream( "secret-file" ) )
             {
                 assertNotNull( resourceStream );
                 int read = resourceStream.read();
@@ -131,7 +131,7 @@ public class IsolatedClassRealmTest
     public void testGetResources()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( IsolatedClassRealmTest.class.getClassLoader() ) )
         {
             realm.addJarDirectory( resourceDir );
             realm.getResource( "secret-file" );
@@ -146,7 +146,7 @@ public class IsolatedClassRealmTest
     public void testParentClassloader()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ) )
         {
             realm.addJar( jarPath );
             realm.importPackage( "com.example" );
@@ -159,7 +159,7 @@ public class IsolatedClassRealmTest
     public void testParentClassloaderResource()
         throws Exception
     {
-        try (IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ))
+        try ( IsolatedClassRealm realm = new IsolatedClassRealm( new MockClassLoader() ) )
         {
             realm.addJar( jarPath );
             realm.importPackage( "resources" );

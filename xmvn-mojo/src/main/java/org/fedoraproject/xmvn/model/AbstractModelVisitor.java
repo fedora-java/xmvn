@@ -848,7 +848,8 @@ public class AbstractModelVisitor
     }
 
     @Override
-    public void visitCiManagementNotifierConfiguration( String configurationElementKey, String configurationElementValue )
+    public void visitCiManagementNotifierConfiguration( String configurationElementKey,
+                                                        String configurationElementValue )
     {
     }
 

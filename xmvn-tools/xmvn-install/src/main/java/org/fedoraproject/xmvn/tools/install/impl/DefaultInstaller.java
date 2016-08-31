@@ -116,7 +116,7 @@ public class DefaultInstaller
 
         if ( logger.isDebugEnabled() )
         {
-            try (StringWriter buffer = new StringWriter())
+            try ( StringWriter buffer = new StringWriter() )
             {
                 Configuration configuration = new Configuration();
                 configuration.addArtifactManagement( rule );
@@ -163,7 +163,7 @@ public class DefaultInstaller
 
         if ( logger.isDebugEnabled() )
         {
-            try (StringWriter buffer = new StringWriter())
+            try ( StringWriter buffer = new StringWriter() )
             {
                 PackageMetadata meta = new PackageMetadata();
                 meta.setSkippedArtifacts( skippedArtifacts );

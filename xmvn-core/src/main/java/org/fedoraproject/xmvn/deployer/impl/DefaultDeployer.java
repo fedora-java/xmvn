@@ -116,7 +116,7 @@ public class DefaultDeployer
             return new PackageMetadata();
         }
 
-        try (Reader reader = Files.newBufferedReader( planPath, StandardCharsets.UTF_8 ))
+        try ( Reader reader = Files.newBufferedReader( planPath, StandardCharsets.UTF_8 ) )
         {
             return new MetadataStaxReader().read( reader );
         }
@@ -129,7 +129,7 @@ public class DefaultDeployer
     private void writeInstallationPlan( PackageMetadata plan, Path planPath )
         throws IOException
     {
-        try (Writer writer = Files.newBufferedWriter( planPath, StandardCharsets.UTF_8 ))
+        try ( Writer writer = Files.newBufferedWriter( planPath, StandardCharsets.UTF_8 ) )
         {
             new MetadataStaxWriter().write( writer, plan );
         }

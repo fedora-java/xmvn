@@ -99,14 +99,15 @@ public class InstallerTest
     @Override
     public void configure( Binder binder )
     {
-        binder.bind( Configurator.class ).toProvider( ( ) -> configuratorMock );
+        binder.bind( Configurator.class ).toProvider( () -> configuratorMock );
 
         binder.bind( ArtifactInstaller.class ).toInstance( new MockArtifactInstaller() );
 
-        binder.bind( Resolver.class ).toProvider( ( ) -> resolverMock );
+        binder.bind( Resolver.class ).toProvider( () -> resolverMock );
     }
 
-    private void addResolution( String coordinates, final String compatVersion, final String namespace, final Path path )
+    private void addResolution( String coordinates, final String compatVersion, final String namespace,
+                                final Path path )
     {
         ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( coordinates ) );
 

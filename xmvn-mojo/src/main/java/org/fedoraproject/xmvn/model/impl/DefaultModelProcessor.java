@@ -887,7 +887,8 @@ public class DefaultModelProcessor
         }
     }
 
-    private void visitDistributionManagementRepository( ModelVisitor visitor, DeploymentRepository deploymentRepository )
+    private void visitDistributionManagementRepository( ModelVisitor visitor,
+                                                        DeploymentRepository deploymentRepository )
     {
         RepositoryPolicy releases = deploymentRepository.getReleases();
         if ( releases != null )
@@ -1354,7 +1355,8 @@ public class DefaultModelProcessor
         }
     }
 
-    private void visitProfileBuildPluginManagementPluginExecution( ModelVisitor visitor, PluginExecution pluginExecution )
+    private void visitProfileBuildPluginManagementPluginExecution( ModelVisitor visitor,
+                                                                   PluginExecution pluginExecution )
     {
         List<String> goals = pluginExecution.getGoals();
         if ( goals != null )
@@ -1501,7 +1503,8 @@ public class DefaultModelProcessor
         }
     }
 
-    private void visitProfileDistributionManagement( ModelVisitor visitor, DistributionManagement distributionManagement )
+    private void visitProfileDistributionManagement( ModelVisitor visitor,
+                                                     DistributionManagement distributionManagement )
     {
         DeploymentRepository repository = distributionManagement.getRepository();
         if ( repository != null )

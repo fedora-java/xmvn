@@ -48,7 +48,7 @@ class RpmDb
 
         Reader reader = new InputStreamReader( child.getInputStream() );
         Collection<String> lines = new ArrayList<>();
-        try (BufferedReader bufferedReader = new BufferedReader( reader ))
+        try ( BufferedReader bufferedReader = new BufferedReader( reader ) )
         {
             String line;
             while ( ( line = bufferedReader.readLine() ) != null )

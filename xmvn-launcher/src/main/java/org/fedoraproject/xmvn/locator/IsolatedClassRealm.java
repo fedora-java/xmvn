@@ -71,7 +71,7 @@ class IsolatedClassRealm
 
     public void addJarDirectory( Path dir )
     {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream( dir, "*.jar" ))
+        try ( DirectoryStream<Path> stream = Files.newDirectoryStream( dir, "*.jar" ) )
         {
             for ( Path path : stream )
             {

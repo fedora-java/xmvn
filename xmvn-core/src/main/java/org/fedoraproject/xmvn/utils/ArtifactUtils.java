@@ -88,7 +88,7 @@ public class ArtifactUtils
     private static Artifact getArtifactFromManifest( Path path )
         throws IOException
     {
-        try (JarFile jarFile = new JarFile( path.toFile() ))
+        try ( JarFile jarFile = new JarFile( path.toFile() ) )
         {
             Manifest mf = jarFile.getManifest();
             if ( mf == null )
@@ -110,7 +110,7 @@ public class ArtifactUtils
     private static Artifact getArtifactFromPomProperties( Path path, String extension )
         throws IOException
     {
-        try (ZipInputStream zis = new ZipInputStream( Files.newInputStream( path ) ))
+        try ( ZipInputStream zis = new ZipInputStream( Files.newInputStream( path ) ) )
         {
             ZipEntry entry;
             while ( ( entry = zis.getNextEntry() ) != null )

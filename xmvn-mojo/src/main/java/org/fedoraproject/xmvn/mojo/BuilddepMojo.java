@@ -117,7 +117,7 @@ public class BuilddepMojo
     {
         this.modelProcessor = modelProcessor;
 
-        try (InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/common-deps.xml" ))
+        try ( InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/common-deps.xml" ) )
         {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse( xmlStream );
@@ -253,7 +253,7 @@ public class BuilddepMojo
     private void serializeArtifacts( Set<NamespacedArtifact> artifacts )
         throws MojoExecutionException
     {
-        try (Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-builddep" ), StandardCharsets.UTF_8 ))
+        try ( Writer writer = Files.newBufferedWriter( Paths.get( ".xmvn-builddep" ), StandardCharsets.UTF_8 ) )
         {
             XmlSerializer s = new MXSerializer();
             s.setProperty( "http://xmlpull.org/v1/doc/properties.html#serializer-indentation", "  " );

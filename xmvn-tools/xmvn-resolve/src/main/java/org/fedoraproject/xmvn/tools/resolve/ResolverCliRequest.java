@@ -39,10 +39,12 @@ class ResolverCliRequest
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
     private boolean debug = false;
 
-    @Parameter( names = { "-c", "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts" )
+    @Parameter( names = { "-c",
+        "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts" )
     private boolean classpath = false;
 
-    @Parameter( names = { "--raw-request" }, description = "Read a list of raw XMvn XML requests from standard input and print the results on standard output" )
+    @Parameter( names = {
+        "--raw-request" }, description = "Read a list of raw XMvn XML requests from standard input and print the results on standard output" )
     private boolean raw = false;
 
     @DynamicParameter( names = "-D", description = "Define system property" )

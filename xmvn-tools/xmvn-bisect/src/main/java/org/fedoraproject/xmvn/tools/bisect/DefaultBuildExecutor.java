@@ -45,7 +45,7 @@ public class DefaultBuildExecutor
     public boolean executeBuild( InvocationRequest request, String logPath, boolean verbose )
         throws MavenInvocationException
     {
-        try (PrintWriter log = new PrintWriter( logPath ))
+        try ( PrintWriter log = new PrintWriter( logPath ) )
         {
             InvocationOutputHandler outputHandler = new InvocationOutputHandler()
             {

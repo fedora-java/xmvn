@@ -66,7 +66,7 @@ public class JarUtilsTest
         Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
         JarUtils.injectManifest( testJar, artifact );
 
-        try (JarInputStream jis = new JarInputStream( Files.newInputStream( testJar ) ))
+        try ( JarInputStream jis = new JarInputStream( Files.newInputStream( testJar ) ) )
         {
             Manifest mf = jis.getManifest();
             assertNotNull( mf );
@@ -98,7 +98,7 @@ public class JarUtilsTest
         Artifact artifact = new DefaultArtifact( "xpp3", "xpp3_xpath", "jar", "", "SYSTEM" );
         JarUtils.injectManifest( testJar, artifact );
 
-        try (JarInputStream jis = new JarInputStream( Files.newInputStream( testJar ) ))
+        try ( JarInputStream jis = new JarInputStream( Files.newInputStream( testJar ) ) )
         {
             Manifest mf = jis.getManifest();
             assertNotNull( mf );

@@ -94,7 +94,7 @@ public class AtomicFileCounter
     public int tryDecrement()
         throws IOException
     {
-        try (FileLock lock = lock())
+        try ( FileLock lock = lock() )
         {
             int value = readValue();
             if ( value > 0 )
@@ -112,7 +112,7 @@ public class AtomicFileCounter
     public int getValue()
         throws IOException
     {
-        try (FileLock lock = lock())
+        try ( FileLock lock = lock() )
         {
             return readValue();
         }
@@ -127,7 +127,7 @@ public class AtomicFileCounter
     public void setValue( int value )
         throws IOException
     {
-        try (FileLock lock = lock())
+        try ( FileLock lock = lock() )
         {
             writeValue( value );
         }

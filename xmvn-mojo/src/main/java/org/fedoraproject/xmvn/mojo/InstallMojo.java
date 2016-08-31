@@ -151,7 +151,7 @@ public class InstallMojo
             return null;
 
         Properties properties = new Properties();
-        try (InputStream stream = Files.newInputStream( propertiesPath ))
+        try ( InputStream stream = Files.newInputStream( propertiesPath ) )
         {
             properties.load( stream );
         }

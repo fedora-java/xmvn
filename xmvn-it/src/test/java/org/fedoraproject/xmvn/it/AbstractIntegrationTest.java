@@ -152,7 +152,7 @@ public abstract class AbstractIntegrationTest
         throws IOException
     {
         Set<URL> bootClassPath = new LinkedHashSet<>();
-        try (DirectoryStream<Path> dir = Files.newDirectoryStream( mavenHome.resolve( "boot" ), "*.jar" ))
+        try ( DirectoryStream<Path> dir = Files.newDirectoryStream( mavenHome.resolve( "boot" ), "*.jar" ) )
         {
             for ( Path jar : dir )
             {
@@ -170,8 +170,8 @@ public abstract class AbstractIntegrationTest
         argList.addFirst( "--batch-mode" );
         args = argList.toArray( args );
 
-        try (PrintStream out = new PrintStream( Files.newOutputStream( baseDir.resolve( STDOUT ) ) );
-                        PrintStream err = new PrintStream( Files.newOutputStream( baseDir.resolve( STDERR ) ) ))
+        try ( PrintStream out = new PrintStream( Files.newOutputStream( baseDir.resolve( STDOUT ) ) );
+                        PrintStream err = new PrintStream( Files.newOutputStream( baseDir.resolve( STDERR ) ) ) )
         {
             assertEquals( expectFailure ? 1 : 0, run( out, err, args ) );
         }
@@ -196,14 +196,14 @@ public abstract class AbstractIntegrationTest
 
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
-        try (URLClassLoader bootClassLoader = new URLClassLoader( getBootClasspath(), parentClassLoader ))
+        try ( URLClassLoader bootClassLoader = new URLClassLoader( getBootClasspath(), parentClassLoader ) )
         {
             Thread.currentThread().setContextClassLoader( bootClassLoader );
 
             Class<?> launcherClass = bootClassLoader.loadClass( "org.codehaus.plexus.classworlds.launcher.Launcher" );
             Object launcher = launcherClass.newInstance();
 
-            try (InputStream config = Files.newInputStream( mavenHome.resolve( "bin/m2.conf" ) ))
+            try ( InputStream config = Files.newInputStream( mavenHome.resolve( "bin/m2.conf" ) ) )
             {
                 launcherClass.getMethod( "configure", InputStream.class ).invoke( launcher, config );
             }

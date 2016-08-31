@@ -130,7 +130,7 @@ public class Package
     public void writeDescriptor( Path descriptorPath )
         throws IOException
     {
-        try (Writer writer = Files.newWriter( descriptorPath.toFile(), StandardCharsets.UTF_8 ))
+        try ( Writer writer = Files.newWriter( descriptorPath.toFile(), StandardCharsets.UTF_8 ) )
         {
             for ( File file : files )
             {

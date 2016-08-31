@@ -63,13 +63,15 @@ public class BisectCliRequest
     @Parameter( names = { "-amd", "--also-make-dependents" }, description = "Enable 'also make dependents' mode" )
     private boolean alsoMakeDependents;
 
-    @Parameter( names = { "-F", "--base-directory" }, description = "Path to the base directory of the POM for the Maven invocation" )
+    @Parameter( names = { "-F",
+        "--base-directory" }, description = "Path to the base directory of the POM for the Maven invocation" )
     private String basedir;
 
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
     private boolean debug;
 
-    @Parameter( names = { "-fb", "--failure-behavior" }, description = "Set the failure mode of the Maven invocation, one of: fail-at-end, fail-fast, fail-never" )
+    @Parameter( names = { "-fb",
+        "--failure-behavior" }, description = "Set the failure mode of the Maven invocation, one of: fail-at-end, fail-fast, fail-never" )
     private String failureBehavior;
 
     @Parameter( names = { "-gcp", "--global-checksum-policy" }, description = "Checksum mode" )
@@ -81,10 +83,12 @@ public class BisectCliRequest
     @Parameter( names = { "-B", "--batch-mode" }, description = "Run Maven in non-interactive (batch) mode" )
     private boolean batchMode;
 
-    @Parameter( names = { "-J", "--java-home" }, description = "Path to the base directory of the Java installation used to run Maven" )
+    @Parameter( names = { "-J",
+        "--java-home" }, description = "Path to the base directory of the Java installation used to run Maven" )
     private String javaHome;
 
-    @Parameter( names = { "-lr", "--local-repository" }, description = "Path to the base directory of the local repository to use for the Maven invocation" )
+    @Parameter( names = { "-lr",
+        "--local-repository" }, description = "Path to the base directory of the local repository to use for the Maven invocation" )
     private String localRepository;
 
     @Parameter( names = { "-O", "--maven-opts" }, description = "Set the value of the MAVEN_OPTS environment variable" )
@@ -111,19 +115,23 @@ public class BisectCliRequest
     @Parameter( names = { "-rf", "--resume-from" }, description = "Resume reactor from specified project" )
     private String resumeFrom;
 
-    @Parameter( names = { "-e", "--errors" }, description = "Print stack traces for exceptions during maven invocation" )
+    @Parameter( names = { "-e",
+        "--errors" }, description = "Print stack traces for exceptions during maven invocation" )
     private boolean showErrors;
 
-    @Parameter( names = { "-V", "--show-version" }, description = "Enable displaying version without stopping the build" )
+    @Parameter( names = { "-V",
+        "--show-version" }, description = "Enable displaying version without stopping the build" )
     private boolean showVersion;
 
-    @Parameter( names = { "-T", "--threads" }, description = "Thread count, for instance 2.0C where C is core multiplied" )
+    @Parameter( names = { "-T",
+        "--threads" }, description = "Thread count, for instance 2.0C where C is core multiplied" )
     private String threads;
 
     @Parameter( names = { "-t", "--toolchains" }, description = "Alternate path for the user toolchains file" )
     private String toolchains;
 
-    @Parameter( names = { "-U", "--update-snapshots" }, description = "Enforce an update check for plugins and snapshots" )
+    @Parameter( names = { "-U",
+        "--update-snapshots" }, description = "Enforce an update check for plugins and snapshots" )
     private boolean updateSnapshots;
 
     @Parameter( names = { "-s", "--settings" }, description = "Path to user settings" )

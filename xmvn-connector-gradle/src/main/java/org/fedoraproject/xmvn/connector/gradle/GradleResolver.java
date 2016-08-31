@@ -161,8 +161,8 @@ public class GradleResolver
         if ( path == null )
         {
             logger.debug( "Unable to resolve artifact {}", artifact2 );
-            result.failed( new ArtifactResolveException( artifact.getId(), "XMvn was unable to resolve artifact "
-                + artifact2 ) );
+            result.failed( new ArtifactResolveException( artifact.getId(),
+                                                         "XMvn was unable to resolve artifact " + artifact2 ) );
             return;
         }
 
@@ -256,7 +256,8 @@ public class GradleResolver
         ModuleComponentResolveMetaData metaData = (ModuleComponentResolveMetaData) component;
         ModuleComponentIdentifier id = metaData.getComponentId();
         DefaultIvyArtifactName name = new DefaultIvyArtifactName( id.getModule(), "pom", "pom" );
-        DefaultModuleComponentArtifactMetaData resolvedMetaData = new DefaultModuleComponentArtifactMetaData( id, name );
+        DefaultModuleComponentArtifactMetaData resolvedMetaData =
+            new DefaultModuleComponentArtifactMetaData( id, name );
         result.resolved( Collections.singleton( resolvedMetaData ) );
     }
 

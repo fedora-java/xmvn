@@ -87,8 +87,7 @@ public class ArtifactInstallerTest
     private void install( JavaPackage pkg, ArtifactMetadata am, PackagingRule rule )
         throws ArtifactInstallationException
     {
-        expect(
-                repositoryMock.getPrimaryArtifactPath( isA( Artifact.class ), isA( ArtifactContext.class ),
+        expect( repositoryMock.getPrimaryArtifactPath( isA( Artifact.class ), isA( ArtifactContext.class ),
                                                        isA( String.class ) ) ).andReturn( Paths.get( "com.example-test" ) );
         expect( repositoryMock.getRootPaths() ).andReturn( Collections.emptySet() );
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );

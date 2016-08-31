@@ -123,7 +123,8 @@ public class IvyResolver
         String classifier = revision.getExtraAttribute( "classifier" );
         String version = revision.getRevision();
 
-        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, extension, classifier, version );
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, extension, classifier,
+                                                                    version );
     }
 
     static org.fedoraproject.xmvn.artifact.Artifact ivy2aether( org.apache.ivy.core.module.descriptor.Artifact artifact )
@@ -145,7 +146,8 @@ public class IvyResolver
                 classifier = "javadoc";
         }
 
-        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, extension, classifier, version );
+        return new org.fedoraproject.xmvn.artifact.DefaultArtifact( groupId, artifactId, extension, classifier,
+                                                                    version );
     }
 
     private static String resolvedVersion( ResolutionResult resolutionResult )
@@ -286,8 +288,8 @@ public class IvyResolver
     {
         try
         {
-            File pomFile = artifactPath.resolveSibling( 
-                    artifactPath.getName( artifactPath.getNameCount() - 1 ) + "-xmvn.pom" ).toFile();
+            File pomFile = artifactPath.resolveSibling( artifactPath.getName( artifactPath.getNameCount() - 1 )
+                + "-xmvn.pom" ).toFile();
             ModuleDescriptorParser parser = XmlModuleDescriptorParser.getInstance();
             ModuleDescriptor module =
                 parser.parseDescriptor( getSettings(), artifactPath.toFile().toURI().toURL(), false );

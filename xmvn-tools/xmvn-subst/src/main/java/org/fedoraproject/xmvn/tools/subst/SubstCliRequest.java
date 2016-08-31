@@ -44,10 +44,12 @@ class SubstCliRequest
     @Parameter( names = { "-s", "--strict" }, description = "Fail if any artifact cannot be symlinked" )
     private boolean strict = false;
 
-    @Parameter( names = { "-d", "--dry-run" }, description = "Do not symlink anything but report what would have been symlinked" )
+    @Parameter( names = { "-d",
+        "--dry-run" }, description = "Do not symlink anything but report what would have been symlinked" )
     private boolean dryRun = false;
 
-    @Parameter( names = { "-L", "--follow-symlinks" }, description = "Follow symbolic links when traversing directory structure" )
+    @Parameter( names = { "-L",
+        "--follow-symlinks" }, description = "Follow symbolic links when traversing directory structure" )
     private boolean followSymlinks = false;
 
     @Parameter( names = { "-t", "--type" }, description = "Consider artifacts with given type" )

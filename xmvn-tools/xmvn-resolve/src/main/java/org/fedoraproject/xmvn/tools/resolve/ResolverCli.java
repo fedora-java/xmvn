@@ -157,7 +157,8 @@ public class ResolverCli
         {
             ResolverCliRequest cliRequest = new ResolverCliRequest( args );
 
-            Module module = new WireModule( new SpaceModule( new URLClassSpace( ResolverCli.class.getClassLoader() ) ) );
+            Module module =
+                new WireModule( new SpaceModule( new URLClassSpace( ResolverCli.class.getClassLoader() ) ) );
             Injector injector = Guice.createInjector( module );
             ResolverCli cli = injector.getInstance( ResolverCli.class );
 

@@ -52,7 +52,7 @@ public class ArtifactTypeRegistry
 
     private ArtifactTypeRegistry()
     {
-        try (InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/stereotypes.xml" ))
+        try ( InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/stereotypes.xml" ) )
         {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse( xmlStream );

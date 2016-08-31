@@ -50,7 +50,7 @@ public class JavaPackage
 
         metadata.setUuid( UUID.randomUUID().toString() );
 
-        File metadataFile = new RegularFile( metadataPath, ( ) -> getMetadataContents() );
+        File metadataFile = new RegularFile( metadataPath, () -> getMetadataContents() );
         addFile( metadataFile );
     }
 

@@ -82,13 +82,13 @@ class MetadataReader
                     for ( String fragFilename : flist )
                     {
                         Path xmlPath = path.resolve( fragFilename );
-                        futures.put( xmlPath, executor.submit( ( ) -> readMetadata( xmlPath ) ) );
+                        futures.put( xmlPath, executor.submit( () -> readMetadata( xmlPath ) ) );
                     }
                 }
             }
             else
             {
-                futures.put( path, executor.submit( ( ) -> readMetadata( path ) ) );
+                futures.put( path, executor.submit( () -> readMetadata( path ) ) );
             }
         }
 
@@ -133,11 +133,11 @@ class MetadataReader
     private static PackageMetadata readMetadata( Path path )
         throws Exception
     {
-        try (InputStream fis = Files.newInputStream( path ))
+        try ( InputStream fis = Files.newInputStream( path ) )
         {
-            try (BufferedInputStream bis = new BufferedInputStream( fis, 128 ))
+            try ( BufferedInputStream bis = new BufferedInputStream( fis, 128 ) )
             {
-                try (InputStream is = isCompressed( bis ) ? new GZIPInputStream( bis ) : bis)
+                try ( InputStream is = isCompressed( bis ) ? new GZIPInputStream( bis ) : bis )
                 {
                     MetadataStaxReader reader = new MetadataStaxReader();
                     return reader.read( is );
