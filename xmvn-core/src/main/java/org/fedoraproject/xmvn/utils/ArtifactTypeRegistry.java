@@ -40,14 +40,14 @@ public class ArtifactTypeRegistry
 {
     private static final ArtifactTypeRegistry DEFAULT_REGISTRY = new ArtifactTypeRegistry();
 
-    private final Map<String, String> EXTENSIONS = new LinkedHashMap<>();
+    private final Map<String, String> extensions = new LinkedHashMap<>();
 
-    private final Map<String, String> CLASSIFIERS = new LinkedHashMap<>();
+    private final Map<String, String> classifiers = new LinkedHashMap<>();
 
     private void addStereotype( String type, String extension, String classifier )
     {
-        EXTENSIONS.put( type, extension );
-        CLASSIFIERS.put( type, classifier );
+        extensions.put( type, extension );
+        classifiers.put( type, classifier );
     }
 
     private ArtifactTypeRegistry()
@@ -74,8 +74,8 @@ public class ArtifactTypeRegistry
 
     private ArtifactTypeRegistry( ArtifactTypeRegistry template )
     {
-        EXTENSIONS.putAll( template.EXTENSIONS );
-        CLASSIFIERS.putAll( template.CLASSIFIERS );
+        extensions.putAll( template.extensions );
+        classifiers.putAll( template.classifiers );
     }
 
     public static ArtifactTypeRegistry getDefaultRegistry()
@@ -93,10 +93,10 @@ public class ArtifactTypeRegistry
     public Artifact createTypedArtifact( String groupId, String artifactId, String type, String customClassifier,
                                          String version )
     {
-        if ( type == null || EXTENSIONS.get( type ) == null )
+        if ( type == null || extensions.get( type ) == null )
             return new DefaultArtifact( groupId, artifactId, type, customClassifier, version );
 
-        String classifier = Strings.isNullOrEmpty( customClassifier ) ? CLASSIFIERS.get( type ) : customClassifier;
-        return new DefaultArtifact( groupId, artifactId, EXTENSIONS.get( type ), classifier, version );
+        String classifier = Strings.isNullOrEmpty( customClassifier ) ? classifiers.get( type ) : customClassifier;
+        return new DefaultArtifact( groupId, artifactId, extensions.get( type ), classifier, version );
     }
 }

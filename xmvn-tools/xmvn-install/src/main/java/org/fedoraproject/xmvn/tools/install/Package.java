@@ -35,7 +35,7 @@ public class Package
     /**
      * ID of main package.
      */
-    public static String MAIN = "";
+    public static final String MAIN = "";
 
     /**
      * Package ID (a unique string).

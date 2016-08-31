@@ -50,7 +50,7 @@ class XMvnInstallTask
 {
     static class LazyDeployerProvider
     {
-        static final Deployer deployer = LazyLocatorProvider.locator.getService( Deployer.class );
+        static final Deployer DEPLOYER = LazyLocatorProvider.LOCATOR.getService( Deployer.class );
     }
 
     @Inject
@@ -61,7 +61,7 @@ class XMvnInstallTask
 
     private Deployer getDeployer()
     {
-        return LazyDeployerProvider.deployer;
+        return LazyDeployerProvider.DEPLOYER;
     }
 
     private Artifact getPublishArtifact( Project project, PublishArtifact gradleArtifact )

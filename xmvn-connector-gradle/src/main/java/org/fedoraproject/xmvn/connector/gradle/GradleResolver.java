@@ -76,27 +76,27 @@ public class GradleResolver
 
     static class LazyLocatorProvider
     {
-        static final IsolatedXMvnServiceLocator locator;
+        static final IsolatedXMvnServiceLocator LOCATOR;
 
         static
         {
             XMvnHomeClassLoader realm = new XMvnHomeClassLoader( LazyLocatorProvider.class.getClassLoader() );
             realm.importAllPackages( "org.slf4j" );
             realm.importAllPackages( "org.gradle.api.logging" );
-            locator = new IsolatedXMvnServiceLocator( realm );
+            LOCATOR = new IsolatedXMvnServiceLocator( realm );
         }
     }
 
     static class LazyResolverProvider
     {
-        static final Resolver resolver = LazyLocatorProvider.locator.getService( Resolver.class );
+        static final Resolver RESOLVER = LazyLocatorProvider.LOCATOR.getService( Resolver.class );
     }
 
     private Path resolve( Artifact artifact )
     {
         logger.debug( "Trying to resolve artifact {}", artifact );
         ResolutionRequest request = new ResolutionRequest( artifact );
-        Resolver resolver = LazyResolverProvider.resolver;
+        Resolver resolver = LazyResolverProvider.RESOLVER;
         ResolutionResult result = resolver.resolve( request );
         return result.getArtifactPath();
     }

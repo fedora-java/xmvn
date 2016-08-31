@@ -54,7 +54,7 @@ public class DefaultResolver
 
     private final MetadataResolver metadataResolver;
 
-    private static final RpmDb rpmdb = new RpmDb();
+    private static final RpmDb RPMDB = new RpmDb();
 
     private final Resolver localRepoResolver;
 
@@ -162,7 +162,7 @@ public class DefaultResolver
         result.setNamespace( metadata.getNamespace() );
         result.setCompatVersion( compatVersion );
         if ( request.isProviderNeeded() )
-            result.setProvider( rpmdb.lookupPath( artifactPath ) );
+            result.setProvider( RPMDB.lookupPath( artifactPath ) );
 
         logger.debug( "Artifact {} was resolved to {}", artifact, artifactPath );
         return result;

@@ -38,7 +38,7 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
  */
 public class ArtifactUtils
 {
-    private static final Logger logger = LoggerFactory.getLogger( ArtifactUtils.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( ArtifactUtils.class );
 
     public static final String UNKNOWN_VERSION = "UNKNOWN";
 
@@ -148,7 +148,7 @@ public class ArtifactUtils
         }
         catch ( IOException e )
         {
-            logger.error( "Failed to get artifact definition from file {}", path, e );
+            LOGGER.error( "Failed to get artifact definition from file {}", path, e );
             return null;
         }
     }

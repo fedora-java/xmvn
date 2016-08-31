@@ -47,19 +47,19 @@ public class ArtifactInstallerFactory
     /**
      * List of Tycho pacgkaging types.
      */
-    private static final Collection<String> eclipsePackagingTypes = Arrays.asList( "eclipse-plugin", //
-                                                                                   "eclipse-test-plugin", //
-                                                                                   "eclipse-feature", //
-                                                                                   "eclipse-repository", //
-                                                                                   "eclipse-application", //
-                                                                                   "eclipse-update-site", //
-                                                                                   "eclipse-target-definition" );
+    private static final Collection<String> ECLIPSE_PACKAGING_TYPES = Arrays.asList( "eclipse-plugin", //
+                                                                                     "eclipse-test-plugin", //
+                                                                                     "eclipse-feature", //
+                                                                                     "eclipse-repository", //
+                                                                                     "eclipse-application", //
+                                                                                     "eclipse-update-site", //
+                                                                                     "eclipse-target-definition" );
 
     @SuppressWarnings( "unused" )
     public ArtifactInstaller getInstallerFor( Artifact artifact, Properties properties )
     {
         String type = properties.getProperty( "type" );
-        if ( type != null && eclipsePackagingTypes.contains( type ) )
+        if ( type != null && ECLIPSE_PACKAGING_TYPES.contains( type ) )
         {
             if ( eclipseArtifactInstaller != null )
                 return eclipseArtifactInstaller;

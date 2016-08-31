@@ -44,7 +44,16 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
  */
 public class JarUtils
 {
-    private static final Logger logger = LoggerFactory.getLogger( JarUtils.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( JarUtils.class );
+
+    // From /usr/include/linux/elf.h
+    private static final int ELFMAG0 = 0x7F;
+
+    private static final int ELFMAG1 = 'E';
+
+    private static final int ELFMAG2 = 'L';
+
+    private static final int ELFMAG3 = 'F';
 
     /**
      * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native (architecture-dependent)
@@ -56,12 +65,6 @@ public class JarUtils
      */
     public static boolean containsNativeCode( Path jar )
     {
-        // From /usr/include/linux/elf.h
-        final int ELFMAG0 = 0x7F;
-        final int ELFMAG1 = 'E';
-        final int ELFMAG2 = 'L';
-        final int ELFMAG3 = 'F';
-
         try ( ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ) )
         {
             ZipEntry ent;
@@ -71,17 +74,17 @@ public class JarUtils
                     continue;
                 if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2 && jis.read() == ELFMAG3 )
                 {
-                    logger.debug( "Native code found inside {}: {}", jar, ent.getName() );
+                    LOGGER.debug( "Native code found inside {}: {}", jar, ent.getName() );
                     return true;
                 }
             }
 
-            logger.trace( "Native code not found inside {}", jar );
+            LOGGER.trace( "Native code not found inside {}", jar );
             return false;
         }
         catch ( IOException e )
         {
-            logger.debug( "I/O exception caught when trying to determine whether JAR contains native code: {}", jar,
+            LOGGER.debug( "I/O exception caught when trying to determine whether JAR contains native code: {}", jar,
                           e );
             return false;
         }
@@ -143,12 +146,12 @@ public class JarUtils
         }
         catch ( NativeMethodFound e )
         {
-            logger.debug( "Native method {}({}) found in {}: {}", e.methodName, e.methodSignature, jar, e.className );
+            LOGGER.debug( "Native method {}({}) found in {}: {}", e.methodName, e.methodSignature, jar, e.className );
             return true;
         }
         catch ( IOException e )
         {
-            logger.debug( "I/O exception caught when trying to determine whether JAR uses native code: {}", jar, e );
+            LOGGER.debug( "I/O exception caught when trying to determine whether JAR uses native code: {}", jar, e );
             return false;
         }
     }
@@ -159,11 +162,11 @@ public class JarUtils
         {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue( key, value );
-            logger.trace( "Injected field {}: {}", key, value );
+            LOGGER.trace( "Injected field {}: {}", key, value );
         }
         else
         {
-            logger.trace( "Not injecting field {} (it has default value \"{}\")", key, defaultValue );
+            LOGGER.trace( "Not injecting field {} (it has default value \"{}\")", key, defaultValue );
         }
     }
 
@@ -201,14 +204,14 @@ public class JarUtils
      */
     public static void injectManifest( Path targetJar, Artifact artifact )
     {
-        logger.trace( "Trying to inject manifest to {}", artifact );
+        LOGGER.trace( "Trying to inject manifest to {}", artifact );
 
         try ( JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ) )
         {
             Manifest mf = jis.getManifest();
             if ( mf == null )
             {
-                logger.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
+                LOGGER.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
                 return;
             }
 
@@ -241,11 +244,11 @@ public class JarUtils
                 throw new RuntimeException( e );
             }
 
-            logger.trace( "Manifest injected successfully" );
+            LOGGER.trace( "Manifest injected successfully" );
         }
         catch ( IOException e )
         {
-            logger.debug( "I/O exception caught when trying to read JAR: {}", targetJar );
+            LOGGER.debug( "I/O exception caught when trying to read JAR: {}", targetJar );
         }
     }
 }

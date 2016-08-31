@@ -43,7 +43,7 @@ public class XMvnWorkspaceReader
 {
     private final Resolver resolver;
 
-    private static final WorkspaceRepository repository = new WorkspaceRepository();
+    private static final WorkspaceRepository REPOSITORY = new WorkspaceRepository();
 
     private final List<ResolutionListener> listeners = new ArrayList<>();
 
@@ -103,6 +103,6 @@ public class XMvnWorkspaceReader
     @Override
     public WorkspaceRepository getRepository()
     {
-        return repository;
+        return REPOSITORY;
     }
 }

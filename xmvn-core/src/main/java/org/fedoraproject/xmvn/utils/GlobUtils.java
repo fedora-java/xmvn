@@ -30,7 +30,7 @@ public class GlobUtils
      * Character with special meaning in regular expression namespace. These characters should be escaped when
      * converting glob expression to regular expression.
      */
-    private static final String specialChars = "(){}.,?*+|<=>!";
+    private static final String SPECIAL_CHARS = "(){}.,?*+|<=>!";
 
     /**
      * Convert wildcard pattern to regular expression.
@@ -50,7 +50,7 @@ public class GlobUtils
         {
             if ( escape )
             {
-                if ( specialChars.indexOf( ch ) >= 0 )
+                if ( SPECIAL_CHARS.indexOf( ch ) >= 0 )
                     re.append( '\\' );
                 re.append( ch );
                 escape = false;
@@ -84,7 +84,7 @@ public class GlobUtils
             }
             else
             {
-                if ( specialChars.indexOf( ch ) >= 0 )
+                if ( SPECIAL_CHARS.indexOf( ch ) >= 0 )
                     re.append( '\\' );
                 re.append( ch );
             }

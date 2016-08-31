@@ -34,7 +34,7 @@ class RpmDb
 {
     private static Map<String, String> paths;
 
-    private static final Object lock = new Object();
+    private static final Object LOCK = new Object();
 
     private static Iterable<String> execQuery( String query )
         throws IOException
@@ -109,7 +109,7 @@ class RpmDb
             // Ignore
         }
 
-        synchronized ( lock )
+        synchronized ( LOCK )
         {
             if ( paths == null )
                 buildDatabase();

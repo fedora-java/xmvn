@@ -65,7 +65,7 @@ public class IvyResolver
 {
     static class LazyLocatorProvider
     {
-        static final IsolatedXMvnServiceLocator locator;
+        static final IsolatedXMvnServiceLocator LOCATOR;
 
         static
         {
@@ -73,18 +73,18 @@ public class IvyResolver
                 new XMvnHomeClassLoader( LazyLocatorProvider.class.getClassLoader() );
             realm.addJarDirectory( realm.getHome().resolve( "lib" ).resolve( "ivy" ) );
             realm.importAllPackages( "org.apache.ivy" );
-            locator = new IsolatedXMvnServiceLocator( realm );
+            LOCATOR = new IsolatedXMvnServiceLocator( realm );
         }
     }
 
     static class LazyResolverProvider
     {
-        static final Resolver resolver = LazyLocatorProvider.locator.getService( Resolver.class );
+        static final Resolver RESOLVER = LazyLocatorProvider.LOCATOR.getService( Resolver.class );
     }
 
     static class LazyDeployerProvider
     {
-        static final Deployer deployer = LazyLocatorProvider.locator.getService( Deployer.class );
+        static final Deployer DEPLOYER = LazyLocatorProvider.LOCATOR.getService( Deployer.class );
     }
 
     private Resolver resolver;
@@ -98,7 +98,7 @@ public class IvyResolver
 
     public Resolver getResolver()
     {
-        return resolver != null ? resolver : LazyResolverProvider.resolver;
+        return resolver != null ? resolver : LazyResolverProvider.RESOLVER;
     }
 
     public void setResolver( Resolver resolver )
@@ -108,7 +108,7 @@ public class IvyResolver
 
     public Deployer getDeployer()
     {
-        return deployer != null ? deployer : LazyDeployerProvider.deployer;
+        return deployer != null ? deployer : LazyDeployerProvider.DEPLOYER;
     }
 
     public void setDeployer( Deployer deployer )

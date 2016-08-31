@@ -24,7 +24,11 @@ import org.slf4j.spi.LoggerFactoryBinder;
 public class StaticLoggerBinder
     implements LoggerFactoryBinder
 {
+    // CHECKSTYLE_OFF: StaticVariableName
+    // CHECKSTYLE_OFF: VisibilityModifier
     public static String REQUESTED_API_VERSION = "1.6.99";
+    // CHECKSTYLE_ON: VisibilityModifier
+    // CHECKSTYLE_ON: StaticVariableName
 
     private static final StaticLoggerBinder INSTANCE = new StaticLoggerBinder();
 
