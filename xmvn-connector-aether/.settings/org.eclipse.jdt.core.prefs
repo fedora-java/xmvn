@@ -259,7 +259,7 @@ org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_method_invoca
 org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_parenthesized_expression=insert
 org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_switch=insert
 org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_synchronized=insert
-org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_try=do not insert
+org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_try=insert
 org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_while=insert
 org.eclipse.jdt.core.formatter.insert_space_after_postfix_operator=do not insert
 org.eclipse.jdt.core.formatter.insert_space_after_prefix_operator=do not insert
@@ -290,7 +290,7 @@ org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_method_invoc
 org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_parenthesized_expression=insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_switch=insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_synchronized=insert
-org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_try=do not insert
+org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_try=insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_while=insert
 org.eclipse.jdt.core.formatter.insert_space_before_colon_in_assert=insert
 org.eclipse.jdt.core.formatter.insert_space_before_colon_in_case=do not insert
