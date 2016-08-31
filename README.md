@@ -41,25 +41,6 @@ This profile is activated automatically when CI environmental variable
 is set to true, for example on TravisCI.
 
 
-Eclipse
--------
-
-XMvn author believes that storing Eclipse project files together with
-code is generally a *bad* idea.  Instead, Eclipse project files and
-settings are provided in a separate git branch.
-
-To add XMvn Eclipse project files to existing git working tree, run:
-
-    git --git-dir .eclipse init
-    git --git-dir .eclipse remote add -f origin https://github.com/fedora-java/xmvn.git
-    git --git-dir .eclipse --work-tree . checkout eclipse
-    ln -sf ../../.gitignore_eclipse .eclipse/info/exclude
-
-To spawn a shell with Eclipse repo set as default you can run:
-
-    GIT_DIR=.eclipse $SHELL
-
-
 Contact
 -------
 

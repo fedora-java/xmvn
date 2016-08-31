@@ -1,8 +1,3 @@
-.classpath
-.settings
-.project
-.eclipse
-.gitignore_eclipse
 pom.xml.*Backup
 *~
 *.xz
