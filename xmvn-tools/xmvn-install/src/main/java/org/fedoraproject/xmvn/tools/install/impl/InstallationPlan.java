@@ -24,6 +24,8 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
+import com.google.common.base.Strings;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
@@ -31,8 +33,6 @@ import org.fedoraproject.xmvn.metadata.DependencyExclusion;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
-
-import com.google.common.base.Strings;
 
 /**
  * @author Mikolaj Izdebski

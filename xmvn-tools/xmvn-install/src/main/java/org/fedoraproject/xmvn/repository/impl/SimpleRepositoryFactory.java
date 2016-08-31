@@ -19,10 +19,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.fedoraproject.xmvn.repository.Repository;
+import com.google.common.base.Strings;
 import org.w3c.dom.Element;
 
-import com.google.common.base.Strings;
+import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * @author Mikolaj Izdebski

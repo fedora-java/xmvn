@@ -17,9 +17,10 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.util.Properties;
 
+import org.w3c.dom.Element;
+
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
-import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski

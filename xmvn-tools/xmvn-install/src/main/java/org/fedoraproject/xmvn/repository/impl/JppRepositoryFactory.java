@@ -20,8 +20,9 @@ import java.nio.file.Path;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
+
+import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * Factory creating JPP repositories.

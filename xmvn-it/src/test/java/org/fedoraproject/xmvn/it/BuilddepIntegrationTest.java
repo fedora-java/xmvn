@@ -25,10 +25,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.easymock.EasyMock;
-import org.fedoraproject.xmvn.utils.DomUtils;
 import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import org.fedoraproject.xmvn.utils.DomUtils;
 
 /**
  * @author Mikolaj Izdebski

@@ -19,10 +19,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 
+import org.w3c.dom.Element;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.tools.install.condition.Condition;
-import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski

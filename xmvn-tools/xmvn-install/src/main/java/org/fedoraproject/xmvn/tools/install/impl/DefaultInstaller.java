@@ -32,6 +32,10 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -52,10 +56,6 @@ import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
 
 @Named
 @Singleton

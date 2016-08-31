@@ -48,16 +48,17 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
-import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.model.ModelProcessor;
-import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.model.ModelProcessor;
+import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 
 /**
  * @author Mikolaj Izdebski

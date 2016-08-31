@@ -22,6 +22,8 @@ import java.util.Set;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.google.common.base.Strings;
+
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ConfigurationMerger;
@@ -29,8 +31,6 @@ import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-
-import com.google.common.base.Strings;
 
 /**
  * Default implementation of configuration merger.

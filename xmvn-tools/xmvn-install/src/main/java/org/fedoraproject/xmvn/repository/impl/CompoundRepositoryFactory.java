@@ -25,12 +25,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.google.common.base.Strings;
+import org.w3c.dom.Element;
+
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.utils.DomUtils;
-import org.w3c.dom.Element;
-
-import com.google.common.base.Strings;
 
 /**
  * Factory creating compound repositories.

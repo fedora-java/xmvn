@@ -23,11 +23,12 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 import org.eclipse.sisu.launch.InjectedTest;
-import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
+
+import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * @author Mikolaj Izdebski

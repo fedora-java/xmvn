@@ -27,12 +27,13 @@ import java.util.Collections;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
-import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
+
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
+import org.fedoraproject.xmvn.repository.ArtifactContext;
 
 /**
  * @author Mikolaj Izdebski

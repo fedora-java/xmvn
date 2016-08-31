@@ -38,6 +38,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.bean.BeanProperties;
 import org.eclipse.sisu.bean.BeanProperty;
+
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 

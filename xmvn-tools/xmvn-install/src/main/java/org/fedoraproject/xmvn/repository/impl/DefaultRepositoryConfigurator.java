@@ -22,11 +22,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.w3c.dom.Element;
+
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.repository.RepositoryFactory;
-import org.w3c.dom.Element;
 
 /**
  * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for

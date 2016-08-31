@@ -34,6 +34,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
@@ -48,10 +52,6 @@ import org.fedoraproject.xmvn.tools.install.File;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.fedoraproject.xmvn.tools.install.SymbolicLink;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
 
 @Named
 @Singleton

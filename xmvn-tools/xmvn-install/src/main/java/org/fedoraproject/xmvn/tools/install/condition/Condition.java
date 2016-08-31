@@ -19,9 +19,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.w3c.dom.Element;
+
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.utils.DomUtils;
-import org.w3c.dom.Element;
 
 /**
  * @author Mikolaj Izdebski
