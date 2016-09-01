@@ -107,7 +107,7 @@ public class BisectCliRequest
     private List<String> projects;
 
     @DynamicParameter( names = { "-D", "--define" }, description = "System properties for the Maven invocation" )
-    public Map<String, String> defines = new TreeMap<>();
+    private Map<String, String> defines = new TreeMap<>();
 
     @Parameter( names = { "-N", "--non-recursive" }, description = "Recursion behavior of a reactor invocation" )
     private boolean nonRecursive;
