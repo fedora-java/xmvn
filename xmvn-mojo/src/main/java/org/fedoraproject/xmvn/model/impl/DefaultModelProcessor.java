@@ -83,6 +83,7 @@ public class DefaultModelProcessor
         visit( visitor, model );
     }
 
+    // CHECKSTYLE_OFF: MethodLength
     private void visit( ModelVisitor visitor, Model model )
     {
         Parent parent = model.getParent();
@@ -339,6 +340,7 @@ public class DefaultModelProcessor
             }
         }
     }
+    // CHECKSTYLE_ON: MethodLength
 
     private void visitBuild( ModelVisitor visitor, Build build )
     {
