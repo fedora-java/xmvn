@@ -59,8 +59,6 @@ BuildRequires:  junit
 BuildRequires:  easymock
 BuildRequires:  gradle >= 2.5
 BuildRequires:  maven-invoker
-BuildRequires:  maven-checkstyle-plugin
-BuildRequires:  apache-rat-plugin
 
 Requires:       xmvn-minimal = %{version}-%{release}
 
@@ -197,6 +195,10 @@ This package provides %{summary}.
 %if %{without its}
 %pom_disable_module xmvn-it
 %endif
+
+# Upstream code quality checks, not relevant when building RPMs
+%pom_remove_plugin -r :apache-rat-plugin
+%pom_remove_plugin -r :maven-checkstyle-plugin
 
 # remove dependency plugin maven-binaries execution
 # we provide apache-maven by symlink
