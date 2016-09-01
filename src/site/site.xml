@@ -53,11 +53,15 @@
       <item name="API Documentation" href="apidocs/"/>
       <item name="Tutorials" href="howto/index.html" collapse="true">
         <item name="Using XMvn Bisect" href="howto/bisect.html"/>
+        <!-- FIXME: outdated
         <item name="Embedding XMvn in your application" href="howto/embed.html"/>
+        -->
         <!-- Not yet available
         <item name="Using XMvn from Maven plugin" href="howto/plugin.html"/>
         -->
+        <!-- FIXME: outdated
         <item name="Creating extension for XMvn" href="howto/extend.html"/>
+        -->
       </item>
     </menu>
   </body>
