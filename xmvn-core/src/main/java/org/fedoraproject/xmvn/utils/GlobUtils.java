@@ -32,6 +32,11 @@ public class GlobUtils
      */
     private static final String SPECIAL_CHARS = "(){}.,?*+|<=>!";
 
+    private GlobUtils()
+    {
+        // Avoid generating default public constructor
+    }
+
     /**
      * Convert wildcard pattern to regular expression.
      * 

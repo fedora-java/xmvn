@@ -54,6 +54,11 @@ public class ArtifactUtils
 
     public static final String MF_KEY_VERSION = "JavaPackages-Version";
 
+    private ArtifactUtils()
+    {
+        // Avoid generating default public constructor
+    }
+
     /**
      * Convert a collection of artifacts to a human-readable string. This function uses single-line representation.
      * 

@@ -28,6 +28,11 @@ class TempManager
 {
     private static Path tempDir;
 
+    private TempManager()
+    {
+        // Avoid generating default public constructor
+    }
+
     private static void delete( Path path )
     {
         try

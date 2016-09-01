@@ -35,6 +35,11 @@ import org.xml.sax.SAXException;
  */
 public class DomUtils
 {
+    private DomUtils()
+    {
+        // Avoid generating default public constructor
+    }
+
     public static Element parse( Path path )
         throws SAXException, IOException, ParserConfigurationException
     {

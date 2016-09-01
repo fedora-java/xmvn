@@ -33,6 +33,11 @@ import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
  */
 class Utils
 {
+    private Utils()
+    {
+        // Avoid generating default public constructor
+    }
+
     public static Artifact aetherArtifact( org.apache.maven.artifact.Artifact mavenArtifact )
     {
         String groupId = mavenArtifact.getGroupId();

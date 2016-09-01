@@ -55,6 +55,11 @@ public class JarUtils
 
     private static final int ELFMAG3 = 'F';
 
+    private JarUtils()
+    {
+        // Avoid generating default public constructor
+    }
+
     /**
      * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native (architecture-dependent)
      * code.
