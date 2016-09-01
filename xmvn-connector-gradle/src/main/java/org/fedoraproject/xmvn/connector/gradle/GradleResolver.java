@@ -228,7 +228,7 @@ public class GradleResolver
         if ( artifactSet.isEmpty() )
         {
             artifactSet.add( new DefaultIvyArtifactName( id.getModule(), "jar", "jar",
-                                                         Collections.<String, String> emptyMap() ) );
+                                                         Collections.<String, String>emptyMap() ) );
         }
 
         return artifactSet;

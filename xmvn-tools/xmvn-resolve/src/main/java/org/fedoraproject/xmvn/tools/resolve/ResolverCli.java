@@ -76,7 +76,7 @@ public class ResolverCli
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             CompoundRequest compoundRequest = (CompoundRequest) jaxbUnmarshaller.unmarshal( System.in );
             List<ResolutionRequest> requests = compoundRequest.getRequests();
-            return requests != null ? requests : Collections.<ResolutionRequest> emptyList();
+            return requests != null ? requests : Collections.<ResolutionRequest>emptyList();
         }
 
         List<ResolutionRequest> requests = new ArrayList<>();
