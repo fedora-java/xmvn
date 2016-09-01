@@ -75,7 +75,7 @@ class MetadataReader
 
             if ( Files.isDirectory( path ) )
             {
-                String flist[] = path.toFile().list();
+                String[] flist = path.toFile().list();
                 if ( flist != null )
                 {
                     Arrays.sort( flist );
