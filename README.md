@@ -5,7 +5,7 @@
     /__/\  \
          \_/   ~ intelligent packaging ~
 
-http://mizdebsk.fedorapeople.org/xmvn/
+https://fedora-java.github.io/xmvn/
 
 XMvn is a set of extensions for Apache Maven that can be used to
 manage system artifact repository and use it to resolve Maven

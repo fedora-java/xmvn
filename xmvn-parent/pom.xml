@@ -28,7 +28,7 @@
     XMvn Parent is project model from which all other XMvn modules are
     inheriting.  It defines settings common to all XMvn modules.
   </description>
-  <url>http://mizdebsk.fedorapeople.org/xmvn/</url>
+  <url>https://fedora-java.github.io/xmvn/</url>
   <inceptionYear>2012</inceptionYear>
   <organization>
     <name>Red Hat, Inc.</name>
@@ -68,8 +68,8 @@
     <developerConnection>scm:git:git@github.com:fedora-java/xmvn.git</developerConnection>
   </scm>
   <issueManagement>
-    <system>Bugzilla</system>
-    <url>https://bugzilla.redhat.com/</url>
+    <system>Github</system>
+    <url>https://github.com/fedora-java/xmvn/issues/</url>
   </issueManagement>
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
