@@ -33,7 +33,7 @@ public class RegularFileTest
         throws Exception
     {
         Path jar = getResource( "example.jar" );
-        byte content[] = Files.readAllBytes( jar );
+        byte[] content = Files.readAllBytes( jar );
         add( new Directory( Paths.get( "usr/share/java" ) ) );
         add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), content ) );
         Path root = performInstallation();

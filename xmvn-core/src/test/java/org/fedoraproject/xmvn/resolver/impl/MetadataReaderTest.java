@@ -57,7 +57,7 @@ public class MetadataReaderTest
     public void testReadingEmptyList()
         throws Exception
     {
-        List<String> pathList = Collections.<String> emptyList();
+        List<String> pathList = Collections.<String>emptyList();
         List<PackageMetadata> list = reader.readMetadata( pathList );
         assertNotNull( list );
         assertTrue( list.isEmpty() );

@@ -92,11 +92,11 @@ public class PackageTest
         throws Exception
     {
         Package pkg = new Package( "my-id" );
-        Package same_pkg = new Package( "my-id" );
-        Package another_pkg = new Package( "other-id" );
+        Package samePkg = new Package( "my-id" );
+        Package anotherPkg = new Package( "other-id" );
 
-        assertEquals( same_pkg, pkg );
-        assertNotEquals( pkg, another_pkg );
-        assertNotEquals( same_pkg, another_pkg );
+        assertEquals( samePkg, pkg );
+        assertNotEquals( pkg, anotherPkg );
+        assertNotEquals( samePkg, anotherPkg );
     }
 }

@@ -29,8 +29,13 @@ import org.fedoraproject.xmvn.tools.install.impl.InstallationPlan;
 /**
  * @author Michael Simacek
  */
-public class InstallationPlanLoader
+public final class InstallationPlanLoader
 {
+    private InstallationPlanLoader()
+    {
+        // Don't generate default public constructor
+    }
+
     public static Path prepareInstallationPlanFile( String filename )
         throws Exception
     {

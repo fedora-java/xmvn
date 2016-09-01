@@ -37,6 +37,9 @@ import org.fedoraproject.xmvn.utils.DomUtils;
 public class BuilddepIntegrationTest
     extends AbstractIntegrationTest
 {
+    /**
+     * @author Mikolaj Izdebski
+     */
     public static interface Visitor
     {
         void visit( String groupId, String artifactId, String version );

@@ -60,8 +60,8 @@ public abstract class AbstractFileTest
     void assertFilesEqual( Path expected, Path actual )
         throws IOException
     {
-        byte expectedContent[] = Files.readAllBytes( expected );
-        byte actualContent[] = Files.readAllBytes( actual );
+        byte[] expectedContent = Files.readAllBytes( expected );
+        byte[] actualContent = Files.readAllBytes( actual );
         assertTrue( Arrays.equals( expectedContent, actualContent ) );
     }
 }
