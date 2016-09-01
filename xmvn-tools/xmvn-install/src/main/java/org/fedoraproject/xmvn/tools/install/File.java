@@ -28,6 +28,12 @@ import java.nio.file.Path;
  */
 public abstract class File
 {
+    static final int DEFAULT_MODE = 0644;
+
+    static final int DIRECTORY_MODE = 0755;
+
+    static final int MAX_MODE = 0777;
+
     /**
      * Path to target file. This path must be relative to buildroot (must not be absolute).
      */
@@ -69,7 +75,7 @@ public abstract class File
      */
     public File( Path targetPath )
     {
-        this( targetPath, 0644 );
+        this( targetPath, DEFAULT_MODE );
     }
 
     /**
@@ -82,7 +88,7 @@ public abstract class File
     {
         if ( targetPath.isAbsolute() )
             throw new IllegalArgumentException( "target path must not be absolute" );
-        if ( accessMode < -1 || accessMode > 0777 )
+        if ( accessMode < -1 || accessMode > MAX_MODE )
             throw new IllegalArgumentException( "access mode must be in range from 0 to 0777 or equal to -1" );
 
         this.targetPath = targetPath;

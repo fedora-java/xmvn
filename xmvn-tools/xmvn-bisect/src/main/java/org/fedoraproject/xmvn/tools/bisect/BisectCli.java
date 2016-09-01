@@ -40,6 +40,8 @@ public class BisectCli
 {
     private final Logger logger = LoggerFactory.getLogger( BisectCli.class );
 
+    private static final int BISECT_MAX = 1000000000;
+
     private final BuildExecutor buildExecutor;
 
     @Inject
@@ -74,7 +76,7 @@ public class BisectCli
         request.getProperties().put( "xmvn.bisect.repository", commandLineParser.getRepoPath() );
         request.getProperties().put( "xmvn.bisect.counter", commandLineParser.getCounterPath() );
 
-        int counterInitialValue = 1000000000;
+        int counterInitialValue = BISECT_MAX;
         AtomicFileCounter counter = new AtomicFileCounter( commandLineParser.getCounterPath(), 0 );
 
         if ( !commandLineParser.isSkipSanityChecks() )

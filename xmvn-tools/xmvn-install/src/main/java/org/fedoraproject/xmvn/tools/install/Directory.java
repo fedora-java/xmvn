@@ -38,7 +38,7 @@ public class Directory
      */
     public Directory( Path targetPath )
     {
-        this( targetPath, 0755 );
+        this( targetPath, DIRECTORY_MODE );
     }
 
     /**

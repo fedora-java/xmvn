@@ -52,7 +52,7 @@ public class RegularFile
      */
     public RegularFile( Path targetPath, Path sourcePath )
     {
-        this( targetPath, sourcePath, 0644 );
+        this( targetPath, sourcePath, DEFAULT_MODE );
     }
 
     /**
@@ -64,7 +64,7 @@ public class RegularFile
      */
     public RegularFile( Path targetPath, byte[] content )
     {
-        this( targetPath, content, 0644 );
+        this( targetPath, content, DEFAULT_MODE );
     }
 
     /**
@@ -76,7 +76,7 @@ public class RegularFile
      */
     public RegularFile( Path targetPath, Provider<byte[]> content )
     {
-        this( targetPath, content, 0644 );
+        this( targetPath, content, DEFAULT_MODE );
     }
 
     /**
