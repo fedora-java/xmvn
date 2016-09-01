@@ -395,9 +395,11 @@
           <configuration>
             <sourceDirectory>src/main/java</sourceDirectory>
             <testSourceDirectory>src/test/java</testSourceDirectory>
-	    <configLocation>../aux/checkstyle.xml</configLocation>
-	    <headerLocation>../aux/license-header.txt</headerLocation>
-	    <excludes>**/package-info.java</excludes>
+            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            <configLocation>../aux/checkstyle.xml</configLocation>
+            <suppressionsLocation>../aux/checkstyle-suppressions.xml</suppressionsLocation>
+            <headerLocation>../aux/license-header.txt</headerLocation>
+            <excludes>**/package-info.java</excludes>
           </configuration>
         </plugin>
       </plugins>
