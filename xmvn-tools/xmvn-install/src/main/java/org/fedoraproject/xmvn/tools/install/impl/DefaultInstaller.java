@@ -57,6 +57,9 @@ import org.fedoraproject.xmvn.tools.install.InstallationResult;
 import org.fedoraproject.xmvn.tools.install.Installer;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named
 @Singleton
 public class DefaultInstaller

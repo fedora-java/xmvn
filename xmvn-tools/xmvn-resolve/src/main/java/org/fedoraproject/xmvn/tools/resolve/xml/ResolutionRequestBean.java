@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @XmlRootElement( name = "request" )
 public class ResolutionRequestBean
 {
@@ -48,6 +51,9 @@ public class ResolutionRequestBean
         this.isProviderNeeded = isProviderNeeded;
     }
 
+    /**
+     * @author Mikolaj Izdebski
+     */
     public static class Adapter
         extends XmlAdapter<ResolutionRequestBean, ResolutionRequest>
     {

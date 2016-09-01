@@ -22,6 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @XmlRootElement( name = "results" )
 public class CompoundResult
 {

@@ -29,6 +29,9 @@ import org.apache.maven.shared.invoker.InvocationResult;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named
 @Singleton
 public class DefaultBuildExecutor

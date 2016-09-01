@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @XmlRootElement( name = "artifact" )
 public class ArtifactBean
 {
@@ -84,6 +87,9 @@ public class ArtifactBean
         this.version = version;
     }
 
+    /**
+     * @author Mikolaj Izdebski
+     */
     public static class Adapter
         extends XmlAdapter<ArtifactBean, Artifact>
     {

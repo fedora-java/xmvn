@@ -30,6 +30,9 @@ import org.slf4j.LoggerFactory;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named
 @Singleton
 public class ArtifactInstallerFactory

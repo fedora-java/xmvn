@@ -23,6 +23,9 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @XmlRootElement( name = "result" )
 public class ResolutionResultBean
 {
@@ -74,6 +77,9 @@ public class ResolutionResultBean
         this.namespace = namespace;
     }
 
+    /**
+     * @author Mikolaj Izdebski
+     */
     public static class Adapter
         extends XmlAdapter<ResolutionResultBean, ResolutionResult>
     {

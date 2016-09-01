@@ -53,6 +53,9 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named
 @Singleton
 public class DefaultArtifactInstaller

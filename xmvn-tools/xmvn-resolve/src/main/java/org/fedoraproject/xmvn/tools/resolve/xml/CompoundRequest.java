@@ -22,6 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
+/**
+ * @author Mikolaj Izdebski
+ */
 @XmlRootElement( name = "requests" )
 public class CompoundRequest
 {
