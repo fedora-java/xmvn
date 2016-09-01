@@ -314,20 +314,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>fedorapeople-snapshots</id>
-      <url>http://mizdebsk.fedorapeople.org/xmvn/repo/</url>
-      <snapshots>
-        <enabled>false</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
   <build>
     <pluginManagement>
       <plugins>
