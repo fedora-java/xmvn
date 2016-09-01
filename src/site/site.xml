@@ -60,9 +60,5 @@
         <item name="Creating extension for XMvn" href="howto/extend.html"/>
       </item>
     </menu>
-
-    <menu name="Contribute">
-      <item name="Contributing Patches" href="patches.html"/>
-    </menu>
   </body>
 </project>

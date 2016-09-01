@@ -3,7 +3,7 @@
             --------------------
               Mikolaj Izdebski
             --------------------
-                 2013-05-23
+                 2016-09-01
 
 
 Preferred ways of contact
@@ -17,9 +17,9 @@ Preferred ways of contact
 |  <<Purpose of contact>>  | communication | communication |
 |                          |   channel>>   |   channel>>   |
 *--------------------------+---------------*---------------*
-| Reporting bugs           | Bugzilla      |               |
+| Reporting bugs           | Github        |               |
 *--------------------------+---------------*---------------*
-| Requesting features      | Bugzilla      | Mailing list  |
+| Requesting features      | Github        | Mailing list  |
 *--------------------------+---------------*---------------*
 | Asking quick questions   | IRC           | Mailing list  |
 *--------------------------+---------------*---------------*
@@ -29,24 +29,22 @@ Preferred ways of contact
 *--------------------------+---------------*---------------*
 | Discussing development   | Mailing list  | IRC           |
 *--------------------------+---------------*---------------*
-| Submitting patches       | Bugzilla      | Pull request  |
+| Submitting patches       | Github        | Pull request  |
 *--------------------------+---------------*---------------*
 | Reporting security bugs  | Private email |               |
 *--------------------------*---------------*---------------*
 Preferred ways of contact
 
 
-Bugzilla
+Github
 
   All security-insensitive bugs should be reported on
-  {{{http://bugzilla.redhat.com/}Red Hat Bugzilla}}.  The appropriate
-  product for XMvn is <<<Fedora>>>, component is <<<xmvn>>>.
-  Anonymous users have read-only access and can only browse bugs.  In
-  order to submit new bug report or comment on existing one you need
-  to have an account on Red Hat Bugzilla and log in with your
-  credentials.
+  {{{https://github.com/fedora-java/xmvn/issues/}Github}}.  Anonymous
+  users have read-only access and can only browse issues.  In order to
+  submit new issue or comment on existing one you need to have an
+  account on Github and log in with your credentials.
 
-  Submitting patches is described in detail in a separate document.
+  Code can be contributed through pull requests.
 
 Mailing list
 

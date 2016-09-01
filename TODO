@@ -4,8 +4,7 @@ This document describes future features to be implemented in XMvn.
 
 To request a new feature contact the author on IRC (mizdebsk @
 #fedora-java @ FreeNode), send an email to mizdebsk@redhat.com or
-submit a RFE at Red Hat Bugzilla (product Fedora, component xmvn):
-http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
+submit a RFE at Github: https://github.com/fedora-java/xmvn/issues/
 
 
 * User-visible features

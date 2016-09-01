@@ -46,8 +46,7 @@ Contact
 
 XMvn is a community project, new contributotrs are welcome. The most
 straightforward way to introduce new features is writting them yourself.
-The preferred way to requests features and report bugs is Red Hat Bugzilla:
-  http://bugzilla.redhat.com/enter_bug.cgi?product=fedora&component=xmvn
+The preferred way to requests features and report bugs is through Github.
 
 The easiest way to get support is asking on IRC -- #fedora-java on freenode.
 You can also write to Fedora Java list <java-devel@lists.fedoraproject.org>
