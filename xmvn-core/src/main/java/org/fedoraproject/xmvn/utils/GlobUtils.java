@@ -24,7 +24,7 @@ import com.google.common.base.Strings;
  * 
  * @author Mikolaj Izdebski
  */
-public class GlobUtils
+public final class GlobUtils
 {
     /**
      * Character with special meaning in regular expression namespace. These characters should be escaped when

@@ -36,7 +36,7 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 /**
  * @author Mikolaj Izdebski
  */
-public class ArtifactTypeRegistry
+public final class ArtifactTypeRegistry
 {
     private static final ArtifactTypeRegistry DEFAULT_REGISTRY = new ArtifactTypeRegistry();
 

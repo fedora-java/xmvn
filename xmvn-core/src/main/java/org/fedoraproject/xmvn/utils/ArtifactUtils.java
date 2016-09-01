@@ -36,7 +36,7 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 /**
  * @author Mikolaj Izdebski
  */
-public class ArtifactUtils
+public final class ArtifactUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( ArtifactUtils.class );
 

@@ -31,7 +31,7 @@ import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 /**
  * @author Mikolaj Izdebski
  */
-class Utils
+final class Utils
 {
     private Utils()
     {

@@ -24,7 +24,7 @@ import java.nio.file.attribute.FileAttribute;
 /**
  * @author Mikolaj Izdebski
  */
-class TempManager
+final class TempManager
 {
     private static Path tempDir;
 

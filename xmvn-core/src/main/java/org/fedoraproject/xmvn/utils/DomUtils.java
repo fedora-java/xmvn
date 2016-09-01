@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Mikolaj Izdebski
  */
-public class DomUtils
+public final class DomUtils
 {
     private DomUtils()
     {

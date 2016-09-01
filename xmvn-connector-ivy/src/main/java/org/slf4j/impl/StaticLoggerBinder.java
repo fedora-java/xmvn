@@ -21,7 +21,7 @@ import org.slf4j.spi.LoggerFactoryBinder;
 /**
  * @author Mikolaj Izdebski
  */
-public class StaticLoggerBinder
+public final class StaticLoggerBinder
     implements LoggerFactoryBinder
 {
     // CHECKSTYLE_OFF: StaticVariableName

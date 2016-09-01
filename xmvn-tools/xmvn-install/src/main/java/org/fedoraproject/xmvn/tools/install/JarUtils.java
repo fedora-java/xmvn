@@ -42,7 +42,7 @@ import org.fedoraproject.xmvn.utils.ArtifactUtils;
 /**
  * @author Mikolaj Izdebski
  */
-public class JarUtils
+public final class JarUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( JarUtils.class );
 
