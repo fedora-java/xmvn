@@ -60,6 +60,7 @@ BuildRequires:  easymock
 BuildRequires:  gradle >= 2.5
 BuildRequires:  maven-invoker
 BuildRequires:  maven-checkstyle-plugin
+BuildRequires:  apache-rat-plugin
 
 Requires:       xmvn-minimal = %{version}-%{release}
 

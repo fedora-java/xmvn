@@ -109,6 +109,7 @@
     <modelloVersion>1.8.2</modelloVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>2.8</projectInfoReportsPluginVersion>
+    <ratPluginVersion>0.11</ratPluginVersion>
     <resourcesPluginVersion>2.7</resourcesPluginVersion>
     <sitePluginVersion>3.4</sitePluginVersion>
     <surefireVersion>2.18.1</surefireVersion>
@@ -402,6 +403,16 @@
             <excludes>**/package-info.java</excludes>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <version>${ratPluginVersion}</version>
+          <configuration>
+            <excludes>
+              <exclude>src/test/resources/**</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -441,6 +452,18 @@
         <executions>
           <execution>
             <id>checkstyle-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-check</id>
             <goals>
               <goal>check</goal>
             </goals>
