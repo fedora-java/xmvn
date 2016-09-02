@@ -100,6 +100,7 @@
     <dependencyPluginVersion>2.10</dependencyPluginVersion>
     <deployPluginVersion>2.8.2</deployPluginVersion>
     <easymockVersion>3.3.1</easymockVersion>
+    <gpgPluginVersion>1.6</gpgPluginVersion>
     <installPluginVersion>2.5.2</installPluginVersion>
     <jarPluginVersion>2.6</jarPluginVersion>
     <javadocPluginVersion>2.10.2</javadocPluginVersion>
@@ -412,6 +413,10 @@
           <artifactId>maven-source-plugin</artifactId>
           <version>${sourcePluginVersion}</version>
         </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>${gpgPluginVersion}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -507,6 +512,18 @@
                 <id>attach-sources</id>
                 <goals>
                   <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>sign</goal>
                 </goals>
               </execution>
             </executions>
