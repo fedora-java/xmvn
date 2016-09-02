@@ -108,6 +108,7 @@
     <easymockVersion>3.3.1</easymockVersion>
     <gpgPluginVersion>1.6</gpgPluginVersion>
     <installPluginVersion>2.5.2</installPluginVersion>
+    <jacocoVersion>0.7.7.201606060606</jacocoVersion>
     <jarPluginVersion>2.6</jarPluginVersion>
     <javadocPluginVersion>2.10.2</javadocPluginVersion>
     <junitVersion>4.12</junitVersion>
@@ -439,6 +440,11 @@
             <autoReleaseAfterClose>false</autoReleaseAfterClose>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacocoVersion}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -502,6 +508,25 @@
           <skip>true</skip>
           <skipDeploy>true</skipDeploy>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.7.201606060606</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

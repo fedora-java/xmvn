@@ -18,3 +18,5 @@ jdk:
   - oraclejdk8
 install: true
 script: mvn -B clean install -Dgpg.skip
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
