@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/fedora-java/xmvn.svg?branch=master)](https://travis-ci.org/fedora-java/xmvn) [![Test Coverage](https://codecov.io/gh/fedora-java/xmvn/branch/master/graph/badge.svg)](https://codecov.io/gh/fedora-java/xmvn)
+[![build status](https://img.shields.io/travis/fedora-java/xmvn.svg)](https://travis-ci.org/fedora-java/xmvn) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/xmvn.svg)](https://codecov.io/gh/fedora-java/xmvn)
+
+
 
     ___  ___ __  __
     \  \/  /|  \/  |__ __ ___
