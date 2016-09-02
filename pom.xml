@@ -35,6 +35,10 @@
     with creating packages containing Maven artifacts.
   </description>
   <modules>
+    <!-- Integration tests are not deployed, so they must be ran early
+         during build to workaround a misfeature of Nexus Staging
+         MOJO: https://issues.sonatype.org/browse/NEXUS-9138 -->
+    <module>xmvn-it</module>
     <module>xmvn-parent</module>
     <module>xmvn-api</module>
     <module>xmvn-launcher</module>
@@ -44,7 +48,6 @@
     <module>xmvn-connector-ivy</module>
     <module>xmvn-mojo</module>
     <module>xmvn-tools</module>
-    <module>xmvn-it</module>
   </modules>
   <dependencies>
     <dependency>

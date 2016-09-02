@@ -28,6 +28,9 @@
   <artifactId>xmvn-it</artifactId>
   <name>XMvn Integration Tests</name>
   <description>Integration tests for XMvn</description>
+  <properties>
+    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

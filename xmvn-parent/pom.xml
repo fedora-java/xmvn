@@ -71,6 +71,12 @@
     <system>Github</system>
     <url>https://github.com/fedora-java/xmvn/issues/</url>
   </issueManagement>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
@@ -108,6 +114,7 @@
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <modelloVersion>1.8.2</modelloVersion>
+    <nexusStagingPluginVersion>1.6.7</nexusStagingPluginVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>2.8</projectInfoReportsPluginVersion>
     <ratPluginVersion>0.11</ratPluginVersion>
@@ -215,6 +222,11 @@
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
         <artifactId>xmvn-install</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-it</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -417,6 +429,16 @@
           <artifactId>maven-gpg-plugin</artifactId>
           <version>${gpgPluginVersion}</version>
         </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>${nexusStagingPluginVersion}</version>
+          <configuration>
+            <serverId>ossrh</serverId>
+            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -527,6 +549,11 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
           </plugin>
         </plugins>
       </build>
