@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/fedora-java/xmvn.svg?branch=master)](https://travis-ci.org/fedora-java/xmvn) [![Test Coverage](https://codecov.io/gh/fedora-java/xmvn/branch/master/graph/badge.svg)](https://codecov.io/gh/fedora-java/xmvn)
+
     ___  ___ __  __
     \  \/  /|  \/  |__ __ ___
      \    / | |\/| |\ V /| ' \
@@ -16,8 +18,6 @@ XMvn is free software. You can redistribute and/or modify it under the
 terms of Apache License Version 2.0.
 
 XMvn was written by Mikolaj Izdebski.
-
-[![Build Status](https://travis-ci.org/fedora-java/xmvn.svg?branch=master)](https://travis-ci.org/fedora-java/xmvn)
 
 
 Building
