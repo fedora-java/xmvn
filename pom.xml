@@ -183,6 +183,7 @@
             <exclude>aux/license-header.txt</exclude>
             <exclude>aux/eclipse-formatter-profile.xml</exclude>
             <exclude>it/**</exclude>
+            <exclude>libs/**/target/**</exclude>
             <exclude>doc/install-dfd.dia</exclude>
             <exclude>README.md</exclude>
             <exclude>TODO</exclude>
