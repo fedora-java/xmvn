@@ -88,6 +88,46 @@ public class DefaultArtifactTest
     }
 
     /**
+     * Test two-argument constructor with groupId as null pointer.
+     */
+    @Test( expected = IllegalArgumentException.class )
+    public void testGroupIdNull()
+        throws Exception
+    {
+        new DefaultArtifact( null, "" );
+    }
+
+    /**
+     * Test two-argument constructor with artifactId as null pointer.
+     */
+    @Test( expected = IllegalArgumentException.class )
+    public void testArtifactIdNull()
+        throws Exception
+    {
+        new DefaultArtifact( "gid", null );
+    }
+
+    /**
+     * Test two-argument constructor with groupId as null pointer.
+     */
+    @Test( expected = IllegalArgumentException.class )
+    public void testGroupIdEmpty()
+        throws Exception
+    {
+        new DefaultArtifact( "", "aid" );
+    }
+
+    /**
+     * Test two-argument constructor with artifactId as null pointer.
+     */
+    @Test( expected = IllegalArgumentException.class )
+    public void testArtifactIdEmpty()
+        throws Exception
+    {
+        new DefaultArtifact( "gid", "" );
+    }
+
+    /**
      * Test two-argument constructor.
      */
     @Test
