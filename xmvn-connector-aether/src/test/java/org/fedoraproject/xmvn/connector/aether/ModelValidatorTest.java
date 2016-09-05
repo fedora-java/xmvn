@@ -221,4 +221,26 @@ public class ModelValidatorTest
         assertEquals( 0, dl.size() );
     }
 
+    @Test
+    public void testMinimalCompilerSource()
+        throws Exception
+    {
+        configurator.getConfiguration().getBuildSettings().setCompilerSource( "1.8" );
+
+        EasyMock.expect( build.getExtensions() ).andReturn( el ).atLeastOnce();
+        EasyMock.expect( build.getPlugins() ).andReturn( pl ).atLeastOnce();
+
+        EasyMock.expect( model.getBuild() ).andReturn( build ).atLeastOnce();
+        EasyMock.expect( model.getDependencies() ).andReturn( dl ).atLeastOnce();
+
+        EasyMock.replay( model, build );
+
+        ( (XMvnModelValidator) validator ).customizeModel( model );
+        EasyMock.verify( model, build );
+
+        Xpp3Dom compilerConf = (Xpp3Dom) pl.get( 0 ).getConfiguration();
+        assertEquals( "1.8", compilerConf.getChild( "source" ).getValue() );
+        assertEquals( "1.8", compilerConf.getChild( "target" ).getValue() );
+    }
+
 }
