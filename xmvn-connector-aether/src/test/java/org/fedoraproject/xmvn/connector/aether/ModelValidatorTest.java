@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileReader;
@@ -41,6 +42,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.fedoraproject.xmvn.config.Configurator;
+
 /**
  * @author Mikolaj Izdebski
  * @author Roman Vais
@@ -53,6 +56,9 @@ public class ModelValidatorTest
 
     @Inject
     private ModelValidator validator;
+
+    @Inject
+    private Configurator configurator;
 
     @Mock
     private Model model;
@@ -196,6 +202,23 @@ public class ModelValidatorTest
 
         ( (XMvnModelValidator) validator ).customizeModel( model );
         EasyMock.verify( model, build );
+    }
+
+    @Test
+    public void testRemovingTestDeps()
+        throws Exception
+    {
+        configurator.getConfiguration().getBuildSettings().setSkipTests( true );
+        dl.iterator().next().setScope( "test" );
+
+        EasyMock.expect( model.getBuild() ).andReturn( null ).atLeastOnce();
+        EasyMock.expect( model.getDependencies() ).andReturn( dl ).atLeastOnce();
+        EasyMock.replay( model );
+
+        ( (XMvnModelValidator) validator ).customizeModel( model );
+        EasyMock.verify( model );
+
+        assertEquals( 0, dl.size() );
     }
 
 }
