@@ -17,8 +17,12 @@ package org.fedoraproject.xmvn.artifact;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -65,6 +69,24 @@ public class DefaultArtifactTest
         assertEquals( "cla", artifact5.getClassifier() );
         assertEquals( "ver", artifact5.getVersion() );
         assertNull( artifact5.getPath() );
+
+        // Empty extension
+        Artifact artifact6 = new DefaultArtifact( "gid:aid::cla:ver" );
+        assertEquals( "gid", artifact6.getGroupId() );
+        assertEquals( "aid", artifact6.getArtifactId() );
+        assertEquals( "jar", artifact6.getExtension() );
+        assertEquals( "cla", artifact6.getClassifier() );
+        assertEquals( "ver", artifact6.getVersion() );
+        assertNull( artifact6.getPath() );
+
+        // Empty version
+        Artifact artifact7 = new DefaultArtifact( "gid:aid:ext:cla:" );
+        assertEquals( "gid", artifact7.getGroupId() );
+        assertEquals( "aid", artifact7.getArtifactId() );
+        assertEquals( "ext", artifact7.getExtension() );
+        assertEquals( "cla", artifact7.getClassifier() );
+        assertEquals( "SYSTEM", artifact7.getVersion() );
+        assertNull( artifact7.getPath() );
     }
 
     /**
@@ -189,6 +211,44 @@ public class DefaultArtifactTest
         assertEquals( "cla", artifact.getClassifier() );
         assertEquals( "ver", artifact.getVersion() );
         assertNull( artifact.getPath() );
+
+        Artifact artifact1 = new DefaultArtifact( "gid", "aid", "", "cla", "ver" );
+        assertEquals( "gid", artifact1.getGroupId() );
+        assertEquals( "aid", artifact1.getArtifactId() );
+        assertEquals( "jar", artifact1.getExtension() );
+        assertEquals( "cla", artifact1.getClassifier() );
+        assertEquals( "ver", artifact1.getVersion() );
+        assertNull( artifact1.getPath() );
+
+        Artifact artifact2 = new DefaultArtifact( "gid", "aid", "ext", "cla", "" );
+        assertEquals( "gid", artifact2.getGroupId() );
+        assertEquals( "aid", artifact2.getArtifactId() );
+        assertEquals( "ext", artifact2.getExtension() );
+        assertEquals( "cla", artifact2.getClassifier() );
+        assertEquals( "SYSTEM", artifact2.getVersion() );
+        assertNull( artifact2.getPath() );
+    }
+
+    @Test
+    public void testSetVersion()
+        throws Exception
+    {
+        Artifact artifact = new DefaultArtifact( "gid:aid:ext:cla:ver" );
+        Artifact newArtifact = artifact.setVersion( "1.2.3" );
+        assertNotSame( artifact, newArtifact );
+        assertEquals( "1.2.3", newArtifact.getVersion() );
+        assertEquals( "ver", artifact.getVersion() );
+    }
+
+    @Test
+    public void testSetPath()
+        throws Exception
+    {
+        Artifact artifact = new DefaultArtifact( "gid:aid:ext:cla:ver" );
+        Artifact newArtifact = artifact.setPath( Paths.get( "/tmp/foo" ) );
+        assertNotSame( artifact, newArtifact );
+        assertEquals( Paths.get( "/tmp/foo" ), newArtifact.getPath() );
+        assertNull( artifact.getPath() );
     }
 
     /**
@@ -219,6 +279,7 @@ public class DefaultArtifactTest
         throws Exception
     {
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "ver" );
+        Path path = Paths.get( "/some/path" );
 
         assertTrue( artifact.equals( artifact ) );
         assertFalse( artifact.equals( null ) );
@@ -227,17 +288,30 @@ public class DefaultArtifactTest
         Artifact artifact0 = new DefaultArtifact( "gid:aid:ext:cla:ver" );
 
         assertTrue( artifact.equals( artifact0 ) );
+        assertTrue( artifact.setPath( path ).equals( artifact0.setPath( path ) ) );
+        assertFalse( artifact.setPath( path ).equals( artifact0 ) );
 
         Artifact artifact1 = new DefaultArtifact( "gidX", "aid", "ext", "cla", "ver" );
         Artifact artifact2 = new DefaultArtifact( "gid", "aidX", "ext", "cla", "ver" );
         Artifact artifact3 = new DefaultArtifact( "gid", "aid", "extX", "cla", "ver" );
         Artifact artifact4 = new DefaultArtifact( "gid", "aid", "ext", "claX", "ver" );
         Artifact artifact5 = new DefaultArtifact( "gid", "aid", "ext", "cla", "verX" );
+        Artifact artifact6 = new DefaultArtifact( "gid", "aid", "ext", "cla", "ver" ).setPath( path );
 
         assertFalse( artifact.equals( artifact1 ) );
         assertFalse( artifact.equals( artifact2 ) );
         assertFalse( artifact.equals( artifact3 ) );
         assertFalse( artifact.equals( artifact4 ) );
         assertFalse( artifact.equals( artifact5 ) );
+        assertFalse( artifact.equals( artifact6 ) );
+    }
+
+    @Test
+    public void testHashCode()
+        throws Exception
+    {
+        Artifact artifact0 = new DefaultArtifact( "gid:aid:ext:cla:ver" );
+        Artifact artifact1 = new DefaultArtifact( "gid", "aid", "ext", "cla", "ver" );
+        assertEquals( artifact0.hashCode(), artifact1.hashCode() );
     }
 }
