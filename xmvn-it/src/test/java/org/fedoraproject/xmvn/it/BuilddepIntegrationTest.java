@@ -22,13 +22,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.easymock.EasyMock;
+import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import org.fedoraproject.xmvn.config.Configuration;
+import org.fedoraproject.xmvn.config.ResolverSettings;
+import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
+import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 import org.fedoraproject.xmvn.utils.DomUtils;
 
 /**
@@ -74,10 +82,45 @@ public class BuilddepIntegrationTest
         }
     }
 
+    @Before
+    public void addMetadata()
+        throws Exception
+    {
+        PackageMetadata md = new PackageMetadata();
+        md.setUuid( UUID.randomUUID().toString() );
+
+        ArtifactMetadata jarMd = new ArtifactMetadata();
+        jarMd.setUuid( UUID.randomUUID().toString() );
+        jarMd.setGroupId( "org.fedoraproject.xmvn" );
+        jarMd.setArtifactId( "xmvn-mojo" );
+        jarMd.setVersion( "DUMMY" );
+        jarMd.addCompatVersion( "XMVN_IT" );
+        jarMd.addProperty( "xmvn.resolver.disableEffectivePom", "true" );
+        jarMd.setPath( "/home/kojan/git/xmvn/xmvn-mojo/target/classes" );
+        md.addArtifact( jarMd );
+
+        ArtifactMetadata pomMd = jarMd.clone();
+        pomMd.setUuid( UUID.randomUUID().toString() );
+        pomMd.setExtension( "pom" );
+        pomMd.setPath( "/home/kojan/git/xmvn/xmvn-mojo/pom.xml" );
+        md.addArtifact( pomMd );
+
+        MetadataStaxWriter mdWriter = new MetadataStaxWriter();
+        mdWriter.write( Files.newOutputStream( Paths.get( "mojo-metadata.xml" ) ), md );
+
+        Configuration conf = new Configuration();
+        conf.setResolverSettings( new ResolverSettings() );
+        conf.getResolverSettings().addMetadataRepository( "mojo-metadata.xml" );
+
+        Files.createDirectories( Paths.get( ".xmvn/config.d" ) );
+        ConfigurationStaxWriter confWriter = new ConfigurationStaxWriter();
+        confWriter.write( Files.newOutputStream( Paths.get( ".xmvn/config.d/builddep-it-conf.xml" ) ), conf );
+    }
+
     public void performBuilddepTest()
         throws Exception
     {
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:2.6.0-SNAPSHOT:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:XMVN_IT:builddep" );
 
         EasyMock.replay( visitor );
         verifyBuilddepXml();
