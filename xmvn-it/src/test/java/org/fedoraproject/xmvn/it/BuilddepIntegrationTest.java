@@ -96,13 +96,13 @@ public class BuilddepIntegrationTest
         jarMd.setVersion( "DUMMY" );
         jarMd.addCompatVersion( "XMVN_IT" );
         jarMd.addProperty( "xmvn.resolver.disableEffectivePom", "true" );
-        jarMd.setPath( "/home/kojan/git/xmvn/xmvn-mojo/target/classes" );
+        jarMd.setPath( "../../../xmvn-mojo/target/classes" );
         md.addArtifact( jarMd );
 
         ArtifactMetadata pomMd = jarMd.clone();
         pomMd.setUuid( UUID.randomUUID().toString() );
         pomMd.setExtension( "pom" );
-        pomMd.setPath( "/home/kojan/git/xmvn/xmvn-mojo/pom.xml" );
+        pomMd.setPath( "../../../xmvn-mojo/pom.xml" );
         md.addArtifact( pomMd );
 
         MetadataStaxWriter mdWriter = new MetadataStaxWriter();
