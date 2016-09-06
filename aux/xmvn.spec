@@ -40,7 +40,7 @@ BuildArch:      noarch
 
 Source0:        https://github.com/fedora-java/xmvn/releases/download/%{version}/xmvn-%{version}.tar.xz
 
-BuildRequires:  maven-lib >= 3.3.9-2
+BuildRequires:  maven-lib >= 3.4.0
 BuildRequires:  maven-local
 BuildRequires:  beust-jcommander
 BuildRequires:  cglib
@@ -61,6 +61,7 @@ BuildRequires:  gradle >= 2.5
 BuildRequires:  maven-invoker
 
 Requires:       xmvn-minimal = %{version}-%{release}
+Requires:       maven >= 3.4.0
 
 %description
 This package provides extensions for Apache Maven that can be used to
@@ -70,10 +71,33 @@ creating RPM packages containing Maven artifacts.
 
 %package        minimal
 Summary:        Dependency-reduced version of XMvn
-Requires:       maven-lib >= 3.2.5-2
+Requires:       maven-lib >= 3.4.0
 Requires:       xmvn-api = %{version}-%{release}
 Requires:       xmvn-connector-aether = %{version}-%{release}
 Requires:       xmvn-core = %{version}-%{release}
+Requires:       aether-api
+Requires:       aether-impl
+Requires:       aether-spi
+Requires:       aether-util
+Requires:       apache-commons-cli
+Requires:       apache-commons-lang3
+Requires:       atinject
+Requires:       google-guice
+Requires:       gossip
+Requires:       guava
+Requires:       jansi
+Requires:       maven-lib
+Requires:       maven-shared-utils
+Requires:       maven-wagon-provider-api
+Requires:       objectweb-asm
+Requires:       plexus-cipher
+Requires:       plexus-containers-component-annotations
+Requires:       plexus-interpolation
+Requires:       plexus-sec-dispatcher
+Requires:       plexus-utils
+Requires:       sisu-inject
+Requires:       sisu-plexus
+Requires:       slf4j
 
 %description    minimal
 This package provides minimal version of XMvn, incapable of using
@@ -225,9 +249,15 @@ rm -Rf %{name}-%{version}*/{AUTHORS,README.md,LICENSE,NOTICE}
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -r %{name}-%{version}*/* %{buildroot}%{_datadir}/%{name}/
-ln -sf %{_datadir}/maven/bin/mvn %{buildroot}%{_datadir}/%{name}/bin/mvn
-ln -sf %{_datadir}/maven/bin/mvnDebug %{buildroot}%{_datadir}/%{name}/bin/mvnDebug
-ln -sf %{_datadir}/maven/bin/mvnyjp %{buildroot}%{_datadir}/%{name}/bin/mvnyjp
+
+for cmd in mvn mvnDebug mvnyjp; do
+    cat <<EOF >%{buildroot}%{_datadir}/%{name}/bin/$cmd
+#!/bin/sh -e
+export _FEDORA_MAVEN_HOME="%{_datadir}/%{name}"
+exec %{_datadir}/maven/bin/$cmd "\${@}"
+EOF
+    chmod 755 %{buildroot}%{_datadir}/%{name}/bin/$cmd
+done
 
 # helper scripts
 install -d -m 755 %{buildroot}%{_bindir}
@@ -245,12 +275,8 @@ cp -r %{_datadir}/maven/lib/* %{buildroot}%{_datadir}/%{name}/lib/
 # possibly recreate symlinks that can be automated with xmvn-subst
 %{name}-subst %{buildroot}%{_datadir}/%{name}/
 
-# /usr/bin/xmvn script
-cat <<EOF >%{buildroot}%{_bindir}/%{name}
-#!/bin/sh -e
-export M2_HOME="\${M2_HOME:-%{_datadir}/%{name}}"
-exec %{_datadir}/maven/bin/mvn-script "\${@}"
-EOF
+# /usr/bin/xmvn
+ln -s %{_datadir}/%{name}/bin/mvn %{buildroot}%{_bindir}/%{name}
 
 # mvn-local symlink
 ln -s %{name} %{buildroot}%{_bindir}/mvn-local
@@ -261,7 +287,7 @@ cp -P %{_datadir}/maven/conf/settings.xml %{buildroot}%{_datadir}/%{name}/conf/
 cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files
-%attr(755,-,-) %{_bindir}/mvn-local
+%{_bindir}/mvn-local
 %{_datadir}/%{name}/lib/aether_aether-connector-basic.jar
 %{_datadir}/%{name}/lib/aether_aether-transport-wagon.jar
 %{_datadir}/%{name}/lib/aopalliance.jar
@@ -279,7 +305,7 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %{_datadir}/%{name}/lib/maven-wagon_http-shared.jar
 
 %files minimal
-%attr(755,-,-) %{_bindir}/%{name}
+%{_bindir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
 %exclude %{_datadir}/%{name}/lib/aether_aether-connector-basic.jar
