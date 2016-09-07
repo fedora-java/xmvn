@@ -230,12 +230,19 @@ public class JavadocMojo
 
             Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE );
 
-            Path javadocExecutable = Paths.get( System.getenv( "JAVA_HOME" ) ) //
-                                          .resolve( "bin" ) //
-                                          .resolve( "javadoc" ) //
-                                          .toRealPath();
+            Path javadocExecutable;
+            if ( System.getenv().containsKey( "JAVA_HOME" ) )
+            {
+                javadocExecutable = Paths.get( System.getenv( "JAVA_HOME" ) ) //
+                                         .resolve( "bin" ) //
+                                         .resolve( "javadoc" );
+            }
+            else
+            {
+                javadocExecutable = Paths.get( "/usr/bin/javadoc" );
+            }
 
-            ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toString(), "@args" );
+            ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "@args" );
             pb.directory( outputDir.toFile() );
             pb.redirectOutput( Redirect.INHERIT );
             pb.redirectError( Redirect.INHERIT );
