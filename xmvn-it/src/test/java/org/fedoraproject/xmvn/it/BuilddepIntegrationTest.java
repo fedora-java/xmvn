@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -89,21 +90,32 @@ public class BuilddepIntegrationTest
         PackageMetadata md = new PackageMetadata();
         md.setUuid( UUID.randomUUID().toString() );
 
-        ArtifactMetadata jarMd = new ArtifactMetadata();
-        jarMd.setUuid( UUID.randomUUID().toString() );
-        jarMd.setGroupId( "org.fedoraproject.xmvn" );
-        jarMd.setArtifactId( "xmvn-mojo" );
-        jarMd.setVersion( "DUMMY" );
-        jarMd.addCompatVersion( "XMVN_IT" );
-        jarMd.addProperty( "xmvn.resolver.disableEffectivePom", "true" );
-        jarMd.setPath( "../../../xmvn-mojo/target/classes" );
-        md.addArtifact( jarMd );
+        for ( String module : Arrays.asList( "xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent" ) )
+        {
+            Path moduleDir = Paths.get( "../../.." ).resolve( module );
+            Path pomPath = moduleDir.resolve( "pom.xml" );
+            Path jarPath = moduleDir.resolve( "target/classes" );
 
-        ArtifactMetadata pomMd = jarMd.clone();
-        pomMd.setUuid( UUID.randomUUID().toString() );
-        pomMd.setExtension( "pom" );
-        pomMd.setPath( "../../../xmvn-mojo/pom.xml" );
-        md.addArtifact( pomMd );
+            assertTrue( Files.exists( pomPath ) );
+            ArtifactMetadata pomMd = new ArtifactMetadata();
+            pomMd.setUuid( UUID.randomUUID().toString() );
+            pomMd.setGroupId( "org.fedoraproject.xmvn" );
+            pomMd.setArtifactId( module );
+            pomMd.setVersion( "DUMMY_IGNORED" );
+            pomMd.addProperty( "xmvn.resolver.disableEffectivePom", "true" );
+            pomMd.setExtension( "pom" );
+            pomMd.setPath( pomPath.toString() );
+            md.addArtifact( pomMd );
+
+            if ( Files.exists( jarPath ) )
+            {
+                ArtifactMetadata jarMd = pomMd.clone();
+                jarMd.setUuid( UUID.randomUUID().toString() );
+                jarMd.setExtension( "jar" );
+                jarMd.setPath( jarPath.toString() );
+                md.addArtifact( jarMd );
+            }
+        }
 
         MetadataStaxWriter mdWriter = new MetadataStaxWriter();
         mdWriter.write( Files.newOutputStream( Paths.get( "mojo-metadata.xml" ) ), md );
@@ -120,7 +132,7 @@ public class BuilddepIntegrationTest
     public void performBuilddepTest()
         throws Exception
     {
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:XMVN_IT:builddep" );
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
 
         EasyMock.replay( visitor );
         verifyBuilddepXml();
