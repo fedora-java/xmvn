@@ -1,0 +1,18 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmvn.its</groupId>
+  <artifactId>javadoc-test</artifactId>
+  <version>0.0.0-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>dummy</groupId>
+      <artifactId>dummy-dep-ignored-due-to-test-scope</artifactId>
+      <version>1.2.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
+    </dependency>
+  </dependencies>
+</project>

@@ -21,30 +21,21 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.easymock.EasyMock;
-import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
-import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
-import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 import org.fedoraproject.xmvn.utils.DomUtils;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class BuilddepIntegrationTest
-    extends AbstractIntegrationTest
+    extends AbstractMojoIntegrationTest
 {
     /**
      * @author Mikolaj Izdebski
@@ -81,52 +72,6 @@ public class BuilddepIntegrationTest
                         .collect( Collectors.toMap( Node::getNodeName, DomUtils::parseAsText ) );
             visitor.visit( children.get( "groupId" ), children.get( "artifactId" ), children.get( "version" ) );
         }
-    }
-
-    @Before
-    public void addMetadata()
-        throws Exception
-    {
-        PackageMetadata md = new PackageMetadata();
-        md.setUuid( UUID.randomUUID().toString() );
-
-        for ( String module : Arrays.asList( "xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent" ) )
-        {
-            Path moduleDir = Paths.get( "../../.." ).resolve( module );
-            Path pomPath = moduleDir.resolve( "pom.xml" );
-            Path jarPath = moduleDir.resolve( "target/classes" );
-
-            assertTrue( Files.exists( pomPath ) );
-            ArtifactMetadata pomMd = new ArtifactMetadata();
-            pomMd.setUuid( UUID.randomUUID().toString() );
-            pomMd.setGroupId( "org.fedoraproject.xmvn" );
-            pomMd.setArtifactId( module );
-            pomMd.setVersion( "DUMMY_IGNORED" );
-            pomMd.addProperty( "xmvn.resolver.disableEffectivePom", "true" );
-            pomMd.setExtension( "pom" );
-            pomMd.setPath( pomPath.toString() );
-            md.addArtifact( pomMd );
-
-            if ( Files.exists( jarPath ) )
-            {
-                ArtifactMetadata jarMd = pomMd.clone();
-                jarMd.setUuid( UUID.randomUUID().toString() );
-                jarMd.setExtension( "jar" );
-                jarMd.setPath( jarPath.toString() );
-                md.addArtifact( jarMd );
-            }
-        }
-
-        MetadataStaxWriter mdWriter = new MetadataStaxWriter();
-        mdWriter.write( Files.newOutputStream( Paths.get( "mojo-metadata.xml" ) ), md );
-
-        Configuration conf = new Configuration();
-        conf.setResolverSettings( new ResolverSettings() );
-        conf.getResolverSettings().addMetadataRepository( "mojo-metadata.xml" );
-
-        Files.createDirectories( Paths.get( ".xmvn/config.d" ) );
-        ConfigurationStaxWriter confWriter = new ConfigurationStaxWriter();
-        confWriter.write( Files.newOutputStream( Paths.get( ".xmvn/config.d/builddep-it-conf.xml" ) ), conf );
     }
 
     public void performBuilddepTest()
