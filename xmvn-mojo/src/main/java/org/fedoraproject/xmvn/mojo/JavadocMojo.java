@@ -34,19 +34,23 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultDependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.DependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
+import org.apache.maven.project.ProjectDependenciesResolver;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.util.filter.AndDependencyFilter;
+import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
+import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,13 +65,13 @@ public class JavadocMojo
     private final Logger logger = LoggerFactory.getLogger( JavadocMojo.class );
 
     @Inject
-    private RepositorySystem repositorySystem;
+    private ProjectDependenciesResolver resolver;
+
+    @Inject
+    private MavenSession session;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
-
-    @Parameter( defaultValue = "${localRepository}", readonly = true, required = true )
-    private ArtifactRepository localRepository;
 
     @Parameter( defaultValue = "${project.build.sourceEncoding}" )
     private String encoding;
@@ -120,9 +124,10 @@ public class JavadocMojo
     private List<Path> getClasspath()
         throws MojoExecutionException
     {
-        List<Artifact> reactorArtifacts = reactorProjects.stream() //
-                                                         .map( project -> project.getArtifact() ) //
-                                                         .collect( Collectors.toList() );
+        List<String> reactorArtifacts =
+            reactorProjects.stream() //
+                           .map( project -> ( project.getGroupId() + ":" + project.getArtifactId() ) ) //
+                           .collect( Collectors.toList() );
 
         List<Path> classpath = new ArrayList<>();
         classpath.addAll( reactorProjects.stream() //
@@ -134,37 +139,23 @@ public class JavadocMojo
 
         for ( MavenProject project : reactorProjects )
         {
-            Set<Artifact> dependencyArtifacts =
-                project.getDependencies().stream() //
-                       .filter( dep -> Artifact.SCOPE_COMPILE.equals( dep.getScope() ) //
-                           || Artifact.SCOPE_PROVIDED.equals( dep.getScope() ) //
-                           || Artifact.SCOPE_SYSTEM.equals( dep.getScope() ) ) //
-                       .filter( dep -> !dep.isOptional() ) //
-                       .map( dep -> repositorySystem.createArtifactWithClassifier( dep.getGroupId(), //
-                                                                                   dep.getArtifactId(), //
-                                                                                   dep.getVersion(), //
-                                                                                   dep.getType(), //
-                                                                                   dep.getClassifier() ) ) //
-                       .filter( artifact -> !reactorArtifacts.contains( artifact ) ) //
-                       .collect( Collectors.toSet() );
-            if ( dependencyArtifacts.isEmpty() )
-                continue;
+            DependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
+            request.setMavenProject( project );
+            request.setRepositorySession( session.getRepositorySession() );
+            request.setResolutionFilter( new AndDependencyFilter( new ScopeDependencyFilter( "runtime", "test" ),
+                                                                  new ExclusionsDependencyFilter( reactorArtifacts ) ) );
 
-            ArtifactResolutionRequest request = new ArtifactResolutionRequest();
-            request.setArtifact( project.getArtifact() );
-            request.setResolveRoot( false );
-            request.setResolveTransitively( true );
-            request.setArtifactDependencies( dependencyArtifacts );
-            request.setManagedVersionMap( project.getManagedVersionMap() );
-            request.setLocalRepository( localRepository );
-            request.setRemoteRepositories( project.getRemoteArtifactRepositories() );
-
-            ArtifactResolutionResult result = repositorySystem.resolve( request );
-            if ( result.isSuccess() )
+            try
             {
-                classpath.addAll( result.getArtifacts().stream() //
+                DependencyResolutionResult result = resolver.resolve( request );
+                classpath.addAll( result.getResolvedDependencies().stream() //
+                                        .map( dependency -> dependency.getArtifact() ) //
                                         .map( artifact -> artifact.getFile().toPath() ) //
                                         .collect( Collectors.toList() ) );
+            }
+            catch ( DependencyResolutionException e )
+            {
+                // Ignore dependency resolution errors
             }
         }
 
