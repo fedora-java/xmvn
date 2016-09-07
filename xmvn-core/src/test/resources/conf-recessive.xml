@@ -1,0 +1,9 @@
+<configuration>
+  <properties>
+    <p1>vX</p1>
+    <p3>v3</p3>
+  </properties>
+  <buildSettings/>
+  <installerSettings/>
+  <resolverSettings/>
+</configuration>

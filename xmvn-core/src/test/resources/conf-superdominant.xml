@@ -1,0 +1,14 @@
+<configuration>
+  <buildSettings>
+    <debug>true</debug>
+    <skipTests>false</skipTests>
+    <compilerSource>1.7</compilerSource>
+  </buildSettings>
+  <resolverSettings>
+    <debug>true</debug>
+  </resolverSettings>
+  <installerSettings>
+    <debug>true</debug>
+    <metadataDir>/foo/bar</metadataDir>
+  </installerSettings>
+</configuration>
