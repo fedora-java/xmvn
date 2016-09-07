@@ -70,6 +70,8 @@ public class ConfigurationMergerTest
         assertEquals( true, out.getInstallerSettings().isDebug() );
         assertEquals( "/foo/bar", out.getInstallerSettings().getMetadataDir() );
 
+        Configuration c6 = merger.merge( c2, c2.clone() );
+        assertEquals( toString( c2 ), toString( c6 ) );
     }
 
 }
