@@ -94,11 +94,12 @@ public class XMvnMojoExecutionListener
                                                                "xmvn-mojo", //
                                                                "javadoc" );
 
-    private static final Path XMVN_STATE_DIR = Paths.get( ".xmvn" );
+    private Path xmvnStateDir = Paths.get( ".xmvn" );
 
-    private static final Path APIDOCS_SYMLINK = XMVN_STATE_DIR.resolve( "apidocs" );
-
-    private static final Path PROPERTIES_FILE = XMVN_STATE_DIR.resolve( "properties" );
+    void setXmvnStateDir( Path xmvnStateDir )
+    {
+        this.xmvnStateDir = xmvnStateDir;
+    }
 
     private final List<String[]> resolutions = new ArrayList<>();
 
@@ -128,18 +129,20 @@ public class XMvnMojoExecutionListener
         }
     }
 
-    private static void createApidocsSymlink( Path javadocDir )
+    private void createApidocsSymlink( Path javadocDir )
         throws MojoExecutionException
     {
         try
         {
-            if ( !Files.exists( XMVN_STATE_DIR ) )
-                Files.createDirectory( XMVN_STATE_DIR );
+            Path apidocsSymlink = xmvnStateDir.resolve( "apidocs" );
 
-            if ( Files.isSymbolicLink( APIDOCS_SYMLINK ) )
-                Files.delete( APIDOCS_SYMLINK );
+            if ( !Files.exists( xmvnStateDir ) )
+                Files.createDirectory( xmvnStateDir );
 
-            Files.createSymbolicLink( APIDOCS_SYMLINK, javadocDir );
+            if ( Files.isSymbolicLink( apidocsSymlink ) )
+                Files.delete( apidocsSymlink );
+
+            Files.createSymbolicLink( apidocsSymlink, javadocDir );
         }
         catch ( IOException e )
         {
@@ -154,12 +157,14 @@ public class XMvnMojoExecutionListener
 
         try
         {
-            if ( !Files.exists( XMVN_STATE_DIR ) )
-                Files.createDirectory( XMVN_STATE_DIR );
+            Path propertiesFile = xmvnStateDir.resolve( "properties" );
 
-            if ( Files.exists( PROPERTIES_FILE ) )
+            if ( !Files.exists( xmvnStateDir ) )
+                Files.createDirectory( xmvnStateDir );
+
+            if ( Files.exists( propertiesFile ) )
             {
-                try ( InputStream stream = Files.newInputStream( PROPERTIES_FILE ) )
+                try ( InputStream stream = Files.newInputStream( propertiesFile ) )
                 {
                     properties.load( stream );
                 }
@@ -168,7 +173,7 @@ public class XMvnMojoExecutionListener
             String projectKey = project.getGroupId() + "/" + project.getArtifactId() + "/" + project.getVersion();
             properties.setProperty( projectKey + "/" + key, value );
 
-            try ( OutputStream stream = Files.newOutputStream( PROPERTIES_FILE ) )
+            try ( OutputStream stream = Files.newOutputStream( propertiesFile ) )
             {
                 properties.store( stream, "XMvn project properties" );
             }

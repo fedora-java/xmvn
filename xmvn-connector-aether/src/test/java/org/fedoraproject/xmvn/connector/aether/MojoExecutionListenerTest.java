@@ -32,7 +32,9 @@ import org.easymock.Mock;
 import org.easymock.MockType;
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 
 /**
@@ -80,12 +82,17 @@ public class MojoExecutionListenerTest
     @Mock( type = MockType.STRICT )
     private MavenProject project;
 
+    @Rule
+    public TemporaryFolder tempDir = new TemporaryFolder();
+
     @Before
     @Override
     public void setUp()
         throws Exception
     {
         super.setUp();
+
+        listener.setXmvnStateDir( tempDir.getRoot().toPath() );
 
         event = EasyMock.createMock( MojoExecutionEvent.class );
         // MojoBeanProperty interface extends Mojo interface, so this is ok (and required).
