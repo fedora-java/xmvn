@@ -223,6 +223,7 @@ This package provides %{summary}.
 # Upstream code quality checks, not relevant when building RPMs
 %pom_remove_plugin -r :apache-rat-plugin
 %pom_remove_plugin -r :maven-checkstyle-plugin
+%pom_remove_plugin -r :jacoco-maven-plugin
 
 # remove dependency plugin maven-binaries execution
 # we provide apache-maven by symlink
