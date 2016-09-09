@@ -17,6 +17,8 @@ package org.fedoraproject.xmvn.connector.ivy;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
@@ -28,7 +30,9 @@ import org.easymock.MockType;
 import org.easymock.TestSubject;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -57,8 +61,12 @@ public class DeployTest
     @Mock( type = MockType.STRICT )
     private Deployer deployer;
 
+    @Rule
+    public TemporaryFolder tempDir = new TemporaryFolder();
+
     @Before
     public void setUp()
+        throws Exception
     {
         // deployment results
         deployed = new DeploymentResult()
@@ -83,7 +91,9 @@ public class DeployTest
         ivyResolver.setSettings( new IvySettings() );
 
         // artifact xml files
-        fileValid = new File( "src/test/resources/bz1127804.ivy" );
+        fileValid = new File( tempDir.getRoot(), "bz1127804.ivy" );
+        // copr ivy.xml file to temp dir, so that pom file doesn't get created in resources dir
+        Files.copy( Paths.get( "src/test/resources/bz1127804.ivy" ), fileValid.toPath() );
         fileBroken = new File( "/tmp/foo/bar/foobar" );
 
         artifact = EasyMock.createMock( Artifact.class );
