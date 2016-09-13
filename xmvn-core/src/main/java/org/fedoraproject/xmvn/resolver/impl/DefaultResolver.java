@@ -66,7 +66,7 @@ public class DefaultResolver
 
     private final MockAgent mockAgent;
 
-    private final AtomicFileCounter counter;
+    private final AtomicFileCounter bisectCounter;
 
     @Inject
     public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator )
@@ -80,13 +80,13 @@ public class DefaultResolver
         mockAgent = new MockAgent();
 
         String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
-        counter = Strings.isNullOrEmpty( bisectCounterPath ) ? null : new AtomicFileCounter( bisectCounterPath );
+        bisectCounter = Strings.isNullOrEmpty( bisectCounterPath ) ? null : new AtomicFileCounter( bisectCounterPath );
     }
 
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        if ( counter != null && counter.tryDecrement() > 0 )
+        if ( bisectCounter != null && bisectCounter.tryDecrement() > 0 )
             return new DefaultResolutionResult();
 
         Properties properties = new Properties();
