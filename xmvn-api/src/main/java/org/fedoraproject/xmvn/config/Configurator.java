@@ -43,11 +43,4 @@ public interface Configurator
      * @return master configuration
      */
     Configuration getConfiguration();
-
-    /**
-     * Dump the master configuration.
-     * <p>
-     * Configuration dumps are written through Plexus container default loggerX.
-     */
-    void dumpConfiguration();
 }

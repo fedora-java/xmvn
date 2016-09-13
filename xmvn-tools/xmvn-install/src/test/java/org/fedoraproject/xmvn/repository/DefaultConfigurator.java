@@ -18,8 +18,6 @@ package org.fedoraproject.xmvn.repository;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.junit.Assert;
-
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 
@@ -43,11 +41,5 @@ public class DefaultConfigurator
     public Configuration getConfiguration()
     {
         return getDefaultConfiguration();
-    }
-
-    @Override
-    public void dumpConfiguration()
-    {
-        Assert.fail( "Unexpected method call" );
     }
 }

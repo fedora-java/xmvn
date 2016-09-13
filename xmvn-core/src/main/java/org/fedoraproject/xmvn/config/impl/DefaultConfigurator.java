@@ -250,7 +250,6 @@ public class DefaultConfigurator
         return cachedConfiguration;
     }
 
-    @Override
     public void dumpConfiguration()
     {
         Configuration configuration = getConfiguration();

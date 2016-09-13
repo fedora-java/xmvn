@@ -33,6 +33,7 @@ import org.eclipse.sisu.space.SpaceModule;
 import org.eclipse.sisu.space.URLClassSpace;
 import org.eclipse.sisu.wire.WireModule;
 
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.resolver.Resolver;
 
@@ -70,10 +71,11 @@ public class XMvnServiceLocator
     }
 
     @Inject
-    public XMvnServiceLocator( List<Resolver> resolvers, List<Deployer> deployers )
+    public XMvnServiceLocator( List<Resolver> resolvers, List<Deployer> deployers, List<Configurator> configurators )
     {
         addService( Resolver.class, resolvers );
         addService( Deployer.class, deployers );
+        addService( Configurator.class, configurators );
     }
 
     public static Object getService( Class<?> role )
