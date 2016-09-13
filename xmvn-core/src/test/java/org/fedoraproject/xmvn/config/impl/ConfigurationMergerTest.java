@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.config;
+package org.fedoraproject.xmvn.config.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
+import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 

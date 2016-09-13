@@ -19,32 +19,19 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import com.google.common.base.Strings;
 
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.ConfigurationMerger;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 
 /**
- * Default implementation of configuration merger.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
- * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
-public class DefaultConfigurationMerger
-    implements ConfigurationMerger
+class ConfigurationMerger
 {
     private void mergeProperties( Properties dominant, Properties recessive )
     {
@@ -119,7 +106,18 @@ public class DefaultConfigurationMerger
         mergeInstallerSettings( dominant.getInstallerSettings(), recessive.getInstallerSettings() );
     }
 
-    @Override
+    /**
+     * Merge two configurations, with one with one having precedence in the case of conflict.
+     * <p>
+     * Caller should not depend on contents of dominant configuration after the merge was attempted as the
+     * implementation is free to modify it. Recessive configuration is never changed.
+     * 
+     * @param dominant the dominant configuration into which the recessive configuration will be merged (may be
+     *            {@code null})
+     * @param recessive the recessive configuration from which the configuration will inherited (may not be {@code null}
+     *            )
+     * @return merged configuration (not {@code null}, may be the same as dominant)
+     */
     public Configuration merge( Configuration dominant, Configuration recessive )
     {
         if ( dominant == null )
