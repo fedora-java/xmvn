@@ -38,6 +38,8 @@ public class BisectIntegrationTest
         pb.redirectInput( new File( "/dev/null" ) );
         pb.redirectOutput( new File( STDOUT ) );
         pb.redirectError( new File( STDERR ) );
+        // TravisCI installs /etc/mavenrc, which overrides M2_HOME and interferes with the IT
+        pb.environment().put( "MAVEN_SKIP_RC", "true" );
         Process p = pb.start();
         return p.waitFor();
     }
