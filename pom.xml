@@ -109,7 +109,7 @@
               <artifactItems>
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-core</artifactId>
+                  <artifactId>xmvn-api</artifactId>
                   <version>${project.version}</version>
                   <type>xdoc</type>
                   <classifier>config</classifier>
@@ -118,7 +118,7 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-core</artifactId>
+                  <artifactId>xmvn-api</artifactId>
                   <version>${project.version}</version>
                   <type>xdoc</type>
                   <classifier>metadata</classifier>
