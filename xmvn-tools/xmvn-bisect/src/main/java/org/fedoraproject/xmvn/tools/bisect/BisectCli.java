@@ -17,9 +17,7 @@ package org.fedoraproject.xmvn.tools.bisect;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -37,6 +35,7 @@ import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.locator.XMvnHomeLocator;
 import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 
 /**
@@ -88,15 +87,9 @@ public class BisectCli
 
         commandLineParser.getSystemProperties().forEach( ( key, value ) -> System.setProperty( key, value ) );
 
-        Path jarPath = Paths.get( BisectCli.class.getProtectionDomain().getCodeSource().getLocation().toURI() );
-        Path mavenHome = jarPath.toAbsolutePath().getParent().getParent().getParent();
-        if ( !Files.isDirectory( mavenHome ) || !jarPath.getFileName().toString().matches( "^xmvn-bisect.*\\.jar$" ) )
-        {
-            logger.error( "Unable to determine Maven home" );
-            System.exit( 1 );
-        }
-        invoker.setMavenHome( mavenHome.toFile() );
-        logger.info( "Using XMvn at {}", mavenHome );
+        Path xmvnHome = XMvnHomeLocator.getHome();
+        invoker.setMavenHome( xmvnHome.toFile() );
+        logger.info( "Using XMvn at {}", xmvnHome );
 
         request.getProperties().put( "xmvn.bisect.counter", commandLineParser.getCounterPath() );
 

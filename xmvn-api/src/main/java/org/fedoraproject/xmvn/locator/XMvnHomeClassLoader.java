@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.locator;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * A class loader, which loads classes from XMvn home directory.
@@ -28,18 +27,6 @@ public class XMvnHomeClassLoader
 {
     private final Path home;
 
-    private static Path getDefaultHome()
-    {
-        String home = System.getProperty( "xmvn.home" );
-        if ( home == null )
-            home = System.getenv( "XMVN_HOME" );
-        if ( home == null )
-            home = System.getenv( "M2_HOME" );
-        if ( home == null )
-            home = "/usr/share/xmvn";
-        return Paths.get( home );
-    }
-
     /**
      * Create an instance of the class loader with default XMvn home and specified parent class loader, from which all
      * XMvn API classes should be imported.
@@ -48,7 +35,7 @@ public class XMvnHomeClassLoader
      */
     public XMvnHomeClassLoader( ClassLoader parent )
     {
-        this( getDefaultHome(), parent );
+        this( XMvnHomeLocator.getHome(), parent );
     }
 
     /**
