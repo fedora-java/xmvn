@@ -31,6 +31,9 @@
     XMvn Subst is a tool that can substitute Maven artifact files with
     symbolic links to corresponding files in artifact repository.
   </description>
+  <properties>
+    <mainClass>org.fedoraproject.xmvn.tools.subst.SubstCli</mainClass>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>javax.inject</groupId>

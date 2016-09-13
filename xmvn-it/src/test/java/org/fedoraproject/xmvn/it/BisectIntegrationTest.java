@@ -19,7 +19,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Test;
 
@@ -32,9 +34,17 @@ public class BisectIntegrationTest
     private int runBisect()
         throws Exception
     {
-        Path exe = getMavenHome().resolve( "bin/xmvn-bisect" );
+        Path javaHome = Paths.get( System.getProperty( "java.home" ) );
+        Path javaCmd = javaHome.resolve( "bin/java" );
+        assertTrue( Files.isExecutable( javaCmd ) );
+        assertTrue( Files.isRegularFile( javaCmd ) );
 
-        ProcessBuilder pb = new ProcessBuilder( exe.toString(), "-Dxmvn.config.sandbox=true", "clean", "compile" );
+        Path libDir = getMavenHome().resolve( "lib/bisect" );
+        Path bisectJar = Files.newDirectoryStream( libDir, "xmvn-bisect*.jar" ).iterator().next();
+        assertTrue( Files.isRegularFile( bisectJar ) );
+
+        ProcessBuilder pb = new ProcessBuilder( javaCmd.toString(), "-jar", bisectJar.toString(),
+                                                "-Dxmvn.config.sandbox=true", "clean", "compile" );
         pb.redirectInput( new File( "/dev/null" ) );
         pb.redirectOutput( new File( STDOUT ) );
         pb.redirectError( new File( STDERR ) );

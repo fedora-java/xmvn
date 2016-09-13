@@ -19,139 +19,80 @@
   <formats>
     <format>tar.bz2</format>
   </formats>
-  <dependencySets>
-    <dependencySet>
-      <useProjectArtifact>false</useProjectArtifact>
-      <useTransitiveDependencies>false</useTransitiveDependencies>
-      <scope>runtime</scope>
-      <outputDirectory>lib/ext</outputDirectory>
-    </dependencySet>
-  </dependencySets>
-  <fileSets>
-    <fileSet>
+  <moduleSets>
+    <moduleSet>
       <includes>
-        <include>AUTHORS</include>
-        <include>README.md</include>
-        <include>LICENSE</include>
-        <include>NOTICE</include>
+	<include>org.fedoraproject.xmvn:xmvn-connector-aether</include>
       </includes>
-    </fileSet>
+      <binaries>
+	<unpack>false</unpack>
+	<outputDirectory>lib/ext</outputDirectory>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+	<include>org.fedoraproject.xmvn:xmvn-core</include>
+      </includes>
+      <binaries>
+	<unpack>false</unpack>
+	<outputDirectory>lib/core</outputDirectory>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+	<include>org.fedoraproject.xmvn:xmvn-bisect</include>
+      </includes>
+      <binaries>
+	<unpack>false</unpack>
+	<outputDirectory>lib/bisect</outputDirectory>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+	<include>org.fedoraproject.xmvn:xmvn-install</include>
+      </includes>
+      <binaries>
+	<unpack>false</unpack>
+	<outputDirectory>lib/installer</outputDirectory>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+	<include>org.fedoraproject.xmvn:xmvn-resolve</include>
+      </includes>
+      <binaries>
+	<unpack>false</unpack>
+	<outputDirectory>lib/resolver</outputDirectory>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <includes>
+	<include>org.fedoraproject.xmvn:xmvn-subst</include>
+      </includes>
+      <binaries>
+	<unpack>false</unpack>
+	<outputDirectory>lib/subst</outputDirectory>
+      </binaries>
+    </moduleSet>
+  </moduleSets>
+  <fileSets>
     <fileSet>
       <directory>target/dependency/apache-maven-${mavenVersion}</directory>
       <outputDirectory>.</outputDirectory>
-      <includes>
-        <include>bin/m2.conf</include>
-        <include>bin/mvn</include>
-        <include>bin/mvnDebug</include>
-        <include>bin/mvnyjp</include>
-        <include>conf/settings.xml</include>
-        <include>conf/logging/simplelogger.properties</include>
-        <include>NOTICE.txt</include>
-        <include>**/*.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-core/target/dependency</directory>
-      <outputDirectory>lib/core</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-core/target</directory>
-      <outputDirectory>lib/core</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-connector-ivy/target/dependency</directory>
-      <outputDirectory>lib/ivy</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-connector-ivy/target</directory>
-      <outputDirectory>lib/ivy</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-bisect/target/dependency</directory>
-      <outputDirectory>lib/bisect</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-bisect/target</directory>
-      <outputDirectory>lib/bisect</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-install/target/dependency</directory>
-      <outputDirectory>lib/installer</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-install/target</directory>
-      <outputDirectory>lib/installer</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-resolve/target/dependency</directory>
-      <outputDirectory>lib/resolver</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-resolve/target</directory>
-      <outputDirectory>lib/resolver</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-subst/target/dependency</directory>
-      <outputDirectory>lib/subst</outputDirectory>
-    </fileSet>
-    <fileSet>
-      <directory>xmvn-tools/xmvn-subst/target</directory>
-      <outputDirectory>lib/subst</outputDirectory>
-      <includes>
-        <include>*.jar</include>
-      </includes>
     </fileSet>
   </fileSets>
   <files>
     <file>
-      <source>src/main/bin/xmvn</source>
-      <outputDirectory>bin</outputDirectory>
-      <destName>xmvn</destName>
-      <fileMode>0755</fileMode>
-      <lineEnding>unix</lineEnding>
+      <source>NOTICE</source>
+      <destName>NOTICE-XMVN</destName>
     </file>
     <file>
-      <source>xmvn-tools/src/main/bin/tool-script</source>
-      <outputDirectory>bin</outputDirectory>
-      <destName>xmvn-bisect</destName>
-      <fileMode>0755</fileMode>
-      <lineEnding>unix</lineEnding>
+      <source>README.md</source>
+      <destName>README-XMVN.md</destName>
     </file>
     <file>
-      <source>xmvn-tools/src/main/bin/tool-script</source>
-      <outputDirectory>bin</outputDirectory>
-      <destName>xmvn-install</destName>
-      <fileMode>0755</fileMode>
-      <lineEnding>unix</lineEnding>
-    </file>
-    <file>
-      <source>xmvn-tools/src/main/bin/tool-script</source>
-      <outputDirectory>bin</outputDirectory>
-      <destName>xmvn-resolve</destName>
-      <fileMode>0755</fileMode>
-      <lineEnding>unix</lineEnding>
-    </file>
-    <file>
-      <source>xmvn-tools/src/main/bin/tool-script</source>
-      <outputDirectory>bin</outputDirectory>
-      <destName>xmvn-subst</destName>
-      <fileMode>0755</fileMode>
-      <lineEnding>unix</lineEnding>
+      <source>AUTHORS</source>
+      <destName>AUTHORS-XMVN</destName>
     </file>
   </files>
 </assembly>

@@ -31,6 +31,9 @@
     installer reads reactor metadata and performs artifact
     installation according to specified configuration.
   </description>
+  <properties>
+    <mainClass>org.fedoraproject.xmvn.tools.install.cli.InstallerCli</mainClass>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.google.guava</groupId>

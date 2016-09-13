@@ -159,6 +159,11 @@
         <version>${aetherVersion}</version>
       </dependency>
       <dependency>
+        <groupId>org.eclipse.aether</groupId>
+        <artifactId>aether-util</artifactId>
+        <version>${aetherVersion}</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <version>${pluginToolsVersion}</version>
@@ -222,7 +227,22 @@
       </dependency>
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-bisect</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedoraproject.xmvn</groupId>
         <artifactId>xmvn-install</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-resolve</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedoraproject.xmvn</groupId>
+        <artifactId>xmvn-subst</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

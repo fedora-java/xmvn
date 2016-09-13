@@ -34,4 +34,7 @@
     Core.  The primary intended use case of XMvn Resolver is debugging
     local artifact repositories.
   </description>
+  <properties>
+    <mainClass>org.fedoraproject.xmvn.tools.resolve.ResolverCli</mainClass>
+  </properties>
 </project>

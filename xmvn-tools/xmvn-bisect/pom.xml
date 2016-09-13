@@ -31,6 +31,9 @@
     XMvn Bisect is a debugging tool that can diagnose build failures
     by using bisection method.
   </description>
+  <properties>
+    <mainClass>org.fedoraproject.xmvn.tools.bisect.BisectCli</mainClass>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>javax.inject</groupId>
