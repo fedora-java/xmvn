@@ -20,25 +20,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
+import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -53,15 +46,12 @@ import org.fedoraproject.xmvn.tools.resolve.xml.CompoundResult;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
 public class ResolverCli
 {
     private final Logger logger = LoggerFactory.getLogger( ResolverCli.class );
 
     private final Resolver resolver;
 
-    @Inject
     public ResolverCli( Resolver resolver )
     {
         this.resolver = resolver;
@@ -156,11 +146,16 @@ public class ResolverCli
         try
         {
             ResolverCliRequest cliRequest = new ResolverCliRequest( args );
+            if ( cliRequest.isDebug() )
+                System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "debug" );
 
-            Module module =
-                new WireModule( new SpaceModule( new URLClassSpace( ResolverCli.class.getClassLoader() ) ) );
-            Injector injector = Guice.createInjector( module );
-            ResolverCli cli = injector.getInstance( ResolverCli.class );
+            XMvnHomeClassLoader classLoader = new XMvnHomeClassLoader( ResolverCli.class.getClassLoader() );
+            classLoader.importAllPackages( "org.slf4j" );
+            classLoader.importPackage( "simplelogger" );
+            IsolatedXMvnServiceLocator locator = new IsolatedXMvnServiceLocator( classLoader );
+            Resolver resolver = locator.getService( Resolver.class );
+
+            ResolverCli cli = new ResolverCli( resolver );
 
             cli.run( cliRequest );
         }
