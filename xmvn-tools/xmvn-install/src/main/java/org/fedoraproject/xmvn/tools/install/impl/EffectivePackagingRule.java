@@ -24,7 +24,6 @@ import com.google.common.base.Strings;
 
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.utils.GlobUtils;
 
 /**
  * Effective artifact packaging rule.
