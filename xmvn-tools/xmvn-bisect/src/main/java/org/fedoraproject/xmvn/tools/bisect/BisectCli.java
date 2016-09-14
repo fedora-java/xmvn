@@ -22,19 +22,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +34,6 @@ import org.fedoraproject.xmvn.locator.XMvnHomeLocator;
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
 public class BisectCli
 {
     private final Logger logger = LoggerFactory.getLogger( BisectCli.class );
@@ -178,9 +167,7 @@ public class BisectCli
         {
             BisectCliRequest cliRequest = new BisectCliRequest( args );
 
-            Module module = new WireModule( new SpaceModule( new URLClassSpace( BisectCli.class.getClassLoader() ) ) );
-            Injector injector = Guice.createInjector( module );
-            BisectCli cli = injector.getInstance( BisectCli.class );
+            BisectCli cli = new BisectCli();
 
             cli.run( cliRequest );
         }
