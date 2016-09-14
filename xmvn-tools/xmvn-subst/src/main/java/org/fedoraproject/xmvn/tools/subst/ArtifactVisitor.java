@@ -26,15 +26,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.impl.MetadataResolver;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -130,10 +135,78 @@ public class ArtifactVisitor
         return FileVisitResult.CONTINUE;
     }
 
+    private Artifact getArtifactFromManifest( Path path )
+        throws IOException
+    {
+        try ( JarFile jarFile = new JarFile( path.toFile() ) )
+        {
+            Manifest mf = jarFile.getManifest();
+            if ( mf == null )
+                return null;
+
+            String groupId = mf.getMainAttributes().getValue( Artifact.MF_KEY_GROUPID );
+            String artifactId = mf.getMainAttributes().getValue( Artifact.MF_KEY_ARTIFACTID );
+            String extension = mf.getMainAttributes().getValue( Artifact.MF_KEY_EXTENSION );
+            String classifier = mf.getMainAttributes().getValue( Artifact.MF_KEY_CLASSIFIER );
+            String version = mf.getMainAttributes().getValue( Artifact.MF_KEY_VERSION );
+
+            if ( groupId == null || artifactId == null )
+                return null;
+
+            return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
+        }
+    }
+
+    private Artifact getArtifactFromPomProperties( Path path, String extension )
+        throws IOException
+    {
+        try ( ZipInputStream zis = new ZipInputStream( Files.newInputStream( path ) ) )
+        {
+            ZipEntry entry;
+            while ( ( entry = zis.getNextEntry() ) != null )
+            {
+                String name = entry.getName();
+                if ( name.startsWith( "META-INF/maven/" ) && name.endsWith( "/pom.properties" ) )
+                {
+                    Properties properties = new Properties();
+                    properties.load( zis );
+
+                    String groupId = properties.getProperty( "groupId" );
+                    String artifactId = properties.getProperty( "artifactId" );
+                    String version = properties.getProperty( "version" );
+                    return new DefaultArtifact( groupId, artifactId, extension, version );
+                }
+            }
+
+            return null;
+        }
+    }
+
+    private Artifact readArtifactDefinition( Path path, String extension )
+    {
+        try
+        {
+            Artifact artifact = getArtifactFromManifest( path );
+            if ( artifact != null )
+                return artifact;
+
+            artifact = getArtifactFromPomProperties( path, extension );
+            if ( artifact != null )
+                return artifact;
+
+            return null;
+        }
+        catch ( IOException e )
+        {
+            logger.error( "Failed to get artifact definition from file {}", path, e );
+            return null;
+        }
+    }
+
     private void substituteArtifact( Path path, String type )
         throws IOException
     {
-        Artifact artifact = ArtifactUtils.readArtifactDefinition( path, type );
+        Artifact artifact = readArtifactDefinition( path, type );
         if ( artifact == null )
         {
             logger.info( "Skipping file {}: No artifact definition found", path );

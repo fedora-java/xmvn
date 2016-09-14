@@ -37,7 +37,6 @@ import org.fedoraproject.xmvn.metadata.DependencyExclusion;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * Default implementation of XMvn {@code Deployer} interface.
@@ -72,7 +71,7 @@ public class DefaultDeployer
             am.setClassifier( artifact.getClassifier() );
             am.setVersion( artifact.getVersion() );
             am.setPath( artifact.getPath().toString() );
-            am.setProperties( ArtifactUtils.convertProperties( request.getProperties() ) );
+            am.getProperties().putAll( request.getProperties() );
 
             for ( DependencyDescriptor depDescriptor : request.getDependencies() )
             {

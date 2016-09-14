@@ -17,6 +17,8 @@ package org.fedoraproject.xmvn.mojo;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.model.Dependency;
@@ -75,5 +77,25 @@ final class Utils
 
         return registry.createTypedArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(),
                                              dependency.getClassifier(), dependency.getVersion() );
+    }
+
+    /**
+     * Convert a collection of artifacts to a human-readable string.
+     * 
+     * @param collection collection of artifacts
+     * @param multiLine if multi-line representation should be used instead of single-line
+     * @return string representation of given collection of artifacts
+     */
+    public static String collectionToString( Collection<Artifact> collection, boolean multiLine )
+    {
+        if ( collection.isEmpty() )
+            return "[]";
+
+        String separator = multiLine ? System.lineSeparator() : " ";
+        String indent = multiLine ? "  " : "";
+
+        String str = collection.stream().map( a -> indent + a ).collect( Collectors.joining( "," + separator ) );
+
+        return "[" + separator + str + separator + "]";
     }
 }

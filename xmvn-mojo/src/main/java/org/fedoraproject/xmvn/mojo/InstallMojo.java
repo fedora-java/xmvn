@@ -51,7 +51,6 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -130,8 +129,7 @@ public class InstallMojo
                 systemDepsFound = true;
 
                 logger.error( "Reactor project {} has system-scoped dependencies: {}",
-                              aetherArtifact( project.getArtifact() ),
-                              ArtifactUtils.collectionToString( systemDeps, true ) );
+                              aetherArtifact( project.getArtifact() ), Utils.collectionToString( systemDeps, true ) );
             }
         }
 

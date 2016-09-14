@@ -37,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.utils.ArtifactUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -220,11 +219,11 @@ public final class JarUtils
                 return;
             }
 
-            putAttribute( mf, ArtifactUtils.MF_KEY_GROUPID, artifact.getGroupId(), null );
-            putAttribute( mf, ArtifactUtils.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
-            putAttribute( mf, ArtifactUtils.MF_KEY_EXTENSION, artifact.getExtension(), Artifact.DEFAULT_EXTENSION );
-            putAttribute( mf, ArtifactUtils.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
-            putAttribute( mf, ArtifactUtils.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
+            putAttribute( mf, Artifact.MF_KEY_GROUPID, artifact.getGroupId(), null );
+            putAttribute( mf, Artifact.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
+            putAttribute( mf, Artifact.MF_KEY_EXTENSION, artifact.getExtension(), Artifact.DEFAULT_EXTENSION );
+            putAttribute( mf, Artifact.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
+            putAttribute( mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
 
             targetJar = targetJar.toRealPath();
             Files.delete( targetJar );
