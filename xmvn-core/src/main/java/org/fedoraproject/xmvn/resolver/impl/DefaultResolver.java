@@ -33,6 +33,9 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.MetadataRequest;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -55,6 +58,10 @@ public class DefaultResolver
 
     private final MetadataResolver metadataResolver;
 
+    private MetadataRequest metadataRequest;
+
+    private MetadataResult metadataResult;
+
     private static final RpmDb RPMDB = new RpmDb();
 
     private final Resolver localRepoResolver;
@@ -68,12 +75,14 @@ public class DefaultResolver
     private final AtomicFileCounter bisectCounter;
 
     @Inject
-    public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator )
+    public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator,
+                            MetadataResolver metadataResolver )
     {
         this.localRepoResolver = localRepoResolver;
+        this.metadataResolver = metadataResolver;
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        metadataResolver = new MetadataResolver( settings.getMetadataRepositories() );
+        metadataRequest = new MetadataRequest( settings.getMetadataRepositories() );
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
         mockAgent = new MockAgent();
@@ -98,12 +107,16 @@ public class DefaultResolver
         Artifact artifact = request.getArtifact();
         logger.debug( "Trying to resolve artifact {}", artifact );
 
-        String compatVersion;
-        ArtifactMetadata metadata = metadataResolver.resolveArtifactMetadata( artifact );
+        if ( metadataResult == null )
+        {
+            metadataResult = metadataResolver.resolveMetadata( metadataRequest );
+        }
+        ArtifactMetadata metadata = metadataResult.getMetadataFor( artifact );
 
+        String compatVersion;
         if ( metadata == null )
         {
-            metadata = metadataResolver.resolveArtifactMetadata( artifact.setVersion( Artifact.DEFAULT_VERSION ) );
+            metadata = metadataResult.getMetadataFor( artifact.setVersion( Artifact.DEFAULT_VERSION ) );
             compatVersion = null;
         }
         else
@@ -113,12 +126,12 @@ public class DefaultResolver
 
         if ( metadata == null && mockAgent.tryInstallArtifact( artifact ) )
         {
-            metadataResolver.invalidateMappings();
-            metadata = metadataResolver.resolveArtifactMetadata( artifact );
+            metadataResult = metadataResolver.resolveMetadata( metadataRequest );
+            metadata = metadataResult.getMetadataFor( artifact );
 
             if ( metadata == null )
             {
-                metadata = metadataResolver.resolveArtifactMetadata( artifact.setVersion( Artifact.DEFAULT_VERSION ) );
+                metadata = metadataResult.getMetadataFor( artifact.setVersion( Artifact.DEFAULT_VERSION ) );
                 compatVersion = null;
             }
             else

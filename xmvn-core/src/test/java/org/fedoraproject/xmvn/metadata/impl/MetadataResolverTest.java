@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver.impl;
+package org.fedoraproject.xmvn.metadata.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,17 +22,27 @@ import static org.junit.Assert.assertNull;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.MetadataRequest;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.MetadataResult;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class MetadataResolverTest
+    extends InjectedTest
 {
+    @Inject
+    private MetadataResolver metadataResolver;
+
     /**
      * Test if metadata resolution works for exact version.
      * 
@@ -43,10 +53,10 @@ public class MetadataResolverTest
         throws Exception
     {
         List<String> pathList = Collections.singletonList( "src/test/resources/metadata1.xml" );
-        MetadataResolver resolver = new MetadataResolver( pathList );
+        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
 
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.2-beta3" );
-        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+        ArtifactMetadata am = result.getMetadataFor( artifact );
 
         assertNotNull( am );
         assertEquals( "/foo/bar", am.getPath() );
@@ -62,10 +72,10 @@ public class MetadataResolverTest
         throws Exception
     {
         List<String> pathList = Collections.singletonList( "src/test/resources/metadata1.xml" );
-        MetadataResolver resolver = new MetadataResolver( pathList );
+        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
 
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
-        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+        ArtifactMetadata am = result.getMetadataFor( artifact );
 
         assertNull( am );
     }
@@ -80,10 +90,10 @@ public class MetadataResolverTest
         throws Exception
     {
         List<String> pathList = Collections.singletonList( "src/test/resources/metadata1-non-compat.xml" );
-        MetadataResolver resolver = new MetadataResolver( pathList );
+        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
 
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION );
-        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+        ArtifactMetadata am = result.getMetadataFor( artifact );
 
         assertNotNull( am );
         assertEquals( "/foo/bar", am.getPath() );
@@ -99,10 +109,10 @@ public class MetadataResolverTest
         throws Exception
     {
         List<String> pathList = Collections.singletonList( "src/test/resources/metadata1-non-compat.xml" );
-        MetadataResolver resolver = new MetadataResolver( pathList );
+        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
 
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
-        ArtifactMetadata am = resolver.resolveArtifactMetadata( artifact );
+        ArtifactMetadata am = result.getMetadataFor( artifact );
 
         assertNull( am );
     }

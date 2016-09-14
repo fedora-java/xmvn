@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver.impl;
+package org.fedoraproject.xmvn.metadata.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +25,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Before;
+import javax.inject.Inject;
+
+import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
@@ -39,14 +41,10 @@ import org.fedoraproject.xmvn.metadata.SkippedArtifactMetadata;
  * @author Mikolaj Izdebski
  */
 public class MetadataReaderTest
+    extends InjectedTest
 {
-    private MetadataReader reader;
-
-    @Before
-    public void setUp()
-    {
-        reader = new MetadataReader();
-    }
+    @Inject
+    private DefaultMetadataResolver reader;
 
     /**
      * Test if trying to read metadata from empty list of directories returns empty result.

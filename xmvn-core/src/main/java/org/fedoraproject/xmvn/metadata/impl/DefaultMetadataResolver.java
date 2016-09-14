@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver.impl;
+package org.fedoraproject.xmvn.metadata.impl;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -37,35 +37,56 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.MetadataRequest;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 
 /**
+ * Default implementation of XMvn {@code MetadataResolver} interface.
+ * <p>
+ * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
+ * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
+ * it directly.
+ * 
  * @author Mikolaj Izdebski
  */
-class MetadataReader
+@Named
+@Singleton
+public class DefaultMetadataResolver
+    implements MetadataResolver
 {
-    private final Logger logger = LoggerFactory.getLogger( MetadataReader.class );
+    private final Logger logger = LoggerFactory.getLogger( DefaultMetadataResolver.class );
 
     private final ThreadPoolExecutor executor;
 
-    public MetadataReader()
+    public DefaultMetadataResolver()
     {
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, ( runnable ) -> {
             Thread thread = new Thread( runnable );
-            thread.setName( MetadataReader.class.getCanonicalName() + ".worker" );
+            thread.setName( DefaultMetadataResolver.class.getCanonicalName() + ".worker" );
             thread.setDaemon( true );
             return thread;
         } );
     }
 
-    public List<PackageMetadata> readMetadata( List<String> metadataLocations )
+    @Override
+    public MetadataResult resolveMetadata( MetadataRequest request )
+    {
+        return new DefaultMetadataResult( readMetadata( request.getMetadataRepositories() ) );
+    }
+
+    List<PackageMetadata> readMetadata( List<String> metadataLocations )
     {
         Map<Path, Future<PackageMetadata>> futures = new LinkedHashMap<>();
 

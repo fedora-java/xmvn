@@ -35,6 +35,7 @@ import org.eclipse.sisu.wire.WireModule;
 
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.deployer.Deployer;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
@@ -71,11 +72,13 @@ public class XMvnServiceLocator
     }
 
     @Inject
-    public XMvnServiceLocator( List<Resolver> resolvers, List<Deployer> deployers, List<Configurator> configurators )
+    public XMvnServiceLocator( List<Resolver> resolvers, List<Deployer> deployers, List<Configurator> configurators,
+                               List<MetadataResolver> metadataResolvers )
     {
         addService( Resolver.class, resolvers );
         addService( Deployer.class, deployers );
         addService( Configurator.class, configurators );
+        addService( MetadataResolver.class, metadataResolvers );
     }
 
     public static Object getService( Class<?> role )

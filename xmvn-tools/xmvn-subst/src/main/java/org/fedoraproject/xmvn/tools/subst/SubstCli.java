@@ -36,7 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.resolver.impl.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.MetadataRequest;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.MetadataResult;
 
 /**
  * @author Mikolaj Izdebski
@@ -49,15 +51,18 @@ public class SubstCli
 
     private final List<String> configuredMetadataRepos;
 
+    private MetadataResolver metadataResolver;
+
     @Inject
-    public SubstCli( Configurator configurator )
+    public SubstCli( Configurator configurator, MetadataResolver metadataResolver )
     {
+        this.metadataResolver = metadataResolver;
         configuredMetadataRepos = configurator.getConfiguration().getResolverSettings().getMetadataRepositories();
     }
 
     private void run( SubstCliRequest cliRequest )
     {
-        List<MetadataResolver> metadataResolvers = new ArrayList<>();
+        List<MetadataResult> metadataResolvers = new ArrayList<>();
 
         if ( cliRequest.getRoot() != null )
         {
@@ -73,10 +78,10 @@ public class SubstCli
                 }
             }
 
-            metadataResolvers.add( new MetadataResolver( metadataRepos ) );
+            metadataResolvers.add( metadataResolver.resolveMetadata( new MetadataRequest( metadataRepos ) ) );
         }
 
-        metadataResolvers.add( new MetadataResolver( configuredMetadataRepos ) );
+        metadataResolvers.add( metadataResolver.resolveMetadata( new MetadataRequest( configuredMetadataRepos ) ) );
 
         ArtifactVisitor visitor = new ArtifactVisitor( metadataResolvers );
 

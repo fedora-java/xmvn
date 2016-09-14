@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
-import org.fedoraproject.xmvn.resolver.impl.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.MetadataResult;
 
 /**
  * @author Mikolaj Izdebski
@@ -51,7 +51,7 @@ public class ArtifactVisitor
 
     private final Set<String> types = new LinkedHashSet<>();
 
-    private final List<MetadataResolver> metadataResolvers;
+    private final List<MetadataResult> metadata;
 
     private boolean followSymlinks;
 
@@ -59,9 +59,9 @@ public class ArtifactVisitor
 
     private int failureCount;
 
-    public ArtifactVisitor( List<MetadataResolver> metadataResolvers )
+    public ArtifactVisitor( List<MetadataResult> metadata )
     {
-        this.metadataResolvers = metadataResolvers;
+        this.metadata = metadata;
     }
 
     public void setTypes( Collection<String> types )
@@ -237,11 +237,11 @@ public class ArtifactVisitor
     {
         List<Artifact> versionedArtifacts = Arrays.asList( artifact, artifact.setVersion( null ) );
 
-        for ( MetadataResolver resolver : metadataResolvers )
+        for ( MetadataResult metadataResult : metadata )
         {
             for ( Artifact versionedArtifact : versionedArtifacts )
             {
-                ArtifactMetadata metadata = resolver.resolveArtifactMetadata( versionedArtifact );
+                ArtifactMetadata metadata = metadataResult.getMetadataFor( versionedArtifact );
                 if ( metadata != null )
                     return metadata;
             }

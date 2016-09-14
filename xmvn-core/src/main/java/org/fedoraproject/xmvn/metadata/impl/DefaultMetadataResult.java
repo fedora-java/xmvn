@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver.impl;
+package org.fedoraproject.xmvn.metadata.impl;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -29,35 +29,23 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 
 /**
  * @author Mikolaj Izdebski
  */
-public class MetadataResolver
+class DefaultMetadataResult
+    implements MetadataResult
 {
-    private final Logger logger = LoggerFactory.getLogger( MetadataResolver.class );
+    private final Logger logger = LoggerFactory.getLogger( DefaultMetadataResult.class );
 
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
-    private final List<String> metadataLocations;
-
     boolean initialized;
 
-    public MetadataResolver( List<String> metadataLocations )
+    public DefaultMetadataResult( List<PackageMetadata> metadataList )
     {
-        this.metadataLocations = metadataLocations;
-    }
-
-    private synchronized void initArtifactMap()
-    {
-        if ( initialized )
-            return;
-        initialized = true;
-
-        MetadataReader reader = new MetadataReader();
-        List<PackageMetadata> metadataList = reader.readMetadata( metadataLocations );
-
         PathInterpolator interpolator = new PathInterpolator();
 
         for ( PackageMetadata metadata : metadataList )
@@ -121,15 +109,9 @@ public class MetadataResolver
         }
     }
 
-    public ArtifactMetadata resolveArtifactMetadata( Artifact artifact )
+    @Override
+    public ArtifactMetadata getMetadataFor( Artifact artifact )
     {
-        initArtifactMap();
         return artifactMap.get( artifact );
-    }
-
-    public synchronized void invalidateMappings()
-    {
-        initialized = false;
-        artifactMap.clear();
     }
 }
