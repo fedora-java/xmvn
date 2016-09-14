@@ -32,7 +32,6 @@ import org.codehaus.plexus.util.StringUtils;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.model.AbstractModelVisitor;
-import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 
 /**
  * @author Mikolaj Izdebski

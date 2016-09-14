@@ -58,7 +58,6 @@ import org.xml.sax.SAXException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.model.ModelProcessor;
-import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 
 /**
  * @author Mikolaj Izdebski

@@ -28,7 +28,6 @@ import org.eclipse.aether.artifact.ArtifactType;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.utils.ArtifactTypeRegistry;
 
 /**
  * @author Mikolaj Izdebski

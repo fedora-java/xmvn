@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.utils;
+package org.fedoraproject.xmvn.mojo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 /**
  * @author Mikolaj Izdebski
  */
-public final class ArtifactTypeRegistry
+final class ArtifactTypeRegistry
 {
     private static final ArtifactTypeRegistry DEFAULT_REGISTRY = new ArtifactTypeRegistry();
 
