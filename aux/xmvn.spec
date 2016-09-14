@@ -111,18 +111,11 @@ This package provides XMvn parent POM.
 
 %package        api
 Summary:        XMvn API
+Obsoletes:      %{name}-launcher < 2.6.0
 
 %description    api
 This package provides XMvn API module which contains public interface
 for functionality implemented by XMvn Core.
-
-%package        launcher
-Summary:        XMvn Launcher
-
-%description    launcher
-This package provides XMvn Launcher module, which provides a way of
-launching XMvn running in isolated class realm and locating XMVn
-services.
 
 %package        core
 Summary:        XMvn Core
@@ -229,6 +222,9 @@ This package provides %{summary}.
 # we provide apache-maven by symlink
 %pom_xpath_remove "pom:executions/pom:execution[pom:id[text()='maven-binaries']]"
 
+# Don't put Class-Path attributes in manifests
+%pom_remove_plugin :maven-jar-plugin xmvn-tools
+
 # get mavenVersion that is expected
 mver=$(sed -n '/<mavenVersion>/{s/.*>\(.*\)<.*/\1/;p}' \
            xmvn-parent/pom.xml)
@@ -242,7 +238,11 @@ cp -aL %{_datadir}/maven target/dependency/apache-maven-$mver
 tar --delay-directory-restore -xvf target/*tar.bz2
 chmod -R +rwX %{name}-%{version}*
 # These are installed as doc
-rm -Rf %{name}-%{version}*/{AUTHORS,README.md,LICENSE,NOTICE}
+rm -f %{name}-%{version}*/{AUTHORS-XMVN,README-XMVN.md,LICENSE,NOTICE,NOTICE-XMVN}
+# Not needed - we use JPackage launcher scripts
+rm -Rf %{name}-%{version}*/lib/{installer,resolver,subst,bisect}/
+# Irrelevant Maven launcher scripts
+rm -f %{name}-%{version}*/bin/{mvn.cmd,mvnDebug.cmd,mvn-script}
 
 
 %install
@@ -261,20 +261,16 @@ EOF
 done
 
 # helper scripts
-install -d -m 755 %{buildroot}%{_bindir}
-for tool in subst resolve bisect install;do
-    cat <<EOF >%{buildroot}%{_bindir}/%{name}-$tool
-#!/bin/sh -e
-exec %{_datadir}/%{name}/bin/%{name}-$tool "\${@}"
-EOF
-    chmod +x %{buildroot}%{_bindir}/%{name}-$tool
-done
+%jpackage_script org.fedoraproject.xmvn.tools.bisect.BisectCli "" "-Dxmvn.home=%{_datadir}/%{name}" xmvn/xmvn-bisect:xmvn/xmvn-api:beust-jcommander:slf4j/api:slf4j/simple:maven-invoker:plexus/utils xmvn-bisect
+%jpackage_script org.fedoraproject.xmvn.tools.install.cli.InstallerCli "" "-Dxmvn.home=%{_datadir}/%{name}" xmvn/xmvn-install:xmvn/xmvn-api:xmvn/xmvn-core:beust-jcommander:slf4j/api:slf4j/simple:atinject:org.eclipse.sisu.inject:google-guice-no_aop:guava:objectweb-asm/asm xmvn-install
+%jpackage_script org.fedoraproject.xmvn.tools.resolve.ResolverCli "" "-Dxmvn.home=%{_datadir}/%{name}" xmvn/xmvn-resolve:xmvn/xmvn-api:beust-jcommander:slf4j/api:slf4j/simple xmvn-resolve
+%jpackage_script org.fedoraproject.xmvn.tools.subst.SubstCli "" "-Dxmvn.home=%{_datadir}/%{name}" xmvn/xmvn-subst:xmvn/xmvn-api:beust-jcommander:slf4j/api:slf4j/simple xmvn-subst
 
 # copy over maven lib directory
 cp -r %{_datadir}/maven/lib/* %{buildroot}%{_datadir}/%{name}/lib/
 
 # possibly recreate symlinks that can be automated with xmvn-subst
-%{name}-subst %{buildroot}%{_datadir}/%{name}/
+%{name}-subst -s %{buildroot}%{_datadir}/%{name}/lib/{ext,core}/
 
 # /usr/bin/xmvn
 ln -s %{_datadir}/%{name}/bin/mvn %{buildroot}%{_bindir}/%{name}
@@ -308,7 +304,6 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %files minimal
 %{_bindir}/%{name}
 %dir %{_datadir}/%{name}/bin
-%dir %{_datadir}/%{name}/lib
 %exclude %{_datadir}/%{name}/lib/aether_aether-connector-basic.jar
 %exclude %{_datadir}/%{name}/lib/aether_aether-transport-wagon.jar
 %exclude %{_datadir}/%{name}/lib/aopalliance.jar
@@ -330,21 +325,18 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %{_datadir}/%{name}/bin/mvn
 %{_datadir}/%{name}/bin/mvnDebug
 %{_datadir}/%{name}/bin/mvnyjp
-%{_datadir}/%{name}/bin/xmvn
 %{_datadir}/%{name}/boot
 %{_datadir}/%{name}/conf
 
 %files parent-pom -f .mfiles-xmvn-parent
 %doc LICENSE NOTICE
 
-%files launcher -f .mfiles-xmvn-launcher
+%files core -f .mfiles-xmvn-core
+%dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/lib
 %{_datadir}/%{name}/lib/core
 
-%files core -f .mfiles-xmvn-core
-
 %files api -f .mfiles-xmvn-api
-%dir %{_javadir}/%{name}
 %doc LICENSE NOTICE
 %doc AUTHORS README.md
 
@@ -353,40 +345,22 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %files connector-gradle -f .mfiles-xmvn-connector-gradle
 
 %files connector-ivy -f .mfiles-xmvn-connector-ivy
-%dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/lib/ivy
 
 %files mojo -f .mfiles-xmvn-mojo
 
 %files tools-pom -f .mfiles-xmvn-tools
 
 %files resolve -f .mfiles-xmvn-resolve
-%attr(755,-,-) %{_bindir}/%{name}-resolve
-%dir %{_datadir}/%{name}/bin
-%dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-resolve
-%{_datadir}/%{name}/lib/resolver
+%{_bindir}/%{name}-resolve
 
 %files bisect -f .mfiles-xmvn-bisect
-%attr(755,-,-) %{_bindir}/%{name}-bisect
-%dir %{_datadir}/%{name}/bin
-%dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-bisect
-%{_datadir}/%{name}/lib/bisect
+%{_bindir}/%{name}-bisect
 
 %files subst -f .mfiles-xmvn-subst
-%attr(755,-,-) %{_bindir}/%{name}-subst
-%dir %{_datadir}/%{name}/bin
-%dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-subst
-%{_datadir}/%{name}/lib/subst
+%{_bindir}/%{name}-subst
 
 %files install -f .mfiles-xmvn-install
-%attr(755,-,-) %{_bindir}/%{name}-install
-%dir %{_datadir}/%{name}/bin
-%dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-install
-%{_datadir}/%{name}/lib/installer
+%{_bindir}/%{name}-install
 
 %files javadoc
 %doc LICENSE NOTICE
