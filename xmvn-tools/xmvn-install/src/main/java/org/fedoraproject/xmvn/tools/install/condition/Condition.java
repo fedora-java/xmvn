@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
-import org.fedoraproject.xmvn.utils.DomUtils;
 
 /**
  * @author Mikolaj Izdebski

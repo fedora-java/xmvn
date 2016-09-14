@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.fedoraproject.xmvn.utils.DomUtils;
+import org.fedoraproject.xmvn.tools.install.condition.DomUtils;
 
 /**
  * @author Mikolaj Izdebski

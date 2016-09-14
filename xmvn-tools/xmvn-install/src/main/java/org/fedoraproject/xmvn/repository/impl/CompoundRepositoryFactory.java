@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
-import org.fedoraproject.xmvn.utils.DomUtils;
+import org.fedoraproject.xmvn.tools.install.condition.DomUtils;
 
 /**
  * Factory creating compound repositories.
