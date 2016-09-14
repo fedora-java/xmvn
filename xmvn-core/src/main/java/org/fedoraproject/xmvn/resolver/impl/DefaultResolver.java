@@ -36,7 +36,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.

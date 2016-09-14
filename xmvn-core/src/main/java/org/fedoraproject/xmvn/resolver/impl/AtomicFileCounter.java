@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.utils;
+package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.nio.channels.FileLock;
  * 
  * @author Mikolaj Izdebski
  */
-public class AtomicFileCounter
+class AtomicFileCounter
 {
     private static final int BUFSIZ = 64;
 

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.After;
@@ -33,7 +34,6 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
-import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 
 /**
  * @author Michael Simacek
@@ -41,7 +41,7 @@ import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 public class BisectResolverTest
     extends InjectedTest
 {
-    private AtomicFileCounter counter;
+    private Path counterPath;
 
     @Before
     @Override
@@ -50,10 +50,10 @@ public class BisectResolverTest
     {
         super.setUp();
 
-        Path counterPath = Paths.get( "target/test-work/bisect-counter" );
+        counterPath = Paths.get( "target/test-work/bisect-counter" );
         Files.createDirectories( counterPath.getParent() );
         System.setProperty( "xmvn.bisect.counter", counterPath.toString() );
-        counter = new AtomicFileCounter( counterPath.toString(), 1000 );
+        Files.write( counterPath, Collections.singleton( "1000" ) );
     }
 
     @After
@@ -91,6 +91,6 @@ public class BisectResolverTest
 
         assertNotNull( result );
         assertNull( result.getArtifactPath() );
-        assertEquals( 999, counter.getValue() );
+        assertEquals( "999", Files.readAllLines( counterPath ).iterator().next() );
     }
 }

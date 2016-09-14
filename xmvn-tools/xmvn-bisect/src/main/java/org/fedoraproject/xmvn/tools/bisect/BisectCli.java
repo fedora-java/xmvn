@@ -17,7 +17,10 @@ package org.fedoraproject.xmvn.tools.bisect;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -36,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.locator.XMvnHomeLocator;
-import org.fedoraproject.xmvn.utils.AtomicFileCounter;
 
 /**
  * @author Mikolaj Izdebski
@@ -52,6 +54,8 @@ public class BisectCli
     private final Invoker invoker = new DefaultInvoker();
 
     private InvocationRequest request;
+
+    private Path counter;
 
     private boolean executeBuild( String logPath )
         throws MavenInvocationException
@@ -79,6 +83,18 @@ public class BisectCli
         return "bisect-initial.log";
     }
 
+    private void setValue( int value )
+        throws Exception
+    {
+        Files.write( counter, Collections.singleton( Integer.toString( value ) ) );
+    }
+
+    private int getValue()
+        throws Exception
+    {
+        return Integer.parseInt( Files.readAllLines( counter ).iterator().next() );
+    }
+
     private void run( BisectCliRequest commandLineParser )
         throws Exception
     {
@@ -94,7 +110,8 @@ public class BisectCli
         request.getProperties().put( "xmvn.bisect.counter", commandLineParser.getCounterPath() );
 
         int counterInitialValue = BISECT_MAX;
-        AtomicFileCounter counter = new AtomicFileCounter( commandLineParser.getCounterPath(), 0 );
+        counter = Paths.get( commandLineParser.getCounterPath() );
+        setValue( 0 );
 
         if ( !commandLineParser.isSkipSanityChecks() )
         {
@@ -110,9 +127,9 @@ public class BisectCli
 
         int badId = 0;
         logger.info( "Running initial upstream build" );
-        counter.setValue( counterInitialValue );
+        setValue( counterInitialValue );
         boolean success = executeBuild( getInitialBuildName() );
-        int goodId = counterInitialValue - counter.getValue();
+        int goodId = counterInitialValue - getValue();
         if ( !success )
         {
             logger.error( "Build failed even when resolving artifacts completely from bisection repository" );
@@ -129,7 +146,7 @@ public class BisectCli
                 tryId = badId + 1;
 
             logger.info( "Bisection iteration: current range is [{},{}], trying {}", badId + 1, goodId - 1, tryId );
-            counter.setValue( tryId );
+            setValue( tryId );
 
             success = executeBuild( getBuildLogName( tryId ) );
             logger.info( "Bisection build number {} {}", tryId, success ? "succeeded" : "failed" );
