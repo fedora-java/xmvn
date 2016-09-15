@@ -16,36 +16,23 @@
 package org.fedoraproject.xmvn.locator;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import org.eclipse.sisu.EagerSingleton;
-import org.eclipse.sisu.space.BeanScanning;
-import org.eclipse.sisu.space.ClassSpace;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
-
 import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 import org.fedoraproject.xmvn.deployer.Deployer;
+import org.fedoraproject.xmvn.deployer.impl.DefaultDeployer;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.impl.DefaultMetadataResolver;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.resolver.impl.DefaultResolver;
 
 /**
  * Service locator for XMvn.
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@EagerSingleton
-public class XMvnServiceLocator
+public final class XMvnServiceLocator
 {
     private static XMvnServiceLocator instance;
 
@@ -53,37 +40,54 @@ public class XMvnServiceLocator
     {
         if ( instance == null )
         {
-            ClassLoader classRealm = XMvnServiceLocator.class.getClassLoader();
-            ClassSpace classSpace = new URLClassSpace( classRealm );
-            Module spaceModule = new SpaceModule( classSpace, BeanScanning.CACHE );
-            Module wireModule = new WireModule( spaceModule );
-            Injector injector = Guice.createInjector( wireModule );
-            instance = injector.getInstance( XMvnServiceLocator.class );
+            instance = new XMvnServiceLocator();
         }
 
         return instance;
     }
 
-    private final Map<String, Iterable<?>> knownServices = new HashMap<>();
+    private final Map<Class<?>, Class<?>> knownServices = new HashMap<>();
 
-    private <T> void addService( Class<T> service, Iterable<T> serviceProviders )
+    private final Map<Class<?>, Object> runningServices = new HashMap<>();
+
+    private <T> void addService( Class<T> role, Class<? extends T> serviceProvider )
     {
-        knownServices.put( service.getCanonicalName(), serviceProviders );
+        knownServices.put( role, serviceProvider );
     }
 
-    @Inject
-    public XMvnServiceLocator( List<Resolver> resolvers, List<Deployer> deployers, List<Configurator> configurators,
-                               List<MetadataResolver> metadataResolvers )
+    private XMvnServiceLocator()
     {
-        addService( Resolver.class, resolvers );
-        addService( Deployer.class, deployers );
-        addService( Configurator.class, configurators );
-        addService( MetadataResolver.class, metadataResolvers );
+        addService( Resolver.class, DefaultResolver.class );
+        addService( Deployer.class, DefaultDeployer.class );
+        addService( Configurator.class, DefaultConfigurator.class );
+        addService( MetadataResolver.class, DefaultMetadataResolver.class );
     }
 
-    public static Object getService( Class<?> role )
+    private void loadService( Class<?> role )
     {
-        Iterator<?> iterator = getInstance().knownServices.get( role.getCanonicalName() ).iterator();
-        return iterator.hasNext() ? iterator.next() : null;
+        Class<?> implClass = knownServices.get( role );
+
+        try
+        {
+            if ( implClass != null )
+                runningServices.put( role, implClass.getConstructor().newInstance() );
+        }
+        catch ( ReflectiveOperationException e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private <T> T getServiceImpl( Class<T> role )
+    {
+        if ( !runningServices.containsKey( role ) )
+            loadService( role );
+
+        return role.cast( runningServices.get( role ) );
+    }
+
+    public static <T> T getService( Class<T> role )
+    {
+        return getInstance().getServiceImpl( role );
     }
 }

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
+import org.fedoraproject.xmvn.locator.XMvnServiceLocator;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
@@ -71,6 +72,13 @@ public class DefaultResolver
     private final MockAgent mockAgent;
 
     private final AtomicFileCounter bisectCounter;
+
+    public DefaultResolver()
+    {
+        this( new LocalRepositoryResolver(), //
+              XMvnServiceLocator.getService( Configurator.class ),
+              XMvnServiceLocator.getService( MetadataResolver.class ) );
+    }
 
     @Inject
     public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator,
