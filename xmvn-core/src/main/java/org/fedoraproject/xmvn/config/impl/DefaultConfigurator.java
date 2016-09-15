@@ -32,7 +32,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
-import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +103,7 @@ public class DefaultConfigurator
     private String getEnvDefault( String key, Object defaultValue )
     {
         String value = System.getenv( key );
-        if ( Strings.isNullOrEmpty( value ) )
+        if ( value == null || value.isEmpty() )
         {
             logger.debug( "Environmental variable ${} is unset or empty, using default value: {}", key, defaultValue );
             return defaultValue.toString();

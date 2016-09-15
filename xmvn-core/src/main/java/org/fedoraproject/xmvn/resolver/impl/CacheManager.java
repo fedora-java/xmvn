@@ -24,8 +24,6 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
-import com.google.common.base.Strings;
-
 /**
  * @author Mikolaj Izdebski
  */
@@ -61,7 +59,7 @@ class CacheManager
     private static Path getPathDefault( String key, Object defaultValue )
     {
         String value = System.getenv( key );
-        if ( Strings.isNullOrEmpty( value ) )
+        if ( value == null || value.isEmpty() )
         {
             value = defaultValue.toString();
         }

@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import com.google.common.base.Strings;
-
 import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.InstallerSettings;
@@ -54,7 +52,7 @@ class ConfigurationMerger
         if ( dominant.isSkipTests() == null )
             dominant.setSkipTests( recessive.isSkipTests() );
 
-        if ( Strings.isNullOrEmpty( dominant.getCompilerSource() ) )
+        if ( dominant.getCompilerSource() == null || dominant.getCompilerSource().isEmpty() )
             dominant.setCompilerSource( recessive.getCompilerSource() );
     }
 
@@ -82,7 +80,7 @@ class ConfigurationMerger
         if ( dominant.isDebug() == null )
             dominant.setDebug( recessive.isDebug() );
 
-        if ( Strings.isNullOrEmpty( dominant.getMetadataDir() ) )
+        if ( dominant.getMetadataDir() == null || dominant.getMetadataDir().isEmpty() )
             dominant.setMetadataDir( recessive.getMetadataDir() );
     }
 

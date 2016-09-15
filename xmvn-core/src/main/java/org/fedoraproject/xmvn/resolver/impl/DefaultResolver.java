@@ -24,8 +24,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +86,8 @@ public class DefaultResolver
         mockAgent = new MockAgent();
 
         String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
-        bisectCounter = Strings.isNullOrEmpty( bisectCounterPath ) ? null : new AtomicFileCounter( bisectCounterPath );
+        bisectCounter = ( bisectCounterPath == null || bisectCounterPath.isEmpty() ) ? null
+                        : new AtomicFileCounter( bisectCounterPath );
     }
 
     @Override
@@ -148,9 +147,9 @@ public class DefaultResolver
 
         properties.putAll( metadata.getProperties() );
 
-        if ( !Objects.equal( properties.getProperty( "xmvn.resolver.disableEffectivePom" ), "true" )
-            && Objects.equal( metadata.getExtension(), "pom" )
-            && ( !Objects.equal( properties.getProperty( "type" ), "pom" ) || metadata.getPath() == null ) )
+        if ( !"true".equals( properties.getProperty( "xmvn.resolver.disableEffectivePom" ) )
+            && "pom".equals( metadata.getExtension() )
+            && ( !"pom".equals( properties.getProperty( "type" ) ) || metadata.getPath() == null ) )
         {
             try
             {
