@@ -1,0 +1,7 @@
+<configuration>
+  <resolverSettings>
+    <metadataRepositories>
+      <repository>metadata.xml</repository>
+    </metadataRepositories>
+  </resolverSettings>
+</configuration>

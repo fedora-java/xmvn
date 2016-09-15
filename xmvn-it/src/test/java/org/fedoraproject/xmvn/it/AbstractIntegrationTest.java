@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -31,9 +32,11 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -223,6 +226,42 @@ public abstract class AbstractIntegrationTest
             Thread.currentThread().setContextClassLoader( oldClassLoader );
             System.setProperties( originalProperties );
         }
+    }
+
+    public ProcessBuilder buildToolSubprocess( String tool, String... args )
+        throws Exception
+    {
+        Path javaHome = Paths.get( System.getProperty( "java.home" ) );
+        Path javaCmd = javaHome.resolve( "bin/java" );
+        assertTrue( Files.isExecutable( javaCmd ) );
+        assertTrue( Files.isRegularFile( javaCmd ) );
+
+        String subDir;
+        if ( tool.equals( "xmvn-install" ) )
+            subDir = "intstaller";
+        else if ( tool.equals( "xmvn-resolve" ) )
+            subDir = "resolver";
+        else
+            subDir = tool.replaceAll( "^xmvn-", "" );
+
+        Path libDir = getMavenHome().resolve( "lib" ).resolve( subDir );
+        Path toolJar = Files.newDirectoryStream( libDir, tool + "*.jar" ).iterator().next();
+        assertTrue( Files.isRegularFile( toolJar ) );
+
+        List<String> command = new ArrayList<>();
+        command.add( javaCmd.toString() );
+        command.add( "-Dxmvn.config.sandbox=true" );
+        command.add( "-jar" );
+        command.add( toolJar.toString() );
+        command.addAll( Arrays.asList( args ) );
+
+        ProcessBuilder pb = new ProcessBuilder( command );
+
+        pb.redirectInput( new File( "/dev/null" ) );
+        pb.redirectOutput( new File( STDOUT ) );
+        pb.redirectError( new File( STDERR ) );
+
+        return pb;
     }
 
     public Stream<String> getStdout()
