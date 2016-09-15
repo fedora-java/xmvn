@@ -37,12 +37,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
+import org.fedoraproject.xmvn.logging.impl.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
@@ -64,12 +64,20 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 public class DefaultMetadataResolver
     implements MetadataResolver
 {
-    private final Logger logger = LoggerFactory.getLogger( DefaultMetadataResolver.class );
+    private final Logger logger;
 
     private final ThreadPoolExecutor executor;
 
     public DefaultMetadataResolver()
     {
+        this( new ConsoleLogger() );
+    }
+
+    @Inject
+    public DefaultMetadataResolver( Logger logger )
+    {
+        this.logger = logger;
+
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, ( runnable ) -> {
@@ -83,7 +91,7 @@ public class DefaultMetadataResolver
     @Override
     public MetadataResult resolveMetadata( MetadataRequest request )
     {
-        return new DefaultMetadataResult( readMetadata( request.getMetadataRepositories() ) );
+        return new DefaultMetadataResult( logger, readMetadata( request.getMetadataRepositories() ) );
     }
 
     List<PackageMetadata> readMetadata( List<String> metadataLocations )

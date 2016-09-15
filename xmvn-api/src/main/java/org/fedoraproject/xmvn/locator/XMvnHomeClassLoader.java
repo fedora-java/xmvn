@@ -55,9 +55,13 @@ public class XMvnHomeClassLoader
         importPackage( "org.fedoraproject.xmvn" );
         importPackage( "org.fedoraproject.xmvn.artifact" );
         importPackage( "org.fedoraproject.xmvn.config" );
+        importPackage( "org.fedoraproject.xmvn.config.io" );
+        importPackage( "org.fedoraproject.xmvn.config.io.stax" );
         importPackage( "org.fedoraproject.xmvn.deployer" );
         importPackage( "org.fedoraproject.xmvn.locator" );
         importPackage( "org.fedoraproject.xmvn.metadata" );
+        importPackage( "org.fedoraproject.xmvn.metadata.io" );
+        importPackage( "org.fedoraproject.xmvn.metadata.io.stax" );
         importPackage( "org.fedoraproject.xmvn.resolver" );
     }
 

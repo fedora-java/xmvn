@@ -19,9 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -29,16 +26,10 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
  * Resolver that resolves artifacts from local repository.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "local-repo" )
-@Singleton
-public class LocalRepositoryResolver
+class LocalRepositoryResolver
     implements Resolver
 {
     private Path getMavenRepositoryPath( Artifact artifact )

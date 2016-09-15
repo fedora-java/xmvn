@@ -24,13 +24,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.locator.XMvnServiceLocator;
+import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
+import org.fedoraproject.xmvn.logging.impl.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
@@ -53,7 +52,7 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 public class DefaultResolver
     implements Resolver
 {
-    private final Logger logger = LoggerFactory.getLogger( DefaultResolver.class );
+    private final Logger logger;
 
     private final MetadataResolver metadataResolver;
 
@@ -75,23 +74,23 @@ public class DefaultResolver
 
     public DefaultResolver()
     {
-        this( new LocalRepositoryResolver(), //
+        this( new ConsoleLogger(), //
               XMvnServiceLocator.getService( Configurator.class ),
               XMvnServiceLocator.getService( MetadataResolver.class ) );
     }
 
     @Inject
-    public DefaultResolver( @Named( "local-repo" ) Resolver localRepoResolver, Configurator configurator,
-                            MetadataResolver metadataResolver )
+    public DefaultResolver( Logger logger, Configurator configurator, MetadataResolver metadataResolver )
     {
-        this.localRepoResolver = localRepoResolver;
+        this.logger = logger;
+        this.localRepoResolver = new LocalRepositoryResolver();
         this.metadataResolver = metadataResolver;
 
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         metadataRequest = new MetadataRequest( settings.getMetadataRepositories() );
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
-        mockAgent = new MockAgent();
+        mockAgent = new MockAgent( logger );
 
         String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
         bisectCounter = ( bisectCounterPath == null || bisectCounterPath.isEmpty() ) ? null

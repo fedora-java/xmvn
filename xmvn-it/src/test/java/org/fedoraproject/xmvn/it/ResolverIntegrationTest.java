@@ -68,7 +68,7 @@ public class ResolverIntegrationTest
         ProcessBuilder pb = buildToolSubprocess( "xmvn-resolve", "foobar:xyzzy" );
 
         assertEquals( 1, pb.start().waitFor() );
-        assertTrue( getStderr().anyMatch( s -> s.equals( "[ERROR] Unable to resolve artifact foobar:xyzzy:jar:SYSTEM" ) ) );
+        assertTrue( getStderr().anyMatch( s -> s.endsWith( "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM" ) ) );
         assertFalse( getStdout().findAny().isPresent() );
     }
 }

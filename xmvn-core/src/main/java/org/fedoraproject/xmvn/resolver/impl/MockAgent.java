@@ -17,10 +17,8 @@ package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.logging.impl.Logger;
 
 /**
  * @author Mikolaj Izdebski
@@ -29,7 +27,12 @@ class MockAgent
 {
     private static final String REQUEST_CMD = System.getProperty( "xmvn.resolver.requestArtifactCmd" );
 
-    private final Logger logger = LoggerFactory.getLogger( MockAgent.class );
+    private final Logger logger;
+
+    public MockAgent( Logger logger )
+    {
+        this.logger = logger;
+    }
 
     public boolean tryInstallArtifact( Artifact artifact )
     {

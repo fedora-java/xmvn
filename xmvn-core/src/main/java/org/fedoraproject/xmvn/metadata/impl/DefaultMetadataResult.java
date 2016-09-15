@@ -22,11 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.logging.impl.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
@@ -38,14 +36,16 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 class DefaultMetadataResult
     implements MetadataResult
 {
-    private final Logger logger = LoggerFactory.getLogger( DefaultMetadataResult.class );
+    private final Logger logger;
 
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
     boolean initialized;
 
-    public DefaultMetadataResult( List<PackageMetadata> metadataList )
+    public DefaultMetadataResult( Logger logger, List<PackageMetadata> metadataList )
     {
+        this.logger = logger;
+
         PathInterpolator interpolator = new PathInterpolator();
 
         for ( PackageMetadata metadata : metadataList )

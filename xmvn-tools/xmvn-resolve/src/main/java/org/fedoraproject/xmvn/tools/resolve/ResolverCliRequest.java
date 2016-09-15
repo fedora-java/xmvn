@@ -70,8 +70,6 @@ class ResolverCliRequest
                 throw new ParameterException( "--raw-request must be used alone" );
             }
 
-            if ( debug )
-                System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "trace" );
             for ( String param : defines.keySet() )
                 System.setProperty( param, defines.get( param ) );
         }

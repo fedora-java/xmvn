@@ -31,6 +31,7 @@ import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.Installer;
@@ -78,8 +79,10 @@ public class InstallerCli
         {
             InstallerCliRequest cliRequest = new InstallerCliRequest( args );
 
-            Module module =
-                new WireModule( new SpaceModule( new URLClassSpace( InstallerCli.class.getClassLoader() ) ) );
+            ClassLoader installerClassLoader = InstallerCli.class.getClassLoader();
+            XMvnHomeClassLoader xmvnClassLoader = new XMvnHomeClassLoader( installerClassLoader );
+            Module module = new WireModule( new SpaceModule( new URLClassSpace( installerClassLoader ) ),
+                                            new SpaceModule( new URLClassSpace( xmvnClassLoader ) ) );
             Injector injector = Guice.createInjector( module );
             InstallerCli cli = injector.getInstance( InstallerCli.class );
 

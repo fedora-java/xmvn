@@ -22,9 +22,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
 import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
@@ -37,8 +34,6 @@ import org.fedoraproject.xmvn.metadata.MetadataResult;
  */
 public class SubstCli
 {
-    private final Logger logger = LoggerFactory.getLogger( SubstCli.class );
-
     private final List<String> configuredMetadataRepos;
 
     private MetadataResolver metadataResolver;
@@ -72,7 +67,7 @@ public class SubstCli
 
         metadataResolvers.add( metadataResolver.resolveMetadata( new MetadataRequest( configuredMetadataRepos ) ) );
 
-        ArtifactVisitor visitor = new ArtifactVisitor( metadataResolvers );
+        ArtifactVisitor visitor = new ArtifactVisitor( cliRequest.isDebug(), metadataResolvers );
 
         visitor.setTypes( cliRequest.getTypes() );
         visitor.setFollowSymlinks( cliRequest.isFollowSymlinks() );
@@ -87,7 +82,7 @@ public class SubstCli
         }
         catch ( IOException e )
         {
-            logger.error( "I/O error occured", e );
+            e.printStackTrace();
         }
 
         if ( cliRequest.isStrict() && visitor.getFailureCount() > 0 )
@@ -100,11 +95,9 @@ public class SubstCli
         {
             SubstCliRequest cliRequest = new SubstCliRequest( args );
             if ( cliRequest.isDebug() )
-                System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "debug" );
+                System.setProperty( "xmvn.debug", "true" );
 
             XMvnHomeClassLoader classLoader = new XMvnHomeClassLoader( SubstCli.class.getClassLoader() );
-            classLoader.importAllPackages( "org.slf4j" );
-            classLoader.importPackage( "simplelogger" );
             IsolatedXMvnServiceLocator locator = new IsolatedXMvnServiceLocator( classLoader );
             Configurator configurator = locator.getService( Configurator.class );
             MetadataResolver metadataResolver = locator.getService( MetadataResolver.class );

@@ -28,17 +28,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
+import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
+import org.fedoraproject.xmvn.logging.impl.Logger;
 
 /**
  * Default implementation of XMvn configurator.
@@ -54,7 +54,7 @@ import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 public class DefaultConfigurator
     implements Configurator
 {
-    private final Logger logger = LoggerFactory.getLogger( DefaultConfigurator.class );
+    private final Logger logger;
 
     private final ConfigurationMerger merger = new ConfigurationMerger();
 
@@ -63,6 +63,17 @@ public class DefaultConfigurator
     private Configuration cachedDefaultConfiguration;
 
     private List<Path> configFiles;
+
+    public DefaultConfigurator()
+    {
+        this( new ConsoleLogger() );
+    }
+
+    @Inject
+    public DefaultConfigurator( Logger logger )
+    {
+        this.logger = logger;
+    }
 
     private Configuration loadConfigurationFromStream( InputStream stream )
         throws IOException

@@ -76,8 +76,6 @@ class SubstCliRequest
                 System.exit( 0 );
             }
 
-            if ( debug )
-                System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "trace" );
             for ( String param : defines.keySet() )
                 System.setProperty( param, defines.get( param ) );
         }

@@ -25,9 +25,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
@@ -48,8 +45,6 @@ import org.fedoraproject.xmvn.tools.resolve.xml.CompoundResult;
  */
 public class ResolverCli
 {
-    private final Logger logger = LoggerFactory.getLogger( ResolverCli.class );
-
     private final Resolver resolver;
 
     public ResolverCli( Resolver resolver )
@@ -125,7 +120,7 @@ public class ResolverCli
                 if ( result.getArtifactPath() == null )
                 {
                     error = true;
-                    logger.error( "Unable to resolve artifact {}", request.getArtifact() );
+                    System.err.printf( "ERROR: Unable to resolve artifact %s%n", request.getArtifact() );
                 }
             }
 
@@ -136,7 +131,7 @@ public class ResolverCli
         }
         catch ( IllegalArgumentException e )
         {
-            logger.error( "{}", e.getMessage() );
+            System.err.println( e.getMessage() );
             System.exit( 1 );
         }
     }
@@ -147,11 +142,9 @@ public class ResolverCli
         {
             ResolverCliRequest cliRequest = new ResolverCliRequest( args );
             if ( cliRequest.isDebug() )
-                System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "debug" );
+                System.setProperty( "xmvn.debug", "true" );
 
             XMvnHomeClassLoader classLoader = new XMvnHomeClassLoader( ResolverCli.class.getClassLoader() );
-            classLoader.importAllPackages( "org.slf4j" );
-            classLoader.importPackage( "simplelogger" );
             IsolatedXMvnServiceLocator locator = new IsolatedXMvnServiceLocator( classLoader );
             Resolver resolver = locator.getService( Resolver.class );
 

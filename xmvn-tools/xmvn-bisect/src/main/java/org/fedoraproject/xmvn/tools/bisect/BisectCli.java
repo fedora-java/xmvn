@@ -26,8 +26,6 @@ import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
 import org.apache.maven.shared.invoker.Invoker;
 import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.locator.XMvnHomeLocator;
 
@@ -36,8 +34,6 @@ import org.fedoraproject.xmvn.locator.XMvnHomeLocator;
  */
 public class BisectCli
 {
-    private final Logger logger = LoggerFactory.getLogger( BisectCli.class );
-
     private static final int BISECT_MAX = 1000000000;
 
     private final Invoker invoker = new DefaultInvoker();
@@ -94,7 +90,7 @@ public class BisectCli
 
         Path xmvnHome = XMvnHomeLocator.getHome();
         invoker.setMavenHome( xmvnHome.toFile() );
-        logger.info( "Using XMvn at {}", xmvnHome );
+        System.err.printf( "Using XMvn at %s%n", xmvnHome );
 
         request.getProperties().put( "xmvn.bisect.counter", commandLineParser.getCounterPath() );
 
@@ -104,25 +100,25 @@ public class BisectCli
 
         if ( !commandLineParser.isSkipSanityChecks() )
         {
-            logger.info( "Checking if standard local build really fails" );
+            System.err.println( "Checking if standard local build really fails" );
             boolean success = executeBuild( getBuildLogName( 0 ) );
             if ( success )
             {
-                logger.error( "Standard local build was successful, expected failure." );
-                logger.info( "Build log is available in {}", getBuildLogName( 0 ) );
+                System.err.println( "ERROR: Standard local build was successful, expected failure." );
+                System.err.printf( "Build log is available in %s%n", getBuildLogName( 0 ) );
                 System.exit( 1 );
             }
         }
 
         int badId = 0;
-        logger.info( "Running initial upstream build" );
+        System.err.println( "Running initial upstream build" );
         setValue( counterInitialValue );
         boolean success = executeBuild( getInitialBuildName() );
         int goodId = counterInitialValue - getValue();
         if ( !success )
         {
-            logger.error( "Build failed even when resolving artifacts completely from bisection repository" );
-            logger.info( "Build log is available in {}", getInitialBuildName() );
+            System.err.println( "ERROR: Build failed even when resolving artifacts completely from bisection repository" );
+            System.err.printf( "Build log is available in %s%n", getInitialBuildName() );
             System.exit( 1 );
         }
 
@@ -134,11 +130,12 @@ public class BisectCli
             else
                 tryId = badId + 1;
 
-            logger.info( "Bisection iteration: current range is [{},{}], trying {}", badId + 1, goodId - 1, tryId );
+            System.err.printf( "Bisection iteration: current range is [%d,%d], trying %d%n", badId + 1, goodId - 1,
+                               tryId );
             setValue( tryId );
 
             success = executeBuild( getBuildLogName( tryId ) );
-            logger.info( "Bisection build number {} {}", tryId, success ? "succeeded" : "failed" );
+            System.err.printf( "Bisection build number %d %s%n", tryId, success ? "succeeded" : "failed" );
 
             if ( success )
                 goodId = tryId;
@@ -153,11 +150,11 @@ public class BisectCli
         if ( badId == 0 )
             badLog = "default.log";
 
-        logger.info( "Bisection build finished" );
-        logger.info( "Failed build:     {}, see ", badId, badLog );
-        logger.info( "Successful build: {}, see ", goodId, goodLog );
-        logger.info( "Try:" );
-        logger.info( "  $ git diff --no-index --color {} {}", badLog, goodLog );
+        System.err.println( "Bisection build finished" );
+        System.err.printf( "Failed build:     %d, see %s%n", badId, badLog );
+        System.err.printf( "Successful build: %d, see %s%n", goodId, goodLog );
+        System.err.println( "Try:" );
+        System.err.printf( "  $ git diff --no-index --color %s %s%n", badLog, goodLog );
     }
 
     public static void main( String[] args )
