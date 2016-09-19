@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import com.google.common.base.Strings;
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.repository.Repository;
@@ -38,7 +37,7 @@ abstract class SimpleRepositoryFactory
         String rootProperty = properties.getProperty( "root" );
         Path root = rootProperty != null ? Paths.get( rootProperty ) : null;
 
-        if ( Strings.isNullOrEmpty( namespace ) )
+        if ( namespace == null || namespace.isEmpty() )
             namespace = properties.getProperty( "namespace", "" );
 
         return newInstance( namespace, root, filter );

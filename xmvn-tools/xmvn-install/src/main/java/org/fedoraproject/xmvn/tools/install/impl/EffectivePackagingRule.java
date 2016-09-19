@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Strings;
-
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
 
@@ -44,6 +42,11 @@ class EffectivePackagingRule
     extends PackagingRule
 {
     private static final long serialVersionUID = 1L;
+
+    private static boolean isNullOrEmpty( String str )
+    {
+        return str == null || str.isEmpty();
+    }
 
     private static String expandBackreferences( List<Matcher> matchers, String result )
     {
@@ -118,24 +121,24 @@ class EffectivePackagingRule
         rule.setMatched( true );
 
         String targetPackage = rule.getTargetPackage();
-        if ( Strings.isNullOrEmpty( getTargetPackage() ) && !Strings.isNullOrEmpty( targetPackage ) )
+        if ( isNullOrEmpty( getTargetPackage() ) && !isNullOrEmpty( targetPackage ) )
             setTargetPackage( expandBackreferences( matchers, targetPackage ) );
 
         for ( org.fedoraproject.xmvn.config.Artifact alias : rule.getAliases() )
         {
             alias = expandBackreferences( matchers, alias );
 
-            if ( Strings.isNullOrEmpty( alias.getStereotype() ) )
+            if ( isNullOrEmpty( alias.getStereotype() ) )
                 alias.setStereotype( artifact.getStereotype() );
-            if ( Strings.isNullOrEmpty( alias.getGroupId() ) )
+            if ( isNullOrEmpty( alias.getGroupId() ) )
                 alias.setGroupId( artifact.getGroupId() );
-            if ( Strings.isNullOrEmpty( alias.getArtifactId() ) )
+            if ( isNullOrEmpty( alias.getArtifactId() ) )
                 alias.setArtifactId( artifact.getArtifactId() );
-            if ( Strings.isNullOrEmpty( alias.getExtension() ) )
+            if ( isNullOrEmpty( alias.getExtension() ) )
                 alias.setExtension( artifact.getExtension() );
-            if ( Strings.isNullOrEmpty( alias.getClassifier() ) )
+            if ( isNullOrEmpty( alias.getClassifier() ) )
                 alias.setClassifier( artifact.getClassifier() );
-            if ( Strings.isNullOrEmpty( alias.getVersion() ) )
+            if ( isNullOrEmpty( alias.getVersion() ) )
                 alias.setVersion( artifact.getVersion() );
 
             if ( !getAliases().contains( alias ) )

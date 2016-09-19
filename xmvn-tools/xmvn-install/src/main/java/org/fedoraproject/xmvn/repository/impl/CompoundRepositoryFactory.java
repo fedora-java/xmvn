@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.google.common.base.Strings;
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.repository.Repository;
@@ -79,7 +78,7 @@ public class CompoundRepositoryFactory
             slaveRepositories.add( slaveRepository );
         }
 
-        if ( Strings.isNullOrEmpty( namespace ) )
+        if ( namespace == null || namespace.isEmpty() )
             namespace = properties.getProperty( "namespace", "" );
 
         return new CompoundRepository( namespace, prefix, slaveRepositories );

@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +145,7 @@ public class DefaultArtifactInstaller
             StringBuilder sb = new StringBuilder( Paths.get( "/" ).relativize( path ).toString() );
             if ( !versionedArtifact.getVersion().equals( Artifact.DEFAULT_VERSION ) )
                 sb.append( '-' ).append( versionedArtifact.getVersion() );
-            if ( !Strings.isNullOrEmpty( versionedArtifact.getClassifier() ) )
+            if ( versionedArtifact.getClassifier() != null && !versionedArtifact.getClassifier().isEmpty() )
                 sb.append( '-' ).append( versionedArtifact.getClassifier() );
             if ( !versionedArtifact.getExtension().equals( Artifact.DEFAULT_VERSION ) )
                 sb.append( '.' ).append( versionedArtifact.getExtension() );

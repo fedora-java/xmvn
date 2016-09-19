@@ -17,13 +17,11 @@ package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import com.google.common.io.Files;
 
 /**
  * Class describing a binary package as a set of files.
@@ -130,7 +128,7 @@ public class Package
     public void writeDescriptor( Path descriptorPath )
         throws IOException
     {
-        try ( Writer writer = Files.newWriter( descriptorPath.toFile(), StandardCharsets.UTF_8 ) )
+        try ( Writer writer = Files.newBufferedWriter( descriptorPath ) )
         {
             for ( File file : files )
             {

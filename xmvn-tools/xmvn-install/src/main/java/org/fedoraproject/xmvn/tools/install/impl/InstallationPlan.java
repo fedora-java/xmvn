@@ -24,8 +24,6 @@ import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 
-import com.google.common.base.Strings;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
@@ -40,6 +38,11 @@ import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 public class InstallationPlan
 {
     private final PackageMetadata metadata;
+
+    private static boolean isNullOrEmpty( String str )
+    {
+        return str == null || str.isEmpty();
+    }
 
     public InstallationPlan( Path planPath )
         throws ArtifactInstallationException
@@ -76,18 +79,18 @@ public class InstallationPlan
     private static void validate( PackageMetadata metadata )
         throws ArtifactInstallationException
     {
-        if ( !Strings.isNullOrEmpty( metadata.getUuid() ) )
+        if ( !isNullOrEmpty( metadata.getUuid() ) )
             throw new ArtifactInstallationException( "Installation plan must not set UUID" );
 
         for ( ArtifactMetadata artifactMetadata : metadata.getArtifacts() )
         {
-            if ( Strings.isNullOrEmpty( artifactMetadata.getGroupId() ) )
+            if ( isNullOrEmpty( artifactMetadata.getGroupId() ) )
                 throw new ArtifactInstallationException( "Artifact metadata must have group ID set" );
-            if ( Strings.isNullOrEmpty( artifactMetadata.getArtifactId() ) )
+            if ( isNullOrEmpty( artifactMetadata.getArtifactId() ) )
                 throw new ArtifactInstallationException( "Artifact metadata must have artifact ID set" );
-            if ( Strings.isNullOrEmpty( artifactMetadata.getVersion() ) )
+            if ( isNullOrEmpty( artifactMetadata.getVersion() ) )
                 throw new ArtifactInstallationException( "Artifact metadata must have version set" );
-            if ( Strings.isNullOrEmpty( artifactMetadata.getPath() ) )
+            if ( isNullOrEmpty( artifactMetadata.getPath() ) )
                 throw new ArtifactInstallationException( "Artifact metadata must have path set" );
 
             Path artifactPath = Paths.get( artifactMetadata.getPath() );
@@ -103,9 +106,9 @@ public class InstallationPlan
                 throw new ArtifactInstallationException( "Artifact path points to a non-readable file: "
                     + artifactPath );
 
-            if ( !Strings.isNullOrEmpty( artifactMetadata.getUuid() ) )
+            if ( !isNullOrEmpty( artifactMetadata.getUuid() ) )
                 throw new ArtifactInstallationException( "Installation plan must not define artifact UUID" );
-            if ( !Strings.isNullOrEmpty( artifactMetadata.getNamespace() ) )
+            if ( !isNullOrEmpty( artifactMetadata.getNamespace() ) )
                 throw new ArtifactInstallationException( "Installation plan must not define artifact namespace" );
             if ( artifactMetadata.getCompatVersions().iterator().hasNext() )
                 throw new ArtifactInstallationException( "Installation plan must not define compat versions" );
@@ -114,23 +117,23 @@ public class InstallationPlan
 
             for ( Dependency dependency : artifactMetadata.getDependencies() )
             {
-                if ( Strings.isNullOrEmpty( dependency.getGroupId() ) )
+                if ( isNullOrEmpty( dependency.getGroupId() ) )
                     throw new ArtifactInstallationException( "Artifact dependency must have group ID set" );
-                if ( Strings.isNullOrEmpty( dependency.getArtifactId() ) )
+                if ( isNullOrEmpty( dependency.getArtifactId() ) )
                     throw new ArtifactInstallationException( "Artifact dependency must have artifact ID set" );
-                if ( Strings.isNullOrEmpty( dependency.getRequestedVersion() ) )
+                if ( isNullOrEmpty( dependency.getRequestedVersion() ) )
                     throw new ArtifactInstallationException( "Artifact dependency must have requested version set" );
 
                 if ( !dependency.getResolvedVersion().equals( Artifact.DEFAULT_VERSION ) )
                     throw new ArtifactInstallationException( "Installation plan must not define resolved dependency version" );
-                if ( !Strings.isNullOrEmpty( dependency.getNamespace() ) )
+                if ( !isNullOrEmpty( dependency.getNamespace() ) )
                     throw new ArtifactInstallationException( "Installation plan must not define dependency namespace" );
 
                 for ( DependencyExclusion dependencyExclusion : dependency.getExclusions() )
                 {
-                    if ( Strings.isNullOrEmpty( dependencyExclusion.getGroupId() ) )
+                    if ( isNullOrEmpty( dependencyExclusion.getGroupId() ) )
                         throw new ArtifactInstallationException( "Dependency exclusion must have group ID set" );
-                    if ( Strings.isNullOrEmpty( dependencyExclusion.getArtifactId() ) )
+                    if ( isNullOrEmpty( dependencyExclusion.getArtifactId() ) )
                         throw new ArtifactInstallationException( "Dependency exclusion must have artifact ID set" );
                 }
             }

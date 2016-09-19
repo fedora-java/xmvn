@@ -32,7 +32,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
 
-import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -350,7 +349,8 @@ public class DefaultInstaller
             logger.debug( "Installing {}", pkg );
             pkg.install( request.getInstallRoot() );
 
-            Path mfiles = Paths.get( Strings.isNullOrEmpty( pkg.getId() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
+            Path mfiles =
+                Paths.get( ( pkg.getId() == null || pkg.getId().isEmpty() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
             if ( request.getDescriptorRoot() != null )
                 mfiles = request.getDescriptorRoot().resolve( mfiles );
 

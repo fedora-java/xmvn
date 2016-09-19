@@ -17,8 +17,6 @@ package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.util.regex.Pattern;
 
-import com.google.common.base.Strings;
-
 /**
  * Utility routines for converting glob patterns to regular expressions.
  * 
@@ -112,7 +110,7 @@ final class GlobUtils
      */
     public static Pattern glob2pattern( String glob )
     {
-        if ( Strings.isNullOrEmpty( glob ) )
+        if ( glob == null || glob.isEmpty() )
             return null;
         return Pattern.compile( glob2re( glob ) );
     }
