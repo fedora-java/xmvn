@@ -35,7 +35,7 @@ import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 /**
  * @author Mikolaj Izdebski
  */
-public class InstallationPlan
+class InstallationPlan
 {
     private final PackageMetadata metadata;
 

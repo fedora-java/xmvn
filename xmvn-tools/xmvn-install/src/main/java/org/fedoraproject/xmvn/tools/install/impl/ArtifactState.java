@@ -24,7 +24,7 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 /**
  * @author Mikolaj Izdebski
  */
-public class ArtifactState
+class ArtifactState
 {
     private final Artifact artifact;
 

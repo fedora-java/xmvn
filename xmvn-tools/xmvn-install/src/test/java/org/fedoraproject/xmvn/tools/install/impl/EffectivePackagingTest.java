@@ -22,19 +22,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.PackagingRule;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class EffectivePackagingTest
-    extends InjectedTest
 {
     /**
      * Test if multiple rules are correctly aggregated into single effective rule.
@@ -45,7 +42,7 @@ public class EffectivePackagingTest
     public void testRuleAggregation()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
+        Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -82,7 +79,7 @@ public class EffectivePackagingTest
     public void testWildcards()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
+        Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -120,7 +117,7 @@ public class EffectivePackagingTest
     public void testEmptyGlob()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
+        Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -144,7 +141,7 @@ public class EffectivePackagingTest
     public void testEmptyPattern()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
+        Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -177,7 +174,7 @@ public class EffectivePackagingTest
     public void testSingletonAndSpecificRule()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
+        Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 
@@ -214,7 +211,7 @@ public class EffectivePackagingTest
     public void testAliases()
         throws Exception
     {
-        Configuration configuration = lookup( Configurator.class ).getDefaultConfiguration().clone();
+        Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
         assertTrue( artifactManagement.isEmpty() );
 

@@ -15,42 +15,38 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
-import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
- * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
 public class DefaultRepositoryConfigurator
     implements RepositoryConfigurator
 {
     private final Configurator configurator;
 
-    private final Map<String, RepositoryFactory> repositoryFactories;
+    private final Map<String, RepositoryFactory> repositoryFactories = new LinkedHashMap<>();
 
-    @Inject
-    public DefaultRepositoryConfigurator( Configurator configurator,
-                                          Map<String, RepositoryFactory> repositoryFactories )
+    public DefaultRepositoryConfigurator( Configurator configurator )
     {
         this.configurator = configurator;
-        this.repositoryFactories = repositoryFactories;
+
+        addRepositoryFactory( "compound", new CompoundRepositoryFactory( this ) );
+        addRepositoryFactory( "jpp", new JppRepositoryFactory() );
+        addRepositoryFactory( "maven", new MavenRepositoryFactory() );
+    }
+
+    void addRepositoryFactory( String type, RepositoryFactory repositoryFactory )
+    {
+        repositoryFactories.put( type, repositoryFactory );
     }
 
     private org.fedoraproject.xmvn.config.Repository findDescriptor( String repoId )

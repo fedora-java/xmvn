@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository;
+package org.fedoraproject.xmvn.repository.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,16 +22,13 @@ import static org.junit.Assert.fail;
 
 import java.util.Properties;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.w3c.dom.Element;
+
+import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named( "my-type" )
-@Singleton
 public class MyRepositoryFactory
     implements RepositoryFactory
 {

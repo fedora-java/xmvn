@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -24,7 +24,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
-import org.fedoraproject.xmvn.tools.install.impl.InstallationPlan;
 
 /**
  * @author Michael Simacek

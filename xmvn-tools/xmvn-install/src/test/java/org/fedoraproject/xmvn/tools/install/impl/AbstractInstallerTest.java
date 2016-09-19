@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,16 +29,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+
+import org.fedoraproject.xmvn.tools.install.Package;
 
 /**
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractInstallerTest
-    extends InjectedTest
 {
     protected Path workdir;
 

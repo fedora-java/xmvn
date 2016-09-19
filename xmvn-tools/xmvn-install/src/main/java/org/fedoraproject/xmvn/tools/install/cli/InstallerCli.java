@@ -18,36 +18,27 @@ package org.fedoraproject.xmvn.tools.install.cli;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import org.eclipse.sisu.space.SpaceModule;
-import org.eclipse.sisu.space.URLClassSpace;
-import org.eclipse.sisu.wire.WireModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
 import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
+import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.Installer;
+import org.fedoraproject.xmvn.tools.install.impl.DefaultInstaller;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
 public class InstallerCli
 {
     private final Logger logger = LoggerFactory.getLogger( InstallerCli.class );
 
     private final Installer installer;
 
-    @Inject
     public InstallerCli( Installer installer )
     {
         this.installer = installer;
@@ -78,13 +69,16 @@ public class InstallerCli
         try
         {
             InstallerCliRequest cliRequest = new InstallerCliRequest( args );
+            if ( cliRequest.isDebug() )
+                System.setProperty( "xmvn.debug", "true" );
 
-            ClassLoader installerClassLoader = InstallerCli.class.getClassLoader();
-            XMvnHomeClassLoader xmvnClassLoader = new XMvnHomeClassLoader( installerClassLoader );
-            Module module = new WireModule( new SpaceModule( new URLClassSpace( installerClassLoader ) ),
-                                            new SpaceModule( new URLClassSpace( xmvnClassLoader ) ) );
-            Injector injector = Guice.createInjector( module );
-            InstallerCli cli = injector.getInstance( InstallerCli.class );
+            XMvnHomeClassLoader classLoader = new XMvnHomeClassLoader( InstallerCli.class.getClassLoader() );
+            IsolatedXMvnServiceLocator locator = new IsolatedXMvnServiceLocator( classLoader );
+            Configurator configurator = locator.getService( Configurator.class );
+            Resolver resolver = locator.getService( Resolver.class );
+
+            Installer installer = new DefaultInstaller( configurator, resolver );
+            InstallerCli cli = new InstallerCli( installer );
 
             System.exit( cli.run( cliRequest ) );
         }

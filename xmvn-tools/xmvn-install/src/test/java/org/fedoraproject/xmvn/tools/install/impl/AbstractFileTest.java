@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.fedoraproject.xmvn.tools.install.File;
 
 /**
  * @author Mikolaj Izdebski

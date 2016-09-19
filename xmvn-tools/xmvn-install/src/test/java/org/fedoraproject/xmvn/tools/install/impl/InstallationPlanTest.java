@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.fedoraproject.xmvn.tools.install.InstallationPlanLoader.createInstallationPlan;
+import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.createInstallationPlan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
-import org.fedoraproject.xmvn.tools.install.impl.InstallationPlan;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 
 /**
  * @author Michael Simacek

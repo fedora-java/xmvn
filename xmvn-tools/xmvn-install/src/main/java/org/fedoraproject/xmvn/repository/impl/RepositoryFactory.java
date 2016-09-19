@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository;
+package org.fedoraproject.xmvn.repository.impl;
 
 import java.util.Properties;
 
 import org.w3c.dom.Element;
 
+import org.fedoraproject.xmvn.repository.Repository;
+
 /**
  * @author Mikolaj Izdebski
  */
-public interface RepositoryFactory
+interface RepositoryFactory
 {
     /**
      * Create a resolver instance configured with given set of properties and repository-specific XML configuration.

@@ -18,8 +18,7 @@ package org.fedoraproject.xmvn.tools.install;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import javax.inject.Provider;
+import java.util.function.Supplier;
 
 /**
  * A regular file created installed in target package.
@@ -41,7 +40,7 @@ public class RegularFile
      * Provider of byte array used to populate target file. It is used only if source path is not provided (is
      * {@code null}).
      */
-    private final Provider<byte[]> content;
+    private final Supplier<byte[]> content;
 
     /**
      * Create a regular file object, which contents will be populated from a source file. Target file will have default
@@ -74,7 +73,7 @@ public class RegularFile
      * @param targetPath file path, relative to installation root
      * @param content provider of array of bytes used to populate target file contents with
      */
-    public RegularFile( Path targetPath, Provider<byte[]> content )
+    public RegularFile( Path targetPath, Supplier<byte[]> content )
     {
         this( targetPath, content, DEFAULT_MODE );
     }
@@ -119,7 +118,7 @@ public class RegularFile
      * @param content provider of array of bytes used to populate target file contents with
      * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
-    public RegularFile( Path targetPath, Provider<byte[]> content, int accessMode )
+    public RegularFile( Path targetPath, Supplier<byte[]> content, int accessMode )
     {
         super( targetPath, accessMode );
 

@@ -20,7 +20,6 @@ import java.util.Properties;
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.repository.Repository;
-import org.fedoraproject.xmvn.repository.RepositoryFactory;
 
 /**
  * @author Mikolaj Izdebski

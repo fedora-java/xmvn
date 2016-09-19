@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -22,6 +22,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Test;
+
+import org.fedoraproject.xmvn.tools.install.Directory;
+import org.fedoraproject.xmvn.tools.install.RegularFile;
+import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 
 /**
  * @author Michael Simacek

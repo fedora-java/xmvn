@@ -17,25 +17,16 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * Factory creating JPP repositories.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "jpp" )
-@Singleton
-public class JppRepositoryFactory
+class JppRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override

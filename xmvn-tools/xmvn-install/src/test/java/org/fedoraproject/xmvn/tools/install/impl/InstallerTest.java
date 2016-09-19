@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.fedoraproject.xmvn.tools.install.InstallationPlanLoader.prepareInstallationPlanFile;
+import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.google.inject.Binder;
+import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.junit.Before;
@@ -51,6 +51,12 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
+import org.fedoraproject.xmvn.tools.install.File;
+import org.fedoraproject.xmvn.tools.install.InstallationRequest;
+import org.fedoraproject.xmvn.tools.install.JavaPackage;
+import org.fedoraproject.xmvn.tools.install.RegularFile;
 
 /**
  * @author Michael Simacek
@@ -62,10 +68,10 @@ public class InstallerTest
     private final Configuration config = new Configuration();
 
     @Mock
-    Configurator configuratorMock;
+    private Configurator configuratorMock;
 
     @Mock
-    Resolver resolverMock;
+    private Resolver resolverMock;
 
     @Before
     public void setUpSettings()
@@ -94,16 +100,6 @@ public class InstallerTest
             throws ArtifactInstallationException
         {
         }
-    }
-
-    @Override
-    public void configure( Binder binder )
-    {
-        binder.bind( Configurator.class ).toProvider( () -> configuratorMock );
-
-        binder.bind( ArtifactInstaller.class ).toInstance( new MockArtifactInstaller() );
-
-        binder.bind( Resolver.class ).toProvider( () -> resolverMock );
     }
 
     private void addResolution( String coordinates, final String compatVersion, final String namespace,
@@ -154,8 +150,11 @@ public class InstallerTest
     private void install( String planName )
         throws Exception
     {
+        ArtifactInstallerFactory installerFactoryMock = EasyMock.createMock( ArtifactInstallerFactory.class );
+        expect( installerFactoryMock.getInstallerFor( EasyMock.anyObject(),
+                                                      EasyMock.anyObject() ) ).andReturn( new MockArtifactInstaller() ).anyTimes();
         expect( configuratorMock.getConfiguration() ).andReturn( config ).atLeastOnce();
-        replay( resolverMock, configuratorMock );
+        replay( resolverMock, configuratorMock, installerFactoryMock );
 
         InstallationRequest request = new InstallationRequest();
         request.setBasePackageName( "test-pkg" );
@@ -163,11 +162,11 @@ public class InstallerTest
         request.setDescriptorRoot( descriptorRoot );
         request.setInstallationPlan( prepareInstallationPlanFile( planName ) );
 
-        Installer installer = lookup( Installer.class );
+        DefaultInstaller installer = new DefaultInstaller( configuratorMock, resolverMock, installerFactoryMock );
         assertNotNull( installer );
         installer.install( request );
 
-        verify( resolverMock, configuratorMock );
+        verify( resolverMock, configuratorMock, installerFactoryMock );
     }
 
     private void addEmptyResolutions()

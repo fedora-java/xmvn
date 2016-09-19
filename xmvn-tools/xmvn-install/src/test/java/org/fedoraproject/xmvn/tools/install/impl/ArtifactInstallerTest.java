@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.tools.install;
+package org.fedoraproject.xmvn.tools.install.impl;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
@@ -32,12 +32,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import com.google.inject.Binder;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
-import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,24 +46,26 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
+import org.fedoraproject.xmvn.tools.install.File;
+import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
 /**
  * @author Michael Simacek
  */
 @RunWith( EasyMockRunner.class )
 public class ArtifactInstallerTest
-    extends InjectedTest
 {
     @Mock
     Repository repositoryMock;
 
-    @Inject
     private ArtifactInstaller installer;
 
-    @Override
-    public void configure( Binder binder )
+    @Before
+    public void configure()
     {
-        binder.bind( RepositoryConfigurator.class ).toInstance( new RepositoryConfigurator()
+        RepositoryConfigurator repoConfigurator = new RepositoryConfigurator()
         {
             @Override
             public Repository configureRepository( String repoId )
@@ -81,7 +80,9 @@ public class ArtifactInstallerTest
                 fail();
                 return null;
             }
-        } );
+        };
+
+        installer = new DefaultArtifactInstaller( repoConfigurator );
     }
 
     private void install( JavaPackage pkg, ArtifactMetadata am, PackagingRule rule )

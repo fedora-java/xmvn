@@ -19,33 +19,42 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
-import org.eclipse.sisu.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
-public class ArtifactInstallerFactory
+class ArtifactInstallerFactory
 {
     private final Logger logger = LoggerFactory.getLogger( ArtifactInstallerFactory.class );
 
-    @Inject
-    private ArtifactInstaller defaultArtifactInstaller;
+    private final ArtifactInstaller defaultArtifactInstaller;
 
-    @Inject
-    @Nullable
-    @Named( "eclipse" )
-    private ArtifactInstaller eclipseArtifactInstaller;
+    private final ArtifactInstaller eclipseArtifactInstaller;
+
+    private static ArtifactInstaller loadPlugin( String className )
+    {
+        try
+        {
+            return (ArtifactInstaller) ArtifactInstallerFactory.class.getClassLoader().loadClass( className ).newInstance();
+        }
+        catch ( ReflectiveOperationException e )
+        {
+            return null;
+        }
+    }
+
+    public ArtifactInstallerFactory( Configurator configurator )
+    {
+        defaultArtifactInstaller = new DefaultArtifactInstaller( configurator );
+        // FIXME Don't hardcode plugin class name
+        eclipseArtifactInstaller = loadPlugin( "org.fedoraproject.p2.xmvn.EclipseArtifactInstaller" );
+    }
 
     /**
      * List of Tycho pacgkaging types.

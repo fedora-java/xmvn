@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository;
+package org.fedoraproject.xmvn.repository.impl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.sisu.launch.InjectedTest;
+import org.easymock.EasyMock;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.config.Configuration;
@@ -29,7 +29,6 @@ import org.fedoraproject.xmvn.config.Repository;
  * @author Mikolaj Izdebski
  */
 public class CustomRepositoryTest
-    extends InjectedTest
 {
     /**
      * Test if simple (non-composite) repository configuration works as expected.
@@ -40,17 +39,21 @@ public class CustomRepositoryTest
     public void testCustomRepository()
         throws Exception
     {
-        Configurator configurator = lookup( Configurator.class );
-        Configuration configuration = configurator.getConfiguration();
-
+        Configuration configuration = new Configuration();
         Repository repository = new Repository();
         repository.setId( "test123" );
         repository.setType( "my-type" );
         repository.addProperty( "foo", "bar" );
         configuration.addRepository( repository );
 
-        RepositoryConfigurator repoConfigurator = lookup( RepositoryConfigurator.class );
+        Configurator configurator = EasyMock.createMock( Configurator.class );
+        EasyMock.expect( configurator.getConfiguration() ).andReturn( configuration ).atLeastOnce();
+        EasyMock.replay( configurator );
+
+        DefaultRepositoryConfigurator repoConfigurator = new DefaultRepositoryConfigurator( configurator );
+        repoConfigurator.addRepositoryFactory( "my-type", new MyRepositoryFactory() );
         org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository( "test123" );
+        EasyMock.verify( configurator );
         assertNotNull( repo );
         assertTrue( repo instanceof MyRepository );
     }

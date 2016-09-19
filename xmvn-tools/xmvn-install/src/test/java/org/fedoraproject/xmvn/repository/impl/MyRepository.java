@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository;
+package org.fedoraproject.xmvn.repository.impl;
 
 import static org.junit.Assert.fail;
 
@@ -21,6 +21,8 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.repository.ArtifactContext;
+import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * @author Mikolaj Izdebski

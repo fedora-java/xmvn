@@ -30,20 +30,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
+import org.fedoraproject.xmvn.repository.impl.DefaultRepositoryConfigurator;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.fedoraproject.xmvn.tools.install.Directory;
@@ -55,15 +53,22 @@ import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 /**
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
-public class DefaultArtifactInstaller
+class DefaultArtifactInstaller
     implements ArtifactInstaller
 {
     private final Logger logger = LoggerFactory.getLogger( DefaultArtifactInstaller.class );
 
-    @Inject
-    private RepositoryConfigurator repositoryConfigurator;
+    private final RepositoryConfigurator repositoryConfigurator;
+
+    public DefaultArtifactInstaller( Configurator configurator )
+    {
+        this( new DefaultRepositoryConfigurator( configurator ) );
+    }
+
+    DefaultArtifactInstaller( RepositoryConfigurator repositoryConfigurator )
+    {
+        this.repositoryConfigurator = repositoryConfigurator;
+    }
 
     @Override
     public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )

@@ -21,10 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.repository.Repository;
@@ -33,21 +29,14 @@ import org.fedoraproject.xmvn.tools.install.condition.DomUtils;
 
 /**
  * Factory creating compound repositories.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "compound" )
-@Singleton
-public class CompoundRepositoryFactory
+class CompoundRepositoryFactory
     extends AbstractRepositoryFactory
 {
     private final RepositoryConfigurator configurator;
 
-    @Inject
     public CompoundRepositoryFactory( RepositoryConfigurator configurator )
     {
         this.configurator = configurator;

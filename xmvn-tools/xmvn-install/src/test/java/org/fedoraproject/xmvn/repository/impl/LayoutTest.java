@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.repository;
+package org.fedoraproject.xmvn.repository.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,61 +22,32 @@ import static org.junit.Assert.assertNull;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.repository.ArtifactContext;
+import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class LayoutTest
-    extends InjectedTest
 {
     private Repository mavenRepository;
 
     private Repository jppRepository;
 
-    private Repository getRepositoryInstance( String type )
-    {
-        RepositoryFactory factory = lookup( RepositoryFactory.class, type );
-        assertNotNull( factory );
-
-        Element filter = null;
-        Properties properties = new Properties();
-        Element configuration = null;
-
-        Repository repository = factory.getInstance( filter, properties, configuration );
-        assertNotNull( repository );
-
-        return repository;
-    }
-
     @Before
-    @Override
     public void setUp()
         throws Exception
     {
-        super.setUp();
+        mavenRepository = new MavenRepositoryFactory().getInstance( null, new Properties(), null );
+        jppRepository = new JppRepositoryFactory().getInstance( null, new Properties(), null );
 
-        mavenRepository = getRepositoryInstance( "maven" );
-        jppRepository = getRepositoryInstance( "jpp" );
-    }
-
-    /**
-     * Make sure there is no default repository factory.
-     * 
-     * @throws Exception
-     */
-    public void defaultRepositoryFactoryTest()
-        throws Exception
-    {
-        RepositoryFactory defaultRepositoryfFactory = lookup( RepositoryFactory.class );
-
-        assertNull( defaultRepositoryfFactory );
+        assertNotNull( mavenRepository );
+        assertNotNull( jppRepository );
     }
 
     private void testPaths( Repository repository, Artifact artifact, String expected )
