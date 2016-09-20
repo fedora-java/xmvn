@@ -22,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
-import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
@@ -72,8 +72,7 @@ public class InstallerCli
             if ( cliRequest.isDebug() )
                 System.setProperty( "xmvn.debug", "true" );
 
-            XMvnHomeClassLoader classLoader = new XMvnHomeClassLoader( InstallerCli.class.getClassLoader() );
-            IsolatedXMvnServiceLocator locator = new IsolatedXMvnServiceLocator( classLoader );
+            ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
             Configurator configurator = locator.getService( Configurator.class );
             Resolver resolver = locator.getService( Resolver.class );
 

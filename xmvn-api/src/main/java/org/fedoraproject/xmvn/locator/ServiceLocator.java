@@ -15,32 +15,20 @@
  */
 package org.fedoraproject.xmvn.locator;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
- * @author Michael Simacek
+ * A service locator for services provided by XMvn.
+ * <p>
+ * This service locator uses a separate class loader to load XMvn classes and all of its dependencies.
+ * 
+ * @author Mikolaj Izdebski
  */
-class MockClassLoader
-    extends ClassLoader
+public interface ServiceLocator
 {
-    @Override
-    public Class<?> loadClass( String string )
-        throws ClassNotFoundException
-    {
-        return MockClassLoader.class;
-    }
-
-    @Override
-    public URL getResource( String string )
-    {
-        try
-        {
-            return new URL( "http://example.com" );
-        }
-        catch ( MalformedURLException ex )
-        {
-            throw new RuntimeException();
-        }
-    }
+    /**
+     * Load an instance of XMvn service.
+     * 
+     * @param role interface class identifying requested service
+     * @return instance of XMvn service, never {@code null}.
+     */
+    <T> T getService( Class<T> role );
 }

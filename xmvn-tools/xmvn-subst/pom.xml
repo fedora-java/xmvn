@@ -43,5 +43,10 @@
       <groupId>org.fedoraproject.xmvn</groupId>
       <artifactId>xmvn-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 </project>

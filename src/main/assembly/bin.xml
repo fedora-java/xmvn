@@ -31,15 +31,6 @@
     </moduleSet>
     <moduleSet>
       <includes>
-	<include>org.fedoraproject.xmvn:xmvn-core</include>
-      </includes>
-      <binaries>
-	<unpack>false</unpack>
-	<outputDirectory>lib/core</outputDirectory>
-      </binaries>
-    </moduleSet>
-    <moduleSet>
-      <includes>
 	<include>org.fedoraproject.xmvn:xmvn-bisect</include>
       </includes>
       <binaries>
@@ -50,6 +41,7 @@
     <moduleSet>
       <includes>
 	<include>org.fedoraproject.xmvn:xmvn-install</include>
+	<include>org.fedoraproject.xmvn:xmvn-core</include>
       </includes>
       <binaries>
 	<unpack>false</unpack>
@@ -59,6 +51,7 @@
     <moduleSet>
       <includes>
 	<include>org.fedoraproject.xmvn:xmvn-resolve</include>
+	<include>org.fedoraproject.xmvn:xmvn-core</include>
       </includes>
       <binaries>
 	<unpack>false</unpack>
@@ -68,6 +61,7 @@
     <moduleSet>
       <includes>
 	<include>org.fedoraproject.xmvn:xmvn-subst</include>
+	<include>org.fedoraproject.xmvn:xmvn-core</include>
       </includes>
       <binaries>
 	<unpack>false</unpack>

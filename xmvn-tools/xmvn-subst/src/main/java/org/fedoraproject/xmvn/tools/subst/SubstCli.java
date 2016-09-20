@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
-import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
@@ -97,8 +97,7 @@ public class SubstCli
             if ( cliRequest.isDebug() )
                 System.setProperty( "xmvn.debug", "true" );
 
-            XMvnHomeClassLoader classLoader = new XMvnHomeClassLoader( SubstCli.class.getClassLoader() );
-            IsolatedXMvnServiceLocator locator = new IsolatedXMvnServiceLocator( classLoader );
+            ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
             Configurator configurator = locator.getService( Configurator.class );
             MetadataResolver metadataResolver = locator.getService( MetadataResolver.class );
 

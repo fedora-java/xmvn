@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.locator;
+package org.fedoraproject.xmvn.locator.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +22,7 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.impl.DefaultDeployer;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.impl.DefaultMetadataResolver;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -29,23 +30,16 @@ import org.fedoraproject.xmvn.resolver.impl.DefaultResolver;
 
 /**
  * Service locator for XMvn.
+ * <p>
+ * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
+ * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
+ * it directly.
  * 
  * @author Mikolaj Izdebski
  */
-public final class XMvnServiceLocator
+public class DefaultServiceLocator
+    implements ServiceLocator
 {
-    private static XMvnServiceLocator instance;
-
-    private static synchronized XMvnServiceLocator getInstance()
-    {
-        if ( instance == null )
-        {
-            instance = new XMvnServiceLocator();
-        }
-
-        return instance;
-    }
-
     private final Map<Class<?>, Class<?>> knownServices = new HashMap<>();
 
     private final Map<Class<?>, Object> runningServices = new HashMap<>();
@@ -55,7 +49,7 @@ public final class XMvnServiceLocator
         knownServices.put( role, serviceProvider );
     }
 
-    private XMvnServiceLocator()
+    public DefaultServiceLocator()
     {
         addService( Resolver.class, DefaultResolver.class );
         addService( Deployer.class, DefaultDeployer.class );
@@ -63,14 +57,22 @@ public final class XMvnServiceLocator
         addService( MetadataResolver.class, DefaultMetadataResolver.class );
     }
 
-    private void loadService( Class<?> role )
+    private Object loadService( Class<?> role )
     {
         Class<?> implClass = knownServices.get( role );
+        if ( implClass == null )
+            return null;
 
         try
         {
-            if ( implClass != null )
-                runningServices.put( role, implClass.getConstructor().newInstance() );
+            try
+            {
+                return implClass.getConstructor( ServiceLocator.class ).newInstance( this );
+            }
+            catch ( NoSuchMethodException e )
+            {
+                return implClass.getConstructor().newInstance();
+            }
         }
         catch ( ReflectiveOperationException e )
         {
@@ -78,16 +80,14 @@ public final class XMvnServiceLocator
         }
     }
 
-    private <T> T getServiceImpl( Class<T> role )
+    @Override
+    public <T> T getService( Class<T> role )
     {
         if ( !runningServices.containsKey( role ) )
-            loadService( role );
+        {
+            runningServices.put( role, loadService( role ) );
+        }
 
         return role.cast( runningServices.get( role ) );
-    }
-
-    public static <T> T getService( Class<T> role )
-    {
-        return getInstance().getServiceImpl( role );
     }
 }

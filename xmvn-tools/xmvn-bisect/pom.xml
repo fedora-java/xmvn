@@ -40,10 +40,6 @@
       <artifactId>jcommander</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.fedoraproject.xmvn</groupId>
-      <artifactId>xmvn-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-invoker</artifactId>
       <exclusions>

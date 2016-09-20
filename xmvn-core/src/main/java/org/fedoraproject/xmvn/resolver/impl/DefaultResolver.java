@@ -27,7 +27,7 @@ import javax.inject.Singleton;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.locator.XMvnServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 import org.fedoraproject.xmvn.logging.impl.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -72,11 +72,11 @@ public class DefaultResolver
 
     private final AtomicFileCounter bisectCounter;
 
-    public DefaultResolver()
+    public DefaultResolver( ServiceLocator locator )
     {
         this( new ConsoleLogger(), //
-              XMvnServiceLocator.getService( Configurator.class ),
-              XMvnServiceLocator.getService( MetadataResolver.class ) );
+              locator.getService( Configurator.class ), //
+              locator.getService( MetadataResolver.class ) );
     }
 
     @Inject

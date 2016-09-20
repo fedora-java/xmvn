@@ -27,8 +27,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
-import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -144,8 +144,7 @@ public class ResolverCli
             if ( cliRequest.isDebug() )
                 System.setProperty( "xmvn.debug", "true" );
 
-            XMvnHomeClassLoader classLoader = new XMvnHomeClassLoader( ResolverCli.class.getClassLoader() );
-            IsolatedXMvnServiceLocator locator = new IsolatedXMvnServiceLocator( classLoader );
+            ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
             Resolver resolver = locator.getService( Resolver.class );
 
             ResolverCli cli = new ResolverCli( resolver );

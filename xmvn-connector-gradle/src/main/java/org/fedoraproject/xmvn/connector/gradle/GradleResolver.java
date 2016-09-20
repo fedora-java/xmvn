@@ -58,8 +58,8 @@ import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
-import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -76,14 +76,11 @@ public class GradleResolver
 
     static class LazyLocatorProvider
     {
-        static final IsolatedXMvnServiceLocator LOCATOR;
+        static final ServiceLocator LOCATOR;
 
         static
         {
-            XMvnHomeClassLoader realm = new XMvnHomeClassLoader( LazyLocatorProvider.class.getClassLoader() );
-            realm.importAllPackages( "org.slf4j" );
-            realm.importAllPackages( "org.gradle.api.logging" );
-            LOCATOR = new IsolatedXMvnServiceLocator( realm );
+            LOCATOR = new ServiceLocatorFactory().createServiceLocator();
         }
     }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.locator;
+package org.fedoraproject.xmvn.tools.bisect;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,7 +24,7 @@ import java.nio.file.Paths;
  * 
  * @author Mikolaj Izdebski
  */
-public final class XMvnHomeLocator
+final class XMvnHomeLocator
 {
     private XMvnHomeLocator()
     {
@@ -51,12 +51,12 @@ public final class XMvnHomeLocator
 
             if ( !Files.exists( jarPath ) )
             {
-                throw new RuntimeException( "Unable to locate XMvn home: API JAR does not exist: " + jarPath );
+                throw new RuntimeException( "Unable to locate XMvn home: bisect JAR does not exist: " + jarPath );
             }
 
-            if ( !jarPath.getFileName().toString().matches( "^xmvn-api.*\\.jar$" ) )
+            if ( !jarPath.getFileName().toString().matches( "^xmvn-bisect.*\\.jar$" ) )
             {
-                throw new RuntimeException( "Unable to locate XMvn home: API JAR has suprious name: " + jarPath );
+                throw new RuntimeException( "Unable to locate XMvn home: bisect JAR has suprious name: " + jarPath );
             }
 
             home = jarPath.toAbsolutePath().getParent().getParent().getParent();

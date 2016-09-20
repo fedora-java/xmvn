@@ -49,8 +49,8 @@ import org.apache.ivy.plugins.resolver.util.ResolvedResource;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
-import org.fedoraproject.xmvn.locator.IsolatedXMvnServiceLocator;
-import org.fedoraproject.xmvn.locator.XMvnHomeClassLoader;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -65,15 +65,11 @@ public class IvyResolver
 {
     static class LazyLocatorProvider
     {
-        static final IsolatedXMvnServiceLocator LOCATOR;
+        static final ServiceLocator LOCATOR;
 
         static
         {
-            @SuppressWarnings( "resource" ) XMvnHomeClassLoader realm =
-                new XMvnHomeClassLoader( LazyLocatorProvider.class.getClassLoader() );
-            realm.addJarDirectory( realm.getHome().resolve( "lib" ).resolve( "ivy" ) );
-            realm.importAllPackages( "org.apache.ivy" );
-            LOCATOR = new IsolatedXMvnServiceLocator( realm );
+            LOCATOR = new ServiceLocatorFactory().createServiceLocator();
         }
     }
 
