@@ -232,8 +232,7 @@ mkdir -p target/dependency/
 cp -aL %{_datadir}/maven target/dependency/apache-maven-$mver
 
 %build
-# ITs require artifacts to be insalled in local repo
-%mvn_build -s -j -g install
+%mvn_build -s -j
 
 tar --delay-directory-restore -xvf target/*tar.bz2
 chmod -R +rwX %{name}-%{version}*
@@ -270,7 +269,7 @@ done
 cp -r %{_datadir}/maven/lib/* %{buildroot}%{_datadir}/%{name}/lib/
 
 # possibly recreate symlinks that can be automated with xmvn-subst
-%{name}-subst -s %{buildroot}%{_datadir}/%{name}/lib/{ext,core}/
+%{name}-subst -s %{buildroot}%{_datadir}/%{name}/lib/ext/
 
 # /usr/bin/xmvn
 ln -s %{_datadir}/%{name}/bin/mvn %{buildroot}%{_bindir}/%{name}
@@ -303,7 +302,9 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files minimal
 %{_bindir}/%{name}
+%dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
+%dir %{_datadir}/%{name}/lib
 %exclude %{_datadir}/%{name}/lib/aether_aether-connector-basic.jar
 %exclude %{_datadir}/%{name}/lib/aether_aether-transport-wagon.jar
 %exclude %{_datadir}/%{name}/lib/aopalliance.jar
@@ -332,9 +333,6 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %doc LICENSE NOTICE
 
 %files core -f .mfiles-xmvn-core
-%dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/lib/core
 
 %files api -f .mfiles-xmvn-api
 %doc LICENSE NOTICE
