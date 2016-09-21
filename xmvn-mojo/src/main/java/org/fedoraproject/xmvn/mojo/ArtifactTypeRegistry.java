@@ -24,7 +24,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.google.common.base.Strings;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -96,7 +95,8 @@ final class ArtifactTypeRegistry
         if ( type == null || extensions.get( type ) == null )
             return new DefaultArtifact( groupId, artifactId, type, customClassifier, version );
 
-        String classifier = Strings.isNullOrEmpty( customClassifier ) ? classifiers.get( type ) : customClassifier;
+        String classifier =
+            ( customClassifier == null || customClassifier.isEmpty() ) ? classifiers.get( type ) : customClassifier;
         return new DefaultArtifact( groupId, artifactId, extensions.get( type ), classifier, version );
     }
 }
