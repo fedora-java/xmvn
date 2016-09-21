@@ -60,6 +60,11 @@ BuildRequires:  easymock
 BuildRequires:  gradle >= 2.5
 BuildRequires:  maven-invoker
 
+# Required for integration tests only
+%if %{with its}
+BuildRequires:  plexus-containers-component-metadata
+%endif
+
 Requires:       xmvn-minimal = %{version}-%{release}
 Requires:       maven >= 3.4.0
 
@@ -207,16 +212,22 @@ This package provides %{summary}.
 %prep
 %setup -q
 
-%mvn_package ":xmvn{,-it}" __noinstall
+# Bisect IT has no chances of working in local, offline mode, without
+# network access - it needs to access remote repositories.
+find -name BisectIntegrationTest.java -delete
 
-%if %{without its}
-%pom_disable_module xmvn-it
-%endif
+# Resolver IT won't work either - it tries to execute JAR file, which
+# relies on Class-Path in manifest, which is forbidden in Fedora...
+find -name ResolverIntegrationTest.java -delete
+
+%mvn_package ":xmvn{,-it}" __noinstall
 
 # Upstream code quality checks, not relevant when building RPMs
 %pom_remove_plugin -r :apache-rat-plugin
 %pom_remove_plugin -r :maven-checkstyle-plugin
 %pom_remove_plugin -r :jacoco-maven-plugin
+# FIXME pom macros don't seem to support submodules in profile
+%pom_remove_plugin :jacoco-maven-plugin xmvn-it
 
 # remove dependency plugin maven-binaries execution
 # we provide apache-maven by symlink
@@ -232,7 +243,11 @@ mkdir -p target/dependency/
 cp -aL %{_datadir}/maven target/dependency/apache-maven-$mver
 
 %build
+%if %{with its}
+%mvn_build -s -j -- -Prun-its
+%else
 %mvn_build -s -j
+%endif
 
 tar --delay-directory-restore -xvf target/*tar.bz2
 chmod -R +rwX %{name}-%{version}*
