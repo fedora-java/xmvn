@@ -209,10 +209,27 @@ public final class JarUtils
     public static void injectManifest( Path targetJar, Artifact artifact )
     {
         LOGGER.trace( "Trying to inject manifest to {}", artifact );
-
-        try ( JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ) )
+        Manifest mf = null;
+        try
         {
-            Manifest mf = jis.getManifest();
+            try ( JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ) )
+            {
+                mf = jis.getManifest();
+                if ( mf == null )
+                {
+                    // getManifest sometimes doesn't find the manifest, try finding it as plain entry
+                    ZipEntry ent;
+                    while ( ( ent = jis.getNextEntry() ) != null )
+                    {
+                        if ( ent.getName().equalsIgnoreCase( "META-INF/MANIFEST.MF" ) )
+                        {
+                            mf = new Manifest( jis );
+                            break;
+                        }
+                    }
+                }
+            }
+
             if ( mf == null )
             {
                 LOGGER.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
@@ -225,30 +242,33 @@ public final class JarUtils
             putAttribute( mf, Artifact.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
             putAttribute( mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
 
-            targetJar = targetJar.toRealPath();
-            Files.delete( targetJar );
-
-            try ( JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ) )
+            try ( JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ) )
             {
-                byte[] buf = new byte[512];
-                JarEntry entry;
-                while ( ( entry = jis.getNextJarEntry() ) != null )
+
+                targetJar = targetJar.toRealPath();
+                Files.delete( targetJar );
+                try ( JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ) )
                 {
-                    openJdkAvoidDuplicateEntryHack( jos );
-                    jos.putNextEntry( entry );
+                    byte[] buf = new byte[512];
+                    JarEntry entry;
+                    while ( ( entry = jis.getNextJarEntry() ) != null )
+                    {
+                        openJdkAvoidDuplicateEntryHack( jos );
+                        jos.putNextEntry( entry );
 
-                    int sz;
-                    while ( ( sz = jis.read( buf ) ) > 0 )
-                        jos.write( buf, 0, sz );
+                        int sz;
+                        while ( ( sz = jis.read( buf ) ) > 0 )
+                            jos.write( buf, 0, sz );
+                    }
                 }
-            }
-            catch ( IOException e )
-            {
-                // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
-                throw new RuntimeException( e );
-            }
+                catch ( IOException e )
+                {
+                    // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
+                    throw new RuntimeException( e );
+                }
 
-            LOGGER.trace( "Manifest injected successfully" );
+                LOGGER.trace( "Manifest injected successfully" );
+            }
         }
         catch ( IOException e )
         {
