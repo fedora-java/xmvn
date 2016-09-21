@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.resolver;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
+package org.fedoraproject.xmvn.test;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Repository;
@@ -25,8 +22,6 @@ import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 /**
  * @author Mikolaj Izdebski
  */
-@Named( "default" )
-@Singleton
 public class TestConfigurator
     extends DefaultConfigurator
 {

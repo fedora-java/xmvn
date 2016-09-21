@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,6 +39,7 @@ import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -58,12 +57,12 @@ import org.xml.sax.SAXException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.model.ModelProcessor;
+import org.fedoraproject.xmvn.model.impl.DefaultModelProcessor;
 
 /**
  * @author Mikolaj Izdebski
  */
 @Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
-@Named
 public class BuilddepMojo
     extends AbstractMojo
 {
@@ -101,21 +100,18 @@ public class BuilddepMojo
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
-    @Inject
+    @Component
     private Map<String, LifecycleMapping> lifecycleMappings;
 
-    private final ModelProcessor modelProcessor;
+    private final ModelProcessor modelProcessor = new DefaultModelProcessor();
 
     // Injected through reflection by XMvn lifecycle participant
     private List<String[]> resolutions;
 
     private Set<Artifact> commonDeps = new LinkedHashSet<>();
 
-    @Inject
-    public BuilddepMojo( ModelProcessor modelProcessor )
+    public BuilddepMojo()
     {
-        this.modelProcessor = modelProcessor;
-
         try ( InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream( "/common-deps.xml" ) )
         {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

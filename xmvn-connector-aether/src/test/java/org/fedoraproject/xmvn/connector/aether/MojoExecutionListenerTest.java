@@ -15,12 +15,6 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.maven.execution.MojoExecutionEvent;
 import org.apache.maven.execution.MojoExecutionListener;
 import org.apache.maven.plugin.Mojo;
@@ -30,7 +24,6 @@ import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.easymock.MockType;
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,10 +33,9 @@ import org.junit.runner.RunWith;
 /**
  * @author Roman Vais
  */
-
 @RunWith( EasyMockRunner.class )
 public class MojoExecutionListenerTest
-    extends InjectedTest
+    extends AbstractTest
 {
     private interface MojoBeanProperty
         extends Mojo
@@ -63,11 +55,7 @@ public class MojoExecutionListenerTest
         // "getReportOutputDirectory", "getOutputDir", "getSource", "getTarget", "getSourceLevel", "getTargetLevel"
     }
 
-    @Inject
     private XMvnMojoExecutionListener listener;
-
-    @Inject
-    private List<MojoExecutionListener> listeners;
 
     @Mock( type = MockType.STRICT )
     private MojoExecutionEvent event;
@@ -86,11 +74,10 @@ public class MojoExecutionListenerTest
     public TemporaryFolder tempDir = new TemporaryFolder();
 
     @Before
-    @Override
     public void setUp()
         throws Exception
     {
-        super.setUp();
+        listener = (XMvnMojoExecutionListener) lookup( MojoExecutionListener.class, "xmvn" );
 
         listener.setXmvnStateDir( tempDir.getRoot().toPath() );
 
@@ -103,13 +90,6 @@ public class MojoExecutionListenerTest
         EasyMock.expect( event.getMojo() ).andReturn( mojo ).atLeastOnce();
         EasyMock.expect( event.getExecution() ).andReturn( exec ).atLeastOnce();
         EasyMock.replay( event, mojo, exec, project );
-    }
-
-    @Test
-    public void testListenerInjection()
-        throws Exception
-    {
-        assertTrue( listeners.contains( listener ) );
     }
 
     @Test

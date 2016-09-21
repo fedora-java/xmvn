@@ -23,8 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
@@ -37,7 +35,6 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,16 +45,12 @@ import org.fedoraproject.xmvn.config.Configurator;
  * @author Mikolaj Izdebski
  * @author Roman Vais
  */
-
 @RunWith( EasyMockRunner.class )
 public class ModelValidatorTest
-    extends InjectedTest
+    extends AbstractTest
 {
-
-    @Inject
     private ModelValidator validator;
 
-    @Inject
     private Configurator configurator;
 
     @Mock
@@ -80,11 +73,11 @@ public class ModelValidatorTest
     }
 
     @Before
-    @Override
     public void setUp()
         throws Exception
     {
-        super.setUp();
+        configurator = lookup( Configurator.class );
+        validator = lookup( ModelValidator.class );
 
         Xpp3Dom mainCfg, glCfg, locCfg;
         mainCfg = Xpp3DomBuilder.build( new FileReader( getResource( "test.pom.xml" ).toFile() ) );

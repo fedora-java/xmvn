@@ -37,9 +37,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 
 import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 import org.fedoraproject.xmvn.logging.impl.Logger;
@@ -59,24 +58,18 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = MetadataResolver.class )
 public class DefaultMetadataResolver
     implements MetadataResolver
 {
-    private final Logger logger;
+    @Requirement
+    private Logger logger = new ConsoleLogger();
 
     private final ThreadPoolExecutor executor;
 
     public DefaultMetadataResolver()
     {
-        this( new ConsoleLogger() );
-    }
-
-    @Inject
-    public DefaultMetadataResolver( Logger logger )
-    {
-        this.logger = logger;
+        this.logger = new ConsoleLogger();
 
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );

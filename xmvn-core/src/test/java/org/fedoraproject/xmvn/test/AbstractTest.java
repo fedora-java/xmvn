@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2014-2016 Red Hat, Inc.
+ * Copyright (c) 2016 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.deployer;
+package org.fedoraproject.xmvn.test;
 
-import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 
-import org.junit.Test;
-
-import org.fedoraproject.xmvn.test.AbstractTest;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator;
 
 /**
  * @author Mikolaj Izdebski
  */
-public class BasicDeployerTest
-    extends AbstractTest
+public class AbstractTest
 {
-    /**
-     * Test if Sisu can load deployer component.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testComponentLookup()
-        throws Exception
+    private DefaultServiceLocator locator;
+
+    @Before
+    public void configureServiceLocator()
     {
-        Deployer deployer = getService( Deployer.class );
-        assertNotNull( deployer );
+        locator = new DefaultServiceLocator();
+        locator.addService( Configurator.class, TestConfigurator.class );
+    }
+
+    public <T> T getService( Class<T> role )
+    {
+        return locator.getService( role );
     }
 }

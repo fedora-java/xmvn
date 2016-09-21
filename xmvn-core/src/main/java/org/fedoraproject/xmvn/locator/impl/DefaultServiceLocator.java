@@ -44,7 +44,7 @@ public class DefaultServiceLocator
 
     private final Map<Class<?>, Object> runningServices = new HashMap<>();
 
-    private <T> void addService( Class<T> role, Class<? extends T> serviceProvider )
+    public <T> void addService( Class<T> role, Class<? extends T> serviceProvider )
     {
         knownServices.put( role, serviceProvider );
     }

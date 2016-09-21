@@ -25,9 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
@@ -36,15 +34,21 @@ import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.metadata.DependencyExclusion;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.SkippedArtifactMetadata;
+import org.fedoraproject.xmvn.test.AbstractTest;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class MetadataReaderTest
-    extends InjectedTest
+    extends AbstractTest
 {
-    @Inject
     private DefaultMetadataResolver reader;
+
+    @Before
+    public void setUp()
+    {
+        reader = new DefaultMetadataResolver();
+    }
 
     /**
      * Test if trying to read metadata from empty list of directories returns empty result.

@@ -22,18 +22,18 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.nio.file.Files;
 
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
+import org.fedoraproject.xmvn.test.AbstractTest;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class JavaHomeResolverTest
-    extends InjectedTest
+    extends AbstractTest
 {
     /**
      * Test if artifacts are resolved correctly from Java home.
@@ -44,14 +44,14 @@ public class JavaHomeResolverTest
     public void testJavaHomeResolver()
         throws Exception
     {
-        Configurator configurator = lookup( Configurator.class );
+        Configurator configurator = getService( Configurator.class );
         ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
         assertTrue( settings.getPrefixes().isEmpty() );
         assertTrue( settings.getMetadataRepositories().isEmpty() );
         settings.addPrefix( new File( "." ).getAbsolutePath() );
         settings.addMetadataRepository( "src/test/resources/java-home-resolver-metadata" );
 
-        Resolver javaHomeResolver = lookup( Resolver.class );
+        Resolver javaHomeResolver = getService( Resolver.class );
 
         ResolutionRequest comSunToolsRequest =
             new ResolutionRequest( new DefaultArtifact( "com.sun", "tools", "jar", "SYSTEM" ) );

@@ -18,19 +18,19 @@ package org.fedoraproject.xmvn.resolver;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
+import org.fedoraproject.xmvn.test.AbstractTest;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class BasicResolverTest
-    extends InjectedTest
+    extends AbstractTest
 {
     /**
      * Test if Plexus can load resolver component.
@@ -41,7 +41,7 @@ public class BasicResolverTest
     public void testComponentLookup()
         throws Exception
     {
-        Resolver resolver = lookup( Resolver.class );
+        Resolver resolver = getService( Resolver.class );
         assertNotNull( resolver );
     }
 
@@ -54,7 +54,7 @@ public class BasicResolverTest
     public void testConfigurationExistance()
         throws Exception
     {
-        Configurator configurator = lookup( Configurator.class );
+        Configurator configurator = getService( Configurator.class );
         assertNotNull( configurator );
 
         Configuration configuration = configurator.getDefaultConfiguration();
@@ -73,7 +73,7 @@ public class BasicResolverTest
     public void testResolutionFailure()
         throws Exception
     {
-        Resolver resolver = lookup( Resolver.class );
+        Resolver resolver = getService( Resolver.class );
         ResolutionRequest request =
             new ResolutionRequest( new DefaultArtifact( "some", "nonexistent", "pom", "artifact" ) );
         ResolutionResult result = resolver.resolve( request );

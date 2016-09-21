@@ -31,13 +31,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -58,16 +56,15 @@ import org.slf4j.LoggerFactory;
  * @author Mikolaj Izdebski
  */
 @Mojo( name = "javadoc", aggregator = true, requiresDependencyResolution = ResolutionScope.COMPILE )
-@Named
 public class JavadocMojo
     extends AbstractMojo
 {
     private final Logger logger = LoggerFactory.getLogger( JavadocMojo.class );
 
-    @Inject
+    @Component
     private ProjectDependenciesResolver resolver;
 
-    @Inject
+    @Component
     private MavenSession session;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )

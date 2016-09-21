@@ -24,7 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,22 +33,20 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
+import org.fedoraproject.xmvn.test.AbstractTest;
 
 /**
  * @author Michael Simacek
  */
 public class BisectResolverTest
-    extends InjectedTest
+    extends AbstractTest
 {
     private Path counterPath;
 
     @Before
-    @Override
     public void setUp()
         throws Exception
     {
-        super.setUp();
-
         counterPath = Paths.get( "target/test-work/bisect-counter" );
         Files.createDirectories( counterPath.getParent() );
         System.setProperty( "xmvn.bisect.counter", counterPath.toString() );
@@ -57,13 +54,10 @@ public class BisectResolverTest
     }
 
     @After
-    @Override
     public void tearDown()
         throws Exception
     {
         System.clearProperty( "xmvn.bisect.counter" );
-
-        super.tearDown();
     }
 
     /**
@@ -75,7 +69,7 @@ public class BisectResolverTest
     public void testBisectResolverNoFile()
         throws Exception
     {
-        Configurator configurator = lookup( Configurator.class );
+        Configurator configurator = getService( Configurator.class );
         Configuration configuration = configurator.getConfiguration();
 
         Repository repository = new Repository();
@@ -85,7 +79,7 @@ public class BisectResolverTest
 
         Artifact artifact = new DefaultArtifact( "foo:bar:1.2" );
 
-        Resolver resolver = lookup( Resolver.class );
+        Resolver resolver = getService( Resolver.class );
         ResolutionRequest request = new ResolutionRequest( artifact );
         ResolutionResult result = resolver.resolve( request );
 

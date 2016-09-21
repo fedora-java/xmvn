@@ -15,43 +15,48 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.execution.MojoExecutionListener;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
+import org.eclipse.aether.repository.WorkspaceReader;
 
 /**
  * Installs some of XMvn extensions for Maven.
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "XMvn" )
-@Singleton
+@Component( role = AbstractMavenLifecycleParticipant.class )
 public class XMvnMavenLifecycleParticipant
     extends AbstractMavenLifecycleParticipant
 {
-    private final XMvnWorkspaceReader workspaceReader;
+    @Requirement
+    private Logger logger;
 
-    @Inject
-    public XMvnMavenLifecycleParticipant( XMvnWorkspaceReader workspaceReader,
-                                          XMvnMojoExecutionListener mojoExecutionListener )
-    {
-        this.workspaceReader = workspaceReader;
-        workspaceReader.addResolutionListener( mojoExecutionListener );
-    }
+    @Requirement( role = WorkspaceReader.class, hint = "ide", optional = true )
+    private XMvnWorkspaceReader workspaceReader;
+
+    @Requirement( role = MojoExecutionListener.class, hint = "xmvn" )
+    private XMvnMojoExecutionListener mojoExecutionListener;
 
     @Override
     public void afterSessionStart( MavenSession session )
         throws MavenExecutionException
     {
+
         MavenExecutionRequest request = session.getRequest();
 
-        DependencyVersionReportGenerator reportGenerator = new DependencyVersionReportGenerator();
-        workspaceReader.addResolutionListener( reportGenerator );
+        DependencyVersionReportGenerator reportGenerator = new DependencyVersionReportGenerator( logger );
+
+        if ( workspaceReader != null )
+        {
+            workspaceReader.addResolutionListener( mojoExecutionListener );
+            workspaceReader.addResolutionListener( reportGenerator );
+        }
 
         ChainedExecutionListener chainedListener = new ChainedExecutionListener();
         chainedListener.addExecutionListener( request.getExecutionListener() );

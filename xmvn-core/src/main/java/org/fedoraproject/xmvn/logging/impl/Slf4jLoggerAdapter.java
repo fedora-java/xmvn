@@ -15,16 +15,13 @@
  */
 package org.fedoraproject.xmvn.logging.impl;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
+import org.codehaus.plexus.component.annotations.Component;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Named( "default" )
-@Singleton
+@Component( role = Logger.class )
 public class Slf4jLoggerAdapter
     implements Logger
 {

@@ -20,9 +20,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -47,14 +46,18 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = Resolver.class )
 public class DefaultResolver
     implements Resolver
 {
-    private final Logger logger;
+    @Requirement
+    private Logger logger;
 
-    private final MetadataResolver metadataResolver;
+    @Requirement
+    private Configurator configurator;
+
+    @Requirement
+    private MetadataResolver metadataResolver;
 
     private MetadataRequest metadataRequest;
 
@@ -68,29 +71,25 @@ public class DefaultResolver
 
     private final CacheManager cacheManager;
 
-    private final MockAgent mockAgent;
+    private MockAgent mockAgent;
 
     private final AtomicFileCounter bisectCounter;
 
     public DefaultResolver( ServiceLocator locator )
     {
-        this( new ConsoleLogger(), //
-              locator.getService( Configurator.class ), //
-              locator.getService( MetadataResolver.class ) );
+        this();
+
+        logger = new ConsoleLogger();
+        configurator = locator.getService( Configurator.class );
+        metadataResolver = locator.getService( MetadataResolver.class );
     }
 
-    @Inject
-    public DefaultResolver( Logger logger, Configurator configurator, MetadataResolver metadataResolver )
+    public DefaultResolver()
     {
-        this.logger = logger;
         this.localRepoResolver = new LocalRepositoryResolver();
-        this.metadataResolver = metadataResolver;
 
-        ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-        metadataRequest = new MetadataRequest( settings.getMetadataRepositories() );
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
-        mockAgent = new MockAgent( logger );
 
         String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
         bisectCounter = ( bisectCounterPath == null || bisectCounterPath.isEmpty() ) ? null
@@ -113,6 +112,11 @@ public class DefaultResolver
         Artifact artifact = request.getArtifact();
         logger.debug( "Trying to resolve artifact {}", artifact );
 
+        if ( metadataRequest == null )
+        {
+            ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
+            metadataRequest = new MetadataRequest( settings.getMetadataRepositories() );
+        }
         if ( metadataResult == null )
         {
             metadataResult = metadataResolver.resolveMetadata( metadataRequest );
@@ -128,6 +132,11 @@ public class DefaultResolver
         else
         {
             compatVersion = artifact.getVersion();
+        }
+
+        if ( mockAgent == null )
+        {
+            mockAgent = new MockAgent( logger );
         }
 
         if ( metadata == null && mockAgent.tryInstallArtifact( artifact ) )

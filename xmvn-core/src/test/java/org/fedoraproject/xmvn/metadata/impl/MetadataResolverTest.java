@@ -22,9 +22,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -33,15 +31,21 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
+import org.fedoraproject.xmvn.test.AbstractTest;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class MetadataResolverTest
-    extends InjectedTest
+    extends AbstractTest
 {
-    @Inject
     private MetadataResolver metadataResolver;
+
+    @Before
+    public void setUp()
+    {
+        metadataResolver = new DefaultMetadataResolver();
+    }
 
     /**
      * Test if metadata resolution works for exact version.

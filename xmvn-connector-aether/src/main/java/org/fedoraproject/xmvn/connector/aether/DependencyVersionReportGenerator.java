@@ -24,8 +24,7 @@ import java.util.stream.Collectors;
 
 import org.apache.maven.execution.AbstractExecutionListener;
 import org.apache.maven.execution.ExecutionEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.codehaus.plexus.logging.Logger;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
@@ -40,9 +39,14 @@ class DependencyVersionReportGenerator
     extends AbstractExecutionListener
     implements ResolutionListener
 {
-    private final Logger logger = LoggerFactory.getLogger( DependencyVersionReportGenerator.class );
+    private Logger logger;
 
     private final Map<Artifact, ResolutionResult> data = new LinkedHashMap<>();
+
+    public DependencyVersionReportGenerator( Logger logger )
+    {
+        this.logger = logger;
+    }
 
     @Override
     public void resolutionRequested( ResolutionRequest request )
@@ -77,13 +81,13 @@ class DependencyVersionReportGenerator
             }
             requestedVersions.add( artifact.getVersion() );
 
-            logger.debug( "  {} => {}, provided by {}", artifact, result.getCompatVersion(), provider );
+            logger.debug( "  " + artifact + " => " + result.getCompatVersion() + ", provided by " + provider );
         } );
 
         logger.debug( "Simplified XMvn dependency report:" );
         logger.debug( "<pkg-name> (<rpm-version>): <requested-versions>" );
         shortReport.forEach( ( provider, versions ) -> {
-            logger.debug( "  {}: {}", provider, versions.stream().collect( Collectors.joining( ", " ) ) );
+            logger.debug( "  " + provider + ": " + versions.stream().collect( Collectors.joining( ", " ) ) );
         } );
     }
 }

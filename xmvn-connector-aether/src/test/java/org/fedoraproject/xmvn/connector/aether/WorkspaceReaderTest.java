@@ -23,16 +23,12 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import com.google.inject.Binder;
-import com.google.inject.name.Named;
 import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,19 +42,20 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  */
 @RunWith( EasyMockRunner.class )
 public class WorkspaceReaderTest
-    extends InjectedTest
+    extends AbstractTest
 {
-    @Inject
-    @Named( "ide" )
     private WorkspaceReader workspace;
 
     @Mock
     private Resolver resolver;
 
-    @Override
-    public void configure( Binder binder )
+    @Before
+    public void setUp()
+        throws Exception
     {
-        binder.bind( Resolver.class ).toInstance( resolver );
+        getContainer().addComponent( resolver, Resolver.class, "default" );
+
+        workspace = lookup( WorkspaceReader.class, "ide" );
     }
 
     @Test

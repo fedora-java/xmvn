@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
+
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -49,12 +49,12 @@ import org.fedoraproject.xmvn.logging.impl.Logger;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = Configurator.class )
 public class DefaultConfigurator
     implements Configurator
 {
-    private final Logger logger;
+    @Requirement
+    private Logger logger = new ConsoleLogger();
 
     private final ConfigurationMerger merger = new ConfigurationMerger();
 
@@ -63,17 +63,6 @@ public class DefaultConfigurator
     private Configuration cachedDefaultConfiguration;
 
     private List<Path> configFiles;
-
-    public DefaultConfigurator()
-    {
-        this( new ConsoleLogger() );
-    }
-
-    @Inject
-    public DefaultConfigurator( Logger logger )
-    {
-        this.logger = logger;
-    }
 
     private Configuration loadConfigurationFromStream( InputStream stream )
         throws IOException

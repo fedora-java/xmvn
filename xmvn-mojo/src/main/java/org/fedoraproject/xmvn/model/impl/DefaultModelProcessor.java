@@ -21,9 +21,6 @@ import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.ActivationFile;
 import org.apache.maven.model.ActivationOS;
@@ -71,8 +68,6 @@ import org.fedoraproject.xmvn.model.ModelVisitor;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
 public class DefaultModelProcessor
     implements ModelProcessor
 {

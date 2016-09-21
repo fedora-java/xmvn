@@ -15,37 +15,49 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.eclipse.aether.repository.WorkspaceReader;
-import org.junit.Test;
+import org.junit.Before;
 
 /**
  * @author Mikolaj Izdebski
  */
-public class PlexusTest
+public abstract class AbstractTest
 {
+    private PlexusContainer container;
+
+    public PlexusContainer getContainer()
+    {
+        return container;
+    }
+
     /**
      * Test if XMvn WorkspaceReader component can be loaded by Sisu Plexus shim.
      * 
      * @throws Exception
      */
-    @Test
-    public void testPlexusComponentLookup()
+    @Before
+    public void setupPlexusContainer()
         throws Exception
     {
         ContainerConfiguration config = new DefaultContainerConfiguration();
         config.setAutoWiring( true );
         config.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
-        PlexusContainer container = new DefaultPlexusContainer( config );
-        WorkspaceReader component = container.lookup( WorkspaceReader.class, "ide" );
-        assertNotNull( component );
-        assertEquals( XMvnWorkspaceReader.class, component.getClass() );
+        container = new DefaultPlexusContainer( config );
+    }
+
+    public <T> T lookup( Class<T> role )
+        throws Exception
+    {
+        return container.lookup( role );
+    }
+
+    public <T> T lookup( Class<T> role, String hint )
+        throws Exception
+    {
+        return container.lookup( role, hint );
     }
 }

@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.connector.aether;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,17 +28,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.execution.MojoExecutionEvent;
 import org.apache.maven.execution.MojoExecutionListener;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.sisu.bean.BeanProperties;
-import org.eclipse.sisu.bean.BeanProperty;
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -47,8 +44,7 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = MojoExecutionListener.class, hint = "xmvn" )
 public class XMvnMojoExecutionListener
     implements MojoExecutionListener, ResolutionListener
 {
@@ -122,6 +118,31 @@ public class XMvnMojoExecutionListener
             }
 
             throw new MojoExecutionException( "Unable to find bean property getter method " + getterName );
+        }
+        catch ( ReflectiveOperationException e )
+        {
+            throw new MojoExecutionException( "Failed to get bean property", e );
+        }
+    }
+
+    private static void trySetBeanProperty( Object bean, String fieldName, Object value )
+        throws MojoExecutionException
+    {
+        try
+        {
+            for ( Class<?> clazz = bean.getClass(); clazz != null; clazz = clazz.getSuperclass() )
+            {
+                try
+                {
+                    Field field = clazz.getDeclaredField( fieldName );
+                    field.setAccessible( true );
+                    field.set( bean, value );
+                    return;
+                }
+                catch ( NoSuchFieldException e )
+                {
+                }
+            }
         }
         catch ( ReflectiveOperationException e )
         {
@@ -216,6 +237,7 @@ public class XMvnMojoExecutionListener
 
     @Override
     public void beforeMojoExecution( MojoExecutionEvent event )
+        throws MojoExecutionException
     {
         Mojo mojo = event.getMojo();
         MojoExecution execution = event.getExecution();
@@ -223,19 +245,11 @@ public class XMvnMojoExecutionListener
         // Disable doclint
         if ( JAVADOC_AGGREGATE.equals( execution ) )
         {
-            for ( BeanProperty<Object> property : new BeanProperties( mojo.getClass() ) )
-            {
-                if ( property.getName().equals( "additionalparam" ) )
-                    property.set( mojo, "-Xdoclint:none" );
-            }
+            trySetBeanProperty( mojo, "additionalparam", "-Xdoclint:none" );
         }
         else if ( XMVN_BUILDDEP.equals( execution ) )
         {
-            for ( BeanProperty<Object> property : new BeanProperties( mojo.getClass() ) )
-            {
-                if ( property.getName().equals( "resolutions" ) )
-                    property.set( mojo, Collections.unmodifiableList( new ArrayList<>( resolutions ) ) );
-            }
+            trySetBeanProperty( mojo, "resolutions", Collections.unmodifiableList( new ArrayList<>( resolutions ) ) );
         }
     }
 

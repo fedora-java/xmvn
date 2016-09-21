@@ -18,8 +18,6 @@ package org.fedoraproject.xmvn.connector.aether;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.inject.Inject;
-
 import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
@@ -31,7 +29,6 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.eclipse.sisu.launch.InjectedTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,11 +38,8 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 /**
  * @author Roman Vais
  */
-
 public class PluginVersionResolverTest
-    extends InjectedTest
 {
-    @Inject
     @TestSubject
     private PluginVersionResolver resolver;
 
@@ -61,11 +55,10 @@ public class PluginVersionResolverTest
     private WorkspaceRepository repo;
 
     @Before
-    @Override
     public void setUp()
-        throws Exception
     {
-        super.setUp();
+        resolver = new XMvnPluginVersionResolver();
+
         rq = EasyMock.createMock( PluginVersionRequest.class );
         session = EasyMock.createMock( RepositorySystemSession.class );
         reader = EasyMock.createMock( WorkspaceReader.class );

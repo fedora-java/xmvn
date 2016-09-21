@@ -22,9 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
+
+import org.codehaus.plexus.component.annotations.Component;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.DependencyDescriptor;
@@ -47,8 +47,7 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
  * 
  * @author Mikolaj Izdebski
  */
-@Named
-@Singleton
+@Component( role = Deployer.class )
 public class DefaultDeployer
     implements Deployer
 {

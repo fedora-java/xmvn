@@ -20,10 +20,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Build;
@@ -35,10 +31,12 @@ import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
+import org.apache.maven.model.validation.ModelValidator;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.BuildSettings;
@@ -49,20 +47,15 @@ import org.fedoraproject.xmvn.config.Configurator;
  * 
  * @author Mikolaj Izdebski
  */
-@Named( "default" )
-@Singleton
+@Component( role = ModelValidator.class )
 public class XMvnModelValidator
     extends DefaultModelValidator
 {
-    private final Logger logger = LoggerFactory.getLogger( XMvnModelValidator.class );
+    @Requirement
+    private Logger logger;
 
-    private final Configurator configurator;
-
-    @Inject
-    public XMvnModelValidator( Configurator configurator )
-    {
-        this.configurator = configurator;
-    }
+    @Requirement
+    private Configurator configurator;
 
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
@@ -97,7 +90,7 @@ public class XMvnModelValidator
 
         if ( StringUtils.isEmpty( version ) )
         {
-            logger.debug( "Missing version of dependency {}, using {}.", id, Artifact.DEFAULT_VERSION );
+            logger.debug( "Missing version of dependency " + id + ", using " + Artifact.DEFAULT_VERSION + "." );
             return Artifact.DEFAULT_VERSION;
         }
 
@@ -105,15 +98,15 @@ public class XMvnModelValidator
         {
             if ( VersionRange.createFromVersionSpec( version ).getRecommendedVersion() == null )
             {
-                logger.debug( "Dependency {} has no recommended version, falling back to {}.", id,
-                              Artifact.DEFAULT_VERSION );
+                logger.debug( "Dependency " + id + " has no recommended version, falling back to "
+                    + Artifact.DEFAULT_VERSION + "." );
                 return Artifact.DEFAULT_VERSION;
             }
         }
         catch ( InvalidVersionSpecificationException e )
         {
-            logger.debug( "Dependency {} is using invalid version range, falling back to {}.", id,
-                          Artifact.DEFAULT_VERSION );
+            logger.debug( "Dependency " + id + " is using invalid version range, falling back to "
+                + Artifact.DEFAULT_VERSION + "." );
             return Artifact.DEFAULT_VERSION;
         }
 

@@ -29,15 +29,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -56,7 +54,6 @@ import org.fedoraproject.xmvn.deployer.DeploymentResult;
  * @author Mikolaj Izdebski
  */
 @Mojo( name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
-@Named
 public class InstallMojo
     extends AbstractMojo
 {
@@ -85,10 +82,15 @@ public class InstallMojo
     @Parameter( readonly = true, defaultValue = "${repositorySystemSession}" )
     private RepositorySystemSession repoSession;
 
-    private final Deployer deployer;
+    @Component
+    private Deployer deployer;
 
-    @Inject
-    public InstallMojo( Deployer deployer )
+    public InstallMojo()
+    {
+        // No-argument constructor is required by Plexus
+    }
+
+    InstallMojo( Deployer deployer )
     {
         this.deployer = deployer;
     }

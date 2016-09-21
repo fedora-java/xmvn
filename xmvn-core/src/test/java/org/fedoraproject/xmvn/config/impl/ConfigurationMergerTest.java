@@ -19,23 +19,27 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
 
-import javax.inject.Inject;
-
-import org.eclipse.sisu.launch.InjectedTest;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
+import org.fedoraproject.xmvn.test.AbstractTest;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class ConfigurationMergerTest
-    extends InjectedTest
+    extends AbstractTest
 {
-    @Inject
     private ConfigurationMerger merger;
+
+    @Before
+    public void setUp()
+    {
+        merger = new ConfigurationMerger();
+    }
 
     private static String toString( Configuration conf )
         throws Exception
