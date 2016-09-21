@@ -195,7 +195,7 @@ public final class JarUtils
         }
         catch ( ReflectiveOperationException e )
         {
-            // This hack relies on OpenJDK internals and therefore is not ugarranteed to work. Ignore failures.
+            // This hack relies on OpenJDK internals and therefore is not guaranteed to work. Ignore failures.
         }
     }
 
