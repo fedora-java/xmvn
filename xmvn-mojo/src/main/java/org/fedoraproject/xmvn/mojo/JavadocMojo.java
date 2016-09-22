@@ -241,7 +241,8 @@ public class JavadocMojo
 
             ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "@args" );
             pb.directory( outputDir.toFile() );
-            pb.redirectOutput( Redirect.INHERIT );
+            pb.redirectInput( new File( "/dev/null" ) );
+            pb.redirectOutput( new File( "/dev/null" ) );
             pb.redirectError( Redirect.INHERIT );
             Process process = pb.start();
 
