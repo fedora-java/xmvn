@@ -15,12 +15,16 @@
  */
 package org.fedoraproject.xmvn.logging.impl;
 
+import java.lang.reflect.Method;
+
 import org.codehaus.plexus.component.annotations.Component;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
+ * @author Roman Vais
  */
+
 @Component( role = Logger.class )
 public class Slf4jLoggerAdapter
     implements Logger
@@ -35,6 +39,34 @@ public class Slf4jLoggerAdapter
             System.setProperty( "org.slf4j.simpleLogger.log.XMvn", "trace" );
 
         delegate = LoggerFactory.getLogger( "XMvn" );
+
+        try
+        {
+            Class<?> gossipLogClass = Class.forName( "com.planet57.gossip.Gossip$LoggerImpl" );
+            boolean isGossipLogger = gossipLogClass.isAssignableFrom( delegate.getClass() );
+
+            try
+            {
+                if ( isGossipLogger && debug )
+                {
+                    Class<?> levelClass = Class.forName( "com.planet57.gossip.Level" );
+                    Method setLogLevel = delegate.getClass().getMethod( "setLevel", levelClass );
+
+                    Object lvl = levelClass.getField( "ALL" ).get( levelClass );
+
+                    setLogLevel.invoke( delegate, lvl );
+                }
+
+            }
+            catch ( ReflectiveOperationException e )
+            {
+                delegate.error( "Unable to set logging level to 'debug' for Gossip logger implementation.", e );
+            }
+        }
+        catch ( ClassNotFoundException ex )
+        {
+
+        }
     }
 
     @Override
