@@ -139,7 +139,7 @@ public class DefaultMetadataResolver
                 catch ( ExecutionException e )
                 {
                     // Ignore. Failure to read PackageMetadata of a single package should not break the whole system
-                    logger.debug( "Skipping metadata file {}", path, e );
+                    logger.debug( "Skipping metadata file {}: {}", path, e );
                 }
             }
 
