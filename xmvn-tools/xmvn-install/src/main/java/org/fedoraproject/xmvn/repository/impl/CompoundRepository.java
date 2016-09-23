@@ -49,6 +49,11 @@ class CompoundRepository
         this.slaveRepositories = slaveRepositories;
     }
 
+    private Path prefix( Path path )
+    {
+        return prefix == null ? path : prefix.resolve( path );
+    }
+
     @Override
     public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
     {
@@ -57,7 +62,7 @@ class CompoundRepository
             Path path = repository.getPrimaryArtifactPath( artifact, context, pattern );
             if ( path != null )
             {
-                return prefix == null ? path : prefix.resolve( path );
+                return prefix( path );
             }
         }
 
@@ -71,7 +76,10 @@ class CompoundRepository
 
         for ( Repository repository : slaveRepositories )
         {
-            rootPaths.addAll( repository.getRootPaths() );
+            for ( Path rootPath : repository.getRootPaths() )
+            {
+                rootPaths.add( prefix( rootPath ) );
+            }
         }
 
         return Collections.unmodifiableSet( rootPaths );
