@@ -17,16 +17,13 @@ package org.fedoraproject.xmvn.logging.impl;
 
 import java.lang.reflect.Method;
 
-import org.codehaus.plexus.component.annotations.Component;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
  * @author Roman Vais
  */
-
-@Component( role = Logger.class )
-public class Slf4jLoggerAdapter
+class Slf4jLoggerAdapter
     implements Logger
 {
     private final org.slf4j.Logger delegate;
@@ -36,12 +33,16 @@ public class Slf4jLoggerAdapter
         boolean debug = System.getProperty( "xmvn.debug" ) != null;
 
         if ( debug )
+        {
+            // Try enabling debug output slf4j-simple logger (used in Maven 3.1.x through 3.3.x)
             System.setProperty( "org.slf4j.simpleLogger.log.XMvn", "trace" );
+        }
 
         delegate = LoggerFactory.getLogger( "XMvn" );
 
         try
         {
+            // Try enabling debug output for Gossip logger (Maven 3.4.0+)
             Class<?> gossipLogClass = Class.forName( "com.planet57.gossip.Gossip$LoggerImpl" );
             boolean isGossipLogger = gossipLogClass.isAssignableFrom( delegate.getClass() );
 
@@ -60,12 +61,12 @@ public class Slf4jLoggerAdapter
             }
             catch ( ReflectiveOperationException e )
             {
-                delegate.error( "Unable to set logging level to 'debug' for Gossip logger implementation.", e );
+                delegate.error( "Unable to set logging level for Gossip logger implementation.", e );
             }
         }
         catch ( ClassNotFoundException ex )
         {
-
+            // Gossip is not in use
         }
     }
 
