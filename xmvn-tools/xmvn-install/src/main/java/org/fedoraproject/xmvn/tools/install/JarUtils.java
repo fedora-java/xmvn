@@ -158,6 +158,10 @@ public final class JarUtils
             LOGGER.debug( "I/O exception caught when trying to determine whether JAR uses native code: {}", jar, e );
             return false;
         }
+        catch ( IllegalArgumentException e )
+        {
+            return false;
+        }
     }
 
     private static void putAttribute( Manifest manifest, String key, String value, String defaultValue )
