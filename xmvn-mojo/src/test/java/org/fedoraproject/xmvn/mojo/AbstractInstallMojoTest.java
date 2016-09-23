@@ -24,6 +24,7 @@ import java.io.File;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
 import org.easymock.Mock;
 import org.easymock.MockType;
 import org.junit.Before;
@@ -41,6 +42,9 @@ public abstract class AbstractInstallMojoTest
     @Mock( type = MockType.NICE )
     private ArtifactHandler artifactHandler;
 
+    @Mock( type = MockType.NICE )
+    private Logger logger;
+
     protected MavenProject getProject()
     {
         return project;
@@ -49,6 +53,11 @@ public abstract class AbstractInstallMojoTest
     protected Artifact getArtifact()
     {
         return artifact;
+    }
+
+    protected Logger getLogger()
+    {
+        return logger;
     }
 
     protected abstract File getArtifactFile()
@@ -68,12 +77,12 @@ public abstract class AbstractInstallMojoTest
         expect( artifactHandler.getExtension() ).andReturn( "jar" ).anyTimes();
         expect( artifactHandler.getClassifier() ).andReturn( "" ).anyTimes();
 
-        replay( artifact, artifactHandler );
+        replay( artifact, artifactHandler, logger );
     }
 
     protected void verifyMojoMocks()
     {
-        verify( artifact, artifactHandler );
+        verify( artifact, artifactHandler, logger );
     }
 
     @Before

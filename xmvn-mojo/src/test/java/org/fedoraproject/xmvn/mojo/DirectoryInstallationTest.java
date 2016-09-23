@@ -71,7 +71,7 @@ public class DirectoryInstallationTest
 
         getProject().setArtifact( getArtifact() );
 
-        InstallMojo mojo = new InstallMojo( deployer );
+        InstallMojo mojo = new InstallMojo( deployer, getLogger() );
         mojo.setReactorProjects( Collections.singletonList( getProject() ) );
         mojo.execute();
 

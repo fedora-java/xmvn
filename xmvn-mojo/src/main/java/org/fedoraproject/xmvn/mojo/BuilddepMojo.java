@@ -44,11 +44,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -92,7 +91,8 @@ public class BuilddepMojo
         }
     }
 
-    private final Logger logger = LoggerFactory.getLogger( BuilddepMojo.class );
+    @Component
+    private Logger logger;
 
     @Parameter( defaultValue = "xmvn.builddep.skip" )
     private boolean skip;

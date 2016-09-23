@@ -45,12 +45,11 @@ import org.apache.maven.project.DependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectDependenciesResolver;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.util.filter.AndDependencyFilter;
 import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Mikolaj Izdebski
@@ -59,7 +58,8 @@ import org.slf4j.LoggerFactory;
 public class JavadocMojo
     extends AbstractMojo
 {
-    private final Logger logger = LoggerFactory.getLogger( JavadocMojo.class );
+    @Component
+    private Logger logger;
 
     @Component
     private ProjectDependenciesResolver resolver;

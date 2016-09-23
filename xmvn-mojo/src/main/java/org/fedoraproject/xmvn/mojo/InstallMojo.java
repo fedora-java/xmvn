@@ -40,9 +40,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.RepositorySystemSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -74,7 +73,8 @@ public class InstallMojo
         return TYCHO_PACKAGING_TYPES.contains( project.getPackaging() );
     }
 
-    private final Logger logger = LoggerFactory.getLogger( InstallMojo.class );
+    @Component
+    private Logger logger;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
@@ -90,9 +90,10 @@ public class InstallMojo
         // No-argument constructor is required by Plexus
     }
 
-    InstallMojo( Deployer deployer )
+    InstallMojo( Deployer deployer, Logger logger )
     {
         this.deployer = deployer;
+        this.logger = logger;
     }
 
     void setReactorProjects( List<MavenProject> reactorProjects )
@@ -130,8 +131,8 @@ public class InstallMojo
             {
                 systemDepsFound = true;
 
-                logger.error( "Reactor project {} has system-scoped dependencies: {}",
-                              aetherArtifact( project.getArtifact() ), Utils.collectionToString( systemDeps, true ) );
+                logger.error( "Reactor project " + aetherArtifact( project.getArtifact() )
+                    + " has system-scoped dependencies: " + Utils.collectionToString( systemDeps, true ) );
             }
         }
 
@@ -204,13 +205,13 @@ public class InstallMojo
         {
             Artifact mainArtifact = aetherArtifact( project.getArtifact() );
             Path mainArtifactPath = mainArtifact.getPath();
-            logger.debug( "Installing main artifact {}", mainArtifact );
-            logger.debug( "Artifact file is {}", mainArtifactPath );
+            logger.debug( "Installing main artifact " + mainArtifact );
+            logger.debug( "Artifact file is " + mainArtifactPath );
 
             if ( mainArtifactPath != null && !Files.isRegularFile( mainArtifactPath ) )
             {
-                logger.info( "Skipping installation of artifact {}: artifact file is not a regular file",
-                             mainArtifactPath );
+                logger.info( "Skipping installation of artifact " + mainArtifactPath
+                    + ": artifact file is not a regular file" );
                 mainArtifactPath = null;
             }
 
@@ -225,7 +226,7 @@ public class InstallMojo
                                          mainArtifact.getClassifier(), mainArtifact.getVersion() );
                 File rawPomFile = project.getFile();
                 Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
-                logger.debug( "Raw POM path: {}", rawPomPath );
+                logger.debug( "Raw POM path: " + rawPomPath );
                 rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
                 deployArtifact( rawPomArtifact, type, project.getModel() );
             }
@@ -237,13 +238,13 @@ public class InstallMojo
             for ( Artifact attachedArtifact : attachedArtifacts )
             {
                 Path attachedArtifactPath = attachedArtifact.getPath();
-                logger.debug( "Installing attached artifact {}", attachedArtifact );
-                logger.debug( "Artifact file is {}", attachedArtifactPath );
+                logger.debug( "Installing attached artifact " + attachedArtifact );
+                logger.debug( "Artifact file is " + attachedArtifactPath );
 
                 if ( attachedArtifactPath != null && !Files.isRegularFile( attachedArtifactPath ) )
                 {
-                    logger.info( "Skipping installation of attached artifact {}: artifact file is not a regular file",
-                                 attachedArtifact );
+                    logger.info( "Skipping installation of attached artifact " + attachedArtifact
+                        + ": artifact file is not a regular file" );
                     continue;
                 }
 
