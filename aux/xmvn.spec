@@ -54,16 +54,13 @@ BuildRequires:  objectweb-asm
 BuildRequires:  modello
 BuildRequires:  xmlunit
 BuildRequires:  apache-ivy
-BuildRequires:  sisu-mojos
 BuildRequires:  junit
 BuildRequires:  easymock
 BuildRequires:  gradle >= 2.5
 BuildRequires:  maven-invoker
-
-# Required for integration tests only
-%if %{with its}
+BuildRequires:  plexus-containers-container-default
+BuildRequires:  plexus-containers-component-annotations
 BuildRequires:  plexus-containers-component-metadata
-%endif
 
 Requires:       xmvn-minimal = %{version}-%{release}
 Requires:       maven >= 3.4.0
