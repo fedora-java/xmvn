@@ -181,25 +181,25 @@ public class DefaultConfigurator
             // 1. artifact configuration: pom.xml
             configFiles = new ArrayList<>();
 
-            // 2. reactor configuration directory: $PWD/.xmvn/conf.d/
+            // 2. reactor configuration directory: $PWD/.xmvn/config.d/
             addConfigDir( reactorConfDir.resolve( "config.d" ) );
             // 3. reactor configuration file: $PWD/.xmvn/configuration.xml
             addConfigFile( reactorConfDir.resolve( "configuration.xml" ) );
 
-            // 4. user configuration directory: $XDG_CONFIG_HOME/xmvn/conf.d/
+            // 4. user configuration directory: $XDG_CONFIG_HOME/xmvn/config.d/
             // 5. user configuration file: $XDG_CONFIG_HOME/xmvn/configuration.xml
             addXdgBasePath( getEnvDefault( "XDG_CONFIG_HOME", xdgHome.resolve( ".config" ) ) );
 
-            // 6. user data directory: $XDG_DATA_HOME/xmvn/conf.d/
+            // 6. user data directory: $XDG_DATA_HOME/xmvn/config.d/
             // 7. user data file: $XDG_DATA_HOME/xmvn/configuration.xml
             addXdgBasePath( getEnvDefault( "XDG_DATA_HOME", xdgHome.resolve( ".local" ).resolve( "share" ) ) );
 
-            // 8. system configuration directories: $XDG_CONFIG_DIRS/xmvn/conf.d/
+            // 8. system configuration directories: $XDG_CONFIG_DIRS/xmvn/config.d/
             // 9. system configuration files: $XDG_CONFIG_DIRS/xmvn/configuration.xml
             for ( String part : getEnvDefault( "XDG_CONFIG_DIRS", "/etc/xdg" ).split( ":+" ) )
                 addXdgBasePath( part );
 
-            // 10. system data directories: $XDG_DATA_DIRS/xmvn/conf.d/
+            // 10. system data directories: $XDG_DATA_DIRS/xmvn/config.d/
             // 11. system data files: $XDG_DATA_DIRS/xmvn/configuration.xml
             for ( String part : getEnvDefault( "XDG_DATA_DIRS", "/usr/local/share:/usr/share" ).split( ":+" ) )
                 addXdgBasePath( part );
