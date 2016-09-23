@@ -133,7 +133,7 @@ public final class JarUtils
                 if ( ent.isDirectory() || !entryName.endsWith( ".class" ) )
                     continue;
 
-                new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM5 )
+                new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM4 )
                 {
                     @Override
                     public MethodVisitor visitMethod( int flags, String name, String desc, String sig, String[] exc )
