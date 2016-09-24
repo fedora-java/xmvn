@@ -19,7 +19,6 @@ import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.execution.MojoExecutionListener;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
@@ -40,14 +39,13 @@ public class XMvnMavenLifecycleParticipant
     @Requirement( role = WorkspaceReader.class, hint = "ide", optional = true )
     private XMvnWorkspaceReader workspaceReader;
 
-    @Requirement( role = MojoExecutionListener.class, hint = "xmvn" )
+    @Requirement( role = XMvnMojoExecutionListener.class )
     private XMvnMojoExecutionListener mojoExecutionListener;
 
     @Override
     public void afterSessionStart( MavenSession session )
         throws MavenExecutionException
     {
-
         MavenExecutionRequest request = session.getRequest();
 
         DependencyVersionReportGenerator reportGenerator = new DependencyVersionReportGenerator( logger );

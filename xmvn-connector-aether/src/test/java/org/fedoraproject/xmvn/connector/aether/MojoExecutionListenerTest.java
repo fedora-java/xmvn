@@ -15,9 +15,6 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import org.apache.maven.execution.MojoExecutionEvent;
-import org.apache.maven.execution.MojoExecutionListener;
-import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.easymock.EasyMock;
@@ -35,10 +32,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith( EasyMockRunner.class )
 public class MojoExecutionListenerTest
-    extends AbstractTest
 {
     private interface MojoBeanProperty
-        extends Mojo
     {
         public String getReportOutputDirectory();
 
@@ -58,9 +53,6 @@ public class MojoExecutionListenerTest
     private XMvnMojoExecutionListener listener;
 
     @Mock( type = MockType.STRICT )
-    private MojoExecutionEvent event;
-
-    @Mock( type = MockType.STRICT )
     // MojoBeanProperty interface extends Mojo interface, so this is ok (and required).
     private MojoBeanProperty mojo;
 
@@ -77,19 +69,16 @@ public class MojoExecutionListenerTest
     public void setUp()
         throws Exception
     {
-        listener = (XMvnMojoExecutionListener) lookup( MojoExecutionListener.class, "xmvn" );
+        listener = new XMvnMojoExecutionListener();
 
         listener.setXmvnStateDir( tempDir.getRoot().toPath() );
 
-        event = EasyMock.createMock( MojoExecutionEvent.class );
         // MojoBeanProperty interface extends Mojo interface, so this is ok (and required).
         mojo = EasyMock.createMock( MojoBeanProperty.class );
         exec = EasyMock.createMock( MojoExecution.class );
         project = EasyMock.createMock( MavenProject.class );
 
-        EasyMock.expect( event.getMojo() ).andReturn( mojo ).atLeastOnce();
-        EasyMock.expect( event.getExecution() ).andReturn( exec ).atLeastOnce();
-        EasyMock.replay( event, mojo, exec, project );
+        EasyMock.replay( mojo, exec, project );
     }
 
     @Test
@@ -103,7 +92,7 @@ public class MojoExecutionListenerTest
         EasyMock.expect( exec.getGoal() ).andReturn( "aggregate" ).once();
         EasyMock.replay( exec );
 
-        listener.beforeMojoExecution( event );
+        listener.beforeMojoExecution( mojo, exec );
         EasyMock.verify( exec );
 
         // tests xmvn build deep
@@ -113,7 +102,7 @@ public class MojoExecutionListenerTest
         EasyMock.expect( exec.getGoal() ).andReturn( "builddep" ).once();
         EasyMock.replay( exec );
 
-        listener.beforeMojoExecution( event );
+        listener.beforeMojoExecution( mojo, exec );
         EasyMock.verify( exec );
 
         // tests nonexistent
@@ -123,8 +112,8 @@ public class MojoExecutionListenerTest
         EasyMock.expect( exec.getGoal() ).andReturn( "builddep" ).anyTimes();
         EasyMock.replay( exec );
 
-        listener.beforeMojoExecution( event );
-        EasyMock.verify( event, mojo, exec );
+        listener.beforeMojoExecution( mojo, exec );
+        EasyMock.verify( mojo, exec );
 
     }
 
@@ -133,17 +122,14 @@ public class MojoExecutionListenerTest
         throws Exception
     {
         // tests JAVADOC_AGGREGATE
-        EasyMock.reset( exec, event, mojo );
+        EasyMock.reset( exec, mojo );
         EasyMock.expect( mojo.getReportOutputDirectory() ).andReturn( "/tmp/foo/bar" ).once();
         EasyMock.expect( exec.getGroupId() ).andReturn( "org.apache.maven.plugins" ).once();
         EasyMock.expect( exec.getArtifactId() ).andReturn( "maven-javadoc-plugin" ).once();
         EasyMock.expect( exec.getGoal() ).andReturn( "aggregate" ).once();
-        EasyMock.expect( event.getMojo() ).andReturn( mojo ).atLeastOnce();
-        EasyMock.expect( event.getExecution() ).andReturn( exec ).atLeastOnce();
-        EasyMock.expect( event.getProject() ).andReturn( project ).atLeastOnce();
-        EasyMock.replay( exec, event, mojo );
+        EasyMock.replay( exec, mojo );
 
-        listener.afterMojoExecutionSuccess( event );
+        listener.afterMojoExecution( mojo, exec, project );
         EasyMock.verify( exec );
 
         // tests XMVN_BUILDDEP
@@ -153,7 +139,7 @@ public class MojoExecutionListenerTest
         EasyMock.expect( exec.getGoal() ).andReturn( "builddep" ).once();
         EasyMock.replay( exec );
 
-        listener.afterMojoExecutionSuccess( event );
+        listener.afterMojoExecution( mojo, exec, project );
         EasyMock.verify( exec );
 
         // tests XMVN_JAVADOC
@@ -165,7 +151,7 @@ public class MojoExecutionListenerTest
         EasyMock.expect( exec.getGoal() ).andReturn( "javadoc" ).once();
         EasyMock.replay( exec, mojo );
 
-        listener.afterMojoExecutionSuccess( event );
+        listener.afterMojoExecution( mojo, exec, project );
         EasyMock.verify( exec );
 
         // tests MAVEN_COMPILE
@@ -180,7 +166,7 @@ public class MojoExecutionListenerTest
         EasyMock.expect( project.getVersion() ).andReturn( "1.0.0" ).times( 2 );
         EasyMock.replay( exec, mojo, project );
 
-        listener.afterMojoExecutionSuccess( event );
+        listener.afterMojoExecution( mojo, exec, project );
         EasyMock.verify( exec );
 
         // tests TYCHO_COMPILE
@@ -195,7 +181,7 @@ public class MojoExecutionListenerTest
         EasyMock.expect( project.getVersion() ).andReturn( "1.0.0" ).times( 2 );
         EasyMock.replay( exec, mojo, project );
 
-        listener.afterMojoExecutionSuccess( event );
+        listener.afterMojoExecution( mojo, exec, project );
         EasyMock.verify( exec );
 
         // tests nonexistent
@@ -205,8 +191,8 @@ public class MojoExecutionListenerTest
         EasyMock.expect( exec.getGoal() ).andReturn( "builddep" ).anyTimes();
         EasyMock.replay( exec );
 
-        listener.afterMojoExecutionSuccess( event );
-        EasyMock.verify( event, mojo, exec );
+        listener.afterMojoExecution( mojo, exec, project );
+        EasyMock.verify( mojo, exec );
 
     }
 

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,13 +29,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.maven.execution.MojoExecutionEvent;
-import org.apache.maven.execution.MojoExecutionListener;
-import org.apache.maven.plugin.Mojo;
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.LegacySupport;
+import org.apache.maven.plugin.MavenPluginManager;
 import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -44,9 +46,9 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = MojoExecutionListener.class, hint = "xmvn" )
+@Component( role = XMvnMojoExecutionListener.class )
 public class XMvnMojoExecutionListener
-    implements MojoExecutionListener, ResolutionListener
+    implements ResolutionListener, Initializable
 {
     private static class MojoGoal
     {
@@ -90,6 +92,15 @@ public class XMvnMojoExecutionListener
                                                                "xmvn-mojo", //
                                                                "javadoc" );
 
+    @Requirement
+    private BuildPluginManager buildPluginManager;
+
+    @Requirement
+    private MavenPluginManager mavenPluginManager;
+
+    @Requirement
+    private LegacySupport legacySupport;
+
     private Path xmvnStateDir = Paths.get( ".xmvn" );
 
     void setXmvnStateDir( Path xmvnStateDir )
@@ -97,10 +108,35 @@ public class XMvnMojoExecutionListener
         this.xmvnStateDir = xmvnStateDir;
     }
 
+    private Object dispatchBuildPluginManagerMethodCall( Object proxy, Method method, Object[] args )
+        throws Throwable
+    {
+        Object ret = method.invoke( mavenPluginManager, args );
+
+        if ( method.getName().equals( "getConfiguredMojo" ) )
+        {
+            beforeMojoExecution( ret, (MojoExecution) args[2] );
+        }
+        else if ( method.getName().equals( "releaseMojo" ) )
+        {
+            afterMojoExecution( args[0], (MojoExecution) args[1], legacySupport.getSession().getCurrentProject() );
+        }
+
+        return ret;
+    }
+
+    @Override
+    public void initialize()
+    {
+        Object proxy = Proxy.newProxyInstance( XMvnMojoExecutionListener.class.getClassLoader(),
+                                               new Class<?>[] { MavenPluginManager.class },
+                                               this::dispatchBuildPluginManagerMethodCall );
+        trySetBeanProperty( buildPluginManager, "mavenPluginManager", proxy );
+    }
+
     private final List<String[]> resolutions = new ArrayList<>();
 
     private static String getBeanProperty( Object bean, String getterName )
-        throws MojoExecutionException
     {
         try
         {
@@ -117,16 +153,15 @@ public class XMvnMojoExecutionListener
                 }
             }
 
-            throw new MojoExecutionException( "Unable to find bean property getter method " + getterName );
+            throw new RuntimeException( "Unable to find bean property getter method " + getterName );
         }
         catch ( ReflectiveOperationException e )
         {
-            throw new MojoExecutionException( "Failed to get bean property", e );
+            throw new RuntimeException( "Failed to get bean property", e );
         }
     }
 
     private static void trySetBeanProperty( Object bean, String fieldName, Object value )
-        throws MojoExecutionException
     {
         try
         {
@@ -146,12 +181,11 @@ public class XMvnMojoExecutionListener
         }
         catch ( ReflectiveOperationException e )
         {
-            throw new MojoExecutionException( "Failed to get bean property", e );
+            throw new RuntimeException( "Failed to get bean property", e );
         }
     }
 
     private void createApidocsSymlink( Path javadocDir )
-        throws MojoExecutionException
     {
         try
         {
@@ -167,12 +201,11 @@ public class XMvnMojoExecutionListener
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Failed to create apidocs symlink", e );
+            throw new RuntimeException( "Failed to create apidocs symlink", e );
         }
     }
 
     private void setProjectProperty( MavenProject project, String key, String value )
-        throws MojoExecutionException
     {
         Properties properties = new Properties();
 
@@ -201,18 +234,12 @@ public class XMvnMojoExecutionListener
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Failed to set project property", e );
+            throw new RuntimeException( "Failed to set project property", e );
         }
     }
 
-    @Override
-    public void afterMojoExecutionSuccess( MojoExecutionEvent event )
-        throws MojoExecutionException
+    void afterMojoExecution( Object mojo, MojoExecution execution, MavenProject project )
     {
-        Mojo mojo = event.getMojo();
-        MojoExecution execution = event.getExecution();
-        MavenProject project = event.getProject();
-
         if ( JAVADOC_AGGREGATE.equals( execution ) )
         {
             String javadocDir = getBeanProperty( mojo, "getReportOutputDirectory" );
@@ -235,13 +262,8 @@ public class XMvnMojoExecutionListener
         }
     }
 
-    @Override
-    public void beforeMojoExecution( MojoExecutionEvent event )
-        throws MojoExecutionException
+    void beforeMojoExecution( Object mojo, MojoExecution execution )
     {
-        Mojo mojo = event.getMojo();
-        MojoExecution execution = event.getExecution();
-
         // Disable doclint
         if ( JAVADOC_AGGREGATE.equals( execution ) )
         {
@@ -251,12 +273,6 @@ public class XMvnMojoExecutionListener
         {
             trySetBeanProperty( mojo, "resolutions", Collections.unmodifiableList( new ArrayList<>( resolutions ) ) );
         }
-    }
-
-    @Override
-    public void afterExecutionFailure( MojoExecutionEvent event )
-    {
-        // Nothing to do
     }
 
     @Override
