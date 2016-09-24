@@ -24,6 +24,12 @@ import os
 import sys
 import glob
 
+plan = False
+for i in reversed(range(1, len(sys.argv))):
+    if sys.argv[i] == '--plan':
+        plan = True
+        del sys.argv[i]
+
 prefix = ''
 if len(sys.argv) > 1:
     prefix = sys.argv[1]
@@ -96,13 +102,15 @@ for fragment in glob.glob(prefix + '/usr/share/maven-fragments/*'):
 
 
 print "<metadata>"
-print "  <uuid>dummy</uuid>"
+if not plan:
+    print "  <uuid>dummy</uuid>"
 print "  <artifacts>"
 
 for key, value in md.iteritems():
 
     print "    <artifact>"
-    print "      <uuid>dummy</uuid>"
+    if not plan:
+        print "      <uuid>dummy</uuid>"
     print "      <groupId>%s</groupId>" % key[0]
     print "      <artifactId>%s</artifactId>" % key[1]
     if key[2] != 'jar':
@@ -112,10 +120,14 @@ for key, value in md.iteritems():
     print "      <version>%s</version>" % key[4]
     print "      <path>%s</path>" % value[0]
     if value[1]:
-        print "      <compatVersions>"
-        for v in value[1]:
-            print "        <version>%s</version>" % v
-        print "      </compatVersions>"
+        if plan:
+            sys.stderr.write("Compat artifact: %s:%s:%s:%s:%s, versions: %s\n"
+                             % (key[0], key[1], key[2], key[3], key[4], ", ".join(value[1])))
+        else:
+            print "      <compatVersions>"
+            for v in value[1]:
+                print "        <version>%s</version>" % v
+            print "      </compatVersions>"
     print "      <properties>"
     print "        <xmvn.resolver.disableEffectivePom>true</xmvn.resolver.disableEffectivePom>"
     print "      </properties>"
