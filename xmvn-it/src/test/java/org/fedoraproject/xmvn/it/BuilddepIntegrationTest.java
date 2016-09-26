@@ -93,6 +93,14 @@ public class BuilddepIntegrationTest
     }
 
     @Test
+    public void testBuilddepPackaging()
+        throws Exception
+    {
+        expectBuildDependency( "junit", "junit" );
+        performBuilddepTest();
+    }
+
+    @Test
     public void testBuilddepReactorDependencies()
         throws Exception
     {
