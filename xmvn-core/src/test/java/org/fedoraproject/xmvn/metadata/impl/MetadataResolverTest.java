@@ -18,7 +18,9 @@ package org.fedoraproject.xmvn.metadata.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -119,5 +121,53 @@ public class MetadataResolverTest
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
         assertNull( am );
+    }
+
+    @Test
+    public void testRepositoryListedTwice()
+        throws Exception
+    {
+        String path = "src/test/resources/simple.xml";
+        MetadataRequest request = new MetadataRequest( Arrays.asList( path, path ) );
+        MetadataResult result = metadataResolver.resolveMetadata( request );
+
+        Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
+        ArtifactMetadata am = result.getMetadataFor( artifact );
+
+        assertNotNull( am );
+        assertEquals( "/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath() );
+    }
+
+    @Test
+    public void testRepositoryListedTwiceDifferentPaths()
+        throws Exception
+    {
+        String path1 = "src/test/resources/simple.xml";
+        String path2 = "src/test/../test/resources/simple.xml";
+        MetadataRequest request = new MetadataRequest( Arrays.asList( path1, path2 ) );
+        MetadataResult result = metadataResolver.resolveMetadata( request );
+
+        Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
+        ArtifactMetadata am = result.getMetadataFor( artifact );
+
+        assertNull( am );
+    }
+
+    @Test
+    public void testAllowDuplicates()
+        throws Exception
+    {
+        String path1 = "src/test/resources/simple.xml";
+        String path2 = "src/test/../test/resources/simple.xml";
+        MetadataRequest request = new MetadataRequest( Arrays.asList( path1, path2 ) );
+        assertTrue( request.isIgnoreDuplicates() );
+        request.setIgnoreDuplicates( false );
+        MetadataResult result = metadataResolver.resolveMetadata( request );
+
+        Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
+        ArtifactMetadata am = result.getMetadataFor( artifact );
+
+        assertNotNull( am );
+        assertEquals( "/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath() );
     }
 }

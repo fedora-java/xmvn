@@ -84,7 +84,8 @@ public class DefaultMetadataResolver
     @Override
     public MetadataResult resolveMetadata( MetadataRequest request )
     {
-        return new DefaultMetadataResult( logger, readMetadata( request.getMetadataRepositories() ) );
+        return new DefaultMetadataResult( logger, readMetadata( request.getMetadataRepositories() ),
+                                          request.isIgnoreDuplicates() );
     }
 
     List<PackageMetadata> readMetadata( List<String> metadataLocations )

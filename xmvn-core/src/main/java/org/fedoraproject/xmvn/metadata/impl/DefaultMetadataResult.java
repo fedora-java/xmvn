@@ -40,9 +40,7 @@ class DefaultMetadataResult
 
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
-    boolean initialized;
-
-    public DefaultMetadataResult( Logger logger, List<PackageMetadata> metadataList )
+    public DefaultMetadataResult( Logger logger, List<PackageMetadata> metadataList, boolean ignoreDuplicates )
     {
         this.logger = logger;
 
@@ -52,13 +50,13 @@ class DefaultMetadataResult
         {
             for ( ArtifactMetadata installedArtifact : metadata.getArtifacts() )
             {
-                processArtifactMetadata( installedArtifact );
+                processArtifactMetadata( installedArtifact, ignoreDuplicates );
                 interpolator.interpolate( installedArtifact );
             }
         }
     }
 
-    private void processArtifactMetadata( ArtifactMetadata metadata )
+    private void processArtifactMetadata( ArtifactMetadata metadata, boolean ignoreDuplicates )
     {
         Artifact baseArtifact = metadata.toArtifact();
 
@@ -85,11 +83,11 @@ class DefaultMetadataResult
             }
         }
 
-        Set<Artifact> ignoredArtifacts = new LinkedHashSet<>();
+        Set<Artifact> duplicateArtifacts = new LinkedHashSet<>();
 
         for ( Artifact artifact : artifactSet )
         {
-            if ( ignoredArtifacts.contains( artifact ) )
+            if ( duplicateArtifacts.contains( artifact ) )
             {
                 logger.debug( "Ignoring metadata for artifact {} as it was already excluded", artifact );
                 continue;
@@ -98,11 +96,18 @@ class DefaultMetadataResult
             ArtifactMetadata otherMetadata = artifactMap.get( artifact );
             if ( otherMetadata != null )
             {
-                artifactMap.remove( artifact );
+                duplicateArtifacts.add( artifact );
 
-                logger.warn( "Ignoring metadata for artifact {} as it has duplicate metadata", artifact );
-                ignoredArtifacts.add( artifact );
-                continue;
+                if ( ignoreDuplicates )
+                {
+                    artifactMap.remove( artifact );
+                    logger.warn( "Ignoring metadata for artifact {} as it has duplicate metadata", artifact );
+                    continue;
+                }
+                else
+                {
+                    logger.warn( "Duplicate metadata for artifact {}", artifact );
+                }
             }
 
             artifactMap.put( artifact, metadata );

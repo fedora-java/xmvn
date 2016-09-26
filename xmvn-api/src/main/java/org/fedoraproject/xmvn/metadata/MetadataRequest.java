@@ -26,6 +26,8 @@ public class MetadataRequest
 {
     private final List<String> metadataRepositories;
 
+    private boolean ignoreDuplicates = true;
+
     public MetadataRequest( List<String> metadataRepositories )
     {
         this.metadataRepositories = metadataRepositories;
@@ -34,5 +36,15 @@ public class MetadataRequest
     public List<String> getMetadataRepositories()
     {
         return metadataRepositories;
+    }
+
+    public boolean isIgnoreDuplicates()
+    {
+        return ignoreDuplicates;
+    }
+
+    public void setIgnoreDuplicates( boolean ignoreDuplicates )
+    {
+        this.ignoreDuplicates = ignoreDuplicates;
     }
 }
