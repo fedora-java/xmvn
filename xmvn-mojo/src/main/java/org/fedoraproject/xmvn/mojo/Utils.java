@@ -39,7 +39,7 @@ final class Utils
         // Avoid generating default public constructor
     }
 
-    public static Artifact aetherArtifact( org.apache.maven.artifact.Artifact mavenArtifact )
+    public static Artifact xmvnArtifact( org.apache.maven.artifact.Artifact mavenArtifact )
     {
         String groupId = mavenArtifact.getGroupId();
         String artifactId = mavenArtifact.getArtifactId();

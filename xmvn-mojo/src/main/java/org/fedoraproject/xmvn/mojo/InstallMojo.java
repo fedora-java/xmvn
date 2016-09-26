@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
-import static org.fedoraproject.xmvn.mojo.Utils.aetherArtifact;
+import static org.fedoraproject.xmvn.mojo.Utils.xmvnArtifact;
 
 import java.io.File;
 import java.io.IOException;
@@ -131,7 +131,7 @@ public class InstallMojo
             {
                 systemDepsFound = true;
 
-                logger.error( "Reactor project " + aetherArtifact( project.getArtifact() )
+                logger.error( "Reactor project " + xmvnArtifact( project.getArtifact() )
                     + " has system-scoped dependencies: " + Utils.collectionToString( systemDeps, true ) );
             }
         }
@@ -203,7 +203,7 @@ public class InstallMojo
 
         for ( MavenProject project : reactorProjects )
         {
-            Artifact mainArtifact = aetherArtifact( project.getArtifact() );
+            Artifact mainArtifact = xmvnArtifact( project.getArtifact() );
             Path mainArtifactPath = mainArtifact.getPath();
             logger.debug( "Installing main artifact " + mainArtifact );
             logger.debug( "Artifact file is " + mainArtifactPath );
@@ -233,7 +233,7 @@ public class InstallMojo
 
             Set<Artifact> attachedArtifacts = new LinkedHashSet<>();
             for ( org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts() )
-                attachedArtifacts.add( aetherArtifact( mavenArtifact ) );
+                attachedArtifacts.add( xmvnArtifact( mavenArtifact ) );
 
             for ( Artifact attachedArtifact : attachedArtifacts )
             {
