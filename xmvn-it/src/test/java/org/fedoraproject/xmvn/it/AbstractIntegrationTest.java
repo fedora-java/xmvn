@@ -192,6 +192,7 @@ public abstract class AbstractIntegrationTest
     {
         Properties originalProperties = System.getProperties();
         System.setProperties( null );
+        System.setProperty( "xmvn.it.rootDir", baseDir.getParent().getParent().getParent().toString() );
         System.setProperty( "maven.home", mavenHome.toString() );
         System.setProperty( "user.dir", baseDir.toString() );
         System.setProperty( "maven.multiModuleProjectDirectory", baseDir.toString() );
@@ -206,7 +207,7 @@ public abstract class AbstractIntegrationTest
             Class<?> launcherClass = bootClassLoader.loadClass( "org.codehaus.plexus.classworlds.launcher.Launcher" );
             Object launcher = launcherClass.newInstance();
 
-            try ( InputStream config = Files.newInputStream( mavenHome.resolve( "bin/m2.conf" ) ) )
+            try ( InputStream config = Files.newInputStream( Paths.get( "../../src/test/resources/m2.conf" ) ) )
             {
                 launcherClass.getMethod( "configure", InputStream.class ).invoke( launcher, config );
             }
