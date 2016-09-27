@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.it;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +39,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.After;
@@ -176,7 +177,11 @@ public abstract class AbstractIntegrationTest
         try ( PrintStream out = new PrintStream( Files.newOutputStream( baseDir.resolve( STDOUT ) ) );
                         PrintStream err = new PrintStream( Files.newOutputStream( baseDir.resolve( STDERR ) ) ) )
         {
-            assertEquals( expectFailure ? 1 : 0, run( out, err, args ) );
+            if ( run( out, err, args ) == 0 == expectFailure )
+            {
+                fail( "Command failed:\n"
+                    + Stream.concat( getStdout(), getStderr() ).collect( Collectors.joining( "\n" ) ) );
+            }
         }
 
         assertFalse( getStderr().findAny().isPresent() );
