@@ -217,8 +217,18 @@ public class BuilddepMojo
 
             for ( LifecycleMojo mojo : phase.getMojos() )
             {
+                // Goal can be in one of three formats (per MojoDescriptorCreator):
+                // - (1) groupId:artifactId:version:goal
+                // - (2) groupId:artifactId:goal
+                // - (3) prefix:goal
+                //
+                // We don't care about version (currently, plugins can't have compat versions), so we can just parse
+                // plugin groupId and artifactId from string in formats (1) and (2), ignoring goals in format (3).
+                // Format with prefix is rarely (if ever) used and therefore not supported by XMvn. If needed, support
+                // for that format can be implemented with help of PluginPrefixResolver.
+                //
                 String[] goalCoords = mojo.getGoal().split( ":" );
-                if ( goalCoords.length == 4 )
+                if ( goalCoords.length >= 3 )
                 {
                     artifacts.add( new DefaultArtifact( goalCoords[0], goalCoords[1] ) );
                 }
