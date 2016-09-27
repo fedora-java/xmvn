@@ -102,6 +102,14 @@ public class BuilddepIntegrationTest
     }
 
     @Test
+    public void testBuilddepPackagingExternal()
+        throws Exception
+    {
+        expectBuildDependency( "org.codehaus.mojo", "native-maven-plugin" );
+        performBuilddepTest();
+    }
+
+    @Test
     public void testBuilddepReactorDependencies()
         throws Exception
     {
