@@ -96,6 +96,7 @@ public class BuilddepIntegrationTest
     public void testBuilddepPackaging()
         throws Exception
     {
+        expectBuildDependency( "org.codehaus.mojo", "native-maven-plugin" );
         expectBuildDependency( "junit", "junit" );
         performBuilddepTest();
     }

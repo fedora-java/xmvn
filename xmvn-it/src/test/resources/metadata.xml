@@ -37,5 +37,12 @@
       <path>@@@/../dependency/plexus-component-metadata-1.6.jar</path>
       <uuid>4fdcec13-40df-428f-a921-089b1177763b</uuid>
     </artifact>
+    <artifact>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>native-maven-plugin</artifactId>
+      <version>SYSTEM</version>
+      <path>@@@/../dependency/native-maven-plugin-1.0-alpha-8.jar</path>
+      <uuid>887e0a3d-0658-461b-9535-b018dfaa998e</uuid>
+    </artifact>
   </artifacts>
 </metadata>
