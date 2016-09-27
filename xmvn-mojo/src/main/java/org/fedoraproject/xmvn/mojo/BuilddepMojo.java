@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -44,6 +43,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
@@ -101,7 +103,7 @@ public class BuilddepMojo
     private List<MavenProject> reactorProjects;
 
     @Component
-    private Map<String, LifecycleMapping> lifecycleMappings;
+    private PlexusContainer container;
 
     private final ModelProcessor modelProcessor = new DefaultModelProcessor();
 
@@ -175,10 +177,36 @@ public class BuilddepMojo
         return visitor.getArtifacts();
     }
 
-    private void addLifecycleDependencies( Set<Artifact> artifacts, String packaging )
+    private Lifecycle getDefaultLifecycle( MavenProject project )
+        throws MojoExecutionException
     {
-        LifecycleMapping lifecycleMapping = lifecycleMappings.get( packaging != null ? packaging : "jar" );
-        Lifecycle defaultLifecycle = lifecycleMapping.getLifecycles().get( "default" );
+        ClassRealm projectRealm = project.getClassRealm();
+        if ( projectRealm == null )
+            projectRealm = container.getContainerRealm();
+
+        ClassRealm oldLookupRealm = container.setLookupRealm( projectRealm );
+        ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader( projectRealm );
+
+        try
+        {
+            return container.lookup( LifecycleMapping.class, project.getPackaging() ).getLifecycles().get( "default" );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new MojoExecutionException( "Unable to get lifecycle for project " + project.getId(), e );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldContextClassLoader );
+            container.setLookupRealm( oldLookupRealm );
+        }
+    }
+
+    private void addLifecycleDependencies( Set<Artifact> artifacts, MavenProject project )
+        throws MojoExecutionException
+    {
+        Lifecycle defaultLifecycle = getDefaultLifecycle( project );
         if ( defaultLifecycle == null )
             return;
 
@@ -219,7 +247,7 @@ public class BuilddepMojo
         for ( MavenProject project : reactorProjects )
         {
             artifacts.addAll( getModelDependencies( project.getModel() ) );
-            addLifecycleDependencies( lifecycleArtifacts, project.getPackaging() );
+            addLifecycleDependencies( lifecycleArtifacts, project );
         }
 
         artifacts.removeIf( dep -> commonDeps.contains( dep.setVersion( Artifact.DEFAULT_VERSION ) ) );
