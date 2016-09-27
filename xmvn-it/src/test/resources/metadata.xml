@@ -44,5 +44,12 @@
       <path>@@@/../dependency/native-maven-plugin-1.0-alpha-8.jar</path>
       <uuid>887e0a3d-0658-461b-9535-b018dfaa998e</uuid>
     </artifact>
+    <artifact>
+      <groupId>io.takari.aether</groupId>
+      <artifactId>aether-connector-okhttp</artifactId>
+      <version>SYSTEM</version>
+      <path>@@@/../dependency/aether-connector-okhttp-1.0.1-alpha.jar</path>
+      <uuid>2204f6b6-60f6-43d3-8288-b4cdf82c3a70</uuid>
+    </artifact>
   </artifacts>
 </metadata>

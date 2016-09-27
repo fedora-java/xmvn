@@ -1,0 +1,7 @@
+<extensions>
+  <extension>
+    <groupId>io.takari.aether</groupId>
+    <artifactId>aether-connector-okhttp</artifactId>
+    <version>0.0.7</version>
+  </extension>
+</extensions>

@@ -187,4 +187,12 @@ public class BuilddepIntegrationTest
         expectBuildDependency( "org.codehaus.plexus", "plexus-component-metadata" );
         performBuilddepTest();
     }
+
+    @Test
+    public void testBuilddepCoreExtensions()
+        throws Exception
+    {
+        expectBuildDependency( "io.takari.aether", "aether-connector-okhttp" );
+        performBuilddepTest();
+    }
 }
