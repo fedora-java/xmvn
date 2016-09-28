@@ -31,7 +31,7 @@
 %bcond_with its
 
 Name:           xmvn
-Version:        2.6.0
+Version:        3.0.0
 Release:        0.git.%(date +%%Y%%m%%d.%%H%%M%%S)
 Summary:        Local Extensions for Apache Maven
 License:        ASL 2.0
@@ -113,7 +113,7 @@ This package provides XMvn parent POM.
 
 %package        api
 Summary:        XMvn API
-Obsoletes:      %{name}-launcher < 2.6.0
+Obsoletes:      %{name}-launcher < 3.0.0
 
 %description    api
 This package provides XMvn API module which contains public interface
