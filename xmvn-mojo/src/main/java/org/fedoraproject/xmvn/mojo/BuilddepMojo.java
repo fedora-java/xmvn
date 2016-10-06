@@ -62,6 +62,7 @@ import org.fedoraproject.xmvn.model.impl.DefaultModelProcessor;
 
 /**
  * @author Mikolaj Izdebski
+ * @author Roman Vais
  */
 @Mojo( name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE )
 public class BuilddepMojo
@@ -109,6 +110,9 @@ public class BuilddepMojo
 
     // Injected through reflection by XMvn lifecycle participant
     private List<String[]> resolutions;
+
+    // Injected through reflection by XMvn lifecycle participant as well
+    private List<String[]> extensionSet;
 
     private Set<Artifact> commonDeps = new LinkedHashSet<>();
 
@@ -254,6 +258,7 @@ public class BuilddepMojo
 
         Set<Artifact> artifacts = new LinkedHashSet<>();
         Set<Artifact> lifecycleArtifacts = new LinkedHashSet<>();
+
         for ( MavenProject project : reactorProjects )
         {
             artifacts.addAll( getModelDependencies( project.getModel() ) );
@@ -277,6 +282,17 @@ public class BuilddepMojo
             if ( artifacts.contains( artifact ) || lifecycleArtifacts.contains( versionlessArtifact ) )
             {
                 deps.add( new NamespacedArtifact( namespace, artifact.setVersion( compatVersion ) ) );
+            }
+        }
+
+        if ( extensionSet != null )
+        {
+            for ( String[] artifactParts : extensionSet )
+            {
+                // String[0] groupId; String[1] artifactId; String[2] version
+
+                Artifact artifact = new DefaultArtifact( artifactParts[0], artifactParts[1], artifactParts[2] );
+                deps.add( new NamespacedArtifact( "", artifact ) );
             }
         }
 
