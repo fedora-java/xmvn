@@ -158,7 +158,7 @@ public final class JarUtils
             LOGGER.debug( "I/O exception caught when trying to determine whether JAR uses native code: {}", jar, e );
             return false;
         }
-        catch ( IllegalArgumentException e )
+        catch ( RuntimeException e )
         {
             return false;
         }
