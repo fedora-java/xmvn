@@ -43,6 +43,22 @@ This profile is activated automatically when CI environmental variable
 is set to true, for example on TravisCI.
 
 
+Running integration tests
+-------------------------
+
+After making code changes it is recommended to run integration tests
+to verify that the change did not break anything.
+
+To save time, integration tests are not ran during default Maven
+build.  To run them you need to activate `run-its` profile.  For
+example:
+
+    mvn -Prun-its clean verify
+
+Note that TravisCI build runs integration tests as part of commit and
+pull request validation.
+
+
 Contact
 -------
 
