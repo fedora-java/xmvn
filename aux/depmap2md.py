@@ -25,9 +25,14 @@ import sys
 import glob
 
 plan = False
+namespace = None
 for i in reversed(range(1, len(sys.argv))):
     if sys.argv[i] == '--plan':
         plan = True
+        del sys.argv[i]
+    elif sys.argv[i] == '--scl':
+        del sys.argv[i]
+        namespace = sys.argv[i]
         del sys.argv[i]
 
 prefix = ''
@@ -119,6 +124,8 @@ for key, value in md.iteritems():
         print "      <classifier>%s</classifier>" % key[3]
     print "      <version>%s</version>" % key[4]
     print "      <path>%s</path>" % value[0]
+    if namespace:
+        print "      <namespace>%s</namespace>" % namespace
     if value[1]:
         if plan:
             sys.stderr.write("Compat artifact: %s:%s:%s:%s:%s, versions: %s\n"
