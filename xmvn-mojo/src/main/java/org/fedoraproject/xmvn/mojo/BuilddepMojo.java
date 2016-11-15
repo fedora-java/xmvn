@@ -112,7 +112,7 @@ public class BuilddepMojo
     private List<String[]> resolutions;
 
     // Injected through reflection by XMvn lifecycle participant as well
-    private List<String[]> extensionSet;
+    private List<String[]> extensionList;
 
     private Set<Artifact> commonDeps = new LinkedHashSet<>();
 
@@ -285,9 +285,9 @@ public class BuilddepMojo
             }
         }
 
-        if ( extensionSet != null )
+        if ( extensionList != null )
         {
-            for ( String[] artifactParts : extensionSet )
+            for ( String[] artifactParts : extensionList )
             {
                 // String[0] groupId; String[1] artifactId; String[2] version
 

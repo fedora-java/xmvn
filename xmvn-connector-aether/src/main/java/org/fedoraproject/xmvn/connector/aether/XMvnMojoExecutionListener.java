@@ -39,7 +39,6 @@ import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import org.fedoraproject.xmvn.maven.internal.XMvnCoreExtensionsManager;
@@ -110,9 +109,6 @@ public class XMvnMojoExecutionListener
 
     @Requirement
     private BootstrapCoreExtensionManager extensionsManager;
-
-    @Requirement
-    private Logger logger;
 
     void setXmvnStateDir( Path xmvnStateDir )
     {
@@ -287,7 +283,7 @@ public class XMvnMojoExecutionListener
             List<String[]> extensionArtifacts = new LinkedList<>();
             addCoreXtensionsToDependencies( extensionArtifacts, getCoreExtensions() );
 
-            trySetBeanProperty( mojo, "extensionSet", Collections.unmodifiableList( new ArrayList<>( resolutions ) ) );
+            trySetBeanProperty( mojo, "extensionList", Collections.unmodifiableList( extensionArtifacts ) );
         }
     }
 
@@ -313,8 +309,8 @@ public class XMvnMojoExecutionListener
 
         if ( this.extensionsManager == null )
         {
-            logWarningSafely( "Missing component XMvnCoreExtensionsManager. This is most likely test so it's ok."
-                + " Extensions will be missing form depency list." );
+            // Missing component XMvnCoreExtensionsManager. This is most likely test so it's ok. Won't log, causes
+            // problems with null pointer in tests. logger is not injected. TODO: if needed solve later.
             return Collections.emptyList();
         }
 
@@ -322,23 +318,8 @@ public class XMvnMojoExecutionListener
 
         if ( isXmvnClass )
         {
-            try
-            {
-                XMvnCoreExtensionsManager xmvnExtManager =
-                    XMvnCoreExtensionsManager.class.cast( this.extensionsManager );
-
-                return xmvnExtManager.getCapturedExtensions();
-            }
-            catch ( ClassCastException e )
-            {
-                logWarningSafely( "Unable to gain list of used Maven's core extensions."
-                    + "Operation failed. Extensions will be missing form depency list.", e );
-            }
-        }
-        else
-        {
-            logWarningSafely( "Unable to gain list of used Maven's core extensions due to missing component."
-                + " Extensions will be missing form depency list." );
+            XMvnCoreExtensionsManager xmvnExtManager = XMvnCoreExtensionsManager.class.cast( this.extensionsManager );
+            return xmvnExtManager.getCapturedExtensions();
         }
 
         return Collections.emptyList();
@@ -354,21 +335,5 @@ public class XMvnMojoExecutionListener
             String[] artifact = { ext.getGroupId(), ext.getArtifactId(), ext.getVersion() };
             artifacts.add( artifact );
         }
-    }
-
-    private void logWarningSafely( String msg )
-    {
-        if ( this.logger == null )
-            return;
-
-        this.logger.warn( msg );
-    }
-
-    private void logWarningSafely( String msg, Throwable t )
-    {
-        if ( this.logger == null )
-            return;
-
-        this.logger.warn( msg, t );
     }
 }
