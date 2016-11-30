@@ -280,7 +280,7 @@ public class XMvnMojoExecutionListener
         {
             trySetBeanProperty( mojo, "resolutions", Collections.unmodifiableList( new ArrayList<>( resolutions ) ) );
 
-            List<String[]> extensionArtifacts = new LinkedList<>();
+            List<String> extensionArtifacts = new LinkedList<>();
             addCoreXtensionsToDependencies( extensionArtifacts, getCoreExtensions() );
 
             trySetBeanProperty( mojo, "extensionList", Collections.unmodifiableList( extensionArtifacts ) );
@@ -325,14 +325,14 @@ public class XMvnMojoExecutionListener
         return Collections.emptyList();
     }
 
-    private void addCoreXtensionsToDependencies( List<String[]> artifacts, List<CoreExtension> extList )
+    private void addCoreXtensionsToDependencies( List<String> artifacts, List<CoreExtension> extList )
     {
         if ( extList == null || artifacts == null )
             return;
 
         for ( CoreExtension ext : extList )
         {
-            String[] artifact = { ext.getGroupId(), ext.getArtifactId(), ext.getVersion() };
+            String artifact = ext.getGroupId() + ":" + ext.getArtifactId(); // version is ignored
             artifacts.add( artifact );
         }
     }

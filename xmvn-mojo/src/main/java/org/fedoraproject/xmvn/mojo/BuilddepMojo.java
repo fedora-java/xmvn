@@ -112,7 +112,7 @@ public class BuilddepMojo
     private List<String[]> resolutions;
 
     // Injected through reflection by XMvn lifecycle participant as well
-    private List<String[]> extensionList;
+    private List<String> extensionList;
 
     private Set<Artifact> commonDeps = new LinkedHashSet<>();
 
@@ -287,13 +287,42 @@ public class BuilddepMojo
 
         if ( extensionList != null )
         {
-            for ( String[] artifactParts : extensionList )
+            for ( String[] resolution : resolutions )
             {
-                // String[0] groupId; String[1] artifactId; String[2] version
 
-                Artifact artifact = new DefaultArtifact( artifactParts[0], artifactParts[1], artifactParts[2] );
-                deps.add( new NamespacedArtifact( "", artifact ) );
+                if ( resolution == null )
+                    continue;
+
+                for ( String extension : extensionList )
+                {
+                    // extension is in groupID:artifactID, ignoring prefix format
+                    if ( extension == null || !resolution[0].startsWith( extension ) )
+                    {
+                        continue;
+                    }
+
+                    Artifact artifact = new DefaultArtifact( resolution[0] );
+                    Artifact versionlessArtifact = artifact.setVersion( Artifact.DEFAULT_VERSION );
+                    String compatVersion = resolution[1];
+                    String namespace = resolution[2];
+
+                    if ( artifacts.contains( artifact ) || lifecycleArtifacts.contains( versionlessArtifact ) )
+                    {
+                        deps.add( new NamespacedArtifact( namespace, artifact.setVersion( compatVersion ) ) );
+                        // Removing used extension from list can prevent duplicates (which should never happened anyway)
+                        // and shortening the list can slightly improve performance because less iterations will be
+                        // performed. extensionList is currently unmodifiable.
+                        // extensionList.remove( extension );
+                    }
+
+                    break;
+                }
             }
+        }
+        else
+        {
+            logger.warn( "Skipping Maven Core Extensions: Maven Core extension list is missing, extensions won't be"
+                + " present in dependencies." );
         }
 
         serializeArtifacts( deps );
