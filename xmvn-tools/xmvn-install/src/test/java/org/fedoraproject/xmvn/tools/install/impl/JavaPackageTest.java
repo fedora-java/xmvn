@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2014-2016 Red Hat, Inc.
+ * Copyright (c) 2014-2017 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,5 +60,34 @@ public class JavaPackageTest
         PackageMetadata actualMetadata =
             new MetadataStaxReader().read( installRoot.resolve( metadataPath ).toString(), true );
         assertEquals( "test-uuid", actualMetadata.getUuid() );
+    }
+
+    @Test
+    public void testSpacesInFileNames() throws Exception
+    {
+        JavaPackage pkg = new JavaPackage( "space-test",
+                Paths.get( "usr/share/maven-metadata/space-test.xml" ) );
+        pkg.addFile( new RegularFile(
+                Paths.get(
+                        "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/META-INF/MANIFEST.MF" ),
+                new byte[0] ) );
+        pkg.addFile( new RegularFile(
+                Paths.get(
+                        "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/file with spaces" ),
+                new byte[0] ) );
+        pkg.addFile( new RegularFile(
+                Paths.get(
+                        "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\twhitespace" ),
+                new byte[0] ) );
+        pkg.addFile( new RegularFile(
+                Paths.get(
+                        "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\u000Bwhitespace" ),
+                new byte[0] ) );
+        assertDescriptorEquals( pkg,
+                "%attr(0644,root,root) /usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/META-INF/MANIFEST.MF",
+                "%attr(0644,root,root) \"/usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/file with spaces\"",
+                "%attr(0644,root,root) \"/usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\twhitespace\"",
+                "%attr(0644,root,root) \"/usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\u000Bwhitespace\"",
+                "%attr(0644,root,root) /usr/share/maven-metadata/space-test.xml" );
     }
 }

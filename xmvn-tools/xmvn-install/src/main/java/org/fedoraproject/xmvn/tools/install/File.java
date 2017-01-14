@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2014-2016 Red Hat, Inc.
+ * Copyright (c) 2014-2017 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,8 +167,21 @@ public abstract class File
             sb.append( ' ' );
         }
 
+        // Paths containing whitespace (e.g. one of [ \t\n\v\f\r]) must be quoted in the descriptor
+        boolean needsQuote = targetPath.toString().matches( ".*\\s+.*" );
+
+        if ( needsQuote )
+        {
+            sb.append( '"' );
+        }
+
         sb.append( '/' );
         sb.append( targetPath );
+
+        if ( needsQuote )
+        {
+            sb.append( '"' );
+        }
 
         return sb.toString();
     }
