@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
+import org.fedoraproject.xmvn.tools.install.RegularFile;
 
 /**
  * @author Michael Simacek
