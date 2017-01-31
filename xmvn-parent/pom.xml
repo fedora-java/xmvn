@@ -87,7 +87,7 @@
     <jcommanderVersion>1.48</jcommanderVersion>
     <gradleVersion>2.13-rc-1</gradleVersion>
     <groovyVersion>2.4.4</groovyVersion>
-    <mavenInvokerVersion>2.2</mavenInvokerVersion>
+    <mavenInvokerVersion>3.0.0</mavenInvokerVersion>
     <mavenVersion>3.3.9</mavenVersion>
     <plexusUtilsVersion>3.0.22</plexusUtilsVersion>
     <pluginToolsVersion>3.4</pluginToolsVersion>
