@@ -50,7 +50,6 @@ BuildRequires:  maven-dependency-plugin
 BuildRequires:  maven-plugin-build-helper
 BuildRequires:  maven-assembly-plugin
 BuildRequires:  maven-install-plugin
-BuildRequires:  maven-site-plugin
 BuildRequires:  maven-plugin-plugin
 BuildRequires:  objectweb-asm
 BuildRequires:  modello
@@ -222,6 +221,8 @@ find -name BisectIntegrationTest.java -delete
 # Resolver IT won't work either - it tries to execute JAR file, which
 # relies on Class-Path in manifest, which is forbidden in Fedora...
 find -name ResolverIntegrationTest.java -delete
+
+%pom_remove_plugin -r :maven-site-plugin
 
 %mvn_package ":xmvn{,-it}" __noinstall
 
