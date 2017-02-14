@@ -88,11 +88,8 @@ Requires:       apache-commons-cli
 Requires:       apache-commons-lang3
 Requires:       atinject
 Requires:       google-guice
-Requires:       gossip
 Requires:       guava
-Requires:       jansi
 Requires:       maven-lib
-Requires:       maven-shared-utils
 Requires:       maven-wagon-provider-api
 Requires:       objectweb-asm
 Requires:       plexus-cipher
