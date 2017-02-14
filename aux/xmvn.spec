@@ -30,6 +30,8 @@
 # adding "--with its" to rpmbuild or mock invocation.
 %bcond_with its
 
+%bcond_without gradle
+
 Name:           xmvn
 Version:        3.0.0
 Release:        0.git.%(date +%%Y%%m%%d.%%H%%M%%S)
@@ -40,7 +42,7 @@ BuildArch:      noarch
 
 Source0:        https://github.com/fedora-java/xmvn/releases/download/%{version}/xmvn-%{version}.tar.xz
 
-BuildRequires:  maven-lib >= 3.4.0
+BuildRequires:  maven >= 3.4.0
 BuildRequires:  maven-local
 BuildRequires:  beust-jcommander
 BuildRequires:  cglib
@@ -56,11 +58,13 @@ BuildRequires:  xmlunit
 BuildRequires:  apache-ivy
 BuildRequires:  junit
 BuildRequires:  easymock
-BuildRequires:  gradle >= 2.5
 BuildRequires:  maven-invoker
 BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-containers-component-annotations
 BuildRequires:  plexus-containers-component-metadata
+%if %{with gradle}
+BuildRequires:  gradle >= 2.5
+%endif
 
 Requires:       xmvn-minimal = %{version}-%{release}
 Requires:       maven >= 3.4.0
@@ -136,6 +140,7 @@ provides integration of Eclipse Aether with XMvn.  It provides an
 adapter which allows XMvn resolver to be used as Aether workspace
 reader.
 
+%if %{with gradle}
 %package        connector-gradle
 Summary:        XMvn Connector for Gradle
 
@@ -143,6 +148,7 @@ Summary:        XMvn Connector for Gradle
 This package provides XMvn Connector for Gradle, which provides
 integration of Gradle with XMvn.  It provides an adapter which allows
 XMvn resolver to be used as Gradle resolver.
+%endif
 
 %package        connector-ivy
 Summary:        XMvn Connector for Apache Ivy
@@ -218,6 +224,10 @@ find -name BisectIntegrationTest.java -delete
 find -name ResolverIntegrationTest.java -delete
 
 %mvn_package ":xmvn{,-it}" __noinstall
+
+%if %{without gradle}
+%pom_disable_module xmvn-connector-gradle
+%endif
 
 # Upstream code quality checks, not relevant when building RPMs
 %pom_remove_plugin -r :apache-rat-plugin
@@ -352,7 +362,9 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files connector-aether -f .mfiles-xmvn-connector-aether
 
+%if %{with gradle}
 %files connector-gradle -f .mfiles-xmvn-connector-gradle
+%endif
 
 %files connector-ivy -f .mfiles-xmvn-connector-ivy
 
