@@ -29,8 +29,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.InvocationRequest.CheckSumPolicy;
-import org.apache.maven.shared.invoker.InvocationRequest.ReactorFailureBehavior;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -71,7 +69,7 @@ public class BisectCliRequest
     private String failureBehavior;
 
     @Parameter( names = { "-gcp", "--global-checksum-policy" }, description = "Checksum mode" )
-    private CheckSumPolicy globalChecksumPolicy;
+    private String globalChecksumPolicy;
 
     @Parameter( names = { "-gs", "--global-settings" }, description = "Path to the global settings" )
     private String globalSettings;
@@ -195,11 +193,11 @@ public class BisectCliRequest
         alsoMake = request.isAlsoMake();
         alsoMakeDependents = request.isAlsoMakeDependents();
         debug = request.isDebug();
-        failureBehavior = request.getReactorFailureBehavior().getLongOption();
+        failureBehavior = request.getFailureBehavior();
         globalChecksumPolicy = request.getGlobalChecksumPolicy();
         globalSettings = StringUtils.defaultString( request.getGlobalSettingsFile() );
         goals = request.getGoals();
-        batchMode = request.isBatchMode();
+        batchMode = !request.isInteractive();
         javaHome = fileToString( request.getJavaHome() );
         localRepository = fileToString( request.getLocalRepositoryDirectory( null ) );
         mavenOpts = request.getMavenOpts();
@@ -224,11 +222,11 @@ public class BisectCliRequest
         request.setAlsoMake( alsoMake );
         request.setAlsoMakeDependents( alsoMakeDependents );
         request.setDebug( debug );
-        request.setReactorFailureBehavior( ReactorFailureBehavior.valueOfByLongOption( failureBehavior ) );
+        request.setFailureBehavior( failureBehavior );
         request.setGlobalChecksumPolicy( globalChecksumPolicy );
         request.setGlobalSettingsFile( stringToFile( globalSettings ) );
         request.setGoals( goals );
-        request.setBatchMode( batchMode );
+        request.setInteractive( !batchMode );
         request.setJavaHome( stringToFile( javaHome ) );
         request.setLocalRepositoryDirectory( stringToFile( localRepository ) );
         request.setMavenOpts( mavenOpts );
