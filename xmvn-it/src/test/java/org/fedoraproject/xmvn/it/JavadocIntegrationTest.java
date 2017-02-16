@@ -34,9 +34,9 @@ public class JavadocIntegrationTest
     {
         performTest( "org.fedoraproject.xmvn:xmvn-mojo:javadoc" );
 
-        assertTrue( Files.isDirectory( Paths.get( "target/apidocs" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/apidocs/foo/Bar.html" ) ) );
+        assertTrue( Files.isDirectory( Paths.get( "target/xmvn-apidocs" ) ) );
+        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/foo/Bar.html" ) ) );
         assertTrue( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
-        assertTrue( Files.isSameFile( Paths.get( ".xmvn/apidocs" ), Paths.get( "target/apidocs" ) ) );
+        assertTrue( Files.isSameFile( Paths.get( ".xmvn/apidocs" ), Paths.get( "target/xmvn-apidocs" ) ) );
     }
 }

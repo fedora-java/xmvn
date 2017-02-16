@@ -115,7 +115,7 @@ public class JavadocMojo
 
     private Path getOutputDir()
     {
-        return buildDirectory.toPath().resolve( "apidocs" );
+        return buildDirectory.toPath().resolve( "xmvn-apidocs" );
     }
 
     private List<Path> getClasspath()
