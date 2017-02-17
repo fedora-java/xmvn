@@ -51,6 +51,8 @@ import org.eclipse.aether.util.filter.AndDependencyFilter;
 import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 
+import org.fedoraproject.xmvn.config.Configurator;
+
 /**
  * @author Mikolaj Izdebski
  */
@@ -66,6 +68,9 @@ public class JavadocMojo
 
     @Component
     private MavenSession session;
+
+    @Component
+    private Configurator confugurator;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
@@ -206,6 +211,13 @@ public class JavadocMojo
             opts.add( "-use" );
             opts.add( "-version" );
             opts.add( "-Xdoclint:none" );
+
+            String compilerSource = confugurator.getConfiguration().getBuildSettings().getCompilerSource();
+            if ( compilerSource != null )
+            {
+                opts.add( "-source" );
+                opts.add( compilerSource );
+            }
 
             opts.add( "-classpath" );
             opts.add( quoted( StringUtils.join( getClasspath().iterator(), ":" ) ) );

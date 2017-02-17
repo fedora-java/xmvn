@@ -1,0 +1,10 @@
+<configuration>
+  <resolverSettings>
+    <metadataRepositories>
+      <repository>metadata.xml</repository>
+    </metadataRepositories>
+  </resolverSettings>
+  <buildSettings>
+    <compilerSource>1.3</compilerSource>
+  </buildSettings>
+</configuration>
