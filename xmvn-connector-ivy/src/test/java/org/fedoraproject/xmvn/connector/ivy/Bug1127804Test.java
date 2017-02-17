@@ -137,4 +137,21 @@ public class Bug1127804Test
         expectArtifact( "org.apache.hadoop:hadoop-hdfs::tests:", "hdfs-tests.jar" );
         performTest( "bz1127804" );
     }
+
+    // Reproducer for rhbz#1383583
+    @Test
+    public void testPomConversion()
+        throws Exception
+    {
+        addArtifact( "foo:parent:pom:1.0.0", "parent.pom" );
+        addArtifact( "foo:parent:1.0.0", null );
+        addArtifact( "foo:child:pom:1.0.0", "child.pom" );
+        addArtifact( "foo:child:1.0.0", "empty.jar" );
+        addArtifact( "foo:child::sources:1.0.0", null );
+        addArtifact( "foo:child::src:1.0.0", null );
+        addArtifact( "foo:child::javadoc:1.0.0", null );
+        addArtifact( "foo:child", "empty.jar" );
+        expectArtifact( "foo:child", "empty.jar" );
+        performTest( "bz1383583" );
+    }
 }
