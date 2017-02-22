@@ -37,7 +37,7 @@
         <groupId>org.codehaus.modello</groupId>
         <artifactId>modello-maven-plugin</artifactId>
         <configuration>
-          <version>2.3.0</version>
+          <version>3.0.0</version>
           <useJava5>true</useJava5>
           <domAsXpp3>false</domAsXpp3>
           <models>

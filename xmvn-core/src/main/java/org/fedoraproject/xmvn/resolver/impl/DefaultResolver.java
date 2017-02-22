@@ -116,8 +116,7 @@ public class DefaultResolver
         {
             ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
             metadataRequest = new MetadataRequest( settings.getMetadataRepositories() );
-            if ( System.getProperty( "xmvn.resolver.allowDuplicates" ) != null )
-                metadataRequest.setIgnoreDuplicates( false );
+            metadataRequest.setIgnoreDuplicates( settings.isIgnoreDuplicateMetadata() );
         }
         if ( metadataResult == null )
         {

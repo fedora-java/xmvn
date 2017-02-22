@@ -334,6 +334,13 @@
           </association>
         </field>
         <field>
+          <name>ignoreDuplicateMetadata</name>
+          <version>3.0.0+</version>
+          <description>Whether XMvn should refuse to resolve artifact that have more than a single piece of metadata.</description>
+          <type>Boolean</type>
+          <defaultValue>true</defaultValue>
+        </field>
+        <field>
           <name>prefixes</name>
           <version>0.4.0+</version>
           <description>List of prefixes that XMvn resolver will prepend to system repositories.</description>
