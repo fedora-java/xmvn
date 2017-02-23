@@ -242,10 +242,11 @@ find -name ResolverIntegrationTest.java -delete
 %pom_remove_plugin :maven-jar-plugin xmvn-tools
 
 # get mavenVersion that is expected
+maven_home=$(readlink -f $(dirname $(readlink $(which mvn)))/..)
 mver=$(sed -n '/<mavenVersion>/{s/.*>\(.*\)<.*/\1/;p}' \
            xmvn-parent/pom.xml)
 mkdir -p target/dependency/
-cp -aL $(dirname $(readlink $(which mvn)))/.. target/dependency/apache-maven-$mver
+cp -aL ${maven_home} target/dependency/apache-maven-$mver
 
 %build
 %if %{with its}
@@ -267,6 +268,8 @@ rm -f %{name}-%{version}*/bin/{mvn.cmd,mvnDebug.cmd,mvn-script}
 %install
 %mvn_install
 
+maven_home=$(readlink -f $(dirname $(readlink $(which mvn)))/..)
+
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -r %{name}-%{version}*/* %{buildroot}%{_datadir}/%{name}/
 
@@ -274,7 +277,7 @@ for cmd in mvn mvnDebug mvnyjp; do
     cat <<EOF >%{buildroot}%{_datadir}/%{name}/bin/$cmd
 #!/bin/sh -e
 export _FEDORA_MAVEN_HOME="%{_datadir}/%{name}"
-exec %{_datadir}/maven/bin/$cmd "\${@}"
+exec ${maven_home}/bin/$cmd "\${@}"
 EOF
     chmod 755 %{buildroot}%{_datadir}/%{name}/bin/$cmd
 done
@@ -286,7 +289,7 @@ done
 %jpackage_script org.fedoraproject.xmvn.tools.subst.SubstCli "" "" xmvn/xmvn-subst:xmvn/xmvn-api:xmvn/xmvn-core:beust-jcommander xmvn-subst
 
 # copy over maven lib directory
-cp -r %{_datadir}/maven/lib/* %{buildroot}%{_datadir}/%{name}/lib/
+cp -r ${maven_home}/lib/* %{buildroot}%{_datadir}/%{name}/lib/
 
 # possibly recreate symlinks that can be automated with xmvn-subst
 %{name}-subst -s -R %{buildroot} %{buildroot}%{_datadir}/%{name}/
@@ -299,8 +302,8 @@ ln -s %{name} %{buildroot}%{_bindir}/mvn-local
 
 # make sure our conf is identical to maven so yum won't freak out
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/conf/
-cp -P %{_datadir}/maven/conf/settings.xml %{buildroot}%{_datadir}/%{name}/conf/
-cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
+cp -P ${maven_home}/conf/settings.xml %{buildroot}%{_datadir}/%{name}/conf/
+cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files
 %{_bindir}/mvn-local
