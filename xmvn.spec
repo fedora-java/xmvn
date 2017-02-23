@@ -245,7 +245,7 @@ find -name ResolverIntegrationTest.java -delete
 mver=$(sed -n '/<mavenVersion>/{s/.*>\(.*\)<.*/\1/;p}' \
            xmvn-parent/pom.xml)
 mkdir -p target/dependency/
-cp -aL %{_datadir}/maven target/dependency/apache-maven-$mver
+cp -aL $(dirname $(readlink $(which mvn)))/.. target/dependency/apache-maven-$mver
 
 %build
 %if %{with its}
