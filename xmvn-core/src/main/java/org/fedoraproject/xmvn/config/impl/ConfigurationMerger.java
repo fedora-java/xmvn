@@ -70,6 +70,9 @@ class ConfigurationMerger
 
         dominant.getMetadataRepositories().addAll( recessive.getMetadataRepositories() );
 
+        if ( dominant.isIgnoreDuplicateMetadata() == null )
+            dominant.setIgnoreDuplicateMetadata( recessive.isIgnoreDuplicateMetadata() );
+
         dominant.getPrefixes().addAll( recessive.getPrefixes() );
 
         dominant.getBlacklist().addAll( recessive.getBlacklist() );

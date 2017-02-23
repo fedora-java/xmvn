@@ -338,7 +338,6 @@
           <version>3.0.0+</version>
           <description>Whether XMvn should refuse to resolve artifact that have more than a single piece of metadata.</description>
           <type>Boolean</type>
-          <defaultValue>true</defaultValue>
         </field>
         <field>
           <name>prefixes</name>

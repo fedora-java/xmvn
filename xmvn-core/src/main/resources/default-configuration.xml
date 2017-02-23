@@ -22,6 +22,7 @@
   </buildSettings>
   <resolverSettings>
     <debug>false</debug>
+    <ignoreDuplicateMetadata>true</ignoreDuplicateMetadata>
   </resolverSettings>
   <installerSettings>
     <debug>false</debug>

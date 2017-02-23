@@ -74,6 +74,7 @@ public class ConfigurationMergerTest
         assertEquals( true, out.getResolverSettings().isDebug() );
         assertEquals( true, out.getInstallerSettings().isDebug() );
         assertEquals( "/foo/bar", out.getInstallerSettings().getMetadataDir() );
+        assertEquals( false, out.getResolverSettings().isIgnoreDuplicateMetadata() );
 
         Configuration c6 = merger.merge( c2, c2.clone() );
         assertEquals( toString( c2 ), toString( c6 ) );
