@@ -242,7 +242,7 @@ find -name ResolverIntegrationTest.java -delete
 %pom_remove_plugin :maven-jar-plugin xmvn-tools
 
 # get mavenVersion that is expected
-maven_home=$(readlink -f $(dirname $(readlink $(which mvn)))/..)
+maven_home=$(readlink -f $(dirname $(readlink $(%{?scl:%{_javadir}-utils/scl-enable %{scl} -- }which mvn)))/..)
 mver=$(sed -n '/<mavenVersion>/{s/.*>\(.*\)<.*/\1/;p}' \
            xmvn-parent/pom.xml)
 mkdir -p target/dependency/
@@ -268,7 +268,7 @@ rm -f %{name}-%{version}*/bin/{mvn.cmd,mvnDebug.cmd,mvn-script}
 %install
 %mvn_install
 
-maven_home=$(readlink -f $(dirname $(readlink $(which mvn)))/..)
+maven_home=$(readlink -f $(dirname $(readlink $(%{?scl:%{_javadir}-utils/scl-enable %{scl} -- }which mvn)))/..)
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -r %{name}-%{version}*/* %{buildroot}%{_datadir}/%{name}/
