@@ -65,7 +65,7 @@ BuildRequires:  plexus-containers-component-metadata
 BuildRequires:  gradle >= 2.5
 %endif
 
-Requires:       xmvn-minimal = %{version}-%{release}
+Requires:       %{name}-minimal = %{version}-%{release}
 Requires:       maven >= 3.4.0
 
 %description
@@ -77,9 +77,9 @@ creating RPM packages containing Maven artifacts.
 %package        minimal
 Summary:        Dependency-reduced version of XMvn
 Requires:       maven-lib >= 3.4.0
-Requires:       xmvn-api = %{version}-%{release}
-Requires:       xmvn-connector-aether = %{version}-%{release}
-Requires:       xmvn-core = %{version}-%{release}
+Requires:       %{name}-api = %{version}-%{release}
+Requires:       %{name}-connector-aether = %{version}-%{release}
+Requires:       %{name}-core = %{version}-%{release}
 Requires:       aether-api
 Requires:       aether-impl
 Requires:       aether-spi
