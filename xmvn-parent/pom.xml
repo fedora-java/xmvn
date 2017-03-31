@@ -80,18 +80,18 @@
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
-    <aetherVersion>1.0.2.v20150114</aetherVersion>
+    <aetherVersion>1.1.0</aetherVersion>
     <asmVersion>5.0.3</asmVersion>
     <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.4.0</ivyVersion>
-    <jcommanderVersion>1.48</jcommanderVersion>
+    <jcommanderVersion>1.64</jcommanderVersion>
     <gradleVersion>2.13-rc-1</gradleVersion>
-    <groovyVersion>2.4.4</groovyVersion>
+    <groovyVersion>2.4.10</groovyVersion>
     <mavenInvokerVersion>2.2</mavenInvokerVersion>
     <mavenVersion>3.3.9</mavenVersion>
-    <plexusUtilsVersion>3.0.22</plexusUtilsVersion>
-    <pluginToolsVersion>3.4</pluginToolsVersion>
-    <slf4jVersion>1.7.12</slf4jVersion>
+    <plexusUtilsVersion>3.0.24</plexusUtilsVersion>
+    <pluginToolsVersion>3.5</pluginToolsVersion>
+    <slf4jVersion>1.7.25</slf4jVersion>
 
     <!-- Build dependencies -->
     <apivizVersion>1.3.2.GA</apivizVersion>
@@ -102,7 +102,7 @@
     <compilerPluginVersion>3.3</compilerPluginVersion>
     <dependencyPluginVersion>2.10</dependencyPluginVersion>
     <deployPluginVersion>2.8.2</deployPluginVersion>
-    <easymockVersion>3.3.1</easymockVersion>
+    <easymockVersion>3.4</easymockVersion>
     <gpgPluginVersion>1.6</gpgPluginVersion>
     <installPluginVersion>2.5.2</installPluginVersion>
     <jacocoVersion>0.7.7.201606060606</jacocoVersion>
@@ -115,7 +115,7 @@
     <nexusStagingPluginVersion>1.6.7</nexusStagingPluginVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>2.8</projectInfoReportsPluginVersion>
-    <plexusVersion>1.6</plexusVersion>
+    <plexusVersion>1.7.1</plexusVersion>
     <ratPluginVersion>0.11</ratPluginVersion>
     <resourcesPluginVersion>2.7</resourcesPluginVersion>
     <sitePluginVersion>3.4</sitePluginVersion>
