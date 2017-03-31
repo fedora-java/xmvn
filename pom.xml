@@ -127,7 +127,7 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-core</artifactId>
+                  <artifactId>xmvn-api</artifactId>
                   <version>${project.version}</version>
                   <type>xsd</type>
                   <classifier>config</classifier>
@@ -136,7 +136,7 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-core</artifactId>
+                  <artifactId>xmvn-api</artifactId>
                   <version>${project.version}</version>
                   <type>xsd</type>
                   <classifier>metadata</classifier>

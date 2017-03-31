@@ -87,12 +87,12 @@
                   <classifier>metadata</classifier>
                 </artifact>
                 <artifact>
-                  <file>${project.build.directory}/generated-site/resources/xsd/config-2.3.0.xsd</file>
+                  <file>${project.build.directory}/generated-site/resources/xsd/config-3.0.0.xsd</file>
                   <type>xsd</type>
                   <classifier>config</classifier>
                 </artifact>
                 <artifact>
-                  <file>${project.build.directory}/generated-site/resources/xsd/metadata-2.3.0.xsd</file>
+                  <file>${project.build.directory}/generated-site/resources/xsd/metadata-3.0.0.xsd</file>
                   <type>xsd</type>
                   <classifier>metadata</classifier>
                 </artifact>
