@@ -80,7 +80,6 @@
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
-    <aetherVersion>1.1.0</aetherVersion>
     <asmVersion>5.0.3</asmVersion>
     <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.4.0</ivyVersion>
@@ -88,7 +87,8 @@
     <gradleVersion>2.13-rc-1</gradleVersion>
     <groovyVersion>2.4.10</groovyVersion>
     <mavenInvokerVersion>2.2</mavenInvokerVersion>
-    <mavenVersion>3.3.9</mavenVersion>
+    <mavenResolverVersion>1.0.3</mavenResolverVersion>
+    <mavenVersion>3.5.0</mavenVersion>
     <plexusUtilsVersion>3.0.24</plexusUtilsVersion>
     <pluginToolsVersion>3.5</pluginToolsVersion>
     <slf4jVersion>1.7.25</slf4jVersion>
@@ -152,14 +152,14 @@
         <version>${mavenVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.aether</groupId>
-        <artifactId>aether-api</artifactId>
-        <version>${aetherVersion}</version>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-api</artifactId>
+        <version>${mavenResolverVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.eclipse.aether</groupId>
-        <artifactId>aether-util</artifactId>
-        <version>${aetherVersion}</version>
+        <groupId>org.apache.maven.resolver</groupId>
+        <artifactId>maven-resolver-util</artifactId>
+        <version>${mavenResolverVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
