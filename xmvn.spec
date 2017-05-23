@@ -80,16 +80,16 @@ Requires:       maven-lib >= 3.4.0
 Requires:       %{name}-api = %{version}-%{release}
 Requires:       %{name}-connector-aether = %{version}-%{release}
 Requires:       %{name}-core = %{version}-%{release}
-Requires:       aether-api
-Requires:       aether-impl
-Requires:       aether-spi
-Requires:       aether-util
 Requires:       apache-commons-cli
 Requires:       apache-commons-lang3
 Requires:       atinject
 Requires:       google-guice
 Requires:       guava
 Requires:       maven-lib
+Requires:       maven-resolver-api
+Requires:       maven-resolver-impl
+Requires:       maven-resolver-spi
+Requires:       maven-resolver-util
 Requires:       maven-wagon-provider-api
 Requires:       objectweb-asm
 Requires:       plexus-cipher
@@ -128,12 +128,12 @@ functionality of XMvn such as resolution of artifacts from system
 repository.
 
 %package        connector-aether
-Summary:        XMvn Connector for Eclipse Aether
+Summary:        XMvn Connector for Maven Resolver
 
 %description    connector-aether
-This package provides XMvn Connector for Eclipse Aether, which
-provides integration of Eclipse Aether with XMvn.  It provides an
-adapter which allows XMvn resolver to be used as Aether workspace
+This package provides XMvn Connector for Maven Resolver, which
+provides integration of Maven Resolver with XMvn.  It provides an
+adapter which allows XMvn resolver to be used as Maven workspace
 reader.
 
 %if %{with gradle}
@@ -307,8 +307,6 @@ cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files
 %{_bindir}/mvn-local
-%{_datadir}/%{name}/lib/aether_aether-connector-basic.jar
-%{_datadir}/%{name}/lib/aether_aether-transport-wagon.jar
 %{_datadir}/%{name}/lib/aopalliance.jar
 %{_datadir}/%{name}/lib/cdi-apicdi-api.jar
 %{_datadir}/%{name}/lib/commons-codec.jar
@@ -319,6 +317,8 @@ cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %{_datadir}/%{name}/lib/httpcomponents_httpcore.jar
 %{_datadir}/%{name}/lib/jsoup_jsoup.jar
 %{_datadir}/%{name}/lib/jsr-305.jar
+%{_datadir}/%{name}/lib/maven-resolver_maven-resolver-connector-basic.jar
+%{_datadir}/%{name}/lib/maven-resolver_maven-resolver-transport-wagon.jar
 %{_datadir}/%{name}/lib/maven-wagon_file.jar
 %{_datadir}/%{name}/lib/maven-wagon_http-shaded.jar
 %{_datadir}/%{name}/lib/maven-wagon_http-shared.jar
@@ -328,8 +328,6 @@ cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
-%exclude %{_datadir}/%{name}/lib/aether_aether-connector-basic.jar
-%exclude %{_datadir}/%{name}/lib/aether_aether-transport-wagon.jar
 %exclude %{_datadir}/%{name}/lib/aopalliance.jar
 %exclude %{_datadir}/%{name}/lib/cdi-apicdi-api.jar
 %exclude %{_datadir}/%{name}/lib/commons-codec.jar
@@ -340,6 +338,8 @@ cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %exclude %{_datadir}/%{name}/lib/httpcomponents_httpcore.jar
 %exclude %{_datadir}/%{name}/lib/jsoup_jsoup.jar
 %exclude %{_datadir}/%{name}/lib/jsr-305.jar
+%exclude %{_datadir}/%{name}/lib/maven-resolver_maven-resolver-connector-basic.jar
+%exclude %{_datadir}/%{name}/lib/maven-resolver_maven-resolver-transport-wagon.jar
 %exclude %{_datadir}/%{name}/lib/maven-wagon_file.jar
 %exclude %{_datadir}/%{name}/lib/maven-wagon_http-shaded.jar
 %exclude %{_datadir}/%{name}/lib/maven-wagon_http-shared.jar
