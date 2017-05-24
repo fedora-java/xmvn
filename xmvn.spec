@@ -337,7 +337,6 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files connector-ivy -f .mfiles-xmvn-connector-ivy
 %dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/lib/ivy
 
 %files mojo -f .mfiles-xmvn-mojo
 
