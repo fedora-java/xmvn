@@ -257,7 +257,9 @@ cp -aL %{_datadir}/maven target/dependency/apache-maven-$mver
 tar --delay-directory-restore -xvf target/*tar.bz2
 chmod -R +rwX %{name}-%{version}*
 # These are installed as doc
-rm -Rf %{name}-%{version}*/{AUTHORS,README.md,LICENSE,NOTICE}
+rm -Rf %{name}-%{version}*/{AUTHORS-XMVN,README-XMVN.md,LICENSE,NOTICE-XMVN}
+# Irrelevant Maven launcher scripts
+rm -f %{name}-%{version}*/bin/{mvn.cmd,mvnDebug.cmd}
 
 
 %install
@@ -346,28 +348,24 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %attr(755,-,-) %{_bindir}/%{name}-resolve
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-resolve
 %{_datadir}/%{name}/lib/resolver
 
 %files bisect -f .mfiles-xmvn-bisect
 %attr(755,-,-) %{_bindir}/%{name}-bisect
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-bisect
 %{_datadir}/%{name}/lib/bisect
 
 %files subst -f .mfiles-xmvn-subst
 %attr(755,-,-) %{_bindir}/%{name}-subst
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-subst
 %{_datadir}/%{name}/lib/subst
 
 %files install -f .mfiles-xmvn-install
 %attr(755,-,-) %{_bindir}/%{name}-install
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
-%{_datadir}/%{name}/bin/%{name}-install
 %{_datadir}/%{name}/lib/installer
 
 %files javadoc
