@@ -316,7 +316,6 @@ cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %{_datadir}/%{name}/bin/mvn
 %{_datadir}/%{name}/bin/mvnDebug
 %{_datadir}/%{name}/bin/mvnyjp
-%{_datadir}/%{name}/bin/xmvn
 %{_datadir}/%{name}/boot
 %{_datadir}/%{name}/conf
 
