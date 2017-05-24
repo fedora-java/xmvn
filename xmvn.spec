@@ -242,11 +242,10 @@ find -name ResolverIntegrationTest.java -delete
 %pom_remove_plugin :maven-jar-plugin xmvn-tools
 
 # get mavenVersion that is expected
-maven_home=$(readlink -f $(dirname $(readlink $(which mvn)))/..)
 mver=$(sed -n '/<mavenVersion>/{s/.*>\(.*\)<.*/\1/;p}' \
            xmvn-parent/pom.xml)
 mkdir -p target/dependency/
-cp -aL ${maven_home} target/dependency/apache-maven-$mver
+cp -aL %{_datadir}/maven target/dependency/apache-maven-$mver
 
 %build
 %if %{with its}
@@ -258,17 +257,11 @@ cp -aL ${maven_home} target/dependency/apache-maven-$mver
 tar --delay-directory-restore -xvf target/*tar.bz2
 chmod -R +rwX %{name}-%{version}*
 # These are installed as doc
-rm -f %{name}-%{version}*/{AUTHORS-XMVN,README-XMVN.md,LICENSE,NOTICE,NOTICE-XMVN}
-# Not needed - we use JPackage launcher scripts
-rm -Rf %{name}-%{version}*/lib/{installer,resolver,subst,bisect}/
-# Irrelevant Maven launcher scripts
-rm -f %{name}-%{version}*/bin/{mvn.cmd,mvnDebug.cmd,mvn-script}
+rm -Rf %{name}-%{version}*/{AUTHORS,README.md,LICENSE,NOTICE}
 
 
 %install
 %mvn_install
-
-maven_home=$(readlink -f $(dirname $(readlink $(which mvn)))/..)
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -r %{name}-%{version}*/* %{buildroot}%{_datadir}/%{name}/
@@ -277,19 +270,23 @@ for cmd in mvn mvnDebug mvnyjp; do
     cat <<EOF >%{buildroot}%{_datadir}/%{name}/bin/$cmd
 #!/bin/sh -e
 export _FEDORA_MAVEN_HOME="%{_datadir}/%{name}"
-exec ${maven_home}/bin/$cmd "\${@}"
+exec %{_datadir}/maven/bin/$cmd "\${@}"
 EOF
     chmod 755 %{buildroot}%{_datadir}/%{name}/bin/$cmd
 done
 
 # helper scripts
-%jpackage_script org.fedoraproject.xmvn.tools.bisect.BisectCli "" "-Dxmvn.home=%{_datadir}/%{name}" xmvn/xmvn-bisect:beust-jcommander:maven-invoker:plexus/utils xmvn-bisect
-%jpackage_script org.fedoraproject.xmvn.tools.install.cli.InstallerCli "" "" xmvn/xmvn-install:xmvn/xmvn-api:xmvn/xmvn-core:beust-jcommander:slf4j/api:slf4j/simple:objectweb-asm/asm xmvn-install
-%jpackage_script org.fedoraproject.xmvn.tools.resolve.ResolverCli "" "" xmvn/xmvn-resolve:xmvn/xmvn-api:xmvn/xmvn-core:beust-jcommander xmvn-resolve
-%jpackage_script org.fedoraproject.xmvn.tools.subst.SubstCli "" "" xmvn/xmvn-subst:xmvn/xmvn-api:xmvn/xmvn-core:beust-jcommander xmvn-subst
+install -d -m 755 %{buildroot}%{_bindir}
+for tool in subst resolve bisect install;do
+    cat <<EOF >%{buildroot}%{_bindir}/%{name}-$tool
+#!/bin/sh -e
+exec %{_datadir}/%{name}/bin/%{name}-$tool "\${@}"
+EOF
+    chmod +x %{buildroot}%{_bindir}/%{name}-$tool
+done
 
 # copy over maven lib directory
-cp -r ${maven_home}/lib/* %{buildroot}%{_datadir}/%{name}/lib/
+cp -r %{_datadir}/maven/lib/* %{buildroot}%{_datadir}/%{name}/lib/
 
 # possibly recreate symlinks that can be automated with xmvn-subst
 %{name}-subst -s -R %{buildroot} %{buildroot}%{_datadir}/%{name}/
@@ -302,53 +299,24 @@ ln -s %{name} %{buildroot}%{_bindir}/mvn-local
 
 # make sure our conf is identical to maven so yum won't freak out
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/conf/
-cp -P ${maven_home}/conf/settings.xml %{buildroot}%{_datadir}/%{name}/conf/
-cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
+cp -P %{_datadir}/maven/conf/settings.xml %{buildroot}%{_datadir}/%{name}/conf/
+cp -P %{_datadir}/maven/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files
 %{_bindir}/mvn-local
-%{_datadir}/%{name}/lib/aopalliance.jar
-%{_datadir}/%{name}/lib/cdi-apicdi-api.jar
-%{_datadir}/%{name}/lib/commons-codec.jar
-%{_datadir}/%{name}/lib/commons-io.jar
-%{_datadir}/%{name}/lib/commons-lang.jar
-%{_datadir}/%{name}/lib/commons-logging.jar
-%{_datadir}/%{name}/lib/httpcomponents_httpclient.jar
-%{_datadir}/%{name}/lib/httpcomponents_httpcore.jar
-%{_datadir}/%{name}/lib/jsoup_jsoup.jar
-%{_datadir}/%{name}/lib/jsr-305.jar
-%{_datadir}/%{name}/lib/maven-resolver_maven-resolver-connector-basic.jar
-%{_datadir}/%{name}/lib/maven-resolver_maven-resolver-transport-wagon.jar
-%{_datadir}/%{name}/lib/maven-wagon_file.jar
-%{_datadir}/%{name}/lib/maven-wagon_http-shaded.jar
-%{_datadir}/%{name}/lib/maven-wagon_http-shared.jar
 
 %files minimal
 %{_bindir}/%{name}
-%dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
-%exclude %{_datadir}/%{name}/lib/aopalliance.jar
-%exclude %{_datadir}/%{name}/lib/cdi-apicdi-api.jar
-%exclude %{_datadir}/%{name}/lib/commons-codec.jar
-%exclude %{_datadir}/%{name}/lib/commons-io.jar
-%exclude %{_datadir}/%{name}/lib/commons-lang.jar
-%exclude %{_datadir}/%{name}/lib/commons-logging.jar
-%exclude %{_datadir}/%{name}/lib/httpcomponents_httpclient.jar
-%exclude %{_datadir}/%{name}/lib/httpcomponents_httpcore.jar
-%exclude %{_datadir}/%{name}/lib/jsoup_jsoup.jar
-%exclude %{_datadir}/%{name}/lib/jsr-305.jar
-%exclude %{_datadir}/%{name}/lib/maven-resolver_maven-resolver-connector-basic.jar
-%exclude %{_datadir}/%{name}/lib/maven-resolver_maven-resolver-transport-wagon.jar
-%exclude %{_datadir}/%{name}/lib/maven-wagon_file.jar
-%exclude %{_datadir}/%{name}/lib/maven-wagon_http-shaded.jar
-%exclude %{_datadir}/%{name}/lib/maven-wagon_http-shared.jar
 %{_datadir}/%{name}/lib/*.jar
 %{_datadir}/%{name}/lib/ext
+%{_datadir}/%{name}/lib/jansi-native
 %{_datadir}/%{name}/bin/m2.conf
 %{_datadir}/%{name}/bin/mvn
 %{_datadir}/%{name}/bin/mvnDebug
 %{_datadir}/%{name}/bin/mvnyjp
+%{_datadir}/%{name}/bin/xmvn
 %{_datadir}/%{name}/boot
 %{_datadir}/%{name}/conf
 
@@ -358,6 +326,7 @@ cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %files core -f .mfiles-xmvn-core
 
 %files api -f .mfiles-xmvn-api
+%dir %{_javadir}/%{name}
 %doc LICENSE NOTICE
 %doc AUTHORS README.md
 
@@ -368,27 +337,69 @@ cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 %endif
 
 %files connector-ivy -f .mfiles-xmvn-connector-ivy
+%dir %{_datadir}/%{name}/lib
+%{_datadir}/%{name}/lib/ivy
 
 %files mojo -f .mfiles-xmvn-mojo
 
 %files tools-pom -f .mfiles-xmvn-tools
 
 %files resolve -f .mfiles-xmvn-resolve
-%{_bindir}/%{name}-resolve
+%attr(755,-,-) %{_bindir}/%{name}-resolve
+%dir %{_datadir}/%{name}/bin
+%dir %{_datadir}/%{name}/lib
+%{_datadir}/%{name}/bin/%{name}-resolve
+%{_datadir}/%{name}/lib/resolver
 
 %files bisect -f .mfiles-xmvn-bisect
-%{_bindir}/%{name}-bisect
+%attr(755,-,-) %{_bindir}/%{name}-bisect
+%dir %{_datadir}/%{name}/bin
+%dir %{_datadir}/%{name}/lib
+%{_datadir}/%{name}/bin/%{name}-bisect
+%{_datadir}/%{name}/lib/bisect
 
 %files subst -f .mfiles-xmvn-subst
-%{_bindir}/%{name}-subst
+%attr(755,-,-) %{_bindir}/%{name}-subst
+%dir %{_datadir}/%{name}/bin
+%dir %{_datadir}/%{name}/lib
+%{_datadir}/%{name}/bin/%{name}-subst
+%{_datadir}/%{name}/lib/subst
 
 %files install -f .mfiles-xmvn-install
-%{_bindir}/%{name}-install
+%attr(755,-,-) %{_bindir}/%{name}-install
+%dir %{_datadir}/%{name}/bin
+%dir %{_datadir}/%{name}/lib
+%{_datadir}/%{name}/bin/%{name}-install
+%{_datadir}/%{name}/lib/installer
 
 %files javadoc
 %doc LICENSE NOTICE
 
 %changelog
+* Wed Apr 19 2017 Michael Simacek <msimacek@redhat.com> - 2.5.0-23
+- Update spec for maven 3.5.0
+
+* Wed Apr 19 2017 Michael Simacek <msimacek@redhat.com> - 2.5.0-22
+- Temporary changes for maven upgrade
+
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.0-21
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Thu Feb 02 2017 Michael Simacek <msimacek@redhat.com> - 2.5.0-20
+- Remove requires added for maven 3.4.0
+
+* Thu Feb 02 2017 Michael Simacek <msimacek@redhat.com> - 2.5.0-19
+- Remove BR on maven-site-plugin
+
+* Tue Jan 31 2017 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.5.0-18
+- Allow to conditionally build without gradle
+
+* Mon Jan 16 2017 Michael Simacek <msimacek@redhat.com> - 2.5.0-17
+- Use reactor artifacts when running xmvn-subst
+
+* Mon Jan 16 2017 Mikolaj Izdebski <mizdebsk@redhat.com> - 2.5.0-16
+- Allow xmvn to install files who names whitespace
+
 * Mon Aug 15 2016 Michael Simacek <msimacek@redhat.com> - 2.5.0-15
 - Switch launcher scripts
 
