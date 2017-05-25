@@ -42,7 +42,7 @@ BuildArch:      noarch
 
 Source0:        https://github.com/fedora-java/xmvn/releases/download/%{version}/xmvn-%{version}.tar.xz
 
-BuildRequires:  maven >= 3.4.0
+BuildRequires:  maven >= 3.5.0
 BuildRequires:  maven-local
 BuildRequires:  beust-jcommander
 BuildRequires:  cglib
@@ -91,8 +91,8 @@ Requires:       maven-resolver-impl
 Requires:       maven-resolver-spi
 Requires:       maven-resolver-util
 Requires:       maven-wagon-provider-api
-Requires:       objectweb-asm
 Requires:       plexus-cipher
+Requires:       plexus-classworlds
 Requires:       plexus-containers-component-annotations
 Requires:       plexus-interpolation
 Requires:       plexus-sec-dispatcher
@@ -307,44 +307,15 @@ cp -P ${maven_home}/bin/m2.conf %{buildroot}%{_datadir}/%{name}/bin/
 
 %files
 %{_bindir}/mvn-local
-%{_datadir}/%{name}/lib/aopalliance.jar
-%{_datadir}/%{name}/lib/cdi-apicdi-api.jar
-%{_datadir}/%{name}/lib/commons-codec.jar
-%{_datadir}/%{name}/lib/commons-io.jar
-%{_datadir}/%{name}/lib/commons-lang.jar
-%{_datadir}/%{name}/lib/commons-logging.jar
-%{_datadir}/%{name}/lib/httpcomponents_httpclient.jar
-%{_datadir}/%{name}/lib/httpcomponents_httpcore.jar
-%{_datadir}/%{name}/lib/jsoup_jsoup.jar
-%{_datadir}/%{name}/lib/jsr-305.jar
-%{_datadir}/%{name}/lib/maven-resolver_maven-resolver-connector-basic.jar
-%{_datadir}/%{name}/lib/maven-resolver_maven-resolver-transport-wagon.jar
-%{_datadir}/%{name}/lib/maven-wagon_file.jar
-%{_datadir}/%{name}/lib/maven-wagon_http-shaded.jar
-%{_datadir}/%{name}/lib/maven-wagon_http-shared.jar
 
 %files minimal
 %{_bindir}/%{name}
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/bin
 %dir %{_datadir}/%{name}/lib
-%exclude %{_datadir}/%{name}/lib/aopalliance.jar
-%exclude %{_datadir}/%{name}/lib/cdi-apicdi-api.jar
-%exclude %{_datadir}/%{name}/lib/commons-codec.jar
-%exclude %{_datadir}/%{name}/lib/commons-io.jar
-%exclude %{_datadir}/%{name}/lib/commons-lang.jar
-%exclude %{_datadir}/%{name}/lib/commons-logging.jar
-%exclude %{_datadir}/%{name}/lib/httpcomponents_httpclient.jar
-%exclude %{_datadir}/%{name}/lib/httpcomponents_httpcore.jar
-%exclude %{_datadir}/%{name}/lib/jsoup_jsoup.jar
-%exclude %{_datadir}/%{name}/lib/jsr-305.jar
-%exclude %{_datadir}/%{name}/lib/maven-resolver_maven-resolver-connector-basic.jar
-%exclude %{_datadir}/%{name}/lib/maven-resolver_maven-resolver-transport-wagon.jar
-%exclude %{_datadir}/%{name}/lib/maven-wagon_file.jar
-%exclude %{_datadir}/%{name}/lib/maven-wagon_http-shaded.jar
-%exclude %{_datadir}/%{name}/lib/maven-wagon_http-shared.jar
 %{_datadir}/%{name}/lib/*.jar
 %{_datadir}/%{name}/lib/ext
+%{_datadir}/%{name}/lib/jansi-native
 %{_datadir}/%{name}/bin/m2.conf
 %{_datadir}/%{name}/bin/mvn
 %{_datadir}/%{name}/bin/mvnDebug
