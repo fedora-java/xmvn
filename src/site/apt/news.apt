@@ -3,10 +3,125 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2015-10-28
+                    2017-06-20
 
 
 Release notes for XMvn
+
+* What's new in XMvn 3.0.0
+
+  XMvn 3.0.0 was released on 2017-06-20.  Most important changes
+  include:
+
+  * API changes
+
+    * New <<<Configurator>>> API
+
+      XMvn 3.0.0 adds Configurator API service, which exposes XMvn
+      configuration as Java beans.
+
+    * New <<<MetadataResolver>>> API
+
+      XMvn 3.0.0 adds new API service - <<<MetadataResolver>>>, which
+      allows resolution of metadata for artifacts installed in the
+      system.
+
+    * Service locator API
+
+      Instances of services provided by XMvn API can now be obtained
+      using service locator, without using dependency injection.  This
+      change obsoleted XMvn Launcher module, which was removed in XMvn
+      3.0.0.
+
+    * New default compiler source setting
+
+      Since XMvn 3.0.0 <<<compilerSource>>> setting has a new default
+      value equal to <<<1.6>>>.
+
+  * Changes in binary distribution
+
+    * Launcher scripts removed from binary tarball
+
+      Launcher scripts for tools, such as <<<xmvn-resolve>>>,
+      <<<xmvn-install>>> etc., as well as <<<xmvn>>> launcher, were
+      removed.  From now on, tools can be ran using <<<java -jar>>>
+      syntax and XMvn itself can be ran using standard <<<mvn>>>
+      launcher.  This is upstream change only - downstream
+      distributions may continue to provide distro-specific launchers.
+
+    * Ivy connector removed from binary tarball
+
+      Since XMvn 3.0.0, connector for Apache Ivy is no longer included
+      in binary tarball.
+
+  * New features
+
+    * Ignoring duplicate metadata made configurable
+
+      XMvn versions prior to 3.0.0 would previously always ignore
+      installed artifacts, which have multiple metadata, for example
+      when more than one package provides the same artifact.  XMvn
+      3.0.0 added new option <<<ignoreDuplicateMetadata>>>, which can
+      be used to control this behavior.
+      <<<ignoreDuplicateMetadata>>> is <<<true>>> by default, but when
+      set to <<<false>>> XMvn will resolve metadata for the first
+      artifact found, ignoring others.
+
+    * POM files for Tycho projects are not installed
+
+      Projects built with Eclipse Tycho install JAR files in private
+      locations specific to Eclipse, so POM files and metadata for
+      them are not installed.
+
+    * PoC implementation of Javadoc MOJO
+
+      XMvn 3.0.0 added new MOJO, which can be used to generate API
+      documentation (javadocs) as alternative to Maven Javadoc Plugin.
+      Goal <<<xmvn-mojo:javadoc>>> works in similar way to
+      <<<javadoc:aggregate>>>, but it has some advantages over it.
+      XMvn javadoc makes javadocs more consistent between packages -
+      it unifies javadoc options, doclet used, CSS styles, and so on.
+      It opens possibilities for better integration with distributions
+      in the future, like for example distro-specific themes, links or
+      dependencies between javadoc packages.  It also has much fewer
+      dependencies, which means smaller builroots and faster builds.
+
+    * More accurate builddep MOJO
+
+      Builddep MOJO, which can be used for auto-generating
+      build-requires, was rewritten almost from scratch.  Now its
+      output should be much more accurate.
+
+    * Partial compatibility with Maven 3.0
+
+      XMvn 3.0.0 restores partial compatibility with Maven 3.0.
+
+  * Bug fixes
+
+    * Ignoring runtime exceptions during bytecode analysis
+
+      Previously XMvn Installer would terminate abnormally on bytecode
+      it couldn't parse, such as newer bytecode than recognized by ASM
+      library which XMvn uses.  This has been fixed in XMvn 3.0.0.
+
+    * Coping with whitespaces in file names
+
+      When installing files with whitespace in their names, XMvn
+      Installer would previously generate incorrect file descriptor.
+      XMvn 3.0.0 fixes this bug.
+
+  * Other changes
+
+    * Release on Maven Central Repository
+
+      Since 3.0.0 XMvn will be available in Maven Central Repository.
+
+    * Migrated from fedorahosted.org to GitHub
+
+      Since fedorahosted.org, the service that XMvn used to be hosted
+      on, was decommissioned, XMvn source repository was moved to new
+      home, which is now at GitHub:
+      https://github.com/fedora-java/xmvn/
 
 * What's new in XMvn 2.5.0
 
