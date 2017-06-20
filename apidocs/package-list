@@ -9,7 +9,10 @@ org.fedoraproject.xmvn.connector.ivy
 org.fedoraproject.xmvn.deployer
 org.fedoraproject.xmvn.deployer.impl
 org.fedoraproject.xmvn.locator
+org.fedoraproject.xmvn.locator.impl
+org.fedoraproject.xmvn.logging.impl
 org.fedoraproject.xmvn.metadata
+org.fedoraproject.xmvn.metadata.impl
 org.fedoraproject.xmvn.metadata.io.stax
 org.fedoraproject.xmvn.model
 org.fedoraproject.xmvn.model.impl
@@ -26,5 +29,4 @@ org.fedoraproject.xmvn.tools.install.impl
 org.fedoraproject.xmvn.tools.resolve
 org.fedoraproject.xmvn.tools.resolve.xml
 org.fedoraproject.xmvn.tools.subst
-org.fedoraproject.xmvn.utils
 org.slf4j.impl
