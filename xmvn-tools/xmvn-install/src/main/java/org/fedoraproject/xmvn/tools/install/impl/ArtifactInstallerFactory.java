@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -56,7 +58,7 @@ class ArtifactInstallerFactory
         try
         {
             String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
-            InputStream resourceStream = pluginRealm.getResourceAsStream( resourceName );
+            InputStream resourceStream = pluginRealm != null ? pluginRealm.getResourceAsStream( resourceName ) : null;
             if ( resourceStream == null )
             {
                 logger.debug( "No XMvn Installer plugin found for packaging type {}", type );
@@ -90,10 +92,18 @@ class ArtifactInstallerFactory
     {
         defaultArtifactInstaller = new DefaultArtifactInstaller( configurator );
 
-        ClassLoader parentClassLoader = ArtifactInstallerFactory.class.getClassLoader();
-        pluginRealm = new IsolatedClassRealm( parentClassLoader );
-        pluginRealm.addJarDirectory( Paths.get( "/usr/share/xmvn/lib/installer" ) );
-        PLUGIN_IMPORTS.forEach( pluginRealm::importPackage );
+        Path pluginDir = Paths.get( "/usr/share/xmvn/lib/installer" );
+        if ( Files.isDirectory( pluginDir ) )
+        {
+            ClassLoader parentClassLoader = ArtifactInstallerFactory.class.getClassLoader();
+            pluginRealm = new IsolatedClassRealm( parentClassLoader );
+            pluginRealm.addJarDirectory( pluginDir );
+            PLUGIN_IMPORTS.forEach( pluginRealm::importPackage );
+        }
+        else
+        {
+            pluginRealm = null;
+        }
     }
 
     /**
