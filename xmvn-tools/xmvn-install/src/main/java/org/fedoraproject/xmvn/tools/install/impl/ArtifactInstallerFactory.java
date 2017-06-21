@@ -15,8 +15,15 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -35,49 +42,85 @@ class ArtifactInstallerFactory
 
     private final ArtifactInstaller defaultArtifactInstaller;
 
-    private final ArtifactInstaller eclipseArtifactInstaller;
+    private final IsolatedClassRealm pluginRealm;
 
-    private static ArtifactInstaller loadPlugin( String className )
+    private final Map<String, ArtifactInstaller> cachedPluginsByType = new LinkedHashMap<>();
+
+    private final Map<String, ArtifactInstaller> cachedPluginsByImplClass = new LinkedHashMap<>();
+
+    private ArtifactInstaller tryLoadPlugin( String type )
     {
+        if ( cachedPluginsByType.containsKey( type ) )
+            return cachedPluginsByType.get( type );
+
         try
         {
-            return (ArtifactInstaller) ArtifactInstallerFactory.class.getClassLoader().loadClass( className ).newInstance();
+            String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
+            InputStream resourceStream = pluginRealm.getResourceAsStream( resourceName );
+            if ( resourceStream == null )
+            {
+                logger.debug( "No XMvn Installer plugin found for packaging type {}", type );
+                cachedPluginsByType.put( type, null );
+                return null;
+            }
+
+            String pluginImplClass;
+            try ( BufferedReader resourceReader = new BufferedReader( new InputStreamReader( resourceStream ) ) )
+            {
+                pluginImplClass = resourceReader.readLine();
+            }
+
+            ArtifactInstaller pluggedInInstaller = cachedPluginsByImplClass.get( pluginImplClass );
+            if ( pluggedInInstaller == null )
+            {
+                pluggedInInstaller = (ArtifactInstaller) pluginRealm.loadClass( pluginImplClass ).newInstance();
+                cachedPluginsByImplClass.put( pluginImplClass, pluggedInInstaller );
+            }
+
+            cachedPluginsByType.put( type, pluggedInInstaller );
+            return pluggedInInstaller;
         }
-        catch ( ReflectiveOperationException e )
+        catch ( IOException | ReflectiveOperationException e )
         {
-            return null;
+            throw new RuntimeException( "Unable to load XMvn Installer plugin for packaging type " + type, e );
         }
     }
 
     public ArtifactInstallerFactory( Configurator configurator )
     {
         defaultArtifactInstaller = new DefaultArtifactInstaller( configurator );
-        // FIXME Don't hardcode plugin class name
-        eclipseArtifactInstaller = loadPlugin( "org.fedoraproject.p2.xmvn.EclipseArtifactInstaller" );
+
+        ClassLoader parentClassLoader = ArtifactInstallerFactory.class.getClassLoader();
+        pluginRealm = new IsolatedClassRealm( parentClassLoader );
+        pluginRealm.addJarDirectory( Paths.get( "/usr/share/xmvn/lib/installer" ) );
+        PLUGIN_IMPORTS.forEach( pluginRealm::importPackage );
     }
 
     /**
-     * List of Tycho pacgkaging types.
+     * List of packages imported from XMvn Installer class loader to plug-in realms.
      */
-    private static final Collection<String> ECLIPSE_PACKAGING_TYPES = Arrays.asList( "eclipse-plugin", //
-                                                                                     "eclipse-test-plugin", //
-                                                                                     "eclipse-feature", //
-                                                                                     "eclipse-repository", //
-                                                                                     "eclipse-application", //
-                                                                                     "eclipse-update-site", //
-                                                                                     "eclipse-target-definition" );
+    private static final List<String> PLUGIN_IMPORTS = Arrays.asList( // XMvn API
+                                                                      "org.fedoraproject.xmvn.artifact", //
+                                                                      "org.fedoraproject.xmvn.config", //
+                                                                      "org.fedoraproject.xmvn.deployer", //
+                                                                      "org.fedoraproject.xmvn.locator", //
+                                                                      "org.fedoraproject.xmvn.metadata", //
+                                                                      "org.fedoraproject.xmvn.resolver", //
+                                                                      // XMvn Installer SPI
+                                                                      "org.fedoraproject.xmvn.tools.install", //
+                                                                      // SLF4J API
+                                                                      "org.slf4j" //
+    );
 
     @SuppressWarnings( "unused" )
     public ArtifactInstaller getInstallerFor( Artifact artifact, Properties properties )
     {
         String type = properties.getProperty( "type" );
-        if ( type != null && ECLIPSE_PACKAGING_TYPES.contains( type ) )
+        if ( type != null )
         {
-            if ( eclipseArtifactInstaller != null )
-                return eclipseArtifactInstaller;
-
-            logger.error( "Unable to load XMvn P2 plugin, Eclipse artifact installation will be impossible" );
-            throw new RuntimeException( "Unable to load XMvn P2 plugin" );
+            ArtifactInstaller pluggedInInstaller = tryLoadPlugin( type );
+            if ( pluggedInInstaller != null )
+                return pluggedInInstaller;
         }
 
         return defaultArtifactInstaller;
