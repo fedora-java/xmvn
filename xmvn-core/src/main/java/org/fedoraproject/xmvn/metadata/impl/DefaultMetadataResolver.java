@@ -69,8 +69,6 @@ public class DefaultMetadataResolver
 
     public DefaultMetadataResolver()
     {
-        this.logger = new ConsoleLogger();
-
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, ( runnable ) -> {
