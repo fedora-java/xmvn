@@ -90,9 +90,13 @@ class ArtifactInstallerFactory
 
     public ArtifactInstallerFactory( Configurator configurator )
     {
+        this( configurator, Paths.get( "/usr/share/xmvn/lib/installer" ) );
+    }
+
+    ArtifactInstallerFactory( Configurator configurator, Path pluginDir )
+    {
         defaultArtifactInstaller = new DefaultArtifactInstaller( configurator );
 
-        Path pluginDir = Paths.get( "/usr/share/xmvn/lib/installer" );
         if ( Files.isDirectory( pluginDir ) )
         {
             ClassLoader parentClassLoader = ArtifactInstallerFactory.class.getClassLoader();
