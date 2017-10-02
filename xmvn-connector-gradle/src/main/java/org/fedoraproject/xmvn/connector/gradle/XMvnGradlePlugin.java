@@ -15,9 +15,11 @@
  */
 package org.fedoraproject.xmvn.connector.gradle;
 
+import groovy.lang.Closure;
+import groovy.lang.GroovyShell;
 import org.gradle.api.Plugin;
 import org.gradle.api.Task;
-import org.gradle.api.artifacts.repositories.ArtifactRepository;
+import org.gradle.api.artifacts.dsl.RepositoryHandler;
 import org.gradle.api.invocation.Gradle;
 
 /**
@@ -26,15 +28,17 @@ import org.gradle.api.invocation.Gradle;
 public class XMvnGradlePlugin
     implements Plugin<Gradle>
 {
+    private void configureRepositories( RepositoryHandler repositories )
+    {
+        repositories.configure( (Closure<?>) new GroovyShell().evaluate( "{ it -> xmvn() }" ) );
+    }
+
     @Override
     public void apply( Gradle gradle )
     {
-        ArtifactRepository repo = new GradleResolver();
-        repo.setName( "xmvn" );
-
         gradle.allprojects( project -> {
-            project.getRepositories().addFirst( repo );
-            project.getBuildscript().getRepositories().addFirst( repo );
+            configureRepositories( project.getRepositories() );
+            configureRepositories( project.getBuildscript().getRepositories() );
 
             Task upload = project.getTasks().create( "xmvnInstall", XMvnInstallTask.class );
             upload.setDescription( "Installs all artifacts through XMvn" );

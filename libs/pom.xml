@@ -37,8 +37,11 @@
     <module>gradle-base-services</module>
     <module>gradle-base-services-groovy</module>
     <module>gradle-core</module>
+    <module>gradle-core-api</module>
+    <module>gradle-model-core</module>
     <module>gradle-dependency-management</module>
     <module>gradle-resources</module>
+    <module>gradle-logging</module>
   </modules>
   <dependencies>
     <dependency>
