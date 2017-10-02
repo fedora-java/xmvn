@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.connector.gradle;
 
 import java.nio.file.Files;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ import org.gradle.api.artifacts.PublishArtifact;
 import org.gradle.api.artifacts.PublishException;
 import org.gradle.api.component.SoftwareComponent;
 import org.gradle.api.internal.component.SoftwareComponentInternal;
-import org.gradle.api.internal.component.Usage;
+import org.gradle.api.internal.component.UsageContext;
 import org.gradle.api.tasks.TaskAction;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -83,7 +84,7 @@ class XMvnInstallTask
             Project dependencyProject = projectDependency.getDependencyProject();
             Stream<SoftwareComponent> components = dependencyProject.getComponents().stream();
             Stream<SoftwareComponentInternal> internalComponents = components.map( c -> (SoftwareComponentInternal) c );
-            Stream<Usage> usages = internalComponents.flatMap( ic -> ic.getUsages().stream() );
+            Stream<UsageContext> usages = internalComponents.flatMap( ic -> ic.getUsages().stream() );
             Stream<PublishArtifact> publishArtifacts = usages.flatMap( usage -> usage.getArtifacts().stream() );
             Stream<Artifact> artifacts = publishArtifacts.map( pa -> getPublishArtifact( dependencyProject, pa ) );
             return artifacts.collect( Collectors.toList() );
@@ -144,7 +145,13 @@ class XMvnInstallTask
             }
         }
 
-        DeploymentResult result = getDeployer().deploy( request );
+        DeploymentResult result;
+
+        // prevent parallel access to installation plan
+        synchronized ( XMvnInstallTask.class )
+        {
+            result = getDeployer().deploy( request );
+        }
 
         if ( result.getException() != null )
         {
@@ -155,17 +162,22 @@ class XMvnInstallTask
     @TaskAction
     protected void deployProject()
     {
+        Set<PublishArtifact> seenArtifacts = new HashSet<>();
+
         for ( SoftwareComponent component : getProject().getComponents() )
         {
             SoftwareComponentInternal internalComponent = (SoftwareComponentInternal) component;
 
-            for ( Usage usage : internalComponent.getUsages() )
+            for ( UsageContext usage : internalComponent.getUsages() )
             {
                 Set<ModuleDependency> dependencies = usage.getDependencies();
 
                 for ( PublishArtifact artifact : usage.getArtifacts() )
                 {
-                    deploy( artifact, dependencies );
+                    if ( seenArtifacts.add( artifact ) )
+                    {
+                        deploy( artifact, dependencies );
+                    }
                 }
             }
         }

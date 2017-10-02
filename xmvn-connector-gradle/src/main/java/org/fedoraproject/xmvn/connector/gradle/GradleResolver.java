@@ -18,41 +18,47 @@ package org.fedoraproject.xmvn.connector.gradle;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.gradle.api.artifacts.ComponentMetadataSupplier;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
+import org.gradle.api.artifacts.component.ComponentArtifactIdentifier;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
+import org.gradle.api.internal.artifacts.ImmutableModuleIdentifierFactory;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ConfiguredModuleComponentRepository;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ModuleComponentRepositoryAccess;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.DescriptorParseContext;
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.GradlePomModuleDescriptorParser;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.parser.MetaDataParser;
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionComparator;
-import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.strategy.DefaultVersionSelectorScheme;
+import org.gradle.api.internal.artifacts.ivyservice.resolveengine.artifact.ResolvableArtifact;
 import org.gradle.api.internal.artifacts.repositories.AbstractArtifactRepository;
 import org.gradle.api.internal.artifacts.repositories.ResolutionAwareRepository;
+import org.gradle.api.internal.artifacts.repositories.resolver.MetadataFetchingCost;
 import org.gradle.api.internal.component.ArtifactType;
-import org.gradle.internal.component.external.model.DefaultMavenModuleResolveMetaData;
-import org.gradle.internal.component.external.model.DefaultModuleComponentArtifactMetaData;
-import org.gradle.internal.component.external.model.ModuleComponentResolveMetaData;
-import org.gradle.internal.component.external.model.MutableModuleComponentResolveMetaData;
-import org.gradle.internal.component.model.ComponentArtifactMetaData;
+import org.gradle.internal.component.external.model.DefaultModuleComponentArtifactMetadata;
+import org.gradle.internal.component.external.model.DefaultMutableMavenModuleResolveMetadata;
+import org.gradle.internal.component.external.model.FixedComponentArtifacts;
+import org.gradle.internal.component.external.model.ModuleComponentArtifactMetadata;
+import org.gradle.internal.component.external.model.ModuleComponentResolveMetadata;
+import org.gradle.internal.component.external.model.MutableMavenModuleResolveMetadata;
+import org.gradle.internal.component.external.model.MutableModuleComponentResolveMetadata;
+import org.gradle.internal.component.model.ComponentArtifactMetadata;
 import org.gradle.internal.component.model.ComponentOverrideMetadata;
-import org.gradle.internal.component.model.ComponentResolveMetaData;
-import org.gradle.internal.component.model.ComponentUsage;
+import org.gradle.internal.component.model.ComponentResolveMetadata;
 import org.gradle.internal.component.model.DefaultIvyArtifactName;
-import org.gradle.internal.component.model.DependencyMetaData;
+import org.gradle.internal.component.model.DependencyMetadata;
 import org.gradle.internal.component.model.IvyArtifactName;
 import org.gradle.internal.component.model.ModuleSource;
 import org.gradle.internal.resolve.ArtifactResolveException;
 import org.gradle.internal.resolve.ModuleVersionResolveException;
 import org.gradle.internal.resolve.result.BuildableArtifactResolveResult;
 import org.gradle.internal.resolve.result.BuildableArtifactSetResolveResult;
+import org.gradle.internal.resolve.result.BuildableComponentArtifactsResolveResult;
 import org.gradle.internal.resolve.result.BuildableModuleComponentMetaDataResolveResult;
 import org.gradle.internal.resolve.result.BuildableModuleVersionListingResolveResult;
-import org.gradle.internal.resource.local.DefaultLocallyAvailableExternalResource;
-import org.gradle.internal.resource.local.DefaultLocallyAvailableResource;
+import org.gradle.internal.resource.local.FileResourceRepository;
 import org.gradle.internal.resource.local.LocallyAvailableExternalResource;
+import org.gradle.internal.resource.metadata.DefaultExternalResourceMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +78,21 @@ public class GradleResolver
     implements ResolutionAwareRepository, ConfiguredModuleComponentRepository, ModuleComponentRepositoryAccess,
     DescriptorParseContext
 {
+    public GradleResolver( MetaDataParser<MutableMavenModuleResolveMetadata> pomParser,
+                           ImmutableModuleIdentifierFactory moduleIdentifierFactory,
+                           FileResourceRepository fileRepository )
+    {
+        this.pomParser = pomParser;
+        this.moduleIdentifierFactory = moduleIdentifierFactory;
+        this.fileRepository = fileRepository;
+    }
+
+    private MetaDataParser<MutableMavenModuleResolveMetadata> pomParser;
+
+    private ImmutableModuleIdentifierFactory moduleIdentifierFactory;
+
+    private FileResourceRepository fileRepository;
+
     private final Logger logger = LoggerFactory.getLogger( GradleResolver.class );
 
     static class LazyLocatorProvider
@@ -135,17 +156,17 @@ public class GradleResolver
     }
 
     @Override
-    public void listModuleVersions( DependencyMetaData arg0, BuildableModuleVersionListingResolveResult arg1 )
+    public void listModuleVersions( DependencyMetadata arg0, BuildableModuleVersionListingResolveResult arg1 )
     {
         logger.debug( "listModuleVersions() called, but it is NOT IMPLEMENTED" );
     }
 
     @Override
-    public void resolveArtifact( ComponentArtifactMetaData artifact, ModuleSource module,
+    public void resolveArtifact( ComponentArtifactMetadata artifact, ModuleSource module,
                                  BuildableArtifactResolveResult result )
     {
         ModuleVersionIdentifier moduleId =
-            ( (DefaultModuleComponentArtifactMetaData) artifact ).toArtifactIdentifier().getModuleVersionIdentifier();
+            ( (DefaultModuleComponentArtifactMetadata) artifact ).toArtifactIdentifier().getModuleVersionIdentifier();
         String groupId = moduleId.getGroup();
         String artifactId = artifact.getName().getName();
         String extension = artifact.getName().getExtension();
@@ -180,11 +201,9 @@ public class GradleResolver
         {
             logger.debug( "Found Maven POM: {}", pomPath );
 
-            MetaDataParser<DefaultMavenModuleResolveMetaData> parser =
-                new GradlePomModuleDescriptorParser( new DefaultVersionSelectorScheme( new DefaultVersionComparator() ) );
-            MutableModuleComponentResolveMetaData metaData = parser.parseMetaData( this, pomPath.toFile() );
+            MutableModuleComponentResolveMetadata metaData = pomParser.parseMetaData( this, pomPath.toFile() );
 
-            result.resolved( metaData );
+            result.resolved( metaData.asImmutable() );
             return;
         }
         else
@@ -204,9 +223,11 @@ public class GradleResolver
                 if ( path != null )
                 {
                     logger.debug( "Artifact {} found, returning minimal model", artifact3 );
-                    MutableModuleComponentResolveMetaData metaData =
-                        new DefaultMavenModuleResolveMetaData( id, request.getArtifacts() );
-                    result.resolved( metaData );
+                    ModuleVersionIdentifier mvi =
+                        moduleIdentifierFactory.moduleWithVersion( id.getGroup(), id.getModule(), id.getVersion() );
+                    MutableModuleComponentResolveMetadata metaData =
+                        new DefaultMutableMavenModuleResolveMetadata( mvi, id, request.getArtifacts() );
+                    result.resolved( metaData.asImmutable() );
                     return;
                 }
             }
@@ -224,24 +245,15 @@ public class GradleResolver
 
         if ( artifactSet.isEmpty() )
         {
-            artifactSet.add( new DefaultIvyArtifactName( id.getModule(), "jar", "jar",
-                                                         Collections.<String, String>emptyMap() ) );
+            artifactSet.add( new DefaultIvyArtifactName( id.getModule(), "jar", "jar", null ) );
         }
 
         return artifactSet;
     }
 
     @Override
-    public void resolveModuleArtifacts( ComponentResolveMetaData component, ComponentUsage usage,
-                                        BuildableArtifactSetResolveResult result )
-    {
-        result.resolved( Collections.singleton( ( (ModuleComponentResolveMetaData) component ).artifact( "jar", "jar",
-                                                                                                         null ) ) );
-    }
-
-    @Override
-    public void resolveModuleArtifacts( ComponentResolveMetaData component, ArtifactType type,
-                                        BuildableArtifactSetResolveResult result )
+    public void resolveArtifactsWithType( ComponentResolveMetadata component, ArtifactType type,
+                                          BuildableArtifactSetResolveResult result )
     {
         if ( type != ArtifactType.MAVEN_POM )
         {
@@ -250,12 +262,19 @@ public class GradleResolver
             return;
         }
 
-        ModuleComponentResolveMetaData metaData = (ModuleComponentResolveMetaData) component;
-        ModuleComponentIdentifier id = metaData.getComponentId();
+        ModuleComponentIdentifier id = (ModuleComponentIdentifier) component.getComponentId();
         DefaultIvyArtifactName name = new DefaultIvyArtifactName( id.getModule(), "pom", "pom" );
-        DefaultModuleComponentArtifactMetaData resolvedMetaData =
-            new DefaultModuleComponentArtifactMetaData( id, name );
+        DefaultModuleComponentArtifactMetadata resolvedMetaData =
+            new DefaultModuleComponentArtifactMetadata( id, name );
         result.resolved( Collections.singleton( resolvedMetaData ) );
+    }
+
+    @Override
+    public void resolveArtifacts( ComponentResolveMetadata component, BuildableComponentArtifactsResolveResult result )
+    {
+        ModuleComponentArtifactMetadata artifact =
+            ( (ModuleComponentResolveMetadata) component ).artifact( "jar", "jar", null );
+        result.resolved( new FixedComponentArtifacts( Collections.singleton( artifact ) ) );
     }
 
     @Override
@@ -266,7 +285,25 @@ public class GradleResolver
         if ( pomPath == null )
             return null;
 
-        return new DefaultLocallyAvailableExternalResource( pomPath.toUri(),
-                                                            new DefaultLocallyAvailableResource( pomPath.toFile() ) );
+        DefaultExternalResourceMetaData metadata = new DefaultExternalResourceMetaData( pomPath.toUri(), 0, 0 );
+        return fileRepository.resource( pomPath.toFile(), pomPath.toUri(), metadata );
+    }
+
+    @Override
+    public ComponentMetadataSupplier createMetadataSupplier()
+    {
+        return null;
+    }
+
+    @Override
+    public Map<ComponentArtifactIdentifier, ResolvableArtifact> getArtifactCache()
+    {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public MetadataFetchingCost estimateMetadataFetchingCost( ModuleComponentIdentifier arg0 )
+    {
+        return MetadataFetchingCost.CHEAP;
     }
 }
