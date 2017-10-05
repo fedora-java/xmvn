@@ -34,7 +34,6 @@ import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.tools.install.JarUtils;
 
 /**
  * @author Mikolaj Izdebski
@@ -94,6 +93,39 @@ public class JarUtilsTest
         throws Exception
     {
         Path testResource = Paths.get( "src/test/resources/late-manifest.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+        JarUtils.injectManifest( testJar, artifact );
+
+        try ( JarInputStream jis = new JarInputStream( Files.newInputStream( testJar ) ) )
+        {
+            Manifest mf = jis.getManifest();
+            assertNotNull( mf );
+
+            Attributes attr = mf.getMainAttributes();
+            assertNotNull( attr );
+
+            assertEquals( "org.apache.maven", attr.getValue( "JavaPackages-GroupId" ) );
+            assertEquals( "maven-model", attr.getValue( "JavaPackages-ArtifactId" ) );
+            assertEquals( "xsd", attr.getValue( "JavaPackages-Extension" ) );
+            assertEquals( "model", attr.getValue( "JavaPackages-Classifier" ) );
+            assertEquals( "2.2.1", attr.getValue( "JavaPackages-Version" ) );
+        }
+    }
+
+    /**
+     * Test JAR if manifest injection works when MANIFEST.MF file appears later in the file (for example produced by
+     * adding manifest to existing jar with plain zip)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionDuplicateManifest()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/duplicate-manifest.jar" );
         Path testJar = workDir.resolve( "manifest.jar" );
         Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
 
