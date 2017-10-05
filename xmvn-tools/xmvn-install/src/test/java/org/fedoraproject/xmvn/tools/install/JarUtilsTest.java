@@ -116,8 +116,7 @@ public class JarUtilsTest
     }
 
     /**
-     * Test JAR if manifest injection works when MANIFEST.MF file appears later in the file (for example produced by
-     * adding manifest to existing jar with plain zip)
+     * Test JAR if manifest injection works when MANIFEST.MF entry is duplicated
      *
      * @throws Exception
      */
