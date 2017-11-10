@@ -226,7 +226,7 @@ public class GradleResolver
                     ModuleVersionIdentifier mvi =
                         moduleIdentifierFactory.moduleWithVersion( id.getGroup(), id.getModule(), id.getVersion() );
                     MutableModuleComponentResolveMetadata metaData =
-                        new DefaultMutableMavenModuleResolveMetadata( mvi, id, request.getArtifacts() );
+                        DefaultMutableMavenModuleResolveMetadata.missing( mvi, id );
                     result.resolved( metaData.asImmutable() );
                     return;
                 }
