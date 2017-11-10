@@ -116,7 +116,7 @@ class XMvnInstallTask
         } ).collect( Collectors.toList() );
     }
 
-    private void deploy( PublishArtifact gradleArtifact, Set<ModuleDependency> dependencies )
+    private void deploy( PublishArtifact gradleArtifact, Set<? extends ModuleDependency> dependencies )
     {
         DeploymentRequest request = new DeploymentRequest();
 
@@ -170,7 +170,7 @@ class XMvnInstallTask
 
             for ( UsageContext usage : internalComponent.getUsages() )
             {
-                Set<ModuleDependency> dependencies = usage.getDependencies();
+                Set<? extends ModuleDependency> dependencies = usage.getDependencies();
 
                 for ( PublishArtifact artifact : usage.getArtifacts() )
                 {
