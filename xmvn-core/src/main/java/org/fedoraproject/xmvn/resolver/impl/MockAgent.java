@@ -25,23 +25,24 @@ import org.fedoraproject.xmvn.logging.impl.Logger;
  */
 class MockAgent
 {
-    private static final String REQUEST_CMD = System.getProperty( "xmvn.resolver.requestArtifactCmd" );
+    private final String requestCommand;
 
     private final Logger logger;
 
     public MockAgent( Logger logger )
     {
         this.logger = logger;
+        this.requestCommand = System.getProperty( "xmvn.resolver.requestArtifactCmd" );
     }
 
     public boolean tryInstallArtifact( Artifact artifact )
     {
-        if ( REQUEST_CMD == null )
+        if ( requestCommand == null )
             return false;
 
         try
         {
-            String cmd = String.format( "%s maven '%s'", REQUEST_CMD, artifact.toString() );
+            String cmd = String.format( "%s maven '%s'", requestCommand, artifact.toString() );
             logger.debug( "Trying to install artifact with external command: {}", cmd );
 
             ProcessBuilder pb = new ProcessBuilder( "sh", "-c", cmd );
