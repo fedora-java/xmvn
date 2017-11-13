@@ -33,7 +33,7 @@
 %bcond_without gradle
 
 Name:           xmvn
-Version:        3.0.0
+Version:        3.1.0
 Release:        0.git.%(date +%%Y%%m%%d.%%H%%M%%S)
 Summary:        Local Extensions for Apache Maven
 License:        ASL 2.0
@@ -62,7 +62,7 @@ BuildRequires:  plexus-containers-container-default
 BuildRequires:  plexus-containers-component-annotations
 BuildRequires:  plexus-containers-component-metadata
 %if %{with gradle}
-BuildRequires:  gradle >= 2.5
+BuildRequires:  gradle >= 4.3.1
 %endif
 
 Requires:       %{name}-minimal = %{version}-%{release}
