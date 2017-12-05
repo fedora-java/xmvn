@@ -75,6 +75,20 @@ public abstract class AbstractIntegrationTest
         return baseDir;
     }
 
+    public void expandBaseDir( String source, String target )
+        throws Exception
+    {
+        String metadata = new String( Files.readAllBytes( Paths.get( source ) ), StandardCharsets.UTF_8 );
+        metadata = metadata.replaceAll( "@@@", baseDir.toString() );
+        Files.write( Paths.get( target ), metadata.getBytes( StandardCharsets.UTF_8 ) );
+    }
+
+    public void expandBaseDirInPlace( String sourceAndTarget )
+        throws Exception
+    {
+        expandBaseDir( sourceAndTarget, sourceAndTarget );
+    }
+
     @BeforeClass
     public static void ensureCorrectWorkingDirectory()
         throws Exception
@@ -104,10 +118,7 @@ public abstract class AbstractIntegrationTest
 
         expectFailure = false;
 
-        Path metadataPath = Paths.get( "../../src/test/resources/metadata.xml" );
-        String metadata = new String( Files.readAllBytes( metadataPath ), StandardCharsets.UTF_8 );
-        metadata = metadata.replaceAll( "@@@", baseDir.toString() );
-        Files.write( Paths.get( "metadata.xml" ), metadata.getBytes( StandardCharsets.UTF_8 ) );
+        expandBaseDir( "../../src/test/resources/metadata.xml", "metadata.xml" );
     }
 
     @After
@@ -239,7 +250,7 @@ public abstract class AbstractIntegrationTest
 
         String subDir;
         if ( tool.equals( "xmvn-install" ) )
-            subDir = "intstaller";
+            subDir = "installer";
         else if ( tool.equals( "xmvn-resolve" ) )
             subDir = "resolver";
         else
