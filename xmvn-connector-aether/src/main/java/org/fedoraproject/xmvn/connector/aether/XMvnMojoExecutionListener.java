@@ -267,7 +267,10 @@ public class XMvnMojoExecutionListener
         // Disable doclint
         if ( JAVADOC_AGGREGATE.equals( execution ) )
         {
+            // maven-javadoc-plugin < 3.0.0
             trySetBeanProperty( mojo, "additionalparam", "-Xdoclint:none" );
+            // maven-javadoc-plugin >= 3.0.0
+            trySetBeanProperty( mojo, "additionalOptions", new String[] { "-Xdoclint:none" } );
         }
         else if ( XMVN_BUILDDEP.equals( execution ) )
         {
