@@ -31,7 +31,8 @@ public class BisectIntegrationTest
     private int runBisect()
         throws Exception
     {
-        return invokeTool( "xmvn-bisect", "-Dxmvn.config.sandbox=true", "clean", "compile" );
+        return invokeTool( "xmvn-bisect", "-Dxmvn.home=" + getMavenHome(), "-Dxmvn.config.sandbox=true", "clean",
+                           "compile" );
     }
 
     @Test
