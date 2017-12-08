@@ -28,9 +28,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -78,6 +76,25 @@ public abstract class AbstractToolIntegrationTest
         return getJar( tool, tool + "-*.jar" );
     }
 
+    /**
+     * For XMvn JARs, replace path to JAR corresponding with path to target/classes so that debugging works out of the
+     * box.
+     */
+    private Path jar2classes( Path jar )
+    {
+
+        String jarName = jar.getFileName().toString();
+        if ( !jarName.startsWith( "xmvn-" ) )
+            return jar;
+        String projectName = jarName.substring( 0, 5 + jarName.substring( 5 ).indexOf( '-' ) );
+        Path projectDir = getRootDir().resolve( "xmvn-tools" ).resolve( projectName );
+        if ( !Files.isDirectory( projectDir, LinkOption.NOFOLLOW_LINKS ) )
+            projectDir = getRootDir().resolve( projectName );
+        Path classesDir = projectDir.resolve( "target" ).resolve( "classes" );
+        assertTrue( Files.isDirectory( classesDir, LinkOption.NOFOLLOW_LINKS ) );
+        return classesDir;
+    }
+
     private Attributes readManifest( Path jar )
         throws Exception
     {
@@ -88,42 +105,16 @@ public abstract class AbstractToolIntegrationTest
         }
     }
 
-    public ProcessBuilder buildToolSubprocess( String tool, String... args )
-        throws Exception
-    {
-        Path javaHome = Paths.get( System.getProperty( "java.home" ) );
-        Path javaCmd = javaHome.resolve( "bin/java" );
-        assertTrue( Files.isExecutable( javaCmd ) );
-        assertTrue( Files.isRegularFile( javaCmd ) );
-
-        Path toolJar = findToolJar( tool );
-
-        List<String> command = new ArrayList<>();
-        command.add( javaCmd.toString() );
-        command.add( "-Dxmvn.config.sandbox=true" );
-        command.add( "-jar" );
-        command.add( toolJar.toString() );
-        command.addAll( Arrays.asList( args ) );
-
-        ProcessBuilder pb = new ProcessBuilder( command );
-
-        pb.redirectInput( new File( "/dev/null" ) );
-        pb.redirectOutput( new File( STDOUT ) );
-        pb.redirectError( new File( STDERR ) );
-
-        return pb;
-    }
-
     public int invokeTool( String tool, String... args )
         throws Exception
     {
         Path jar = findToolJar( tool );
         Attributes mf = readManifest( jar );
         List<URL> classPathList = new ArrayList<>();
-        classPathList.add( jar.toUri().toURL() );
+        classPathList.add( jar2classes( jar ).toUri().toURL() );
         for ( String cpJar : mf.getValue( "Class-Path" ).split( " " ) )
         {
-            classPathList.add( getJar( tool, cpJar ).toUri().toURL() );
+            classPathList.add( jar2classes( getJar( tool, cpJar ) ).toUri().toURL() );
         }
         URL[] classPath = classPathList.stream().toArray( URL[]::new );
 
