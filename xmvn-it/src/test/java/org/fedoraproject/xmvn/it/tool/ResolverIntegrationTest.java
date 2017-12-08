@@ -39,9 +39,7 @@ public class ResolverIntegrationTest
     public void testResolveNone()
         throws Exception
     {
-        ProcessBuilder pb = buildToolSubprocess( "xmvn-resolve" );
-
-        assertEquals( 0, pb.start().waitFor() );
+        assertEquals( 0, invokeTool( "xmvn-resolve" ) );
         assertFalse( getStderr().findAny().isPresent() );
         assertFalse( getStdout().findAny().isPresent() );
     }
@@ -50,9 +48,7 @@ public class ResolverIntegrationTest
     public void testResolveOne()
         throws Exception
     {
-        ProcessBuilder pb = buildToolSubprocess( "xmvn-resolve", "junit:junit" );
-
-        assertEquals( 0, pb.start().waitFor() );
+        assertEquals( 0, invokeTool( "xmvn-resolve", "junit:junit" ) );
         assertFalse( getStderr().findAny().isPresent() );
 
         List<String> out = getStdout().collect( Collectors.toList() );
@@ -67,9 +63,7 @@ public class ResolverIntegrationTest
     public void testResolveFail()
         throws Exception
     {
-        ProcessBuilder pb = buildToolSubprocess( "xmvn-resolve", "foobar:xyzzy" );
-
-        assertEquals( 1, pb.start().waitFor() );
+        assertEquals( 1, invokeTool( "xmvn-resolve", "foobar:xyzzy" ) );
         assertTrue( getStderr().anyMatch( s -> s.endsWith( "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM" ) ) );
         assertFalse( getStdout().findAny().isPresent() );
     }

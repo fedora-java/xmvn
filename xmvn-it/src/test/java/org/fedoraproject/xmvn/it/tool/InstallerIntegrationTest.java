@@ -41,9 +41,7 @@ public class InstallerIntegrationTest
     public void testInstallerHelp()
         throws Exception
     {
-        ProcessBuilder pb = buildToolSubprocess( "xmvn-install", "--help" );
-
-        assertEquals( 0, pb.start().waitFor() );
+        assertEquals( 0, invokeTool( "xmvn-install", "--help" ) );
         assertFalse( getStderr().findAny().isPresent() );
         assertTrue( getStdout().anyMatch( line -> line.startsWith( "Usage: xmvn-install" ) ) );
     }
@@ -53,10 +51,8 @@ public class InstallerIntegrationTest
         throws Exception
     {
         expandBaseDirInPlace( "install-plan.xml" );
-        ProcessBuilder pb =
-            buildToolSubprocess( "xmvn-install", "-n", "xyzzy", "-R", "install-plan.xml", "-d", "dest", "-X" );
 
-        assertEquals( 0, pb.start().waitFor() );
+        assertEquals( 0, invokeTool( "xmvn-install", "-n", "xyzzy", "-R", "install-plan.xml", "-d", "dest", "-X" ) );
         assertFalse( getStdout().findAny().isPresent() );
         assertTrue( getStderr().anyMatch( line -> line.equals( "[INFO] Installation successful" ) ) );
 
