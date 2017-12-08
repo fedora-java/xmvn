@@ -59,6 +59,11 @@ public abstract class AbstractIntegrationTest
         return baseDir;
     }
 
+    public Path getRootDir()
+    {
+        return getBaseDir().getParent().getParent().getParent();
+    }
+
     public void expandBaseDir( String source, String target )
         throws Exception
     {

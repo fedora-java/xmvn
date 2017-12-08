@@ -101,7 +101,7 @@ public abstract class AbstractMavenIntegrationTest
     {
         Properties originalProperties = System.getProperties();
         System.setProperties( null );
-        System.setProperty( "xmvn.it.rootDir", getBaseDir().getParent().getParent().getParent().toString() );
+        System.setProperty( "xmvn.it.rootDir", getRootDir().toString() );
         System.setProperty( "maven.home", getMavenHome().toString() );
         System.setProperty( "user.dir", getBaseDir().toString() );
         System.setProperty( "maven.multiModuleProjectDirectory", getBaseDir().toString() );
