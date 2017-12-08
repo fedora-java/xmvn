@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -130,6 +131,9 @@ public abstract class AbstractToolIntegrationTest
         PrintStream oldStdout = System.out;
         PrintStream oldStderr = System.err;
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        Properties oldProperties = (Properties) System.getProperties().clone();
+
+        System.setProperty( "xmvn.config.sandbox", "true" );
 
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
         try ( InputStream stdin = new FileInputStream( "/dev/null" );
@@ -159,6 +163,7 @@ public abstract class AbstractToolIntegrationTest
             System.setIn( oldStdin );
             System.setOut( oldStdout );
             System.setErr( oldStderr );
+            System.setProperties( oldProperties );
         }
         return 0;
     }
