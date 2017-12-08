@@ -16,13 +16,12 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 /**
  * @author Mikolaj Izdebski
@@ -30,8 +29,6 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 class CacheManager
 {
     private static final String DIGEST_ALGORITHM = "SHA-1";
-
-    private final HexBinaryAdapter hexAdapter;
 
     private final MessageDigest digest;
 
@@ -41,7 +38,6 @@ class CacheManager
     {
         try
         {
-            hexAdapter = new HexBinaryAdapter();
             digest = MessageDigest.getInstance( DIGEST_ALGORITHM );
         }
         catch ( NoSuchAlgorithmException e )
@@ -58,7 +54,7 @@ class CacheManager
 
     String hash( byte[] bytes )
     {
-        return hexAdapter.marshal( digest.digest( bytes ) );
+        return new BigInteger( 1, digest.digest( bytes ) ).setBit( 160 ).toString( 16 ).substring( 1 ).toUpperCase();
     }
 
     private static Path getPathDefault( String key, Object defaultValue )
