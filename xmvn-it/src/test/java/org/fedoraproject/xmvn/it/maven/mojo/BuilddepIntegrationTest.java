@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it;
+package org.fedoraproject.xmvn.it.maven.mojo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +32,8 @@ import org.w3c.dom.Node;
 import org.fedoraproject.xmvn.tools.install.condition.DomUtils;
 
 /**
+ * Integration tests for builddep MOJO.
+ * 
  * @author Mikolaj Izdebski
  */
 public class BuilddepIntegrationTest
@@ -67,9 +69,9 @@ public class BuilddepIntegrationTest
         for ( Element dep : DomUtils.parseAsParent( DomUtils.parse( builddepPath ) ) )
         {
             assertEquals( "dependency", dep.getNodeName() );
-            Map<String, String> children =
-                DomUtils.parseAsParent( dep ).stream() //
-                        .collect( Collectors.toMap( Node::getNodeName, DomUtils::parseAsText ) );
+            Map<String, String> children = DomUtils.parseAsParent( dep ).stream() //
+                                                   .collect( Collectors.toMap( Node::getNodeName,
+                                                                               DomUtils::parseAsText ) );
             visitor.visit( children.get( "groupId" ), children.get( "artifactId" ), children.get( "version" ) );
         }
     }

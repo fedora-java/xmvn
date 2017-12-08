@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it;
+package org.fedoraproject.xmvn.it.maven.mojo;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +23,8 @@ import java.nio.file.Paths;
 import org.junit.Test;
 
 /**
+ * Integration tests for javadoc MOJO.
+ * 
  * @author Mikolaj Izdebski
  */
 public class JavadocIntegrationTest

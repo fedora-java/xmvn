@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it;
+package org.fedoraproject.xmvn.it.maven.mojo;
 
 import static org.junit.Assert.assertTrue;
 
@@ -28,15 +28,18 @@ import org.junit.Before;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
+import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
+ * Abstract base class MOJO integration tests.
+ * 
  * @author Mikolaj Izdebski
  */
 public class AbstractMojoIntegrationTest
-    extends AbstractIntegrationTest
+    extends AbstractMavenIntegrationTest
 {
     @Before
     public void addMetadata()

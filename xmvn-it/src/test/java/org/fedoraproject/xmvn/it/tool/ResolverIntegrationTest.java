@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it;
+package org.fedoraproject.xmvn.it.tool;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,10 +28,12 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 /**
+ * Integration tests for XMvn Resolver tool.
+ * 
  * @author Mikolaj Izdebski
  */
 public class ResolverIntegrationTest
-    extends AbstractIntegrationTest
+    extends AbstractToolIntegrationTest
 {
     @Test
     public void testResolveNone()

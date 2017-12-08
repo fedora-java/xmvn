@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it;
+package org.fedoraproject.xmvn.it.tool;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -21,10 +21,12 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
+ * Integration tests for XMvn Bisect tool.
+ * 
  * @author Mikolaj Izdebski
  */
 public class BisectIntegrationTest
-    extends AbstractIntegrationTest
+    extends AbstractToolIntegrationTest
 {
     private int runBisect()
         throws Exception
