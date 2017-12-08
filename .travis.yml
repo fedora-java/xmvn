@@ -19,6 +19,9 @@ jdk:
 install: true
 before_script:
   - unset _JAVA_OPTIONS
-script: mvn -B clean verify -Dgpg.skip
+script: mvn -B verify -Dgpg.skip
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+cache:
+  directories:
+    - $HOME/.m2/
