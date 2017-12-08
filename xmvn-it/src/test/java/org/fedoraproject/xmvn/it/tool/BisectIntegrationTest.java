@@ -31,12 +31,7 @@ public class BisectIntegrationTest
     private int runBisect()
         throws Exception
     {
-        ProcessBuilder pb = buildToolSubprocess( "xmvn-bisect", "-Dxmvn.config.sandbox=true", "clean", "compile" );
-
-        // TravisCI installs /etc/mavenrc, which overrides M2_HOME and interferes with the IT
-        pb.environment().put( "MAVEN_SKIP_RC", "true" );
-
-        return pb.start().waitFor();
+        return invokeTool( "xmvn-bisect", "-Dxmvn.config.sandbox=true", "clean", "compile" );
     }
 
     @Test

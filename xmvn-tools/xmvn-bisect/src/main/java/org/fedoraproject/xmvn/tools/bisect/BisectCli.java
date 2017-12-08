@@ -168,6 +168,10 @@ public class BisectCli
         }
         catch ( Throwable e )
         {
+            // Helper exceptions used with our integration tests should be ignored
+            if ( e.getClass().getName().startsWith( "org.fedoraproject.xmvn.it." ) )
+                throw (RuntimeException) e;
+
             System.err.println( "Unhandled exception" );
             e.printStackTrace();
             System.exit( 2 );

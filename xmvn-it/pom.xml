@@ -78,6 +78,11 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <workingDirectory>target/work</workingDirectory>
+	  <environmentVariables>
+	    <!-- TravisCI installs /etc/mavenrc, which overrides
+	         M2_HOME and interferes with some ITs. -->
+	    <MAVEN_SKIP_RC>true</MAVEN_SKIP_RC>
+	  </environmentVariables>
         </configuration>
       </plugin>
       <plugin>
