@@ -21,9 +21,11 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Permission;
 import java.util.stream.Stream;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -147,5 +149,50 @@ public abstract class AbstractIntegrationTest
         throws Exception
     {
         return Files.lines( baseDir.resolve( STDERR ) );
+    }
+
+    /**
+     * @author Mikolaj Izdebski
+     */
+    public static class SystemExit
+        extends SecurityException
+    {
+        private static final long serialVersionUID = 1;
+
+        private final int status;
+
+        public SystemExit( int status )
+        {
+            this.status = status;
+        }
+
+        public int getStatus()
+        {
+            return status;
+        }
+    }
+
+    @BeforeClass
+    public static void inhibitSystemExit()
+    {
+        System.setSecurityManager( new SecurityManager()
+        {
+            @Override
+            public void checkExit( int status )
+            {
+                throw new SystemExit( status );
+            }
+
+            @Override
+            public void checkPermission( Permission perm )
+            {
+            }
+        } );
+    }
+
+    @AfterClass
+    public static void restoreSystemExit()
+    {
+        System.setSecurityManager( null );
     }
 }
