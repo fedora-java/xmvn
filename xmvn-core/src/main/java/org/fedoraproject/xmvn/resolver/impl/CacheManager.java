@@ -54,7 +54,8 @@ class CacheManager
 
     String hash( byte[] bytes )
     {
-        return new BigInteger( 1, digest.digest( bytes ) ).setBit( 160 ).toString( 16 ).substring( 1 ).toUpperCase();
+        byte[] digest = this.digest.digest( bytes );
+        return new BigInteger( 1, digest ).setBit( digest.length << 3 ).toString( 16 ).substring( 1 ).toUpperCase();
     }
 
     private static Path getPathDefault( String key, Object defaultValue )
