@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it;
+package org.fedoraproject.xmvn.it.maven;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,10 +21,12 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
+ * Basic integration tests for XMvn (Maven with extensions).
+ * 
  * @author Mikolaj Izdebski
  */
 public class BasicIntegrationTest
-    extends AbstractIntegrationTest
+    extends AbstractMavenIntegrationTest
 {
     @Test
     public void testVersion()

@@ -15,30 +15,12 @@
  */
 package org.fedoraproject.xmvn.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.junit.After;
@@ -48,6 +30,8 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 
 /**
+ * Abstract base class for all integration tests.
+ * 
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractIntegrationTest
@@ -62,8 +46,6 @@ public abstract class AbstractIntegrationTest
     private Path mavenHome;
 
     private Path baseDir;
-
-    private boolean expectFailure;
 
     public Path getMavenHome()
     {
@@ -116,8 +98,6 @@ public abstract class AbstractIntegrationTest
             Files.createDirectories( baseDir );
         }
 
-        expectFailure = false;
-
         expandBaseDir( "../../src/test/resources/metadata.xml", "metadata.xml" );
     }
 
@@ -130,11 +110,6 @@ public abstract class AbstractIntegrationTest
         delete( saveDir );
         copy( baseDir, saveDir );
         delete( baseDir );
-    }
-
-    public void expectFailure()
-    {
-        expectFailure = true;
     }
 
     private void delete( Path path )
@@ -160,120 +135,6 @@ public abstract class AbstractIntegrationTest
             if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
                 copy( child, targetChild );
         }
-    }
-
-    private URL[] getBootClasspath()
-        throws IOException
-    {
-        Set<URL> bootClassPath = new LinkedHashSet<>();
-        try ( DirectoryStream<Path> dir = Files.newDirectoryStream( mavenHome.resolve( "boot" ), "*.jar" ) )
-        {
-            for ( Path jar : dir )
-            {
-                bootClassPath.add( jar.toUri().toURL() );
-            }
-        }
-
-        return bootClassPath.toArray( new URL[bootClassPath.size()] );
-    }
-
-    public void performTest( String... args )
-        throws Exception
-    {
-        Deque<String> argList = new ArrayDeque<>( Arrays.asList( args ) );
-        argList.addFirst( "--batch-mode" );
-        args = argList.toArray( args );
-
-        try ( PrintStream out = new PrintStream( Files.newOutputStream( baseDir.resolve( STDOUT ) ) );
-                        PrintStream err = new PrintStream( Files.newOutputStream( baseDir.resolve( STDERR ) ) ) )
-        {
-            assertEquals( expectFailure ? 1 : 0, run( out, err, args ) );
-        }
-
-        assertFalse( getStderr().findAny().isPresent() );
-
-        if ( expectFailure )
-        {
-            assertTrue( getStdout().anyMatch( s -> s.equals( "[INFO] BUILD FAILURE" ) ) );
-        }
-    }
-
-    private int run( PrintStream out, PrintStream err, String... args )
-        throws Exception
-    {
-        Properties originalProperties = System.getProperties();
-        System.setProperties( null );
-        System.setProperty( "xmvn.it.rootDir", baseDir.getParent().getParent().getParent().toString() );
-        System.setProperty( "maven.home", mavenHome.toString() );
-        System.setProperty( "user.dir", baseDir.toString() );
-        System.setProperty( "maven.multiModuleProjectDirectory", baseDir.toString() );
-        System.setProperty( "xmvn.config.sandbox", "true" );
-
-        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
-        ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
-        try ( URLClassLoader bootClassLoader = new URLClassLoader( getBootClasspath(), parentClassLoader ) )
-        {
-            Thread.currentThread().setContextClassLoader( bootClassLoader );
-
-            Class<?> launcherClass = bootClassLoader.loadClass( "org.codehaus.plexus.classworlds.launcher.Launcher" );
-            Object launcher = launcherClass.newInstance();
-
-            try ( InputStream config = Files.newInputStream( Paths.get( "../../src/test/resources/m2.conf" ) ) )
-            {
-                launcherClass.getMethod( "configure", InputStream.class ).invoke( launcher, config );
-            }
-
-            Object classWorld = launcherClass.getMethod( "getWorld" ).invoke( launcher );
-            ClassLoader classRealm = (ClassLoader) launcherClass.getMethod( "getMainRealm" ).invoke( launcher );
-
-            Class<?> cliClass = (Class<?>) launcherClass.getMethod( "getMainClass" ).invoke( launcher );
-            Object mavenCli = cliClass.getConstructor( classWorld.getClass() ).newInstance( classWorld );
-
-            Thread.currentThread().setContextClassLoader( classRealm );
-            return (int) cliClass.getMethod( "doMain", String[].class, String.class, PrintStream.class,
-                                             PrintStream.class ).invoke( mavenCli, args, baseDir.toString(), out, err );
-        }
-        finally
-        {
-            Thread.currentThread().setContextClassLoader( oldClassLoader );
-            System.setProperties( originalProperties );
-        }
-    }
-
-    public ProcessBuilder buildToolSubprocess( String tool, String... args )
-        throws Exception
-    {
-        Path javaHome = Paths.get( System.getProperty( "java.home" ) );
-        Path javaCmd = javaHome.resolve( "bin/java" );
-        assertTrue( Files.isExecutable( javaCmd ) );
-        assertTrue( Files.isRegularFile( javaCmd ) );
-
-        String subDir;
-        if ( tool.equals( "xmvn-install" ) )
-            subDir = "installer";
-        else if ( tool.equals( "xmvn-resolve" ) )
-            subDir = "resolver";
-        else
-            subDir = tool.replaceAll( "^xmvn-", "" );
-
-        Path libDir = getMavenHome().resolve( "lib" ).resolve( subDir );
-        Path toolJar = Files.newDirectoryStream( libDir, tool + "*.jar" ).iterator().next();
-        assertTrue( Files.isRegularFile( toolJar ) );
-
-        List<String> command = new ArrayList<>();
-        command.add( javaCmd.toString() );
-        command.add( "-Dxmvn.config.sandbox=true" );
-        command.add( "-jar" );
-        command.add( toolJar.toString() );
-        command.addAll( Arrays.asList( args ) );
-
-        ProcessBuilder pb = new ProcessBuilder( command );
-
-        pb.redirectInput( new File( "/dev/null" ) );
-        pb.redirectOutput( new File( STDOUT ) );
-        pb.redirectError( new File( STDERR ) );
-
-        return pb;
     }
 
     public Stream<String> getStdout()
