@@ -53,7 +53,12 @@ class CacheManager
     private String hash( Path path )
         throws IOException
     {
-        return hexAdapter.marshal( digest.digest( Files.readAllBytes( path ) ) );
+        return hash( Files.readAllBytes( path ) );
+    }
+
+    String hash( byte[] bytes )
+    {
+        return hexAdapter.marshal( digest.digest( bytes ) );
     }
 
     private static Path getPathDefault( String key, Object defaultValue )
