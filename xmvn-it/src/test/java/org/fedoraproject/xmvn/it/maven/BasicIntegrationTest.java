@@ -18,6 +18,9 @@ package org.fedoraproject.xmvn.it.maven;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.junit.Test;
 
 /**
@@ -96,5 +99,14 @@ public class BasicIntegrationTest
         throws Exception
     {
         performTest( "verify" );
+    }
+
+    @Test
+    public void testPlugin()
+        throws Exception
+    {
+        performTest( "process-classes" );
+        assertTrue( getStdout().anyMatch( s -> s.startsWith( "[INFO] --- plexus-component-metadata:1.7.1:generate-metadata (default)" ) ) );
+        assertTrue( Files.isRegularFile( Paths.get( "src/main/resources/META-INF/plexus/components.xml" ) ) );
     }
 }
