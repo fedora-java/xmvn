@@ -36,6 +36,12 @@
       <version>SYSTEM</version>
       <path>@@@/../dependency/plexus-component-metadata-1.7.1.jar</path>
       <uuid>4fdcec13-40df-428f-a921-089b1177763b</uuid>
+      <aliases>
+        <alias>
+          <groupId>alias-test</groupId>
+          <artifactId>aliased-component-metadata</artifactId>
+        </alias>
+      </aliases>
     </artifact>
     <artifact>
       <groupId>org.codehaus.plexus</groupId>
@@ -44,6 +50,13 @@
       <extension>pom</extension>
       <path>@@@/../dependency/plexus-component-metadata-1.7.1.pom</path>
       <uuid>65097184-1970-440b-bacd-c7c5ba72b75c</uuid>
+      <aliases>
+        <alias>
+          <groupId>alias-test</groupId>
+          <artifactId>aliased-component-metadata</artifactId>
+          <extension>pom</extension>
+        </alias>
+      </aliases>
       <dependencies>
         <dependency>
           <groupId>org.codehaus.plexus</groupId>

@@ -110,4 +110,14 @@ public class BasicIntegrationTest
         assertTrue( Files.isRegularFile( Paths.get( "src/main/resources/META-INF/plexus/components.xml" ) ) );
         assertTrue( Files.isRegularFile( Paths.get( "component-metadata-test.xml" ) ) );
     }
+
+    @Test
+    public void testPluginAlias()
+        throws Exception
+    {
+        performTest( "process-classes" );
+        assertTrue( getStdout().anyMatch( s -> s.startsWith( "[INFO] --- plexus-component-metadata:1.7.1:generate-metadata (default)" ) ) );
+        assertTrue( Files.isRegularFile( Paths.get( "src/main/resources/META-INF/plexus/components.xml" ) ) );
+        assertTrue( Files.isRegularFile( Paths.get( "component-metadata-test.xml" ) ) );
+    }
 }
