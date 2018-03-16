@@ -6,9 +6,9 @@
   <build>
     <plugins>
       <plugin>
-	<groupId>org.codehaus.plexus</groupId>
-	<artifactId>plexus-component-metadata</artifactId>
-	<version>1.7.1</version>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>1.7.1</version>
         <executions>
           <execution>
             <goals>
@@ -16,6 +16,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <generatedMetadata>component-metadata-test.xml</generatedMetadata>
+        </configuration>
       </plugin>
     </plugins>
   </build>
