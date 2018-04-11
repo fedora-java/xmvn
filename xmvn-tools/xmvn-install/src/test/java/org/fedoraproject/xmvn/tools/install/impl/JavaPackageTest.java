@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
@@ -61,6 +62,31 @@ public class JavaPackageTest
             new MetadataStaxReader().read( installRoot.resolve( "usr/share/maven-metadata/my-pkg-my-id.xml" ).toString(),
                                            true );
         assertTrue( actualMetadata.getProperties().containsKey( "foo" ) );
+    }
+
+    @Test
+    public void testJavaPackageMetadataSplit()
+        throws Exception
+    {
+        JavaPackage pkg = new JavaPackage( "my-id", "my-pkg", Paths.get( "usr/share/maven-metadata" ) );
+
+        ArtifactMetadata foo = new ArtifactMetadata();
+        foo.setGroupId( "foo" );
+        foo.setArtifactId( "foo" );
+        foo.setNamespace( "foo" );
+        pkg.getMetadata().addArtifact( foo );
+        ArtifactMetadata bar = new ArtifactMetadata();
+        bar.setGroupId( "bar" );
+        bar.setArtifactId( "bar" );
+        bar.setNamespace( "bar" );
+        pkg.getMetadata().addArtifact( bar );
+
+        pkg.install( installRoot );
+
+        assertMetadataEqual( getResource( "ns-foo.xml" ),
+                             installRoot.resolve( "usr/share/maven-metadata/foo-my-pkg-my-id.xml" ) );
+        assertMetadataEqual( getResource( "ns-bar.xml" ),
+                             installRoot.resolve( "usr/share/maven-metadata/bar-my-pkg-my-id.xml" ) );
     }
 
     @Test
