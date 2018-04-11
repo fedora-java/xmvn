@@ -42,14 +42,6 @@ class PackageRegistry
         this.basePackageName = basePackageName;
     }
 
-    private Path getMetadataFilePath( String id )
-    {
-        String metadataBaseName = basePackageName + ( id.isEmpty() ? "" : "-" ) + id;
-
-        Path metadatDir = Paths.get( settings.getMetadataDir() );
-        return metadatDir.resolve( metadataBaseName + ".xml" );
-    }
-
     public JavaPackage getPackageById( String id )
     {
         if ( id == null || id.equals( "__default" ) )
@@ -62,7 +54,8 @@ class PackageRegistry
 
         if ( pkg == null )
         {
-            pkg = new JavaPackage( id, getMetadataFilePath( id ) );
+            Path metadataDir = Paths.get( settings.getMetadataDir() );
+            pkg = new JavaPackage( id, basePackageName, metadataDir );
             packages.put( id, pkg );
         }
 
