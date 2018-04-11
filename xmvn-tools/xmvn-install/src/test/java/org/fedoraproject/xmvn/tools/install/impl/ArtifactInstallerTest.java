@@ -120,8 +120,7 @@ public class ArtifactInstallerTest
         throws Exception
     {
         ArtifactMetadata artifact = createArtifact();
-        Path metadataPath = Paths.get( "usr/share/maven-metadata/test.xml" );
-        JavaPackage pkg = new JavaPackage( "test", metadataPath );
+        JavaPackage pkg = new JavaPackage( "", "test", Paths.get( "usr/share/maven-metadata" ) );
         PackagingRule rule = new PackagingRule();
 
         install( pkg, artifact, rule );
@@ -135,7 +134,7 @@ public class ArtifactInstallerTest
         assertEquals( 2, pkg.getFiles().size() );
         Iterator<File> iterator = pkg.getFiles().iterator();
         File file = iterator.next();
-        if ( file.getTargetPath().equals( metadataPath ) )
+        if ( file.getTargetPath().equals( Paths.get( "usr/share/maven-metadata/test.xml" ) ) )
             file = iterator.next();
         assertEquals( Paths.get( "com.example-test" ), file.getTargetPath() );
         assertEquals( "/com.example-test", artifact.getPath() );
@@ -146,7 +145,7 @@ public class ArtifactInstallerTest
         throws Exception
     {
         ArtifactMetadata artifact = createArtifact();
-        JavaPackage pkg = new JavaPackage( "test", Paths.get( "usr/share/maven-metadata/test.xml" ) );
+        JavaPackage pkg = new JavaPackage( "", "test", Paths.get( "usr/share/maven-metadata" ) );
         PackagingRule rule = new PackagingRule();
         rule.addVersion( "3.4" );
         rule.addVersion( "3" );
@@ -166,7 +165,7 @@ public class ArtifactInstallerTest
         throws Exception
     {
         ArtifactMetadata artifact = createArtifact();
-        JavaPackage pkg = new JavaPackage( "test", Paths.get( "usr/share/maven-metadata/test.xml" ) );
+        JavaPackage pkg = new JavaPackage( "", "test", Paths.get( "usr/share/maven-metadata" ) );
         PackagingRule rule = new PackagingRule();
 
         org.fedoraproject.xmvn.config.Artifact alias1 = new org.fedoraproject.xmvn.config.Artifact();
