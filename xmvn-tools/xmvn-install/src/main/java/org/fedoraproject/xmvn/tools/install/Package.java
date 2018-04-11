@@ -113,7 +113,7 @@ public class Package
     public void install( Path installRoot )
         throws IOException
     {
-        for ( File file : files )
+        for ( File file : getFiles() )
             file.install( installRoot );
     }
 
@@ -130,7 +130,7 @@ public class Package
     {
         try ( Writer writer = Files.newBufferedWriter( descriptorPath ) )
         {
-            for ( File file : files )
+            for ( File file : getFiles() )
             {
                 writer.write( file.getDescriptor() );
                 writer.write( '\n' );
