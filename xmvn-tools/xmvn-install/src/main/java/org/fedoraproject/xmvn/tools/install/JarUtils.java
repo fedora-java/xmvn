@@ -258,7 +258,11 @@ public final class JarUtils
                     while ( ( entry = jis.getNextJarEntry() ) != null )
                     {
                         openJdkAvoidDuplicateEntryHack( jos );
-                        jos.putNextEntry( entry );
+                        JarEntry copiedEntry = new JarEntry( entry );
+                        // Reset the compressed size to default
+                        // This avoids archive corruption in the rare case that the entry compresses differently
+                        copiedEntry.setCompressedSize( -1 );
+                        jos.putNextEntry( copiedEntry );
 
                         int sz;
                         while ( ( sz = jis.read( buf ) ) > 0 )
