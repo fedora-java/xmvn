@@ -74,4 +74,24 @@ public class InstallerIntegrationTest
         assertEquals( "4.12", mf.getValue( "JavaPackages-Version" ) );
         assertEquals( "42", mf.getValue( "X-Test1" ) );
     }
+
+    @Test
+    public void testInstallJarCompressionMismatch()
+        throws Exception
+    {
+        expandBaseDirInPlace( "install-plan.xml" );
+
+        assertEquals( 0, invokeTool( "xmvn-install", "-n", "xyzzy", "-R", "install-plan.xml", "-d", "dest", "-X" ) );
+        assertFalse( getStdout().findAny().isPresent() );
+        assertTrue( getStderr().anyMatch( line -> line.equals( "[INFO] Installation successful" ) ) );
+
+        Path jarPath = Paths.get( "dest/usr/share/java/xyzzy/osgi.compatibility.state.jar" );
+        assertTrue( Files.isRegularFile( jarPath, LinkOption.NOFOLLOW_LINKS ) );
+        Attributes mf = new Manifest( new URL( "jar:file:" + jarPath.toAbsolutePath()
+            + "!/META-INF/MANIFEST.MF" ).openStream() ).getMainAttributes();
+        assertEquals( "org.eclipse.osgi", mf.getValue( "JavaPackages-GroupId" ) );
+        assertEquals( "osgi.compatibility.state", mf.getValue( "JavaPackages-ArtifactId" ) );
+        assertEquals( "1.1.0.v20180409-1212", mf.getValue( "JavaPackages-Version" ) );
+        assertEquals( "org.eclipse.osgi.compatibility.state", mf.getValue( "Bundle-SymbolicName" ) );
+    }
 }

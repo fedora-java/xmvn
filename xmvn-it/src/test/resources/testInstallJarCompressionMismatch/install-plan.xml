@@ -1,0 +1,11 @@
+<metadata>
+  <artifacts>
+    <artifact>
+      <groupId>org.eclipse.osgi</groupId>
+      <artifactId>osgi.compatibility.state</artifactId>
+      <extension>jar</extension>
+      <version>1.1.0.v20180409-1212</version>
+      <path>@@@/tgt/org.eclipse.osgi.compatibility.state_1.1.0.v20180409-1212.jar</path>
+    </artifact>
+  </artifacts>
+</metadata>
