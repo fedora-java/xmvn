@@ -116,6 +116,38 @@ public class JarUtilsTest
     }
 
     /**
+     * Regression test for a jar which contains an entry that can recompress with a different size, which caused a
+     * mismatch in sizes.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionRecompressionCausesSizeMismatch()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/recompression-size.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact =
+            new DefaultArtifact( "org.eclipse.osgi", "osgi.compatibility.state", "1.1.0.v20180409-1212" );
+        JarUtils.injectManifest( testJar, artifact );
+
+        try ( JarInputStream jis = new JarInputStream( Files.newInputStream( testJar ) ) )
+        {
+            Manifest mf = jis.getManifest();
+            assertNotNull( mf );
+
+            Attributes attr = mf.getMainAttributes();
+            assertNotNull( attr );
+
+            assertEquals( "org.eclipse.osgi", attr.getValue( "JavaPackages-GroupId" ) );
+            assertEquals( "osgi.compatibility.state", attr.getValue( "JavaPackages-ArtifactId" ) );
+            assertEquals( "1.1.0.v20180409-1212", attr.getValue( "JavaPackages-Version" ) );
+        }
+    }
+
+    /**
      * Test JAR if manifest injection works when MANIFEST.MF entry is duplicated
      *
      * @throws Exception
