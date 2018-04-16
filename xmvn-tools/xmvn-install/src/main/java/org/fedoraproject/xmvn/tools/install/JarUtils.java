@@ -16,19 +16,17 @@
 package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.nio.file.StandardCopyOption;
 import java.util.jar.Attributes;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -43,6 +41,8 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  */
 public final class JarUtils
 {
+    private static final String MANIFEST_PATH = "META-INF/MANIFEST.MF";
+
     private static final Logger LOGGER = LoggerFactory.getLogger( JarUtils.class );
 
     // From /usr/include/linux/elf.h
@@ -178,29 +178,13 @@ public final class JarUtils
         }
     }
 
-    /**
-     * OpenJDK has a sanity check that prevents adding duplicate entries to ZIP streams. The problem is that some of
-     * JARs we try to inject manifests to (especially the ones created by Gradle) already contain duplicate entries, so
-     * manifest injection would always fail for them with "ZipException: duplicate entry".
-     * <p>
-     * This function tries to work around this OpenJDK sanity check, effectively allowing creating ZIP files with
-     * duplicated entries. It should be called on particular ZIP output stream before adding each duplicate entry.
-     * 
-     * @param zipOutputStream ZIP stream to hack
-     */
-    private static void openJdkAvoidDuplicateEntryHack( ZipOutputStream zipOutputStream )
+    private static void updateManifest( Artifact artifact, Manifest mf )
     {
-        try
-        {
-            Field namesField = ZipOutputStream.class.getDeclaredField( "names" );
-            namesField.setAccessible( true );
-            Collection<?> names = (Collection<?>) namesField.get( zipOutputStream );
-            names.clear();
-        }
-        catch ( ReflectiveOperationException e )
-        {
-            // This hack relies on OpenJDK internals and therefore is not guaranteed to work. Ignore failures.
-        }
+        putAttribute( mf, Artifact.MF_KEY_GROUPID, artifact.getGroupId(), null );
+        putAttribute( mf, Artifact.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
+        putAttribute( mf, Artifact.MF_KEY_EXTENSION, artifact.getExtension(), Artifact.DEFAULT_EXTENSION );
+        putAttribute( mf, Artifact.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
+        putAttribute( mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
     }
 
     /**
@@ -213,65 +197,39 @@ public final class JarUtils
     public static void injectManifest( Path targetJar, Artifact artifact )
     {
         LOGGER.trace( "Trying to inject manifest to {}", artifact );
-        Manifest mf = null;
         try
         {
-            try ( JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ) )
+            try ( ZipFile jar = new ZipFile( targetJar.toFile() ) )
             {
-                mf = jis.getManifest();
-                if ( mf == null )
+                ZipArchiveEntry manifestEntry = jar.getEntry( MANIFEST_PATH );
+                if ( manifestEntry != null )
                 {
-                    // getManifest sometimes doesn't find the manifest, try finding it as plain entry
-                    ZipEntry ent;
-                    while ( ( ent = jis.getNextEntry() ) != null )
+                    Manifest mf = new Manifest( jar.getInputStream( manifestEntry ) );
+                    updateManifest( artifact, mf );
+                    Path tempJar = Files.createTempFile( "xmvn", ".tmp" );
+                    try ( ZipArchiveOutputStream os = new ZipArchiveOutputStream( tempJar.toFile() ) )
                     {
-                        if ( ent.getName().equalsIgnoreCase( "META-INF/MANIFEST.MF" ) )
-                        {
-                            mf = new Manifest( jis );
-                            break;
-                        }
+                        // write manifest
+                        ZipArchiveEntry newManifestEntry = new ZipArchiveEntry( MANIFEST_PATH );
+                        os.putArchiveEntry( newManifestEntry );
+                        mf.write( os );
+                        os.closeArchiveEntry();
+                        // copy the rest of content
+                        jar.copyRawEntries( os, entry -> !entry.equals( manifestEntry ) );
                     }
-                }
-            }
-
-            if ( mf == null )
-            {
-                LOGGER.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
-                return;
-            }
-
-            putAttribute( mf, Artifact.MF_KEY_GROUPID, artifact.getGroupId(), null );
-            putAttribute( mf, Artifact.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null );
-            putAttribute( mf, Artifact.MF_KEY_EXTENSION, artifact.getExtension(), Artifact.DEFAULT_EXTENSION );
-            putAttribute( mf, Artifact.MF_KEY_CLASSIFIER, artifact.getClassifier(), "" );
-            putAttribute( mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
-
-            try ( JarInputStream jis = new JarInputStream( Files.newInputStream( targetJar ) ) )
-            {
-
-                targetJar = targetJar.toRealPath();
-                Files.delete( targetJar );
-                try ( JarOutputStream jos = new JarOutputStream( Files.newOutputStream( targetJar ), mf ) )
-                {
-                    byte[] buf = new byte[512];
-                    JarEntry entry;
-                    while ( ( entry = jis.getNextJarEntry() ) != null )
+                    catch ( IOException e )
                     {
-                        openJdkAvoidDuplicateEntryHack( jos );
-                        jos.putNextEntry( entry );
-
-                        int sz;
-                        while ( ( sz = jis.read( buf ) ) > 0 )
-                            jos.write( buf, 0, sz );
+                        // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
+                        throw new RuntimeException( e );
                     }
+                    Files.move( tempJar, targetJar, StandardCopyOption.REPLACE_EXISTING );
+                    LOGGER.trace( "Manifest injected successfully" );
                 }
-                catch ( IOException e )
+                else
                 {
-                    // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
-                    throw new RuntimeException( e );
+                    LOGGER.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
+                    return;
                 }
-
-                LOGGER.trace( "Manifest injected successfully" );
             }
         }
         catch ( IOException e )
