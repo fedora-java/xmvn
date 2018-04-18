@@ -16,13 +16,13 @@
 package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -67,28 +67,33 @@ public final class JarUtils
      * 
      * @return {@code true} if native code was found inside given JAR
      */
-    public static boolean containsNativeCode( Path jar )
+    public static boolean containsNativeCode( Path jarPath )
     {
-        try ( ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ) )
+        try ( ZipFile jar = new ZipFile( jarPath.toFile() ) )
         {
-            ZipEntry ent;
-            while ( ( ent = jis.getNextEntry() ) != null )
+            Enumeration<ZipArchiveEntry> entries = jar.getEntries();
+            while ( entries.hasMoreElements() )
             {
-                if ( ent.isDirectory() )
+                ZipArchiveEntry entry = entries.nextElement();
+                if ( entry.isDirectory() )
                     continue;
-                if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2 && jis.read() == ELFMAG3 )
+                try ( InputStream jis = jar.getInputStream( entry ) )
                 {
-                    LOGGER.debug( "Native code found inside {}: {}", jar, ent.getName() );
-                    return true;
+                    if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2
+                        && jis.read() == ELFMAG3 )
+                    {
+                        LOGGER.debug( "Native code found inside {}: {}", jarPath, entry.getName() );
+                        return true;
+                    }
                 }
             }
 
-            LOGGER.trace( "Native code not found inside {}", jar );
+            LOGGER.trace( "Native code not found inside {}", jarPath );
             return false;
         }
         catch ( IOException e )
         {
-            LOGGER.debug( "I/O exception caught when trying to determine whether JAR contains native code: {}", jar,
+            LOGGER.debug( "I/O exception caught when trying to determine whether JAR contains native code: {}", jarPath,
                           e );
             return false;
         }
@@ -122,40 +127,47 @@ public final class JarUtils
      * 
      * @return {@code true} given JAR as found inside to use native code
      */
-    public static boolean usesNativeCode( Path jar )
+    public static boolean usesNativeCode( Path jarPath )
     {
-        try ( ZipInputStream jis = new ZipInputStream( Files.newInputStream( jar ) ) )
+        try ( ZipFile jar = new ZipFile( jarPath.toFile() ) )
         {
-            ZipEntry ent;
-            while ( ( ent = jis.getNextEntry() ) != null )
+            Enumeration<ZipArchiveEntry> entries = jar.getEntries();
+            while ( entries.hasMoreElements() )
             {
-                final String entryName = ent.getName();
-                if ( ent.isDirectory() || !entryName.endsWith( ".class" ) )
+                ZipArchiveEntry entry = entries.nextElement();
+                final String entryName = entry.getName();
+                if ( entry.isDirectory() || !entryName.endsWith( ".class" ) )
                     continue;
 
-                new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM4 )
+                try ( InputStream jis = jar.getInputStream( entry ) )
                 {
-                    @Override
-                    public MethodVisitor visitMethod( int flags, String name, String desc, String sig, String[] exc )
+                    new ClassReader( jis ).accept( new ClassVisitor( Opcodes.ASM4 )
                     {
-                        if ( ( flags & Opcodes.ACC_NATIVE ) != 0 )
-                            throw new NativeMethodFound( entryName, name, sig );
+                        @Override
+                        public MethodVisitor visitMethod( int flags, String name, String desc, String sig,
+                                                          String[] exc )
+                        {
+                            if ( ( flags & Opcodes.ACC_NATIVE ) != 0 )
+                                throw new NativeMethodFound( entryName, name, sig );
 
-                        return super.visitMethod( flags, name, desc, sig, exc );
-                    }
-                }, ClassReader.SKIP_CODE );
+                            return super.visitMethod( flags, name, desc, sig, exc );
+                        }
+                    }, ClassReader.SKIP_CODE );
+                }
             }
 
             return false;
         }
         catch ( NativeMethodFound e )
         {
-            LOGGER.debug( "Native method {}({}) found in {}: {}", e.methodName, e.methodSignature, jar, e.className );
+            LOGGER.debug( "Native method {}({}) found in {}: {}", e.methodName, e.methodSignature, jarPath,
+                          e.className );
             return true;
         }
         catch ( IOException e )
         {
-            LOGGER.debug( "I/O exception caught when trying to determine whether JAR uses native code: {}", jar, e );
+            LOGGER.debug( "I/O exception caught when trying to determine whether JAR uses native code: {}", jarPath,
+                          e );
             return false;
         }
         catch ( RuntimeException e )
