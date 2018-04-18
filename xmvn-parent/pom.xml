@@ -103,7 +103,7 @@
     <compilerPluginVersion>3.6.1</compilerPluginVersion>
     <dependencyPluginVersion>3.0.0</dependencyPluginVersion>
     <deployPluginVersion>2.8.2</deployPluginVersion>
-    <easymockVersion>3.4</easymockVersion>
+    <easymockVersion>3.5</easymockVersion>
     <gpgPluginVersion>1.6</gpgPluginVersion>
     <installPluginVersion>2.5.2</installPluginVersion>
     <jacocoVersion>0.7.9</jacocoVersion>
