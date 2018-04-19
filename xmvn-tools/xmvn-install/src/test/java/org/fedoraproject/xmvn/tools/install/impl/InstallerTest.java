@@ -19,6 +19,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Path;
@@ -41,7 +42,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.fedoraproject.xmvn.tools.install.File;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
@@ -76,9 +76,10 @@ public class InstallerTest
     {
         @Override
         public void install( JavaPackage targetPackage, ArtifactMetadata artifactMetadata, PackagingRule packagingRule,
-                             String basePackageName )
-            throws ArtifactInstallationException
+                             String basePackageName, String repositoryId )
         {
+            assertEquals( "test-pkg", basePackageName );
+            assertEquals( "test-repo", repositoryId );
             Path path = Paths.get( "usr/share/java/" + artifactMetadata.getArtifactId() + ".jar" );
             File file = new RegularFile( path, Paths.get( artifactMetadata.getPath() ) );
             targetPackage.addFile( file );
@@ -87,7 +88,6 @@ public class InstallerTest
 
         @Override
         public void postInstallation()
-            throws ArtifactInstallationException
         {
         }
     }
@@ -148,6 +148,7 @@ public class InstallerTest
 
         InstallationRequest request = new InstallationRequest();
         request.setBasePackageName( "test-pkg" );
+        request.setRepositoryId( "test-repo" );
         request.setInstallRoot( installRoot );
         request.setDescriptorRoot( descriptorRoot );
         request.setInstallationPlan( prepareInstallationPlanFile( planName ) );

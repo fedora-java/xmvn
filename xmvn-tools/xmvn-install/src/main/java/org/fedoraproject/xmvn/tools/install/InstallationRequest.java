@@ -32,6 +32,8 @@ public class InstallationRequest
 
     private Path descriptorRoot;
 
+    private String repositoryId;
+
     public boolean isCheckForUnmatchedRules()
     {
         return checkForUnmatchedRules;
@@ -81,4 +83,15 @@ public class InstallationRequest
     {
         this.descriptorRoot = descriptorRoot;
     }
+
+    public String getRepositoryId()
+    {
+        return repositoryId;
+    }
+
+    public void setRepositoryId( String repositoryId )
+    {
+        this.repositoryId = repositoryId;
+    }
+
 }

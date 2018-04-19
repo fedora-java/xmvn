@@ -70,7 +70,7 @@ public class ArtifactInstallerTest
             @Override
             public Repository configureRepository( String repoId )
             {
-                assertEquals( "install", repoId );
+                assertEquals( "my-install-repo", repoId );
                 return repositoryMock;
             }
 
@@ -94,7 +94,7 @@ public class ArtifactInstallerTest
         expect( repositoryMock.getNamespace() ).andReturn( "ns" );
         replay( repositoryMock );
 
-        installer.install( pkg, am, rule, "foo" );
+        installer.install( pkg, am, rule, "foo", "my-install-repo" );
 
         verify( repositoryMock );
     }
