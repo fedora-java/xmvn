@@ -113,6 +113,10 @@
     </repository>
     <repository>
       <id>install</id>
+      <type>dummy-default-should-not-be-used</type>
+    </repository>
+    <repository>
+      <id>custom-install</id>
       <type>compound</type>
       <configuration>
         <repositories>

@@ -52,7 +52,7 @@ public class InstallerIntegrationTest
     {
         expandBaseDirInPlace( "install-plan.xml" );
 
-        assertEquals( 0, invokeTool( "xmvn-install", "-n", "xyzzy", "-R", "install-plan.xml", "-d", "dest", "-X" ) );
+        assertEquals( 0, invokeTool( "xmvn-install", "-n", "xyzzy", "-R", "install-plan.xml", "-d", "dest", "-X", "-i", "custom-install" ) );
         assertFalse( getStdout().findAny().isPresent() );
         assertTrue( getStderr().anyMatch( line -> line.equals( "[INFO] Installation successful" ) ) );
 
