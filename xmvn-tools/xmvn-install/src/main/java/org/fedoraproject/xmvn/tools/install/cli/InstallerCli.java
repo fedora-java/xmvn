@@ -51,6 +51,7 @@ public class InstallerCli
         request.setBasePackageName( cliRequest.getPackageName() );
         request.setInstallRoot( Paths.get( cliRequest.getDestDir() ) );
         request.setInstallationPlan( Paths.get( cliRequest.getPlanPath() ) );
+        request.setRepositoryId( cliRequest.getRepoId() );
 
         try
         {

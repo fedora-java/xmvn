@@ -23,8 +23,27 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
  */
 public interface ArtifactInstaller
 {
-    void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
-        throws ArtifactInstallationException;
+    String DEFAULT_REPOSITORY_ID = "install";
+
+    default void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName, String repositoryId )
+            throws ArtifactInstallationException
+    {
+        if ( repositoryId.equals( DEFAULT_REPOSITORY_ID ) )
+        {
+            install( targetPackage, am, rule, basePackageName );
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "This artifact installer does not support non-default repository." );
+        }
+    }
+
+    @Deprecated
+    default void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
+            throws ArtifactInstallationException
+    {
+        install( targetPackage, am, rule, basePackageName, DEFAULT_REPOSITORY_ID );
+    }
 
     void postInstallation()
         throws ArtifactInstallationException;

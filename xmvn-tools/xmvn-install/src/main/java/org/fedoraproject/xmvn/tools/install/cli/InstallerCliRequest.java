@@ -24,6 +24,7 @@ import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
 /**
  * @author Mikolaj Izdebski
@@ -50,6 +51,9 @@ class InstallerCliRequest
 
     @Parameter( names = { "-d", "--destination" }, description = "Destination directory" )
     private String destDir = ".xmvn/root";
+
+    @Parameter( names = { "-i", "--repository" }, description = "Installation repository ID" )
+    private String repoId = ArtifactInstaller.DEFAULT_REPOSITORY_ID;
 
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
@@ -140,6 +144,17 @@ class InstallerCliRequest
     {
         this.destDir = destDir;
     }
+
+    public String getRepoId()
+    {
+        return repoId;
+    }
+
+    public void setRepoId( String repoId )
+    {
+        this.repoId = repoId;
+    }
+
 
     public Map<String, String> getDefines()
     {

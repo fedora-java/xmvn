@@ -210,7 +210,7 @@ public class DefaultInstaller
                                                                           artifactState.getMetadata().getProperties() ) );
     }
 
-    private void installArtifact( ArtifactState artifactState, String basePackageName )
+    private void installArtifact( ArtifactState artifactState, String basePackageName, String repositoryId )
         throws ArtifactInstallationException
     {
         JavaPackage targetPackage = artifactState.getTargetPackage();
@@ -220,7 +220,7 @@ public class DefaultInstaller
             ArtifactInstaller installer = artifactState.getInstaller();
             ArtifactMetadata metadata = artifactState.getMetadata();
             PackagingRule packagingRule = artifactState.getPackagingRule();
-            installer.install( targetPackage, metadata, packagingRule, basePackageName );
+            installer.install( targetPackage, metadata, packagingRule, basePackageName, repositoryId );
         }
     }
 
@@ -332,7 +332,7 @@ public class DefaultInstaller
                                   artifactState.getInstaller().getClass().getName() );
             }
 
-            installArtifact( artifactState, request.getBasePackageName() );
+            installArtifact( artifactState, request.getBasePackageName(), request.getRepositoryId() );
         }
 
         logger.debug( "Running post-installation hooks" );

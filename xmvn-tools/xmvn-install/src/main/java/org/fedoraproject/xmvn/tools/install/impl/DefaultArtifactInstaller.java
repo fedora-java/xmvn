@@ -71,7 +71,7 @@ class DefaultArtifactInstaller
     }
 
     @Override
-    public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
+    public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName, String repositoryId )
         throws ArtifactInstallationException
     {
         Artifact artifact = am.toArtifact();
@@ -90,9 +90,9 @@ class DefaultArtifactInstaller
 
         logger.info( "Installing artifact {}", artifact );
 
-        Repository repo = repositoryConfigurator.configureRepository( "install" );
+        Repository repo = repositoryConfigurator.configureRepository( repositoryId );
         if ( repo == null )
-            throw new ArtifactInstallationException( "Unable to configure installation repository" );
+            throw new ArtifactInstallationException( "Unable to configure installation repository: " + repositoryId );
 
         Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
