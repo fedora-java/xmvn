@@ -57,6 +57,7 @@ public class ArtifactInstallerFactoryTest
 
     @Test
     public void testValidPlugin()
+        throws Exception
     {
         Path pluginDir = Paths.get( "src/test/resources/plugins" ).toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory( null, pluginDir );
@@ -64,6 +65,43 @@ public class ArtifactInstallerFactoryTest
         props.setProperty( "type", "myplugin1" );
         ArtifactInstaller inst = aif.getInstallerFor( null, props );
         assertEquals( "foo.bar.MyPlugin", inst.getClass().getCanonicalName() );
+
+        try
+        {
+            // Deprecated call without repoId specified
+            inst.install( null, null, null, null );
+            fail( "Expected UnsupportedOperationException" );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+            // "Not implemented exception" is thrown by the plugin
+            assertEquals( "Not implemented", e.getMessage() );
+            assertEquals( "foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString() );
+        }
+
+        try
+        {
+            // Modern call with default repoId
+            inst.install( null, null, null, null, "install" );
+            fail( "Expected UnsupportedOperationException" );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+            // "Not implemented exception" is thrown by the plugin
+            assertEquals( "Not implemented", e.getMessage() );
+            assertEquals( "foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString() );
+        }
+
+        try
+        {
+            // Modern call with non-default repoId
+            inst.install( null, null, null, null, "my-repo" );
+            fail( "Expected UnsupportedOperationException" );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+            assertEquals( "This artifact installer does not support non-default repository.", e.getMessage() );
+        }
     }
 
     @Test
@@ -85,5 +123,4 @@ public class ArtifactInstallerFactoryTest
             assertTrue( ReflectiveOperationException.class.isAssignableFrom( e.getCause().getClass() ) );
         }
     }
-
 }
