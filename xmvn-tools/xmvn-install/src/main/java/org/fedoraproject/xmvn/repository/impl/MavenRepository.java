@@ -30,14 +30,14 @@ import org.w3c.dom.Element;
 class MavenRepository
     extends SimpleRepository
 {
-    public MavenRepository( String namespace, Path root, Element filter )
+    public MavenRepository( String namespace, Path root, Element filter, String suffix )
     {
-        super( namespace, root, filter );
+        super( namespace, root, filter, suffix );
     }
 
     @Override
     protected Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,
-                                    String classifier, String version )
+                                    String classifier, String version, String suffix )
     {
         if ( version == null )
             return null;
