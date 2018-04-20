@@ -38,7 +38,7 @@ public class JppRepositoryTest
 {
     @Test
     public void testJppRepository()
-        throws Exception
+            throws Exception
     {
         Configuration configuration = new Configuration();
         Repository repository = new Repository();
@@ -58,11 +58,41 @@ public class JppRepositoryTest
         Artifact artifact1 = new DefaultArtifact( "foo.bar", "the-artifact", "baz", "1.2.3" );
         ArtifactContext context1 = new ArtifactContext( artifact1 );
         assertEquals( Paths.get( "my-target/path/aid-1.2.3.baz" ),
-                      repo.getPrimaryArtifactPath( artifact1, context1, "my-target/path/aid" ) );
+                repo.getPrimaryArtifactPath( artifact1, context1, "my-target/path/aid" ) );
 
         Artifact artifact2 = artifact1.setVersion( null );
         ArtifactContext context2 = new ArtifactContext( artifact2 );
         assertEquals( Paths.get( "my-target/path/aid.baz" ),
-                      repo.getPrimaryArtifactPath( artifact2, context2, "my-target/path/aid" ) );
+                repo.getPrimaryArtifactPath( artifact2, context2, "my-target/path/aid" ) );
+    }
+    @Test
+    public void testSuffix()
+            throws Exception
+    {
+        Configuration configuration = new Configuration();
+        Repository repository = new Repository();
+        repository.setId( "my-repo-with-suffix" );
+        repository.setType( "jpp" );
+        repository.addProperty( "suffix", "mymodule-stream" );
+        configuration.addRepository( repository );
+
+        Configurator configurator = EasyMock.createMock( Configurator.class );
+        EasyMock.expect( configurator.getConfiguration() ).andReturn( configuration ).atLeastOnce();
+        EasyMock.replay( configurator );
+
+        RepositoryConfigurator repoConfigurator = new DefaultRepositoryConfigurator( configurator );
+        org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository( "my-repo-with-suffix" );
+        EasyMock.verify( configurator );
+        assertNotNull( repo );
+
+        Artifact artifact1 = new DefaultArtifact( "foo.bar", "the-artifact", "baz", "1.2.3" );
+        ArtifactContext context1 = new ArtifactContext( artifact1 );
+        assertEquals( Paths.get( "my-target/path/aid-1.2.3-mymodule-stream.baz" ),
+                repo.getPrimaryArtifactPath( artifact1, context1, "my-target/path/aid" ) );
+
+        Artifact artifact2 = artifact1.setVersion( null );
+        ArtifactContext context2 = new ArtifactContext( artifact2 );
+        assertEquals( Paths.get( "my-target/path/aid-mymodule-stream.baz" ),
+                repo.getPrimaryArtifactPath( artifact2, context2, "my-target/path/aid" ) );
     }
 }

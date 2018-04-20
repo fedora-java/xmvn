@@ -30,8 +30,8 @@ class MavenRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
-    protected Repository newInstance( String namespace, Path root, Element filter )
+    protected Repository newInstance( String namespace, Path root, Element filter, String suffix )
     {
-        return new MavenRepository( namespace, root, filter );
+        return new MavenRepository( namespace, root, filter, suffix );
     }
 }

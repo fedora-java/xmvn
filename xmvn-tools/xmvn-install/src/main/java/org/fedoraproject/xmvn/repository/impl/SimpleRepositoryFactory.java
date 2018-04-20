@@ -29,7 +29,7 @@ import org.fedoraproject.xmvn.repository.Repository;
 abstract class SimpleRepositoryFactory
     extends AbstractRepositoryFactory
 {
-    protected abstract Repository newInstance( String namespace, Path root, Element filter );
+    protected abstract Repository newInstance( String namespace, Path root, Element filter, String suffix );
 
     @Override
     public Repository getInstance( Element filter, Properties properties, Element configuration, String namespace )
@@ -40,6 +40,8 @@ abstract class SimpleRepositoryFactory
         if ( namespace == null || namespace.isEmpty() )
             namespace = properties.getProperty( "namespace", "" );
 
-        return newInstance( namespace, root, filter );
+        String suffix = properties.getProperty( "suffix", "" );
+
+        return newInstance( namespace, root, filter, suffix );
     }
 }

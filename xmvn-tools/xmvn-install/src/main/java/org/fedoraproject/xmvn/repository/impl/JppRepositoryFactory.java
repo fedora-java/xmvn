@@ -30,8 +30,8 @@ class JppRepositoryFactory
     extends SimpleRepositoryFactory
 {
     @Override
-    protected Repository newInstance( String namespace, Path root, Element filter )
+    protected Repository newInstance( String namespace, Path root, Element filter, String suffix )
     {
-        return new JppRepository( namespace, root, filter );
+        return new JppRepository( namespace, root, filter, suffix );
     }
 }
