@@ -44,6 +44,7 @@ Source0:        https://github.com/fedora-java/xmvn/releases/download/%{version}
 
 BuildRequires:  maven >= 3.5.0
 BuildRequires:  maven-local
+BuildRequires:  apache-commons-compress
 BuildRequires:  beust-jcommander
 BuildRequires:  cglib
 BuildRequires:  maven-dependency-plugin
