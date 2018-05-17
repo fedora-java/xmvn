@@ -19,11 +19,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
@@ -209,6 +211,27 @@ public class JarUtilsTest
             assertEquals( null, attr.getValue( "JavaPackages-Classifier" ) );
             assertEquals( null, attr.getValue( "JavaPackages-Version" ) );
         }
+    }
+
+    /**
+     * Test JAR if manifest injection preserves sane file perms.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionSanePermissions()
+            throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        assumeTrue( "sane umask", Files.getPosixFilePermissions( testJar ).contains( PosixFilePermission.OTHERS_READ ) );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+        JarUtils.injectManifest( testJar, artifact );
+
+        assertTrue( Files.getPosixFilePermissions( testJar ).contains( PosixFilePermission.OTHERS_READ ) );
     }
 
     /**
