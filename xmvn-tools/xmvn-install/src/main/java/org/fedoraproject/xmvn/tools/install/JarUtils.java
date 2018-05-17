@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -218,8 +217,8 @@ public final class JarUtils
                 {
                     Manifest mf = new Manifest( jar.getInputStream( manifestEntry ) );
                     updateManifest( artifact, mf );
-                    Path tempJar = Files.createTempFile( "xmvn", ".tmp" );
-                    try ( ZipArchiveOutputStream os = new ZipArchiveOutputStream( tempJar.toFile() ) )
+                    Files.delete( targetJar );
+                    try ( ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
                     {
                         // write manifest
                         ZipArchiveEntry newManifestEntry = new ZipArchiveEntry( MANIFEST_PATH );
@@ -234,7 +233,6 @@ public final class JarUtils
                         // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
                         throw new RuntimeException( e );
                     }
-                    Files.move( tempJar, targetJar, StandardCopyOption.REPLACE_EXISTING );
                     LOGGER.trace( "Manifest injected successfully" );
                 }
                 else
