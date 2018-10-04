@@ -84,7 +84,7 @@
     <atinjectVersion>1</atinjectVersion>
     <ivyVersion>2.4.0</ivyVersion>
     <jcommanderVersion>1.64</jcommanderVersion>
-    <gradleVersion>4.3.1</gradleVersion>
+    <gradleVersion>4.4.1</gradleVersion>
     <groovyVersion>2.4.10</groovyVersion>
     <mavenInvokerVersion>2.2</mavenInvokerVersion>
     <mavenResolverVersion>1.0.3</mavenResolverVersion>
@@ -474,6 +474,18 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>rat-check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -501,18 +513,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>rat-check</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+      
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
         <configuration>

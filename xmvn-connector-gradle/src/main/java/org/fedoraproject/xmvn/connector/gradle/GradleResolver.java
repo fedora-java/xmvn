@@ -40,13 +40,13 @@ import org.gradle.internal.component.external.model.DefaultMutableMavenModuleRes
 import org.gradle.internal.component.external.model.FixedComponentArtifacts;
 import org.gradle.internal.component.external.model.ModuleComponentArtifactMetadata;
 import org.gradle.internal.component.external.model.ModuleComponentResolveMetadata;
+import org.gradle.internal.component.external.model.ModuleDependencyMetadata;
 import org.gradle.internal.component.external.model.MutableMavenModuleResolveMetadata;
 import org.gradle.internal.component.external.model.MutableModuleComponentResolveMetadata;
 import org.gradle.internal.component.model.ComponentArtifactMetadata;
 import org.gradle.internal.component.model.ComponentOverrideMetadata;
 import org.gradle.internal.component.model.ComponentResolveMetadata;
 import org.gradle.internal.component.model.DefaultIvyArtifactName;
-import org.gradle.internal.component.model.DependencyMetadata;
 import org.gradle.internal.component.model.IvyArtifactName;
 import org.gradle.internal.component.model.ModuleSource;
 import org.gradle.internal.resolve.ArtifactResolveException;
@@ -153,12 +153,6 @@ public class GradleResolver
     public boolean isLocal()
     {
         return true;
-    }
-
-    @Override
-    public void listModuleVersions( DependencyMetadata arg0, BuildableModuleVersionListingResolveResult arg1 )
-    {
-        logger.debug( "listModuleVersions() called, but it is NOT IMPLEMENTED" );
     }
 
     @Override
@@ -305,5 +299,18 @@ public class GradleResolver
     public MetadataFetchingCost estimateMetadataFetchingCost( ModuleComponentIdentifier arg0 )
     {
         return MetadataFetchingCost.CHEAP;
+    }
+
+    @Override
+    public LocallyAvailableExternalResource getMetaDataArtifact( ModuleDependencyMetadata arg0, ArtifactType arg1 )
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void listModuleVersions( ModuleDependencyMetadata arg0, BuildableModuleVersionListingResolveResult arg1 )
+    {
+        logger.debug( "listModuleVersions() called, but it is NOT IMPLEMENTED" );
+
     }
 }
