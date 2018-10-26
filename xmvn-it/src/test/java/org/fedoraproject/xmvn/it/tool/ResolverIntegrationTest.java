@@ -25,6 +25,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 
 /**
@@ -66,5 +68,103 @@ public class ResolverIntegrationTest
         assertEquals( 1, invokeTool( "xmvn-resolve", "foobar:xyzzy" ) );
         assertTrue( getStderr().anyMatch( s -> s.endsWith( "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM" ) ) );
         assertFalse( getStdout().findAny().isPresent() );
+    }
+
+    @Test
+    public void testResolveRawNull()
+        throws Exception
+    {
+        assertEquals( 2, invokeToolWithInput( "", "xmvn-resolve", "--raw-request" ) );
+        assertTrue( getStderr().findAny().isPresent() );
+        assertFalse( getStdout().findAny().isPresent() );
+    }
+
+    @Test
+    public void testResolveRawTrash()
+        throws Exception
+    {
+        assertEquals( 2, invokeToolWithInput( "xyzzy", "xmvn-resolve", "--raw-request" ) );
+        assertTrue( getStderr().findAny().isPresent() );
+        assertFalse( getStdout().findAny().isPresent() );
+    }
+
+    @Test
+    public void testResolveRawNone()
+        throws Exception
+    {
+        assertEquals( 0, invokeToolWithInput( "<requests/>", "xmvn-resolve", "--raw-request" ) );
+        assertFalse( getStderr().findAny().isPresent() );
+        XMLAssert.assertXMLEqual( "<results/>", getStdout().collect( Collectors.joining() ) );
+    }
+
+    @Test
+    public void testResolveRawOne()
+        throws Exception
+    {
+        String input = String.join( "\n", //
+                                    "<requests>", //
+                                    " <![CDATA[ ]]>", //
+                                    " <request>", //
+                                    "  <persistentFileNeeded>false</persistentFileNeeded>", //
+                                    "  <artifact>", //
+                                    "   <extension>jar</extension>", //
+                                    "   <artifactId>aliased-component-metadata</artifactId>", //
+                                    "   <classifier/>", //
+                                    "   <!-- huh -->", //
+                                    "   <version>any</version>", //
+                                    "   <groupId>alias-<![CDATA[test]]></groupId>", //
+                                    "  </artifact>", //
+                                    "  <providerNeeded><![CDATA[false]]></providerNeeded>", //
+                                    " </request>", //
+                                    "</requests>" );
+        assertEquals( 0, invokeToolWithInput( input, "xmvn-resolve", "--raw-request" ) );
+        assertFalse( getStderr().findAny().isPresent() );
+        Path absPath = getBaseDir().resolve( "../dependency/plexus-component-metadata-1.7.1.jar" ).toRealPath();
+        String expectedOutput = String.join( "\n", //
+                                             "<results>", //
+                                             " <result>", //
+                                             "  <artifactPath>" + absPath + "</artifactPath>", //
+                                             "  <namespace/>", //
+                                             " </result>", //
+                                             "</results>" );
+        XMLUnit.setIgnoreComments( true );
+        XMLUnit.setIgnoreWhitespace( true );
+        XMLAssert.assertXMLEqual( expectedOutput, getStdout().collect( Collectors.joining( "\n" ) ) );
+    }
+
+    @Test
+    public void testResolveRawTwo()
+        throws Exception
+    {
+        String input = String.join( "\n", //
+                                    "<requests>", //
+                                    " <request>", //
+                                    "  <artifact>", //
+                                    "   <groupId>foobar</groupId>", //
+                                    "   <artifactId>xyzzy</artifactId>", //
+                                    "  </artifact>", //
+                                    " </request>", //
+                                    " <request>", //
+                                    "  <artifact>", //
+                                    "   <artifactId>junit</artifactId>", //
+                                    "   <groupId>junit</groupId>", //
+                                    "  </artifact>", //
+                                    " </request>", //
+                                    "</requests>" );
+        assertEquals( 0, invokeToolWithInput( input, "xmvn-resolve", "--raw-request" ) );
+        assertTrue( getStderr().anyMatch( s -> s.endsWith( "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM" ) ) );
+        Path absPath = getBaseDir().resolve( "../../src/test/resources/empty.jar" ).toRealPath();
+        String expectedOutput = String.join( "\n", //
+                                             "<results>", //
+                                             " <result/>", //
+                                             " <result>", //
+                                             "  <artifactPath>" + absPath + "</artifactPath>", //
+                                             "  <namespace/>", //
+                                             "  <compatVersion>SYSTEM</compatVersion>", //
+                                             " </result>", //
+                                             "</results>" );
+        XMLUnit.setIgnoreComments( true );
+        XMLUnit.setIgnoreWhitespace( true );
+        XMLAssert.assertXMLEqual( expectedOutput, getStdout().collect( Collectors.joining( "\n" ) ) );
     }
 }

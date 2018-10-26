@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -108,6 +109,12 @@ public abstract class AbstractToolIntegrationTest
     public int invokeTool( String tool, String... args )
         throws Exception
     {
+        return invokeToolWithInput( "", tool, args );
+    }
+
+    public int invokeToolWithInput( String input, String tool, String... args )
+        throws Exception
+    {
         Path jar = findToolJar( tool );
         Attributes mf = readManifest( jar );
         List<URL> classPathList = new ArrayList<>();
@@ -127,7 +134,7 @@ public abstract class AbstractToolIntegrationTest
         System.setProperty( "xmvn.config.sandbox", "true" );
 
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
-        try ( InputStream stdin = new ByteArrayInputStream( new byte[0] );
+        try ( InputStream stdin = new ByteArrayInputStream( input.getBytes( StandardCharsets.US_ASCII ) );
                         PrintStream stdout = new PrintStream( new File( STDOUT ) );
                         PrintStream stderr = new PrintStream( new File( STDERR ) );
                         URLClassLoader toolClassLoader = new URLClassLoader( classPath, parentClassLoader ) )
