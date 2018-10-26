@@ -17,8 +17,8 @@ package org.fedoraproject.xmvn.it.tool;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -127,7 +127,7 @@ public abstract class AbstractToolIntegrationTest
         System.setProperty( "xmvn.config.sandbox", "true" );
 
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
-        try ( InputStream stdin = new FileInputStream( "/dev/null" );
+        try ( InputStream stdin = new ByteArrayInputStream( new byte[0] );
                         PrintStream stdout = new PrintStream( new File( STDOUT ) );
                         PrintStream stderr = new PrintStream( new File( STDERR ) );
                         URLClassLoader toolClassLoader = new URLClassLoader( classPath, parentClassLoader ) )
