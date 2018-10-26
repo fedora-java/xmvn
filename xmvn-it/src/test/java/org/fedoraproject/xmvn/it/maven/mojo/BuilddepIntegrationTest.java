@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.it.maven.mojo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -98,6 +99,8 @@ public class BuilddepIntegrationTest
     public void testBuilddepPackaging()
         throws Exception
     {
+        assumeTrue( "native-maven-plugin requires a C compiler to work",
+                    Files.isExecutable( Paths.get( "/usr/bin/gcc" ) ) );
         expectBuildDependency( "org.codehaus.mojo", "native-maven-plugin" );
         expectBuildDependency( "junit", "junit" );
         performBuilddepTest();
@@ -107,6 +110,8 @@ public class BuilddepIntegrationTest
     public void testBuilddepPackagingExternal()
         throws Exception
     {
+        assumeTrue( "native-maven-plugin requires a C compiler to work",
+                    Files.isExecutable( Paths.get( "/usr/bin/gcc" ) ) );
         expectBuildDependency( "org.codehaus.mojo", "native-maven-plugin" );
         performBuilddepTest();
     }
