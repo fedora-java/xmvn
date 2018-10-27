@@ -212,13 +212,6 @@ public class JavadocMojo
             opts.add( "-version" );
             opts.add( "-Xdoclint:none" );
 
-            String compilerSource = confugurator.getConfiguration().getBuildSettings().getCompilerSource();
-            if ( compilerSource != null )
-            {
-                opts.add( "-source" );
-                opts.add( compilerSource );
-            }
-
             opts.add( "-classpath" );
             opts.add( quoted( StringUtils.join( getClasspath().iterator(), ":" ) ) );
             opts.add( "-encoding" );
