@@ -73,34 +73,6 @@ public class BasicIntegrationTest
         performTest( "verify" );
     }
 
-    /**
-     * This project won't compile with upstream Maven -- it uses generics, but declares source 1.4 (generics are
-     * supported since 1.5). This project should however compile successfully with XMvn as it overrides default source
-     * setting.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testCompilerSource15()
-        throws Exception
-    {
-        performTest( "verify" );
-    }
-
-    /**
-     * This test uses `enum' as identifier, which is not supported in Java 1.5. This project is expected to fail with
-     * upstream Maven (as compiler source is set to 1.6) and succeed with XMvn (as special configuration sets source to
-     * 1.4).
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testOverrideCompilerSource()
-        throws Exception
-    {
-        performTest( "verify" );
-    }
-
     @Test
     public void testPlugin()
         throws Exception
