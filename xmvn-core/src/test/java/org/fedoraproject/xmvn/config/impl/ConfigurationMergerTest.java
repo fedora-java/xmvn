@@ -70,7 +70,6 @@ public class ConfigurationMergerTest
         assertEquals( "v3", out.getProperties().get( "p3" ) );
         assertEquals( true, out.getBuildSettings().isDebug() );
         assertEquals( false, out.getBuildSettings().isSkipTests() );
-        assertEquals( "1.7", out.getBuildSettings().getCompilerSource() );
         assertEquals( true, out.getResolverSettings().isDebug() );
         assertEquals( true, out.getInstallerSettings().isDebug() );
         assertEquals( "/foo/bar", out.getInstallerSettings().getMetadataDir() );
