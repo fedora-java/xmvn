@@ -49,12 +49,6 @@
           <description>Whether compilation and execution of unit and integration tests should be skipped.</description>
           <type>Boolean</type>
         </field>
-        <field>
-          <name>compilerSource</name>
-          <version>0.4.0+</version>
-          <description>Compatibility version of Java sources in the reactor. If not specified then it defaults to 1.6 or whatever is specified in configuration of Maven Compiler Plugin.</description>
-          <type>String</type>
-        </field>
       </fields>
     </class>
 

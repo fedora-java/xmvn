@@ -51,9 +51,6 @@ class ConfigurationMerger
 
         if ( dominant.isSkipTests() == null )
             dominant.setSkipTests( recessive.isSkipTests() );
-
-        if ( dominant.getCompilerSource() == null || dominant.getCompilerSource().isEmpty() )
-            dominant.setCompilerSource( recessive.getCompilerSource() );
     }
 
     private void mergeArtifactmanagement( List<PackagingRule> dominant, List<PackagingRule> recessive )

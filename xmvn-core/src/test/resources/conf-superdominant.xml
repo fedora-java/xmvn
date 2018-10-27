@@ -2,7 +2,6 @@
   <buildSettings>
     <debug>true</debug>
     <skipTests>false</skipTests>
-    <compilerSource>1.7</compilerSource>
   </buildSettings>
   <resolverSettings>
     <debug>true</debug>
