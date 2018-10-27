@@ -214,6 +214,7 @@ public class ModelValidatorTest
         assertEquals( 0, dl.size() );
     }
 
+    // compilerSource setting is now ignored
     @Test
     public void testMinimalCompilerSource()
         throws Exception
@@ -232,8 +233,8 @@ public class ModelValidatorTest
         EasyMock.verify( model, build );
 
         Xpp3Dom compilerConf = (Xpp3Dom) pl.get( 0 ).getConfiguration();
-        assertEquals( "1.8", compilerConf.getChild( "source" ).getValue() );
-        assertEquals( "1.8", compilerConf.getChild( "target" ).getValue() );
+        assertEquals( "1.6", compilerConf.getChild( "source" ).getValue() );
+        assertEquals( "1.6", compilerConf.getChild( "target" ).getValue() );
     }
 
 }

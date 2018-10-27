@@ -15,9 +15,6 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
@@ -27,7 +24,6 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
@@ -36,7 +32,6 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.BuildSettings;
@@ -79,9 +74,6 @@ public class XMvnModelValidator
                                                                  d.getVersion() ) ) );
         extensions.forEach( e -> e.setVersion( replaceVersion( e.getGroupId(), e.getArtifactId(), e.getVersion() ) ) );
         plugins.forEach( p -> p.setVersion( replaceVersion( p.getGroupId(), p.getArtifactId(), p.getVersion() ) ) );
-
-        plugins.stream().filter( p -> p.getGroupId().equals( "org.apache.maven.plugins" )
-            && p.getArtifactId().equals( "maven-compiler-plugin" ) ).forEach( p -> configureCompiler( p ) );
     }
 
     private String replaceVersion( String groupId, String artifactId, String version )
@@ -111,48 +103,5 @@ public class XMvnModelValidator
         }
 
         return version;
-    }
-
-    private void configureCompiler( Plugin plugin )
-    {
-        boolean minSourceSpecified = false;
-        BigDecimal minSource = new BigDecimal( "1.6" );
-        String compilerSource = configurator.getConfiguration().getBuildSettings().getCompilerSource();
-        if ( compilerSource != null )
-        {
-            minSourceSpecified = true;
-            minSource = new BigDecimal( compilerSource );
-        }
-
-        Collection<Object> configurations = new LinkedList<>();
-        configurations.add( plugin.getConfiguration() );
-
-        Collection<PluginExecution> executions = plugin.getExecutions();
-        for ( PluginExecution exec : executions )
-            configurations.add( exec.getConfiguration() );
-
-        for ( Object configObj : configurations )
-        {
-            try
-            {
-                Xpp3Dom config = (Xpp3Dom) configObj;
-                BigDecimal source = new BigDecimal( config.getChild( "source" ).getValue().trim() );
-                BigDecimal target = new BigDecimal( config.getChild( "target" ).getValue().trim() );
-
-                // Source must be at least 1.6
-                if ( minSourceSpecified || source.compareTo( minSource ) < 0 )
-                    source = minSource;
-
-                // Target must not be less than source
-                if ( target.compareTo( source ) < 0 )
-                    target = source;
-
-                config.getChild( "source" ).setValue( source.toString() );
-                config.getChild( "target" ).setValue( target.toString() );
-            }
-            catch ( NullPointerException | NumberFormatException e )
-            {
-            }
-        }
     }
 }
