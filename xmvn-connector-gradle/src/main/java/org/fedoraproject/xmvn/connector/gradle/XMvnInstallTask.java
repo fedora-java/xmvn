@@ -99,7 +99,8 @@ class XMvnInstallTask
             return Collections.singletonList( new DefaultArtifact( groupId, artifactId, version ) );
         }
 
-        return dependency.getArtifacts().stream().map( dependencyArtifact -> {
+        return dependency.getArtifacts().stream().map( dependencyArtifact ->
+        {
             String artifactId = dependencyArtifact.getName();
             String extension = dependencyArtifact.getExtension();
             String classifier = dependencyArtifact.getClassifier();
@@ -109,7 +110,8 @@ class XMvnInstallTask
 
     private List<Artifact> getExclusionArtifacts( ModuleDependency dependency )
     {
-        return dependency.getExcludeRules().stream().map( exclusionRule -> {
+        return dependency.getExcludeRules().stream().map( exclusionRule ->
+        {
             String groupId = exclusionRule.getGroup();
             String artifactId = exclusionRule.getModule();
             return new DefaultArtifact( groupId, artifactId );

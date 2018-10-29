@@ -69,7 +69,8 @@ class DependencyVersionReportGenerator
 
         logger.debug( "Full XMvn dependency report:" );
         logger.debug( "<gId>:<aId>:<ext>[:<classifier>:]<version> => <compat-version>, provided by <pkg-name> (<rpm-version>)" );
-        data.forEach( ( artifact, result ) -> {
+        data.forEach( ( artifact, result ) ->
+        {
             String provider = result.getProvider();
             if ( provider == null )
                 provider = "(none)";
@@ -86,7 +87,8 @@ class DependencyVersionReportGenerator
 
         logger.debug( "Simplified XMvn dependency report:" );
         logger.debug( "<pkg-name> (<rpm-version>): <requested-versions>" );
-        shortReport.forEach( ( provider, versions ) -> {
+        shortReport.forEach( ( provider, versions ) ->
+        {
             logger.debug( "  " + provider + ": " + versions.stream().collect( Collectors.joining( ", " ) ) );
         } );
     }

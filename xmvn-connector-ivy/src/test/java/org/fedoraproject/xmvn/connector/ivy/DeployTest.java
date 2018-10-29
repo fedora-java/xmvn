@@ -98,7 +98,6 @@ public class DeployTest
 
         artifact = EasyMock.createMock( Artifact.class );
         mri = EasyMock.createMock( ModuleRevisionId.class );
-
     }
 
     /**
@@ -204,7 +203,6 @@ public class DeployTest
         }
         catch ( Exception e )
         {
-
         }
         EasyMock.verify( artifact, mri, deployer );
     }
@@ -258,7 +256,6 @@ public class DeployTest
         }
         catch ( IOException e )
         {
-
         }
         EasyMock.verify( artifact, deployer );
     }
@@ -291,7 +288,6 @@ public class DeployTest
         }
         catch ( IOException e )
         {
-
         }
         EasyMock.verify( artifact, deployer );
     }

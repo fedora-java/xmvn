@@ -114,7 +114,6 @@ public class MojoExecutionListenerTest
 
         listener.beforeMojoExecution( mojo, exec );
         EasyMock.verify( mojo, exec );
-
     }
 
     @Test
@@ -193,7 +192,5 @@ public class MojoExecutionListenerTest
 
         listener.afterMojoExecution( mojo, exec, project );
         EasyMock.verify( mojo, exec );
-
     }
-
 }

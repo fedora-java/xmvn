@@ -24,7 +24,6 @@ import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,7 +33,6 @@ import org.apache.maven.lifecycle.mapping.Lifecycle;
 import org.apache.maven.lifecycle.mapping.LifecycleMapping;
 import org.apache.maven.lifecycle.mapping.LifecycleMojo;
 import org.apache.maven.lifecycle.mapping.LifecyclePhase;
-import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -167,12 +165,13 @@ public class BuilddepMojo
 
     private Set<Artifact> getModelDependencies( Model model )
     {
-        Function<InputLocation, Boolean> isExternalLocation =
-            location -> !reactorProjects.stream() //
-                                        .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
-                                        .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
-                                        .findAny().isPresent();
-        BuildDependencyVisitor visitor = new BuildDependencyVisitor( isExternalLocation );
+        BuildDependencyVisitor visitor = new BuildDependencyVisitor( location ->
+        {
+            return !reactorProjects.stream() //
+                                   .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
+                                   .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
+                                   .findAny().isPresent();
+        } );
         modelProcessor.processModel( model.clone(), visitor );
         return visitor.getArtifacts();
     }

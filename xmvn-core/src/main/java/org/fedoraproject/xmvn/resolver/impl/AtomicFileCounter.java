@@ -49,7 +49,6 @@ class AtomicFileCounter
         {
             throw new RuntimeException( e );
         }
-
     }
 
     /**

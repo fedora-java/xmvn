@@ -25,8 +25,9 @@ public interface ArtifactInstaller
 {
     String DEFAULT_REPOSITORY_ID = "install";
 
-    default void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName, String repositoryId )
-            throws ArtifactInstallationException
+    default void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName,
+                          String repositoryId )
+        throws ArtifactInstallationException
     {
         if ( repositoryId.equals( DEFAULT_REPOSITORY_ID ) )
         {
@@ -40,7 +41,7 @@ public interface ArtifactInstaller
 
     @Deprecated
     default void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName )
-            throws ArtifactInstallationException
+        throws ArtifactInstallationException
     {
         install( targetPackage, am, rule, basePackageName, DEFAULT_REPOSITORY_ID );
     }

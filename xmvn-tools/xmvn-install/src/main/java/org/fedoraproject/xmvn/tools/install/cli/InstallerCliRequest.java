@@ -24,6 +24,7 @@ import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
 /**
@@ -154,7 +155,6 @@ class InstallerCliRequest
     {
         this.repoId = repoId;
     }
-
 
     public Map<String, String> getDefines()
     {

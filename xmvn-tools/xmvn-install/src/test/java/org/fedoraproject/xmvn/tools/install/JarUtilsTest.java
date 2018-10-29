@@ -220,13 +220,14 @@ public class JarUtilsTest
      */
     @Test
     public void testManifestInjectionSanePermissions()
-            throws Exception
+        throws Exception
     {
         Path testResource = Paths.get( "src/test/resources/example.jar" );
         Path testJar = workDir.resolve( "manifest.jar" );
         Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
 
-        assumeTrue( "sane umask", Files.getPosixFilePermissions( testJar ).contains( PosixFilePermission.OTHERS_READ ) );
+        assumeTrue( "sane umask",
+                    Files.getPosixFilePermissions( testJar ).contains( PosixFilePermission.OTHERS_READ ) );
 
         Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
         JarUtils.injectManifest( testJar, artifact );

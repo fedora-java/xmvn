@@ -88,7 +88,6 @@ public class ResolutionRequestTest
     public void equalityTest()
         throws Exception
     {
-
         Assert.assertTrue( rrq.equals( rrq ) );
         Assert.assertFalse( rrq.equals( null ) );
         Assert.assertFalse( rrq.equals( new Object() ) );
@@ -111,7 +110,5 @@ public class ResolutionRequestTest
 
         extraRq.setArtifact( EasyMock.createMock( Artifact.class ) );
         Assert.assertFalse( rrq.equals( extraRq ) );
-
     }
-
 }

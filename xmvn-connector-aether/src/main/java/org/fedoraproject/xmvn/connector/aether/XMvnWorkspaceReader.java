@@ -54,7 +54,8 @@ public class XMvnWorkspaceReader
     {
         org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact =
             new org.fedoraproject.xmvn.artifact.DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
-                                                                 artifact.getExtension(), artifact.getClassifier(), artifact.getVersion() );
+                                                                 artifact.getExtension(), artifact.getClassifier(),
+                                                                 artifact.getVersion() );
         ResolutionRequest request = new ResolutionRequest( xmvnArtifact );
 
         for ( ResolutionListener listener : listeners )
