@@ -98,7 +98,7 @@
     <apivizVersion>1.3.2.GA</apivizVersion>
     <assemblyPluginVersion>3.1.0</assemblyPluginVersion>
     <buildHelperPluginVersion>3.0.0</buildHelperPluginVersion>
-    <checkstylePluginVersion>2.17</checkstylePluginVersion>
+    <checkstylePluginVersion>3.0.0</checkstylePluginVersion>
     <cleanPluginVersion>3.1.0</cleanPluginVersion>
     <compilerPluginVersion>3.8.0</compilerPluginVersion>
     <dependencyPluginVersion>3.1.1</dependencyPluginVersion>
@@ -412,8 +412,9 @@
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${checkstylePluginVersion}</version>
           <configuration>
-            <sourceDirectory>src/main/java</sourceDirectory>
-            <testSourceDirectory>src/test/java</testSourceDirectory>
+	    <sourceDirectories>
+              <sourceDirectory>src/main/java</sourceDirectory>
+	    </sourceDirectories>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
             <configLocation>../aux/checkstyle.xml</configLocation>
             <suppressionsLocation>../aux/checkstyle-suppressions.xml</suppressionsLocation>
