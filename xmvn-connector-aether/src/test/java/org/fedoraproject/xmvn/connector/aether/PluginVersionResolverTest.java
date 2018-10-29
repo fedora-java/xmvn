@@ -118,5 +118,4 @@ public class PluginVersionResolverTest
 
         EasyMock.verify( rq, session, reader );
     }
-
 }

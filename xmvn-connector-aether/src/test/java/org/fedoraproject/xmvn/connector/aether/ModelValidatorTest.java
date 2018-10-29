@@ -148,7 +148,6 @@ public class ModelValidatorTest
 
         build = EasyMock.createMock( Build.class );
         model = EasyMock.createMock( Model.class );
-
     }
 
     @Test

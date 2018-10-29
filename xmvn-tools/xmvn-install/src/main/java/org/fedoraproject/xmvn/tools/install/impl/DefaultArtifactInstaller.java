@@ -71,7 +71,8 @@ class DefaultArtifactInstaller
     }
 
     @Override
-    public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName, String repositoryId )
+    public void install( JavaPackage targetPackage, ArtifactMetadata am, PackagingRule rule, String basePackageName,
+                         String repositoryId )
         throws ArtifactInstallationException
     {
         Artifact artifact = am.toArtifact();

@@ -190,5 +190,4 @@ public class DeploymentRequestTest
 
         EasyMock.verify( artifact, dependencyA, dependencyB, dependencyC, dependencyD );
     }
-
 }

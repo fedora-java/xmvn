@@ -311,6 +311,5 @@ public class GradleResolver
     public void listModuleVersions( ModuleDependencyMetadata arg0, BuildableModuleVersionListingResolveResult arg1 )
     {
         logger.debug( "listModuleVersions() called, but it is NOT IMPLEMENTED" );
-
     }
 }

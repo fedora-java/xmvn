@@ -83,7 +83,6 @@ public abstract class AbstractToolIntegrationTest
      */
     private Path jar2classes( Path jar )
     {
-
         String jarName = jar.getFileName().toString();
         if ( !jarName.startsWith( "xmvn-" ) )
             return jar;

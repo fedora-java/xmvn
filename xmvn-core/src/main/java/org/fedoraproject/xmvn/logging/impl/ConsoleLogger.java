@@ -45,7 +45,6 @@ public class ConsoleLogger
         sb.append( format.substring( i ) );
 
         System.err.println( sb );
-
     }
 
     @Override

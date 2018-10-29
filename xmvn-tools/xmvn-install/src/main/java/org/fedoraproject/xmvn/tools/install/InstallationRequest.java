@@ -93,5 +93,4 @@ public class InstallationRequest
     {
         this.repositoryId = repositoryId;
     }
-
 }

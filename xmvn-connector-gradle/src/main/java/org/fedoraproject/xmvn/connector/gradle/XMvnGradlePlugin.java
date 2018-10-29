@@ -36,7 +36,8 @@ public class XMvnGradlePlugin
     @Override
     public void apply( Gradle gradle )
     {
-        gradle.allprojects( project -> {
+        gradle.allprojects( project ->
+        {
             configureRepositories( project.getRepositories() );
             configureRepositories( project.getBuildscript().getRepositories() );
 

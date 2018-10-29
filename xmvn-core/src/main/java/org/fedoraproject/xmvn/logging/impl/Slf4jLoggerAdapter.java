@@ -57,7 +57,6 @@ class Slf4jLoggerAdapter
 
                     setLogLevel.invoke( delegate, lvl );
                 }
-
             }
             catch ( ReflectiveOperationException e )
             {

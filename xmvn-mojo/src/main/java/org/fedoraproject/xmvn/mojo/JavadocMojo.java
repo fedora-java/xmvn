@@ -126,10 +126,10 @@ public class JavadocMojo
     private List<Path> getClasspath()
         throws MojoExecutionException
     {
-        List<String> reactorArtifacts =
-            reactorProjects.stream() //
-                           .map( project -> ( project.getGroupId() + ":" + project.getArtifactId() ) ) //
-                           .collect( Collectors.toList() );
+        List<String> reactorArtifacts = reactorProjects.stream() //
+                                                       .map( project -> ( project.getGroupId() + ":"
+                                                           + project.getArtifactId() ) ) //
+                                                       .collect( Collectors.toList() );
 
         List<Path> classpath = new ArrayList<>();
         classpath.addAll( reactorProjects.stream() //
@@ -175,21 +175,21 @@ public class JavadocMojo
             if ( StringUtils.isEmpty( docencoding ) )
                 docencoding = "UTF-8";
 
-            Set<Path> sourcePaths =
-                Stream.concat( reactorProjects.stream(), //
-                               reactorProjects.stream().map( p -> p.getExecutionProject() ) ) //
-                      .filter( project -> project != null ) //
-                      .filter( project -> !project.getPackaging().equals( "pom" ) ) //
-                      .filter( project -> project.getArtifact().getArtifactHandler().getLanguage().equals( "java" ) ) //
-                      .filter( project -> project.getCompileSourceRoots() != null ) //
-                      .map( project -> project.getCompileSourceRoots().stream() //
-                                              .filter( compileRoot -> compileRoot != null ) //
-                                              .map( compileRoot -> Paths.get( compileRoot ) ) //
-                                              .map( sourcePath -> sourcePath.isAbsolute() ? sourcePath
-                                                              : project.getBasedir().toPath().resolve( sourcePath ).toAbsolutePath() ) //
-                                              .filter( sourcePath -> Files.isDirectory( sourcePath ) ) ) //
-                      .flatMap( x -> x ) //
-                      .collect( Collectors.toSet() );
+            Set<Path> sourcePaths = Stream.concat( reactorProjects.stream(), //
+                                                   reactorProjects.stream().map( p -> p.getExecutionProject() ) ) //
+                                          .filter( project -> project != null ) //
+                                          .filter( project -> !project.getPackaging().equals( "pom" ) ) //
+                                          .filter( project -> project.getArtifact().getArtifactHandler().getLanguage().equals( "java" ) ) //
+                                          .filter( project -> project.getCompileSourceRoots() != null ) //
+                                          .map( project -> project.getCompileSourceRoots().stream() //
+                                                                  .filter( compileRoot -> compileRoot != null ) //
+                                                                  .map( compileRoot -> Paths.get( compileRoot ) ) //
+                                                                  .map( sourcePath -> sourcePath.isAbsolute()
+                                                                                  ? sourcePath
+                                                                                  : project.getBasedir().toPath().resolve( sourcePath ).toAbsolutePath() ) //
+                                                                  .filter( sourcePath -> Files.isDirectory( sourcePath ) ) ) //
+                                          .flatMap( x -> x ) //
+                                          .collect( Collectors.toSet() );
 
             Set<Path> files = new LinkedHashSet<>();
             for ( Path sourcePath : sourcePaths )

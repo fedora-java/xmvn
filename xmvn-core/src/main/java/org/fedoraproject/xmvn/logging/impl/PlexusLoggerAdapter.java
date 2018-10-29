@@ -47,7 +47,6 @@ class PlexusLoggerAdapter
         sb.append( format.substring( i ) );
 
         return sb.toString();
-
     }
 
     @Override

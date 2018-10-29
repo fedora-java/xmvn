@@ -78,5 +78,4 @@ public class ConfigurationMergerTest
         Configuration c6 = merger.merge( c2, c2.clone() );
         assertEquals( toString( c2 ), toString( c6 ) );
     }
-
 }

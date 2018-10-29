@@ -30,7 +30,6 @@ import org.junit.runner.RunWith;
 @RunWith( EasyMockRunner.class )
 public class MavenPluginValidatorTest
 {
-
     private MavenPluginValidator validator;
 
     private PluginDescriptor desc;
@@ -63,5 +62,4 @@ public class MavenPluginValidatorTest
         Assert.assertFalse( validator.hasErrors() );
         Assert.assertTrue( validator.getErrors().isEmpty() );
     }
-
 }
