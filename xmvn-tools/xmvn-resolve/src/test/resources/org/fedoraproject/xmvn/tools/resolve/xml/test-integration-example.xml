@@ -1,0 +1,14 @@
+<requests>
+	<request>
+		<artifact>
+			<groupId>foobar</groupId>
+			<artifactId>xyzzy</artifactId>
+		</artifact>
+	</request>
+	<request>
+		<artifact>
+			<artifactId>junit</artifactId>
+			<groupId>junit</groupId>
+		</artifact>
+	</request>
+</requests>

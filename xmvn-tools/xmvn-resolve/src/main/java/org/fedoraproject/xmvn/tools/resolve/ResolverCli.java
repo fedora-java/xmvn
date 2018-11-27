@@ -15,15 +15,13 @@
  */
 package org.fedoraproject.xmvn.tools.resolve;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamException;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -32,8 +30,8 @@ import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.tools.resolve.xml.CompoundRequest;
-import org.fedoraproject.xmvn.tools.resolve.xml.CompoundResult;
+import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionRequestListUnmarshaller;
+import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionResultListMarshaller;
 
 /**
  * Resolve artifacts given on command line.
@@ -53,14 +51,11 @@ public class ResolverCli
     }
 
     private List<ResolutionRequest> parseRequests( ResolverCliRequest cli )
-        throws JAXBException
+        throws IOException, XMLStreamException
     {
         if ( cli.isRaw() )
         {
-            JAXBContext jaxbContext = JAXBContext.newInstance( CompoundRequest.class );
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            CompoundRequest compoundRequest = (CompoundRequest) jaxbUnmarshaller.unmarshal( System.in );
-            List<ResolutionRequest> requests = compoundRequest.getRequests();
+            List<ResolutionRequest> requests = new ResolutionRequestListUnmarshaller( System.in ).unmarshal();
             return requests != null ? requests : Collections.<ResolutionRequest>emptyList();
         }
 
@@ -83,14 +78,11 @@ public class ResolverCli
     }
 
     private void printResults( ResolverCliRequest cli, List<ResolutionResult> results )
-        throws JAXBException
+        throws IOException, XMLStreamException
     {
         if ( cli.isRaw() )
         {
-            JAXBContext jaxbContext = JAXBContext.newInstance( CompoundResult.class );
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            jaxbMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-            jaxbMarshaller.marshal( new CompoundResult( results ), System.out );
+            new ResolutionResultListMarshaller( results ).marshal( System.out );
         }
         else if ( cli.isClasspath() )
         {
@@ -103,7 +95,7 @@ public class ResolverCli
     }
 
     private void run( ResolverCliRequest cliRequest )
-        throws JAXBException
+        throws IOException, XMLStreamException
     {
         try
         {

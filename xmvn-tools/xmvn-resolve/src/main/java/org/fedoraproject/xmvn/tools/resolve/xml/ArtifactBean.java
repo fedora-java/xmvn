@@ -15,16 +15,12 @@
  */
 package org.fedoraproject.xmvn.tools.resolve.xml;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * @author Mikolaj Izdebski
  */
-@XmlRootElement( name = "artifact" )
 public class ArtifactBean
 {
     private String groupId;
@@ -91,14 +87,12 @@ public class ArtifactBean
      * @author Mikolaj Izdebski
      */
     public static class Adapter
-        extends XmlAdapter<ArtifactBean, Artifact>
     {
         private static String nullify( String value, String defaultValue )
         {
             return value.equals( defaultValue ) ? null : value;
         }
 
-        @Override
         public ArtifactBean marshal( Artifact artifact )
             throws Exception
         {
@@ -113,7 +107,6 @@ public class ArtifactBean
             return bean;
         }
 
-        @Override
         public Artifact unmarshal( ArtifactBean bean )
             throws Exception
         {

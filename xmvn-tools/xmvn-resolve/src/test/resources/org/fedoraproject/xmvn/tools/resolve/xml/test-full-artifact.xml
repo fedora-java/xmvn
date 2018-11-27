@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<requests>
+	<request>
+		<artifact>
+			<artifactId>test1</artifactId>
+			<groupId>test1</groupId>
+			<extension>test1</extension>
+			<classifier>test1</classifier>
+			<version>test1</version>
+			<path>/dev/null</path>
+		</artifact>
+	</request>
+</requests>

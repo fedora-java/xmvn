@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<requests>
+	<request>
+		<artifact>
+			<artifactId>test1</artifactId>
+			<groupId>test1</groupId>
+		</artifact>
+	</request>
+	<request>
+		<artifact>
+			<artifactId>test2</artifactId>
+			<groupId>test2</groupId>
+		</artifact>
+	</request>
+	<request>
+		<artifact>
+			<artifactId>test3</artifactId>
+			<groupId>test3</groupId>
+		</artifact>
+	</request>
+	<request>
+		<artifact>
+			<artifactId>test4</artifactId>
+			<groupId>test4</groupId>
+		</artifact>
+	</request>
+	<request>
+		<artifact>
+			<artifactId>test5</artifactId>
+			<groupId>test5</groupId>
+		</artifact>
+	</request>
+</requests>
