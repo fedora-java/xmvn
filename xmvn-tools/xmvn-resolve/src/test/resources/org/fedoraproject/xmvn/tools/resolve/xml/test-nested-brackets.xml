@@ -1,0 +1,15 @@
+<requests>
+	<![CDATA[ ]]>
+	<request>
+		<persistentFileNeeded>false</persistentFileNeeded>
+		<artifact>
+			<extension>jar</extension>
+			<artifactId>aliased-component-metadata</artifactId>
+			<classifier/>
+			<!-- huh -->
+			<version>any</version>
+			<groupId>alias-<![CDATA[test]]></groupId>
+		</artifact>
+		<providerNeeded><![CDATA[false]]></providerNeeded>
+	</request>
+</requests>

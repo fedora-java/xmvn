@@ -18,15 +18,11 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
 /**
  * @author Mikolaj Izdebski
  */
-@XmlRootElement( name = "result" )
 public class ResolutionResultBean
 {
     private String artifactPath;
@@ -81,9 +77,7 @@ public class ResolutionResultBean
      * @author Mikolaj Izdebski
      */
     public static class Adapter
-        extends XmlAdapter<ResolutionResultBean, ResolutionResult>
     {
-        @Override
         public ResolutionResultBean marshal( ResolutionResult result )
             throws Exception
         {
@@ -97,7 +91,6 @@ public class ResolutionResultBean
             return bean;
         }
 
-        @Override
         public ResolutionResult unmarshal( final ResolutionResultBean bean )
             throws Exception
         {

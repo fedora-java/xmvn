@@ -15,16 +15,12 @@
  */
 package org.fedoraproject.xmvn.tools.resolve.xml;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
 /**
  * @author Mikolaj Izdebski
  */
-@XmlRootElement( name = "request" )
 public class ResolutionRequestBean
 {
     private Artifact artifact;
@@ -55,9 +51,7 @@ public class ResolutionRequestBean
      * @author Mikolaj Izdebski
      */
     public static class Adapter
-        extends XmlAdapter<ResolutionRequestBean, ResolutionRequest>
     {
-        @Override
         public ResolutionRequestBean marshal( ResolutionRequest request )
             throws Exception
         {
@@ -69,7 +63,6 @@ public class ResolutionRequestBean
             return bean;
         }
 
-        @Override
         public ResolutionRequest unmarshal( ResolutionRequestBean bean )
             throws Exception
         {
