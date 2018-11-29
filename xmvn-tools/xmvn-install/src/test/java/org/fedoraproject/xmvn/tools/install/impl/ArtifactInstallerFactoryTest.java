@@ -56,6 +56,7 @@ public class ArtifactInstallerFactoryTest
     }
 
     @Test
+    @SuppressWarnings( "deprecation" )
     public void testValidPlugin()
         throws Exception
     {

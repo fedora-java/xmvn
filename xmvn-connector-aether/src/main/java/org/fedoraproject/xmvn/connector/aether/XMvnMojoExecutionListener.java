@@ -108,7 +108,8 @@ public class XMvnMojoExecutionListener
         this.xmvnStateDir = xmvnStateDir;
     }
 
-    private Object dispatchBuildPluginManagerMethodCall( Object proxy, Method method, Object[] args )
+    private Object dispatchBuildPluginManagerMethodCall( @SuppressWarnings( "unused" ) Object proxy, Method method,
+                                                         Object[] args )
         throws Throwable
     {
         Object ret = method.invoke( mavenPluginManager, args );

@@ -142,7 +142,7 @@ public class DeploymentRequestTest
         deployRq.removeDependency( dependencyB );
 
         // tests adding optional dependency without exclusions
-        deployRq.addDependency( dependencyB, true, new ArrayList() );
+        deployRq.addDependency( dependencyB, true, new ArrayList<>() );
         listedDependencies = deployRq.getDependencies();
         dsc = listedDependencies.get( 1 );
         Assert.assertTrue( dsc.isOptional() );

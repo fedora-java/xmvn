@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileReader;
+import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -80,7 +81,10 @@ public class ModelValidatorTest
         validator = lookup( ModelValidator.class );
 
         Xpp3Dom mainCfg, glCfg, locCfg;
-        mainCfg = Xpp3DomBuilder.build( new FileReader( getResource( "test.pom.xml" ).toFile() ) );
+        try ( Reader reader = new FileReader( getResource( "test.pom.xml" ).toFile() ) )
+        {
+            mainCfg = Xpp3DomBuilder.build( reader );
+        }
         glCfg = mainCfg.getChild( "basic" ).getChild( "configuration" );
 
         dl = new ArrayList<>();

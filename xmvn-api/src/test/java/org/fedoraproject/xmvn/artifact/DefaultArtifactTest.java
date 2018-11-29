@@ -275,6 +275,7 @@ public class DefaultArtifactTest
      * Test if equality behaves sanely.
      */
     @Test
+    @SuppressWarnings( "unlikely-arg-type" )
     public void testEquals()
         throws Exception
     {

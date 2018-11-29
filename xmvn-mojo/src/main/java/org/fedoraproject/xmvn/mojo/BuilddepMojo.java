@@ -176,6 +176,7 @@ public class BuilddepMojo
         return visitor.getArtifacts();
     }
 
+    @SuppressWarnings( "resource" )
     private Lifecycle getDefaultLifecycle( MavenProject project )
         throws MojoExecutionException
     {
