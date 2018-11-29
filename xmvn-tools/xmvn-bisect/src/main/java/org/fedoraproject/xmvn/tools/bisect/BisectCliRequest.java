@@ -137,8 +137,9 @@ public class BisectCliRequest
 
         try
         {
-            JCommander jcomm = new JCommander( this, args );
+            JCommander jcomm = new JCommander( this );
             jcomm.setProgramName( "xmvn-bisect" );
+            jcomm.parse( args );
 
             if ( help )
             {

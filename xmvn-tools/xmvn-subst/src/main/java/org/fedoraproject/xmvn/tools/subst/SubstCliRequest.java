@@ -65,8 +65,9 @@ class SubstCliRequest
     {
         try
         {
-            JCommander jcomm = new JCommander( this, args );
+            JCommander jcomm = new JCommander( this );
             jcomm.setProgramName( "xmvn-subst" );
+            jcomm.parse( args );
 
             if ( help )
             {
