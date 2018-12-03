@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.tools.bisect;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,7 +53,7 @@ public class BisectCli
         }
         catch ( FileNotFoundException e )
         {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException( e );
         }
     }
 

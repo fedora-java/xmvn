@@ -147,8 +147,9 @@ public class DefaultMetadataResolver
         }
         catch ( InterruptedException e )
         {
-            logger.debug( "Metadata reader thread was interrupted" );
-            throw new RuntimeException( e );
+            final String message = "Metadata reader thread was interrupted";
+            logger.debug( message );
+            throw new IllegalThreadStateException( message + ": " + e.getMessage() );
         }
     }
 

@@ -58,6 +58,7 @@ public class DefaultServiceLocator
     }
 
     private Object loadService( Class<?> role )
+        throws ReflectiveOperationException
     {
         Class<?> implClass = knownServices.get( role );
         if ( implClass == null )
@@ -76,16 +77,23 @@ public class DefaultServiceLocator
         }
         catch ( ReflectiveOperationException e )
         {
-            throw new RuntimeException( e );
+            throw new ReflectiveOperationException( e );
         }
     }
 
     @Override
     public <T> T getService( Class<T> role )
     {
-        if ( !runningServices.containsKey( role ) )
+        try
         {
-            runningServices.put( role, loadService( role ) );
+            if ( !runningServices.containsKey( role ) )
+            {
+                runningServices.put( role, loadService( role ) );
+            }
+        }
+        catch ( ReflectiveOperationException e )
+        {
+            throw new IllegalStateException( "Failed to get service", e );
         }
 
         return role.cast( runningServices.get( role ) );

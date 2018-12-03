@@ -84,7 +84,7 @@ public abstract class AbstractIntegrationTest
     {
         Path cwd = Paths.get( "." ).toRealPath();
         if ( !cwd.endsWith( "xmvn-it/target/work" ) )
-            throw new RuntimeException( "XMvn integration tests must be ran from xmvn-it/target/work directory" );
+            throw new IllegalStateException( "XMvn integration tests must be ran from xmvn-it/target/work directory" );
     }
 
     @Before

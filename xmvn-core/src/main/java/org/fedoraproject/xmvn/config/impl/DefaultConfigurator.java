@@ -79,6 +79,7 @@ public class DefaultConfigurator
     }
 
     private Configuration loadDefaultConfiguration()
+        throws IOException
     {
         ClassLoader loader = getClass().getClassLoader();
         try ( InputStream stream = loader.getResourceAsStream( "default-configuration.xml" ) )
@@ -87,7 +88,7 @@ public class DefaultConfigurator
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( "Failed to load default XMvn configuration", e );
+            throw new IOException( "Failed to load default XMvn configuration", e );
         }
     }
 
@@ -227,15 +228,22 @@ public class DefaultConfigurator
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( "Failed to load XMvn configuration", e );
+            throw new IllegalStateException( "Failed to load XMvn configuration", e );
         }
     }
 
     @Override
     public synchronized Configuration getDefaultConfiguration()
     {
-        if ( cachedDefaultConfiguration == null )
-            cachedDefaultConfiguration = loadDefaultConfiguration();
+        try
+        {
+            if ( cachedDefaultConfiguration == null )
+                cachedDefaultConfiguration = loadDefaultConfiguration();
+        }
+        catch ( IOException e )
+        {
+            throw new IllegalStateException( "Failed to load the default configuration due to an IO error", e );
+        }
 
         return cachedDefaultConfiguration;
     }
@@ -250,6 +258,7 @@ public class DefaultConfigurator
     }
 
     public void dumpConfiguration()
+        throws IOException
     {
         Configuration configuration = getConfiguration();
 
@@ -261,7 +270,7 @@ public class DefaultConfigurator
         }
         catch ( IOException | XMLStreamException e )
         {
-            throw new RuntimeException( e );
+            throw new IOException( e );
         }
     }
 }

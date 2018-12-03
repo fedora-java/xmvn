@@ -137,6 +137,7 @@ public class XMvnMojoExecutionListener
     private final List<String[]> resolutions = new ArrayList<>();
 
     private static String getBeanProperty( Object bean, String getterName )
+        throws NoSuchMethodException
     {
         try
         {
@@ -150,14 +151,15 @@ public class XMvnMojoExecutionListener
                 }
                 catch ( NoSuchMethodException e )
                 {
+                    continue;
                 }
             }
 
-            throw new RuntimeException( "Unable to find bean property getter method " + getterName );
+            throw new NoSuchMethodException( "Unable to find bean property getter method " + getterName );
         }
         catch ( ReflectiveOperationException e )
         {
-            throw new RuntimeException( "Failed to get bean property", e );
+            throw new TypeNotPresentException( "Failed to get bean property", e );
         }
     }
 
@@ -176,16 +178,18 @@ public class XMvnMojoExecutionListener
                 }
                 catch ( NoSuchFieldException e )
                 {
+                    continue;
                 }
             }
         }
         catch ( ReflectiveOperationException e )
         {
-            throw new RuntimeException( "Failed to get bean property", e );
+            throw new TypeNotPresentException( "Failed to get bean property", e );
         }
     }
 
     private void createApidocsSymlink( Path javadocDir )
+        throws IOException
     {
         try
         {
@@ -201,11 +205,12 @@ public class XMvnMojoExecutionListener
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( "Failed to create apidocs symlink", e );
+            throw new IOException( "Failed to create apidocs symlink", e );
         }
     }
 
     private void setProjectProperty( MavenProject project, String key, String value )
+        throws IOException
     {
         Properties properties = new Properties();
 
@@ -234,11 +239,12 @@ public class XMvnMojoExecutionListener
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( "Failed to set project property", e );
+            throw new IOException( "Failed to set project property", e );
         }
     }
 
     void afterMojoExecution( Object mojo, MojoExecution execution, MavenProject project )
+        throws IOException, ReflectiveOperationException
     {
         if ( JAVADOC_AGGREGATE.equals( execution ) )
         {

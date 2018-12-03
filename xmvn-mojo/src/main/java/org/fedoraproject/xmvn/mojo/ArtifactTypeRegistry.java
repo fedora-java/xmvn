@@ -67,7 +67,7 @@ final class ArtifactTypeRegistry
         }
         catch ( ParserConfigurationException | IOException | SAXException ex )
         {
-            throw new RuntimeException( "Couldnt load resource 'stereotypes.xml'", ex );
+            throw new IllegalStateException( "Couldn't load resource 'stereotypes.xml'", ex );
         }
     }
 

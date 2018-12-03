@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.connector.ivy;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.text.ParseException;
 
@@ -217,7 +218,7 @@ public class IvyResolver
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException( e );
         }
     }
 

@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.NoSuchElementException;
 
 /**
  * @author Mikolaj Izdebski
@@ -42,7 +43,8 @@ class CacheManager
         }
         catch ( NoSuchAlgorithmException e )
         {
-            throw new RuntimeException( "Digest algorithm " + DIGEST_ALGORITHM + " is not available", e );
+            throw new NoSuchElementException( "Digest algorithm " + DIGEST_ALGORITHM + " is not available"
+                + e.getMessage() );
         }
     }
 

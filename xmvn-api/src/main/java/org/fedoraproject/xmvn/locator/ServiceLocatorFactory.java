@@ -29,6 +29,7 @@ public final class ServiceLocatorFactory
      * 
      * @param role interface class identifying requested service
      * @return instance of XMvn service, never {@code null}.
+     * @throws ReflectiveOperationException
      */
     public ServiceLocator createServiceLocator()
     {
@@ -38,7 +39,7 @@ public final class ServiceLocatorFactory
         }
         catch ( ReflectiveOperationException e )
         {
-            throw new RuntimeException( "Unable to instantiate DefaultServiceLocator, "
+            throw new IllegalStateException( "Unable to instantiate DefaultServiceLocator, "
                 + "make sure that xmvn-core.jar is available on classpath", e );
         }
     }

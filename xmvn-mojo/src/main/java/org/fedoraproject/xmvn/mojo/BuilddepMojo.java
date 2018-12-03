@@ -127,7 +127,7 @@ public class BuilddepMojo
         }
         catch ( ParserConfigurationException | IOException | SAXException ex )
         {
-            throw new RuntimeException( "Couldnt load resource 'common-deps.xml'", ex );
+            throw new IllegalStateException( "Couldn't load resource 'common-deps.xml'", ex );
         }
     }
 

@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.resolver.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.UncheckedIOException;
 import java.nio.channels.FileLock;
 
 /**
@@ -47,7 +48,7 @@ class AtomicFileCounter
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException( e );
         }
     }
 
@@ -107,7 +108,7 @@ class AtomicFileCounter
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException( e );
         }
     }
 
@@ -124,7 +125,7 @@ class AtomicFileCounter
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException( e );
         }
     }
 
@@ -141,7 +142,7 @@ class AtomicFileCounter
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            throw new UncheckedIOException( e );
         }
     }
 }

@@ -69,7 +69,8 @@ class MockAgent
         }
         catch ( InterruptedException e )
         {
-            throw new RuntimeException( "Interrupted when waiting for subprocess to complete", e );
+            throw new IllegalThreadStateException( "Interrupted when waiting for subprocess to complete" + ": "
+                + e.getMessage() );
         }
     }
 }
