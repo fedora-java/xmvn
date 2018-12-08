@@ -67,10 +67,10 @@ public class JavadocMojo
     private ProjectDependenciesResolver resolver;
 
     @Component
-    private MavenSession session;
-
-    @Component
     private Configurator confugurator;
+
+    @Parameter( defaultValue = "${session}", readonly = true )
+    private MavenSession session;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
