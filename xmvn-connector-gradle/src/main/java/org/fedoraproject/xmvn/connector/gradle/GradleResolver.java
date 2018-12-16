@@ -25,6 +25,7 @@ import org.gradle.api.artifacts.ComponentMetadataSupplier;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.component.ComponentArtifactIdentifier;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
+import org.gradle.api.internal.ExperimentalFeatures;
 import org.gradle.api.internal.artifacts.ImmutableModuleIdentifierFactory;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ConfiguredModuleComponentRepository;
 import org.gradle.api.internal.artifacts.ivyservice.ivyresolve.ModuleComponentRepositoryAccess;
@@ -34,10 +35,13 @@ import org.gradle.api.internal.artifacts.ivyservice.resolveengine.artifact.Resol
 import org.gradle.api.internal.artifacts.repositories.AbstractArtifactRepository;
 import org.gradle.api.internal.artifacts.repositories.ResolutionAwareRepository;
 import org.gradle.api.internal.artifacts.repositories.resolver.MetadataFetchingCost;
+import org.gradle.api.internal.attributes.ImmutableAttributesFactory;
 import org.gradle.api.internal.component.ArtifactType;
+import org.gradle.api.internal.model.NamedObjectInstantiator;
 import org.gradle.internal.component.external.model.DefaultModuleComponentArtifactMetadata;
 import org.gradle.internal.component.external.model.DefaultMutableMavenModuleResolveMetadata;
 import org.gradle.internal.component.external.model.FixedComponentArtifacts;
+import org.gradle.internal.component.external.model.MavenDependencyDescriptor;
 import org.gradle.internal.component.external.model.ModuleComponentArtifactMetadata;
 import org.gradle.internal.component.external.model.ModuleComponentResolveMetadata;
 import org.gradle.internal.component.external.model.ModuleDependencyMetadata;
@@ -80,16 +84,27 @@ public class GradleResolver
 {
     public GradleResolver( MetaDataParser<MutableMavenModuleResolveMetadata> pomParser,
                            ImmutableModuleIdentifierFactory moduleIdentifierFactory,
-                           FileResourceRepository fileRepository )
+                           FileResourceRepository fileRepository, ImmutableAttributesFactory immutableAttributesFactory,
+                           NamedObjectInstantiator objectInstantiator, ExperimentalFeatures experimentalFeatures )
     {
         this.pomParser = pomParser;
         this.moduleIdentifierFactory = moduleIdentifierFactory;
         this.fileRepository = fileRepository;
+        this.immutableAttributesFactory = immutableAttributesFactory;
+        this.experimentalFeatures = experimentalFeatures;
+        this.objectInstantiator = objectInstantiator;
+
     }
 
     private MetaDataParser<MutableMavenModuleResolveMetadata> pomParser;
 
     private ImmutableModuleIdentifierFactory moduleIdentifierFactory;
+
+    private ImmutableAttributesFactory immutableAttributesFactory;
+
+    private ExperimentalFeatures experimentalFeatures;
+
+    private NamedObjectInstantiator objectInstantiator;
 
     private FileResourceRepository fileRepository;
 
@@ -219,8 +234,11 @@ public class GradleResolver
                     logger.debug( "Artifact {} found, returning minimal model", artifact3 );
                     ModuleVersionIdentifier mvi =
                         moduleIdentifierFactory.moduleWithVersion( id.getGroup(), id.getModule(), id.getVersion() );
-                    MutableModuleComponentResolveMetadata metaData =
-                        DefaultMutableMavenModuleResolveMetadata.missing( mvi, id );
+                    DefaultMutableMavenModuleResolveMetadata metaData =
+                        new DefaultMutableMavenModuleResolveMetadata( mvi, id,
+                                                                      Collections.<MavenDependencyDescriptor>emptyList(),
+                                                                      immutableAttributesFactory, objectInstantiator,
+                                                                      experimentalFeatures );
                     result.resolved( metaData.asImmutable() );
                     return;
                 }
