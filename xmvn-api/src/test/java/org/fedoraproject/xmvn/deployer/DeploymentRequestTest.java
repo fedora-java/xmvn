@@ -138,13 +138,13 @@ public class DeploymentRequestTest
 
         deployRq.addDependency( dependencyB, dependencyC, dependencyD );
         listedDependencies = deployRq.getDependencies();
-        Assert.assertTrue( listedDependencies.get( 1 ).getExclusions().equals( depExcl ) );
+        Assert.assertTrue( listedDependencies.get( 0 ).getExclusions().equals( depExcl ) );
         deployRq.removeDependency( dependencyB );
 
         // tests adding optional dependency without exclusions
         deployRq.addDependency( dependencyB, true, new ArrayList<>() );
         listedDependencies = deployRq.getDependencies();
-        dsc = listedDependencies.get( 1 );
+        dsc = listedDependencies.get( 0 );
         Assert.assertTrue( dsc.isOptional() );
         Assert.assertTrue( dsc.getExclusions().isEmpty() );
 

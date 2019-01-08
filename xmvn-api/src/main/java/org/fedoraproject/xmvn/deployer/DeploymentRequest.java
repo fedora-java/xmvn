@@ -77,10 +77,9 @@ public class DeploymentRequest
         Iterator<DependencyDescriptor> ddl = dependencies.iterator();
         while ( ddl.hasNext() )
         {
-            DependencyDescriptor dd = ddl.next();
-            if ( dd.getDependencyArtifact().equals( dependencyArtifact ) )
+            if ( ddl.next().getDependencyArtifact().equals( dependencyArtifact ) )
             {
-                dependencies.remove( dd );
+                ddl.remove();
             }
         }
     }
