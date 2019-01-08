@@ -131,7 +131,7 @@ public class ArtifactVisitor
     public FileVisitResult visitFileFailed( Path path, IOException e )
         throws IOException
     {
-        System.err.printf( "WARNING: Failed to access file%n", e );
+        System.err.printf( "WARNING: Failed to access file %s%n", path );
         return FileVisitResult.CONTINUE;
     }
 
