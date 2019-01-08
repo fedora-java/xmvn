@@ -71,7 +71,7 @@ public class InstallerTest
         config.setInstallerSettings( settings );
     }
 
-    class MockArtifactInstaller
+    private static class MockArtifactInstaller
         implements ArtifactInstaller
     {
         @Override

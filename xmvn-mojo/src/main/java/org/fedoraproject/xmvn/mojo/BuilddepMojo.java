@@ -65,7 +65,7 @@ import org.fedoraproject.xmvn.model.impl.DefaultModelProcessor;
 public class BuilddepMojo
     extends AbstractMojo
 {
-    static class NamespacedArtifact
+    private static class NamespacedArtifact
     {
         String namespace;
 
