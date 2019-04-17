@@ -20,13 +20,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.xmlunit.assertj.XmlAssert;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
@@ -153,14 +151,12 @@ public class BasicResolverTest
 
         EasyMock.verify( mockMdResult, mockMdResolver, mockServiceLocator );
 
-        XMLUnit.setIgnoreWhitespace( true );
-        XMLUnit.setIgnoreComments( true );
-        XMLAssert.assertXMLEqual( new StringReader( "<project>\n" + //
+        XmlAssert.assertThat( "<project>\n" + //
             "  <modelVersion>4.0.0</modelVersion>\n" + //
             "  <groupId>gid</groupId>\n" + //
             "  <artifactId>aid</artifactId>\n" + //
             "  <version>ver</version>\n" + //
-            "</project>" ), Files.newBufferedReader( result.getArtifactPath() ) );
+            "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
     @Test
@@ -200,9 +196,7 @@ public class BasicResolverTest
 
         EasyMock.verify( mockMdResult, mockMdResolver, mockServiceLocator );
 
-        XMLUnit.setIgnoreWhitespace( true );
-        XMLUnit.setIgnoreComments( true );
-        XMLAssert.assertXMLEqual( new StringReader( "<project>\n" + //
+        XmlAssert.assertThat( "<project>\n" + //
             "  <modelVersion>4.0.0</modelVersion>\n" + //
             "  <groupId>gid</groupId>\n" + //
             "  <artifactId>aid</artifactId>\n" + //
@@ -220,7 +214,7 @@ public class BasicResolverTest
             "      </exclusions>\n" + //
             "    </dependency>\n" + //
             "  </dependencies>\n" + //
-            "</project>" ), Files.newBufferedReader( result.getArtifactPath() ) );
+            "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
     @Test

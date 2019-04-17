@@ -15,14 +15,13 @@
  */
 package org.fedoraproject.xmvn.model;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import org.xmlunit.assertj.XmlAssert;
 
 import java.io.StringWriter;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,8 +72,7 @@ public class ModelProcessorTest
         ModelVisitor mock = EasyMock.createNiceMock( ModelVisitor.class );
         EasyMock.replay( mock );
         mp.processModel( m, mock );
-        XMLUnit.setIgnoreWhitespace( true );
-        assertXMLEqual( "<?xml version=\"1.0\"?>" + //
+        XmlAssert.assertThat( "<?xml version=\"1.0\"?>" + //
             "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0" + //
             " http://maven.apache.org/xsd/maven-4.0.0.xsd\"" + //
             " xmlns=\"http://maven.apache.org/POM/4.0.0\"" + //
@@ -88,6 +86,6 @@ public class ModelProcessorTest
             "<description/>" + //
             "<url/>" + //
             "<inceptionYear/>" + //
-            "</project>", m2s( m ) );
+            "</project>" ).and( m2s( m ) ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 }

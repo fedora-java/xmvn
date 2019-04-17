@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.custommonkey.xmlunit.XMLUnit.setIgnoreWhitespace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,6 +39,7 @@ import org.junit.rules.TestName;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xmlunit.assertj.XmlAssert;
 
 import org.fedoraproject.xmvn.tools.install.Package;
 
@@ -169,7 +168,6 @@ public abstract class AbstractInstallerTest
     protected void assertMetadataEqual( Path expected, Path actual )
         throws Exception
     {
-        setIgnoreWhitespace( true );
         assertTrue( Files.isRegularFile( actual ) );
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -189,6 +187,6 @@ public abstract class AbstractInstallerTest
         unifyUuids( expectedXml.getElementsByTagName( "uuid" ) );
         unifyUuids( actualXml.getElementsByTagName( "uuid" ) );
 
-        assertXMLEqual( expectedXml, actualXml );
+        XmlAssert.assertThat( expectedXml ).and( actualXml ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 }
