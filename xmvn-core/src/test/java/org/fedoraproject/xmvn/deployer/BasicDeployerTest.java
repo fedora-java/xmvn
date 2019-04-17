@@ -28,8 +28,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
+import org.xmlunit.assertj.XmlAssert;
 import org.junit.Test;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -74,9 +73,7 @@ public class BasicDeployerTest
         req2.setArtifact( new DefaultArtifact( "foo:bar:pom:" ).setPath( Paths.get( "/dev/null" ) ) );
         deployer.deploy( req2 );
 
-        XMLUnit.setIgnoreComments( true );
-        XMLUnit.setIgnoreWhitespace( true );
-        XMLAssert.assertXMLEqual( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + //
+        XmlAssert.assertThat( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + //
             "<metadata xmlns=\"http://fedorahosted.org/xmvn/METADATA/3.0.0\">\n" + //
             "  <artifacts>\n" + //
             "    <artifact>\n" + //
@@ -123,7 +120,7 @@ public class BasicDeployerTest
             "      <path>/dev/null</path>\n" + //
             "    </artifact>\n" + //
             "  </artifacts>\n" + //
-            "</metadata>\n", new String( Files.readAllBytes( plan ) ) );
+            "</metadata>\n" ).and( plan.toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
     @Test
