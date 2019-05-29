@@ -29,6 +29,8 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.InvocationRequest;
+import org.apache.maven.shared.invoker.InvocationRequest.CheckSumPolicy;
+import org.apache.maven.shared.invoker.InvocationRequest.ReactorFailureBehavior;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -179,6 +181,30 @@ public class BisectCliRequest
         return null;
     }
 
+    private static CheckSumPolicy stringToCheckSumPolicy( String policy )
+    {
+        if ( policy == null )
+            return null;
+        if ( policy.equals( "fail" ) )
+            return CheckSumPolicy.Fail;
+        if ( policy.equals( "warn" ) )
+            return CheckSumPolicy.Warn;
+
+        throw new IllegalArgumentException( "Invalid checksum policy selected" );
+    }
+
+    private static String checkSumPolicyToString( CheckSumPolicy policy )
+    {
+        if ( policy == null )
+            return null;
+        if ( policy.equals( CheckSumPolicy.Fail ) )
+            return "fail";
+        if ( policy.equals( CheckSumPolicy.Warn ) )
+            return "warn";
+
+        throw new IllegalArgumentException( "Invalid checksum policy selected" );
+    }
+
     private void setDefaultValues()
     {
         String userHome = System.getProperty( "user.home" );
@@ -194,11 +220,11 @@ public class BisectCliRequest
         alsoMake = request.isAlsoMake();
         alsoMakeDependents = request.isAlsoMakeDependents();
         debug = request.isDebug();
-        failureBehavior = request.getFailureBehavior();
-        globalChecksumPolicy = request.getGlobalChecksumPolicy();
+        failureBehavior = request.getReactorFailureBehavior().getLongOption();
+        globalChecksumPolicy = checkSumPolicyToString( request.getGlobalChecksumPolicy() );
         globalSettings = StringUtils.defaultString( request.getGlobalSettingsFile() );
         goals = request.getGoals();
-        batchMode = !request.isInteractive();
+        batchMode = request.isBatchMode();
         javaHome = fileToString( request.getJavaHome() );
         localRepository = fileToString( request.getLocalRepositoryDirectory( null ) );
         mavenOpts = request.getMavenOpts();
@@ -223,11 +249,11 @@ public class BisectCliRequest
         request.setAlsoMake( alsoMake );
         request.setAlsoMakeDependents( alsoMakeDependents );
         request.setDebug( debug );
-        request.setFailureBehavior( failureBehavior );
-        request.setGlobalChecksumPolicy( globalChecksumPolicy );
+        request.setReactorFailureBehavior( ReactorFailureBehavior.valueOfByLongOption( failureBehavior ) );
+        request.setGlobalChecksumPolicy( stringToCheckSumPolicy( globalChecksumPolicy ) );
         request.setGlobalSettingsFile( stringToFile( globalSettings ) );
         request.setGoals( goals );
-        request.setInteractive( !batchMode );
+        request.setBatchMode( batchMode );
         request.setJavaHome( stringToFile( javaHome ) );
         request.setLocalRepositoryDirectory( stringToFile( localRepository ) );
         request.setMavenOpts( mavenOpts );

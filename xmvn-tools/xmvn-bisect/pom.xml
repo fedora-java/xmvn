@@ -49,6 +49,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+	<dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
