@@ -94,23 +94,28 @@ class DefaultMetadataResult
             }
 
             ArtifactMetadata otherMetadata = artifactMap.get( artifact );
-            if ( otherMetadata != null )
-            {
-                duplicateArtifacts.add( artifact );
 
-                if ( ignoreDuplicates )
-                {
-                    artifactMap.remove( artifact );
-                    logger.warn( "Ignoring metadata for artifact {} as it has duplicate metadata", artifact );
-                    continue;
-                }
-                else
-                {
-                    logger.warn( "Duplicate metadata for artifact {}", artifact );
-                }
+            if ( otherMetadata == null )
+            {
+                artifactMap.put( artifact, metadata );
+                continue;
             }
 
-            artifactMap.put( artifact, metadata );
+            duplicateArtifacts.add( artifact );
+
+            if ( ignoreDuplicates )
+            {
+                artifactMap.remove( artifact );
+                logger.warn( "Ignoring metadata for artifact {} as it has duplicate metadata", artifact );
+                continue;
+            }
+
+            logger.warn( "Duplicate metadata for artifact {}", artifact );
+
+            if ( otherMetadata.getNamespace().isEmpty() || !metadata.getNamespace().isEmpty() )
+            {
+                artifactMap.put( artifact, metadata );
+            }
         }
     }
 
