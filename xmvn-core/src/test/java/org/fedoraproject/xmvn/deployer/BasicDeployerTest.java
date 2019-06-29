@@ -74,7 +74,7 @@ public class BasicDeployerTest
         deployer.deploy( req2 );
 
         XmlAssert.assertThat( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + //
-            "<metadata xmlns=\"http://fedorahosted.org/xmvn/METADATA/3.0.0\">\n" + //
+            "<metadata xmlns=\"http://fedorahosted.org/xmvn/METADATA/3.2.0\">\n" + //
             "  <artifacts>\n" + //
             "    <artifact>\n" + //
             "      <groupId>g</groupId>\n" + //
