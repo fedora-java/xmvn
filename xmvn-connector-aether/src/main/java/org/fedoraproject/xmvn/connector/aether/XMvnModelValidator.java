@@ -34,7 +34,6 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.config.BuildSettings;
 import org.fedoraproject.xmvn.config.Configurator;
 
 /**
@@ -61,19 +60,37 @@ public class XMvnModelValidator
 
     void customizeModel( Model model )
     {
-        BuildSettings settings = configurator.getConfiguration().getBuildSettings();
         Build build = model.getBuild() != null ? model.getBuild() : new Build();
         List<Dependency> dependencies = model.getDependencies();
         List<Extension> extensions = build.getExtensions();
         List<Plugin> plugins = build.getPlugins();
 
-        if ( settings.isSkipTests() )
-            dependencies.removeIf( d -> StringUtils.equals( d.getScope(), "test" ) );
+        dependencies.removeIf( this::isSkippedDependency );
+        plugins.removeIf( this::isSkippedPlugin );
 
         dependencies.forEach( d -> d.setVersion( replaceVersion( d.getGroupId(), d.getArtifactId(),
                                                                  d.getVersion() ) ) );
         extensions.forEach( e -> e.setVersion( replaceVersion( e.getGroupId(), e.getArtifactId(), e.getVersion() ) ) );
         plugins.forEach( p -> p.setVersion( replaceVersion( p.getGroupId(), p.getArtifactId(), p.getVersion() ) ) );
+    }
+
+    private boolean matches( String field, String pattern )
+    {
+        return StringUtils.isEmpty( pattern ) || StringUtils.equals( field, pattern );
+    }
+
+    private boolean isSkippedDependency( Dependency d )
+    {
+        return matches( d.getScope(), "test" ) && configurator.getConfiguration().getBuildSettings().isSkipTests();
+    }
+
+    private boolean isSkippedPlugin( Plugin p )
+    {
+        return configurator.getConfiguration().getBuildSettings().getSkippedPlugins().stream() //
+                           .anyMatch( sp -> matches( p.getGroupId(), sp.getGroupId() )
+                               && matches( p.getArtifactId(), sp.getArtifactId() )
+                               && StringUtils.isEmpty( sp.getExtension() ) && StringUtils.isEmpty( sp.getClassifier() )
+                               && matches( p.getVersion(), sp.getVersion() ) );
     }
 
     private String replaceVersion( String groupId, String artifactId, String version )

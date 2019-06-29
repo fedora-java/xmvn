@@ -49,6 +49,15 @@
           <description>Whether compilation and execution of unit and integration tests should be skipped.</description>
           <type>Boolean</type>
         </field>
+        <field>
+          <name>skippedPlugins</name>
+          <version>3.2.0+</version>
+          <description>List of plugins which will not be executed during build.</description>
+          <association xml.tagName="plugin" java.adder="false">
+            <type>Artifact</type>
+            <multiplicity>*</multiplicity>
+          </association>
+        </field>
       </fields>
     </class>
 

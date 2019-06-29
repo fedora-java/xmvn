@@ -40,6 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 
 /**
@@ -215,5 +216,32 @@ public class ModelValidatorTest
         EasyMock.verify( model );
 
         assertEquals( 0, dl.size() );
+    }
+
+    @Test
+    public void testSkippedPlugins()
+        throws Exception
+    {
+        Artifact sp1 = new Artifact();
+        sp1.setArtifactId( "maven-compiler-plugin" );
+        configurator.getConfiguration().getBuildSettings().getSkippedPlugins().add( sp1 );
+        Artifact sp2 = new Artifact();
+        sp2.setGroupId( "org.apache.maven.plugins" );
+        sp2.setVersion( "starter edition" );
+        configurator.getConfiguration().getBuildSettings().getSkippedPlugins().add( sp2 );
+
+        EasyMock.expect( build.getExtensions() ).andReturn( new ArrayList<>() ).atLeastOnce();
+        EasyMock.expect( build.getPlugins() ).andReturn( pl ).atLeastOnce();
+        EasyMock.expect( model.getBuild() ).andReturn( build ).atLeastOnce();
+        EasyMock.expect( model.getDependencies() ).andReturn( new ArrayList<>() ).atLeastOnce();
+        EasyMock.replay( build, model );
+
+        ( (XMvnModelValidator) validator ).customizeModel( model );
+        EasyMock.verify( model );
+
+        assertEquals( 1, pl.size() );
+        Plugin plugin = pl.iterator().next();
+        assertEquals( "foobar", plugin.getGroupId() );
+        assertEquals( "bar", plugin.getArtifactId() );
     }
 }
