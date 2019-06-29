@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
@@ -34,26 +35,34 @@ import org.fedoraproject.xmvn.metadata.MetadataResult;
  */
 public class SubstCli
 {
-    private final List<String> configuredMetadataRepos;
-
     private MetadataResolver metadataResolver;
+
+    private ResolverSettings resolverSettings;
 
     public SubstCli( Configurator configurator, MetadataResolver metadataResolver )
     {
         this.metadataResolver = metadataResolver;
-        configuredMetadataRepos = configurator.getConfiguration().getResolverSettings().getMetadataRepositories();
+        resolverSettings = configurator.getConfiguration().getResolverSettings();
+    }
+
+    private MetadataResult resolveMetadata( List<String> repos )
+    {
+        MetadataRequest request = new MetadataRequest( repos );
+        request.setIgnoreDuplicates( resolverSettings.isIgnoreDuplicateMetadata() );
+        MetadataResult result = metadataResolver.resolveMetadata( request );
+        return result;
     }
 
     private void run( SubstCliRequest cliRequest )
     {
-        List<MetadataResult> metadataResolvers = new ArrayList<>();
+        List<MetadataResult> metadataResults = new ArrayList<>();
 
         if ( cliRequest.getRoot() != null )
         {
             List<String> metadataRepos = new ArrayList<>();
             Path root = Paths.get( cliRequest.getRoot() );
 
-            for ( String configuredRepo : configuredMetadataRepos )
+            for ( String configuredRepo : resolverSettings.getMetadataRepositories() )
             {
                 Path repoPath = Paths.get( configuredRepo );
                 if ( repoPath.isAbsolute() )
@@ -62,12 +71,12 @@ public class SubstCli
                 }
             }
 
-            metadataResolvers.add( metadataResolver.resolveMetadata( new MetadataRequest( metadataRepos ) ) );
+            metadataResults.add( resolveMetadata( metadataRepos ) );
         }
 
-        metadataResolvers.add( metadataResolver.resolveMetadata( new MetadataRequest( configuredMetadataRepos ) ) );
+        metadataResults.add( resolveMetadata( resolverSettings.getMetadataRepositories() ) );
 
-        ArtifactVisitor visitor = new ArtifactVisitor( cliRequest.isDebug(), metadataResolvers );
+        ArtifactVisitor visitor = new ArtifactVisitor( cliRequest.isDebug(), metadataResults );
 
         visitor.setTypes( cliRequest.getTypes() );
         visitor.setFollowSymlinks( cliRequest.isFollowSymlinks() );
