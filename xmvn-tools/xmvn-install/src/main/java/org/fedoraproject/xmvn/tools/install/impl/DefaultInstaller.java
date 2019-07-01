@@ -275,6 +275,11 @@ public class DefaultInstaller
                 dependency.setNamespace( resolvedMetadata.getNamespace() );
                 return;
             }
+        }
+
+        for ( String version : Arrays.asList( dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION ) )
+        {
+            Artifact dependencyArtifact = dependency.toArtifact().setVersion( version );
 
             // Next try system artifact resolver
             ResolutionRequest request = new ResolutionRequest( dependencyArtifact );

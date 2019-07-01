@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://fedorahosted.org/xmvn/METADATA/3.2.0">
+  <uuid>bfb4d47f-4bf2-49bc-bd85-1d3528e97746</uuid>
+  <artifacts>
+    <artifact>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+      <version>3.3.2</version>
+      <path>???example.jar</path>
+    </artifact>
+    <artifact>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <version>3.3.2</version>
+      <path>???example.jar</path>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.maven.wagon</groupId>
+          <artifactId>wagon-provider-api</artifactId>
+          <requestedVersion>3.3.2</requestedVersion>
+        </dependency>
+      </dependencies>
+    </artifact>
+  </artifacts>
+</metadata>
