@@ -201,6 +201,15 @@ public class InstallerTest
     }
 
     @Test
+    public void testSelfRequires()
+        throws Exception
+    {
+        install( "self-requires.xml" );
+        assertMetadataEqual( getResource( "self-requires-resolved.xml" ),
+                             installRoot.resolve( "usr/share/maven-metadata/test-pkg.xml" ) );
+    }
+
+    @Test
     public void testSubpackage()
         throws Exception
     {
