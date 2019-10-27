@@ -15,7 +15,6 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -35,7 +34,7 @@ public class DependencyDescriptor
     {
         this.dependencyArtifact = dependencyArtifact;
         this.optional = optional;
-        this.exclusions = Collections.unmodifiableList( exclusions );
+        this.exclusions = List.copyOf( exclusions );
     }
 
     public Artifact getDependencyArtifact()

@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.mojo;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +53,7 @@ class BuildDependencyVisitor
 
     public Set<Artifact> getArtifacts()
     {
-        return Collections.unmodifiableSet( artifacts );
+        return Set.copyOf( artifacts );
     }
 
     private boolean isExternal( InputLocation location )

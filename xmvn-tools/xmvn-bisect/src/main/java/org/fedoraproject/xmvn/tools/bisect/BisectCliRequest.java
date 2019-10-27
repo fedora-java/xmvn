@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.tools.bisect;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -279,7 +278,7 @@ public class BisectCliRequest
 
     public Map<String, String> getSystemProperties()
     {
-        return Collections.unmodifiableMap( defines );
+        return Map.copyOf( defines );
     }
 
     public boolean useBinarySearch()
