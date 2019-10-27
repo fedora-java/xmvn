@@ -57,23 +57,8 @@ public class DeployTest
         throws Exception
     {
         // deployment results
-        deployed = new DeploymentResult()
-        {
-            @Override
-            public Exception getException()
-            {
-                return null;
-            }
-        };
-
-        deployFail = new DeploymentResult()
-        {
-            @Override
-            public Exception getException()
-            {
-                return new Exception( "Tested Exception" );
-            }
-        };
+        deployed = () -> null;
+        deployFail = () -> new Exception( "Tested Exception" );
 
         artifact = EasyMock.createMock( Artifact.class );
         mri = EasyMock.createMock( ModuleRevisionId.class );
