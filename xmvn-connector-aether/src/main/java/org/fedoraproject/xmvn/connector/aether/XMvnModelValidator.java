@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.connector.aether;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
@@ -76,7 +77,7 @@ public class XMvnModelValidator
 
     private boolean matches( String field, String pattern )
     {
-        return StringUtils.isEmpty( pattern ) || StringUtils.equals( field, pattern );
+        return StringUtils.isEmpty( pattern ) || Objects.equals( field, pattern );
     }
 
     private boolean isSkippedDependency( Dependency d )
