@@ -92,7 +92,7 @@ public class DefaultResolver
         cacheManager = new CacheManager();
 
         String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
-        bisectCounter = ( bisectCounterPath == null || bisectCounterPath.isEmpty() ) ? null
+        bisectCounter = bisectCounterPath == null || bisectCounterPath.isEmpty() ? null
                         : new AtomicFileCounter( bisectCounterPath );
     }
 
