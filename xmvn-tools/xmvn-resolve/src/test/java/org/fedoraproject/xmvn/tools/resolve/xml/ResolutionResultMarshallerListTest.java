@@ -15,11 +15,13 @@
  */
 package org.fedoraproject.xmvn.tools.resolve.xml;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.xmlunit.assertj.XmlAssert;
 
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
@@ -32,7 +34,14 @@ public class ResolutionResultMarshallerListTest
     public void testEmpty()
         throws Exception
     {
-        new ResolutionResultListMarshaller( Arrays.asList( new ResolutionResult[] { null } ) ).marshal( System.out );
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        new ResolutionResultListMarshaller( Arrays.asList( new ResolutionResult[] { null } ) ).marshal( bos );
+
+        XmlAssert.assertThat( "<results></results>" ) //
+                 .and( bos.toString() ) //
+                 .ignoreComments() //
+                 .ignoreWhitespace() //
+                 .areIdentical();
     }
 
     @Test
@@ -65,7 +74,34 @@ public class ResolutionResultMarshallerListTest
         temp.setProvider( "provider3" );
         list.add( new ResolutionResultBean.Adapter().unmarshal( temp ) );
 
-        new ResolutionResultListMarshaller( list ).marshal( System.out );
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        new ResolutionResultListMarshaller( list ).marshal( bos );
+
+        XmlAssert.assertThat( "" + //
+            "<results>" + //
+            "  <result>" + //
+            "    <artifactPath>/dev/null</artifactPath>" + //
+            "    <provider>provider1</provider>" + //
+            "    <compatVersion>comp1</compatVersion>" + //
+            "    <namespace>namespace1</namespace>" + //
+            "  </result>" + //
+            "  <result>" + //
+            "    <artifactPath>/dev/null</artifactPath>" + //
+            "    <provider>provider2</provider>" + //
+            "    <compatVersion>comp2</compatVersion>" + //
+            "    <namespace>namespace2</namespace>" + //
+            "  </result>" + //
+            "  <result>" + //
+            "    <artifactPath>/dev/null</artifactPath>" + //
+            "    <provider>provider3</provider>" + //
+            "    <compatVersion>comp3</compatVersion>" + //
+            "    <namespace>namespace3</namespace>" + //
+            "  </result>" + //
+            "</results>" ) //
+                 .and( bos.toString() ) //
+                 .ignoreComments() //
+                 .ignoreWhitespace() //
+                 .areIdentical();
     }
 
     @Test
@@ -73,6 +109,13 @@ public class ResolutionResultMarshallerListTest
         throws Exception
     {
         ResolutionResult rr = new ResolutionResultBean.Adapter().unmarshal( new ResolutionResultBean() );
-        new ResolutionResultListMarshaller( Arrays.asList( new ResolutionResult[] { rr } ) ).marshal( System.out );
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        new ResolutionResultListMarshaller( Arrays.asList( new ResolutionResult[] { rr } ) ).marshal( bos );
+
+        XmlAssert.assertThat( "<results><result/></results>" ) //
+                 .and( bos.toString() ) //
+                 .ignoreComments() //
+                 .ignoreWhitespace() //
+                 .areIdentical();
     }
 }
