@@ -68,7 +68,7 @@ public class ResolutionRequestListUnmarshaller
                             switch ( startName )
                             {
                                 case "requests":
-                                    resolutionRequests = new ArrayList<ResolutionRequest>();
+                                    resolutionRequests = new ArrayList<>();
                                     break;
                                 case "request":
                                     resolutionRequests.add( new ResolutionRequestUnmarshaller( eventReader ).unmarshal() );
