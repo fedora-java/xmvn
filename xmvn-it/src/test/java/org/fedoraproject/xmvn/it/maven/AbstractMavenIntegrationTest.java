@@ -114,7 +114,7 @@ public abstract class AbstractMavenIntegrationTest
             Thread.currentThread().setContextClassLoader( bootClassLoader );
 
             Class<?> launcherClass = bootClassLoader.loadClass( "org.codehaus.plexus.classworlds.launcher.Launcher" );
-            Object launcher = launcherClass.newInstance();
+            Object launcher = launcherClass.getConstructor().newInstance();
 
             try ( InputStream config = Files.newInputStream( Paths.get( "../../src/test/resources/m2.conf" ) ) )
             {
