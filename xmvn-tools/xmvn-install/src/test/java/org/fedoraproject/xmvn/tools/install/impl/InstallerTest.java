@@ -19,18 +19,15 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Artifact;
@@ -51,24 +48,23 @@ import org.fedoraproject.xmvn.tools.install.RegularFile;
 /**
  * @author Michael Simacek
  */
-@RunWith( EasyMockRunner.class )
 public class InstallerTest
     extends AbstractInstallerTest
 {
     private final Configuration config = new Configuration();
 
-    @Mock
     private Configurator configuratorMock;
 
-    @Mock
     private Resolver resolverMock;
 
-    @Before
+    @BeforeEach
     public void setUpSettings()
     {
         InstallerSettings settings = new InstallerSettings();
         settings.setMetadataDir( "usr/share/maven-metadata" );
         config.setInstallerSettings( settings );
+        configuratorMock = EasyMock.createMock( Configurator.class );
+        resolverMock = EasyMock.createMock( Resolver.class );
     }
 
     private static class MockArtifactInstaller

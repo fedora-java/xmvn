@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.bisect;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -27,24 +27,20 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class BisectCliTest
 {
-    @Rule
-    public TestName testName = new TestName();
-
-    @Before
-    public void setUp()
+    @BeforeEach
+    public void setUp( TestInfo testInfo )
     {
         Path resDir = Paths.get( "../../src/test/resources" ).toAbsolutePath();
-        System.setProperty( "xmvn.home", resDir.resolve( testName.getMethodName() ).toString() );
+        System.setProperty( "xmvn.home", resDir.resolve( testInfo.getTestMethod().get().getName() ).toString() );
     }
 
     private List<String> run( String... args )

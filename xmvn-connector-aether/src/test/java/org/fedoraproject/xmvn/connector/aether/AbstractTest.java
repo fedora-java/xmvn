@@ -20,7 +20,7 @@ import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * @author Mikolaj Izdebski
@@ -39,7 +39,7 @@ public abstract class AbstractTest
      * 
      * @throws Exception
      */
-    @Before
+    @BeforeEach
     public void setupPlexusContainer()
         throws Exception
     {

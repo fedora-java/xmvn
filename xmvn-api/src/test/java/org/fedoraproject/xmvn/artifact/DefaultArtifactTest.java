@@ -15,16 +15,17 @@
  */
 package org.fedoraproject.xmvn.artifact;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Mikolaj Izdebski
@@ -92,61 +93,67 @@ public class DefaultArtifactTest
     /**
      * Test one-argument constructor with invalid coordinates.
      */
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testInvalidCoordinates()
         throws Exception
     {
-        new DefaultArtifact( "foo" );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> new DefaultArtifact( "foo" ) );
     }
 
     /**
      * Test one-argument constructor with too many fields in coordinates.
      */
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testTooManyFields()
         throws Exception
     {
-        new DefaultArtifact( "gid:aid:ext:cla:ver:extra" );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> new DefaultArtifact( "gid:aid:ext:cla:ver:extra" ) );
     }
 
     /**
      * Test two-argument constructor with groupId as null pointer.
      */
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testGroupIdNull()
         throws Exception
     {
-        new DefaultArtifact( null, "" );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> new DefaultArtifact( null, "" ) );
     }
 
     /**
      * Test two-argument constructor with artifactId as null pointer.
      */
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testArtifactIdNull()
         throws Exception
     {
-        new DefaultArtifact( "gid", null );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> new DefaultArtifact( "gid", null ) );
     }
 
     /**
      * Test two-argument constructor with groupId as null pointer.
      */
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testGroupIdEmpty()
         throws Exception
     {
-        new DefaultArtifact( "", "aid" );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> new DefaultArtifact( "", "aid" ) );
     }
 
     /**
      * Test two-argument constructor with artifactId as null pointer.
      */
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testArtifactIdEmpty()
         throws Exception
     {
-        new DefaultArtifact( "gid", "" );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> new DefaultArtifact( "gid", "" ) );
     }
 
     /**

@@ -15,22 +15,18 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
+import java.nio.file.Path;
+
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * @author Roman Vais
  */
-@RunWith( EasyMockRunner.class )
 public class MojoExecutionListenerTest
 {
     private interface MojoBeanProperty
@@ -52,26 +48,20 @@ public class MojoExecutionListenerTest
 
     private XMvnMojoExecutionListener listener;
 
-    @Mock( type = MockType.STRICT )
     // MojoBeanProperty interface extends Mojo interface, so this is ok (and required).
     private MojoBeanProperty mojo;
 
-    @Mock( type = MockType.STRICT )
     private MojoExecution exec;
 
-    @Mock( type = MockType.STRICT )
     private MavenProject project;
 
-    @Rule
-    public TemporaryFolder tempDir = new TemporaryFolder();
-
-    @Before
-    public void setUp()
+    @BeforeEach
+    public void setUp( @TempDir Path tempDir )
         throws Exception
     {
         listener = new XMvnMojoExecutionListener();
 
-        listener.setXmvnStateDir( tempDir.getRoot().toPath() );
+        listener.setXmvnStateDir( tempDir );
 
         // MojoBeanProperty interface extends Mojo interface, so this is ok (and required).
         mojo = EasyMock.createMock( MojoBeanProperty.class );

@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -22,16 +24,12 @@ import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
 import org.easymock.EasyMock;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.easymock.TestSubject;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 
@@ -40,28 +38,24 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  */
 public class PluginVersionResolverTest
 {
-    @TestSubject
     private PluginVersionResolver resolver;
 
-    @Mock( type = MockType.STRICT )
     private PluginVersionRequest rq;
 
-    @Mock( type = MockType.STRICT )
     private RepositorySystemSession session;
 
-    @Mock( type = MockType.STRICT )
     private WorkspaceReader reader;
 
     private WorkspaceRepository repo;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         resolver = new XMvnPluginVersionResolver();
 
-        rq = EasyMock.createMock( PluginVersionRequest.class );
-        session = EasyMock.createMock( RepositorySystemSession.class );
-        reader = EasyMock.createMock( WorkspaceReader.class );
+        rq = EasyMock.createStrictMock( PluginVersionRequest.class );
+        session = EasyMock.createStrictMock( RepositorySystemSession.class );
+        reader = EasyMock.createStrictMock( WorkspaceReader.class );
         repo = new WorkspaceRepository();
     }
 
@@ -69,7 +63,7 @@ public class PluginVersionResolverTest
     public void testInjection()
         throws Exception
     {
-        Assert.assertTrue( this.resolver instanceof XMvnPluginVersionResolver );
+        assertTrue( this.resolver instanceof XMvnPluginVersionResolver );
     }
 
     @Test
@@ -91,8 +85,8 @@ public class PluginVersionResolverTest
         PluginVersionResult result;
 
         result = resolver.resolve( rq );
-        Assert.assertTrue( result.getRepository().equals( repo ) );
-        Assert.assertTrue( result.getVersion().equals( Artifact.DEFAULT_VERSION ) );
+        assertTrue( result.getRepository().equals( repo ) );
+        assertTrue( result.getVersion().equals( Artifact.DEFAULT_VERSION ) );
 
         EasyMock.verify( rq, session, reader );
 
@@ -113,8 +107,8 @@ public class PluginVersionResolverTest
         EasyMock.replay( rq, session, reader );
 
         result = resolver.resolve( rq );
-        Assert.assertTrue( result.getRepository().equals( repo ) );
-        Assert.assertTrue( result.getVersion().equals( "1.2.3" ) );
+        assertTrue( result.getRepository().equals( repo ) );
+        assertTrue( result.getVersion().equals( "1.2.3" ) );
 
         EasyMock.verify( rq, session, reader );
     }

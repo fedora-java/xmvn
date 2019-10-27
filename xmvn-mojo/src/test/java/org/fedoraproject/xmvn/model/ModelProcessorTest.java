@@ -15,16 +15,15 @@
  */
 package org.fedoraproject.xmvn.model;
 
-import org.xmlunit.assertj.XmlAssert;
-
 import java.io.StringWriter;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.xmlunit.assertj.XmlAssert;
 
 import org.fedoraproject.xmvn.model.impl.DefaultModelProcessor;
 
@@ -35,7 +34,7 @@ public class ModelProcessorTest
 {
     private ModelProcessor mp;
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {

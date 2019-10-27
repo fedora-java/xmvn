@@ -15,36 +15,36 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.TestSubject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * @author Roman Vais
  */
-
-@RunWith( EasyMockRunner.class )
 public class DeploymentRequestTest
 {
     private ArrayList<Artifact> depExcl;
 
     private Artifact artifact, dependencyA, dependencyB, dependencyC, dependencyD;
 
-    @TestSubject
     private final DeploymentRequest deployRq = new DeploymentRequest();
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         artifact = EasyMock.createMock( Artifact.class );
@@ -71,32 +71,32 @@ public class DeploymentRequestTest
         // tests setting an artifact
         deployRq.setArtifact( artifact );
         Artifact gained = deployRq.getArtifact();
-        Assert.assertSame( artifact, gained );
+        assertSame( artifact, gained );
 
         deployRq.setArtifact( null );
         gained = deployRq.getArtifact();
-        Assert.assertSame( gained, null );
+        assertSame( gained, null );
 
         // tests equality of empty DeploymentRequests
         DeploymentRequest extraRq = new DeploymentRequest();
-        Assert.assertTrue( deployRq.equals( extraRq ) );
+        assertTrue( deployRq.equals( extraRq ) );
 
         // tests inequality if one of the requests doesn't have artifact
         extraRq.setArtifact( artifact );
-        Assert.assertFalse( deployRq.equals( extraRq ) );
+        assertFalse( deployRq.equals( extraRq ) );
 
         extraRq.setArtifact( null );
         deployRq.setArtifact( artifact );
-        Assert.assertFalse( deployRq.equals( extraRq ) );
+        assertFalse( deployRq.equals( extraRq ) );
 
         // tests if requests with the same artifact are considered equal
         extraRq.setArtifact( artifact );
-        Assert.assertTrue( deployRq.equals( extraRq ) );
+        assertTrue( deployRq.equals( extraRq ) );
 
         // test remaining cases
-        Assert.assertFalse( deployRq.equals( null ) );
-        Assert.assertFalse( deployRq.equals( new Object() ) );
-        Assert.assertTrue( deployRq.equals( deployRq ) );
+        assertFalse( deployRq.equals( null ) );
+        assertFalse( deployRq.equals( new Object() ) );
+        assertTrue( deployRq.equals( deployRq ) );
         EasyMock.verify( artifact, dependencyA, dependencyB, dependencyC, dependencyD );
     }
 
@@ -117,7 +117,7 @@ public class DeploymentRequestTest
 
         if ( dsc.getDependencyArtifact() != ( dependencyA ) || listedDependencies.size() != 1 )
         {
-            Assert.fail( "Added dependency is not in list or there are more items." );
+            fail( "Added dependency is not in list or there are more items." );
         }
 
         // tests removal of dependency
@@ -127,26 +127,26 @@ public class DeploymentRequestTest
 
         if ( listedDependencies.size() > 1 )
         {
-            Assert.fail( "Dependency was not removed from the list." );
+            fail( "Dependency was not removed from the list." );
         }
 
         // tests adding dependency with exclusions
         deployRq.addDependency( dependencyB, depExcl );
         listedDependencies = deployRq.getDependencies();
-        Assert.assertTrue( listedDependencies.get( 1 ).getExclusions().equals( depExcl ) );
+        assertTrue( listedDependencies.get( 1 ).getExclusions().equals( depExcl ) );
         deployRq.removeDependency( dependencyB );
 
         deployRq.addDependency( dependencyB, dependencyC, dependencyD );
         listedDependencies = deployRq.getDependencies();
-        Assert.assertTrue( listedDependencies.get( 0 ).getExclusions().equals( depExcl ) );
+        assertTrue( listedDependencies.get( 0 ).getExclusions().equals( depExcl ) );
         deployRq.removeDependency( dependencyB );
 
         // tests adding optional dependency without exclusions
         deployRq.addDependency( dependencyB, true, new ArrayList<>() );
         listedDependencies = deployRq.getDependencies();
         dsc = listedDependencies.get( 0 );
-        Assert.assertTrue( dsc.isOptional() );
-        Assert.assertTrue( dsc.getExclusions().isEmpty() );
+        assertTrue( dsc.isOptional() );
+        assertTrue( dsc.getExclusions().isEmpty() );
 
         EasyMock.verify( artifact, dependencyA, dependencyB, dependencyC, dependencyD );
     }
@@ -159,20 +159,19 @@ public class DeploymentRequestTest
         throws Exception
     {
         // no properties should be present
-        Assert.assertTrue( "Hash map of properties is not empty before adding first one.",
-                           deployRq.getProperties().isEmpty() );
+        assertTrue( deployRq.getProperties().isEmpty(),
+                    "Hash map of properties is not empty before adding first one." );
 
         // tests adding and getting new properties
         deployRq.addProperty( "key", null );
-        Assert.assertTrue( "Property has been added even thou it's value is a null.",
-                           deployRq.getProperties().isEmpty() );
+        assertTrue( deployRq.getProperties().isEmpty(), "Property has been added even thou it's value is a null." );
 
         deployRq.addProperty( "key", "value" );
-        Assert.assertTrue( deployRq.getProperty( "key" ).equals( "value" ) );
+        assertEquals( "value", deployRq.getProperty( "key" ) );
 
         // tests removing property
         deployRq.removeProperty( "key" );
-        Assert.assertFalse( "Poperty was not removed.", deployRq.getProperty( "key" ) != null );
+        assertNull( deployRq.getProperty( "key" ), "Poperty was not removed." );
 
         EasyMock.verify( artifact, dependencyA, dependencyB, dependencyC, dependencyD );
     }
@@ -186,7 +185,7 @@ public class DeploymentRequestTest
     {
         Path planPath = Paths.get( "/tmp/foo/bar/plan" );
         deployRq.setPlanPath( planPath );
-        Assert.assertTrue( deployRq.getPlanPath().equals( planPath ) );
+        assertEquals( planPath, deployRq.getPlanPath() );
 
         EasyMock.verify( artifact, dependencyA, dependencyB, dependencyC, dependencyD );
     }

@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.it.tool;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,8 +25,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj.XmlAssert;
 
 /**
@@ -130,7 +130,7 @@ public class ResolverIntegrationTest
         XmlAssert.assertThat( expectedOutput ).and( getStdout().collect( Collectors.joining( "\n" ) ) ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testResolveRawTwo()
         throws Exception

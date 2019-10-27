@@ -29,8 +29,8 @@ import org.apache.ivy.Ivy;
 import org.apache.ivy.core.report.ArtifactDownloadReport;
 import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.settings.IvySettings;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -60,7 +60,7 @@ public class Bug1127804Test
 
     private ReportVisitor visitor;
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {

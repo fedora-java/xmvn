@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.it.maven;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +35,7 @@ import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.fedoraproject.xmvn.it.AbstractIntegrationTest;
 
@@ -49,7 +49,7 @@ public abstract class AbstractMavenIntegrationTest
 {
     private boolean expectFailure;
 
-    @Before
+    @BeforeEach
     public void expectSuccess()
     {
         expectFailure = false;

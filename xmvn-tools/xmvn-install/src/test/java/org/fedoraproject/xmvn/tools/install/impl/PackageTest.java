@@ -15,13 +15,14 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.File;
@@ -82,7 +83,7 @@ public class PackageTest
         assertDescriptorEquals( pkg );
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testSameFileTwice()
         throws Exception
     {
@@ -90,7 +91,8 @@ public class PackageTest
         Package pkg = new Package( "my-id" );
         assertEquals( "my-id", pkg.getId() );
         pkg.addFile( jarfile );
-        pkg.addFile( jarfile );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> pkg.addFile( jarfile ) );
     }
 
     @Test

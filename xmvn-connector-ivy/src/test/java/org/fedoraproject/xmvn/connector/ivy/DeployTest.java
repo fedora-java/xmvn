@@ -18,22 +18,17 @@ package org.fedoraproject.xmvn.connector.ivy;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.settings.IvySettings;
 import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.easymock.TestSubject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
@@ -43,8 +38,6 @@ import org.fedoraproject.xmvn.deployer.DeploymentResult;
  * @author Mikolaj Izdebski
  * @author Roman Vais
  */
-
-@RunWith( EasyMockRunner.class )
 public class DeployTest
 {
     private DeploymentResult deployed, deployFail;
@@ -55,17 +48,12 @@ public class DeployTest
 
     private ModuleRevisionId mri;
 
-    @TestSubject
-    private final IvyResolver ivyResolver = new IvyResolver();
+    private IvyResolver ivyResolver;
 
-    @Mock( type = MockType.STRICT )
     private Deployer deployer;
 
-    @Rule
-    public TemporaryFolder tempDir = new TemporaryFolder();
-
-    @Before
-    public void setUp()
+    @BeforeEach
+    public void setUp( @TempDir Path tempDir )
         throws Exception
     {
         // deployment results
@@ -87,17 +75,20 @@ public class DeployTest
             }
         };
 
+        artifact = EasyMock.createMock( Artifact.class );
+        mri = EasyMock.createMock( ModuleRevisionId.class );
+        deployer = EasyMock.createStrictMock( Deployer.class );
+
         // prepare all the resources needed for testing; ivy itself
+        ivyResolver = new IvyResolver();
         ivyResolver.setSettings( new IvySettings() );
+        ivyResolver.setDeployer( deployer );
 
         // artifact xml files
-        fileValid = new File( tempDir.getRoot(), "bz1127804.ivy" );
+        fileValid = new File( tempDir.toString(), "bz1127804.ivy" );
         // copr ivy.xml file to temp dir, so that pom file doesn't get created in resources dir
         Files.copy( Paths.get( "src/test/resources/bz1127804.ivy" ), fileValid.toPath() );
         fileBroken = new File( "/tmp/foo/bar/foobar" );
-
-        artifact = EasyMock.createMock( Artifact.class );
-        mri = EasyMock.createMock( ModuleRevisionId.class );
     }
 
     /**
@@ -199,7 +190,7 @@ public class DeployTest
         try
         {
             ivyResolver.publish( artifact, fileBroken, true );
-            Assert.fail();
+            Assertions.fail();
         }
         catch ( Exception e )
         {
@@ -252,7 +243,7 @@ public class DeployTest
         try
         {
             ivyResolver.publish( artifact, fileBroken, true );
-            Assert.fail();
+            Assertions.fail();
         }
         catch ( IOException e )
         {
@@ -284,7 +275,7 @@ public class DeployTest
         try
         {
             ivyResolver.publish( artifact, fileValid, true );
-            Assert.fail();
+            Assertions.fail();
         }
         catch ( IOException e )
         {
