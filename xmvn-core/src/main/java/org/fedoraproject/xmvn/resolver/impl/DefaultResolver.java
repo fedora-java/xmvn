@@ -86,7 +86,7 @@ public class DefaultResolver
 
     public DefaultResolver()
     {
-        this.localRepoResolver = new LocalRepositoryResolver();
+        localRepoResolver = new LocalRepositoryResolver();
 
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();

@@ -39,7 +39,7 @@ abstract class SimpleRepository
     {
         super( namespace );
         this.root = root;
-        this.condition = new Condition( filter );
+        condition = new Condition( filter );
     }
 
     protected abstract Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,

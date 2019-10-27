@@ -117,11 +117,11 @@ public class Condition
     {
         if ( dom == null )
         {
-            this.expr = new BooleanLiteral( true );
+            expr = new BooleanLiteral( true );
         }
         else
         {
-            this.expr = parseBoolean( DomUtils.parseAsWrapper( dom ) );
+            expr = parseBoolean( DomUtils.parseAsWrapper( dom ) );
         }
     }
 

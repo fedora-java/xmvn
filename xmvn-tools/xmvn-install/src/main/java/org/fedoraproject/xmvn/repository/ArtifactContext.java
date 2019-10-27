@@ -32,7 +32,7 @@ public class ArtifactContext
     public ArtifactContext( Artifact artifact )
     {
         this.artifact = artifact;
-        this.properties = Collections.emptyMap();
+        properties = Collections.emptyMap();
     }
 
     public ArtifactContext( Artifact artifact, Map<String, String> properties )

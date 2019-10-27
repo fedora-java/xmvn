@@ -63,7 +63,7 @@ public class PluginVersionResolverTest
     public void testInjection()
         throws Exception
     {
-        assertTrue( this.resolver instanceof XMvnPluginVersionResolver );
+        assertTrue( resolver instanceof XMvnPluginVersionResolver );
     }
 
     @Test
