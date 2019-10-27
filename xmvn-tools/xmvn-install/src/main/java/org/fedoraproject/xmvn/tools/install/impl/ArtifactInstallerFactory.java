@@ -75,7 +75,8 @@ class ArtifactInstallerFactory
             ArtifactInstaller pluggedInInstaller = cachedPluginsByImplClass.get( pluginImplClass );
             if ( pluggedInInstaller == null )
             {
-                pluggedInInstaller = (ArtifactInstaller) pluginRealm.loadClass( pluginImplClass ).newInstance();
+                pluggedInInstaller =
+                    (ArtifactInstaller) pluginRealm.loadClass( pluginImplClass ).getConstructor().newInstance();
                 cachedPluginsByImplClass.put( pluginImplClass, pluggedInInstaller );
             }
 

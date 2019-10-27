@@ -34,7 +34,7 @@ public final class ServiceLocatorFactory
     {
         try
         {
-            return (ServiceLocator) Class.forName( "org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator" ).newInstance();
+            return (ServiceLocator) Class.forName( "org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator" ).getConstructor().newInstance();
         }
         catch ( ReflectiveOperationException e )
         {
