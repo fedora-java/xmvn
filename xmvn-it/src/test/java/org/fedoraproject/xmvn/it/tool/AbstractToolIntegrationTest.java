@@ -145,6 +145,7 @@ public abstract class AbstractToolIntegrationTest
 
             Class<?> mainClass = toolClassLoader.loadClass( mf.getValue( "Main-Class" ) );
             mainClass.getMethod( "main", String[].class ).invoke( null, (Object) args );
+            return 0;
         }
         catch ( InvocationTargetException e )
         {
@@ -162,6 +163,5 @@ public abstract class AbstractToolIntegrationTest
             System.setErr( oldStderr );
             System.setProperties( oldProperties );
         }
-        return 0;
     }
 }
