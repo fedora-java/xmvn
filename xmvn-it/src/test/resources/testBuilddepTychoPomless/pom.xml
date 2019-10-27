@@ -13,7 +13,7 @@
       <plugin>
 	<groupId>org.eclipse.tycho</groupId>
 	<artifactId>tycho-maven-plugin</artifactId>
-	<version>0.25.0</version>
+	<version>1.5.1</version>
 	<extensions>true</extensions>
       </plugin>
     </plugins>
