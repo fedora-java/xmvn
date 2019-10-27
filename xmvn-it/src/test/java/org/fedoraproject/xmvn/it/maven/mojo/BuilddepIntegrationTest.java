@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.easymock.EasyMock;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -196,6 +197,8 @@ public class BuilddepIntegrationTest
     }
 
     @Test
+    @Disabled( "Tycho Pomless does not work with Maven 3.6.2" )
+    // https://issues.apache.org/jira/browse/MNG-6765
     public void testBuilddepTychoPomless()
         throws Exception
     {
