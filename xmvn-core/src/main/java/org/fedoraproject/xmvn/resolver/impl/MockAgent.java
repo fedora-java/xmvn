@@ -32,7 +32,7 @@ class MockAgent
     public MockAgent( Logger logger )
     {
         this.logger = logger;
-        this.requestCommand = System.getProperty( "xmvn.resolver.requestArtifactCmd" );
+        requestCommand = System.getProperty( "xmvn.resolver.requestArtifactCmd" );
     }
 
     public boolean tryInstallArtifact( Artifact artifact )

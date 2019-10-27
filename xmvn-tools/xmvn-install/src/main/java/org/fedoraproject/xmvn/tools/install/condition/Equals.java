@@ -39,8 +39,8 @@ class Equals
     public Equals( List<StringExpression> args )
     {
         Iterator<StringExpression> iterator = args.iterator();
-        this.lhs = iterator.next();
-        this.rhs = iterator.next();
+        lhs = iterator.next();
+        rhs = iterator.next();
         if ( iterator.hasNext() )
             throw new IllegalArgumentException();
     }

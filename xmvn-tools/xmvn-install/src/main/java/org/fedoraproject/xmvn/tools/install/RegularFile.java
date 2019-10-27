@@ -91,7 +91,7 @@ public class RegularFile
         super( targetPath, accessMode );
 
         this.sourcePath = sourcePath;
-        this.content = null;
+        content = null;
     }
 
     /**
@@ -106,7 +106,7 @@ public class RegularFile
     {
         super( targetPath, accessMode );
 
-        this.sourcePath = null;
+        sourcePath = null;
         this.content = () -> content;
     }
 
@@ -122,7 +122,7 @@ public class RegularFile
     {
         super( targetPath, accessMode );
 
-        this.sourcePath = null;
+        sourcePath = null;
         this.content = content;
     }
 
