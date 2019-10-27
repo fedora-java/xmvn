@@ -115,7 +115,7 @@ public class DeploymentRequestTest
 
         DependencyDescriptor dsc = listedDependencies.get( 0 );
 
-        if ( dsc.getDependencyArtifact() != ( dependencyA ) || listedDependencies.size() != 1 )
+        if ( dsc.getDependencyArtifact() != dependencyA || listedDependencies.size() != 1 )
         {
             fail( "Added dependency is not in list or there are more items." );
         }

@@ -96,7 +96,7 @@ final class ArtifactTypeRegistry
             return new DefaultArtifact( groupId, artifactId, type, customClassifier, version );
 
         String classifier =
-            ( customClassifier == null || customClassifier.isEmpty() ) ? classifiers.get( type ) : customClassifier;
+            customClassifier == null || customClassifier.isEmpty() ? classifiers.get( type ) : customClassifier;
         return new DefaultArtifact( groupId, artifactId, extensions.get( type ), classifier, version );
     }
 }

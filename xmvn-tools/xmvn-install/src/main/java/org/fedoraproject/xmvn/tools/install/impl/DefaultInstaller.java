@@ -354,7 +354,7 @@ public class DefaultInstaller
             pkg.install( request.getInstallRoot() );
 
             Path mfiles =
-                Paths.get( ( pkg.getId() == null || pkg.getId().isEmpty() ) ? ".mfiles" : ".mfiles-" + pkg.getId() );
+                Paths.get( pkg.getId() == null || pkg.getId().isEmpty() ? ".mfiles" : ".mfiles-" + pkg.getId() );
             if ( request.getDescriptorRoot() != null )
                 mfiles = request.getDescriptorRoot().resolve( mfiles );
 
