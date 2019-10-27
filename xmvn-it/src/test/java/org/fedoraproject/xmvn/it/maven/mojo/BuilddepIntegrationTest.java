@@ -43,7 +43,7 @@ public class BuilddepIntegrationTest
     /**
      * @author Mikolaj Izdebski
      */
-    public static interface Visitor
+    public interface Visitor
     {
         void visit( String groupId, String artifactId, String version );
     }
