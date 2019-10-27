@@ -31,17 +31,17 @@ public class MojoExecutionListenerTest
 {
     private interface MojoBeanProperty
     {
-        public String getReportOutputDirectory();
+        String getReportOutputDirectory();
 
-        public String getOutputDir();
+        String getOutputDir();
 
-        public String getSource();
+        String getSource();
 
-        public String getTarget();
+        String getTarget();
 
-        public String getSourceLevel();
+        String getSourceLevel();
 
-        public String getTargetLevel();
+        String getTargetLevel();
 
         // "getReportOutputDirectory", "getOutputDir", "getSource", "getTarget", "getSourceLevel", "getTargetLevel"
     }

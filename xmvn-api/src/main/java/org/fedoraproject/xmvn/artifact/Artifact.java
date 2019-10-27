@@ -31,22 +31,22 @@ public interface Artifact
     /**
      * Default artifact extension, used if no explicit extension is specified.
      */
-    static final String DEFAULT_EXTENSION = "jar";
+    String DEFAULT_EXTENSION = "jar";
 
     /**
      * Default artifact version, used if no explicit version is specified.
      */
-    static final String DEFAULT_VERSION = "SYSTEM";
+    String DEFAULT_VERSION = "SYSTEM";
 
-    static final String MF_KEY_GROUPID = "JavaPackages-GroupId";
+    String MF_KEY_GROUPID = "JavaPackages-GroupId";
 
-    static final String MF_KEY_ARTIFACTID = "JavaPackages-ArtifactId";
+    String MF_KEY_ARTIFACTID = "JavaPackages-ArtifactId";
 
-    static final String MF_KEY_EXTENSION = "JavaPackages-Extension";
+    String MF_KEY_EXTENSION = "JavaPackages-Extension";
 
-    static final String MF_KEY_CLASSIFIER = "JavaPackages-Classifier";
+    String MF_KEY_CLASSIFIER = "JavaPackages-Classifier";
 
-    static final String MF_KEY_VERSION = "JavaPackages-Version";
+    String MF_KEY_VERSION = "JavaPackages-Version";
 
     /**
      * Get group identifier of this artifact.
