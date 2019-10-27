@@ -19,6 +19,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
 
@@ -221,7 +222,7 @@ public class BisectCliRequest
         debug = request.isDebug();
         failureBehavior = request.getReactorFailureBehavior().getLongOption();
         globalChecksumPolicy = checkSumPolicyToString( request.getGlobalChecksumPolicy() );
-        globalSettings = StringUtils.defaultString( request.getGlobalSettingsFile() );
+        globalSettings = Objects.toString( request.getGlobalSettingsFile(), "" );
         goals = request.getGoals();
         batchMode = request.isBatchMode();
         javaHome = fileToString( request.getJavaHome() );
