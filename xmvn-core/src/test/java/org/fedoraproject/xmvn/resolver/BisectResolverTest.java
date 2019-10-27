@@ -15,18 +15,18 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -43,7 +43,7 @@ public class BisectResolverTest
 {
     private Path counterPath;
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -53,7 +53,7 @@ public class BisectResolverTest
         Files.write( counterPath, Collections.singleton( "1000" ) );
     }
 
-    @After
+    @AfterEach
     public void tearDown()
         throws Exception
     {

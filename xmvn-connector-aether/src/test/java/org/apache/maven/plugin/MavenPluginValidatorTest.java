@@ -15,26 +15,24 @@
  */
 package org.apache.maven.plugin;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Roman Vais
  */
-
-@RunWith( EasyMockRunner.class )
 public class MavenPluginValidatorTest
 {
     private MavenPluginValidator validator;
 
     private PluginDescriptor desc;
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -59,7 +57,7 @@ public class MavenPluginValidatorTest
         EasyMock.replay( desc );
         validator.validate( desc );
 
-        Assert.assertFalse( validator.hasErrors() );
-        Assert.assertTrue( validator.getErrors().isEmpty() );
+        assertFalse( validator.hasErrors() );
+        assertTrue( validator.getErrors().isEmpty() );
     }
 }

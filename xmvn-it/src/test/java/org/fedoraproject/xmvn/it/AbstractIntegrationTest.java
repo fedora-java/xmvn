@@ -24,12 +24,11 @@ import java.nio.file.Paths;
 import java.security.Permission;
 import java.util.stream.Stream;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Abstract base class for all integration tests.
@@ -41,9 +40,6 @@ public abstract class AbstractIntegrationTest
     public static final String STDOUT = "stdout.txt";
 
     public static final String STDERR = "stderr.txt";
-
-    @Rule
-    public TestName testName = new TestName();
 
     private Path mavenHome;
 
@@ -78,7 +74,7 @@ public abstract class AbstractIntegrationTest
         expandBaseDir( sourceAndTarget, sourceAndTarget );
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void ensureCorrectWorkingDirectory()
         throws Exception
     {
@@ -87,15 +83,16 @@ public abstract class AbstractIntegrationTest
             throw new RuntimeException( "XMvn integration tests must be ran from xmvn-it/target/work directory" );
     }
 
-    @Before
-    public void createBaseDir()
+    @BeforeEach
+    public void createBaseDir( TestInfo testInfo )
         throws Exception
     {
         mavenHome = Paths.get( "../dependency/xmvn-4.0.0-SNAPSHOT" ).toAbsolutePath();
 
         baseDir = Paths.get( "." ).toRealPath();
         delete( baseDir );
-        Path baseDirTemplate = Paths.get( "../../src/test/resources" ).resolve( testName.getMethodName() );
+        String testName = testInfo.getTestMethod().get().getName();
+        Path baseDirTemplate = Paths.get( "../../src/test/resources" ).resolve( testName );
         if ( Files.isDirectory( baseDirTemplate, LinkOption.NOFOLLOW_LINKS ) )
         {
             copy( baseDirTemplate, baseDir );
@@ -108,11 +105,12 @@ public abstract class AbstractIntegrationTest
         expandBaseDir( "../../src/test/resources/metadata.xml", "metadata.xml" );
     }
 
-    @After
-    public void saveBaseDir()
+    @AfterEach
+    public void saveBaseDir( TestInfo testInfo )
         throws Exception
     {
-        Path saveDir = Paths.get( "../saved-work" ).resolve( testName.getMethodName() ).toAbsolutePath();
+        String testName = testInfo.getTestMethod().get().getName();
+        Path saveDir = Paths.get( "../saved-work" ).resolve( testName ).toAbsolutePath();
         Files.createDirectories( saveDir );
         delete( saveDir );
         copy( baseDir, saveDir );
@@ -177,7 +175,7 @@ public abstract class AbstractIntegrationTest
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void inhibitSystemExit()
     {
         System.setSecurityManager( new SecurityManager()
@@ -195,7 +193,7 @@ public abstract class AbstractIntegrationTest
         } );
     }
 
-    @AfterClass
+    @AfterAll
     public static void restoreSystemExit()
     {
         System.setSecurityManager( null );

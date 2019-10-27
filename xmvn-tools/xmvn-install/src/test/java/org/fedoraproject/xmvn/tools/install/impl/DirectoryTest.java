@@ -15,10 +15,12 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
@@ -69,26 +71,26 @@ public class DirectoryTest
     /**
      * Test if directory installation fails if target already exists and is not a directory.
      */
-    @Test( expected = IOException.class )
+    @Test
     public void testExistentTargetFile()
         throws Exception
     {
         add( new RegularFile( Paths.get( "foo/bar" ), new byte[0] ) );
         add( new Directory( Paths.get( "foo/bar" ) ) );
-        performInstallation();
+        assertThrows( IOException.class, () -> performInstallation() );
     }
 
     /**
      * Test if directory installation fails if component of target directory target already exists and is not a
      * directory.
      */
-    @Test( expected = IOException.class )
+    @Test
     public void testDirectoryCOmponentIsAFile()
         throws Exception
     {
         add( new RegularFile( Paths.get( "a/b/c/d" ), new byte[0] ) );
         add( new Directory( Paths.get( "a/b/c/d/e/f/g/h" ) ) );
-        performInstallation();
+        assertThrows( IOException.class, () -> performInstallation() );
     }
 
     /**

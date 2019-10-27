@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.it.maven.mojo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.easymock.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -99,8 +99,8 @@ public class BuilddepIntegrationTest
     public void testBuilddepPackaging()
         throws Exception
     {
-        assumeTrue( "native-maven-plugin requires a C compiler to work",
-                    Files.isExecutable( Paths.get( "/usr/bin/gcc" ) ) );
+        assumeTrue( Files.isExecutable( Paths.get( "/usr/bin/gcc" ) ),
+                    "native-maven-plugin requires a C compiler to work" );
         expectBuildDependency( "org.codehaus.mojo", "native-maven-plugin" );
         expectBuildDependency( "junit", "junit" );
         performBuilddepTest();
@@ -110,8 +110,8 @@ public class BuilddepIntegrationTest
     public void testBuilddepPackagingExternal()
         throws Exception
     {
-        assumeTrue( "native-maven-plugin requires a C compiler to work",
-                    Files.isExecutable( Paths.get( "/usr/bin/gcc" ) ) );
+        assumeTrue( Files.isExecutable( Paths.get( "/usr/bin/gcc" ) ),
+                    "native-maven-plugin requires a C compiler to work" );
         expectBuildDependency( "org.codehaus.mojo", "native-maven-plugin" );
         performBuilddepTest();
     }

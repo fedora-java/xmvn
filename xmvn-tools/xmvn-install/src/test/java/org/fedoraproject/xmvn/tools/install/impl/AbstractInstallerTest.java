@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -33,9 +33,8 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -56,15 +55,12 @@ public abstract class AbstractInstallerTest
 
     protected final List<String> descriptors = new ArrayList<>();
 
-    @Rule
-    public TestName testName = new TestName();
-
-    @Before
-    public void setUpWorkdir()
+    @BeforeEach
+    public void setUpWorkdir( TestInfo testInfo )
         throws IOException
     {
         Path workPath = Paths.get( "target" ).resolve( "test-work" );
-        workdir = workPath.resolve( testName.getMethodName() ).toAbsolutePath();
+        workdir = workPath.resolve( testInfo.getTestMethod().get().getName() ).toAbsolutePath();
         delete( workdir );
         Files.createDirectories( workdir );
         installRoot = workdir.resolve( "install-root" );

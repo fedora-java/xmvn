@@ -15,8 +15,8 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -34,11 +34,8 @@ import org.apache.maven.model.validation.ModelValidator;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -47,7 +44,6 @@ import org.fedoraproject.xmvn.config.Configurator;
  * @author Mikolaj Izdebski
  * @author Roman Vais
  */
-@RunWith( EasyMockRunner.class )
 public class ModelValidatorTest
     extends AbstractTest
 {
@@ -55,10 +51,8 @@ public class ModelValidatorTest
 
     private Configurator configurator;
 
-    @Mock
     private Model model;
 
-    @Mock
     private Build build;
 
     private ArrayList<Dependency> dl;
@@ -74,7 +68,7 @@ public class ModelValidatorTest
         return Paths.get( "src/test/resources" ).resolve( resource ).toAbsolutePath();
     }
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {

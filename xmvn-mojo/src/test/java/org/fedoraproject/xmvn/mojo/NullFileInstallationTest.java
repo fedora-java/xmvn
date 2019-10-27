@@ -17,21 +17,18 @@ package org.fedoraproject.xmvn.mojo;
 
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -43,13 +40,11 @@ import org.fedoraproject.xmvn.deployer.DeploymentResult;
  * 
  * @author Mikolaj Izdebski
  */
-@RunWith( EasyMockRunner.class )
 public class NullFileInstallationTest
     extends AbstractInstallMojoTest
 {
     boolean deployed;
 
-    @Mock( type = MockType.NICE )
     DeploymentResult result;
 
     Path pomPath = Paths.get( "/some/non/existent.path" );
@@ -83,6 +78,7 @@ public class NullFileInstallationTest
         throws Exception
     {
         setMojoMockExpectations();
+        result = EasyMock.createNiceMock( DeploymentResult.class );
         replay( result );
 
         getProject().setArtifact( getArtifact() );

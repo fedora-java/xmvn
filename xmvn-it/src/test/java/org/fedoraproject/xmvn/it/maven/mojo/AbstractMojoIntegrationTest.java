@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.maven.mojo;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.UUID;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ResolverSettings;
@@ -41,7 +41,7 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 public class AbstractMojoIntegrationTest
     extends AbstractMavenIntegrationTest
 {
-    @Before
+    @BeforeEach
     public void addMetadata()
         throws Exception
     {

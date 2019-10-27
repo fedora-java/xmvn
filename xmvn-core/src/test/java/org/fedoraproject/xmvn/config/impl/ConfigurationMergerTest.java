@@ -15,12 +15,12 @@
  */
 package org.fedoraproject.xmvn.config.impl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.StringWriter;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
@@ -35,7 +35,7 @@ public class ConfigurationMergerTest
 {
     private ConfigurationMerger merger;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         merger = new ConfigurationMerger();

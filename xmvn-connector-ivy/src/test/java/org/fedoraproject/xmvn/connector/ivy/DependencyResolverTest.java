@@ -17,9 +17,9 @@ package org.fedoraproject.xmvn.connector.ivy;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,12 +31,9 @@ import org.apache.ivy.core.module.id.ModuleId;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.resolve.ResolvedModuleRevision;
 import org.apache.ivy.core.settings.IvySettings;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.easymock.TestSubject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -48,22 +45,23 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 /**
  * @author Mikolaj Izdebski
  */
-@RunWith( EasyMockRunner.class )
 public class DependencyResolverTest
 {
-    @TestSubject
-    private final IvyResolver ivyResolver = new IvyResolver();
+    private IvyResolver ivyResolver = new IvyResolver();
 
-    @Mock
     private Resolver resolver;
 
-    @Mock
     private Deployer deployer;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
+        resolver = EasyMock.createStrictMock( Resolver.class );
+        deployer = EasyMock.createStrictMock( Deployer.class );
+        ivyResolver = new IvyResolver();
         ivyResolver.setSettings( new IvySettings() );
+        ivyResolver.setResolver( resolver );
+        ivyResolver.setDeployer( deployer );
     }
 
     private Path getResource( String id, String ext )

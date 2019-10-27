@@ -15,22 +15,19 @@
  */
 package org.fedoraproject.xmvn.connector.aether;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
@@ -40,19 +37,18 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 /**
  * @author Mikolaj Izdebski
  */
-@RunWith( EasyMockRunner.class )
 public class WorkspaceReaderTest
     extends AbstractTest
 {
     private WorkspaceReader workspace;
 
-    @Mock
     private Resolver resolver;
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {
+        resolver = EasyMock.createMock( Resolver.class );
         getContainer().addComponent( resolver, Resolver.class, "default" );
 
         workspace = lookup( WorkspaceReader.class, "ide" );

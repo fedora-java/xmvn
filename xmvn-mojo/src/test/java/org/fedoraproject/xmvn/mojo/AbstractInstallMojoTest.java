@@ -25,9 +25,8 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.junit.Before;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test if artifacts which files are not regular files are handled properly.
@@ -36,13 +35,10 @@ public abstract class AbstractInstallMojoTest
 {
     private MavenProject project;
 
-    @Mock( type = MockType.NICE )
     private Artifact artifact;
 
-    @Mock( type = MockType.NICE )
     private ArtifactHandler artifactHandler;
 
-    @Mock( type = MockType.NICE )
     private Logger logger;
 
     protected MavenProject getProject()
@@ -85,7 +81,7 @@ public abstract class AbstractInstallMojoTest
         verify( artifact, artifactHandler, logger );
     }
 
-    @Before
+    @BeforeEach
     public void setUp()
         throws Exception
     {
@@ -94,5 +90,9 @@ public abstract class AbstractInstallMojoTest
         project.setGroupId( "test-gid" );
         project.setArtifactId( "test-aid" );
         project.setVersion( "test-version" );
+
+        artifact = EasyMock.createNiceMock( Artifact.class );
+        artifactHandler = EasyMock.createNiceMock( ArtifactHandler.class );
+        logger = EasyMock.createNiceMock( Logger.class );
     }
 }

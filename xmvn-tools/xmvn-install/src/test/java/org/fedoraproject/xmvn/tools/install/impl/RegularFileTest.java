@@ -15,12 +15,14 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
@@ -73,13 +75,13 @@ public class RegularFileTest
         assertDescriptorEquals( "%attr(0644,root,root) /usr/share/java/foobar.jar" );
     }
 
-    @Test( expected = IOException.class )
+    @Test
     public void testNonexistentFile()
         throws Exception
     {
         add( new Directory( Paths.get( "usr/share/java" ) ) );
         add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), Paths.get( "not-here" ) ) );
-        performInstallation();
+        assertThrows( IOException.class, this::performInstallation );
     }
 
     @Test
@@ -97,27 +99,30 @@ public class RegularFileTest
                                 "%attr(0666,root,root) /usr/share/java/foobar.jar" );
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testIncorrectMode()
         throws Exception
     {
         Path jar = getResource( "example.jar" );
-        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar, 01000 ) );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar, 01000 ) ) );
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testNegativeMode()
         throws Exception
     {
         Path jar = getResource( "example.jar" );
-        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar, -0644 ) );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar, -0644 ) ) );
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test
     public void testAbsoluteTarget()
         throws Exception
     {
         Path jar = getResource( "example.jar" );
-        add( new RegularFile( Paths.get( "/usr/share/java/foobar.jar" ), jar, 01000 ) );
+        assertThrows( IllegalArgumentException.class, //
+                      () -> add( new RegularFile( Paths.get( "/usr/share/java/foobar.jar" ), jar, 01000 ) ) );
     }
 }

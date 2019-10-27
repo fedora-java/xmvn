@@ -15,9 +15,9 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -27,8 +27,8 @@ import java.util.Collections;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -44,7 +44,7 @@ public class ConditionTest
 
     private ArtifactContext context2;
 
-    @Before
+    @BeforeEach
     public void setUp()
     {
         context1 = new ArtifactContext( new DefaultArtifact( "some-gid", "the-aid", "zip", "xyzzy", "1.2.3" ),

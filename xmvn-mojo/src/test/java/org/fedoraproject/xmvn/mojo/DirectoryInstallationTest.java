@@ -25,11 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
@@ -40,16 +37,9 @@ import org.fedoraproject.xmvn.deployer.DeploymentResult;
  * 
  * @author Mikolaj Izdebski
  */
-@RunWith( EasyMockRunner.class )
 public class DirectoryInstallationTest
     extends AbstractInstallMojoTest
 {
-    @Mock( type = MockType.STRICT )
-    private Deployer deployer;
-
-    @Mock( type = MockType.NICE )
-    private DeploymentResult deploymentResult;
-
     @Override
     protected File getArtifactFile()
         throws Exception
@@ -63,6 +53,9 @@ public class DirectoryInstallationTest
         throws Exception
     {
         setMojoMockExpectations();
+
+        Deployer deployer = EasyMock.createStrictMock( Deployer.class );
+        DeploymentResult deploymentResult = EasyMock.createNiceMock( DeploymentResult.class );
 
         // Expect deployment of POM file only
         expect( deployer.deploy( isA( DeploymentRequest.class ) ) ).andReturn( deploymentResult );

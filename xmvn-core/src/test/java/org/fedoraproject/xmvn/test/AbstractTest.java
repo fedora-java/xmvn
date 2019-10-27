@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.test;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator;
@@ -27,7 +27,7 @@ public class AbstractTest
 {
     private DefaultServiceLocator locator;
 
-    @Before
+    @BeforeEach
     public void configureServiceLocator()
     {
         locator = new DefaultServiceLocator();

@@ -19,9 +19,9 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,11 +32,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
@@ -54,17 +52,17 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 /**
  * @author Michael Simacek
  */
-@RunWith( EasyMockRunner.class )
 public class ArtifactInstallerTest
 {
-    @Mock
     Repository repositoryMock;
 
     private ArtifactInstaller installer;
 
-    @Before
+    @BeforeEach
     public void configure()
     {
+        repositoryMock = EasyMock.createMock( Repository.class );
+
         RepositoryConfigurator repoConfigurator = new RepositoryConfigurator()
         {
             @Override
