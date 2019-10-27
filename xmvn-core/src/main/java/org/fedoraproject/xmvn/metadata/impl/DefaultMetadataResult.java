@@ -44,14 +44,11 @@ class DefaultMetadataResult
     {
         this.logger = logger;
 
-        PathInterpolator interpolator = new PathInterpolator();
-
         for ( PackageMetadata metadata : metadataList )
         {
             for ( ArtifactMetadata installedArtifact : metadata.getArtifacts() )
             {
                 processArtifactMetadata( installedArtifact, ignoreDuplicates );
-                interpolator.interpolate( installedArtifact );
             }
         }
     }
