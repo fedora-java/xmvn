@@ -1,0 +1,11 @@
+<toolchains>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <xmvn>xmvn</xmvn>
+    </provides>
+    <configuration>
+      <jdkHome>/tmp</jdkHome>
+    </configuration>
+  </toolchain>
+</toolchains>

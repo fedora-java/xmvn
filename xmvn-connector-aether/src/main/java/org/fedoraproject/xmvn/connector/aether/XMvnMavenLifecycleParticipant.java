@@ -42,6 +42,9 @@ public class XMvnMavenLifecycleParticipant
     @Requirement( role = XMvnMojoExecutionListener.class )
     private XMvnMojoExecutionListener mojoExecutionListener;
 
+    @Requirement
+    private XMvnToolchainManager toolchainManager;
+
     @Override
     public void afterSessionStart( MavenSession session )
         throws MavenExecutionException
@@ -60,5 +63,12 @@ public class XMvnMavenLifecycleParticipant
         chainedListener.addExecutionListener( request.getExecutionListener() );
         chainedListener.addExecutionListener( reportGenerator );
         request.setExecutionListener( chainedListener );
+    }
+
+    @Override
+    public void afterProjectsRead( MavenSession session )
+        throws MavenExecutionException
+    {
+        toolchainManager.activate( session );
     }
 }
