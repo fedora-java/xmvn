@@ -92,4 +92,13 @@ public class BasicIntegrationTest
         assertTrue( Files.isRegularFile( Paths.get( "src/main/resources/META-INF/plexus/components.xml" ) ) );
         assertTrue( Files.isRegularFile( Paths.get( "component-metadata-test.xml" ) ) );
     }
+
+    @Test
+    public void testToolchainManager()
+        throws Exception
+    {
+        performTest( "verify" );
+        assertTrue( getStdout().anyMatch( s -> s.equals( "[INFO] Toolchain in compiler-plugin: JDK[/tmp]" ) ) );
+        assertTrue( getStdout().anyMatch( s -> s.equals( "[INFO] Toolchain in surefire-plugin: JDK[/tmp]" ) ) );
+    }
 }
