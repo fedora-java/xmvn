@@ -84,6 +84,9 @@ public class JavadocMojo
     @Parameter( defaultValue = "${project.build.directory}", required = true )
     private File buildDirectory;
 
+    @Parameter( property = "source" )
+    private String source;
+
     private static String quoted( Object obj )
     {
         String arg = obj.toString();
@@ -226,6 +229,11 @@ public class JavadocMojo
             opts.add( quoted( docencoding ) );
             opts.add( "-doctitle" );
             opts.add( quoted( "Javadoc for package XXX" ) );
+            if ( source != null )
+            {
+                opts.add( "-source" );
+                opts.add( quoted( source ) );
+            }
 
             for ( Path file : files )
                 opts.add( quoted( file ) );
