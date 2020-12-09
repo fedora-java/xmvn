@@ -85,7 +85,7 @@
     <ivyVersion>2.5.0</ivyVersion>
     <jcommanderVersion>1.78</jcommanderVersion>
     <gradleVersion>4.5.1</gradleVersion>
-    <groovyVersion>2.5.8</groovyVersion>
+    <groovyVersion>2.5.14</groovyVersion>
     <mavenInvokerVersion>3.0.1</mavenInvokerVersion>
     <mavenResolverVersion>1.4.1</mavenResolverVersion>
     <mavenVersion>3.6.2</mavenVersion>
