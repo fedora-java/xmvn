@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.xmlunit.assertj.XmlAssert;
+import org.xmlunit.assertj3.XmlAssert;
 
 /**
  * Integration tests for XMvn Resolver tool.
