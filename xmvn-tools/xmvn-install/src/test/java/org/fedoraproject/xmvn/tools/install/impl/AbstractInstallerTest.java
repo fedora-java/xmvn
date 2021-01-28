@@ -38,7 +38,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xmlunit.assertj.XmlAssert;
+import org.xmlunit.assertj3.XmlAssert;
 
 import org.fedoraproject.xmvn.tools.install.Package;
 

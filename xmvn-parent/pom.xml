@@ -123,7 +123,7 @@
     <sitePluginVersion>3.7.1</sitePluginVersion>
     <sourcePluginVersion>3.0.1</sourcePluginVersion>
     <surefireVersion>2.22.2</surefireVersion>
-    <xmlunitVersion>2.6.3</xmlunitVersion>
+    <xmlunitVersion>2.8.2</xmlunitVersion>
 
   </properties>
   <dependencyManagement>
@@ -235,7 +235,7 @@
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-assertj</artifactId>
+        <artifactId>xmlunit-assertj3</artifactId>
         <version>${xmlunitVersion}</version>
       </dependency>
       <dependency>
@@ -343,7 +343,7 @@
     </dependency>
     <dependency>
       <groupId>org.xmlunit</groupId>
-      <artifactId>xmlunit-assertj</artifactId>
+      <artifactId>xmlunit-assertj3</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
