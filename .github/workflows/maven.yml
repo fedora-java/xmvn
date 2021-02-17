@@ -1,0 +1,16 @@
+name: Maven Build
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: quay.io/mizdebsk/maven:latest
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v2
+      - name: Run build
+        run: mvn -B -Dgpg.skip -Plibs -Prun-its verify

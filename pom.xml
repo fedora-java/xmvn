@@ -234,24 +234,12 @@
   <profiles>
     <profile>
       <id>run-its</id>
-      <activation>
-        <property>
-          <name>env.CI</name>
-          <value>true</value>
-        </property>
-      </activation>
       <modules>
         <module>xmvn-it</module>
       </modules>
     </profile>
     <profile>
       <id>libs</id>
-      <activation>
-        <property>
-          <name>env.CI</name>
-          <value>true</value>
-        </property>
-      </activation>
       <modules>
         <module>libs</module>
       </modules>
