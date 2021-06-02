@@ -30,15 +30,18 @@ public class CacheManagerTest
     public void testHashing()
     {
         CacheManager mgr = new CacheManager();
-        assertEquals( "A94A8FE5CCB19BA61C4C0873D391E987982FBBD3",
+        assertEquals( "9F86D081884C7D659A2FEAA0C55AD015A3BF4F1B2B0B822CD15D6C15B0F00A08",
                       mgr.hash( "test".getBytes( StandardCharsets.US_ASCII ) ) );
     }
 
     @Test
+    /**
+     * Test case when the first hex letter is a zero.
+     */
     public void testHashing2()
     {
         CacheManager mgr = new CacheManager();
-        assertEquals( "0AEC4D9BC52AB96E424CD057A59CC45EFF314107",
-                      mgr.hash( "TEST2".getBytes( StandardCharsets.US_ASCII ) ) );
+        assertEquals( "033C0C34DCC7390311EF0D2CECF963B42A9C6E19D798117A66AF811FB0040A45",
+                      mgr.hash( "TEST4".getBytes( StandardCharsets.US_ASCII ) ) );
     }
 }
