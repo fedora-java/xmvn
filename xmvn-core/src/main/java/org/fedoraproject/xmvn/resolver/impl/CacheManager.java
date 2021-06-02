@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
  */
 class CacheManager
 {
-    private static final String DIGEST_ALGORITHM = "SHA-1";
+    private static final String DIGEST_ALGORITHM = "SHA-256";
 
     private final MessageDigest digest;
 
