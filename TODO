@@ -13,8 +13,6 @@ submit a RFE at Github: https://github.com/fedora-java/xmvn/issues/
 
 * Internal features
 
-** Test cases for Ivy support
-
 ** Test cases for XMvn Bisect
 
 ** Regression tests for fixed bugs
