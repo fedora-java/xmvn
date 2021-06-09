@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.deployer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
@@ -139,10 +141,39 @@ public class BasicDeployerTest
         assertEquals( "Failed to parse reactor installation plan", res.getException().getMessage() );
     }
 
+    static final Pattern PROCESS_UID_PATTERN = Pattern.compile( "^Uid:\\s+\\d+\\s+(\\d+)\\s+\\d+\\s+\\d+\\s*$" );
+
+    private boolean runningAsRoot()
+    {
+        try
+        {
+            return Files.lines( Paths.get( "/proc/self/status" ) ).map( s ->
+            {
+                var matcher = PROCESS_UID_PATTERN.matcher( s );
+
+                if ( matcher.matches() )
+                {
+                    if ( matcher.group( 1 ).equals( "0" ) )
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            } ).anyMatch( result -> result );
+        }
+        catch ( IOException ex )
+        {
+            System.err.println( "Unable to read from \"/proc/self/status\"" );
+            return false;
+        }
+    }
+
     @Test
     public void testWriteError()
         throws Exception
     {
+        assumeFalse( runningAsRoot() );
         Deployer deployer = getService( Deployer.class );
         Path plan = Files.createTempDirectory( "xmvn-test" ).resolve( "plan.xml" );
         try ( BufferedWriter bw = Files.newBufferedWriter( plan ) )
