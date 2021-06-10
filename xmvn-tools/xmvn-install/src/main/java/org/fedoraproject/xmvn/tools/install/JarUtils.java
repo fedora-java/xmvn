@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -198,6 +199,11 @@ public final class JarUtils
         putAttribute( mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
     }
 
+    static Path getBackupNameOf( Path p )
+    {
+        return p.getParent().resolve( ( p.getFileName() + "-backup" ).replaceAll( "\\.jar-backup$", "-backup.jar" ) );
+    }
+
     /**
      * Inject artifact coordinates into manifest of specified JAR (or WAR, EAR, ...) file. The file is modified
      * in-place.
@@ -208,44 +214,64 @@ public final class JarUtils
     public static void injectManifest( Path targetJar, Artifact artifact )
     {
         LOGGER.trace( "Trying to inject manifest to {}", artifact );
-        try
+        try ( ZipFile jar = new ZipFile( targetJar.toFile() ) )
         {
-            try ( ZipFile jar = new ZipFile( targetJar.toFile() ) )
+            if ( jar.getEntry( MANIFEST_PATH ) == null )
             {
-                ZipArchiveEntry manifestEntry = jar.getEntry( MANIFEST_PATH );
-                if ( manifestEntry != null )
-                {
-                    Files.delete( targetJar );
-                    try ( InputStream mfIs = jar.getInputStream( manifestEntry );
-                                    ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
-                    {
-                        Manifest mf = new Manifest( mfIs );
-                        updateManifest( artifact, mf );
-                        // write manifest
-                        ZipArchiveEntry newManifestEntry = new ZipArchiveEntry( MANIFEST_PATH );
-                        os.putArchiveEntry( newManifestEntry );
-                        mf.write( os );
-                        os.closeArchiveEntry();
-                        // copy the rest of content
-                        jar.copyRawEntries( os, entry -> !entry.equals( manifestEntry ) );
-                    }
-                    catch ( IOException e )
-                    {
-                        // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
-                        throw new RuntimeException( e );
-                    }
-                    LOGGER.trace( "Manifest injected successfully" );
-                }
-                else
-                {
-                    LOGGER.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
-                    return;
-                }
+                LOGGER.trace( "Manifest injection skipped: no pre-existing manifest found to update" );
+                return;
             }
         }
         catch ( IOException e )
         {
             LOGGER.debug( "I/O exception caught when trying to read JAR: {}", targetJar );
+            return;
         }
+        Path backupPath = getBackupNameOf( targetJar );
+
+        try
+        {
+            Files.copy( targetJar, backupPath, StandardCopyOption.COPY_ATTRIBUTES );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Unable to inject manifest: I/O error when creating backup file: " + backupPath,
+                                        e );
+        }
+        LOGGER.trace( "Created backup file {}", backupPath );
+
+        try ( ZipFile jar = new ZipFile( backupPath.toFile() );
+                        ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
+        {
+            try ( InputStream mfIs = jar.getInputStream( jar.getEntry( MANIFEST_PATH ) ) )
+            {
+                Manifest mf = new Manifest( mfIs );
+                updateManifest( artifact, mf );
+                // write manifest
+                ZipArchiveEntry newManifestEntry = new ZipArchiveEntry( MANIFEST_PATH );
+                os.putArchiveEntry( newManifestEntry );
+                mf.write( os );
+                os.closeArchiveEntry();
+            }
+            // copy the rest of content
+            jar.copyRawEntries( os, entry -> !entry.equals( jar.getEntry( MANIFEST_PATH ) ) );
+        }
+        catch ( Exception e )
+        {
+            // Re-throw exceptions that occur when processing JAR file after reading header and
+            // manifest.
+            throw new RuntimeException( "Failed to inject manifest; backup file is available at " + backupPath, e );
+        }
+        LOGGER.trace( "Manifest injected successfully" );
+
+        try
+        {
+            Files.delete( backupPath );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( "Unable to delete backup file " + backupPath, e );
+        }
+        LOGGER.trace( "Deleted backup file {}", backupPath );
     }
 }

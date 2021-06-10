@@ -15,12 +15,15 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,17 +55,11 @@ public class JarUtilsTest
         Files.createDirectories( workDir );
     }
 
-    /**
-     * Test JAR if manifest injection works as expected.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testManifestInjection()
+    private void testManifestInjectionInto( String testJarName )
         throws Exception
     {
         Path testResource = Paths.get( "src/test/resources/example.jar" );
-        Path testJar = workDir.resolve( "manifest.jar" );
+        Path testJar = workDir.resolve( testJarName );
         Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
 
         Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
@@ -82,6 +79,42 @@ public class JarUtilsTest
             assertEquals( "model", attr.getValue( "JavaPackages-Classifier" ) );
             assertEquals( "2.2.1", attr.getValue( "JavaPackages-Version" ) );
         }
+    }
+
+    /**
+     * Test JAR if manifest injection works as expected.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjection()
+        throws Exception
+    {
+        testManifestInjectionInto( "manifest.jar" );
+    }
+
+    /**
+     * Test injecting manifest into a file without ".jar" suffix
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionNoJarSuffix()
+        throws Exception
+    {
+        testManifestInjectionInto( "foo" );
+    }
+
+    /**
+     * Test injecting manifest into a hidden file, i. e. starting with a "."
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionHiddenFilename()
+        throws Exception
+    {
+        testManifestInjectionInto( ".f" );
     }
 
     /**
@@ -280,5 +313,170 @@ public class JarUtilsTest
 
         assertFalse( JarUtils.usesNativeCode( testResource ) );
         assertFalse( JarUtils.containsNativeCode( testResource ) );
+    }
+
+    /**
+     * Test that the manifest file retains the same i-node after being injected into
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSameINode()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        long oldInode = (Long) Files.getAttribute( testJar, "unix:ino" );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        JarUtils.injectManifest( testJar, artifact );
+
+        long newInode = (Long) Files.getAttribute( testJar, "unix:ino" );
+
+        assertEquals( oldInode, newInode, "Different manifest I-node after injection" );
+    }
+
+    /**
+     * Test that the backup file created during injectManifest was deleted after a successful operation
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testBackupDeletion()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        Path backupPath = JarUtils.getBackupNameOf( testJar );
+        Files.deleteIfExists( backupPath );
+        JarUtils.injectManifest( testJar, artifact );
+        assertFalse( Files.exists( backupPath ) );
+    }
+
+    /**
+     * A SecurityManager that forbids writing into a specific file
+     */
+    private static class ForbiddingSecurityManager
+        extends SecurityManager
+    {
+        private String file;
+
+        public ForbiddingSecurityManager( String file )
+        {
+            this.file = file;
+        }
+
+        /// This function throws an exception unless overridden
+        @Override
+        public void checkPermission( java.security.Permission perm )
+        {
+        };
+
+        /// Forbid rewriting the original jar file
+        @Override
+        public void checkWrite( String file )
+        {
+            if ( this.file.equals( file ) )
+            {
+                throw new SecurityException();
+            }
+        }
+    }
+
+    /**
+     * Test that the backup file created during injectManifest remains after an unsuccessful operation and its content
+     * is identical to the original file
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testBackupOnFailure()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        Path backupPath = JarUtils.getBackupNameOf( testJar );
+        Files.deleteIfExists( backupPath );
+
+        byte[] content = Files.readAllBytes( testJar );
+
+        var previousSecurity = System.getSecurityManager();
+        var fobiddingSecurity = new ForbiddingSecurityManager( testJar.toString() );
+
+        System.setSecurityManager( fobiddingSecurity );
+
+        try
+        {
+            Exception ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+
+            assertTrue( ex.getMessage().contains( backupPath.toString() ),
+                        "An exception thrown when injecting manifest does not mention stored backup file" );
+            assertTrue( Files.exists( backupPath ) );
+
+            byte[] backupContent = Files.readAllBytes( backupPath );
+
+            assertArrayEquals( content, backupContent,
+                               "Content of the backup file is different from the content of the original file" );
+
+            System.setSecurityManager( previousSecurity );
+            try ( var os = new FileOutputStream( testJar.toFile(), true ) )
+            {
+                /// Append garbage to the original file to check if the content of the backup will be retained
+                os.write( 0 );
+            }
+            System.setSecurityManager( fobiddingSecurity );
+
+            assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+
+            assertArrayEquals( backupContent, Files.readAllBytes( backupPath ),
+                               "Backup file content was overwritten after an unsuccessful injection" );
+        }
+        finally
+        {
+            System.setSecurityManager( previousSecurity );
+        }
+
+        Files.delete( backupPath );
+    }
+
+    /**
+     * Test that injectManifest fails if the backup file already exists
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testFailWhenBachupPresent()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        Path backupPath = JarUtils.getBackupNameOf( testJar );
+        Files.deleteIfExists( backupPath );
+        Files.createFile( backupPath );
+
+        try
+        {
+            assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ),
+                          "Expected failure because the the backup file already exists" );
+        }
+        finally
+        {
+            Files.delete( backupPath );
+        }
     }
 }
