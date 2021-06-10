@@ -15,9 +15,11 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
@@ -280,5 +282,81 @@ public class JarUtilsTest
 
         assertFalse( JarUtils.usesNativeCode( testResource ) );
         assertFalse( JarUtils.containsNativeCode( testResource ) );
+    }
+
+    /**
+     * Test that the backup file created during injectManifest was deleted after a successful operation
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testBackupDeletion()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        var backupPath = Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) );
+        Files.deleteIfExists( backupPath );
+        JarUtils.injectManifest( testJar, artifact );
+        assertFalse( Files.exists( backupPath ) );
+    }
+
+    /**
+     * Test that the backup file created during injectManifest remains after an unsuccessful operation and its content
+     * is identical to the original file
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testBackupOnFailure()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        var backupPath = Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) );
+        Files.deleteIfExists( backupPath );
+
+        var content = Files.readAllBytes( testJar );
+
+        var previousSecurity = System.getSecurityManager();
+        System.setSecurityManager( new SecurityManager()
+        {
+            /// This function throws an exception unless overridden
+            @Override
+            public void checkPermission( java.security.Permission perm )
+            {
+            };
+
+            /// Forbid rewriting the original jar file
+            @Override
+            public void checkWrite( String file )
+            {
+                if ( file.equals( testJar.toString() ) )
+                {
+                    throw new SecurityException();
+                }
+            }
+        } );
+
+        try
+        {
+            assertThrows( SecurityException.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+        }
+        finally
+        {
+            System.setSecurityManager( previousSecurity );
+        }
+
+        assertTrue( Files.exists( backupPath ) );
+        assertArrayEquals( content, Files.readAllBytes( backupPath ),
+                           "Content of the backup file is different from the content of the original file" );
     }
 }

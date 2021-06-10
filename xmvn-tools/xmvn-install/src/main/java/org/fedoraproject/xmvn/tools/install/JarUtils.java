@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -198,6 +200,12 @@ public final class JarUtils
         putAttribute( mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
     }
 
+    static String getBackupNameOf( String jarName )
+    {
+        jarName = jarName.substring( 0, jarName.length() - 4 ) + "-backup.jar";
+        return jarName;
+    }
+
     /**
      * Inject artifact coordinates into manifest of specified JAR (or WAR, EAR, ...) file. The file is modified
      * in-place.
@@ -215,6 +223,18 @@ public final class JarUtils
                 ZipArchiveEntry manifestEntry = jar.getEntry( MANIFEST_PATH );
                 if ( manifestEntry != null )
                 {
+                    var backupName = getBackupNameOf( targetJar.toString() );
+                    try
+                    {
+                        Files.copy( targetJar, Paths.get( backupName ), StandardCopyOption.COPY_ATTRIBUTES,
+                                    StandardCopyOption.REPLACE_EXISTING );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new RuntimeException( "When attempting to copy into a backup file " + backupName, e );
+                    }
+                    LOGGER.trace( "Created backup file: {}", backupName );
+
                     Files.delete( targetJar );
                     try ( InputStream mfIs = jar.getInputStream( manifestEntry );
                                     ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
@@ -231,10 +251,21 @@ public final class JarUtils
                     }
                     catch ( IOException e )
                     {
-                        // Re-throw exceptions that occur when processing JAR file after reading header and manifest.
+                        // Re-throw exceptions that occur when processing JAR file after reading header and
+                        // manifest.
                         throw new RuntimeException( e );
                     }
                     LOGGER.trace( "Manifest injected successfully" );
+
+                    try
+                    {
+                        Files.delete( Paths.get( backupName ) );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new RuntimeException( "When attempting to delete a backup file " + backupName, e );
+                    }
+                    LOGGER.trace( "Deleted backup file: {}", backupName );
                 }
                 else
                 {
