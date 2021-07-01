@@ -15,8 +15,11 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -93,6 +96,30 @@ public class JavadocMojo
         arg = StringUtils.replace( arg, "\\", "\\\\" );
         arg = StringUtils.replace( arg, "'", "\\'" );
         return "'" + arg + "'";
+    }
+
+    static boolean isJavadocModular( Path javadocExecutable )
+        throws IOException, InterruptedException, MojoExecutionException
+    {
+        ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "-help" );
+        pb.redirectInput( new File( "/dev/null" ) );
+        pb.redirectError( Redirect.INHERIT );
+        Process process = pb.start();
+
+        try ( InputStream is = process.getInputStream();
+                        InputStreamReader isr = new InputStreamReader( is );
+                        BufferedReader br = new BufferedReader( isr ) )
+        {
+            return br.lines().anyMatch( line -> line.contains( "module-path" ) );
+        }
+        finally
+        {
+            int exitCode = process.waitFor();
+            if ( exitCode != 0 )
+            {
+                throw new MojoExecutionException( "Javadoc failed with exit code " + exitCode );
+            }
+        }
     }
 
     private static void findJavaSources( Collection<Path> javaFiles, Path dir )
