@@ -234,17 +234,25 @@ public final class JarUtils
                 if ( manifestEntry != null )
                 {
                     var backupPath = Paths.get( getBackupNameOf( targetJar.toString() ) );
-                    try
+
+                    if ( Files.notExists( backupPath ) )
                     {
-                        Files.copy( targetJar, backupPath, StandardCopyOption.COPY_ATTRIBUTES,
-                                    StandardCopyOption.REPLACE_EXISTING );
+                        try
+                        {
+                            Files.copy( targetJar, backupPath, StandardCopyOption.COPY_ATTRIBUTES );
+                        }
+                        catch ( IOException e )
+                        {
+                            throw new RuntimeException( "When attempting to copy into a backup file "
+                                + backupPath.toString(), e );
+                        }
+
+                        LOGGER.trace( "Created backup file: {}", backupPath );
                     }
-                    catch ( IOException e )
+                    else
                     {
-                        throw new RuntimeException( "When attempting to copy into a backup file "
-                            + backupPath.toString(), e );
+                        LOGGER.trace( "Backup file: {} already exists, keeping the file", backupPath );
                     }
-                    LOGGER.trace( "Created backup file: {}", backupPath );
 
                     try ( InputStream mfIs = jar.getInputStream( manifestEntry );
                                     ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )

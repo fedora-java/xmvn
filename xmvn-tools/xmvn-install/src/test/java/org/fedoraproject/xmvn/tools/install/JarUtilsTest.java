@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -360,6 +361,37 @@ public class JarUtilsTest
     }
 
     /**
+     * A SecurityManager that forbids writing into a specific file
+     */
+    private static class ForbiddingSecurityManager
+        extends SecurityManager
+    {
+        private String file;
+
+        public ForbiddingSecurityManager( String file )
+        {
+            this.file = file;
+        }
+
+        /// This function throws an exception unless overridden
+        @Override
+        public void checkPermission( java.security.Permission perm )
+        {
+        };
+
+        /// Forbid rewriting the original jar file
+        @Override
+        public void checkWrite( String file )
+        {
+            System.out.println( file );
+            if ( this.file.equals( file ) )
+            {
+                throw new SecurityException();
+            }
+        }
+    }
+
+    /**
      * Test that the backup file created during injectManifest remains after an unsuccessful operation and its content
      * is identical to the original file
      * 
@@ -381,42 +413,42 @@ public class JarUtilsTest
         var content = Files.readAllBytes( testJar );
 
         var previousSecurity = System.getSecurityManager();
-        System.setSecurityManager( new SecurityManager()
-        {
-            /// This function throws an exception unless overridden
-            @Override
-            public void checkPermission( java.security.Permission perm )
-            {
-            };
+        var fobiddingSecurity = new ForbiddingSecurityManager( testJar.toString() );
 
-            /// Forbid rewriting the original jar file
-            @Override
-            public void checkWrite( String file )
-            {
-                if ( file.equals( testJar.toString() ) )
-                {
-                    throw new SecurityException();
-                }
-            }
-        } );
+        System.setSecurityManager( fobiddingSecurity );
 
         try
         {
             var ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
             var message = ex.getMessage();
 
-            /// Assert that the mention of backup file was propagated through exceptions
             assertTrue( message.contains( backupPath.toString() ),
                         "An exception thrown when injecting manifest does not mention stored backup file" );
+            assertTrue( Files.exists( backupPath ) );
+
+            var backupContent = Files.readAllBytes( backupPath );
+
+            assertArrayEquals( content, backupContent,
+                               "Content of the backup file is different from the content of the original file" );
+
+            System.setSecurityManager( previousSecurity );
+            try ( var os = new FileOutputStream( testJar.toFile(), true ) )
+            {
+                /// Append garbage to the original file to check if the content of the backup will be retained
+                os.write( 0 );
+            }
+            System.setSecurityManager( fobiddingSecurity );
+
+            assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+
+            assertArrayEquals( backupContent, Files.readAllBytes( backupPath ),
+                               "Backup file content was overwritten after an unsuccessful injection" );
         }
         finally
         {
             System.setSecurityManager( previousSecurity );
         }
 
-        assertTrue( Files.exists( backupPath ) );
-        assertArrayEquals( content, Files.readAllBytes( backupPath ),
-                           "Content of the backup file is different from the content of the original file" );
         Files.delete( backupPath );
     }
 }
