@@ -233,17 +233,18 @@ public final class JarUtils
                 ZipArchiveEntry manifestEntry = jar.getEntry( MANIFEST_PATH );
                 if ( manifestEntry != null )
                 {
-                    var backupName = getBackupNameOf( targetJar.toString() );
+                    var backupPath = Paths.get( getBackupNameOf( targetJar.toString() ) );
                     try
                     {
-                        Files.copy( targetJar, Paths.get( backupName ), StandardCopyOption.COPY_ATTRIBUTES,
+                        Files.copy( targetJar, backupPath, StandardCopyOption.COPY_ATTRIBUTES,
                                     StandardCopyOption.REPLACE_EXISTING );
                     }
                     catch ( IOException e )
                     {
-                        throw new RuntimeException( "When attempting to copy into a backup file " + backupName, e );
+                        throw new RuntimeException( "When attempting to copy into a backup file "
+                            + backupPath.toString(), e );
                     }
-                    LOGGER.trace( "Created backup file: {}", backupName );
+                    LOGGER.trace( "Created backup file: {}", backupPath );
 
                     try ( InputStream mfIs = jar.getInputStream( manifestEntry );
                                     ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
@@ -258,23 +259,25 @@ public final class JarUtils
                         // copy the rest of content
                         jar.copyRawEntries( os, entry -> !entry.equals( manifestEntry ) );
                     }
-                    catch ( IOException e )
+                    catch ( Exception e )
                     {
                         // Re-throw exceptions that occur when processing JAR file after reading header and
                         // manifest.
-                        throw new RuntimeException( e );
+                        throw new RuntimeException( "A backup of file " + targetJar.toString() + " is stored in "
+                            + backupPath, e );
                     }
                     LOGGER.trace( "Manifest injected successfully" );
 
                     try
                     {
-                        Files.delete( Paths.get( backupName ) );
+                        Files.delete( backupPath );
                     }
                     catch ( IOException e )
                     {
-                        throw new RuntimeException( "When attempting to delete a backup file " + backupName, e );
+                        throw new RuntimeException( "When attempting to delete backup file " + backupPath.toString(),
+                                                    e );
                     }
-                    LOGGER.trace( "Deleted backup file: {}", backupName );
+                    LOGGER.trace( "Deleted backup file: {}", backupPath );
                 }
                 else
                 {

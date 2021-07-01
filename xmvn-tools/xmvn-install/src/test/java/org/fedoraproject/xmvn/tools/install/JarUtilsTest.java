@@ -402,7 +402,12 @@ public class JarUtilsTest
 
         try
         {
-            assertThrows( SecurityException.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+            var ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+            var message = ex.getMessage();
+
+            /// Assert that the mention of backup file was propagated through exceptions
+            assertTrue( message.contains( backupPath.toString() ),
+                        "An exception thrown when injecting manifest does not mention stored backup file" );
         }
         finally
         {
@@ -412,5 +417,6 @@ public class JarUtilsTest
         assertTrue( Files.exists( backupPath ) );
         assertArrayEquals( content, Files.readAllBytes( backupPath ),
                            "Content of the backup file is different from the content of the original file" );
+        Files.delete( backupPath );
     }
 }
