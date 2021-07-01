@@ -315,6 +315,30 @@ public class JarUtilsTest
     }
 
     /**
+     * Test that the manifest file retains the same i-node after being injected into
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testSameINode()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        var oldInode = (Long) Files.getAttribute( testJar, "unix:ino" );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        JarUtils.injectManifest( testJar, artifact );
+
+        var newInode = (Long) Files.getAttribute( testJar, "unix:ino" );
+
+        assertEquals( oldInode, newInode, "Different manifest I-node after injection" );
+    }
+
+    /**
      * Test that the backup file created during injectManifest was deleted after a successful operation
      * 
      * @throws Exception

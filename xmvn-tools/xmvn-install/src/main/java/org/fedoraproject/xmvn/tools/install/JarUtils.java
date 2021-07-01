@@ -245,7 +245,6 @@ public final class JarUtils
                     }
                     LOGGER.trace( "Created backup file: {}", backupName );
 
-                    Files.delete( targetJar );
                     try ( InputStream mfIs = jar.getInputStream( manifestEntry );
                                     ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
                     {
