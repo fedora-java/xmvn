@@ -200,10 +200,20 @@ public final class JarUtils
         putAttribute( mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION );
     }
 
-    static String getBackupNameOf( String jarName )
+    static String getBackupNameOf( String filename )
     {
-        jarName = jarName.substring( 0, jarName.length() - 4 ) + "-backup.jar";
-        return jarName;
+        var end = filename.lastIndexOf( ".jar" );
+
+        if ( end > 0 )
+        {
+            filename = filename.substring( 0, end ) + "-backup.jar";
+        }
+        else
+        {
+            filename += "-backup";
+        }
+
+        return filename;
     }
 
     /**

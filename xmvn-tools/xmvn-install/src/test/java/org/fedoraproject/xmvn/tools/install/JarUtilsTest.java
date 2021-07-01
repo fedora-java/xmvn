@@ -54,17 +54,11 @@ public class JarUtilsTest
         Files.createDirectories( workDir );
     }
 
-    /**
-     * Test JAR if manifest injection works as expected.
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testManifestInjection()
+    private void testManifestInjectionInto( String testJarName )
         throws Exception
     {
         Path testResource = Paths.get( "src/test/resources/example.jar" );
-        Path testJar = workDir.resolve( "manifest.jar" );
+        Path testJar = workDir.resolve( testJarName );
         Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
 
         Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
@@ -84,6 +78,42 @@ public class JarUtilsTest
             assertEquals( "model", attr.getValue( "JavaPackages-Classifier" ) );
             assertEquals( "2.2.1", attr.getValue( "JavaPackages-Version" ) );
         }
+    }
+
+    /**
+     * Test JAR if manifest injection works as expected.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjection()
+        throws Exception
+    {
+        testManifestInjectionInto( "manifest.jar" );
+    }
+
+    /**
+     * Test injecting manifest into a file without ".jar" suffix
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionNoJarSuffix()
+        throws Exception
+    {
+        testManifestInjectionInto( "foo" );
+    }
+
+    /**
+     * Test injecting manifest into a hidden file, i. e. starting with a "."
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionHiddenFilename()
+        throws Exception
+    {
+        testManifestInjectionInto( ".f" );
     }
 
     /**
