@@ -41,4 +41,16 @@ public class JavadocIntegrationTest
         assertTrue( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
         assertTrue( Files.isSameFile( Paths.get( ".xmvn/apidocs" ), Paths.get( "target/xmvn-apidocs" ) ) );
     }
+
+    @Test
+    public void testJavadocJPMS()
+        throws Exception
+    {
+        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:javadoc" );
+
+        assertTrue( Files.isDirectory( Paths.get( "target/xmvn-apidocs" ) ) );
+        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/test.jpms/foo/Bar.html" ) ) );
+        assertTrue( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
+        assertTrue( Files.isSameFile( Paths.get( ".xmvn/apidocs" ), Paths.get( "target/xmvn-apidocs" ) ) );
+    }
 }
