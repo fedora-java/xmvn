@@ -198,6 +198,18 @@ public class JavadocMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        Path javadocExecutable;
+        if ( System.getenv().containsKey( "JAVA_HOME" ) )
+        {
+            javadocExecutable = Paths.get( System.getenv( "JAVA_HOME" ) ) //
+                                     .resolve( "bin" ) //
+                                     .resolve( "javadoc" );
+        }
+        else
+        {
+            javadocExecutable = Paths.get( "/usr/bin/javadoc" );
+        }
+
         try
         {
             if ( StringUtils.isEmpty( encoding ) )
@@ -242,7 +254,7 @@ public class JavadocMojo
             opts.add( "-version" );
             opts.add( "-Xdoclint:none" );
 
-            opts.add( "-classpath" );
+            opts.add( isJavadocModular( javadocExecutable ) ? "--module-path" : "-classpath" );
             opts.add( quoted( StringUtils.join( getClasspath().iterator(), ":" ) ) );
             opts.add( "-encoding" );
             opts.add( quoted( encoding ) );
@@ -266,18 +278,6 @@ public class JavadocMojo
                 opts.add( quoted( file ) );
 
             Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE );
-
-            Path javadocExecutable;
-            if ( System.getenv().containsKey( "JAVA_HOME" ) )
-            {
-                javadocExecutable = Paths.get( System.getenv( "JAVA_HOME" ) ) //
-                                         .resolve( "bin" ) //
-                                         .resolve( "javadoc" );
-            }
-            else
-            {
-                javadocExecutable = Paths.get( "/usr/bin/javadoc" );
-            }
 
             ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "@args" );
             pb.directory( outputDir.toFile() );
