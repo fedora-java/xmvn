@@ -136,24 +136,30 @@ public class XMvnMojoExecutionListener
 
     private final List<String[]> resolutions = new ArrayList<>();
 
-    private static String getBeanProperty( Object bean, String getterName )
+    private static String getBeanProperty( Object bean, String... getterNames )
     {
         try
         {
-            for ( Class<?> clazz = bean.getClass(); clazz != null; clazz = clazz.getSuperclass() )
+            for ( String getterName : getterNames )
             {
-                try
+                for ( Class<?> clazz = bean.getClass(); clazz != null; clazz = clazz.getSuperclass() )
                 {
-                    Method getter = clazz.getDeclaredMethod( getterName );
-                    getter.setAccessible( true );
-                    return getter.invoke( bean ).toString();
-                }
-                catch ( NoSuchMethodException e )
-                {
+                    try
+                    {
+                        Method getter = clazz.getDeclaredMethod( getterName );
+                        getter.setAccessible( true );
+                        Object value = getter.invoke( bean );
+                        if ( value != null )
+                        {
+                            return value.toString();
+                        }
+                    }
+                    catch ( NoSuchMethodException e )
+                    {
+                    }
                 }
             }
-
-            throw new RuntimeException( "Unable to find bean property getter method " + getterName );
+            return null;
         }
         catch ( ReflectiveOperationException e )
         {
@@ -240,25 +246,21 @@ public class XMvnMojoExecutionListener
 
     void afterMojoExecution( Object mojo, MojoExecution execution, MavenProject project )
     {
-        if ( JAVADOC_AGGREGATE.equals( execution ) )
+        if ( JAVADOC_AGGREGATE.equals( execution ) || XMVN_JAVADOC.equals( execution ) )
         {
-            String javadocDir = getBeanProperty( mojo, "getReportOutputDirectory" );
-            createApidocsSymlink( Paths.get( javadocDir ) );
+            String javadocDir = getBeanProperty( mojo, "getReportOutputDirectory", "getOutputDir" );
+            if ( javadocDir != null )
+            {
+                createApidocsSymlink( Paths.get( javadocDir ) );
+            }
         }
-        else if ( XMVN_JAVADOC.equals( execution ) )
+        else if ( MAVEN_COMPILE.equals( execution ) || TYCHO_COMPILE.equals( execution ) )
         {
-            String javadocDir = getBeanProperty( mojo, "getOutputDir" );
-            createApidocsSymlink( Paths.get( javadocDir ) );
-        }
-        else if ( MAVEN_COMPILE.equals( execution ) )
-        {
-            setProjectProperty( project, "compilerSource", getBeanProperty( mojo, "getSource" ) );
-            setProjectProperty( project, "compilerTarget", getBeanProperty( mojo, "getTarget" ) );
-        }
-        else if ( TYCHO_COMPILE.equals( execution ) )
-        {
-            setProjectProperty( project, "compilerSource", getBeanProperty( mojo, "getSourceLevel" ) );
-            setProjectProperty( project, "compilerTarget", getBeanProperty( mojo, "getTargetLevel" ) );
+            String target = getBeanProperty( mojo, "getRelease", "getReleaseLevel", "getTarget", "getTargetLevel" );
+            if ( target != null )
+            {
+                setProjectProperty( project, "compilerTarget", target );
+            }
         }
     }
 

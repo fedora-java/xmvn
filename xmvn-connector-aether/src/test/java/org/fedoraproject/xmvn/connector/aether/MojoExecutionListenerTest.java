@@ -35,15 +35,9 @@ public class MojoExecutionListenerTest
 
         String getOutputDir();
 
-        String getSource();
+        String getRelease();
 
-        String getTarget();
-
-        String getSourceLevel();
-
-        String getTargetLevel();
-
-        // "getReportOutputDirectory", "getOutputDir", "getSource", "getTarget", "getSourceLevel", "getTargetLevel"
+        String getReleaseLevel();
     }
 
     private XMvnMojoExecutionListener listener;
@@ -133,7 +127,7 @@ public class MojoExecutionListenerTest
 
         // tests XMVN_JAVADOC
         EasyMock.reset( exec, mojo );
-        // EasyMock.expect( mojo.getReportOutputDirectory() ).andReturn( "/tmp/foo/bar/test.log" ).once();
+        EasyMock.expect( mojo.getReportOutputDirectory() ).andReturn( null ).once();
         EasyMock.expect( mojo.getOutputDir() ).andReturn( "/tmp/foo/bar" ).once();
         EasyMock.expect( exec.getGroupId() ).andReturn( "org.fedoraproject.xmvn" ).atLeastOnce();
         EasyMock.expect( exec.getArtifactId() ).andReturn( "xmvn-mojo" ).once();
@@ -145,8 +139,7 @@ public class MojoExecutionListenerTest
 
         // tests MAVEN_COMPILE
         EasyMock.reset( exec, mojo, project );
-        EasyMock.expect( mojo.getSource() ).andReturn( "foo" ).once();
-        EasyMock.expect( mojo.getTarget() ).andReturn( "bar" ).once();
+        EasyMock.expect( mojo.getRelease() ).andReturn( "bar" ).once();
         EasyMock.expect( exec.getGroupId() ).andReturn( "org.apache.maven.plugins" ).atLeastOnce();
         EasyMock.expect( exec.getArtifactId() ).andReturn( "maven-compiler-plugin" ).times( 2 );
         EasyMock.expect( exec.getGoal() ).andReturn( "compile" ).once();
@@ -160,8 +153,8 @@ public class MojoExecutionListenerTest
 
         // tests TYCHO_COMPILE
         EasyMock.reset( exec, mojo, project );
-        EasyMock.expect( mojo.getSourceLevel() ).andReturn( "deep" ).once();
-        EasyMock.expect( mojo.getTargetLevel() ).andReturn( "deeper" ).once();
+        EasyMock.expect( mojo.getRelease() ).andReturn( null ).once();
+        EasyMock.expect( mojo.getReleaseLevel() ).andReturn( "deeper" ).once();
         EasyMock.expect( exec.getGroupId() ).andReturn( "org.eclipse.tycho" ).atLeastOnce();
         EasyMock.expect( exec.getArtifactId() ).andReturn( "tycho-compiler-plugin" ).once();
         EasyMock.expect( exec.getGoal() ).andReturn( "compile" ).once();
