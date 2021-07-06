@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it.tool;
+package org.fedoraproject.xmvn.it.tool.installer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,6 +29,8 @@ import java.util.jar.Manifest;
 
 import org.junit.jupiter.api.Test;
 
+import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
+
 /**
  * Integration tests for XMvn Installer tool.
  * 
@@ -37,15 +39,6 @@ import org.junit.jupiter.api.Test;
 public class InstallerIntegrationTest
     extends AbstractToolIntegrationTest
 {
-    @Test
-    public void testInstallerHelp()
-        throws Exception
-    {
-        assertEquals( 0, invokeTool( "xmvn-install", "--help" ) );
-        assertFalse( getStderr().findAny().isPresent() );
-        assertTrue( getStdout().anyMatch( line -> line.startsWith( "Usage: xmvn-install" ) ) );
-    }
-
     @Test
     public void testInstallJar()
         throws Exception
