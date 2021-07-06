@@ -17,6 +17,9 @@ package foo;
 
 import org.junit.jupiter.api.TestReporter;
 
+/**
+ * @author Mat Booth
+ */
 public class Bar implements TestReporter
 {
 	public void publishEntry(java.util.Map<String,String> map) {
