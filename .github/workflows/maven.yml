@@ -30,3 +30,5 @@ jobs:
         uses: actions/checkout@v2
       - name: Run build
         run: mvn -B -Dgpg.skip -Prun-its verify
+      - name: Upload coverage report to Codecov
+        uses: codecov/codecov-action@v1
