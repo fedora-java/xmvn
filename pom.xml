@@ -39,7 +39,6 @@
     <module>xmvn-api</module>
     <module>xmvn-core</module>
     <module>xmvn-connector-aether</module>
-    <module>xmvn-connector-ivy</module>
     <module>xmvn-mojo</module>
     <module>xmvn-tools</module>
   </modules>
