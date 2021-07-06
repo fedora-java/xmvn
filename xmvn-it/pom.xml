@@ -29,6 +29,7 @@
   <name>XMvn Integration Tests</name>
   <description>Integration tests for XMvn</description>
   <properties>
+    <itForkCount>1C</itForkCount>
     <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
   </properties>
   <dependencies>
@@ -77,12 +78,12 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <workingDirectory>target/work</workingDirectory>
-          <environmentVariables>
-            <!-- TravisCI installs /etc/mavenrc, which overrides
-                 M2_HOME and interferes with some ITs. -->
-            <MAVEN_SKIP_RC>true</MAVEN_SKIP_RC>
-          </environmentVariables>
+          <forkCount>${itForkCount}</forkCount>
+          <reuseForks>false</reuseForks>
+          <workingDirectory>target/work-${surefire.forkNumber}</workingDirectory>
+          <systemPropertyVariables>
+            <xmvnITWorkdirSuffix>-${surefire.forkNumber}</xmvnITWorkdirSuffix>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
