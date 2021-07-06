@@ -29,4 +29,4 @@ jobs:
       - name: Checkout git repository
         uses: actions/checkout@v2
       - name: Run build
-        run: mvn -B -Dgpg.skip -Plibs -Prun-its verify
+        run: mvn -B -Dgpg.skip -Prun-its verify

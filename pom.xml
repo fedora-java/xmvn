@@ -39,7 +39,6 @@
     <module>xmvn-api</module>
     <module>xmvn-core</module>
     <module>xmvn-connector-aether</module>
-    <module>xmvn-connector-gradle</module>
     <module>xmvn-connector-ivy</module>
     <module>xmvn-mojo</module>
     <module>xmvn-tools</module>
@@ -177,7 +176,6 @@
             <exclude>aux/eclipse-formatter-profile.xml</exclude>
             <exclude>it/**</exclude>
             <exclude>xmvn-it/**</exclude>
-            <exclude>libs/**/target/**</exclude>
             <exclude>doc/install-dfd.dia</exclude>
             <exclude>README.md</exclude>
             <exclude>TODO</exclude>
@@ -236,12 +234,6 @@
       <id>run-its</id>
       <modules>
         <module>xmvn-it</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>libs</id>
-      <modules>
-        <module>libs</module>
       </modules>
     </profile>
   </profiles>
