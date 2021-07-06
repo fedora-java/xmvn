@@ -22,50 +22,50 @@
   <moduleSets>
     <moduleSet>
       <includes>
-	<include>org.fedoraproject.xmvn:xmvn-connector-aether</include>
+        <include>org.fedoraproject.xmvn:xmvn-connector-aether</include>
       </includes>
       <binaries>
-	<unpack>false</unpack>
-	<outputDirectory>lib/ext</outputDirectory>
+        <unpack>false</unpack>
+        <outputDirectory>lib/ext</outputDirectory>
       </binaries>
     </moduleSet>
     <moduleSet>
       <includes>
-	<include>org.fedoraproject.xmvn:xmvn-bisect</include>
+        <include>org.fedoraproject.xmvn:xmvn-bisect</include>
       </includes>
       <binaries>
-	<unpack>false</unpack>
-	<outputDirectory>lib/bisect</outputDirectory>
+        <unpack>false</unpack>
+        <outputDirectory>lib/bisect</outputDirectory>
       </binaries>
     </moduleSet>
     <moduleSet>
       <includes>
-	<include>org.fedoraproject.xmvn:xmvn-install</include>
-	<include>org.fedoraproject.xmvn:xmvn-core</include>
+        <include>org.fedoraproject.xmvn:xmvn-install</include>
+        <include>org.fedoraproject.xmvn:xmvn-core</include>
       </includes>
       <binaries>
-	<unpack>false</unpack>
-	<outputDirectory>lib/installer</outputDirectory>
+        <unpack>false</unpack>
+        <outputDirectory>lib/installer</outputDirectory>
       </binaries>
     </moduleSet>
     <moduleSet>
       <includes>
-	<include>org.fedoraproject.xmvn:xmvn-resolve</include>
-	<include>org.fedoraproject.xmvn:xmvn-core</include>
+        <include>org.fedoraproject.xmvn:xmvn-resolve</include>
+        <include>org.fedoraproject.xmvn:xmvn-core</include>
       </includes>
       <binaries>
-	<unpack>false</unpack>
-	<outputDirectory>lib/resolver</outputDirectory>
+        <unpack>false</unpack>
+        <outputDirectory>lib/resolver</outputDirectory>
       </binaries>
     </moduleSet>
     <moduleSet>
       <includes>
-	<include>org.fedoraproject.xmvn:xmvn-subst</include>
-	<include>org.fedoraproject.xmvn:xmvn-core</include>
+        <include>org.fedoraproject.xmvn:xmvn-subst</include>
+        <include>org.fedoraproject.xmvn:xmvn-core</include>
       </includes>
       <binaries>
-	<unpack>false</unpack>
-	<outputDirectory>lib/subst</outputDirectory>
+        <unpack>false</unpack>
+        <outputDirectory>lib/subst</outputDirectory>
       </binaries>
     </moduleSet>
   </moduleSets>

@@ -349,14 +349,14 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefireVersion}</version>
-	</plugin>
+        </plugin>
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${checkstylePluginVersion}</version>
           <configuration>
-	    <sourceDirectories>
+            <sourceDirectories>
               <sourceDirectory>src/main/java</sourceDirectory>
-	    </sourceDirectories>
+            </sourceDirectories>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
             <configLocation>../aux/checkstyle.xml</configLocation>
             <suppressionsLocation>../aux/checkstyle-suppressions.xml</suppressionsLocation>
