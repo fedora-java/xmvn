@@ -29,6 +29,10 @@
     <property name="eachLine" value="true"/>
   </module>
 
+  <module name="LineLength">
+    <property name="max" value="160" />
+  </module>
+
   <module name="TreeWalker">
     <module name="RegexpSinglelineJava">
       <property name="format" value="\s+$"/>
@@ -36,11 +40,9 @@
       <property name="ignoreComments" value="true"/>
     </module>
 
-  <property name="cacheFile" value="${checkstyle.cache.file}"/>
     <property name="tabWidth" value="4"/>
 
     <module name="SuppressWarningsHolder"/>
-    <module name="FileContentsHolder"/>
 
     <module name="LeftCurly">
       <property name="option" value="nl"/>
@@ -48,21 +50,10 @@
     <module name="RightCurly">
       <property name="option" value="alone"/>
     </module>
-    <module name="LineLength">
-      <property name="max" value="160" />
-    </module>
 
-    <module name="JavadocMethod">
-      <property name="severity" value="warning"/>
-      <property name="scope" value="protected"/>
-    </module>
     <module name="JavadocType">
       <property name="scope" value="protected"/>
       <property name="allowUnknownTags" value="true" />
-    </module>
-    <module name="JavadocVariable">
-      <property name="severity" value="info"/>
-      <property name="scope" value="protected"/>
     </module>
 
     <module name="MemberName" />
@@ -130,16 +121,15 @@
 
     <module name="ArrayTypeStyle"/>
     <module name="UpperEll"/>
+
+    <module name="SuppressionCommentFilter">
+      <property name="offCommentFormat" value="CHECKSTYLE_OFF\: (.+)"/>
+      <property name="onCommentFormat" value="CHECKSTYLE_ON\: (.+)"/>
+      <property name="checkFormat" value="$1"/>
+    </module>
   </module>
 
   <module name="SuppressWarningsFilter"/>
 
   <module name="UniqueProperties"/>
-
-  <module name="SuppressionCommentFilter">
-    <property name="offCommentFormat" value="CHECKSTYLE_OFF\: (.+)"/>
-    <property name="onCommentFormat" value="CHECKSTYLE_ON\: (.+)"/>
-    <property name="checkFormat" value="$1"/>
-  </module>
-
 </module>
