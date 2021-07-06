@@ -59,9 +59,6 @@
       <unsubscribe>https://admin.fedoraproject.org/mailman/listinfo/java-devel</unsubscribe>
     </mailingList>
   </mailingLists>
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
   <scm>
     <url>https://github.com/fedora-java/xmvn</url>
     <connection>scm:git:https://github.com/fedora-java/xmvn.git</connection>
