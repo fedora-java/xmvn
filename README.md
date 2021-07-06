@@ -1,4 +1,4 @@
-[![build status](https://img.shields.io/github/workflow/status/fedora-java/xmvn/Maven%20Build/master.svg)](https://travis-ci.org/fedora-java/xmvn) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/xmvn/master.svg)](https://codecov.io/gh/fedora-java/xmvn)
+[![build status](https://img.shields.io/github/workflow/status/fedora-java/xmvn/Maven%20Build/master.svg)](https://github.com/fedora-java/xmvn/actions/workflows/maven.yml?query=branch%3Amaster) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/xmvn/master.svg)](https://codecov.io/gh/fedora-java/xmvn)
 
 
 
@@ -34,8 +34,8 @@ example:
 
     mvn -Prun-its clean verify
 
-Note that TravisCI build runs integration tests as part of commit and
-pull request validation.
+Note that integration tests are ran as part of commit and pull request
+validation.
 
 
 Contact
