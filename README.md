@@ -1,4 +1,4 @@
-[![build status](https://img.shields.io/travis/fedora-java/xmvn/master.svg)](https://travis-ci.org/fedora-java/xmvn) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/xmvn/master.svg)](https://codecov.io/gh/fedora-java/xmvn)
+[![build status](https://img.shields.io/github/workflow/status/fedora-java/xmvn/Maven%20Build/master.svg)](https://travis-ci.org/fedora-java/xmvn) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/xmvn/master.svg)](https://codecov.io/gh/fedora-java/xmvn)
 
 
 
