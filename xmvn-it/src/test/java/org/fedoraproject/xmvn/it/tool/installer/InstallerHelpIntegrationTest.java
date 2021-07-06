@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2016-2021 Red Hat, Inc.
+ * Copyright (c) 2017-2021 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.fedoraproject.xmvn.it.tool;
+package org.fedoraproject.xmvn.it.tool.installer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
+
 /**
- * Integration tests for XMvn Bisect tool.
+ * Integration tests for XMvn Installer tool.
  * 
  * @author Mikolaj Izdebski
  */
-public class BisectIntegrationTest
+public class InstallerHelpIntegrationTest
     extends AbstractToolIntegrationTest
 {
-    private int runBisect()
-        throws Exception
-    {
-        return invokeTool( "xmvn-bisect", "-Dxmvn.home=" + getMavenHome(), "-Dxmvn.config.sandbox=true", "clean",
-                           "compile" );
-    }
-
     @Test
-    public void testBisect()
+    public void testInstallerHelp()
         throws Exception
     {
-        assertEquals( 0, runBisect() );
-
-        assertTrue( getStderr().anyMatch( s -> s.endsWith( "Bisection build finished" ) ) );
-        assertTrue( getStderr().anyMatch( s -> s.contains( "Failed build:" ) ) );
-        assertTrue( getStderr().anyMatch( s -> s.contains( "Successful build:" ) ) );
+        assertEquals( 0, invokeTool( "xmvn-install", "--help" ) );
+        assertFalse( getStderr().findAny().isPresent() );
+        assertTrue( getStdout().anyMatch( line -> line.startsWith( "Usage: xmvn-install" ) ) );
     }
 }
