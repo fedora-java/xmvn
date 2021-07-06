@@ -25,7 +25,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
 
@@ -130,7 +129,6 @@ public class ResolverIntegrationTest
         XmlAssert.assertThat( expectedOutput ).and( getStdout().collect( Collectors.joining( "\n" ) ) ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
-    @Disabled
     @Test
     public void testResolveRawTwo()
         throws Exception
@@ -158,8 +156,8 @@ public class ResolverIntegrationTest
                                              " <result/>", //
                                              " <result>", //
                                              "  <artifactPath>" + absPath + "</artifactPath>", //
-                                             "  <namespace/>", //
                                              "  <compatVersion>SYSTEM</compatVersion>", //
+                                             "  <namespace/>", //
                                              " </result>", //
                                              "</results>" );
         XmlAssert.assertThat( expectedOutput ).and( getStdout().collect( Collectors.joining( "\n" ) ) ).ignoreComments().ignoreWhitespace().areSimilar();
