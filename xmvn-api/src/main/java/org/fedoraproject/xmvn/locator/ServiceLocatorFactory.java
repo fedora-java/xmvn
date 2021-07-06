@@ -27,7 +27,6 @@ public final class ServiceLocatorFactory
     /**
      * Load an instance of XMvn service.
      * 
-     * @param role interface class identifying requested service
      * @return instance of XMvn service, never {@code null}.
      */
     public ServiceLocator createServiceLocator()
