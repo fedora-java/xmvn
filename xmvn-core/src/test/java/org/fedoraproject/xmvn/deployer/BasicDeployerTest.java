@@ -75,54 +75,54 @@ public class BasicDeployerTest
         req2.setArtifact( new DefaultArtifact( "foo:bar:pom:" ).setPath( Paths.get( "/dev/null" ) ) );
         deployer.deploy( req2 );
 
-        XmlAssert.assertThat( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + //
-            "<metadata xmlns=\"http://fedorahosted.org/xmvn/METADATA/3.2.0\">\n" + //
-            "  <artifacts>\n" + //
-            "    <artifact>\n" + //
-            "      <groupId>g</groupId>\n" + //
-            "      <artifactId>a</artifactId>\n" + //
-            "      <version>v</version>\n" + //
-            "      <path>src/test/resources/simple.xml</path>\n" + //
-            "      <properties>\n" + //
-            "        <foo>bar</foo>\n" + //
-            "      </properties>\n" + //
-            "      <dependencies>\n" + //
-            "        <dependency>\n" + //
-            "          <groupId>g1</groupId>\n" + //
-            "          <artifactId>a1</artifactId>\n" + //
-            "          <extension>e1</extension>\n" + //
-            "          <classifier>c1</classifier>\n" + //
-            "          <requestedVersion>v1</requestedVersion>\n" + //
-            "        </dependency>\n" + //
-            "        <dependency>\n" + //
-            "          <groupId>g2</groupId>\n" + //
-            "          <artifactId>a2</artifactId>\n" + //
-            "          <extension>e2</extension>\n" + //
-            "          <classifier>c2</classifier>\n" + //
-            "          <requestedVersion>v2</requestedVersion>\n" + //
-            "          <optional>true</optional>\n" + //
-            "          <exclusions>\n" + //
-            "            <exclusion>\n" + //
-            "              <groupId>e</groupId>\n" + //
-            "              <artifactId>e</artifactId>\n" + //
-            "            </exclusion>\n" + //
-            "            <exclusion>\n" + //
-            "              <groupId>eg2</groupId>\n" + //
-            "              <artifactId>ea2</artifactId>\n" + //
-            "            </exclusion>\n" + //
-            "          </exclusions>\n" + //
-            "        </dependency>\n" + //
-            "      </dependencies>\n" + //
-            "    </artifact>\n" + //
-            "    <artifact>\n" + //
-            "      <groupId>foo</groupId>\n" + //
-            "      <artifactId>bar</artifactId>\n" + //
-            "      <extension>pom</extension>\n" + //
-            "      <version>SYSTEM</version>\n" + //
-            "      <path>/dev/null</path>\n" + //
-            "    </artifact>\n" + //
-            "  </artifacts>\n" + //
-            "</metadata>\n" ).and( plan.toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
+        XmlAssert.assertThat( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" //
+            + "<metadata xmlns=\"http://fedorahosted.org/xmvn/METADATA/3.2.0\">\n" //
+            + "  <artifacts>\n" //
+            + "    <artifact>\n" //
+            + "      <groupId>g</groupId>\n" //
+            + "      <artifactId>a</artifactId>\n" //
+            + "      <version>v</version>\n" //
+            + "      <path>src/test/resources/simple.xml</path>\n" //
+            + "      <properties>\n" //
+            + "        <foo>bar</foo>\n" //
+            + "      </properties>\n" //
+            + "      <dependencies>\n" //
+            + "        <dependency>\n" //
+            + "          <groupId>g1</groupId>\n" //
+            + "          <artifactId>a1</artifactId>\n" //
+            + "          <extension>e1</extension>\n" //
+            + "          <classifier>c1</classifier>\n" //
+            + "          <requestedVersion>v1</requestedVersion>\n" //
+            + "        </dependency>\n" //
+            + "        <dependency>\n" //
+            + "          <groupId>g2</groupId>\n" //
+            + "          <artifactId>a2</artifactId>\n" //
+            + "          <extension>e2</extension>\n" //
+            + "          <classifier>c2</classifier>\n" //
+            + "          <requestedVersion>v2</requestedVersion>\n" //
+            + "          <optional>true</optional>\n" //
+            + "          <exclusions>\n" //
+            + "            <exclusion>\n" //
+            + "              <groupId>e</groupId>\n" //
+            + "              <artifactId>e</artifactId>\n" //
+            + "            </exclusion>\n" //
+            + "            <exclusion>\n" //
+            + "              <groupId>eg2</groupId>\n" //
+            + "              <artifactId>ea2</artifactId>\n" //
+            + "            </exclusion>\n" //
+            + "          </exclusions>\n" //
+            + "        </dependency>\n" //
+            + "      </dependencies>\n" //
+            + "    </artifact>\n" //
+            + "    <artifact>\n" //
+            + "      <groupId>foo</groupId>\n" //
+            + "      <artifactId>bar</artifactId>\n" //
+            + "      <extension>pom</extension>\n" //
+            + "      <version>SYSTEM</version>\n" //
+            + "      <path>/dev/null</path>\n" //
+            + "    </artifact>\n" //
+            + "  </artifacts>\n" //
+            + "</metadata>\n" ).and( plan.toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
     @Test

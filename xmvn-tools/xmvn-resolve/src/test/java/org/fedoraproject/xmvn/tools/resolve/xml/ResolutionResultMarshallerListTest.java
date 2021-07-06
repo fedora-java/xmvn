@@ -77,27 +77,27 @@ public class ResolutionResultMarshallerListTest
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         new ResolutionResultListMarshaller( list ).marshal( bos );
 
-        XmlAssert.assertThat( "" + //
-            "<results>" + //
-            "  <result>" + //
-            "    <artifactPath>/dev/null</artifactPath>" + //
-            "    <provider>provider1</provider>" + //
-            "    <compatVersion>comp1</compatVersion>" + //
-            "    <namespace>namespace1</namespace>" + //
-            "  </result>" + //
-            "  <result>" + //
-            "    <artifactPath>/dev/null</artifactPath>" + //
-            "    <provider>provider2</provider>" + //
-            "    <compatVersion>comp2</compatVersion>" + //
-            "    <namespace>namespace2</namespace>" + //
-            "  </result>" + //
-            "  <result>" + //
-            "    <artifactPath>/dev/null</artifactPath>" + //
-            "    <provider>provider3</provider>" + //
-            "    <compatVersion>comp3</compatVersion>" + //
-            "    <namespace>namespace3</namespace>" + //
-            "  </result>" + //
-            "</results>" ) //
+        XmlAssert.assertThat( "" //
+            + "<results>" //
+            + "  <result>" //
+            + "    <artifactPath>/dev/null</artifactPath>" //
+            + "    <provider>provider1</provider>" //
+            + "    <compatVersion>comp1</compatVersion>" //
+            + "    <namespace>namespace1</namespace>" //
+            + "  </result>" //
+            + "  <result>" //
+            + "    <artifactPath>/dev/null</artifactPath>" //
+            + "    <provider>provider2</provider>" //
+            + "    <compatVersion>comp2</compatVersion>" //
+            + "    <namespace>namespace2</namespace>" //
+            + "  </result>" //
+            + "  <result>" //
+            + "    <artifactPath>/dev/null</artifactPath>" //
+            + "    <provider>provider3</provider>" //
+            + "    <compatVersion>comp3</compatVersion>" //
+            + "    <namespace>namespace3</namespace>" //
+            + "  </result>" //
+            + "</results>" ) //
                  .and( bos.toString() ) //
                  .ignoreComments() //
                  .ignoreWhitespace() //
