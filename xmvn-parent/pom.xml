@@ -95,7 +95,8 @@
     <apivizVersion>1.3.2.GA</apivizVersion>
     <assemblyPluginVersion>3.3.0</assemblyPluginVersion>
     <buildHelperPluginVersion>3.2.0</buildHelperPluginVersion>
-    <checkstylePluginVersion>3.0.0</checkstylePluginVersion>
+    <checkstyleVersion>8.44</checkstyleVersion>
+    <checkstylePluginVersion>3.1.2</checkstylePluginVersion>
     <cleanPluginVersion>3.1.0</cleanPluginVersion>
     <compilerPluginVersion>3.8.1</compilerPluginVersion>
     <dependencyPluginVersion>3.2.0</dependencyPluginVersion>
@@ -353,6 +354,13 @@
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${checkstylePluginVersion}</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyleVersion}</version>
+            </dependency>
+          </dependencies>
           <configuration>
             <sourceDirectories>
               <sourceDirectory>src/main/java</sourceDirectory>
@@ -362,6 +370,7 @@
             <suppressionsLocation>../aux/checkstyle-suppressions.xml</suppressionsLocation>
             <headerLocation>../aux/license-header.txt</headerLocation>
             <excludes>**/package-info.java</excludes>
+            <logViolationCountToConsole>false</logViolationCountToConsole>
           </configuration>
         </plugin>
         <plugin>
