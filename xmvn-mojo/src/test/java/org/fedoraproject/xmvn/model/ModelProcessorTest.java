@@ -71,20 +71,20 @@ public class ModelProcessorTest
         ModelVisitor mock = EasyMock.createNiceMock( ModelVisitor.class );
         EasyMock.replay( mock );
         mp.processModel( m, mock );
-        XmlAssert.assertThat( "<?xml version=\"1.0\"?>" + //
-            "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0" + //
-            " http://maven.apache.org/xsd/maven-4.0.0.xsd\"" + //
-            " xmlns=\"http://maven.apache.org/POM/4.0.0\"" + //
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" + //
-            "<modelVersion/>" + //
-            "<groupId/>" + //
-            "<artifactId/>" + //
-            "<version/>" + //
-            "<packaging/>" + //
-            "<name/>" + //
-            "<description/>" + //
-            "<url/>" + //
-            "<inceptionYear/>" + //
-            "</project>" ).and( m2s( m ) ).ignoreComments().ignoreWhitespace().areSimilar();
+        XmlAssert.assertThat( "<?xml version=\"1.0\"?>" //
+            + "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0" //
+            + " http://maven.apache.org/xsd/maven-4.0.0.xsd\"" //
+            + " xmlns=\"http://maven.apache.org/POM/4.0.0\"" //
+            + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" //
+            + "<modelVersion/>" //
+            + "<groupId/>" //
+            + "<artifactId/>" //
+            + "<version/>" //
+            + "<packaging/>" //
+            + "<name/>" //
+            + "<description/>" //
+            + "<url/>" //
+            + "<inceptionYear/>" //
+            + "</project>" ).and( m2s( m ) ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 }

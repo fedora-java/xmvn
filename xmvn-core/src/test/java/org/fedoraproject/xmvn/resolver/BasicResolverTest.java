@@ -151,12 +151,12 @@ public class BasicResolverTest
 
         EasyMock.verify( mockMdResult, mockMdResolver, mockServiceLocator );
 
-        XmlAssert.assertThat( "<project>\n" + //
-            "  <modelVersion>4.0.0</modelVersion>\n" + //
-            "  <groupId>gid</groupId>\n" + //
-            "  <artifactId>aid</artifactId>\n" + //
-            "  <version>ver</version>\n" + //
-            "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
+        XmlAssert.assertThat( "<project>\n" //
+            + "  <modelVersion>4.0.0</modelVersion>\n" //
+            + "  <groupId>gid</groupId>\n" //
+            + "  <artifactId>aid</artifactId>\n" //
+            + "  <version>ver</version>\n" //
+            + "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
     @Test
@@ -196,25 +196,25 @@ public class BasicResolverTest
 
         EasyMock.verify( mockMdResult, mockMdResolver, mockServiceLocator );
 
-        XmlAssert.assertThat( "<project>\n" + //
-            "  <modelVersion>4.0.0</modelVersion>\n" + //
-            "  <groupId>gid</groupId>\n" + //
-            "  <artifactId>aid</artifactId>\n" + //
-            "  <version>ver</version>\n" + //
-            "  <dependencies>\n" + //
-            "    <dependency>\n" + //
-            "      <groupId>dgid</groupId>\n" + //
-            "      <artifactId>daid</artifactId>\n" + //
-            "      <version>drqv</version>\n" + //
-            "      <exclusions>\n" + //
-            "        <exclusion>\n" + //
-            "          <groupId>egid</groupId>\n" + //
-            "          <artifactId>eaid</artifactId>\n" + //
-            "        </exclusion>\n" + //
-            "      </exclusions>\n" + //
-            "    </dependency>\n" + //
-            "  </dependencies>\n" + //
-            "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
+        XmlAssert.assertThat( "<project>\n" //
+            + "  <modelVersion>4.0.0</modelVersion>\n" //
+            + "  <groupId>gid</groupId>\n" //
+            + "  <artifactId>aid</artifactId>\n" //
+            + "  <version>ver</version>\n" //
+            + "  <dependencies>\n" //
+            + "    <dependency>\n" //
+            + "      <groupId>dgid</groupId>\n" //
+            + "      <artifactId>daid</artifactId>\n" //
+            + "      <version>drqv</version>\n" //
+            + "      <exclusions>\n" //
+            + "        <exclusion>\n" //
+            + "          <groupId>egid</groupId>\n" //
+            + "          <artifactId>eaid</artifactId>\n" //
+            + "        </exclusion>\n" //
+            + "      </exclusions>\n" //
+            + "    </dependency>\n" //
+            + "  </dependencies>\n" //
+            + "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
     }
 
     @Test
