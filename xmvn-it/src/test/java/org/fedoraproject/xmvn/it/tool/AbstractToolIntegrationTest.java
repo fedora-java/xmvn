@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -30,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -65,7 +67,10 @@ public abstract class AbstractToolIntegrationTest
     {
         try ( DirectoryStream<Path> ds = Files.newDirectoryStream( getToolLibDir( tool ), glob ) )
         {
-            Path jar = ds.iterator().next();
+            Iterator<Path> it = ds.iterator();
+            assertTrue( it.hasNext(), "JAR not found for glob: " + glob );
+            Path jar = it.next();
+            assertFalse( it.hasNext(), "More than one JAR found for glob: " + glob );
             assertTrue( Files.isRegularFile( jar, LinkOption.NOFOLLOW_LINKS ) );
             return jar;
         }
