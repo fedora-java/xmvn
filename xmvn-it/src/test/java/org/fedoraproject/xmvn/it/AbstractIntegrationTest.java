@@ -78,9 +78,11 @@ public abstract class AbstractIntegrationTest
     public static void ensureCorrectWorkingDirectory()
         throws Exception
     {
+        String workdirSuffix = System.getProperty( "xmvnITWorkdirSuffix", "" );
+        String workdir = "xmvn-it/target/work" + workdirSuffix;
         Path cwd = Paths.get( "." ).toRealPath();
-        if ( !cwd.endsWith( "xmvn-it/target/work" ) )
-            throw new RuntimeException( "XMvn integration tests must be ran from xmvn-it/target/work directory" );
+        if ( !cwd.endsWith( workdir ) )
+            throw new RuntimeException( "XMvn integration tests must be ran from " + workdir + " directory" );
     }
 
     @BeforeEach
