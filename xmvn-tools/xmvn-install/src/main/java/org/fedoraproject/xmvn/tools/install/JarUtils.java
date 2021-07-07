@@ -241,17 +241,17 @@ public final class JarUtils
                         {
                             Files.copy( targetJar, backupPath, StandardCopyOption.COPY_ATTRIBUTES );
                         }
-                        catch ( IOException e )
+                        catch ( Exception e )
                         {
                             throw new RuntimeException( "When attempting to copy into a backup file "
                                 + backupPath.toString(), e );
                         }
 
-                        LOGGER.trace( "Created backup file: {}", backupPath );
+                        LOGGER.trace( "Created backup file {}", backupPath );
                     }
                     else
                     {
-                        LOGGER.trace( "Backup file: {} already exists, keeping the file", backupPath );
+                        throw new RuntimeException( "Backup file " + backupPath.toString() + " already exists" );
                     }
 
                     try ( InputStream mfIs = jar.getInputStream( manifestEntry );
@@ -280,12 +280,12 @@ public final class JarUtils
                     {
                         Files.delete( backupPath );
                     }
-                    catch ( IOException e )
+                    catch ( Exception e )
                     {
                         throw new RuntimeException( "When attempting to delete backup file " + backupPath.toString(),
                                                     e );
                     }
-                    LOGGER.trace( "Deleted backup file: {}", backupPath );
+                    LOGGER.trace( "Deleted backup file {}", backupPath );
                 }
                 else
                 {

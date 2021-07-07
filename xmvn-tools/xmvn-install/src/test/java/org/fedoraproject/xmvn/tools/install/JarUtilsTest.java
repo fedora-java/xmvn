@@ -383,7 +383,6 @@ public class JarUtilsTest
         @Override
         public void checkWrite( String file )
         {
-            System.out.println( file );
             if ( this.file.equals( file ) )
             {
                 throw new SecurityException();
@@ -420,9 +419,8 @@ public class JarUtilsTest
         try
         {
             Exception ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
-            String message = ex.getMessage();
 
-            assertTrue( message.contains( backupPath.toString() ),
+            assertTrue( ex.getMessage().contains( backupPath.toString() ),
                         "An exception thrown when injecting manifest does not mention stored backup file" );
             assertTrue( Files.exists( backupPath ) );
 
@@ -450,5 +448,35 @@ public class JarUtilsTest
         }
 
         Files.delete( backupPath );
+    }
+
+    /**
+     * Test that injectManifest fails if the backup file already exists
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testFailWhenBachupPresent()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar = workDir.resolve( "manifest.jar" );
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        Path backupPath = Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) );
+        Files.deleteIfExists( backupPath );
+        Files.createFile( backupPath );
+
+        try
+        {
+            assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ),
+                          "Expected failure because the the backup file already exists" );
+        }
+        finally
+        {
+            Files.delete( backupPath );
+        }
     }
 }
