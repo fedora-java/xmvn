@@ -55,10 +55,10 @@ class ArtifactInstallerFactory
         if ( cachedPluginsByType.containsKey( type ) )
             return cachedPluginsByType.get( type );
 
-        try
+        String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
+        try ( InputStream resourceStream =
+            pluginRealm != null ? pluginRealm.getResourceAsStream( resourceName ) : null )
         {
-            String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
-            InputStream resourceStream = pluginRealm != null ? pluginRealm.getResourceAsStream( resourceName ) : null;
             if ( resourceStream == null )
             {
                 logger.debug( "No XMvn Installer plugin found for packaging type {}", type );

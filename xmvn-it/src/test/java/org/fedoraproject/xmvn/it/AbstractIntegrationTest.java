@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.it;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -122,25 +123,35 @@ public abstract class AbstractIntegrationTest
     private void delete( Path path )
         throws IOException
     {
-        for ( Path child : Files.newDirectoryStream( path ) )
+        try ( DirectoryStream<Path> ds = Files.newDirectoryStream( path ) )
         {
-            if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
-                delete( child );
+            for ( Path child : ds )
+            {
+                if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
+                {
+                    delete( child );
+                }
 
-            Files.deleteIfExists( child );
+                Files.deleteIfExists( child );
+            }
         }
     }
 
     private void copy( Path source, Path target )
         throws Exception
     {
-        for ( Path child : Files.newDirectoryStream( source ) )
+        try ( DirectoryStream<Path> ds = Files.newDirectoryStream( source ) )
         {
-            Path targetChild = target.resolve( child.getFileName() );
-            Files.copy( child, targetChild );
+            for ( Path child : ds )
+            {
+                Path targetChild = target.resolve( child.getFileName() );
+                Files.copy( child, targetChild );
 
-            if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
-                copy( child, targetChild );
+                if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
+                {
+                    copy( child, targetChild );
+                }
+            }
         }
     }
 
