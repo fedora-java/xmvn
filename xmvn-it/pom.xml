@@ -51,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>xmvn-connector-aether</artifactId>
+      <artifactId>xmvn-connector</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

@@ -168,7 +168,7 @@
         <field>
           <name>requestedVersion</name>
           <version>2.0.0+</version>
-          <description>Version of the dependency artifact as defined in the main artifact descriptor. This may be a version range as supported by Aether.</description>
+          <description>Version of the dependency artifact as defined in the main artifact descriptor. This may be a version range as supported by Maven.</description>
           <type>String</type>
           <defaultValue>SYSTEM</defaultValue>
         </field>
