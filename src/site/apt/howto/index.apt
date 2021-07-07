@@ -3,16 +3,10 @@
             --------------------
               Mikolaj Izdebski
             --------------------
-                 2013-03-15
+                 2021-07-07
 
 
 XMvn Tutorials
-
-* How to use XMvn Bisect
-
-  This document describes debugging builds using bisection method with
-  XMvn Bisect.  Here you can find step-by-step walkthrough running
-  XMvn Bisect with some examples.
 
 * How to embed XMvn in your application
 

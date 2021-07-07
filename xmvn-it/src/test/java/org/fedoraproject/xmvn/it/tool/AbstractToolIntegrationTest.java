@@ -40,7 +40,7 @@ import java.util.jar.Manifest;
 import org.fedoraproject.xmvn.it.AbstractIntegrationTest;
 
 /**
- * Abstract base class for integration tests that involve invoking XMvn tools (resolve, bisect and so on).
+ * Abstract base class for integration tests that involve invoking XMvn tools (resolve, install, subst).
  * 
  * @author Mikolaj Izdebski
  */

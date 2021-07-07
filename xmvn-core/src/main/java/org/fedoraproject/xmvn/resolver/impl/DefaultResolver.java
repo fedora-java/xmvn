@@ -73,8 +73,6 @@ public class DefaultResolver
 
     private MockAgent mockAgent;
 
-    private final AtomicFileCounter bisectCounter;
-
     public DefaultResolver( ServiceLocator locator )
     {
         this();
@@ -87,21 +85,13 @@ public class DefaultResolver
     public DefaultResolver()
     {
         localRepoResolver = new LocalRepositoryResolver();
-
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
-
-        String bisectCounterPath = System.getProperty( "xmvn.bisect.counter" );
-        bisectCounter = bisectCounterPath == null || bisectCounterPath.isEmpty() ? null
-                        : new AtomicFileCounter( bisectCounterPath );
     }
 
     @Override
     public ResolutionResult resolve( ResolutionRequest request )
     {
-        if ( bisectCounter != null && bisectCounter.tryDecrement() > 0 )
-            return new DefaultResolutionResult();
-
         Properties properties = new Properties();
         properties.putAll( System.getProperties() );
 
