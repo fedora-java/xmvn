@@ -166,6 +166,7 @@ public class JarUtilsTest
 
         Artifact artifact =
             new DefaultArtifact( "org.eclipse.osgi", "osgi.compatibility.state", "1.1.0.v20180409-1212" );
+        Files.deleteIfExists( Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) ) );
         JarUtils.injectManifest( testJar, artifact );
 
         try ( JarInputStream jis = new JarInputStream( Files.newInputStream( testJar ) ) )
@@ -305,6 +306,7 @@ public class JarUtilsTest
         Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
 
         Artifact artifact = new DefaultArtifact( "foo", "bar" );
+        Files.deleteIfExists( Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) ) );
         JarUtils.injectManifest( testJar, artifact );
 
         byte[] testJarContent = Files.readAllBytes( testJar );
@@ -446,8 +448,6 @@ public class JarUtilsTest
         {
             System.setSecurityManager( previousSecurity );
         }
-
-        Files.delete( backupPath );
     }
 
     /**
@@ -469,14 +469,7 @@ public class JarUtilsTest
         Files.deleteIfExists( backupPath );
         Files.createFile( backupPath );
 
-        try
-        {
-            assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ),
-                          "Expected failure because the the backup file already exists" );
-        }
-        finally
-        {
-            Files.delete( backupPath );
-        }
+        assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ),
+                      "Expected failure because the the backup file already exists" );
     }
 }
