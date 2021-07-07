@@ -184,7 +184,7 @@
       </dependency>
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
-        <artifactId>xmvn-connector-aether</artifactId>
+        <artifactId>xmvn-connector</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

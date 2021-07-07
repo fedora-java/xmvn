@@ -22,7 +22,7 @@
   <moduleSets>
     <moduleSet>
       <includes>
-        <include>org.fedoraproject.xmvn:xmvn-connector-aether</include>
+        <include>org.fedoraproject.xmvn:xmvn-connector</include>
       </includes>
       <binaries>
         <unpack>false</unpack>
