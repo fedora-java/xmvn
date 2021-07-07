@@ -37,7 +37,8 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>xmvn</artifactId>
       <version>${project.version}</version>
-      <type>tar.bz2</type>
+      <classifier>bin</classifier>
+      <type>zip</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -112,7 +113,8 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>xmvn</artifactId>
                   <version>${project.version}</version>
-                  <type>tar.bz2</type>
+                  <classifier>bin</classifier>
+                  <type>zip</type>
                 </artifactItem>
               </artifactItems>
             </configuration>

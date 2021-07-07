@@ -17,7 +17,7 @@
 <assembly>
   <id>bin</id>
   <formats>
-    <format>tar.bz2</format>
+    <format>zip</format>
   </formats>
   <moduleSets>
     <moduleSet>
