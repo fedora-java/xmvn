@@ -34,9 +34,6 @@
     Maven lifecycle when building packages, others can be called
     directly from Maven command line.
   </description>
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
