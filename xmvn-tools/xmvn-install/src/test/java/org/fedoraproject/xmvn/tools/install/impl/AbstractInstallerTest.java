@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -73,8 +74,15 @@ public abstract class AbstractInstallerTest
         throws IOException
     {
         if ( Files.isDirectory( path, LinkOption.NOFOLLOW_LINKS ) )
-            for ( Path child : Files.newDirectoryStream( path ) )
-                delete( child );
+        {
+            try ( DirectoryStream<Path> ds = Files.newDirectoryStream( path ) )
+            {
+                for ( Path child : ds )
+                {
+                    delete( child );
+                }
+            }
+        }
 
         Files.deleteIfExists( path );
     }

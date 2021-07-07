@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -61,11 +62,14 @@ public class InstallerIntegrationTest
 
         Path jarPath = Paths.get( "dest/usr/share/java/xyzzy/junit.jar" );
         assertTrue( Files.isRegularFile( jarPath, LinkOption.NOFOLLOW_LINKS ) );
-        Attributes mf = new Manifest( new URL( "jar:file:" + jarPath.toAbsolutePath()
-            + "!/META-INF/MANIFEST.MF" ).openStream() ).getMainAttributes();
-        assertEquals( "junit", mf.getValue( "JavaPackages-GroupId" ) );
-        assertEquals( "junit", mf.getValue( "JavaPackages-ArtifactId" ) );
-        assertEquals( "4.12", mf.getValue( "JavaPackages-Version" ) );
-        assertEquals( "42", mf.getValue( "X-Test1" ) );
+        try ( InputStream is =
+            new URL( "jar:file:" + jarPath.toAbsolutePath() + "!/META-INF/MANIFEST.MF" ).openStream() )
+        {
+            Attributes mf = new Manifest( is ).getMainAttributes();
+            assertEquals( "junit", mf.getValue( "JavaPackages-GroupId" ) );
+            assertEquals( "junit", mf.getValue( "JavaPackages-ArtifactId" ) );
+            assertEquals( "4.12", mf.getValue( "JavaPackages-Version" ) );
+            assertEquals( "42", mf.getValue( "X-Test1" ) );
+        }
     }
 }

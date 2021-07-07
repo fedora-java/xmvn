@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.it.maven.mojo;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,7 +77,10 @@ public class AbstractMojoIntegrationTest
         }
 
         MetadataStaxWriter mdWriter = new MetadataStaxWriter();
-        mdWriter.write( Files.newOutputStream( Paths.get( "mojo-metadata.xml" ) ), md );
+        try ( OutputStream os = Files.newOutputStream( Paths.get( "mojo-metadata.xml" ) ) )
+        {
+            mdWriter.write( os, md );
+        }
 
         Configuration conf = new Configuration();
         conf.setResolverSettings( new ResolverSettings() );
@@ -84,6 +88,9 @@ public class AbstractMojoIntegrationTest
 
         Files.createDirectories( Paths.get( ".xmvn/config.d" ) );
         ConfigurationStaxWriter confWriter = new ConfigurationStaxWriter();
-        confWriter.write( Files.newOutputStream( Paths.get( ".xmvn/config.d/mojo-it-conf.xml" ) ), conf );
+        try ( OutputStream os = Files.newOutputStream( Paths.get( ".xmvn/config.d/mojo-it-conf.xml" ) ) )
+        {
+            confWriter.write( os, conf );
+        }
     }
 }

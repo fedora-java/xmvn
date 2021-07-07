@@ -215,11 +215,12 @@ public final class JarUtils
                 ZipArchiveEntry manifestEntry = jar.getEntry( MANIFEST_PATH );
                 if ( manifestEntry != null )
                 {
-                    Manifest mf = new Manifest( jar.getInputStream( manifestEntry ) );
-                    updateManifest( artifact, mf );
                     Files.delete( targetJar );
-                    try ( ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
+                    try ( InputStream mfIs = jar.getInputStream( manifestEntry );
+                                    ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
                     {
+                        Manifest mf = new Manifest( mfIs );
+                        updateManifest( artifact, mf );
                         // write manifest
                         ZipArchiveEntry newManifestEntry = new ZipArchiveEntry( MANIFEST_PATH );
                         os.putArchiveEntry( newManifestEntry );

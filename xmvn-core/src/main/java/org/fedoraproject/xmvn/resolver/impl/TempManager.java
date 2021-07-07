@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -39,9 +40,12 @@ final class TempManager
         {
             if ( Files.isDirectory( path, LinkOption.NOFOLLOW_LINKS ) )
             {
-                for ( Path child : Files.newDirectoryStream( path ) )
+                try ( DirectoryStream<Path> ds = Files.newDirectoryStream( path ) )
                 {
-                    delete( child );
+                    for ( Path child : ds )
+                    {
+                        delete( child );
+                    }
                 }
             }
 

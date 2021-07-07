@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.model;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 
 import org.apache.maven.model.Model;
@@ -44,7 +45,10 @@ public class ModelProcessorTest
     private Model full()
         throws Exception
     {
-        return new MavenXpp3Reader().read( ModelProcessorTest.class.getClassLoader().getResourceAsStream( "full-pom.xml" ) );
+        try ( InputStream is = ModelProcessorTest.class.getClassLoader().getResourceAsStream( "full-pom.xml" ) )
+        {
+            return new MavenXpp3Reader().read( is );
+        }
     }
 
     private String m2s( Model m )
