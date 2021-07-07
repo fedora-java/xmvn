@@ -84,6 +84,33 @@
     </dependency>
   </dependencies>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <configuration>
+            <excludes>
+              <exclude>src/site/apt/**</exclude>
+              <exclude>aux/license-header.txt</exclude>
+              <exclude>aux/eclipse-formatter-profile.xml</exclude>
+              <exclude>xmvn-it/**</exclude>
+              <exclude>doc/install-dfd.dia</exclude>
+              <exclude>README.md</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <configuration>
+            <skip>false</skip>
+            <skipDeploy>false</skipDeploy>
+            <inputEncoding>UTF-8</inputEncoding>
+            <outputEncoding>UTF-8</outputEncoding>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -173,31 +200,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>src/site/apt/**</exclude>
-            <exclude>aux/license-header.txt</exclude>
-            <exclude>aux/eclipse-formatter-profile.xml</exclude>
-            <exclude>it/**</exclude>
-            <exclude>xmvn-it/**</exclude>
-            <exclude>doc/install-dfd.dia</exclude>
-            <exclude>README.md</exclude>
-            <exclude>TODO</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <skip>false</skip>
-          <skipDeploy>false</skipDeploy>
-          <inputEncoding>UTF-8</inputEncoding>
-          <outputEncoding>UTF-8</outputEncoding>
-        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -450,13 +450,6 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <skipDeploy>true</skipDeploy>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
@@ -563,6 +556,13 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-site-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+              <skipDeploy>true</skipDeploy>
+            </configuration>
           </plugin>
         </plugins>
       </build>
