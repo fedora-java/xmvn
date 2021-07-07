@@ -48,7 +48,7 @@
         <executions>
           <execution>
             <id>site-docs</id>
-            <phase>prepare-package</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>xdoc</goal>
               <goal>xsd</goal>
@@ -70,7 +70,7 @@
         <executions>
           <execution>
             <id>attach-mdo</id>
-            <phase>prepare-package</phase>
+            <phase>pre-site</phase>
             <goals>
               <goal>attach-artifact</goal>
             </goals>
