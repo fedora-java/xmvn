@@ -189,11 +189,6 @@
       </dependency>
       <dependency>
         <groupId>org.fedoraproject.xmvn</groupId>
-        <artifactId>xmvn-bisect</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.fedoraproject.xmvn</groupId>
         <artifactId>xmvn-install</artifactId>
         <version>${project.version}</version>
       </dependency>
