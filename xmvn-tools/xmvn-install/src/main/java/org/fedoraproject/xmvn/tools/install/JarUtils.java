@@ -202,7 +202,7 @@ public final class JarUtils
 
     static String getBackupNameOf( String filename )
     {
-        var end = filename.lastIndexOf( ".jar" );
+        int end = filename.lastIndexOf( ".jar" );
 
         if ( end > 0 )
         {
@@ -233,7 +233,7 @@ public final class JarUtils
                 ZipArchiveEntry manifestEntry = jar.getEntry( MANIFEST_PATH );
                 if ( manifestEntry != null )
                 {
-                    var backupPath = Paths.get( getBackupNameOf( targetJar.toString() ) );
+                    Path backupPath = Paths.get( getBackupNameOf( targetJar.toString() ) );
 
                     if ( Files.notExists( backupPath ) )
                     {

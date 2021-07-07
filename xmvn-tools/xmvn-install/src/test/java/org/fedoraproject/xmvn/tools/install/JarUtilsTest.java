@@ -328,13 +328,13 @@ public class JarUtilsTest
         Path testJar = workDir.resolve( "manifest.jar" );
         Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
 
-        var oldInode = (Long) Files.getAttribute( testJar, "unix:ino" );
+        long oldInode = (Long) Files.getAttribute( testJar, "unix:ino" );
 
         Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
 
         JarUtils.injectManifest( testJar, artifact );
 
-        var newInode = (Long) Files.getAttribute( testJar, "unix:ino" );
+        long newInode = (Long) Files.getAttribute( testJar, "unix:ino" );
 
         assertEquals( oldInode, newInode, "Different manifest I-node after injection" );
     }
@@ -354,7 +354,7 @@ public class JarUtilsTest
 
         Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
 
-        var backupPath = Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) );
+        Path backupPath = Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) );
         Files.deleteIfExists( backupPath );
         JarUtils.injectManifest( testJar, artifact );
         assertFalse( Files.exists( backupPath ) );
@@ -407,10 +407,10 @@ public class JarUtilsTest
 
         Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
 
-        var backupPath = Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) );
+        Path backupPath = Paths.get( JarUtils.getBackupNameOf( testJar.toString() ) );
         Files.deleteIfExists( backupPath );
 
-        var content = Files.readAllBytes( testJar );
+        byte[] content = Files.readAllBytes( testJar );
 
         var previousSecurity = System.getSecurityManager();
         var fobiddingSecurity = new ForbiddingSecurityManager( testJar.toString() );
@@ -419,14 +419,14 @@ public class JarUtilsTest
 
         try
         {
-            var ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
-            var message = ex.getMessage();
+            Exception ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+            String message = ex.getMessage();
 
             assertTrue( message.contains( backupPath.toString() ),
                         "An exception thrown when injecting manifest does not mention stored backup file" );
             assertTrue( Files.exists( backupPath ) );
 
-            var backupContent = Files.readAllBytes( backupPath );
+            byte[] backupContent = Files.readAllBytes( backupPath );
 
             assertArrayEquals( content, backupContent,
                                "Content of the backup file is different from the content of the original file" );
