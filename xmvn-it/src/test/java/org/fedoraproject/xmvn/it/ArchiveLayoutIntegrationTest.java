@@ -15,14 +15,22 @@
  */
 package org.fedoraproject.xmvn.it;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
@@ -83,7 +91,42 @@ public class ArchiveLayoutIntegrationTest
         expectations.add( new PathExpectation( lowerBound, upperBound, regex ) );
     }
 
+    private void validateJarManifest( String glob )
+        throws Exception
+    {
+        Path globPath = Paths.get( glob );
+        Path dir = getMavenHome().resolve( globPath.getParent() );
+        String nameGlob = globPath.getFileName().toString();
+
+        try ( DirectoryStream<Path> ds = Files.newDirectoryStream( dir, nameGlob ) )
+        {
+            Iterator<Path> it = ds.iterator();
+            assertTrue( it.hasNext() );
+            Path jarPath = it.next();
+            assertFalse( it.hasNext() );
+
+            try ( InputStream is = Files.newInputStream( jarPath ); JarInputStream jis = new JarInputStream( is ) )
+            {
+                Manifest mf = jis.getManifest();
+                assertNotNull( mf );
+
+                String mainClass = mf.getMainAttributes().getValue( "Main-Class" );
+                assertNotNull( mainClass );
+                assertTrue( mainClass.startsWith( "org.fedoraproject.xmvn.tools." ) );
+
+                String classPath = mf.getMainAttributes().getValue( "Class-Path" );
+                assertNotNull( classPath );
+                for ( String classPathElement : classPath.split( " +" ) )
+                {
+                    Path depPath = dir.resolve( classPathElement );
+                    assertTrue( Files.isRegularFile( depPath, LinkOption.NOFOLLOW_LINKS ) );
+                }
+            }
+        }
+    }
+
     private void matchSingleFile( Path baseDir, Path path, String dirSuffix, List<String> errors )
+        throws Exception
     {
         String pathStr = baseDir.relativize( path ) + dirSuffix;
 
@@ -190,5 +233,9 @@ public class ArchiveLayoutIntegrationTest
         {
             fail( String.join( "\n", errors ) );
         }
+
+        validateJarManifest( "lib/installer/xmvn-install-*.jar" );
+        validateJarManifest( "lib/resolver/xmvn-resolve-*.jar" );
+        validateJarManifest( "lib/subst/xmvn-subst-*.jar" );
     }
 }
