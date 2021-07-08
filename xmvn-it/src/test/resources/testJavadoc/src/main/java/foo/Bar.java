@@ -15,13 +15,21 @@
  */
 package foo;
 
+import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
+import org.xmlpull.mxp1.MXParser;
+
 /**
  * @author Mikolaj Izdebski
  */
 public class Bar
 {
     /** pubDesc */
-    public void pubMethod() {}
+    public void pubMethod()
+    {
+        MXParser mxp = new MXParser();
+        mxp.setInput( new CpioArchiveInputStream( System.in ), null );
+    }
+
     /** protDesc */
     protected void protMethod() {}
     /** defDesc */
