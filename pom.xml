@@ -50,6 +50,11 @@
     </dependency>
     <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
+      <artifactId>xmvn-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.fedoraproject.xmvn</groupId>
       <artifactId>xmvn-core</artifactId>
       <scope>runtime</scope>
     </dependency>
@@ -68,13 +73,29 @@
       <artifactId>xmvn-subst</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- slf4j-simple is a test-scoped dependency declared by
-         xmvn-parent. Override scope to runtime so that
-         maven-assembly-plugin can pick it up as transitive dependency
-         of xmvn-install. -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
