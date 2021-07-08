@@ -254,7 +254,19 @@ public class JavadocMojo
             opts.add( "-version" );
             opts.add( "-Xdoclint:none" );
 
-            opts.add( isJavadocModular( javadocExecutable ) ? "--module-path" : "-classpath" );
+            if ( isJavadocModular( javadocExecutable ) )
+            {
+                if ( files.stream().map( Path::getFileName ).map( Object::toString ).noneMatch( path -> path.equals( "module-info.java" ) ) )
+                {
+                    opts.add( "--add-modules" );
+                    opts.add( "ALL-MODULE-PATH" );
+                }
+                opts.add( "--module-path" );
+            }
+            else
+            {
+                opts.add( "-classpath" );
+            }
             opts.add( quoted( StringUtils.join( getClasspath().iterator(), ":" ) ) );
             opts.add( "-encoding" );
             opts.add( quoted( encoding ) );
