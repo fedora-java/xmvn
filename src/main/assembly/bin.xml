@@ -19,47 +19,51 @@
   <formats>
     <format>zip</format>
   </formats>
-  <moduleSets>
-    <moduleSet>
+  <dependencySets>
+    <dependencySet>
       <includes>
-        <include>org.fedoraproject.xmvn:xmvn-connector</include>
+        <include>:xmvn-connector</include>
+        <include>:xmvn-api</include>
+        <include>:xmvn-core</include>
       </includes>
-      <binaries>
-        <unpack>false</unpack>
-        <outputDirectory>lib/ext</outputDirectory>
-      </binaries>
-    </moduleSet>
-    <moduleSet>
+      <unpack>false</unpack>
+      <outputDirectory>lib/ext</outputDirectory>
+    </dependencySet>
+    <dependencySet>
       <includes>
-        <include>org.fedoraproject.xmvn:xmvn-install</include>
-        <include>org.fedoraproject.xmvn:xmvn-core</include>
+        <include>:xmvn-install</include>
+        <include>:xmvn-api</include>
+        <include>:xmvn-core</include>
+        <include>:jcommander</include>
+        <include>:slf4j-api</include>
+        <include>:slf4j-simple</include>
+        <include>:asm</include>
+        <include>:commons-compress</include>
       </includes>
-      <binaries>
-        <unpack>false</unpack>
-        <outputDirectory>lib/installer</outputDirectory>
-      </binaries>
-    </moduleSet>
-    <moduleSet>
+      <unpack>false</unpack>
+      <outputDirectory>lib/installer</outputDirectory>
+    </dependencySet>
+    <dependencySet>
       <includes>
-        <include>org.fedoraproject.xmvn:xmvn-resolve</include>
-        <include>org.fedoraproject.xmvn:xmvn-core</include>
+        <include>:xmvn-resolve</include>
+        <include>:xmvn-api</include>
+        <include>:xmvn-core</include>
+        <include>:jcommander</include>
       </includes>
-      <binaries>
-        <unpack>false</unpack>
-        <outputDirectory>lib/resolver</outputDirectory>
-      </binaries>
-    </moduleSet>
-    <moduleSet>
+      <unpack>false</unpack>
+      <outputDirectory>lib/resolver</outputDirectory>
+    </dependencySet>
+    <dependencySet>
       <includes>
-        <include>org.fedoraproject.xmvn:xmvn-subst</include>
-        <include>org.fedoraproject.xmvn:xmvn-core</include>
+        <include>:xmvn-subst</include>
+        <include>:xmvn-api</include>
+        <include>:xmvn-core</include>
+        <include>:jcommander</include>
       </includes>
-      <binaries>
-        <unpack>false</unpack>
-        <outputDirectory>lib/subst</outputDirectory>
-      </binaries>
-    </moduleSet>
-  </moduleSets>
+      <unpack>false</unpack>
+      <outputDirectory>lib/subst</outputDirectory>
+    </dependencySet>
+  </dependencySets>
   <fileSets>
     <fileSet>
       <directory>target/dependency/apache-maven-${mavenVersion}</directory>
