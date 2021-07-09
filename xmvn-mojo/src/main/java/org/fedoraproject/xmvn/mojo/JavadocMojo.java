@@ -15,13 +15,9 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +27,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,54 +95,23 @@ public class JavadocMojo
         return "'" + arg + "'";
     }
 
-    static boolean isJavadocModular( Path javadocExecutable )
-        throws IOException, InterruptedException, MojoExecutionException
-    {
-        ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "-help" );
-        pb.redirectInput( new File( "/dev/null" ) );
-        pb.redirectError( Redirect.INHERIT );
-        Process process = pb.start();
-
-        try ( InputStream is = process.getInputStream();
-                        InputStreamReader isr = new InputStreamReader( is );
-                        BufferedReader br = new BufferedReader( isr ) )
-        {
-            return br.lines().anyMatch( line -> line.contains( "module-path" ) );
-        }
-        finally
-        {
-            int exitCode = process.waitFor();
-            if ( exitCode != 0 )
-            {
-                throw new MojoExecutionException( "Javadoc failed with exit code " + exitCode );
-            }
-        }
-    }
-
-    private static void findJavaSources( Collection<Path> javaFiles, Path dir )
+    private static Set<Path> findFiles( Collection<Path> dirs, String regex )
         throws IOException
     {
-        List<Path> paths = new ArrayList<>();
+        Pattern pattern = Pattern.compile( regex );
+        Set<Path> found = new LinkedHashSet<>();
 
-        try ( DirectoryStream<Path> stream = Files.newDirectoryStream( dir ) )
+        for ( Path dir : dirs )
         {
-            for ( Path path : stream )
+            try ( Stream<Path> stream = Files.find( dir, Integer.MAX_VALUE, //
+                                                    ( path, attributes ) -> ( attributes.isRegularFile()
+                                                        && pattern.matcher( path.getFileName().toString() ).matches() ) ) )
             {
-                paths.add( path );
+                stream.forEach( found::add );
             }
         }
 
-        for ( Path path : paths )
-        {
-            if ( Files.isDirectory( path ) )
-            {
-                findJavaSources( javaFiles, path );
-            }
-            else if ( path.toString().endsWith( ".java" ) )
-            {
-                javaFiles.add( path );
-            }
-        }
+        return found;
     }
 
     private Path getOutputDir()
@@ -153,21 +119,20 @@ public class JavadocMojo
         return buildDirectory.toPath().resolve( "xmvn-apidocs" );
     }
 
-    private List<Path> getClasspath()
-        throws MojoExecutionException
+    private void populateClasspath( Collection<Path> reactorClassPath, Collection<Path> fullClassPath )
     {
         List<String> reactorArtifacts = reactorProjects.stream() //
                                                        .map( project -> ( project.getGroupId() + ":"
                                                            + project.getArtifactId() ) ) //
                                                        .collect( Collectors.toList() );
 
-        List<Path> classpath = new ArrayList<>();
-        classpath.addAll( reactorProjects.stream() //
-                                         .map( project -> project.getBuild().getOutputDirectory() ) //
-                                         .filter( StringUtils::isNotEmpty ) //
-                                         .map( dir -> Paths.get( dir ) ) //
-                                         .filter( path -> Files.isDirectory( path ) ) //
-                                         .collect( Collectors.toSet() ) );
+        reactorClassPath.addAll( reactorProjects.stream() //
+                                                .map( project -> project.getBuild().getOutputDirectory() ) //
+                                                .filter( StringUtils::isNotEmpty ) //
+                                                .map( dir -> Paths.get( dir ) ) //
+                                                .filter( path -> Files.isDirectory( path ) ) //
+                                                .collect( Collectors.toSet() ) );
+        fullClassPath.addAll( reactorClassPath );
 
         for ( MavenProject project : reactorProjects )
         {
@@ -180,18 +145,16 @@ public class JavadocMojo
             try
             {
                 DependencyResolutionResult result = resolver.resolve( request );
-                classpath.addAll( result.getResolvedDependencies().stream() //
-                                        .map( dependency -> dependency.getArtifact() ) //
-                                        .map( artifact -> artifact.getFile().toPath() ) //
-                                        .collect( Collectors.toList() ) );
+                fullClassPath.addAll( result.getResolvedDependencies().stream() //
+                                            .map( dependency -> dependency.getArtifact() ) //
+                                            .map( artifact -> artifact.getFile().toPath() ) //
+                                            .collect( Collectors.toList() ) );
             }
             catch ( DependencyResolutionException e )
             {
                 // Ignore dependency resolution errors
             }
         }
-
-        return classpath;
     }
 
     @Override
@@ -213,9 +176,13 @@ public class JavadocMojo
         try
         {
             if ( StringUtils.isEmpty( encoding ) )
+            {
                 encoding = "UTF-8";
+            }
             if ( StringUtils.isEmpty( docencoding ) )
+            {
                 docencoding = "UTF-8";
+            }
 
             Set<Path> sourcePaths = Stream.concat( reactorProjects.stream(), //
                                                    reactorProjects.stream().map( p -> p.getExecutionProject() ) ) //
@@ -233,11 +200,9 @@ public class JavadocMojo
                                           .flatMap( x -> x ) //
                                           .collect( Collectors.toSet() );
 
-            Set<Path> files = new LinkedHashSet<>();
-            for ( Path sourcePath : sourcePaths )
-                findJavaSources( files, sourcePath );
+            Set<Path> sourceFiles = findFiles( sourcePaths, ".*\\.java" );
 
-            if ( files.isEmpty() )
+            if ( sourceFiles.isEmpty() )
             {
                 logger.info( "Skipping Javadoc generation: no Java sources found" );
                 return;
@@ -254,20 +219,19 @@ public class JavadocMojo
             opts.add( "-version" );
             opts.add( "-Xdoclint:none" );
 
-            if ( isJavadocModular( javadocExecutable ) )
-            {
-                if ( files.stream().map( Path::getFileName ).map( Object::toString ).noneMatch( path -> path.equals( "module-info.java" ) ) )
-                {
-                    opts.add( "--add-modules" );
-                    opts.add( "ALL-MODULE-PATH" );
-                }
-                opts.add( "--module-path" );
-            }
-            else
+            List<Path> reactorClassPath = new ArrayList<>();
+            List<Path> fullClassPath = new ArrayList<>();
+            populateClasspath( reactorClassPath, fullClassPath );
+
+            if ( findFiles( reactorClassPath, "module-info\\.class" ).isEmpty() )
             {
                 opts.add( "-classpath" );
             }
-            opts.add( quoted( StringUtils.join( getClasspath().iterator(), ":" ) ) );
+            else
+            {
+                opts.add( "--module-path" );
+            }
+            opts.add( quoted( StringUtils.join( fullClassPath.iterator(), ":" ) ) );
             opts.add( "-encoding" );
             opts.add( quoted( encoding ) );
             opts.add( "-sourcepath" );
@@ -286,8 +250,10 @@ public class JavadocMojo
                 opts.add( quoted( source ) );
             }
 
-            for ( Path file : files )
+            for ( Path file : sourceFiles )
+            {
                 opts.add( quoted( file ) );
+            }
 
             Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE );
 
