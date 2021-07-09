@@ -16,6 +16,10 @@
 package foo;
 
 import org.apache.commons.compress.archivers.cpio.CpioArchiveInputStream;
+import org.apache.maven.project.DefaultMavenProjectBuilder;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
 import org.xmlpull.mxp1.MXParser;
 
 /**
@@ -23,17 +27,37 @@ import org.xmlpull.mxp1.MXParser;
  */
 public class Bar
 {
-    /** pubDesc */
+    /**
+     * pubDesc
+     * 
+     * @throws Exception
+     */
     public void pubMethod()
+        throws Exception
     {
         MXParser mxp = new MXParser();
         mxp.setInput( new CpioArchiveInputStream( System.in ), null );
     }
 
-    /** protDesc */
-    protected void protMethod() {}
+    /** protDesc 
+     * @return 
+     * @throws ProjectBuildingException */
+    @Deprecated
+    protected MavenProject protMethod() throws ProjectBuildingException
+    {
+        MavenProjectBuilder projectBuilder=new DefaultMavenProjectBuilder();
+        MavenProject project = projectBuilder.build( null, null );
+        return project;
+    }
+
     /** defDesc */
-    void defMethod() {}
+    void defMethod()
+    {
+        privMethod();
+    }
+
     /** privDesc */
-    private void privMethod() {}
+    private void privMethod()
+    {
+    }
 }
