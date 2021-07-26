@@ -3,10 +3,84 @@
             --------------------------
                  Mikolaj Izdebski
             --------------------------
-                    2017-06-20
+                    2021-07-26
 
 
 Release notes for XMvn
+
+* What's new in XMvn 4.0.0
+
+  XMvn 4.0.0 was released on 2021-07-26.  Most important changes
+  include:
+
+  * Breaking changes
+
+    * Gradle connector removed
+
+      XMvn 4.0.0 drops connector for Gradle.  It is no longer possible
+      to use XMvn as a Gradle plugin for resolving and deploying
+      artifacts from and to system repositories.
+
+    * Ivy connector removed
+
+      XMvn connector for Apache Ivy was moved to a separate project.
+      XMvn itself is still able to resolve artifacts from Ivy
+      repositories, but XMvn can't be used as Ivy resolver or
+      publisher.
+
+    * Bisect tool removed
+
+      XMvn Bisect tool was removed.  There is no replacement.
+
+    * Artifact resolution from JAVA_HOME
+
+      XMvn can no longer resolve artifacts from JAVA_HOME directory.
+
+    * XMvn connector for Aether
+
+      XMvn Connector for Aether was renamed back to XMvn Connector,
+      following rename of Aether to Maven Resolver.
+
+    * Java 11 runtime requirement
+
+      XMvn now requires Java 11 to run.  It can still be used to build
+      projects with older Java versions by using Maven toolchains.
+
+  * New features
+
+    * Plugin blacklisting
+
+      XMvn 4.0.0 configuration allows blacklisting certain Maven
+      plugins, which are removed from effective POM during build.
+      This feature allows distributions to maintain list of not
+      packaged, not useful plugins that don't need to be explicitly
+      removed by each package.
+
+    * XMvn toolchain manager
+
+      XMvn 4.0.0 automatically activates Maven toolchain of type
+      <<jdk>> which provides <<xmvn=xmvn>>.  This feature allows to
+      easily enable toolchains by system-wide configuration.
+
+  * Other changes
+
+    * Duplicate metadata changes
+
+      In case duplicated Javapackages metadata is found, XMvn will
+      prefer entries which have namespace set, ignoring non-namespaced
+      entries.
+
+* What's new in XMvn 3.1.0
+
+  XMvn 3.1.0 was released on 2019-06-14.  Most important changes
+  include:
+
+  * API changes
+
+    * Overriding compiler settings
+
+      XMvn 3.1.0 no longer tries to override compiler source/target
+      settings of Maven Compiler Plugin.
 
 * What's new in XMvn 3.0.0
 
