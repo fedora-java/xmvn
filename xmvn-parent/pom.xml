@@ -83,7 +83,7 @@
     <mavenResolverVersion>1.7.1</mavenResolverVersion>
     <mavenVersion>3.8.1</mavenVersion>
     <plexusClassworldsVersion>2.6.0</plexusClassworldsVersion>
-    <plexusUtilsVersion>3.4.0</plexusUtilsVersion>
+    <plexusUtilsVersion>3.4.1</plexusUtilsVersion>
     <pluginToolsVersion>3.6.1</pluginToolsVersion>
     <slf4jVersion>2.0.0-alpha4</slf4jVersion>
     <commonsCompressVersion>1.21</commonsCompressVersion>
