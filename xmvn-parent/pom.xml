@@ -92,7 +92,7 @@
     <apivizVersion>1.3.2.GA</apivizVersion>
     <assemblyPluginVersion>3.3.0</assemblyPluginVersion>
     <buildHelperPluginVersion>3.2.0</buildHelperPluginVersion>
-    <checkstyleVersion>8.45.1</checkstyleVersion>
+    <checkstyleVersion>9.0</checkstyleVersion>
     <checkstylePluginVersion>3.1.2</checkstylePluginVersion>
     <cleanPluginVersion>3.1.0</cleanPluginVersion>
     <compilerPluginVersion>3.8.1</compilerPluginVersion>
