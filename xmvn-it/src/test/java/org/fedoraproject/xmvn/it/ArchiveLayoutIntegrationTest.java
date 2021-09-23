@@ -190,7 +190,6 @@ public class ArchiveLayoutIntegrationTest
         expect( 1, 1, "lib/" );
         expect( 30, 60, "lib/[^/]*\\.jar" );
         expect( 15, 30, "lib/[^/]*\\.license" );
-        expect( 10, 100, "lib/jansi-native/.*" );
 
         expect( 1, 1, "lib/ext/" );
         expect( 1, 1, "lib/ext/README\\.txt" );
