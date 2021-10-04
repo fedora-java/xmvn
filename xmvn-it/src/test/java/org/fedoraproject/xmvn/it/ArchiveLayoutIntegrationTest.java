@@ -191,6 +191,10 @@ public class ArchiveLayoutIntegrationTest
         expect( 30, 60, "lib/[^/]*\\.jar" );
         expect( 15, 30, "lib/[^/]*\\.license" );
 
+        expect( 1, 1, "lib/jansi-native/" );
+        expect( 1, 1, "lib/jansi-native/README\\.txt" );
+        expect( 3, 9, "lib/jansi-native/Windows/.*" );
+
         expect( 1, 1, "lib/ext/" );
         expect( 1, 1, "lib/ext/README\\.txt" );
         expect( 1, 1, "lib/ext/xmvn-connector-.*\\.jar" );
