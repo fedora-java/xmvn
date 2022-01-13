@@ -102,7 +102,7 @@
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
     <installPluginVersion>3.0.0-M1</installPluginVersion>
     <jacocoVersion>0.8.7</jacocoVersion>
-    <jarPluginVersion>3.2.1</jarPluginVersion>
+    <jarPluginVersion>3.2.2</jarPluginVersion>
     <javadocPluginVersion>3.3.1</javadocPluginVersion>
     <junitVersion>5.8.2</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
