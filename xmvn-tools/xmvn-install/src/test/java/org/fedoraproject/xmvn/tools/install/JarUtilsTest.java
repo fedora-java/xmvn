@@ -30,6 +30,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -361,36 +362,6 @@ public class JarUtilsTest
     }
 
     /**
-     * A SecurityManager that forbids writing into a specific file
-     */
-    private static class ForbiddingSecurityManager
-        extends SecurityManager
-    {
-        private String file;
-
-        public ForbiddingSecurityManager( String file )
-        {
-            this.file = file;
-        }
-
-        /// This function throws an exception unless overridden
-        @Override
-        public void checkPermission( java.security.Permission perm )
-        {
-        };
-
-        /// Forbid rewriting the original jar file
-        @Override
-        public void checkWrite( String file )
-        {
-            if ( this.file.equals( file ) )
-            {
-                throw new SecurityException();
-            }
-        }
-    }
-
-    /**
      * Test that the backup file created during injectManifest remains after an unsuccessful operation and its content
      * is identical to the original file
      * 
@@ -411,10 +382,10 @@ public class JarUtilsTest
 
         byte[] content = Files.readAllBytes( testJar );
 
-        var previousSecurity = System.getSecurityManager();
-        var fobiddingSecurity = new ForbiddingSecurityManager( testJar.toString() );
+        var previousPermissions = Files.getPosixFilePermissions( testJar );
+        var forbiddingPermissions = Set.of( PosixFilePermission.OWNER_READ );
 
-        System.setSecurityManager( fobiddingSecurity );
+        Files.setPosixFilePermissions( testJar, forbiddingPermissions );
 
         try
         {
@@ -429,13 +400,13 @@ public class JarUtilsTest
             assertArrayEquals( content, backupContent,
                                "Content of the backup file is different from the content of the original file" );
 
-            System.setSecurityManager( previousSecurity );
+            Files.setPosixFilePermissions( testJar, previousPermissions );
             try ( var os = new FileOutputStream( testJar.toFile(), true ) )
             {
-                /// Append garbage to the original file to check if the content of the backup will be retained
+                // Append garbage to the original file to check if the content of the backup will be retained
                 os.write( 0 );
             }
-            System.setSecurityManager( fobiddingSecurity );
+            Files.setPosixFilePermissions( testJar, forbiddingPermissions );
 
             assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
 
@@ -444,7 +415,7 @@ public class JarUtilsTest
         }
         finally
         {
-            System.setSecurityManager( previousSecurity );
+            Files.setPosixFilePermissions( testJar, previousPermissions );
         }
 
         Files.delete( backupPath );
