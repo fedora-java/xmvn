@@ -108,7 +108,7 @@
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <modelloVersion>1.11</modelloVersion>
-    <nexusStagingPluginVersion>1.6.8</nexusStagingPluginVersion>
+    <nexusStagingPluginVersion>1.6.12</nexusStagingPluginVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.0.0</projectInfoReportsPluginVersion>
     <plexusVersion>2.1.1</plexusVersion>
