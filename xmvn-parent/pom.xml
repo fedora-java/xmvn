@@ -85,7 +85,7 @@
     <plexusClassworldsVersion>2.6.0</plexusClassworldsVersion>
     <plexusUtilsVersion>3.4.1</plexusUtilsVersion>
     <pluginToolsVersion>3.6.4</pluginToolsVersion>
-    <slf4jVersion>2.0.0-alpha6</slf4jVersion>
+    <slf4jVersion>2.0.0-alpha7</slf4jVersion>
     <commonsCompressVersion>1.21</commonsCompressVersion>
 
     <!-- Build dependencies -->
