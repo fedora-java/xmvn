@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -95,6 +96,9 @@ public class JavadocMojo
     @Parameter( defaultValue = "${maven.compiler.release}" )
     private String release;
 
+    @Parameter( property = "javadocExcludePackagesRegex" )
+    private String javadocExcludePackagesRegex;
+
     private static String quoted( Object obj )
     {
         String arg = obj.toString();
@@ -103,9 +107,18 @@ public class JavadocMojo
         return "'" + arg + "'";
     }
 
-    private static Set<Path> findFiles( Collection<Path> dirs, String regex )
+    private Set<Path> findFiles( Collection<Path> dirs, String regex )
         throws IOException
     {
+        Optional<Pattern> excludedPackages = Optional.ofNullable( javadocExcludePackagesRegex ).map( Pattern::compile );
+
+        Set<String> compileSourceRoots = new LinkedHashSet<>();
+
+        for ( MavenProject project : session.getAllProjects() )
+        {
+            compileSourceRoots.addAll( project.getCompileSourceRoots() );
+        }
+
         Pattern pattern = Pattern.compile( regex );
         Set<Path> found = new LinkedHashSet<>();
 
@@ -115,7 +128,18 @@ public class JavadocMojo
                                                     ( path, attributes ) -> ( attributes.isRegularFile()
                                                         && pattern.matcher( path.getFileName().toString() ).matches() ) ) )
             {
-                stream.forEach( found::add );
+                stream.filter( ( sourceFile ) ->
+                {
+                    for ( String sourceRoot : compileSourceRoots )
+                    {
+                        if ( sourceFile.startsWith( sourceRoot ) && excludedPackages.isPresent()
+                            && excludedPackages.get().matcher( Paths.get( sourceRoot ).relativize( sourceFile ).toString() ).matches() )
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                } ).forEach( found::add );
             }
         }
 
