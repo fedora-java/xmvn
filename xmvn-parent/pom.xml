@@ -114,7 +114,7 @@
     <plexusVersion>2.1.1</plexusVersion>
     <ratPluginVersion>0.13</ratPluginVersion>
     <resourcesPluginVersion>3.2.0</resourcesPluginVersion>
-    <sitePluginVersion>3.11.0</sitePluginVersion>
+    <sitePluginVersion>3.12.0</sitePluginVersion>
     <sourcePluginVersion>3.2.1</sourcePluginVersion>
     <surefireVersion>3.0.0-M6</surefireVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
