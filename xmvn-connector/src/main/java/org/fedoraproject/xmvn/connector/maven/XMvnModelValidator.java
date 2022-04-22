@@ -27,6 +27,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
+import org.apache.maven.model.interpolation.DefaultModelVersionProcessor;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
 import org.codehaus.plexus.component.annotations.Component;
@@ -51,6 +52,11 @@ public class XMvnModelValidator
 
     @Requirement
     private Configurator configurator;
+
+    public XMvnModelValidator()
+    {
+        super( new DefaultModelVersionProcessor() );
+    }
 
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
