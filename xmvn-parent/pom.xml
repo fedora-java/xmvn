@@ -80,7 +80,7 @@
     <asmVersion>9.2</asmVersion>
     <jcommanderVersion>1.82</jcommanderVersion>
     <mavenInvokerVersion>3.1.0</mavenInvokerVersion>
-    <mavenResolverVersion>1.7.3</mavenResolverVersion>
+    <mavenResolverVersion>1.8.0</mavenResolverVersion>
     <mavenVersion>3.8.4</mavenVersion>
     <plexusClassworldsVersion>2.6.0</plexusClassworldsVersion>
     <plexusUtilsVersion>3.4.1</plexusUtilsVersion>
@@ -92,11 +92,11 @@
     <apivizVersion>1.3.2.GA</apivizVersion>
     <assemblyPluginVersion>3.3.0</assemblyPluginVersion>
     <buildHelperPluginVersion>3.3.0</buildHelperPluginVersion>
-    <checkstyleVersion>10.0</checkstyleVersion>
+    <checkstyleVersion>10.1</checkstyleVersion>
     <checkstylePluginVersion>3.1.2</checkstylePluginVersion>
     <cleanPluginVersion>3.1.0</cleanPluginVersion>
     <compilerPluginVersion>3.10.1</compilerPluginVersion>
-    <dependencyPluginVersion>3.2.0</dependencyPluginVersion>
+    <dependencyPluginVersion>3.3.0</dependencyPluginVersion>
     <deployPluginVersion>3.0.0-M2</deployPluginVersion>
     <easymockVersion>4.3</easymockVersion>
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
@@ -108,7 +108,7 @@
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <modelloVersion>2.0.0</modelloVersion>
-    <nexusStagingPluginVersion>1.6.12</nexusStagingPluginVersion>
+    <nexusStagingPluginVersion>1.6.13</nexusStagingPluginVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.0.0</projectInfoReportsPluginVersion>
     <plexusVersion>2.1.1</plexusVersion>
