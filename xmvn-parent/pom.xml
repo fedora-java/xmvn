@@ -80,7 +80,7 @@
     <asmVersion>9.2</asmVersion>
     <jcommanderVersion>1.82</jcommanderVersion>
     <mavenInvokerVersion>3.1.0</mavenInvokerVersion>
-    <mavenResolverVersion>1.7.3</mavenResolverVersion>
+    <mavenResolverVersion>1.8.0</mavenResolverVersion>
     <mavenVersion>3.8.4</mavenVersion>
     <plexusClassworldsVersion>2.6.0</plexusClassworldsVersion>
     <plexusUtilsVersion>3.4.1</plexusUtilsVersion>
