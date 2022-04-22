@@ -101,7 +101,7 @@
     <easymockVersion>4.3</easymockVersion>
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
     <installPluginVersion>3.0.0-M1</installPluginVersion>
-    <jacocoVersion>0.8.7</jacocoVersion>
+    <jacocoVersion>0.8.8</jacocoVersion>
     <jarPluginVersion>3.2.2</jarPluginVersion>
     <javadocPluginVersion>3.3.2</javadocPluginVersion>
     <junitVersion>5.8.2</junitVersion>
