@@ -89,8 +89,11 @@ public class JavadocMojo
     @Parameter( defaultValue = "${project.build.directory}", required = true )
     private File buildDirectory;
 
-    @Parameter( property = "source" )
+    @Parameter( property = "source", defaultValue = "${maven.compiler.source}" )
     private String source;
+
+    @Parameter( defaultValue = "${maven.compiler.release}" )
+    private String release;
 
     private static String quoted( Object obj )
     {
@@ -238,8 +241,9 @@ public class JavadocMojo
             List<Path> reactorClassPath = new ArrayList<>();
             List<Path> fullClassPath = new ArrayList<>();
             populateClasspath( reactorClassPath, fullClassPath );
+            boolean isModular = !findFiles( reactorClassPath, "module-info\\.class" ).isEmpty();
 
-            if ( findFiles( reactorClassPath, "module-info\\.class" ).isEmpty() )
+            if ( !isModular )
             {
                 opts.add( "-classpath" );
             }
@@ -260,15 +264,41 @@ public class JavadocMojo
             opts.add( quoted( docencoding ) );
             opts.add( "-doctitle" );
             opts.add( quoted( "Javadoc for package XXX" ) );
-            if ( source != null )
+
+            String sourceLevel = null;
+            if ( release != null && isModular )
+            {
+                opts.add( "--release" );
+                opts.add( quoted( release ) );
+                sourceLevel = release;
+
+            }
+            else if ( source != null )
             {
                 opts.add( "-source" );
                 opts.add( quoted( source ) );
+                sourceLevel = source;
+            }
+
+            boolean skipModuleInfo = !isModular;
+            if ( sourceLevel != null && !skipModuleInfo )
+            {
+                try
+                {
+                    float f = Float.parseFloat( sourceLevel );
+                    if ( f < 9 )
+                        skipModuleInfo = true;
+                }
+                catch ( Exception e )
+                {
+                    // pass, we assume that we use modular Java
+                }
             }
 
             for ( Path file : sourceFiles )
             {
-                opts.add( quoted( file ) );
+                if ( !skipModuleInfo || !file.endsWith( "module-info.java" ) )
+                    opts.add( quoted( file ) );
             }
 
             Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE );
