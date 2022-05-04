@@ -78,6 +78,9 @@ public class JavadocMojo
     @Parameter( defaultValue = "${project.build.sourceEncoding}" )
     private String encoding;
 
+    @Parameter( property = "source", defaultValue = "${maven.compiler.source}" )
+    private String source;
+
     @Parameter( defaultValue = "${project.reporting.outputEncoding}" )
     private String docencoding;
 
@@ -234,6 +237,8 @@ public class JavadocMojo
             opts.add( quoted( StringUtils.join( fullClassPath.iterator(), ":" ) ) );
             opts.add( "-encoding" );
             opts.add( quoted( encoding ) );
+            opts.add( "-source" );
+            opts.add( quoted( source ) );
             opts.add( "-sourcepath" );
             opts.add( quoted( StringUtils.join( sourcePaths.iterator(), ":" ) ) );
             opts.add( "-charset" );
