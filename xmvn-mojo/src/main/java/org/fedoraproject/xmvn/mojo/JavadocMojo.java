@@ -225,8 +225,9 @@ public class JavadocMojo
             List<Path> reactorClassPath = new ArrayList<>();
             List<Path> fullClassPath = new ArrayList<>();
             populateClasspath( reactorClassPath, fullClassPath );
+            boolean isModular = !findFiles( reactorClassPath, "module-info\\.class" ).isEmpty();
 
-            if ( findFiles( reactorClassPath, "module-info\\.class" ).isEmpty() )
+            if ( !isModular )
             {
                 opts.add( "-classpath" );
             }
@@ -249,7 +250,7 @@ public class JavadocMojo
             opts.add( quoted( "Javadoc for package XXX" ) );
 
             String sourceLevel = null;
-            if ( release != null )
+            if ( release != null && isModular )
             {
                 opts.add( "--release" );
                 opts.add( quoted( release ) );
@@ -263,8 +264,8 @@ public class JavadocMojo
                 sourceLevel = source;
             }
 
-            boolean skipModuleInfo = false;
-            if ( sourceLevel != null )
+            boolean skipModuleInfo = !isModular;
+            if ( sourceLevel != null && !skipModuleInfo )
             {
                 try
                 {
