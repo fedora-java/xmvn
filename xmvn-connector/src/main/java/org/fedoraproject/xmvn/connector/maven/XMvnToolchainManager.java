@@ -22,6 +22,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.DefaultToolchainManagerPrivate;
 import org.apache.maven.toolchain.MisconfiguredToolchainException;
+import org.apache.maven.toolchain.ToolchainPrivate;
 import org.codehaus.plexus.component.annotations.Component;
 
 /**
@@ -38,11 +39,11 @@ public class XMvnToolchainManager
 
         try
         {
-            for ( var toolchain : getToolchainsForType( "jdk", session ) )
+            for ( ToolchainPrivate toolchain : getToolchainsForType( "jdk", session ) )
             {
                 if ( toolchain.matchesRequirements( Collections.singletonMap( "xmvn", "xmvn" ) ) )
                 {
-                    for ( var project : session.getAllProjects() )
+                    for ( MavenProject project : session.getAllProjects() )
                     {
                         session.setCurrentProject( project );
                         storeToolchainToBuildContext( toolchain, session );
