@@ -411,8 +411,8 @@ public class JarUtilsTest
 
         byte[] content = Files.readAllBytes( testJar );
 
-        var previousSecurity = System.getSecurityManager();
-        var fobiddingSecurity = new ForbiddingSecurityManager( testJar.toString() );
+        SecurityManager previousSecurity = System.getSecurityManager();
+        SecurityManager fobiddingSecurity = new ForbiddingSecurityManager( testJar.toString() );
 
         System.setSecurityManager( fobiddingSecurity );
 
@@ -430,7 +430,7 @@ public class JarUtilsTest
                                "Content of the backup file is different from the content of the original file" );
 
             System.setSecurityManager( previousSecurity );
-            try ( var os = new FileOutputStream( testJar.toFile(), true ) )
+            try ( FileOutputStream os = new FileOutputStream( testJar.toFile(), true ) )
             {
                 /// Append garbage to the original file to check if the content of the backup will be retained
                 os.write( 0 );

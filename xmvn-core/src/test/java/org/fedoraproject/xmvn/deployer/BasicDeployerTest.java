@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
@@ -149,7 +150,7 @@ public class BasicDeployerTest
         {
             return Files.lines( Paths.get( "/proc/self/status" ) ).map( s ->
             {
-                var matcher = PROCESS_UID_PATTERN.matcher( s );
+                Matcher matcher = PROCESS_UID_PATTERN.matcher( s );
 
                 if ( matcher.matches() )
                 {
