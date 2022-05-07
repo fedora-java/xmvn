@@ -69,7 +69,7 @@ public class JavadocMojo
     private ProjectDependenciesResolver resolver;
 
     @Component
-    private Configurator confugurator;
+    private Configurator configurator;
 
     @Component
     private ToolchainManager toolchainManager;
