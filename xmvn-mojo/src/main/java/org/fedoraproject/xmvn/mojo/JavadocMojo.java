@@ -227,7 +227,36 @@ public class JavadocMojo
             populateClasspath( reactorClassPath, fullClassPath );
             boolean isModular = !findFiles( reactorClassPath, "module-info\\.class" ).isEmpty();
 
-            if ( !isModular )
+            String sourceLevel = null;
+            if ( release != null )
+            {
+                opts.add( "--release" );
+                opts.add( quoted( release ) );
+                sourceLevel = release;
+            }
+            else if ( source != null )
+            {
+                opts.add( "-source" );
+                opts.add( quoted( source ) );
+                sourceLevel = source;
+            }
+
+            boolean skipModuleInfo = !isModular;
+            if ( sourceLevel != null )
+            {
+                try
+                {
+                    float f = Float.parseFloat( sourceLevel );
+                    if ( f < 9 )
+                        skipModuleInfo = true;
+                }
+                catch ( Exception e )
+                {
+                    // pass, we assume that we use modular Java
+                }
+            }
+
+            if ( !isModular || skipModuleInfo )
             {
                 opts.add( "-classpath" );
             }
@@ -248,36 +277,6 @@ public class JavadocMojo
             opts.add( quoted( docencoding ) );
             opts.add( "-doctitle" );
             opts.add( quoted( "Javadoc for package XXX" ) );
-
-            String sourceLevel = null;
-            if ( release != null && isModular )
-            {
-                opts.add( "--release" );
-                opts.add( quoted( release ) );
-                sourceLevel = release;
-
-            }
-            else if ( source != null )
-            {
-                opts.add( "-source" );
-                opts.add( quoted( source ) );
-                sourceLevel = source;
-            }
-
-            boolean skipModuleInfo = !isModular;
-            if ( sourceLevel != null && !skipModuleInfo )
-            {
-                try
-                {
-                    float f = Float.parseFloat( sourceLevel );
-                    if ( f < 9 )
-                        skipModuleInfo = true;
-                }
-                catch ( Exception e )
-                {
-                    // pass, we assume that we use modular Java
-                }
-            }
 
             for ( Path file : sourceFiles )
             {
