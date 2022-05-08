@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -276,7 +277,7 @@ public class XMvnMojoExecutionListener
         }
         else if ( XMVN_BUILDDEP.equals( execution ) )
         {
-            trySetBeanProperty( mojo, "resolutions", List.copyOf( resolutions ) );
+            trySetBeanProperty( mojo, "resolutions", Collections.unmodifiableList( new ArrayList<>( resolutions ) ) );
         }
     }
 

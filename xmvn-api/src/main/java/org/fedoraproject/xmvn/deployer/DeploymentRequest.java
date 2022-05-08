@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,7 +54,7 @@ public class DeploymentRequest
 
     public List<DependencyDescriptor> getDependencies()
     {
-        return List.copyOf( dependencies );
+        return Collections.unmodifiableList( dependencies );
     }
 
     public void addDependency( Artifact dependencyArtifact, Artifact... exclusions )
@@ -85,7 +86,7 @@ public class DeploymentRequest
 
     public Map<String, String> getProperties()
     {
-        return Map.copyOf( properties );
+        return Collections.unmodifiableMap( properties );
     }
 
     public String getProperty( String key )
