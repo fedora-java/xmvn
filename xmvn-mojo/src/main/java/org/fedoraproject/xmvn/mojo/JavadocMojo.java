@@ -170,6 +170,7 @@ public class JavadocMojo
         Toolchain tc = toolchainManager.getToolchainFromBuildContext( "jdk", session );
         if ( tc != null )
         {
+            logger.info( "Toolchain in xmvn-mojo: " + tc );
             javadocTool = tc.findTool( "javadoc" );
         }
         Path javadocExecutable;
