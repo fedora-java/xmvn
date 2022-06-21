@@ -45,6 +45,8 @@ import org.apache.maven.project.DependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectDependenciesResolver;
+import org.apache.maven.toolchain.Toolchain;
+import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.util.filter.AndDependencyFilter;
@@ -67,7 +69,10 @@ public class JavadocMojo
     private ProjectDependenciesResolver resolver;
 
     @Component
-    private Configurator confugurator;
+    private Configurator configurator;
+
+    @Component
+    private ToolchainManager toolchainManager;
 
     @Parameter( defaultValue = "${session}", readonly = true )
     private MavenSession session;
@@ -161,8 +166,19 @@ public class JavadocMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        String javadocTool = null;
+        Toolchain tc = toolchainManager.getToolchainFromBuildContext( "jdk", session );
+        if ( tc != null )
+        {
+            logger.info( "Toolchain in xmvn-mojo: " + tc );
+            javadocTool = tc.findTool( "javadoc" );
+        }
         Path javadocExecutable;
-        if ( System.getenv().containsKey( "JAVA_HOME" ) )
+        if ( javadocTool != null && !javadocTool.isEmpty() )
+        {
+            javadocExecutable = Paths.get( javadocTool );
+        }
+        else if ( System.getenv().containsKey( "JAVA_HOME" ) )
         {
             javadocExecutable = Paths.get( System.getenv( "JAVA_HOME" ) ) //
                                      .resolve( "bin" ) //
