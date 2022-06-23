@@ -183,9 +183,7 @@ public class JavadocMojo
         }
         else if ( System.getenv().containsKey( "JAVA_HOME" ) )
         {
-            javadocExecutable = Paths.get( System.getenv( "JAVA_HOME" ) ) //
-                                     .resolve( "bin" ) //
-                                     .resolve( "javadoc" );
+            javadocExecutable = Paths.get( System.getenv( "JAVA_HOME" ) ).resolve( "bin" ).resolve( "javadoc" );
         }
         else
         {
