@@ -298,7 +298,8 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${compilerPluginVersion}</version>
           <configuration>
-            <release>11</release>
+            <source>1.8</source>
+            <target>1.8</target>
           </configuration>
         </plugin>
         <plugin>
@@ -559,6 +560,28 @@
             <configuration>
               <skip>true</skip>
               <skipDeploy>true</skipDeploy>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk9+</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <release>8</release>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
             </configuration>
           </plugin>
         </plugins>
