@@ -167,6 +167,11 @@ public abstract class AbstractIntegrationTest
         return Files.lines( baseDir.resolve( STDERR ) );
     }
 
+    public static int getJavaVersion()
+    {
+        return Integer.parseInt( System.getProperty( "java.version" ).replaceAll( "\\..*", "" ) );
+    }
+
     /**
      * @author Mikolaj Izdebski
      */
