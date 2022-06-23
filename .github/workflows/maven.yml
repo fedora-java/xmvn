@@ -29,6 +29,6 @@ jobs:
       - name: Checkout git repository
         uses: actions/checkout@v3
       - name: Run build
-        run: mvn -B -Dgpg.skip -Prun-its verify
+        run: mvn -V -B -Dgpg.skip -Prun-its verify
       - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v3.1.0
