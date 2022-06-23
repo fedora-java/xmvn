@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 
-FROM registry.access.redhat.com/ubi8
-RUN dnf -y module enable maven:3.6 && dnf -y update && dnf -y install git-core maven-openjdk11
+FROM registry.access.redhat.com/ubi9
+RUN dnf -y update && dnf -y install git-core maven-openjdk11
