@@ -15,4 +15,4 @@
 #
 
 FROM registry.access.redhat.com/ubi9
-RUN dnf -y update && dnf -y install git-core maven-openjdk11
+RUN dnf -y update && dnf -y install git-core maven-openjdk8
