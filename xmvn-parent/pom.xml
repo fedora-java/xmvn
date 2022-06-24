@@ -80,10 +80,10 @@
     <asmVersion>9.3</asmVersion>
     <jcommanderVersion>1.82</jcommanderVersion>
     <mavenInvokerVersion>3.2.0</mavenInvokerVersion>
-    <mavenResolverVersion>1.8.0</mavenResolverVersion>
-    <mavenVersion>3.8.5</mavenVersion>
+    <mavenResolverVersion>1.8.1</mavenResolverVersion>
+    <mavenVersion>3.8.6</mavenVersion>
     <plexusClassworldsVersion>2.6.0</plexusClassworldsVersion>
-    <plexusUtilsVersion>3.4.1</plexusUtilsVersion>
+    <plexusUtilsVersion>3.4.2</plexusUtilsVersion>
     <pluginToolsVersion>3.6.4</pluginToolsVersion>
     <slf4jVersion>2.0.0-alpha7</slf4jVersion>
     <commonsCompressVersion>1.21</commonsCompressVersion>
@@ -112,11 +112,11 @@
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.0.0</projectInfoReportsPluginVersion>
     <plexusVersion>2.1.1</plexusVersion>
-    <ratPluginVersion>0.13</ratPluginVersion>
+    <ratPluginVersion>0.14</ratPluginVersion>
     <resourcesPluginVersion>3.2.0</resourcesPluginVersion>
-    <sitePluginVersion>3.11.0</sitePluginVersion>
+    <sitePluginVersion>3.12.0</sitePluginVersion>
     <sourcePluginVersion>3.2.1</sourcePluginVersion>
-    <surefireVersion>3.0.0-M6</surefireVersion>
+    <surefireVersion>3.0.0-M7</surefireVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
 
   </properties>
@@ -470,12 +470,6 @@
     </profile>
     <profile>
       <id>release</id>
-      <activation>
-        <property>
-          <name>env.CI</name>
-          <value>true</value>
-        </property>
-      </activation>
       <build>
         <plugins>
           <plugin>
