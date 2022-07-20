@@ -97,7 +97,7 @@
     <cleanPluginVersion>3.2.0</cleanPluginVersion>
     <compilerPluginVersion>3.10.1</compilerPluginVersion>
     <dependencyPluginVersion>3.3.0</dependencyPluginVersion>
-    <deployPluginVersion>3.0.0-M2</deployPluginVersion>
+    <deployPluginVersion>3.0.0</deployPluginVersion>
     <easymockVersion>4.3</easymockVersion>
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
     <installPluginVersion>3.0.0-M1</installPluginVersion>
