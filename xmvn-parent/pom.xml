@@ -100,7 +100,7 @@
     <deployPluginVersion>3.0.0-M2</deployPluginVersion>
     <easymockVersion>4.3</easymockVersion>
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
-    <installPluginVersion>3.0.0-M1</installPluginVersion>
+    <installPluginVersion>3.0.0</installPluginVersion>
     <jacocoVersion>0.8.8</jacocoVersion>
     <jarPluginVersion>3.2.2</jarPluginVersion>
     <javadocPluginVersion>3.4.0</javadocPluginVersion>
