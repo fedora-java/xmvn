@@ -30,7 +30,7 @@ import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 /**
  * @author Mikolaj Izdebski
  */
-class InstallerCliRequest
+final class InstallerCliRequest
 {
     @Parameter
     private List<String> parameters = new LinkedList<>();
@@ -59,32 +59,45 @@ class InstallerCliRequest
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
-    public InstallerCliRequest( String[] args )
+    private StringBuilder usage = new StringBuilder();
+
+    public static InstallerCliRequest build( String[] args )
     {
         try
         {
-            JCommander jcomm = new JCommander( this );
-            jcomm.setProgramName( "xmvn-install" );
-            jcomm.parse( args );
-
-            if ( help )
-            {
-                System.out.println( "xmvn-install: Install artifacts" );
-                System.out.println();
-                jcomm.usage();
-                System.exit( 0 );
-            }
-
-            if ( debug )
-                System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "trace" );
-            for ( String param : defines.keySet() )
-                System.setProperty( param, defines.get( param ) );
+            return new InstallerCliRequest( args );
         }
         catch ( ParameterException e )
         {
             System.err.println( e.getMessage() + ". Specify -h for usage." );
-            System.exit( 1 );
+            return null;
         }
+    }
+
+    private InstallerCliRequest( String[] args )
+    {
+        JCommander jcomm = new JCommander( this );
+        jcomm.setProgramName( "xmvn-install" );
+        jcomm.parse( args );
+        jcomm.getUsageFormatter().usage( usage );
+
+        if ( debug )
+            System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "trace" );
+        for ( String param : defines.keySet() )
+            System.setProperty( param, defines.get( param ) );
+    }
+
+    public boolean printUsage()
+    {
+        if ( help )
+        {
+            System.out.println( "xmvn-install: Install artifacts" );
+            System.out.println();
+            System.out.println( usage );
+            return true;
+        }
+
+        return false;
     }
 
     public List<String> getParameters()
