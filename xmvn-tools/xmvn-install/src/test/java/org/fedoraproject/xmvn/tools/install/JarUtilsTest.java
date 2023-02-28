@@ -34,6 +34,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
+import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -361,36 +362,6 @@ public class JarUtilsTest
     }
 
     /**
-     * A SecurityManager that forbids writing into a specific file
-     */
-    private static class ForbiddingSecurityManager
-        extends SecurityManager
-    {
-        private String file;
-
-        public ForbiddingSecurityManager( String file )
-        {
-            this.file = file;
-        }
-
-        /// This function throws an exception unless overridden
-        @Override
-        public void checkPermission( java.security.Permission perm )
-        {
-        };
-
-        /// Forbid rewriting the original jar file
-        @Override
-        public void checkWrite( String file )
-        {
-            if ( this.file.equals( file ) )
-            {
-                throw new SecurityException();
-            }
-        }
-    }
-
-    /**
      * Test that the backup file created during injectManifest remains after an unsuccessful operation and its content
      * is identical to the original file
      * 
@@ -404,48 +375,39 @@ public class JarUtilsTest
         Path testJar = workDir.resolve( "manifest.jar" );
         Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
 
-        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+        Artifact artifact = EasyMock.createMock( Artifact.class );
+        EasyMock.expect( artifact.getGroupId() ).andThrow( new RuntimeException( "boom" ) );
+        EasyMock.replay( artifact );
 
         Path backupPath = JarUtils.getBackupNameOf( testJar );
         Files.deleteIfExists( backupPath );
 
         byte[] content = Files.readAllBytes( testJar );
 
-        SecurityManager previousSecurity = System.getSecurityManager();
-        SecurityManager fobiddingSecurity = new ForbiddingSecurityManager( testJar.toString() );
+        Exception ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
 
-        System.setSecurityManager( fobiddingSecurity );
+        assertTrue( ex.getMessage().contains( backupPath.toString() ),
+                    "An exception thrown when injecting manifest does not mention stored backup file" );
+        assertTrue( Files.exists( backupPath ) );
 
-        try
+        byte[] backupContent = Files.readAllBytes( backupPath );
+
+        assertArrayEquals( content, backupContent,
+                           "Content of the backup file is different from the content of the original file" );
+
+        Files.copy( testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+        try ( FileOutputStream os = new FileOutputStream( testJar.toFile(), true ) )
         {
-            Exception ex = assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
-
-            assertTrue( ex.getMessage().contains( backupPath.toString() ),
-                        "An exception thrown when injecting manifest does not mention stored backup file" );
-            assertTrue( Files.exists( backupPath ) );
-
-            byte[] backupContent = Files.readAllBytes( backupPath );
-
-            assertArrayEquals( content, backupContent,
-                               "Content of the backup file is different from the content of the original file" );
-
-            System.setSecurityManager( previousSecurity );
-            try ( FileOutputStream os = new FileOutputStream( testJar.toFile(), true ) )
-            {
-                /// Append garbage to the original file to check if the content of the backup will be retained
-                os.write( 0 );
-            }
-            System.setSecurityManager( fobiddingSecurity );
-
-            assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
-
-            assertArrayEquals( backupContent, Files.readAllBytes( backupPath ),
-                               "Backup file content was overwritten after an unsuccessful injection" );
+            /// Append garbage to the original file to check if the content of the backup will be retained
+            os.write( 0 );
         }
-        finally
-        {
-            System.setSecurityManager( previousSecurity );
-        }
+
+        assertThrows( Exception.class, () -> JarUtils.injectManifest( testJar, artifact ) );
+
+        assertArrayEquals( backupContent, Files.readAllBytes( backupPath ),
+                           "Backup file content was overwritten after an unsuccessful injection" );
+
+        EasyMock.verify( artifact );
 
         Files.delete( backupPath );
     }
