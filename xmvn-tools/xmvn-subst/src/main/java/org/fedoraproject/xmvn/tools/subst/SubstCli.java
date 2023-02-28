@@ -53,7 +53,7 @@ public class SubstCli
         return result;
     }
 
-    private void run( SubstCliRequest cliRequest )
+    private int run( SubstCliRequest cliRequest )
     {
         List<MetadataResult> metadataResults = new ArrayList<>();
 
@@ -94,15 +94,22 @@ public class SubstCli
             e.printStackTrace();
         }
 
-        if ( cliRequest.isStrict() && visitor.getFailureCount() > 0 )
-            System.exit( 1 );
+        return cliRequest.isStrict() && visitor.getFailureCount() > 0 ? 1 : 0;
     }
 
-    public static void main( String[] args )
+    public static int doMain( String[] args )
     {
         try
         {
-            SubstCliRequest cliRequest = new SubstCliRequest( args );
+            SubstCliRequest cliRequest = SubstCliRequest.build( args );
+            if ( cliRequest == null )
+            {
+                return 1;
+            }
+            if ( cliRequest.printUsage() )
+            {
+                return 0;
+            }
             if ( cliRequest.isDebug() )
                 System.setProperty( "xmvn.debug", "true" );
 
@@ -112,17 +119,18 @@ public class SubstCli
 
             SubstCli cli = new SubstCli( configurator, metadataResolver );
 
-            cli.run( cliRequest );
+            return cli.run( cliRequest );
         }
         catch ( Throwable e )
         {
-            // Helper exceptions used with our integration tests should be ignored
-            if ( e.getClass().getName().startsWith( "org.fedoraproject.xmvn.it." ) )
-                throw (RuntimeException) e;
-
             System.err.println( "Unhandled exception" );
             e.printStackTrace();
-            System.exit( 2 );
+            return 2;
         }
+    }
+
+    public static void main( String[] args )
+    {
+        System.exit( doMain( args ) );
     }
 }

@@ -22,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
@@ -149,16 +148,7 @@ public abstract class AbstractToolIntegrationTest
             System.setErr( stderr );
 
             Class<?> mainClass = toolClassLoader.loadClass( mf.getValue( "Main-Class" ) );
-            mainClass.getMethod( "main", String[].class ).invoke( null, (Object) args );
-            return 0;
-        }
-        catch ( InvocationTargetException e )
-        {
-            Throwable cause = e.getCause();
-            System.err.println( cause );
-            if ( cause instanceof SystemExit )
-                return ( (SystemExit) cause ).getStatus();
-            throw e;
+            return (Integer) mainClass.getMethod( "doMain", String[].class ).invoke( null, (Object) args );
         }
         finally
         {

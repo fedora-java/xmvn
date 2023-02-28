@@ -30,7 +30,7 @@ import com.beust.jcommander.ParameterException;
 /**
  * @author Mikolaj Izdebski
  */
-class SubstCliRequest
+final class SubstCliRequest
 {
     @Parameter
     private List<String> parameters = new LinkedList<>();
@@ -61,30 +61,43 @@ class SubstCliRequest
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
-    public SubstCliRequest( String[] args )
+    private StringBuilder usage = new StringBuilder();
+
+    public static SubstCliRequest build( String[] args )
     {
         try
         {
-            JCommander jcomm = new JCommander( this );
-            jcomm.setProgramName( "xmvn-subst" );
-            jcomm.parse( args );
-
-            if ( help )
-            {
-                System.out.println( "xmvn-subst: Substitute artifact files with symbolic links" );
-                System.out.println();
-                jcomm.usage();
-                System.exit( 0 );
-            }
-
-            for ( String param : defines.keySet() )
-                System.setProperty( param, defines.get( param ) );
+            return new SubstCliRequest( args );
         }
         catch ( ParameterException e )
         {
             System.err.println( e.getMessage() + ". Specify -h for usage." );
-            System.exit( 1 );
+            return null;
         }
+    }
+
+    private SubstCliRequest( String[] args )
+    {
+        JCommander jcomm = new JCommander( this );
+        jcomm.setProgramName( "xmvn-subst" );
+        jcomm.parse( args );
+        jcomm.getUsageFormatter().usage( usage );
+
+        for ( String param : defines.keySet() )
+            System.setProperty( param, defines.get( param ) );
+    }
+
+    public boolean printUsage()
+    {
+        if ( help )
+        {
+            System.out.println( "xmvn-subst: Substitute artifact files with symbolic links" );
+            System.out.println();
+            System.out.println( usage );
+            return true;
+        }
+
+        return false;
     }
 
     public List<String> getParameters()

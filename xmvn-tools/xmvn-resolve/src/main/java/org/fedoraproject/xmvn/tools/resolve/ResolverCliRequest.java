@@ -28,7 +28,7 @@ import com.beust.jcommander.ParameterException;
 /**
  * @author Mikolaj Izdebski
  */
-class ResolverCliRequest
+final class ResolverCliRequest
 {
     @Parameter
     private List<String> parameters = new LinkedList<>();
@@ -50,35 +50,48 @@ class ResolverCliRequest
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
-    public ResolverCliRequest( String[] args )
+    private StringBuilder usage = new StringBuilder();
+
+    public static ResolverCliRequest build( String[] args )
     {
         try
         {
-            JCommander jcomm = new JCommander( this );
-            jcomm.setProgramName( "xmvn-resolve" );
-            jcomm.parse( args );
-
-            if ( help )
-            {
-                System.out.println( "xmvn-resolve: Resolve artifacts from system repository" );
-                System.out.println();
-                jcomm.usage();
-                System.exit( 0 );
-            }
-
-            if ( raw && ( classpath || parameters.size() > 0 ) )
-            {
-                throw new ParameterException( "--raw-request must be used alone" );
-            }
-
-            for ( String param : defines.keySet() )
-                System.setProperty( param, defines.get( param ) );
+            return new ResolverCliRequest( args );
         }
         catch ( ParameterException e )
         {
             System.err.println( e.getMessage() + ". Specify -h for usage." );
-            System.exit( 1 );
+            return null;
         }
+    }
+
+    private ResolverCliRequest( String[] args )
+    {
+        JCommander jcomm = new JCommander( this );
+        jcomm.setProgramName( "xmvn-resolve" );
+        jcomm.parse( args );
+        jcomm.getUsageFormatter().usage( usage );
+
+        if ( raw && ( classpath || parameters.size() > 0 ) )
+        {
+            throw new ParameterException( "--raw-request must be used alone" );
+        }
+
+        for ( String param : defines.keySet() )
+            System.setProperty( param, defines.get( param ) );
+    }
+
+    public boolean printUsage()
+    {
+        if ( help )
+        {
+            System.out.println( "xmvn-resolve: Resolve artifacts from system repository" );
+            System.out.println();
+            System.out.println( usage );
+            return true;
+        }
+
+        return false;
     }
 
     public List<String> getParameters()
