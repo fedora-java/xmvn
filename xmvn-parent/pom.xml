@@ -93,7 +93,7 @@
     <assemblyPluginVersion>3.5.0</assemblyPluginVersion>
     <buildHelperPluginVersion>3.3.0</buildHelperPluginVersion>
     <checkstyleVersion>9.3</checkstyleVersion>
-    <checkstylePluginVersion>3.1.2</checkstylePluginVersion>
+    <checkstylePluginVersion>3.2.1</checkstylePluginVersion>
     <cleanPluginVersion>3.2.0</cleanPluginVersion>
     <compilerPluginVersion>3.10.1</compilerPluginVersion>
     <dependencyPluginVersion>3.3.0</dependencyPluginVersion>
