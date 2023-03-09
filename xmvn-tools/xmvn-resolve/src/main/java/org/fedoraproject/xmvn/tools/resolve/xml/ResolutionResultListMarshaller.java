@@ -32,7 +32,7 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
  */
 public class ResolutionResultListMarshaller
 {
-    private List<ResolutionResult> resolutionResults;
+    private final List<ResolutionResult> resolutionResults;
 
     static class StringConstants
     {

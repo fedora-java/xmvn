@@ -65,8 +65,8 @@ public class EffectivePackagingTest
 
         PackagingRule effectiveRule =
             new EffectivePackagingRule( artifactManagement, "foo", "bar", "the=ext", "_my_clasfr", "baz" );
-        assertTrue( effectiveRule.getFiles().get( 0 ).equals( "file1" ) );
-        assertTrue( effectiveRule.getFiles().get( 1 ).equals( "file2" ) );
+        assertTrue( "file1".equals( effectiveRule.getFiles().get( 0 ) ) );
+        assertTrue( "file2".equals( effectiveRule.getFiles().get( 1 ) ) );
         assertEquals( effectiveRule.getFiles().size(), 2 );
     }
 
@@ -96,12 +96,12 @@ public class EffectivePackagingTest
         PackagingRule effRule1 =
             new EffectivePackagingRule( artifactManagement, "foo-test-bar", "ipsum-dolor", "jar", "", "1.2.3" );
         assertNotNull( effRule1.getTargetPackage() );
-        assertTrue( effRule1.getTargetPackage().equals( "pkgX" ) );
+        assertTrue( "pkgX".equals( effRule1.getTargetPackage() ) );
 
         PackagingRule effRule2 =
             new EffectivePackagingRule( artifactManagement, "foobar", "lorem-dolor", "jar", "", "1.2.3" );
         assertNotNull( effRule2.getTargetPackage() );
-        assertTrue( effRule2.getTargetPackage().equals( "pkgX" ) );
+        assertTrue( "pkgX".equals( effRule2.getTargetPackage() ) );
 
         PackagingRule effRule3 =
             new EffectivePackagingRule( artifactManagement, "foobar", "lorem-dolor", "jar", "", "1.253" );
@@ -129,7 +129,7 @@ public class EffectivePackagingTest
         PackagingRule effRule1 =
             new EffectivePackagingRule( artifactManagement, "maven-plugin", "com.example", "jar", "funny", "0.42" );
         assertNotNull( effRule1.getTargetPackage() );
-        assertTrue( effRule1.getTargetPackage().equals( "somePackage" ) );
+        assertTrue( "somePackage".equals( effRule1.getTargetPackage() ) );
     }
 
     /**
@@ -162,7 +162,7 @@ public class EffectivePackagingTest
             new EffectivePackagingRule( artifactManagement, "bar", "baz", "xy", "zzy", "1.2.3" );
         assertNotNull( effectiveRule );
         assertNotNull( effectiveRule.getTargetPackage() );
-        assertTrue( effectiveRule.getTargetPackage().equals( "fooBar" ) );
+        assertTrue( "fooBar".equals( effectiveRule.getTargetPackage() ) );
     }
 
     /**
@@ -199,7 +199,7 @@ public class EffectivePackagingTest
         PackagingRule effRule =
             new EffectivePackagingRule( artifactManagement, "org.sonatype.sisu", "sisu-parent", "pom", "", "2.3.0" );
         assertNotNull( effRule.getTargetPackage() );
-        assertTrue( effRule.getTargetPackage().equals( "parent" ) );
+        assertTrue( "parent".equals( effRule.getTargetPackage() ) );
     }
 
     /**

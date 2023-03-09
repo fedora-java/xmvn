@@ -92,7 +92,7 @@ public abstract class AbstractMavenIntegrationTest
 
         if ( expectFailure )
         {
-            assertTrue( getStdout().anyMatch( s -> s.equals( "[INFO] BUILD FAILURE" ) ) );
+            assertTrue( getStdout().anyMatch( "[INFO] BUILD FAILURE"::equals ) );
         }
     }
 

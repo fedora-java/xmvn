@@ -54,7 +54,9 @@ final class GlobUtils
             if ( escape )
             {
                 if ( SPECIAL_CHARS.indexOf( ch ) >= 0 )
+                {
                     re.append( '\\' );
+                }
                 re.append( ch );
                 escape = false;
             }
@@ -88,15 +90,21 @@ final class GlobUtils
             else
             {
                 if ( SPECIAL_CHARS.indexOf( ch ) >= 0 )
+                {
                     re.append( '\\' );
+                }
                 re.append( ch );
             }
         }
 
         if ( escape )
+        {
             throw new Error( "Escape sequence ends prematurely" );
+        }
         if ( level != 0 )
+        {
             throw new Error( "Alternative not closed" );
+        }
 
         re.append( '$' );
         return re.toString();
@@ -111,7 +119,9 @@ final class GlobUtils
     public static Pattern glob2pattern( String glob )
     {
         if ( glob == null || glob.isEmpty() )
+        {
             return null;
+        }
         return Pattern.compile( glob2re( glob ) );
     }
 }

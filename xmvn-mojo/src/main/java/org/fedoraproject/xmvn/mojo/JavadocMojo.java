@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.util.filter.AndDependencyFilter;
 import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
@@ -137,8 +139,8 @@ public class JavadocMojo
         reactorClassPath.addAll( reactorProjects.stream() //
                                                 .map( project -> project.getBuild().getOutputDirectory() ) //
                                                 .filter( StringUtils::isNotEmpty ) //
-                                                .map( dir -> Paths.get( dir ) ) //
-                                                .filter( path -> Files.isDirectory( path ) ) //
+                                                .map( Paths::get ) //
+                                                .filter( Files::isDirectory ) //
                                                 .collect( Collectors.toSet() ) );
         fullClassPath.addAll( reactorClassPath );
 
@@ -154,7 +156,7 @@ public class JavadocMojo
             {
                 DependencyResolutionResult result = resolver.resolve( request );
                 fullClassPath.addAll( result.getResolvedDependencies().stream() //
-                                            .map( dependency -> dependency.getArtifact() ) //
+                                            .map( Dependency::getArtifact ) //
                                             .map( artifact -> artifact.getFile().toPath() ) //
                                             .collect( Collectors.toList() ) );
             }
@@ -202,18 +204,18 @@ public class JavadocMojo
             }
 
             Set<Path> sourcePaths = Stream.concat( reactorProjects.stream(), //
-                                                   reactorProjects.stream().map( p -> p.getExecutionProject() ) ) //
-                                          .filter( project -> project != null ) //
-                                          .filter( project -> !project.getPackaging().equals( "pom" ) ) //
-                                          .filter( project -> project.getArtifact().getArtifactHandler().getLanguage().equals( "java" ) ) //
+                                                   reactorProjects.stream().map( MavenProject::getExecutionProject ) ) //
+                                          .filter( Objects::nonNull ) //
+                                          .filter( project -> !"pom".equals( project.getPackaging() ) ) //
+                                          .filter( project -> "java".equals( project.getArtifact().getArtifactHandler().getLanguage() ) ) //
                                           .filter( project -> project.getCompileSourceRoots() != null ) //
                                           .map( project -> project.getCompileSourceRoots().stream() //
-                                                                  .filter( compileRoot -> compileRoot != null ) //
-                                                                  .map( compileRoot -> Paths.get( compileRoot ) ) //
+                                                                  .filter( Objects::nonNull ) //
+                                                                  .map( Paths::get ) //
                                                                   .map( sourcePath -> sourcePath.isAbsolute()
                                                                                   ? sourcePath
                                                                                   : project.getBasedir().toPath().resolve( sourcePath ).toAbsolutePath() ) //
-                                                                  .filter( sourcePath -> Files.isDirectory( sourcePath ) ) ) //
+                                                                  .filter( Files::isDirectory ) ) //
                                           .flatMap( x -> x ) //
                                           .collect( Collectors.toSet() );
 
@@ -227,7 +229,9 @@ public class JavadocMojo
 
             Path outputDir = getOutputDir();
             if ( !Files.isDirectory( outputDir ) )
+            {
                 Files.createDirectories( outputDir );
+            }
             outputDir = outputDir.toRealPath();
 
             List<String> opts = new ArrayList<>();
@@ -262,7 +266,9 @@ public class JavadocMojo
                 {
                     float f = Float.parseFloat( sourceLevel );
                     if ( f < 9 )
+                    {
                         skipModuleInfo = true;
+                    }
                 }
                 catch ( Exception e )
                 {
@@ -295,7 +301,9 @@ public class JavadocMojo
             for ( Path file : sourceFiles )
             {
                 if ( !skipModuleInfo || !file.endsWith( "module-info.java" ) )
+                {
                     opts.add( quoted( file ) );
+                }
             }
 
             Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE );

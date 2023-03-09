@@ -40,8 +40,10 @@ public final class DefaultArtifact
         String s = coords;
         int n = s.length() - s.replace( ":", "" ).length();
         if ( n < 1 || n > 4 )
+        {
             throw new IllegalArgumentException( "Illegal artifact coordinates " + coords
                 + ", expected coordinates in format <groupId>:<artifactId>[:<extension>[:<classifier>]]:[<version>]" );
+        }
         s += "::::";
         String[] a = new String[5];
         for ( int j = 0; j < 5; j++ )
@@ -83,9 +85,13 @@ public final class DefaultArtifact
                             Path path )
     {
         if ( groupId == null || groupId.isEmpty() )
+        {
             throw new IllegalArgumentException( "groupId must be specified" );
+        }
         if ( artifactId == null || artifactId.isEmpty() )
+        {
             throw new IllegalArgumentException( "artifactId must be specified" );
+        }
 
         this.groupId = groupId;
         this.artifactId = artifactId;
@@ -151,7 +157,9 @@ public final class DefaultArtifact
         sb.append( ':' ).append( artifactId );
         sb.append( ':' ).append( extension );
         if ( !classifier.isEmpty() )
+        {
             sb.append( ':' ).append( classifier );
+        }
         sb.append( ':' ).append( getVersion() );
         return sb.toString();
     }
@@ -160,7 +168,9 @@ public final class DefaultArtifact
     public boolean equals( Object rhs )
     {
         if ( !( rhs instanceof Artifact ) )
+        {
             return false;
+        }
 
         Artifact x = (Artifact) rhs;
 

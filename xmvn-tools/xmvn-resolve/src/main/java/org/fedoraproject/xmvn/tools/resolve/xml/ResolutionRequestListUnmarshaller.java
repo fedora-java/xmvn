@@ -37,7 +37,7 @@ import org.fedoraproject.xmvn.resolver.ResolutionRequest;
  */
 public class ResolutionRequestListUnmarshaller
 {
-    private InputStream inputStream;
+    private final InputStream inputStream;
 
     public ResolutionRequestListUnmarshaller( InputStream inputStream )
     {
@@ -83,7 +83,7 @@ public class ResolutionRequestListUnmarshaller
                             EndElement endElement = event.asEndElement();
                             String endName = endElement.getName().getLocalPart();
 
-                            if ( endName.equals( "requests" ) )
+                            if ( "requests".equals( endName ) )
                             {
                                 break mainLoop;
                             }

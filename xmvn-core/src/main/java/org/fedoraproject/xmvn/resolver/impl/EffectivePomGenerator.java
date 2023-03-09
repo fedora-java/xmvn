@@ -94,7 +94,9 @@ class EffectivePomGenerator
         for ( DependencyExclusion exclusion : dependency.getExclusions() )
             addExclusion( document, exclusions, exclusion );
         if ( exclusions.hasChildNodes() )
+        {
             dependencyNode.appendChild( exclusions );
+        }
     }
 
     private void addProject( Document document, ArtifactMetadata metadata, Artifact artifact )
@@ -110,7 +112,9 @@ class EffectivePomGenerator
         for ( Dependency dependency : metadata.getDependencies() )
             addDependency( document, dependencies, dependency );
         if ( dependencies.hasChildNodes() )
+        {
             project.appendChild( dependencies );
+        }
     }
 
     public Path generateEffectivePom( ArtifactMetadata metadata, Artifact artifact )

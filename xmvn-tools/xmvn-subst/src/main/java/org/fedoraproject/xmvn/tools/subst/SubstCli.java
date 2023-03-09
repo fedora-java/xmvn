@@ -35,9 +35,9 @@ import org.fedoraproject.xmvn.metadata.MetadataResult;
  */
 public class SubstCli
 {
-    private MetadataResolver metadataResolver;
+    private final MetadataResolver metadataResolver;
 
-    private ResolverSettings resolverSettings;
+    private final ResolverSettings resolverSettings;
 
     public SubstCli( Configurator configurator, MetadataResolver metadataResolver )
     {
@@ -49,8 +49,7 @@ public class SubstCli
     {
         MetadataRequest request = new MetadataRequest( repos );
         request.setIgnoreDuplicates( resolverSettings.isIgnoreDuplicateMetadata() );
-        MetadataResult result = metadataResolver.resolveMetadata( request );
-        return result;
+        return metadataResolver.resolveMetadata( request );
     }
 
     private int run( SubstCliRequest cliRequest )
@@ -111,7 +110,9 @@ public class SubstCli
                 return 0;
             }
             if ( cliRequest.isDebug() )
+            {
                 System.setProperty( "xmvn.debug", "true" );
+            }
 
             ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
             Configurator configurator = locator.getService( Configurator.class );

@@ -53,7 +53,9 @@ class ArtifactInstallerFactory
     private ArtifactInstaller tryLoadPlugin( String type )
     {
         if ( cachedPluginsByType.containsKey( type ) )
+        {
             return cachedPluginsByType.get( type );
+        }
 
         String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
         try ( InputStream resourceStream =
@@ -135,7 +137,9 @@ class ArtifactInstallerFactory
         {
             ArtifactInstaller pluggedInInstaller = tryLoadPlugin( type );
             if ( pluggedInInstaller != null )
+            {
                 return pluggedInInstaller;
+            }
         }
 
         return defaultArtifactInstaller;

@@ -36,7 +36,9 @@ class ChainedExecutionListener
     public void addExecutionListener( ExecutionListener listener )
     {
         if ( listener != null )
+        {
             listeners.add( listener );
+        }
     }
 
     @Override

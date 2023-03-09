@@ -108,7 +108,7 @@ public class PluginVersionResolverTest
 
         result = resolver.resolve( rq );
         assertTrue( result.getRepository().equals( repo ) );
-        assertTrue( result.getVersion().equals( "1.2.3" ) );
+        assertTrue( "1.2.3".equals( result.getVersion() ) );
 
         EasyMock.verify( rq, session, reader );
     }

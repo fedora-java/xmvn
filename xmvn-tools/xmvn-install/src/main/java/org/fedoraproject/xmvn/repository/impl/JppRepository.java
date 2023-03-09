@@ -44,13 +44,19 @@ class JppRepository
         path.append( pattern.replaceFirst( "^JPP/", "" ) );
 
         if ( version != null )
+        {
             path.append( '-' ).append( version );
+        }
 
         if ( !classifier.isEmpty() )
+        {
             path.append( '-' ).append( classifier );
+        }
 
         if ( !extension.isEmpty() )
+        {
             path.append( '.' ).append( extension );
+        }
 
         return Paths.get( path.toString() );
     }

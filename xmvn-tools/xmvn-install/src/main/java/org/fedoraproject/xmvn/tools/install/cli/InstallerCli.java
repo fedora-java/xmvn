@@ -79,7 +79,9 @@ public class InstallerCli
                 return 0;
             }
             if ( cliRequest.isDebug() )
+            {
                 System.setProperty( "xmvn.debug", "true" );
+            }
 
             ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
             Configurator configurator = locator.getService( Configurator.class );

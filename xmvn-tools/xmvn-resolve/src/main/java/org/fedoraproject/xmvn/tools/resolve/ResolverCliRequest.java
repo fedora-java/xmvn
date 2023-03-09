@@ -37,20 +37,20 @@ final class ResolverCliRequest
     private boolean help;
 
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
-    private boolean debug = false;
+    private boolean debug;
 
     @Parameter( names = { "-c",
         "--classpath" }, description = "Use colon instead of new line to separate resolved artifacts" )
-    private boolean classpath = false;
+    private boolean classpath;
 
     @Parameter( names = {
         "--raw-request" }, description = "Read a list of raw XMvn XML requests from standard input and print the results on standard output" )
-    private boolean raw = false;
+    private boolean raw;
 
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
-    private StringBuilder usage = new StringBuilder();
+    private final StringBuilder usage = new StringBuilder();
 
     public static ResolverCliRequest build( String[] args )
     {
@@ -72,7 +72,7 @@ final class ResolverCliRequest
         jcomm.parse( args );
         jcomm.getUsageFormatter().usage( usage );
 
-        if ( raw && ( classpath || parameters.size() > 0 ) )
+        if ( raw && ( classpath || !parameters.isEmpty() ) )
         {
             throw new ParameterException( "--raw-request must be used alone" );
         }

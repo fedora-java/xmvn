@@ -54,7 +54,9 @@ class EffectivePackagingRule
         for ( Matcher matcher : matchers )
         {
             for ( int i = 1; i <= matcher.groupCount(); i++, group++ )
+            {
                 result = result.replace( "@" + group, matcher.group( i ) );
+            }
         }
 
         return result.trim();
@@ -103,60 +105,94 @@ class EffectivePackagingRule
         Artifact artifact = getArtifactGlob();
         List<Matcher> matchers = new ArrayList<>( 3 );
         if ( stereotypePattern != null )
+        {
             matchers.add( stereotypePattern.matcher( artifact.getStereotype() ) );
+        }
         if ( groupIdPattern != null )
+        {
             matchers.add( groupIdPattern.matcher( artifact.getGroupId() ) );
+        }
         if ( artifactIdPattern != null )
+        {
             matchers.add( artifactIdPattern.matcher( artifact.getArtifactId() ) );
+        }
         if ( extensionPattern != null )
+        {
             matchers.add( extensionPattern.matcher( artifact.getExtension() ) );
+        }
         if ( classifierPattern != null )
+        {
             matchers.add( classifierPattern.matcher( artifact.getClassifier() ) );
+        }
         if ( versionPattern != null )
+        {
             matchers.add( versionPattern.matcher( artifact.getVersion() ) );
+        }
 
         for ( Matcher matcher : matchers )
             if ( !matcher.matches() )
+            {
                 return;
+            }
         rule.setMatched( true );
 
         String targetPackage = rule.getTargetPackage();
         if ( isNullOrEmpty( getTargetPackage() ) && !isNullOrEmpty( targetPackage ) )
+        {
             setTargetPackage( expandBackreferences( matchers, targetPackage ) );
+        }
 
         for ( org.fedoraproject.xmvn.config.Artifact alias : rule.getAliases() )
         {
             alias = expandBackreferences( matchers, alias );
 
             if ( isNullOrEmpty( alias.getStereotype() ) )
+            {
                 alias.setStereotype( artifact.getStereotype() );
+            }
             if ( isNullOrEmpty( alias.getGroupId() ) )
+            {
                 alias.setGroupId( artifact.getGroupId() );
+            }
             if ( isNullOrEmpty( alias.getArtifactId() ) )
+            {
                 alias.setArtifactId( artifact.getArtifactId() );
+            }
             if ( isNullOrEmpty( alias.getExtension() ) )
+            {
                 alias.setExtension( artifact.getExtension() );
+            }
             if ( isNullOrEmpty( alias.getClassifier() ) )
+            {
                 alias.setClassifier( artifact.getClassifier() );
+            }
             if ( isNullOrEmpty( alias.getVersion() ) )
+            {
                 alias.setVersion( artifact.getVersion() );
+            }
 
             if ( !getAliases().contains( alias ) )
+            {
                 addAlias( alias );
+            }
         }
 
         for ( String file : rule.getFiles() )
         {
             file = expandBackreferences( matchers, file );
             if ( !getFiles().contains( file ) )
+            {
                 addFile( file );
+            }
         }
 
         for ( String version : rule.getVersions() )
         {
             version = expandBackreferences( matchers, version );
             if ( !getVersions().contains( version ) )
+            {
                 addVersion( version );
+            }
         }
     }
 

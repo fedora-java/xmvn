@@ -84,7 +84,9 @@ public class DefaultDeployer
                 dependency.setClassifier( dependencyArtifact.getClassifier() );
                 dependency.setRequestedVersion( dependencyArtifact.getVersion() );
                 if ( depDescriptor.isOptional() )
+                {
                     dependency.setOptional( true );
+                }
 
                 for ( Artifact exclusionArtifact : depDescriptor.getExclusions() )
                 {

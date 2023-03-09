@@ -39,7 +39,7 @@ final class InstallerCliRequest
     private boolean help;
 
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
-    private boolean debug = false;
+    private boolean debug;
 
     @Parameter( names = { "-r", "--relaxed" }, description = "Skip strict rule checking" )
     private boolean relaxed;
@@ -59,7 +59,7 @@ final class InstallerCliRequest
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
-    private StringBuilder usage = new StringBuilder();
+    private final StringBuilder usage = new StringBuilder();
 
     public static InstallerCliRequest build( String[] args )
     {
@@ -82,7 +82,9 @@ final class InstallerCliRequest
         jcomm.getUsageFormatter().usage( usage );
 
         if ( debug )
+        {
             System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "trace" );
+        }
         for ( String param : defines.keySet() )
             System.setProperty( param, defines.get( param ) );
     }

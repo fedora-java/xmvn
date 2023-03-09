@@ -40,7 +40,15 @@ public class DeploymentRequestTest
 {
     private ArrayList<Artifact> depExcl;
 
-    private Artifact artifact, dependencyA, dependencyB, dependencyC, dependencyD;
+    private Artifact artifact;
+
+    private Artifact dependencyA;
+
+    private Artifact dependencyB;
+
+    private Artifact dependencyC;
+
+    private Artifact dependencyD;
 
     private final DeploymentRequest deployRq = new DeploymentRequest();
 

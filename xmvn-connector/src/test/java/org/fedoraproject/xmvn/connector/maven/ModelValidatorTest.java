@@ -64,7 +64,9 @@ public class ModelValidatorTest
     private Path getResource( String resource )
     {
         if ( resource == null )
+        {
             return null;
+        }
         return Paths.get( "src/test/resources" ).resolve( resource ).toAbsolutePath();
     }
 
@@ -75,7 +77,9 @@ public class ModelValidatorTest
         configurator = lookup( Configurator.class );
         validator = lookup( ModelValidator.class );
 
-        Xpp3Dom mainCfg, glCfg, locCfg;
+        Xpp3Dom mainCfg;
+        Xpp3Dom glCfg;
+        Xpp3Dom locCfg;
         try ( Reader reader = new FileReader( getResource( "test.pom.xml" ).toFile() ) )
         {
             mainCfg = Xpp3DomBuilder.build( reader );

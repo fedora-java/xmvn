@@ -110,12 +110,16 @@ class IsolatedClassRealm
         String namespace = name.substring( 0, index );
 
         if ( imports.contains( namespace ) )
+        {
             return true;
+        }
 
         while ( !namespace.isEmpty() )
         {
             if ( importsAll.contains( namespace ) )
+            {
                 return true;
+            }
 
             namespace = namespace.substring( 0, Math.max( namespace.lastIndexOf( '.' ), 0 ) );
         }

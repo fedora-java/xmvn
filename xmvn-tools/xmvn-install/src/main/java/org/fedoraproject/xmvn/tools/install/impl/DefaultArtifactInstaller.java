@@ -80,7 +80,9 @@ class DefaultArtifactInstaller
         // Handle native JARs/WARs etc
         Path artifactPath = Paths.get( am.getPath() );
         if ( usesNativeCode( artifactPath ) || containsNativeCode( artifactPath ) )
+        {
             am.getProperties().setProperty( "native", "true" );
+        }
 
         // Inject Javapackages manifests
         injectManifest( artifactPath, artifact );
@@ -93,13 +95,17 @@ class DefaultArtifactInstaller
 
         Repository repo = repositoryConfigurator.configureRepository( repositoryId );
         if ( repo == null )
+        {
             throw new ArtifactInstallationException( "Unable to configure installation repository: " + repositoryId );
+        }
 
         Set<Path> basePaths = new LinkedHashSet<>();
         for ( String fileName : rule.getFiles() )
             basePaths.add( Paths.get( fileName ) );
         if ( basePaths.isEmpty() )
+        {
             basePaths.add( Paths.get( basePackageName ).resolve( artifact.getArtifactId() ) );
+        }
 
         Set<Path> relativePaths = new LinkedHashSet<>();
         Set<Path> absolutePaths = new LinkedHashSet<>();
@@ -107,12 +113,18 @@ class DefaultArtifactInstaller
         for ( Path path : basePaths )
         {
             if ( path.isAbsolute() )
+            {
                 absolutePaths.add( path );
+            }
             else
+            {
                 relativePaths.add( path );
+            }
         }
         if ( relativePaths.isEmpty() )
+        {
             throw new RuntimeException( "At least one non-absolute file must be specified for artifact " + artifact );
+        }
 
         String installedVersion = rule.getVersions().isEmpty() ? null : rule.getVersions().iterator().next();
         Artifact versionedArtifact = artifact.setVersion( installedVersion );
@@ -122,13 +134,17 @@ class DefaultArtifactInstaller
         {
             Path repoPath = repo.getPrimaryArtifactPath( versionedArtifact, context, path.toString() );
             if ( repoPath == null )
+            {
                 throw new ArtifactInstallationException( "Installation repository is incapable of holding artifact "
                     + versionedArtifact );
+            }
             repoPaths.add( repoPath );
 
             Set<Path> repoRoots = repo.getRootPaths();
             for ( Path dir = repoPath.getParent(); dir != null && !repoRoots.contains( dir ); dir = dir.getParent() )
+            {
                 targetPackage.addFileIfNotExists( new Directory( dir ) );
+            }
         }
         Iterator<Path> repoPathIterator = repoPaths.iterator();
 
@@ -150,11 +166,17 @@ class DefaultArtifactInstaller
         {
             StringBuilder sb = new StringBuilder( Paths.get( "/" ).relativize( path ).toString() );
             if ( !versionedArtifact.getVersion().equals( Artifact.DEFAULT_VERSION ) )
+            {
                 sb.append( '-' ).append( versionedArtifact.getVersion() );
+            }
             if ( versionedArtifact.getClassifier() != null && !versionedArtifact.getClassifier().isEmpty() )
+            {
                 sb.append( '-' ).append( versionedArtifact.getClassifier() );
+            }
             if ( !versionedArtifact.getExtension().equals( Artifact.DEFAULT_VERSION ) )
+            {
                 sb.append( '.' ).append( versionedArtifact.getExtension() );
+            }
             File symlink = new SymbolicLink( Paths.get( sb.toString() ), primaryPath );
             targetPackage.addFile( symlink );
         }

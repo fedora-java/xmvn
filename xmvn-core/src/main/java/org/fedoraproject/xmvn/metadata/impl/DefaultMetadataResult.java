@@ -59,7 +59,9 @@ class DefaultMetadataResult
 
         List<String> versions = metadata.getCompatVersions();
         if ( versions.isEmpty() )
+        {
             versions = Collections.singletonList( Artifact.DEFAULT_VERSION );
+        }
 
         Set<Artifact> artifactSet = new LinkedHashSet<>();
 

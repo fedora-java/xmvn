@@ -77,7 +77,7 @@ public class DirectoryTest
     {
         add( new RegularFile( Paths.get( "foo/bar" ), new byte[0] ) );
         add( new Directory( Paths.get( "foo/bar" ) ) );
-        assertThrows( IOException.class, () -> performInstallation() );
+        assertThrows( IOException.class, this::performInstallation );
     }
 
     /**
@@ -90,7 +90,7 @@ public class DirectoryTest
     {
         add( new RegularFile( Paths.get( "a/b/c/d" ), new byte[0] ) );
         add( new Directory( Paths.get( "a/b/c/d/e/f/g/h" ) ) );
-        assertThrows( IOException.class, () -> performInstallation() );
+        assertThrows( IOException.class, this::performInstallation );
     }
 
     /**

@@ -32,7 +32,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
  */
 class ArtifactUnmarshaller
 {
-    private XMLEventReader eventReader;
+    private final XMLEventReader eventReader;
 
     static class StringConstants
     {
@@ -138,7 +138,7 @@ class ArtifactUnmarshaller
                     break;
 
                 case XMLStreamConstants.END_ELEMENT:
-                    if ( event.asEndElement().getName().getLocalPart().equals( "artifact" ) )
+                    if ( "artifact".equals( event.asEndElement().getName().getLocalPart() ) )
                     {
                         try
                         {

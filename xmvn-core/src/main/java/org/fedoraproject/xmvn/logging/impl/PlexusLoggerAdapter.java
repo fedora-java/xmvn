@@ -28,7 +28,9 @@ class PlexusLoggerAdapter
         this.delegate = delegate;
 
         if ( System.getProperty( "xmvn.debug" ) != null )
+        {
             delegate.setThreshold( org.codehaus.plexus.logging.Logger.LEVEL_DEBUG );
+        }
     }
 
     private String format( String format, Object... args )

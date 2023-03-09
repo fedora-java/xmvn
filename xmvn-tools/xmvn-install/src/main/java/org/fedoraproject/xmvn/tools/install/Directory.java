@@ -57,7 +57,9 @@ public class Directory
         throws IOException
     {
         if ( !Files.isDirectory( targetAbsolutePath, LinkOption.NOFOLLOW_LINKS ) )
+        {
             Files.createDirectory( targetAbsolutePath );
+        }
     }
 
     @Override

@@ -49,12 +49,18 @@ public abstract class AbstractToolIntegrationTest
     private Path getToolLibDir( String tool )
     {
         String subDir;
-        if ( tool.equals( "xmvn-install" ) )
+        if ( "xmvn-install".equals( tool ) )
+        {
             subDir = "installer";
-        else if ( tool.equals( "xmvn-resolve" ) )
+        }
+        else if ( "xmvn-resolve".equals( tool ) )
+        {
             subDir = "resolver";
+        }
         else
+        {
             subDir = tool.replaceAll( "^xmvn-", "" );
+        }
 
         Path libDir = getMavenHome().resolve( "lib" ).resolve( subDir );
         assertTrue( Files.isDirectory( libDir, LinkOption.NOFOLLOW_LINKS ) );
@@ -89,11 +95,15 @@ public abstract class AbstractToolIntegrationTest
     {
         String jarName = jar.getFileName().toString();
         if ( !jarName.startsWith( "xmvn-" ) )
+        {
             return jar;
+        }
         String projectName = jarName.substring( 0, 5 + jarName.substring( 5 ).indexOf( '-' ) );
         Path projectDir = getRootDir().resolve( "xmvn-tools" ).resolve( projectName );
         if ( !Files.isDirectory( projectDir, LinkOption.NOFOLLOW_LINKS ) )
+        {
             projectDir = getRootDir().resolve( projectName );
+        }
         Path classesDir = projectDir.resolve( "target" ).resolve( "classes" );
         assertTrue( Files.isDirectory( classesDir, LinkOption.NOFOLLOW_LINKS ) );
         return classesDir;

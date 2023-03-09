@@ -38,7 +38,9 @@ abstract class SimpleRepositoryFactory
         Path root = rootProperty != null ? Paths.get( rootProperty ) : null;
 
         if ( namespace == null || namespace.isEmpty() )
+        {
             namespace = properties.getProperty( "namespace", "" );
+        }
 
         return newInstance( namespace, root, filter );
     }

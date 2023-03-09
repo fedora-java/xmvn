@@ -76,7 +76,9 @@ public final class JarUtils
             {
                 ZipArchiveEntry entry = entries.nextElement();
                 if ( entry.isDirectory() )
+                {
                     continue;
+                }
                 try ( InputStream jis = jar.getInputStream( entry ) )
                 {
                     if ( jis.read() == ELFMAG0 && jis.read() == ELFMAG1 && jis.read() == ELFMAG2
@@ -137,7 +139,9 @@ public final class JarUtils
                 ZipArchiveEntry entry = entries.nextElement();
                 final String entryName = entry.getName();
                 if ( entry.isDirectory() || !entryName.endsWith( ".class" ) )
+                {
                     continue;
+                }
 
                 try ( InputStream jis = jar.getInputStream( entry ) )
                 {
@@ -148,7 +152,9 @@ public final class JarUtils
                                                           String[] exc )
                         {
                             if ( ( flags & Opcodes.ACC_NATIVE ) != 0 )
+                            {
                                 throw new NativeMethodFound( entryName, name, sig );
+                            }
 
                             return super.visitMethod( flags, name, desc, sig, exc );
                         }

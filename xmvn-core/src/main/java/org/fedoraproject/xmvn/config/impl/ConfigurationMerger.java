@@ -36,7 +36,9 @@ class ConfigurationMerger
         Set<Object> dominantKeySet = dominant.keySet();
         for ( Object key : recessive.keySet() )
             if ( !dominantKeySet.contains( key ) )
+            {
                 dominant.put( key, recessive.get( key ) );
+            }
     }
 
     private void mergeRepositories( List<Repository> dominant, List<Repository> recessive )
@@ -47,10 +49,14 @@ class ConfigurationMerger
     private void mergeBuildSettings( BuildSettings dominant, BuildSettings recessive )
     {
         if ( dominant.isDebug() == null )
+        {
             dominant.setDebug( recessive.isDebug() );
+        }
 
         if ( dominant.isSkipTests() == null )
+        {
             dominant.setSkipTests( recessive.isSkipTests() );
+        }
     }
 
     private void mergeArtifactmanagement( List<PackagingRule> dominant, List<PackagingRule> recessive )
@@ -61,14 +67,18 @@ class ConfigurationMerger
     private void mergeResolverSettings( ResolverSettings dominant, ResolverSettings recessive )
     {
         if ( dominant.isDebug() == null )
+        {
             dominant.setDebug( recessive.isDebug() );
+        }
 
         dominant.getLocalRepositories().addAll( recessive.getLocalRepositories() );
 
         dominant.getMetadataRepositories().addAll( recessive.getMetadataRepositories() );
 
         if ( dominant.isIgnoreDuplicateMetadata() == null )
+        {
             dominant.setIgnoreDuplicateMetadata( recessive.isIgnoreDuplicateMetadata() );
+        }
 
         dominant.getPrefixes().addAll( recessive.getPrefixes() );
 
@@ -78,10 +88,14 @@ class ConfigurationMerger
     private void mergeInstallerSettings( InstallerSettings dominant, InstallerSettings recessive )
     {
         if ( dominant.isDebug() == null )
+        {
             dominant.setDebug( recessive.isDebug() );
+        }
 
         if ( dominant.getMetadataDir() == null || dominant.getMetadataDir().isEmpty() )
+        {
             dominant.setMetadataDir( recessive.getMetadataDir() );
+        }
     }
 
     private void mergeConfiguration( Configuration dominant, Configuration recessive )
@@ -90,17 +104,23 @@ class ConfigurationMerger
         mergeRepositories( dominant.getRepositories(), recessive.getRepositories() );
 
         if ( dominant.getBuildSettings() == null )
+        {
             dominant.setBuildSettings( new BuildSettings() );
+        }
         mergeBuildSettings( dominant.getBuildSettings(), recessive.getBuildSettings() );
 
         mergeArtifactmanagement( dominant.getArtifactManagement(), recessive.getArtifactManagement() );
 
         if ( dominant.getResolverSettings() == null )
+        {
             dominant.setResolverSettings( new ResolverSettings() );
+        }
         mergeResolverSettings( dominant.getResolverSettings(), recessive.getResolverSettings() );
 
         if ( dominant.getInstallerSettings() == null )
+        {
             dominant.setInstallerSettings( new InstallerSettings() );
+        }
         mergeInstallerSettings( dominant.getInstallerSettings(), recessive.getInstallerSettings() );
     }
 
@@ -119,7 +139,9 @@ class ConfigurationMerger
     public Configuration merge( Configuration dominant, Configuration recessive )
     {
         if ( dominant == null )
+        {
             dominant = new Configuration();
+        }
 
         mergeConfiguration( dominant, recessive );
         return dominant;

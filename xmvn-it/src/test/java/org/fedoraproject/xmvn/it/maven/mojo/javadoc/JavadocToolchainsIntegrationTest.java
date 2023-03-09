@@ -34,6 +34,6 @@ public class JavadocToolchainsIntegrationTest
         throws Exception
     {
         performTest( "org.fedoraproject.xmvn:xmvn-mojo:javadoc" );
-        assertTrue( getStdout().anyMatch( s -> s.equals( "[INFO] Toolchain in xmvn-mojo: JDK[/tmp]" ) ) );
+        assertTrue( getStdout().anyMatch( "[INFO] Toolchain in xmvn-mojo: JDK[/tmp]"::equals ) );
     }
 }

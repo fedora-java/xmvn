@@ -51,7 +51,7 @@ public final class DomUtils
         return IntStream.range( 0, dom.getChildNodes().getLength() ) //
                         .mapToObj( i -> dom.getChildNodes().item( i ) ) //
                         .filter( node -> type.isAssignableFrom( node.getClass() ) ) //
-                        .map( node -> type.cast( node ) );
+                        .map( type::cast );
     }
 
     public static List<Element> parseAsParent( Element dom )

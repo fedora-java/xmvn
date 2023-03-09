@@ -49,7 +49,7 @@ public class InstallerIntegrationTest
         assertEquals( 0, invokeTool( "xmvn-install", "-n", "xyzzy", "-R", "install-plan.xml", "-d", "dest", "-X", "-i",
                                      "custom-install" ) );
         assertFalse( getStdout().findAny().isPresent() );
-        assertTrue( getStderr().anyMatch( line -> line.equals( "[INFO] Installation successful" ) ) );
+        assertTrue( getStderr().anyMatch( "[INFO] Installation successful"::equals ) );
 
         Path pomPath = Paths.get( "dest/usr/share/maven-poms/xyzzy/junit.pom" );
         assertTrue( Files.isRegularFile( pomPath, LinkOption.NOFOLLOW_LINKS ) );

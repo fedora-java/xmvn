@@ -44,7 +44,7 @@ import org.fedoraproject.xmvn.metadata.MetadataResult;
 public class ArtifactVisitor
     implements FileVisitor<Path>
 {
-    private boolean debug;
+    private final boolean debug;
 
     private final Set<String> types = new LinkedHashSet<>();
 
@@ -96,7 +96,9 @@ public class ArtifactVisitor
         if ( Files.isSymbolicLink( path ) && !followSymlinks )
         {
             if ( debug )
+            {
                 System.err.printf( "Skipping symlink to directory: %s%n", path );
+            }
             return FileVisitResult.SKIP_SUBTREE;
         }
 
@@ -110,7 +112,9 @@ public class ArtifactVisitor
         if ( !Files.isRegularFile( path ) )
         {
             if ( debug )
+            {
                 System.err.printf( "Skipping %s: not a regular file%n", path );
+            }
             return FileVisitResult.CONTINUE;
         }
 
@@ -142,7 +146,9 @@ public class ArtifactVisitor
         {
             Manifest mf = jarFile.getManifest();
             if ( mf == null )
+            {
                 return null;
+            }
 
             String groupId = mf.getMainAttributes().getValue( Artifact.MF_KEY_GROUPID );
             String artifactId = mf.getMainAttributes().getValue( Artifact.MF_KEY_ARTIFACTID );
@@ -151,7 +157,9 @@ public class ArtifactVisitor
             String version = mf.getMainAttributes().getValue( Artifact.MF_KEY_VERSION );
 
             if ( groupId == null || artifactId == null )
+            {
                 return null;
+            }
 
             return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
         }
@@ -188,11 +196,15 @@ public class ArtifactVisitor
         {
             Artifact artifact = getArtifactFromManifest( path );
             if ( artifact != null )
+            {
                 return artifact;
+            }
 
             artifact = getArtifactFromPomProperties( path, extension );
             if ( artifact != null )
+            {
                 return artifact;
+            }
 
             return null;
         }
@@ -244,7 +256,9 @@ public class ArtifactVisitor
             {
                 ArtifactMetadata metadata = metadataResult.getMetadataFor( versionedArtifact );
                 if ( metadata != null )
+                {
                     return metadata;
+                }
             }
         }
 

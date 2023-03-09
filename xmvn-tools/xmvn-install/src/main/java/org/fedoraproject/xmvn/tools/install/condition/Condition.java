@@ -109,7 +109,7 @@ public class Condition
     private static <T> List<T> parseList( Element dom, Function<Element, T> parser )
     {
         return DomUtils.parseAsParent( dom ).stream() //
-                       .map( child -> parser.apply( child ) ) //
+                       .map( parser::apply ) //
                        .collect( Collectors.toList() );
     }
 

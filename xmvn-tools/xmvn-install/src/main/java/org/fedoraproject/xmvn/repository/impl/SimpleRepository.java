@@ -49,7 +49,9 @@ abstract class SimpleRepository
     public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
     {
         if ( !condition.getValue( context ) )
+        {
             return null;
+        }
 
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
@@ -57,14 +59,20 @@ abstract class SimpleRepository
         String classifier = artifact.getClassifier();
         String version = artifact.getVersion();
         if ( version.equals( Artifact.DEFAULT_VERSION ) )
+        {
             version = null;
+        }
 
         Path path = getArtifactPath( pattern, groupId, artifactId, extension, classifier, version );
         if ( path == null )
+        {
             return null;
+        }
 
         if ( root != null )
+        {
             path = root.resolve( path );
+        }
 
         return path;
     }

@@ -72,9 +72,13 @@ class BuildDependencyVisitor
     public void visitDependency( Dependency dependency )
     {
         if ( isExternal( dependency.getLocation( "" ) ) )
+        {
             return;
+        }
         if ( !BUILD_SCOPES.contains( dependency.getScope() ) )
+        {
             return;
+        }
 
         artifacts.add( ArtifactTypeRegistry.getDefaultRegistry().createTypedArtifact( dependency.getGroupId(),
                                                                                       dependency.getArtifactId(),
@@ -94,15 +98,21 @@ class BuildDependencyVisitor
     public void visitBuildPlugin( Plugin plugin )
     {
         if ( isExternal( plugin.getLocation( "" ) ) )
+        {
             return;
+        }
 
         String groupId = plugin.getGroupId();
         String artifactId = plugin.getArtifactId();
         String version = plugin.getVersion();
         if ( StringUtils.isEmpty( groupId ) )
+        {
             groupId = "org.apache.maven.plugins";
+        }
         if ( StringUtils.isEmpty( version ) )
+        {
             version = Artifact.DEFAULT_VERSION;
+        }
 
         Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, version );
         artifacts.add( pluginArtifact );
@@ -112,9 +122,13 @@ class BuildDependencyVisitor
     public void visitBuildPluginDependency( Dependency dependency )
     {
         if ( isExternal( dependency.getLocation( "" ) ) )
+        {
             return;
+        }
         if ( !RUNTIME_SCOPES.contains( dependency.getScope() ) )
+        {
             return;
+        }
 
         artifacts.add( ArtifactTypeRegistry.getDefaultRegistry().createTypedArtifact( dependency.getGroupId(),
                                                                                       dependency.getArtifactId(),

@@ -124,24 +124,34 @@ public class ResolutionRequest
     public boolean equals( Object obj )
     {
         if ( this == obj )
+        {
             return true;
+        }
         if ( obj == null )
+        {
             return false;
+        }
         if ( getClass() != obj.getClass() )
+        {
             return false;
+        }
         ResolutionRequest other = (ResolutionRequest) obj;
         if ( artifact == null )
         {
             if ( other.artifact != null )
+            {
                 return false;
+            }
         }
         else if ( !artifact.equals( other.artifact ) )
+        {
             return false;
+        }
         if ( isProviderNeeded != other.isProviderNeeded )
+        {
             return false;
-        if ( isPersistentFileNeeded != other.isPersistentFileNeeded )
-            return false;
-        return true;
+        }
+        return isPersistentFileNeeded == other.isPersistentFileNeeded;
     }
 
     @Override
