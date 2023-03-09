@@ -33,6 +33,7 @@ import org.apache.maven.lifecycle.mapping.Lifecycle;
 import org.apache.maven.lifecycle.mapping.LifecycleMapping;
 import org.apache.maven.lifecycle.mapping.LifecycleMojo;
 import org.apache.maven.lifecycle.mapping.LifecyclePhase;
+import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -163,12 +164,17 @@ public class BuilddepMojo
         dom.writeToSerializer( namespace, serializer );
     }
 
+    private boolean isExternalLocation( InputLocation location )
+    {
+        return !reactorProjects.stream() //
+                               .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
+                               .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
+                               .findAny().isPresent();
+    }
+
     private Set<Artifact> getModelDependencies( Model model )
     {
-        BuildDependencyVisitor visitor = new BuildDependencyVisitor( location -> !reactorProjects.stream() //
-                                                                                                 .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
-                                                                                                 .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
-                                                                                                 .findAny().isPresent() );
+        BuildDependencyVisitor visitor = new BuildDependencyVisitor( this::isExternalLocation );
         modelProcessor.processModel( model.clone(), visitor );
         return visitor.getArtifacts();
     }
