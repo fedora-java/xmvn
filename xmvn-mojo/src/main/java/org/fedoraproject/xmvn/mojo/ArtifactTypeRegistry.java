@@ -93,7 +93,9 @@ final class ArtifactTypeRegistry
                                          String version )
     {
         if ( type == null || extensions.get( type ) == null )
+        {
             return new DefaultArtifact( groupId, artifactId, type, customClassifier, version );
+        }
 
         String classifier =
             customClassifier == null || customClassifier.isEmpty() ? classifiers.get( type ) : customClassifier;

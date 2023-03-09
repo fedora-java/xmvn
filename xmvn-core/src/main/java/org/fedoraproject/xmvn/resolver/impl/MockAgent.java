@@ -38,7 +38,9 @@ class MockAgent
     public boolean tryInstallArtifact( Artifact artifact )
     {
         if ( requestCommand == null )
+        {
             return false;
+        }
 
         try
         {

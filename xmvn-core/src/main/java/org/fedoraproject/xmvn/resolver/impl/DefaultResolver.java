@@ -97,7 +97,9 @@ public class DefaultResolver
 
         ResolutionResult localRepoResult = localRepoResolver.resolve( request );
         if ( localRepoResult.getArtifactPath() != null )
+        {
             return localRepoResult;
+        }
 
         Artifact artifact = request.getArtifact();
         logger.debug( "Trying to resolve artifact {}", artifact );
@@ -190,7 +192,9 @@ public class DefaultResolver
         result.setNamespace( metadata.getNamespace() );
         result.setCompatVersion( compatVersion );
         if ( request.isProviderNeeded() )
+        {
             result.setProvider( RPMDB.lookupPath( artifactPath ) );
+        }
 
         logger.debug( "Artifact {} was resolved to {}", artifact, artifactPath );
         return result;

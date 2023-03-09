@@ -118,7 +118,9 @@ public class DefaultConfigurator
         {
             String reason = "not a regular file";
             if ( !Files.exists( file ) )
+            {
                 reason = "no such file";
+            }
 
             logger.debug( "Skipping configuration file {}: {}", file, reason );
             return;
@@ -134,7 +136,9 @@ public class DefaultConfigurator
         {
             String reason = "not a directory";
             if ( !Files.exists( directory ) )
+            {
                 reason = "no such directory";
+            }
 
             logger.debug( "Skipping configuration directory {}: {}", directory, reason );
             return;
@@ -235,7 +239,9 @@ public class DefaultConfigurator
     public synchronized Configuration getDefaultConfiguration()
     {
         if ( cachedDefaultConfiguration == null )
+        {
             cachedDefaultConfiguration = loadDefaultConfiguration();
+        }
 
         return cachedDefaultConfiguration;
     }
@@ -244,7 +250,9 @@ public class DefaultConfigurator
     public synchronized Configuration getConfiguration()
     {
         if ( cachedConfiguration == null )
+        {
             cachedConfiguration = loadConfiguration();
+        }
 
         return cachedConfiguration;
     }

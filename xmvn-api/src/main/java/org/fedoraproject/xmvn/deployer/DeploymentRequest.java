@@ -97,7 +97,9 @@ public class DeploymentRequest
     public void addProperty( String key, String value )
     {
         if ( value != null )
+        {
             properties.put( key, value );
+        }
     }
 
     public void removeProperty( String key )
@@ -128,19 +130,29 @@ public class DeploymentRequest
     public boolean equals( Object obj )
     {
         if ( this == obj )
+        {
             return true;
+        }
         if ( obj == null )
+        {
             return false;
+        }
         if ( getClass() != obj.getClass() )
+        {
             return false;
+        }
         DeploymentRequest other = (DeploymentRequest) obj;
         if ( artifact == null )
         {
             if ( other.artifact != null )
+            {
                 return false;
+            }
         }
         else if ( !artifact.equals( other.artifact ) )
+        {
             return false;
+        }
         return true;
     }
 }

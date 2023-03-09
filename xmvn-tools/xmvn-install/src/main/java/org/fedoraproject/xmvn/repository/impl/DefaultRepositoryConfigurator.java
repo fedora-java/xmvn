@@ -53,7 +53,9 @@ public class DefaultRepositoryConfigurator
     {
         for ( org.fedoraproject.xmvn.config.Repository repository : configurator.getConfiguration().getRepositories() )
             if ( repository.getId() != null && repository.getId().equals( repoId ) )
+            {
                 return repository;
+            }
 
         return null;
     }
@@ -69,7 +71,9 @@ public class DefaultRepositoryConfigurator
     {
         org.fedoraproject.xmvn.config.Repository desc = findDescriptor( repoId );
         if ( desc == null )
+        {
             throw new RuntimeException( "Repository '" + repoId + "' is not configured." );
+        }
 
         Properties properties = desc.getProperties();
 
@@ -77,14 +81,18 @@ public class DefaultRepositoryConfigurator
 
         String type = desc.getType();
         if ( type == null )
+        {
             throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
+        }
 
         Element filter = (Element) desc.getFilter();
 
         RepositoryFactory factory = repositoryFactories.get( type );
         if ( factory == null )
+        {
             throw new RuntimeException( "Unable to create repository of type '" + type
                 + "': no suitable factory found" );
+        }
 
         return factory.getInstance( filter, properties, configurationXml );
     }

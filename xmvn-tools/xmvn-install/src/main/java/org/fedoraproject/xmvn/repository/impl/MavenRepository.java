@@ -40,7 +40,9 @@ class MavenRepository
                                     String classifier, String version )
     {
         if ( version == null )
+        {
             return null;
+        }
 
         StringBuilder path = new StringBuilder();
 
@@ -55,10 +57,14 @@ class MavenRepository
         path.append( '-' ).append( version );
 
         if ( !classifier.isEmpty() )
+        {
             path.append( '-' ).append( classifier );
+        }
 
         if ( !extension.isEmpty() )
+        {
             path.append( '.' ).append( extension );
+        }
 
         return Paths.get( path.toString() );
     }

@@ -39,18 +39,18 @@ final class SubstCliRequest
     private boolean help;
 
     @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
-    private boolean debug = false;
+    private boolean debug;
 
     @Parameter( names = { "-s", "--strict" }, description = "Fail if any artifact cannot be symlinked" )
-    private boolean strict = false;
+    private boolean strict;
 
     @Parameter( names = { "-d",
         "--dry-run" }, description = "Do not symlink anything but report what would have been symlinked" )
-    private boolean dryRun = false;
+    private boolean dryRun;
 
     @Parameter( names = { "-L",
         "--follow-symlinks" }, description = "Follow symbolic links when traversing directory structure" )
-    private boolean followSymlinks = false;
+    private boolean followSymlinks;
 
     @Parameter( names = { "-t", "--type" }, description = "Consider artifacts with given type" )
     private List<String> types = new ArrayList<>( Arrays.asList( "jar", "war" ) );
@@ -61,7 +61,7 @@ final class SubstCliRequest
     @DynamicParameter( names = "-D", description = "Define system property" )
     private Map<String, String> defines = new TreeMap<>();
 
-    private StringBuilder usage = new StringBuilder();
+    private final StringBuilder usage = new StringBuilder();
 
     public static SubstCliRequest build( String[] args )
     {

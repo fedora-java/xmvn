@@ -71,7 +71,7 @@ public class DefaultMetadataResolver
     {
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
-        executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, ( runnable ) ->
+        executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, runnable ->
         {
             Thread thread = new Thread( runnable );
             thread.setName( DefaultMetadataResolver.class.getCanonicalName() + ".worker" );

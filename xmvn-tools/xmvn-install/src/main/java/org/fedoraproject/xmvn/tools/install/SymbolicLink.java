@@ -48,7 +48,9 @@ public class SymbolicLink
             Path parent = getTargetPath().getParent();
             Path base = Paths.get( "/" );
             if ( parent != null )
+            {
                 base = base.resolve( parent );
+            }
             referencedPath = base.relativize( referencedPath );
         }
 

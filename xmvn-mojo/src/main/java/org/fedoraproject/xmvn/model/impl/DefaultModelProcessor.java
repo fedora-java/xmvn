@@ -107,9 +107,13 @@ public class DefaultModelProcessor
                 visitor.visitLicense( license );
                 license = visitor.replaceLicense( license );
                 if ( license == null )
+                {
                     licenseIterator.remove();
+                }
                 else
+                {
                     licenseIterator.set( license );
+                }
             }
         }
 
@@ -124,9 +128,13 @@ public class DefaultModelProcessor
                 visitDeveloper( visitor, developer );
                 developer = visitor.replaceDeveloper( developer );
                 if ( developer == null )
+                {
                     developerIterator.remove();
+                }
                 else
+                {
                     developerIterator.set( developer );
+                }
             }
         }
 
@@ -141,9 +149,13 @@ public class DefaultModelProcessor
                 visitContributor( visitor, contributor );
                 contributor = visitor.replaceContributor( contributor );
                 if ( contributor == null )
+                {
                     contributorIterator.remove();
+                }
                 else
+                {
                     contributorIterator.set( contributor );
+                }
             }
         }
 
@@ -158,9 +170,13 @@ public class DefaultModelProcessor
                 visitMailingList( visitor, mailingList );
                 mailingList = visitor.replaceMailingList( mailingList );
                 if ( mailingList == null )
+                {
                     mailingListIterator.remove();
+                }
                 else
+                {
                     mailingListIterator.set( mailingList );
+                }
             }
         }
 
@@ -182,9 +198,13 @@ public class DefaultModelProcessor
                 visitor.visitModule( module );
                 module = visitor.replaceModule( module );
                 if ( module == null )
+                {
                     moduleIterator.remove();
+                }
                 else
+                {
                     moduleIterator.set( module );
+                }
             }
         }
 
@@ -234,9 +254,13 @@ public class DefaultModelProcessor
                 visitor.visitProperty( propertyKey, propertyValue );
                 propertyValue = visitor.replaceProperty( propertyKey, propertyValue );
                 if ( propertyValue == null )
+                {
                     propertyIterator.remove();
+                }
                 else
+                {
                     property.setValue( propertyValue );
+                }
             }
         }
 
@@ -260,9 +284,13 @@ public class DefaultModelProcessor
                 visitDependency( visitor, dependency );
                 dependency = visitor.replaceDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
 
@@ -277,9 +305,13 @@ public class DefaultModelProcessor
                 visitRepository( visitor, repository );
                 repository = visitor.replaceRepository( repository );
                 if ( repository == null )
+                {
                     repositoryIterator.remove();
+                }
                 else
+                {
                     repositoryIterator.set( repository );
+                }
             }
         }
 
@@ -294,9 +326,13 @@ public class DefaultModelProcessor
                 visitPluginRepository( visitor, pluginRepository );
                 pluginRepository = visitor.replacePluginRepository( pluginRepository );
                 if ( pluginRepository == null )
+                {
                     pluginRepositoryIterator.remove();
+                }
                 else
+                {
                     pluginRepositoryIterator.set( pluginRepository );
+                }
             }
         }
 
@@ -329,9 +365,13 @@ public class DefaultModelProcessor
                 visitProfile( visitor, profile );
                 profile = visitor.replaceProfile( profile );
                 if ( profile == null )
+                {
                     profileIterator.remove();
+                }
                 else
+                {
                     profileIterator.set( profile );
+                }
             }
         }
     }
@@ -349,9 +389,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildExtension( extension );
                 extension = visitor.replaceBuildExtension( extension );
                 if ( extension == null )
+                {
                     extensionIterator.remove();
+                }
                 else
+                {
                     extensionIterator.set( extension );
+                }
             }
         }
 
@@ -366,9 +410,13 @@ public class DefaultModelProcessor
                 visitBuildResource( visitor, resource );
                 resource = visitor.replaceBuildResource( resource );
                 if ( resource == null )
+                {
                     resourceIterator.remove();
+                }
                 else
+                {
                     resourceIterator.set( resource );
+                }
             }
         }
 
@@ -383,9 +431,13 @@ public class DefaultModelProcessor
                 visitBuildTestResource( visitor, testResource );
                 testResource = visitor.replaceBuildTestResource( testResource );
                 if ( testResource == null )
+                {
                     testResourceIterator.remove();
+                }
                 else
+                {
                     testResourceIterator.set( testResource );
+                }
             }
         }
 
@@ -399,9 +451,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildFilter( filter );
                 filter = visitor.replaceBuildFilter( filter );
                 if ( filter == null )
+                {
                     filterIterator.remove();
+                }
                 else
+                {
                     filterIterator.set( filter );
+                }
             }
         }
 
@@ -425,9 +481,13 @@ public class DefaultModelProcessor
                 visitBuildPlugin( visitor, plugin );
                 plugin = visitor.replaceBuildPlugin( plugin );
                 if ( plugin == null )
+                {
                     pluginIterator.remove();
+                }
                 else
+                {
                     pluginIterator.set( plugin );
+                }
             }
         }
     }
@@ -445,9 +505,13 @@ public class DefaultModelProcessor
                 visitBuildPluginExecution( visitor, execution );
                 execution = visitor.replaceBuildPluginExecution( execution );
                 if ( execution == null )
+                {
                     executionIterator.remove();
+                }
                 else
+                {
                     executionIterator.set( execution );
+                }
             }
         }
 
@@ -462,9 +526,13 @@ public class DefaultModelProcessor
                 visitBuildPluginDependency( visitor, dependency );
                 dependency = visitor.replaceBuildPluginDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
     }
@@ -481,9 +549,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildPluginDependencyExclusion( exclusion );
                 exclusion = visitor.replaceBuildPluginDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -500,9 +572,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildPluginExecutionGoal( goal );
                 goal = visitor.replaceBuildPluginExecutionGoal( goal );
                 if ( goal == null )
+                {
                     goalIterator.remove();
+                }
                 else
+                {
                     goalIterator.set( goal );
+                }
             }
         }
     }
@@ -520,9 +596,13 @@ public class DefaultModelProcessor
                 visitBuildPluginManagementPlugin( visitor, plugin );
                 plugin = visitor.replaceBuildPluginManagementPlugin( plugin );
                 if ( plugin == null )
+                {
                     pluginIterator.remove();
+                }
                 else
+                {
                     pluginIterator.set( plugin );
+                }
             }
         }
     }
@@ -540,9 +620,13 @@ public class DefaultModelProcessor
                 visitBuildPluginManagementPluginExecution( visitor, execution );
                 execution = visitor.replaceBuildPluginManagementPluginExecution( execution );
                 if ( execution == null )
+                {
                     executionIterator.remove();
+                }
                 else
+                {
                     executionIterator.set( execution );
+                }
             }
         }
 
@@ -557,9 +641,13 @@ public class DefaultModelProcessor
                 visitBuildPluginManagementPluginDependency( visitor, dependency );
                 dependency = visitor.replaceBuildPluginManagementPluginDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
     }
@@ -576,9 +664,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildPluginManagementPluginDependencyExclusion( exclusion );
                 exclusion = visitor.replaceBuildPluginManagementPluginDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -595,9 +687,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildPluginManagementPluginExecutionGoal( goal );
                 goal = visitor.replaceBuildPluginManagementPluginExecutionGoal( goal );
                 if ( goal == null )
+                {
                     goalIterator.remove();
+                }
                 else
+                {
                     goalIterator.set( goal );
+                }
             }
         }
     }
@@ -614,9 +710,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildResourceInclude( include );
                 include = visitor.replaceBuildResourceInclude( include );
                 if ( include == null )
+                {
                     includeIterator.remove();
+                }
                 else
+                {
                     includeIterator.set( include );
+                }
             }
         }
 
@@ -630,9 +730,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildResourceExclude( exclude );
                 exclude = visitor.replaceBuildResourceExclude( exclude );
                 if ( exclude == null )
+                {
                     excludeIterator.remove();
+                }
                 else
+                {
                     excludeIterator.set( exclude );
+                }
             }
         }
     }
@@ -649,9 +753,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildTestResourceInclude( include );
                 include = visitor.replaceBuildTestResourceInclude( include );
                 if ( include == null )
+                {
                     includeIterator.remove();
+                }
                 else
+                {
                     includeIterator.set( include );
+                }
             }
         }
 
@@ -665,9 +773,13 @@ public class DefaultModelProcessor
                 visitor.visitBuildTestResourceExclude( exclude );
                 exclude = visitor.replaceBuildTestResourceExclude( exclude );
                 if ( exclude == null )
+                {
                     excludeIterator.remove();
+                }
                 else
+                {
                     excludeIterator.set( exclude );
+                }
             }
         }
     }
@@ -685,9 +797,13 @@ public class DefaultModelProcessor
                 visitCiManagementNotifier( visitor, notifier );
                 notifier = visitor.replaceCiManagementNotifier( notifier );
                 if ( notifier == null )
+                {
                     notifierIterator.remove();
+                }
                 else
+                {
                     notifierIterator.set( notifier );
+                }
             }
         }
     }
@@ -708,9 +824,13 @@ public class DefaultModelProcessor
                     visitor.replaceCiManagementNotifierConfiguration( configurationElementKey,
                                                                       configurationElementValue );
                 if ( configurationElementValue == null )
+                {
                     configurationElementIterator.remove();
+                }
                 else
+                {
                     configurationElement.setValue( configurationElementValue );
+                }
             }
         }
     }
@@ -727,9 +847,13 @@ public class DefaultModelProcessor
                 visitor.visitContributorRole( role );
                 role = visitor.replaceContributorRole( role );
                 if ( role == null )
+                {
                     roleIterator.remove();
+                }
                 else
+                {
                     roleIterator.set( role );
+                }
             }
         }
 
@@ -745,9 +869,13 @@ public class DefaultModelProcessor
                 visitor.visitContributorProperty( propertyKey, propertyValue );
                 propertyValue = visitor.replaceContributorProperty( propertyKey, propertyValue );
                 if ( propertyValue == null )
+                {
                     propertyIterator.remove();
+                }
                 else
+                {
                     property.setValue( propertyValue );
+                }
             }
         }
     }
@@ -764,9 +892,13 @@ public class DefaultModelProcessor
                 visitor.visitDependencyExclusion( exclusion );
                 exclusion = visitor.replaceDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -784,9 +916,13 @@ public class DefaultModelProcessor
                 visitDependencyManagementDependency( visitor, dependency );
                 dependency = visitor.replaceDependencyManagementDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
     }
@@ -803,9 +939,13 @@ public class DefaultModelProcessor
                 visitor.visitDependencyManagementDependencyExclusion( exclusion );
                 exclusion = visitor.replaceDependencyManagementDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -822,9 +962,13 @@ public class DefaultModelProcessor
                 visitor.visitDeveloperRole( role );
                 role = visitor.replaceDeveloperRole( role );
                 if ( role == null )
+                {
                     roleIterator.remove();
+                }
                 else
+                {
                     roleIterator.set( role );
+                }
             }
         }
 
@@ -840,9 +984,13 @@ public class DefaultModelProcessor
                 visitor.visitDeveloperProperty( propertyKey, propertyValue );
                 propertyValue = visitor.replaceDeveloperProperty( propertyKey, propertyValue );
                 if ( propertyValue == null )
+                {
                     propertyIterator.remove();
+                }
                 else
+                {
                     property.setValue( propertyValue );
+                }
             }
         }
     }
@@ -936,9 +1084,13 @@ public class DefaultModelProcessor
                 visitor.visitMailingListOtherArchive( otherArchive );
                 otherArchive = visitor.replaceMailingListOtherArchive( otherArchive );
                 if ( otherArchive == null )
+                {
                     otherArchiveIterator.remove();
+                }
                 else
+                {
                     otherArchiveIterator.set( otherArchive );
+                }
             }
         }
     }
@@ -992,9 +1144,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileModule( module );
                 module = visitor.replaceProfileModule( module );
                 if ( module == null )
+                {
                     moduleIterator.remove();
+                }
                 else
+                {
                     moduleIterator.set( module );
+                }
             }
         }
 
@@ -1019,9 +1175,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileProperty( propertyKey, propertyValue );
                 propertyValue = visitor.replaceProfileProperty( propertyKey, propertyValue );
                 if ( propertyValue == null )
+                {
                     propertyIterator.remove();
+                }
                 else
+                {
                     property.setValue( propertyValue );
+                }
             }
         }
 
@@ -1045,9 +1205,13 @@ public class DefaultModelProcessor
                 visitProfileDependency( visitor, dependency );
                 dependency = visitor.replaceProfileDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
 
@@ -1062,9 +1226,13 @@ public class DefaultModelProcessor
                 visitProfileRepository( visitor, repository );
                 repository = visitor.replaceProfileRepository( repository );
                 if ( repository == null )
+                {
                     repositoryIterator.remove();
+                }
                 else
+                {
                     repositoryIterator.set( repository );
+                }
             }
         }
 
@@ -1079,9 +1247,13 @@ public class DefaultModelProcessor
                 visitProfilePluginRepository( visitor, pluginRepository );
                 pluginRepository = visitor.replaceProfilePluginRepository( pluginRepository );
                 if ( pluginRepository == null )
+                {
                     pluginRepositoryIterator.remove();
+                }
                 else
+                {
                     pluginRepositoryIterator.set( pluginRepository );
+                }
             }
         }
 
@@ -1135,9 +1307,13 @@ public class DefaultModelProcessor
                 visitProfileBuildResource( visitor, resource );
                 resource = visitor.replaceProfileBuildResource( resource );
                 if ( resource == null )
+                {
                     resourceIterator.remove();
+                }
                 else
+                {
                     resourceIterator.set( resource );
+                }
             }
         }
 
@@ -1152,9 +1328,13 @@ public class DefaultModelProcessor
                 visitProfileBuildTestResource( visitor, testResource );
                 testResource = visitor.replaceProfileBuildTestResource( testResource );
                 if ( testResource == null )
+                {
                     testResourceIterator.remove();
+                }
                 else
+                {
                     testResourceIterator.set( testResource );
+                }
             }
         }
 
@@ -1168,9 +1348,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildFilter( filter );
                 filter = visitor.replaceProfileBuildFilter( filter );
                 if ( filter == null )
+                {
                     filterIterator.remove();
+                }
                 else
+                {
                     filterIterator.set( filter );
+                }
             }
         }
 
@@ -1194,9 +1378,13 @@ public class DefaultModelProcessor
                 visitProfileBuildPlugin( visitor, plugin );
                 plugin = visitor.replaceProfileBuildPlugin( plugin );
                 if ( plugin == null )
+                {
                     pluginIterator.remove();
+                }
                 else
+                {
                     pluginIterator.set( plugin );
+                }
             }
         }
     }
@@ -1214,9 +1402,13 @@ public class DefaultModelProcessor
                 visitProfileBuildPluginExecution( visitor, execution );
                 execution = visitor.replaceProfileBuildPluginExecution( execution );
                 if ( execution == null )
+                {
                     executionIterator.remove();
+                }
                 else
+                {
                     executionIterator.set( execution );
+                }
             }
         }
 
@@ -1231,9 +1423,13 @@ public class DefaultModelProcessor
                 visitProfileBuildPluginDependency( visitor, dependency );
                 dependency = visitor.replaceProfileBuildPluginDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
     }
@@ -1250,9 +1446,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildPluginDependencyExclusion( exclusion );
                 exclusion = visitor.replaceProfileBuildPluginDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -1269,9 +1469,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildPluginExecutionGoal( goal );
                 goal = visitor.replaceProfileBuildPluginExecutionGoal( goal );
                 if ( goal == null )
+                {
                     goalIterator.remove();
+                }
                 else
+                {
                     goalIterator.set( goal );
+                }
             }
         }
     }
@@ -1289,9 +1493,13 @@ public class DefaultModelProcessor
                 visitProfileBuildPluginManagementPlugin( visitor, plugin );
                 plugin = visitor.replaceProfileBuildPluginManagementPlugin( plugin );
                 if ( plugin == null )
+                {
                     pluginIterator.remove();
+                }
                 else
+                {
                     pluginIterator.set( plugin );
+                }
             }
         }
     }
@@ -1309,9 +1517,13 @@ public class DefaultModelProcessor
                 visitProfileBuildPluginManagementPluginExecution( visitor, execution );
                 execution = visitor.replaceProfileBuildPluginManagementPluginExecution( execution );
                 if ( execution == null )
+                {
                     executionIterator.remove();
+                }
                 else
+                {
                     executionIterator.set( execution );
+                }
             }
         }
 
@@ -1326,9 +1538,13 @@ public class DefaultModelProcessor
                 visitProfileBuildPluginManagementPluginDependency( visitor, dependency );
                 dependency = visitor.replaceProfileBuildPluginManagementPluginDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
     }
@@ -1345,9 +1561,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildPluginManagementPluginDependencyExclusion( exclusion );
                 exclusion = visitor.replaceProfileBuildPluginManagementPluginDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -1365,9 +1585,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildPluginManagementPluginExecutionGoal( goal );
                 goal = visitor.replaceProfileBuildPluginManagementPluginExecutionGoal( goal );
                 if ( goal == null )
+                {
                     goalIterator.remove();
+                }
                 else
+                {
                     goalIterator.set( goal );
+                }
             }
         }
     }
@@ -1384,9 +1608,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildResourceInclude( include );
                 include = visitor.replaceProfileBuildResourceInclude( include );
                 if ( include == null )
+                {
                     includeIterator.remove();
+                }
                 else
+                {
                     includeIterator.set( include );
+                }
             }
         }
 
@@ -1400,9 +1628,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildResourceExclude( exclude );
                 exclude = visitor.replaceProfileBuildResourceExclude( exclude );
                 if ( exclude == null )
+                {
                     excludeIterator.remove();
+                }
                 else
+                {
                     excludeIterator.set( exclude );
+                }
             }
         }
     }
@@ -1419,9 +1651,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildTestResourceInclude( include );
                 include = visitor.replaceProfileBuildTestResourceInclude( include );
                 if ( include == null )
+                {
                     includeIterator.remove();
+                }
                 else
+                {
                     includeIterator.set( include );
+                }
             }
         }
 
@@ -1435,9 +1671,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileBuildTestResourceExclude( exclude );
                 exclude = visitor.replaceProfileBuildTestResourceExclude( exclude );
                 if ( exclude == null )
+                {
                     excludeIterator.remove();
+                }
                 else
+                {
                     excludeIterator.set( exclude );
+                }
             }
         }
     }
@@ -1454,9 +1694,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileDependencyExclusion( exclusion );
                 exclusion = visitor.replaceProfileDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -1474,9 +1718,13 @@ public class DefaultModelProcessor
                 visitProfileDependencyManagementDependency( visitor, dependency );
                 dependency = visitor.replaceProfileDependencyManagementDependency( dependency );
                 if ( dependency == null )
+                {
                     dependencyIterator.remove();
+                }
                 else
+                {
                     dependencyIterator.set( dependency );
+                }
             }
         }
     }
@@ -1493,9 +1741,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileDependencyManagementDependencyExclusion( exclusion );
                 exclusion = visitor.replaceProfileDependencyManagementDependencyExclusion( exclusion );
                 if ( exclusion == null )
+                {
                     exclusionIterator.remove();
+                }
                 else
+                {
                     exclusionIterator.set( exclusion );
+                }
             }
         }
     }
@@ -1610,9 +1862,13 @@ public class DefaultModelProcessor
                 visitProfileReportingPlugin( visitor, plugin );
                 plugin = visitor.replaceProfileReportingPlugin( plugin );
                 if ( plugin == null )
+                {
                     pluginIterator.remove();
+                }
                 else
+                {
                     pluginIterator.set( plugin );
+                }
             }
         }
     }
@@ -1630,9 +1886,13 @@ public class DefaultModelProcessor
                 visitProfileReportingPluginReportSet( visitor, reportSet );
                 reportSet = visitor.replaceProfileReportingPluginReportSet( reportSet );
                 if ( reportSet == null )
+                {
                     reportSetIterator.remove();
+                }
                 else
+                {
                     reportSetIterator.set( reportSet );
+                }
             }
         }
     }
@@ -1649,9 +1909,13 @@ public class DefaultModelProcessor
                 visitor.visitProfileReportingPluginReportSetReport( report );
                 report = visitor.replaceProfileReportingPluginReportSetReport( report );
                 if ( report == null )
+                {
                     reportIterator.remove();
+                }
                 else
+                {
                     reportIterator.set( report );
+                }
             }
         }
     }
@@ -1688,9 +1952,13 @@ public class DefaultModelProcessor
                 visitReportingPlugin( visitor, plugin );
                 plugin = visitor.replaceReportingPlugin( plugin );
                 if ( plugin == null )
+                {
                     pluginIterator.remove();
+                }
                 else
+                {
                     pluginIterator.set( plugin );
+                }
             }
         }
     }
@@ -1708,9 +1976,13 @@ public class DefaultModelProcessor
                 visitReportingPluginReportSet( visitor, reportSet );
                 reportSet = visitor.replaceReportingPluginReportSet( reportSet );
                 if ( reportSet == null )
+                {
                     reportSetIterator.remove();
+                }
                 else
+                {
                     reportSetIterator.set( reportSet );
+                }
             }
         }
     }
@@ -1727,9 +1999,13 @@ public class DefaultModelProcessor
                 visitor.visitReportingPluginReportSetReport( report );
                 report = visitor.replaceReportingPluginReportSetReport( report );
                 if ( report == null )
+                {
                     reportIterator.remove();
+                }
                 else
+                {
                     reportIterator.set( report );
+                }
             }
         }
     }

@@ -87,9 +87,13 @@ public abstract class File
     public File( Path targetPath, int accessMode )
     {
         if ( targetPath.isAbsolute() )
+        {
             throw new IllegalArgumentException( "target path must not be absolute" );
+        }
         if ( accessMode < -1 || accessMode > MAX_MODE )
+        {
             throw new IllegalArgumentException( "access mode must be in range from 0 to 0777 or equal to -1" );
+        }
 
         this.targetPath = targetPath;
         this.accessMode = accessMode;
@@ -129,7 +133,9 @@ public abstract class File
         if ( Files.exists( installRoot ) )
         {
             if ( !Files.isDirectory( installRoot ) )
+            {
                 throw new IOException( "Installation root " + installRoot + " already exists and is not a directory." );
+            }
         }
         else
         {

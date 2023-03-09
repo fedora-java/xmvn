@@ -47,10 +47,12 @@ class CompoundRepositoryFactory
     {
         Path prefix = null;
         if ( properties.containsKey( "prefix" ) )
+        {
             prefix = Paths.get( properties.getProperty( "prefix" ) );
+        }
 
         Element repositories = DomUtils.parseAsWrapper( configuration );
-        if ( !repositories.getNodeName().equals( "repositories" ) )
+        if ( !"repositories".equals( repositories.getNodeName() ) )
         {
             throw new RuntimeException( "compound repository expects configuration "
                 + "with exactly one child element: <repositories>" );
@@ -60,15 +62,19 @@ class CompoundRepositoryFactory
         for ( Element child : DomUtils.parseAsParent( repositories ) )
         {
             String text = DomUtils.parseAsText( child );
-            if ( !child.getNodeName().equals( "repository" ) )
+            if ( !"repository".equals( child.getNodeName() ) )
+            {
                 throw new RuntimeException( "All children of <repositories> must be <repository> text nodes" );
+            }
 
             Repository slaveRepository = configurator.configureRepository( text, namespace );
             slaveRepositories.add( slaveRepository );
         }
 
         if ( namespace == null || namespace.isEmpty() )
+        {
             namespace = properties.getProperty( "namespace", "" );
+        }
 
         return new CompoundRepository( namespace, prefix, slaveRepositories );
     }

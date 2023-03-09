@@ -34,7 +34,7 @@ public class ToolchainManagerBasicIntegrationTest
         throws Exception
     {
         performTest( "verify" );
-        assertTrue( getStdout().anyMatch( s -> s.equals( "[INFO] Toolchain in compiler-plugin: JDK[/tmp]" ) ) );
-        assertTrue( getStdout().anyMatch( s -> s.equals( "[INFO] Toolchain in surefire-plugin: JDK[/tmp]" ) ) );
+        assertTrue( getStdout().anyMatch( "[INFO] Toolchain in compiler-plugin: JDK[/tmp]"::equals ) );
+        assertTrue( getStdout().anyMatch( "[INFO] Toolchain in surefire-plugin: JDK[/tmp]"::equals ) );
     }
 }

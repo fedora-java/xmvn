@@ -154,7 +154,7 @@ public class BasicDeployerTest
 
                 if ( matcher.matches() )
                 {
-                    if ( matcher.group( 1 ).equals( "0" ) )
+                    if ( "0".equals( matcher.group( 1 ) ) )
                     {
                         return true;
                     }

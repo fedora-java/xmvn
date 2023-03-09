@@ -56,7 +56,7 @@ public class ResolverCli
         if ( cli.isRaw() )
         {
             List<ResolutionRequest> requests = new ResolutionRequestListUnmarshaller( System.in ).unmarshal();
-            return requests != null ? requests : Collections.<ResolutionRequest>emptyList();
+            return requests != null ? requests : Collections.emptyList();
         }
 
         List<ResolutionRequest> requests = new ArrayList<>();
@@ -64,9 +64,13 @@ public class ResolverCli
         for ( String s : cli.getParameters() )
         {
             if ( s.indexOf( ':' ) > 0 && s.indexOf( ':' ) == s.lastIndexOf( ':' ) )
+            {
                 s += ":";
+            }
             if ( s.endsWith( ":" ) )
+            {
                 s += "SYSTEM";
+            }
 
             Artifact artifact = new DefaultArtifact( s );
             ResolutionRequest request = new ResolutionRequest( artifact );
@@ -117,7 +121,9 @@ public class ResolverCli
             }
 
             if ( error && !cliRequest.isRaw() )
+            {
                 return 1;
+            }
 
             printResults( cliRequest, results );
             return 0;
@@ -143,7 +149,9 @@ public class ResolverCli
                 return 0;
             }
             if ( cliRequest.isDebug() )
+            {
                 System.setProperty( "xmvn.debug", "true" );
+            }
 
             ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
             Resolver resolver = locator.getService( Resolver.class );

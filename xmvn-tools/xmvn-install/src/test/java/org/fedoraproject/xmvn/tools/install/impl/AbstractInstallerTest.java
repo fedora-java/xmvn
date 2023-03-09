@@ -121,7 +121,9 @@ public abstract class AbstractInstallerTest
             Iterator<String> actualIterator = actualList.iterator();
 
             while ( expectedIterator.hasNext() && actualIterator.hasNext() )
+            {
                 assertEquals( expectedIterator.next(), actualIterator.next() );
+            }
 
             assertFalse( expectedIterator.hasNext() );
             assertFalse( actualIterator.hasNext() );
@@ -185,7 +187,9 @@ public abstract class AbstractInstallerTest
             Node pathNode = nodes.item( i );
             String path = pathNode.getTextContent();
             if ( path.startsWith( "???" ) )
+            {
                 pathNode.setTextContent( getResource( path.substring( 3 ) ).toAbsolutePath().toString() );
+            }
         }
 
         unifyUuids( expectedXml.getElementsByTagName( "uuid" ) );

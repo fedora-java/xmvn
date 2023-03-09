@@ -81,7 +81,9 @@ public abstract class AbstractIntegrationTest
         String workdir = "xmvn-it/target/work" + workdirSuffix;
         Path cwd = Paths.get( "." ).toRealPath();
         if ( !cwd.endsWith( workdir ) )
+        {
             throw new RuntimeException( "XMvn integration tests must be ran from " + workdir + " directory" );
+        }
     }
 
     @BeforeEach

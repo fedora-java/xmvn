@@ -84,11 +84,15 @@ public class XMvnWorkspaceReader
         ResolutionResult result = resolve( artifact );
 
         if ( result.getArtifactPath() == null )
+        {
             return Collections.emptyList();
+        }
 
         String version = result.getCompatVersion();
         if ( version == null )
+        {
             version = org.fedoraproject.xmvn.artifact.Artifact.DEFAULT_VERSION;
+        }
 
         return Collections.singletonList( version );
     }

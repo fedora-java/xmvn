@@ -165,13 +165,10 @@ public class BuilddepMojo
 
     private Set<Artifact> getModelDependencies( Model model )
     {
-        BuildDependencyVisitor visitor = new BuildDependencyVisitor( location ->
-        {
-            return !reactorProjects.stream() //
-                                   .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
-                                   .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
-                                   .findAny().isPresent();
-        } );
+        BuildDependencyVisitor visitor = new BuildDependencyVisitor( location -> !reactorProjects.stream() //
+                                                                                                 .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
+                                                                                                 .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
+                                                                                                 .findAny().isPresent() );
         modelProcessor.processModel( model.clone(), visitor );
         return visitor.getArtifacts();
     }
@@ -182,7 +179,9 @@ public class BuilddepMojo
     {
         ClassRealm projectRealm = project.getClassRealm();
         if ( projectRealm == null )
+        {
             projectRealm = container.getContainerRealm();
+        }
 
         ClassRealm oldLookupRealm = container.setLookupRealm( projectRealm );
         ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -208,12 +207,16 @@ public class BuilddepMojo
     {
         Lifecycle defaultLifecycle = getDefaultLifecycle( project );
         if ( defaultLifecycle == null )
+        {
             return;
+        }
 
         for ( LifecyclePhase phase : defaultLifecycle.getLifecyclePhases().values() )
         {
             if ( phase.getMojos() == null )
+            {
                 continue;
+            }
 
             for ( LifecycleMojo mojo : phase.getMojos() )
             {
@@ -261,13 +264,15 @@ public class BuilddepMojo
         }
 
         artifacts.removeIf( dep -> commonDeps.contains( dep.setVersion( Artifact.DEFAULT_VERSION ) ) );
-        lifecycleArtifacts.removeIf( dep -> commonDeps.contains( dep ) );
+        lifecycleArtifacts.removeIf( commonDeps::contains );
 
         Set<NamespacedArtifact> deps = new LinkedHashSet<>();
         for ( String[] resolution : resolutions )
         {
             if ( resolution == null )
+            {
                 continue;
+            }
 
             Artifact artifact = new DefaultArtifact( resolution[0] );
             Artifact versionlessArtifact = artifact.setVersion( Artifact.DEFAULT_VERSION );

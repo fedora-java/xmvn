@@ -117,9 +117,11 @@ public class InstallMojo
             {
                 // Ignore dependencies injected by Tycho
                 if ( isTychoProject( project ) )
+                {
                     continue;
+                }
 
-                if ( dependency.getScope() != null && dependency.getScope().equals( "system" ) )
+                if ( "system".equals( dependency.getScope() ) )
                 {
                     systemDeps.add( new DefaultArtifact( dependency.getGroupId(), dependency.getArtifactId(),
                                                          dependency.getClassifier(), dependency.getType(),
@@ -149,7 +151,9 @@ public class InstallMojo
     {
         Path propertiesPath = Paths.get( ".xmvn/properties" );
         if ( !Files.exists( propertiesPath ) )
+        {
             return null;
+        }
 
         Properties properties = new Properties();
         try ( InputStream stream = Files.newInputStream( propertiesPath ) )
@@ -176,7 +180,7 @@ public class InstallMojo
         for ( Dependency dependency : model.getDependencies() )
         {
             String scope = dependency.getScope();
-            if ( scope == null || scope.equals( "compile" ) || scope.equals( "runtime" ) )
+            if ( scope == null || "compile".equals( scope ) || "runtime".equals( scope ) )
             {
                 Artifact dependencyArtifact = Utils.dependencyArtifact( repoSession, dependency );
 
@@ -192,7 +196,9 @@ public class InstallMojo
 
         DeploymentResult result = deployer.deploy( request );
         if ( result.getException() != null )
+        {
             throw new MojoExecutionException( "Failed to deploy artifact " + artifact, result.getException() );
+        }
     }
 
     @Override
@@ -217,7 +223,9 @@ public class InstallMojo
 
             String type = project.getPackaging();
             if ( mainArtifactPath != null )
+            {
                 deployArtifact( mainArtifact, type, project.getModel() );
+            }
 
             if ( !isTychoProject( project ) )
             {

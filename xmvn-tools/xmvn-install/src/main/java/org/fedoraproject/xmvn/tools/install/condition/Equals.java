@@ -42,7 +42,9 @@ class Equals
         lhs = iterator.next();
         rhs = iterator.next();
         if ( iterator.hasNext() )
+        {
             throw new IllegalArgumentException();
+        }
     }
 
     @Override

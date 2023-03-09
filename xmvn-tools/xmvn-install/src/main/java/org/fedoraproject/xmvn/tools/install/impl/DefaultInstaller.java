@@ -101,7 +101,9 @@ public class DefaultInstaller
             Artifact artifact = artifactMetadata.toArtifact();
 
             if ( !reactor.add( new ArtifactState( artifact, artifactMetadata ) ) )
+            {
                 throw new ArtifactInstallationException( "Installation plan contains duplicate artifact: " + artifact );
+            }
         }
     }
 
@@ -206,8 +208,10 @@ public class DefaultInstaller
     private void assignArtifactInstaller( ArtifactState artifactState )
     {
         if ( artifactState.getTargetPackage() != null )
+        {
             artifactState.setInstaller( installerFactory.getInstallerFor( artifactState.getArtifact(),
                                                                           artifactState.getMetadata().getProperties() ) );
+        }
     }
 
     private void installArtifact( ArtifactState artifactState, String basePackageName, String repositoryId )
@@ -333,8 +337,10 @@ public class DefaultInstaller
             if ( logger.isDebugEnabled() )
             {
                 if ( artifactState.getInstaller() != null )
+                {
                     logger.debug( "Installing {} using {}", artifactState.getArtifact(),
                                   artifactState.getInstaller().getClass().getName() );
+                }
             }
 
             installArtifact( artifactState, request.getBasePackageName(), request.getRepositoryId() );
@@ -346,7 +352,9 @@ public class DefaultInstaller
         {
             ArtifactInstaller installer = artifactState.getInstaller();
             if ( installer != null && installers.add( installer ) )
+            {
                 installer.postInstallation();
+            }
         }
 
         logger.debug( "Resolving artifact dependencies..." );
@@ -361,7 +369,9 @@ public class DefaultInstaller
             Path mfiles =
                 Paths.get( pkg.getId() == null || pkg.getId().isEmpty() ? ".mfiles" : ".mfiles-" + pkg.getId() );
             if ( request.getDescriptorRoot() != null )
+            {
                 mfiles = request.getDescriptorRoot().resolve( mfiles );
+            }
 
             logger.debug( "Writing file descriptor {}", mfiles );
             pkg.writeDescriptor( mfiles );

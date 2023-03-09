@@ -28,7 +28,7 @@ import org.fedoraproject.xmvn.resolver.ResolutionRequest;
  */
 class ResolutionRequestUnmarshaller
 {
-    private XMLEventReader eventReader;
+    private final XMLEventReader eventReader;
 
     public ResolutionRequestUnmarshaller( XMLEventReader eventReader )
     {
@@ -72,7 +72,7 @@ class ResolutionRequestUnmarshaller
                     break;
 
                 case XMLStreamConstants.END_ELEMENT:
-                    if ( event.asEndElement().getName().getLocalPart().equals( "request" ) )
+                    if ( "request".equals( event.asEndElement().getName().getLocalPart() ) )
                     {
                         ResolutionRequest resolutionRequest;
                         try

@@ -83,7 +83,9 @@ public class Package
     public void addFile( File file )
     {
         if ( files.contains( file ) )
+        {
             throw new IllegalArgumentException( "Package " + id + " already contains file " + file.getTargetPath() );
+        }
 
         files.add( file );
     }
@@ -96,7 +98,9 @@ public class Package
     public void addFileIfNotExists( File file )
     {
         if ( !files.contains( file ) )
+        {
             files.add( file );
+        }
     }
 
     /**

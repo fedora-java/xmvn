@@ -46,8 +46,7 @@ public class Bar
     protected MavenProject protMethod() throws ProjectBuildingException
     {
         MavenProjectBuilder projectBuilder=new DefaultMavenProjectBuilder();
-        MavenProject project = projectBuilder.build( null, null );
-        return project;
+        return projectBuilder.build( null, null );
     }
 
     /** defDesc */

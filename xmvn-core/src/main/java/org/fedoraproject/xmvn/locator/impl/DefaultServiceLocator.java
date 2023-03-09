@@ -61,7 +61,9 @@ public class DefaultServiceLocator
     {
         Class<?> implClass = knownServices.get( role );
         if ( implClass == null )
+        {
             return null;
+        }
 
         try
         {

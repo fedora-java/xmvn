@@ -133,7 +133,9 @@ public class ArtifactInstallerTest
         Iterator<File> iterator = pkg.getFiles().iterator();
         File file = iterator.next();
         if ( file.getTargetPath().equals( Paths.get( "usr/share/maven-metadata/test.xml" ) ) )
+        {
             file = iterator.next();
+        }
         assertEquals( Paths.get( "com.example-test" ), file.getTargetPath() );
         assertEquals( "/com.example-test", artifact.getPath() );
     }

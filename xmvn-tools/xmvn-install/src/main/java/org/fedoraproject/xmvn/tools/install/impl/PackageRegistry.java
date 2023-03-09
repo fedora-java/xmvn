@@ -44,11 +44,15 @@ class PackageRegistry
 
     public JavaPackage getPackageById( String id )
     {
-        if ( id == null || id.equals( "__default" ) )
+        if ( id == null || "__default".equals( id ) )
+        {
             id = "";
+        }
 
-        if ( id.equals( "__noinstall" ) )
+        if ( "__noinstall".equals( id ) )
+        {
             return null;
+        }
 
         JavaPackage pkg = packages.get( id );
 

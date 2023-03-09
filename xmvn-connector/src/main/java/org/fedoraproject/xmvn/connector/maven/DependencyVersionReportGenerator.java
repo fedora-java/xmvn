@@ -39,7 +39,7 @@ class DependencyVersionReportGenerator
     extends AbstractExecutionListener
     implements ResolutionListener
 {
-    private Logger logger;
+    private final Logger logger;
 
     private final Map<Artifact, ResolutionResult> data = new LinkedHashMap<>();
 
@@ -52,7 +52,9 @@ class DependencyVersionReportGenerator
     public void resolutionRequested( ResolutionRequest request )
     {
         if ( logger.isDebugEnabled() )
+        {
             request.setProviderNeeded( true );
+        }
     }
 
     @Override
@@ -73,7 +75,9 @@ class DependencyVersionReportGenerator
         {
             String provider = result.getProvider();
             if ( provider == null )
+            {
                 provider = "(none)";
+            }
             Set<String> requestedVersions = shortReport.get( provider );
             if ( requestedVersions == null )
             {

@@ -47,7 +47,9 @@ class FileSystemWalker
         throws IOException
     {
         if ( !path.equals( root ) )
+        {
             lines.add( "D /" + root.relativize( path ) );
+        }
 
         return CONTINUE;
     }

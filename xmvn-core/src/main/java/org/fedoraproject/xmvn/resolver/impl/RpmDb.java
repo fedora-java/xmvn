@@ -52,7 +52,9 @@ class RpmDb
         {
             String line;
             while ( ( line = bufferedReader.readLine() ) != null )
+            {
                 lines.add( line );
+            }
         }
 
         int exitStatus;
@@ -65,7 +67,9 @@ class RpmDb
             throw new IOException( e );
         }
         if ( exitStatus != 0 )
+        {
             throw new IOException( "rpm failed with exit status " + exitStatus );
+        }
 
         return lines;
     }
@@ -112,7 +116,9 @@ class RpmDb
         synchronized ( LOCK )
         {
             if ( paths == null )
+            {
                 buildDatabase();
+            }
             return paths.get( path.toString() );
         }
     }

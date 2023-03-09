@@ -114,11 +114,11 @@ public class XMvnMojoExecutionListener
     {
         Object ret = method.invoke( mavenPluginManager, args );
 
-        if ( method.getName().equals( "getConfiguredMojo" ) )
+        if ( "getConfiguredMojo".equals( method.getName() ) )
         {
             beforeMojoExecution( ret, (MojoExecution) args[2] );
         }
-        else if ( method.getName().equals( "releaseMojo" ) )
+        else if ( "releaseMojo".equals( method.getName() ) )
         {
             afterMojoExecution( args[0], (MojoExecution) args[1], legacySupport.getSession().getCurrentProject() );
         }
@@ -199,10 +199,14 @@ public class XMvnMojoExecutionListener
             Path apidocsSymlink = xmvnStateDir.resolve( "apidocs" );
 
             if ( !Files.exists( xmvnStateDir ) )
+            {
                 Files.createDirectory( xmvnStateDir );
+            }
 
             if ( Files.isSymbolicLink( apidocsSymlink ) )
+            {
                 Files.delete( apidocsSymlink );
+            }
 
             Files.createSymbolicLink( apidocsSymlink, javadocDir );
         }
@@ -221,7 +225,9 @@ public class XMvnMojoExecutionListener
             Path propertiesFile = xmvnStateDir.resolve( "properties" );
 
             if ( !Files.exists( xmvnStateDir ) )
+            {
                 Files.createDirectory( xmvnStateDir );
+            }
 
             if ( Files.exists( propertiesFile ) )
             {

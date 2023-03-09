@@ -49,7 +49,9 @@ final class Utils
         String extension = handler.getExtension();
         String classifier = handler.getClassifier();
         if ( StringUtils.isNotEmpty( mavenArtifact.getClassifier() ) )
+        {
             classifier = mavenArtifact.getClassifier();
+        }
 
         File artifactFile = mavenArtifact.getFile();
         Path artifactPath = artifactFile != null ? artifactFile.toPath() : null;
@@ -88,7 +90,9 @@ final class Utils
     public static String collectionToString( Collection<Artifact> collection, boolean multiLine )
     {
         if ( collection.isEmpty() )
+        {
             return "[]";
+        }
 
         String separator = multiLine ? System.lineSeparator() : " ";
         String indent = multiLine ? "  " : "";

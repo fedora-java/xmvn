@@ -44,7 +44,9 @@ public class MavenPluginValidator
     public void validate( PluginDescriptor pluginDescriptor )
     {
         if ( pluginDescriptor.getVersion() == null )
+        {
             pluginDescriptor.setVersion( Artifact.DEFAULT_VERSION );
+        }
     }
 
     public boolean hasErrors()
