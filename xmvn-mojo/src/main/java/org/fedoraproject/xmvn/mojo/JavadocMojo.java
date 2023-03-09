@@ -167,6 +167,84 @@ public class JavadocMojo
         }
     }
 
+    private List<String> getOpts( Path outputDir, Set<Path> sourcePaths, Set<Path> sourceFiles )
+        throws IOException
+    {
+        List<String> opts = new ArrayList<>();
+        opts.add( "-private" );
+        opts.add( "-use" );
+        opts.add( "-version" );
+        opts.add( "-Xdoclint:none" );
+
+        List<Path> reactorClassPath = new ArrayList<>();
+        List<Path> fullClassPath = new ArrayList<>();
+        populateClasspath( reactorClassPath, fullClassPath );
+        boolean isModular = !findFiles( reactorClassPath, "module-info\\.class" ).isEmpty();
+
+        String sourceLevel = null;
+        if ( release != null )
+        {
+            opts.add( "--release" );
+            opts.add( quoted( release ) );
+            sourceLevel = release;
+        }
+        else if ( source != null )
+        {
+            opts.add( "-source" );
+            opts.add( quoted( source ) );
+            sourceLevel = source;
+        }
+
+        boolean skipModuleInfo = !isModular;
+        if ( sourceLevel != null )
+        {
+            try
+            {
+                float f = Float.parseFloat( sourceLevel );
+                if ( f < 9 )
+                {
+                    skipModuleInfo = true;
+                }
+            }
+            catch ( Exception e )
+            {
+                // pass, we assume that we use modular Java
+            }
+        }
+
+        if ( !isModular || skipModuleInfo )
+        {
+            opts.add( "-classpath" );
+        }
+        else
+        {
+            opts.add( "--module-path" );
+        }
+        opts.add( quoted( StringUtils.join( fullClassPath.iterator(), ":" ) ) );
+        opts.add( "-encoding" );
+        opts.add( quoted( encoding ) );
+        opts.add( "-sourcepath" );
+        opts.add( quoted( StringUtils.join( sourcePaths.iterator(), ":" ) ) );
+        opts.add( "-charset" );
+        opts.add( quoted( docencoding ) );
+        opts.add( "-d" );
+        opts.add( quoted( outputDir ) );
+        opts.add( "-docencoding" );
+        opts.add( quoted( docencoding ) );
+        opts.add( "-doctitle" );
+        opts.add( quoted( "Javadoc for package XXX" ) );
+
+        for ( Path file : sourceFiles )
+        {
+            if ( !skipModuleInfo || !file.endsWith( "module-info.java" ) )
+            {
+                opts.add( quoted( file ) );
+            }
+        }
+
+        return opts;
+    }
+
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
@@ -234,77 +312,7 @@ public class JavadocMojo
             }
             outputDir = outputDir.toRealPath();
 
-            List<String> opts = new ArrayList<>();
-            opts.add( "-private" );
-            opts.add( "-use" );
-            opts.add( "-version" );
-            opts.add( "-Xdoclint:none" );
-
-            List<Path> reactorClassPath = new ArrayList<>();
-            List<Path> fullClassPath = new ArrayList<>();
-            populateClasspath( reactorClassPath, fullClassPath );
-            boolean isModular = !findFiles( reactorClassPath, "module-info\\.class" ).isEmpty();
-
-            String sourceLevel = null;
-            if ( release != null )
-            {
-                opts.add( "--release" );
-                opts.add( quoted( release ) );
-                sourceLevel = release;
-            }
-            else if ( source != null )
-            {
-                opts.add( "-source" );
-                opts.add( quoted( source ) );
-                sourceLevel = source;
-            }
-
-            boolean skipModuleInfo = !isModular;
-            if ( sourceLevel != null )
-            {
-                try
-                {
-                    float f = Float.parseFloat( sourceLevel );
-                    if ( f < 9 )
-                    {
-                        skipModuleInfo = true;
-                    }
-                }
-                catch ( Exception e )
-                {
-                    // pass, we assume that we use modular Java
-                }
-            }
-
-            if ( !isModular || skipModuleInfo )
-            {
-                opts.add( "-classpath" );
-            }
-            else
-            {
-                opts.add( "--module-path" );
-            }
-            opts.add( quoted( StringUtils.join( fullClassPath.iterator(), ":" ) ) );
-            opts.add( "-encoding" );
-            opts.add( quoted( encoding ) );
-            opts.add( "-sourcepath" );
-            opts.add( quoted( StringUtils.join( sourcePaths.iterator(), ":" ) ) );
-            opts.add( "-charset" );
-            opts.add( quoted( docencoding ) );
-            opts.add( "-d" );
-            opts.add( quoted( outputDir ) );
-            opts.add( "-docencoding" );
-            opts.add( quoted( docencoding ) );
-            opts.add( "-doctitle" );
-            opts.add( quoted( "Javadoc for package XXX" ) );
-
-            for ( Path file : sourceFiles )
-            {
-                if ( !skipModuleInfo || !file.endsWith( "module-info.java" ) )
-                {
-                    opts.add( quoted( file ) );
-                }
-            }
+            List<String> opts = getOpts( outputDir, sourcePaths, sourceFiles );
 
             Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE );
 
