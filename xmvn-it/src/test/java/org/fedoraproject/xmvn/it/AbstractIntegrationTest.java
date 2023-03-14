@@ -16,12 +16,14 @@
 package org.fedoraproject.xmvn.it;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
@@ -90,7 +92,7 @@ public abstract class AbstractIntegrationTest
     public void createBaseDir( TestInfo testInfo )
         throws Exception
     {
-        mavenHome = Paths.get( "../dependency/xmvn-4.1.0-SNAPSHOT" ).toAbsolutePath();
+        mavenHome = Paths.get( "../dependency/xmvn-" + getTestProperty( "xmvn.version" ) ).toAbsolutePath();
 
         baseDir = Paths.get( "." ).toRealPath();
         delete( baseDir );
@@ -170,5 +172,16 @@ public abstract class AbstractIntegrationTest
     public static int getJavaVersion()
     {
         return Integer.parseInt( System.getProperty( "java.version" ).replaceAll( "\\..*", "" ) );
+    }
+
+    public String getTestProperty( String name )
+        throws IOException
+    {
+        try ( InputStream is = AbstractIntegrationTest.class.getResourceAsStream( "/xmvn-it.properties" ) )
+        {
+            Properties properties = new Properties();
+            properties.load( is );
+            return properties.getProperty( name );
+        }
     }
 }
