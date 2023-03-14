@@ -25,19 +25,18 @@ import java.util.function.Function;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.InputLocation;
+import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.util.StringUtils;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.model.AbstractModelVisitor;
 
 /**
  * @author Mikolaj Izdebski
  */
 class BuildDependencyVisitor
-    extends AbstractModelVisitor
 {
     private static final List<String> BUILD_SCOPES = Arrays.asList( null, "compile", "provided", "test", "runtime" );
 
@@ -62,14 +61,12 @@ class BuildDependencyVisitor
         return location == null || isExternalLocation.apply( location );
     }
 
-    @Override
-    public void visitParent( Parent parent )
+    private void visitParent( Parent parent )
     {
         artifacts.add( new DefaultArtifact( parent.getGroupId(), parent.getArtifactId(), "pom", parent.getVersion() ) );
     }
 
-    @Override
-    public void visitDependency( Dependency dependency )
+    private void visitDependency( Dependency dependency )
     {
         if ( isExternal( dependency.getLocation( "" ) ) )
         {
@@ -87,15 +84,13 @@ class BuildDependencyVisitor
                                                                                       dependency.getVersion() ) );
     }
 
-    @Override
-    public void visitBuildExtension( Extension extension )
+    private void visitBuildExtension( Extension extension )
     {
         artifacts.add( new DefaultArtifact( extension.getGroupId(), extension.getArtifactId(),
                                             extension.getVersion() ) );
     }
 
-    @Override
-    public void visitBuildPlugin( Plugin plugin )
+    private void visitBuildPlugin( Plugin plugin )
     {
         if ( isExternal( plugin.getLocation( "" ) ) )
         {
@@ -116,10 +111,14 @@ class BuildDependencyVisitor
 
         Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, version );
         artifacts.add( pluginArtifact );
+
+        for ( Dependency dependency : plugin.getDependencies() )
+        {
+            visitBuildPluginDependency( dependency );
+        }
     }
 
-    @Override
-    public void visitBuildPluginDependency( Dependency dependency )
+    private void visitBuildPluginDependency( Dependency dependency )
     {
         if ( isExternal( dependency.getLocation( "" ) ) )
         {
@@ -135,5 +134,28 @@ class BuildDependencyVisitor
                                                                                       dependency.getType(),
                                                                                       dependency.getClassifier(),
                                                                                       dependency.getVersion() ) );
+    }
+
+    public void visitModel( Model model )
+    {
+        if ( model.getParent() != null )
+        {
+            visitParent( model.getParent() );
+        }
+        for ( Dependency dependency : model.getDependencies() )
+        {
+            visitDependency( dependency );
+        }
+        if ( model.getBuild() != null )
+        {
+            for ( Extension extension : model.getBuild().getExtensions() )
+            {
+                visitBuildExtension( extension );
+            }
+            for ( Plugin plugin : model.getBuild().getPlugins() )
+            {
+                visitBuildPlugin( plugin );
+            }
+        }
     }
 }
