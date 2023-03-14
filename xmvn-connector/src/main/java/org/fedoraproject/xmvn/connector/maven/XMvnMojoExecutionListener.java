@@ -29,14 +29,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.LegacySupport;
 import org.apache.maven.plugin.MavenPluginManager;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -46,9 +47,10 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = XMvnMojoExecutionListener.class )
+@Named
+@Singleton
 public class XMvnMojoExecutionListener
-    implements ResolutionListener, Initializable
+    implements ResolutionListener
 {
     private static class MojoGoal
     {
@@ -92,13 +94,8 @@ public class XMvnMojoExecutionListener
                                                                "xmvn-mojo", //
                                                                "javadoc" );
 
-    @Requirement
-    private BuildPluginManager buildPluginManager;
-
-    @Requirement
     private MavenPluginManager mavenPluginManager;
 
-    @Requirement
     private LegacySupport legacySupport;
 
     private Path xmvnStateDir = Paths.get( ".xmvn" );
@@ -126,9 +123,17 @@ public class XMvnMojoExecutionListener
         return ret;
     }
 
-    @Override
-    public void initialize()
+    XMvnMojoExecutionListener()
     {
+    }
+
+    @Inject
+    public XMvnMojoExecutionListener( BuildPluginManager buildPluginManager, MavenPluginManager mavenPluginManager,
+                                      LegacySupport legacySupport )
+    {
+        this.mavenPluginManager = mavenPluginManager;
+        this.legacySupport = legacySupport;
+
         Object proxy = Proxy.newProxyInstance( XMvnMojoExecutionListener.class.getClassLoader(),
                                                new Class<?>[] { MavenPluginManager.class },
                                                this::dispatchBuildPluginManagerMethodCall );

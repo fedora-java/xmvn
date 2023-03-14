@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
+import com.google.inject.Module;
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractTest
+    implements Module
 {
     private PlexusContainer container;
 
@@ -34,11 +36,6 @@ public abstract class AbstractTest
         return container;
     }
 
-    /**
-     * Test if XMvn WorkspaceReader component can be loaded by Sisu Plexus shim.
-     * 
-     * @throws Exception
-     */
     @BeforeEach
     public void setupPlexusContainer()
         throws Exception
@@ -46,7 +43,7 @@ public abstract class AbstractTest
         ContainerConfiguration config = new DefaultContainerConfiguration();
         config.setAutoWiring( true );
         config.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
-        container = new DefaultPlexusContainer( config );
+        container = new DefaultPlexusContainer( config, this );
     }
 
     public <T> T lookup( Class<T> role )

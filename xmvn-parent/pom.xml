@@ -100,6 +100,7 @@
     <deployPluginVersion>3.1.0</deployPluginVersion>
     <easymockVersion>5.1.0</easymockVersion>
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
+    <injectionApiVersion>1</injectionApiVersion>
     <installPluginVersion>3.1.0</installPluginVersion>
     <jacocoVersion>0.8.8</jacocoVersion>
     <jarPluginVersion>3.2.2</jarPluginVersion>
@@ -111,9 +112,9 @@
     <nexusStagingPluginVersion>1.6.13</nexusStagingPluginVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.0.0</projectInfoReportsPluginVersion>
-    <plexusVersion>2.1.1</plexusVersion>
     <ratPluginVersion>0.15</ratPluginVersion>
     <resourcesPluginVersion>3.3.0</resourcesPluginVersion>
+    <sisuVersion>0.3.5</sisuVersion>
     <sitePluginVersion>3.12.0</sitePluginVersion>
     <sourcePluginVersion>3.2.1</sourcePluginVersion>
     <surefireVersion>3.0.0-M7</surefireVersion>
@@ -248,14 +249,19 @@
         <version>${asmVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-component-annotations</artifactId>
-        <version>${plexusVersion}</version>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>${injectionApiVersion}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-container-default</artifactId>
-        <version>${plexusVersion}</version>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.inject</artifactId>
+        <version>${sisuVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.plexus</artifactId>
+        <version>${sisuVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -415,13 +421,13 @@
           <version>${jacocoVersion}</version>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.plexus</groupId>
-          <artifactId>plexus-component-metadata</artifactId>
-          <version>${plexusVersion}</version>
+          <groupId>org.eclipse.sisu</groupId>
+          <artifactId>sisu-maven-plugin</artifactId>
+          <version>${sisuVersion}</version>
           <executions>
             <execution>
               <goals>
-                <goal>generate-metadata</goal>
+                <goal>main-index</goal>
               </goals>
             </execution>
           </executions>

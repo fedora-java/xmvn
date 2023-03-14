@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
@@ -34,11 +36,12 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = WorkspaceReader.class, hint = "ide" )
+@Named( "ide" )
+@Singleton
 public class XMvnWorkspaceReader
     implements WorkspaceReader
 {
-    @Requirement
+    @Inject
     private Resolver resolver;
 
     private static final WorkspaceRepository REPOSITORY = new WorkspaceRepository();

@@ -15,34 +15,39 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-import org.eclipse.aether.repository.WorkspaceReader;
+import org.eclipse.sisu.Nullable;
 
 /**
  * Installs some of XMvn extensions for Maven.
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = AbstractMavenLifecycleParticipant.class )
+@Named
+@Singleton
 public class XMvnMavenLifecycleParticipant
     extends AbstractMavenLifecycleParticipant
 {
-    @Requirement
+    @Inject
     private Logger logger;
 
-    @Requirement( role = WorkspaceReader.class, hint = "ide", optional = true )
+    @Inject
+    @Nullable
+    @Named( "ide" )
     private XMvnWorkspaceReader workspaceReader;
 
-    @Requirement( role = XMvnMojoExecutionListener.class )
+    @Inject
     private XMvnMojoExecutionListener mojoExecutionListener;
 
-    @Requirement
+    @Inject
     private XMvnToolchainManager toolchainManager;
 
     @Override

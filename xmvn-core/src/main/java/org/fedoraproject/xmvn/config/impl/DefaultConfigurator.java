@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
-
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -49,11 +49,12 @@ import org.fedoraproject.xmvn.logging.impl.Logger;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Configurator.class )
+@Named
+@Singleton
 public class DefaultConfigurator
     implements Configurator
 {
-    @Requirement
+    @Inject
     private Logger logger = new ConsoleLogger();
 
     private final ConfigurationMerger merger = new ConfigurationMerger();
