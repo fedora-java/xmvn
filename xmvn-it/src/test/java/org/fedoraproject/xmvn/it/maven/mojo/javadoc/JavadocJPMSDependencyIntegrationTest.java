@@ -30,19 +30,18 @@ import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
  * 
  * @author Mikolaj Izdebski
  */
-public class JavadocJPMSIntegrationTest
+public class JavadocJPMSDependencyIntegrationTest
     extends AbstractMojoIntegrationTest
 {
     @Test
-    public void testJavadocJPMS()
+    public void testJavadocJPMSDependency()
         throws Exception
     {
         assumeTrue( getJavaVersion() >= 9 );
         performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:javadoc" );
 
         assertTrue( Files.isDirectory( Paths.get( "target/xmvn-apidocs" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/test.jpms/foo/Bar.html" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/test.jpms/module-summary.html" ) ) );
+        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/A.html" ) ) );
         assertTrue( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
         assertTrue( Files.isSameFile( Paths.get( ".xmvn/apidocs" ), Paths.get( "target/xmvn-apidocs" ) ) );
     }
