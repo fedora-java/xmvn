@@ -112,7 +112,7 @@
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.0.0</projectInfoReportsPluginVersion>
     <plexusVersion>2.1.1</plexusVersion>
-    <ratPluginVersion>0.14</ratPluginVersion>
+    <ratPluginVersion>0.15</ratPluginVersion>
     <resourcesPluginVersion>3.3.0</resourcesPluginVersion>
     <sitePluginVersion>3.12.0</sitePluginVersion>
     <sourcePluginVersion>3.2.1</sourcePluginVersion>
