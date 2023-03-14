@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2016-2021 Red Hat, Inc.
+ * Copyright (c) 2016-2023 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,8 @@ public class JavadocMojo
     @Component
     private ToolchainManager toolchainManager;
 
+    private ModuleGleaner moduleGleaner = new ModuleGleaner();
+
     @Parameter( defaultValue = "${session}", readonly = true )
     private MavenSession session;
 
@@ -129,45 +131,83 @@ public class JavadocMojo
         return buildDirectory.toPath().resolve( "xmvn-apidocs" );
     }
 
-    private void populateClasspath( Collection<Path> reactorClassPath, Collection<Path> fullClassPath )
+    private void discoverModule( List<JavadocModule> modules, List<String> reactorArtifacts, MavenProject project )
     {
+        if ( project == null || "pom".equals( project.getPackaging() )
+            || !"java".equals( project.getArtifact().getArtifactHandler().getLanguage() ) )
+        {
+            return;
+        }
+
+        Path artifactPath;
+        if ( project.getArtifact().getFile() != null )
+        {
+            artifactPath = project.getArtifact().getFile().toPath();
+        }
+        else if ( project.getBuild().getOutputDirectory() != null )
+        {
+            artifactPath = Paths.get( project.getBuild().getOutputDirectory() );
+        }
+        else
+        {
+            return;
+        }
+
+        DependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
+        request.setMavenProject( project );
+        request.setRepositorySession( session.getRepositorySession() );
+        request.setResolutionFilter( new AndDependencyFilter( new ScopeDependencyFilter( "runtime", "test" ),
+                                                              new ExclusionsDependencyFilter( reactorArtifacts ) ) );
+
+        List<Path> dependencies = new ArrayList<>();
+        try
+        {
+            DependencyResolutionResult result = resolver.resolve( request );
+            dependencies.addAll( result.getResolvedDependencies().stream() //
+                                       .map( Dependency::getArtifact ) //
+                                       .map( artifact -> artifact.getFile().toPath() ) //
+                                       .collect( Collectors.toList() ) );
+        }
+        catch ( DependencyResolutionException e )
+        {
+            // Ignore dependency resolution errors
+        }
+
+        String moduleName = moduleGleaner.glean( artifactPath );
+
+        List<Path> sourcePaths = project.getCompileSourceRoots().stream() //
+                                        .filter( Objects::nonNull ) //
+                                        .map( Paths::get ) //
+                                        .map( sourcePath -> sourcePath.isAbsolute() ? sourcePath
+                                                        : project.getBasedir().toPath().resolve( sourcePath ).toAbsolutePath() ) //
+                                        .filter( Files::isDirectory ) //
+                                        .collect( Collectors.toList() );
+
+        modules.add( new JavadocModule( moduleName, artifactPath, sourcePaths, dependencies ) );
+    }
+
+    private List<JavadocModule> discoverModules()
+    {
+        List<JavadocModule> modules = new ArrayList<>();
+
         List<String> reactorArtifacts = reactorProjects.stream() //
                                                        .map( project -> ( project.getGroupId() + ":"
                                                            + project.getArtifactId() ) ) //
                                                        .collect( Collectors.toList() );
 
-        reactorClassPath.addAll( reactorProjects.stream() //
-                                                .map( project -> project.getBuild().getOutputDirectory() ) //
-                                                .filter( StringUtils::isNotEmpty ) //
-                                                .map( Paths::get ) //
-                                                .filter( Files::isDirectory ) //
-                                                .collect( Collectors.toSet() ) );
-        fullClassPath.addAll( reactorClassPath );
-
         for ( MavenProject project : reactorProjects )
         {
-            DependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
-            request.setMavenProject( project );
-            request.setRepositorySession( session.getRepositorySession() );
-            request.setResolutionFilter( new AndDependencyFilter( new ScopeDependencyFilter( "runtime", "test" ),
-                                                                  new ExclusionsDependencyFilter( reactorArtifacts ) ) );
-
-            try
+            discoverModule( modules, reactorArtifacts, project );
+            if ( project.getExecutionProject() != project )
             {
-                DependencyResolutionResult result = resolver.resolve( request );
-                fullClassPath.addAll( result.getResolvedDependencies().stream() //
-                                            .map( Dependency::getArtifact ) //
-                                            .map( artifact -> artifact.getFile().toPath() ) //
-                                            .collect( Collectors.toList() ) );
-            }
-            catch ( DependencyResolutionException e )
-            {
-                // Ignore dependency resolution errors
+                discoverModule( modules, reactorArtifacts, project.getExecutionProject() );
             }
         }
+
+        return modules;
     }
 
-    private List<String> getOpts( Path outputDir, Set<Path> sourcePaths, Set<Path> sourceFiles )
+    private List<String> getOpts( Path outputDir, List<JavadocModule> modules, Set<Path> sourceFiles )
         throws IOException
     {
         List<String> opts = new ArrayList<>();
@@ -175,11 +215,6 @@ public class JavadocMojo
         opts.add( "-use" );
         opts.add( "-version" );
         opts.add( "-Xdoclint:none" );
-
-        List<Path> reactorClassPath = new ArrayList<>();
-        List<Path> fullClassPath = new ArrayList<>();
-        populateClasspath( reactorClassPath, fullClassPath );
-        boolean isModular = !findFiles( reactorClassPath, "module-info\\.class" ).isEmpty();
 
         String sourceLevel = null;
         if ( release != null )
@@ -195,7 +230,7 @@ public class JavadocMojo
             sourceLevel = source;
         }
 
-        boolean skipModuleInfo = !isModular;
+        boolean skipModuleInfo = false;
         if ( sourceLevel != null )
         {
             try
@@ -212,19 +247,51 @@ public class JavadocMojo
             }
         }
 
-        if ( !isModular || skipModuleInfo )
+        Path moduleSourcePath = outputDir.resolve( "module-source-path" );
+        List<Path> sourcePaths = new ArrayList<>();
+        List<Path> classPath = new ArrayList<>();
+        List<Path> modulePath = new ArrayList<>();
+        for ( JavadocModule module : modules )
+        {
+            if ( module.getModuleName() == null || skipModuleInfo )
+            {
+                classPath.add( module.getArtifactPath() );
+                classPath.addAll( module.getDependencies() );
+                sourcePaths.addAll( module.getSourcePaths() );
+            }
+            else
+            {
+                modulePath.add( module.getArtifactPath() );
+                modulePath.addAll( module.getDependencies() );
+                Files.createDirectories( moduleSourcePath.resolve( module.getModuleName() ) );
+                opts.add( "--patch-module" );
+                opts.add( module.getModuleName() + "="
+                    + quoted( StringUtils.join( module.getSourcePaths().iterator(), ":" ) ) );
+            }
+        }
+
+        if ( !classPath.isEmpty() )
         {
             opts.add( "-classpath" );
+            opts.add( quoted( StringUtils.join( classPath.iterator(), ":" ) ) );
         }
-        else
+        if ( !modulePath.isEmpty() )
         {
             opts.add( "--module-path" );
+            opts.add( quoted( StringUtils.join( modulePath.iterator(), ":" ) ) );
         }
-        opts.add( quoted( StringUtils.join( fullClassPath.iterator(), ":" ) ) );
+        if ( !sourcePaths.isEmpty() )
+        {
+            opts.add( "-sourcepath" );
+            opts.add( quoted( StringUtils.join( sourcePaths.iterator(), ":" ) ) );
+        }
+        if ( Files.isDirectory( moduleSourcePath ) )
+        {
+            opts.add( "--module-source-path" );
+            opts.add( quoted( moduleSourcePath ) );
+        }
         opts.add( "-encoding" );
         opts.add( quoted( encoding ) );
-        opts.add( "-sourcepath" );
-        opts.add( quoted( StringUtils.join( sourcePaths.iterator(), ":" ) ) );
         opts.add( "-charset" );
         opts.add( quoted( docencoding ) );
         opts.add( "-d" );
@@ -272,6 +339,8 @@ public class JavadocMojo
 
         try
         {
+            List<JavadocModule> modules = discoverModules();
+
             if ( StringUtils.isEmpty( encoding ) )
             {
                 encoding = "UTF-8";
@@ -281,22 +350,10 @@ public class JavadocMojo
                 docencoding = "UTF-8";
             }
 
-            Set<Path> sourcePaths = Stream.concat( reactorProjects.stream(), //
-                                                   reactorProjects.stream().map( MavenProject::getExecutionProject ) ) //
-                                          .filter( Objects::nonNull ) //
-                                          .filter( project -> !"pom".equals( project.getPackaging() ) ) //
-                                          .filter( project -> "java".equals( project.getArtifact().getArtifactHandler().getLanguage() ) ) //
-                                          .filter( project -> project.getCompileSourceRoots() != null ) //
-                                          .map( project -> project.getCompileSourceRoots().stream() //
-                                                                  .filter( Objects::nonNull ) //
-                                                                  .map( Paths::get ) //
-                                                                  .map( sourcePath -> sourcePath.isAbsolute()
-                                                                                  ? sourcePath
-                                                                                  : project.getBasedir().toPath().resolve( sourcePath ).toAbsolutePath() ) //
-                                                                  .filter( Files::isDirectory ) ) //
-                                          .flatMap( x -> x ) //
-                                          .collect( Collectors.toSet() );
-
+            Set<Path> sourcePaths = modules.stream() //
+                                           .map( module -> module.getSourcePaths() ) //
+                                           .flatMap( Collection::stream ) //
+                                           .collect( Collectors.toSet() );
             Set<Path> sourceFiles = findFiles( sourcePaths, ".*\\.java" );
 
             if ( sourceFiles.isEmpty() )
@@ -312,9 +369,10 @@ public class JavadocMojo
             }
             outputDir = outputDir.toRealPath();
 
-            List<String> opts = getOpts( outputDir, sourcePaths, sourceFiles );
+            List<String> opts = getOpts( outputDir, modules, sourceFiles );
 
-            Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE );
+            Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE,
+                         StandardOpenOption.TRUNCATE_EXISTING );
 
             ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "@args" );
             pb.directory( outputDir.toFile() );
