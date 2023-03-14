@@ -20,18 +20,21 @@ import java.util.Collections;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.toolchain.DefaultToolchainManagerPrivate;
 import org.apache.maven.toolchain.MisconfiguredToolchainException;
+import org.apache.maven.toolchain.ToolchainManagerPrivate;
 import org.apache.maven.toolchain.ToolchainPrivate;
 import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
  * @author Mikolaj Izdebski
  */
 @Component( role = XMvnToolchainManager.class )
 public class XMvnToolchainManager
-    extends DefaultToolchainManagerPrivate
 {
+    @Requirement
+    private ToolchainManagerPrivate toolchainManager;
+
     public void activate( MavenSession session )
         throws MavenExecutionException
     {
@@ -39,14 +42,14 @@ public class XMvnToolchainManager
 
         try
         {
-            for ( ToolchainPrivate toolchain : getToolchainsForType( "jdk", session ) )
+            for ( ToolchainPrivate toolchain : toolchainManager.getToolchainsForType( "jdk", session ) )
             {
                 if ( toolchain.matchesRequirements( Collections.singletonMap( "xmvn", "xmvn" ) ) )
                 {
                     for ( MavenProject project : session.getAllProjects() )
                     {
                         session.setCurrentProject( project );
-                        storeToolchainToBuildContext( toolchain, session );
+                        toolchainManager.storeToolchainToBuildContext( toolchain, session );
                     }
                 }
             }
