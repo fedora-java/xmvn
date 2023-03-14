@@ -27,7 +27,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
-import org.apache.maven.model.interpolation.DefaultModelVersionProcessor;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
 import org.codehaus.plexus.component.annotations.Component;
@@ -45,7 +44,7 @@ import org.fedoraproject.xmvn.config.Configurator;
  */
 @Component( role = ModelValidator.class )
 public class XMvnModelValidator
-    extends DefaultModelValidator
+    implements ModelValidator
 {
     @Requirement
     private Logger logger;
@@ -53,16 +52,20 @@ public class XMvnModelValidator
     @Requirement
     private Configurator configurator;
 
-    public XMvnModelValidator()
+    @Requirement
+    private DefaultModelValidator delegate;
+
+    @Override
+    public void validateRawModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
-        super( new DefaultModelVersionProcessor() );
+        delegate.validateRawModel( model, request, problems );
     }
 
     @Override
     public void validateEffectiveModel( Model model, ModelBuildingRequest request, ModelProblemCollector problems )
     {
         customizeModel( model );
-        super.validateEffectiveModel( model, request, problems );
+        delegate.validateEffectiveModel( model, request, problems );
     }
 
     void customizeModel( Model model )
