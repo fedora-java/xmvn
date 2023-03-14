@@ -20,8 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -46,17 +47,18 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = Resolver.class )
+@Named
+@Singleton
 public class DefaultResolver
     implements Resolver
 {
-    @Requirement
+    @Inject
     private Logger logger;
 
-    @Requirement
+    @Inject
     private Configurator configurator;
 
-    @Requirement
+    @Inject
     private MetadataResolver metadataResolver;
 
     private MetadataRequest metadataRequest;

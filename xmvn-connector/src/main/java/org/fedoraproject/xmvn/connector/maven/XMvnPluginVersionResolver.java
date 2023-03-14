@@ -17,10 +17,12 @@ package org.fedoraproject.xmvn.connector.maven;
 
 import java.util.List;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
-import org.codehaus.plexus.component.annotations.Component;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.ArtifactRepository;
@@ -31,7 +33,8 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = PluginVersionResolver.class )
+@Named
+@Singleton
 public class XMvnPluginVersionResolver
     implements PluginVersionResolver
 {

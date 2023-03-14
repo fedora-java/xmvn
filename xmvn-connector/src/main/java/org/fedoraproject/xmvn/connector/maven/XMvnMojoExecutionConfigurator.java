@@ -15,17 +15,19 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
-import org.apache.maven.lifecycle.MojoExecutionConfigurator;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.lifecycle.internal.DefaultMojoExecutionConfigurator;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = MojoExecutionConfigurator.class )
+@Named
+@Singleton
 public class XMvnMojoExecutionConfigurator
     extends DefaultMojoExecutionConfigurator
 {

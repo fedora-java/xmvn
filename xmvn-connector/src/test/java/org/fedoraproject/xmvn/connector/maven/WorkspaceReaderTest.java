@@ -23,6 +23,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.google.inject.Binder;
 import org.easymock.EasyMock;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
@@ -43,6 +44,12 @@ public class WorkspaceReaderTest
     private WorkspaceReader workspace;
 
     private Resolver resolver;
+
+    @Override
+    public void configure( Binder binder )
+    {
+        // Nothing to do
+    }
 
     @BeforeEach
     public void setUp()

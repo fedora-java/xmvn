@@ -37,8 +37,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 import org.fedoraproject.xmvn.logging.impl.Logger;
@@ -58,11 +59,12 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = MetadataResolver.class )
+@Named
+@Singleton
 public class DefaultMetadataResolver
     implements MetadataResolver
 {
-    @Requirement
+    @Inject
     private Logger logger = new ConsoleLogger();
 
     private final ThreadPoolExecutor executor;

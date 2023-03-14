@@ -17,22 +17,25 @@ package org.fedoraproject.xmvn.connector.maven;
 
 import java.util.Collections;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.MisconfiguredToolchainException;
 import org.apache.maven.toolchain.ToolchainManagerPrivate;
 import org.apache.maven.toolchain.ToolchainPrivate;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = XMvnToolchainManager.class )
+@Named
+@Singleton
 public class XMvnToolchainManager
 {
-    @Requirement
+    @Inject
     private ToolchainManagerPrivate toolchainManager;
 
     public void activate( MavenSession session )

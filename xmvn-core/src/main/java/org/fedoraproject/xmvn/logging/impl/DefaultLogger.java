@@ -15,37 +15,22 @@
  */
 package org.fedoraproject.xmvn.logging.impl;
 
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  * @author Mikolaj Izdebski
  */
-@Component( role = Logger.class )
+@Named
+@Singleton
 public class DefaultLogger
-    implements Logger, Initializable
+    implements Logger
 {
-    @Requirement
-    private org.codehaus.plexus.logging.Logger plexusLogger;
-
     private Logger delegate;
 
-    @Override
-    public void initialize()
-        throws InitializationException
+    public DefaultLogger()
     {
-        try
-        {
-            // First try to use SLF4J logging (available in Maven 3.1.0+)
-            delegate = new Slf4jLoggerAdapter();
-        }
-        catch ( LinkageError e )
-        {
-            // Fall back to Plexus logger
-            delegate = new PlexusLoggerAdapter( plexusLogger );
-        }
+        delegate = new Slf4jLoggerAdapter();
     }
 
     @Override

@@ -18,6 +18,10 @@ package org.fedoraproject.xmvn.connector.maven;
 import java.util.List;
 import java.util.Objects;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.model.Build;
@@ -29,10 +33,9 @@ import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
+import org.eclipse.sisu.Priority;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -42,17 +45,19 @@ import org.fedoraproject.xmvn.config.Configurator;
  * 
  * @author Mikolaj Izdebski
  */
-@Component( role = ModelValidator.class )
+@Named
+@Singleton
+@Priority( 100 )
 public class XMvnModelValidator
     implements ModelValidator
 {
-    @Requirement
+    @Inject
     private Logger logger;
 
-    @Requirement
+    @Inject
     private Configurator configurator;
 
-    @Requirement
+    @Inject
     private DefaultModelValidator delegate;
 
     @Override

@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import com.google.inject.Binder;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
@@ -68,6 +69,12 @@ public class ModelValidatorTest
             return null;
         }
         return Paths.get( "src/test/resources" ).resolve( resource ).toAbsolutePath();
+    }
+
+    @Override
+    public void configure( Binder binder )
+    {
+        binder.bind( ModelValidator.class ).to( XMvnModelValidator.class );
     }
 
     @BeforeEach
