@@ -56,8 +56,6 @@ import org.xml.sax.SAXException;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.model.ModelProcessor;
-import org.fedoraproject.xmvn.model.impl.DefaultModelProcessor;
 
 /**
  * @author Mikolaj Izdebski
@@ -103,8 +101,6 @@ public class BuilddepMojo
 
     @Component
     private PlexusContainer container;
-
-    private final ModelProcessor modelProcessor = new DefaultModelProcessor();
 
     // Injected through reflection by XMvn lifecycle participant
     private List<String[]> resolutions;
@@ -175,7 +171,7 @@ public class BuilddepMojo
     private Set<Artifact> getModelDependencies( Model model )
     {
         BuildDependencyVisitor visitor = new BuildDependencyVisitor( this::isExternalLocation );
-        modelProcessor.processModel( model.clone(), visitor );
+        visitor.visitModel( model );
         return visitor.getArtifacts();
     }
 
