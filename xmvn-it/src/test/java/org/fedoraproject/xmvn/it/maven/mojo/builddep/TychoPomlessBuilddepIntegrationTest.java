@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.maven.mojo.builddep;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
  * 
  * @author Mikolaj Izdebski
  */
+@Disabled( "Tycho Pomless is not compatible with Maven 4 yet" )
 public class TychoPomlessBuilddepIntegrationTest
     extends AbstractBuilddepIntegrationTest
 {
