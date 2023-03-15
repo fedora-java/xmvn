@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>xmvn.its</groupId>
-  <artifactId>javadoc-test-jpms-multimodule</artifactId>
+  <artifactId>javadoc-test-jpms-dependency</artifactId>
   <version>1</version>
   <build>
     <plugins>
