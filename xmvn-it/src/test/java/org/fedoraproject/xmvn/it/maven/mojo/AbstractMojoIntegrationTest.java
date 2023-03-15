@@ -21,7 +21,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -92,5 +94,16 @@ public class AbstractMojoIntegrationTest
         {
             confWriter.write( os, conf );
         }
+    }
+
+    public void performMojoTest( String... args )
+        throws Exception
+    {
+        String xmvnVersion = getTestProperty( "xmvn.version" );
+        Deque<String> argList = new ArrayDeque<>( Arrays.asList( args ) );
+        String shortGoal = argList.removeLast();
+        String fullGoal = "org.fedoraproject.xmvn:xmvn-mojo:" + xmvnVersion + ":" + shortGoal;
+        argList.addLast( fullGoal );
+        super.performTest( argList );
     }
 }
