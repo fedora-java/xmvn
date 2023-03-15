@@ -79,8 +79,14 @@ public abstract class AbstractMavenIntegrationTest
         throws Exception
     {
         Deque<String> argList = new ArrayDeque<>( Arrays.asList( args ) );
+        performTest( argList );
+    }
+
+    public void performTest( Deque<String> argList )
+        throws Exception
+    {
         argList.addFirst( "--batch-mode" );
-        args = argList.toArray( args );
+        String[] args = argList.toArray( new String[argList.size()] );
 
         try ( PrintStream out = new PrintStream( Files.newOutputStream( getBaseDir().resolve( STDOUT ) ) );
                         PrintStream err = new PrintStream( Files.newOutputStream( getBaseDir().resolve( STDERR ) ) ) )

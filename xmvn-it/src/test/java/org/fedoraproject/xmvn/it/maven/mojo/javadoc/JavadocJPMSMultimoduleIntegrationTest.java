@@ -38,7 +38,7 @@ public class JavadocJPMSMultimoduleIntegrationTest
         throws Exception
     {
         assumeTrue( getJavaVersion() >= 9 );
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:javadoc" );
+        performMojoTest( "verify", "javadoc" );
 
         assertTrue( Files.isDirectory( Paths.get( "target/xmvn-apidocs" ) ) );
         assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/A.html" ) ) );

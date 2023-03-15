@@ -36,7 +36,7 @@ public class JavadocIntegrationTest
     public void testJavadoc()
         throws Exception
     {
-        performTest( "org.fedoraproject.xmvn:xmvn-mojo:javadoc" );
+        performMojoTest( "javadoc" );
 
         assertTrue( Files.isDirectory( Paths.get( "target/xmvn-apidocs" ) ) );
         assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/foo/Bar.html" ) ) );

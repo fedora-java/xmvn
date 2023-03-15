@@ -79,7 +79,7 @@ public abstract class AbstractBuilddepIntegrationTest
     public void performBuilddepTest()
         throws Exception
     {
-        performTest( "verify", "org.fedoraproject.xmvn:xmvn-mojo:builddep" );
+        performMojoTest( "verify", "builddep" );
 
         EasyMock.replay( visitor );
         verifyBuilddepXml();
