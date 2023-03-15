@@ -379,6 +379,7 @@
           <configuration>
             <excludes>
               <exclude>src/test/resources/**</exclude>
+              <exclude>src/test/resources-filtered/**</exclude>
             </excludes>
           </configuration>
         </plugin>
