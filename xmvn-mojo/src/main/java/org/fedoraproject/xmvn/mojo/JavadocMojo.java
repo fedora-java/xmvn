@@ -351,7 +351,7 @@ public class JavadocMojo
             }
 
             Set<Path> sourcePaths = modules.stream() //
-                                           .map( module -> module.getSourcePaths() ) //
+                                           .map( JavadocModule::getSourcePaths ) //
                                            .flatMap( Collection::stream ) //
                                            .collect( Collectors.toSet() );
             Set<Path> sourceFiles = findFiles( sourcePaths, ".*\\.java" );
