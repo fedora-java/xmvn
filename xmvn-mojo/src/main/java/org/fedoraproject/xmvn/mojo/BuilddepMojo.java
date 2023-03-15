@@ -163,9 +163,9 @@ public class BuilddepMojo
     private boolean isExternalLocation( InputLocation location )
     {
         return !reactorProjects.stream() //
-                               .map( project -> project.getModel().getLocation( "" ).getSource().getModelId() ) //
-                               .filter( modelId -> modelId.equals( location.getSource().getModelId() ) ) //
-                               .findAny().isPresent();
+                               .map( project -> project.getGroupId() + ':' + project.getArtifactId() + ':'
+                                   + project.getVersion() ) //
+                               .anyMatch( location.getSource().getModelId()::equals );
     }
 
     private Set<Artifact> getModelDependencies( Model model )
