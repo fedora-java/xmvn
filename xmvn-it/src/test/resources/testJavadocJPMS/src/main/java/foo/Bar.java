@@ -22,6 +22,6 @@ import org.junit.jupiter.api.TestReporter;
  */
 public class Bar implements TestReporter
 {
-	public void publishEntry(java.util.Map<String,String> map) {
-	}
+    public void publishEntry(java.util.Map<String,String> map) {
+    }
 }

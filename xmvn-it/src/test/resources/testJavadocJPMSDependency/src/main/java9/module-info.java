@@ -1,3 +1,3 @@
 module a {
-	requires org.apiguardian.api;
+    requires org.apiguardian.api;
 }

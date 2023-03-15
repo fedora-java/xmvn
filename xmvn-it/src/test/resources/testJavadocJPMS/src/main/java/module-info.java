@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 module test.jpms {
-	requires transitive org.junit.jupiter.api;
+    requires transitive org.junit.jupiter.api;
 }
