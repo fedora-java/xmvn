@@ -24,12 +24,14 @@ import org.apache.maven.lifecycle.internal.DefaultMojoExecutionConfigurator;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
+import org.eclipse.sisu.Priority;
 
 /**
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
+@Priority( 100 )
 public class XMvnMojoExecutionConfigurator
     implements MojoExecutionConfigurator
 {
