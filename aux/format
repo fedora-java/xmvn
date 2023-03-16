@@ -21,7 +21,7 @@ year=$(date +%Y)
 author="Mikolaj Izdebski"
 copyright_holder="Red Hat, Inc."
 
-java_files=$(find -name *.java | grep -v /src/it/)
+java_files=$(find -name *.java | grep -v /xmvn-it/src/test/resources/)
 
 # Remove empty lines after opening braces.
 sed -i -n '
