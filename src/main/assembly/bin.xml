@@ -26,6 +26,7 @@
         <include>:xmvn-api</include>
         <include>:xmvn-core</include>
       </includes>
+      <useProjectArtifact>false</useProjectArtifact>
       <unpack>false</unpack>
       <outputDirectory>lib/ext</outputDirectory>
     </dependencySet>
@@ -40,6 +41,7 @@
         <include>:asm</include>
         <include>:commons-compress</include>
       </includes>
+      <useProjectArtifact>false</useProjectArtifact>
       <unpack>false</unpack>
       <outputDirectory>lib/installer</outputDirectory>
     </dependencySet>
@@ -50,6 +52,7 @@
         <include>:xmvn-core</include>
         <include>:jcommander</include>
       </includes>
+      <useProjectArtifact>false</useProjectArtifact>
       <unpack>false</unpack>
       <outputDirectory>lib/resolver</outputDirectory>
     </dependencySet>
@@ -60,6 +63,7 @@
         <include>:xmvn-core</include>
         <include>:jcommander</include>
       </includes>
+      <useProjectArtifact>false</useProjectArtifact>
       <unpack>false</unpack>
       <outputDirectory>lib/subst</outputDirectory>
     </dependencySet>
