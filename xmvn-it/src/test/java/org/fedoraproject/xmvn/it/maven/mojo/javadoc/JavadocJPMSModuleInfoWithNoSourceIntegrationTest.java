@@ -15,7 +15,12 @@
  */
 package org.fedoraproject.xmvn.it.maven.mojo.javadoc;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +39,10 @@ public class JavadocJPMSModuleInfoWithNoSourceIntegrationTest
         throws Exception
     {
         assumeTrue( getJavaVersion() >= 9 );
-        expectFailure();
         performMojoTest( "verify", "javadoc" );
+
+        assertTrue( getStdout().anyMatch( "[INFO] Skipping Javadoc generation: no Java sources found"::equals ) );
+        assertTrue( Files.exists( Paths.get( "target/xmvn-apidocs" ) ) );
+        assertFalse( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
     }
 }
