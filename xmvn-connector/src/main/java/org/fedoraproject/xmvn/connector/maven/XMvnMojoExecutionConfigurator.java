@@ -15,9 +15,11 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.lifecycle.MojoExecutionConfigurator;
 import org.apache.maven.lifecycle.internal.DefaultMojoExecutionConfigurator;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
@@ -29,8 +31,11 @@ import org.apache.maven.project.MavenProject;
 @Named
 @Singleton
 public class XMvnMojoExecutionConfigurator
-    extends DefaultMojoExecutionConfigurator
+    implements MojoExecutionConfigurator
 {
+    @Inject
+    private DefaultMojoExecutionConfigurator delegate;
+
     @Override
     public void configure( MavenProject project, MojoExecution execution, boolean allowPluginLevelConfig )
     {
@@ -43,7 +48,7 @@ public class XMvnMojoExecutionConfigurator
         try
         {
             execution.getMojoDescriptor().setPluginDescriptor( aliasedPluginDescriptor );
-            super.configure( project, execution, allowPluginLevelConfig );
+            delegate.configure( project, execution, allowPluginLevelConfig );
         }
         finally
         {
