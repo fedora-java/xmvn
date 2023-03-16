@@ -32,11 +32,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -55,8 +56,6 @@ import org.eclipse.aether.util.filter.AndDependencyFilter;
 import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 
-import org.fedoraproject.xmvn.config.Configurator;
-
 /**
  * @author Mikolaj Izdebski
  */
@@ -64,16 +63,13 @@ import org.fedoraproject.xmvn.config.Configurator;
 public class JavadocMojo
     extends AbstractMojo
 {
-    @Component
+    @Inject
     private Logger logger;
 
-    @Component
+    @Inject
     private ProjectDependenciesResolver resolver;
 
-    @Component
-    private Configurator configurator;
-
-    @Component
+    @Inject
     private ToolchainManager toolchainManager;
 
     private ModuleGleaner moduleGleaner = new ModuleGleaner();

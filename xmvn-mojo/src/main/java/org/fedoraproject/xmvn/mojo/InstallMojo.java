@@ -29,13 +29,14 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -73,7 +74,7 @@ public class InstallMojo
         return TYCHO_PACKAGING_TYPES.contains( project.getPackaging() );
     }
 
-    @Component
+    @Inject
     private Logger logger;
 
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
@@ -82,7 +83,7 @@ public class InstallMojo
     @Parameter( readonly = true, defaultValue = "${repositorySystemSession}" )
     private RepositorySystemSession repoSession;
 
-    @Component
+    @Inject
     private Deployer deployer;
 
     public InstallMojo()
