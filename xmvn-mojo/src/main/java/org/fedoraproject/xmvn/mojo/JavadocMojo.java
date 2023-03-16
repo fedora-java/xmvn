@@ -260,13 +260,17 @@ public class JavadocMojo
                 modulePath.add( module.getArtifactPath() );
                 modulePath.addAll( module.getDependencies() );
                 Files.createDirectories( moduleSourcePath.resolve( module.getModuleName() ) );
-                opts.add( "--patch-module" );
-                opts.add( module.getModuleName() + "="
-                    + quoted( StringUtils.join( module.getSourcePaths().iterator(), ":" ) ) );
+                if ( !module.getSourcePaths().isEmpty() )
+                {
+                    opts.add( "--patch-module" );
+                    opts.add( module.getModuleName() + "="
+                        + quoted( StringUtils.join( module.getSourcePaths().iterator(), ":" ) ) );
+                }
             }
         }
 
         if ( !classPath.isEmpty() )
+
         {
             opts.add( "-classpath" );
             opts.add( quoted( StringUtils.join( classPath.iterator(), ":" ) ) );
