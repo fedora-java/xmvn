@@ -25,6 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,7 +38,6 @@ import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
@@ -90,7 +90,7 @@ public class BuilddepMojo
         }
     }
 
-    @Component
+    @Inject
     private Logger logger;
 
     @Parameter( defaultValue = "xmvn.builddep.skip" )
@@ -99,7 +99,7 @@ public class BuilddepMojo
     @Parameter( defaultValue = "${reactorProjects}", readonly = true, required = true )
     private List<MavenProject> reactorProjects;
 
-    @Component
+    @Inject
     private PlexusContainer container;
 
     // Injected through reflection by XMvn lifecycle participant
