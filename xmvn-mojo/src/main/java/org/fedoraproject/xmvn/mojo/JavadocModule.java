@@ -16,6 +16,8 @@
 package org.fedoraproject.xmvn.mojo;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,18 +27,16 @@ class JavadocModule
 {
     private final String moduleName;
 
-    private final Path artifactPath;
-
     private final List<Path> sourcePaths;
 
-    private final List<Path> dependencies;
+    private final List<Path> binaryPaths;
 
     public JavadocModule( String moduleName, Path artifactPath, List<Path> sourcePaths, List<Path> dependencies )
     {
         this.moduleName = moduleName;
-        this.artifactPath = artifactPath;
         this.sourcePaths = sourcePaths;
-        this.dependencies = dependencies;
+        binaryPaths = new ArrayList<>( Collections.singleton( artifactPath ) );
+        binaryPaths.addAll( dependencies );
     }
 
     public String getModuleName()
@@ -44,9 +44,14 @@ class JavadocModule
         return moduleName;
     }
 
-    public Path getArtifactPath()
+    public boolean isModular()
     {
-        return artifactPath;
+        return moduleName != null;
+    }
+
+    public boolean isNotModular()
+    {
+        return moduleName == null;
     }
 
     public List<Path> getSourcePaths()
@@ -54,8 +59,8 @@ class JavadocModule
         return sourcePaths;
     }
 
-    public List<Path> getDependencies()
+    public List<Path> getClassPaths()
     {
-        return dependencies;
+        return binaryPaths;
     }
 }
