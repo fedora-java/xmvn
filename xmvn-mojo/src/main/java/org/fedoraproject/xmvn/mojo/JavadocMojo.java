@@ -95,7 +95,10 @@ public class JavadocMojo
     @Parameter( defaultValue = "${maven.compiler.release}" )
     private String release;
 
-    private Path outputDir;
+    @Parameter( property = "xmvn.javadoc.ignoreJPMS" )
+    private boolean ignoreJPMS;
+
+    private List<String> options = new ArrayList<>();
 
     private static String quoted( Object obj )
     {
@@ -105,13 +108,25 @@ public class JavadocMojo
         return "'" + arg + "'";
     }
 
-    private static Set<Path> findFiles( Collection<Path> dirs, String regex )
+    // Called by XMvn lifecycle participant
+    private Path getOutputDir()
+    {
+        return buildDirectory.toPath().resolve( "xmvn-apidocs" );
+    }
+
+    private Set<Path> findJavaSources( List<JavadocModule> modules )
         throws IOException
     {
-        Pattern pattern = Pattern.compile( regex );
+        Set<Path> sourcePaths = modules.stream() //
+                                       .map( JavadocModule::getSourcePaths ) //
+                                       .flatMap( Collection::stream ) //
+                                       .collect( Collectors.toSet() );
+
+        Pattern pattern = Pattern.compile( ".*\\.java$" );
+
         Set<Path> found = new LinkedHashSet<>();
 
-        for ( Path dir : dirs )
+        for ( Path dir : sourcePaths )
         {
             try ( Stream<Path> stream = Files.find( dir, Integer.MAX_VALUE, //
                                                     ( path, attributes ) -> ( attributes.isRegularFile()
@@ -122,12 +137,6 @@ public class JavadocMojo
         }
 
         return found;
-    }
-
-    // Called by XMvn lifecycle participant
-    Path getOutputDir()
-    {
-        return outputDir;
     }
 
     private void discoverModule( List<JavadocModule> modules, List<String> reactorArtifacts, MavenProject project )
@@ -172,7 +181,7 @@ public class JavadocMojo
             // Ignore dependency resolution errors
         }
 
-        String moduleName = moduleGleaner.glean( artifactPath );
+        String moduleName = ignoreJPMS ? null : moduleGleaner.glean( artifactPath );
 
         List<Path> sourcePaths = project.getCompileSourceRoots().stream() //
                                         .filter( Objects::nonNull ) //
@@ -206,126 +215,49 @@ public class JavadocMojo
         return modules;
     }
 
-    private boolean writeOpts( Path outputDir, List<JavadocModule> modules, Set<Path> sourceFiles )
-        throws IOException
+    private void addOpt( String name )
     {
-        List<String> opts = new ArrayList<>();
-        opts.add( "-private" );
-        opts.add( "-use" );
-        opts.add( "-version" );
-        opts.add( "-Xdoclint:none" );
-
-        String sourceLevel = null;
-        if ( release != null )
-        {
-            opts.add( "--release" );
-            opts.add( quoted( release ) );
-            sourceLevel = release;
-        }
-        else if ( source != null )
-        {
-            opts.add( "-source" );
-            opts.add( quoted( source ) );
-            sourceLevel = source;
-        }
-
-        boolean skipModuleInfo = false;
-        if ( sourceLevel != null )
-        {
-            try
-            {
-                float f = Float.parseFloat( sourceLevel );
-                if ( f < 9 )
-                {
-                    skipModuleInfo = true;
-                }
-            }
-            catch ( Exception e )
-            {
-                // pass, we assume that we use modular Java
-            }
-        }
-
-        Path moduleSourcePath = outputDir.resolve( "module-source-path" );
-        List<Path> sourcePaths = new ArrayList<>();
-        List<Path> classPath = new ArrayList<>();
-        List<Path> modulePath = new ArrayList<>();
-        for ( JavadocModule module : modules )
-        {
-            if ( module.getModuleName() == null || skipModuleInfo )
-            {
-                classPath.add( module.getArtifactPath() );
-                classPath.addAll( module.getDependencies() );
-                sourcePaths.addAll( module.getSourcePaths() );
-            }
-            else
-            {
-                modulePath.add( module.getArtifactPath() );
-                modulePath.addAll( module.getDependencies() );
-                Files.createDirectories( moduleSourcePath.resolve( module.getModuleName() ) );
-                if ( !module.getSourcePaths().isEmpty() )
-                {
-                    opts.add( "--patch-module" );
-                    opts.add( module.getModuleName() + "="
-                        + quoted( StringUtils.join( module.getSourcePaths().iterator(), ":" ) ) );
-                }
-            }
-        }
-
-        if ( !classPath.isEmpty() )
-
-        {
-            opts.add( "-classpath" );
-            opts.add( quoted( StringUtils.join( classPath.iterator(), ":" ) ) );
-        }
-        if ( !modulePath.isEmpty() )
-        {
-            opts.add( "--module-path" );
-            opts.add( quoted( StringUtils.join( modulePath.iterator(), ":" ) ) );
-        }
-        if ( !sourcePaths.isEmpty() )
-        {
-            opts.add( "-sourcepath" );
-            opts.add( quoted( StringUtils.join( sourcePaths.iterator(), ":" ) ) );
-        }
-        if ( Files.isDirectory( moduleSourcePath ) )
-        {
-            opts.add( "--module-source-path" );
-            opts.add( quoted( moduleSourcePath ) );
-        }
-        opts.add( "-encoding" );
-        opts.add( quoted( encoding ) );
-        opts.add( "-charset" );
-        opts.add( quoted( docencoding ) );
-        opts.add( "-d" );
-        opts.add( quoted( outputDir ) );
-        opts.add( "-docencoding" );
-        opts.add( quoted( docencoding ) );
-        opts.add( "-doctitle" );
-        opts.add( quoted( "Javadoc for package XXX" ) );
-
-        if ( sourceFiles.stream().allMatch( file -> file.endsWith( "module-info.java" ) ) )
-        {
-            logger.info( "Skipping Javadoc generation: no Java sources found" );
-            return false;
-        }
-
-        Stream<Path> sourcesToAdd = sourceFiles.stream();
-        if ( skipModuleInfo )
-        {
-            sourcesToAdd = sourcesToAdd.filter( file -> !file.endsWith( "module-info.java" ) );
-        }
-        sourcesToAdd.map( JavadocMojo::quoted ).forEach( opts::add );
-
-        Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE,
-                     StandardOpenOption.TRUNCATE_EXISTING );
-
-        return true;
+        options.add( name );
+        logger.debug( "Javadc option: " + name );
     }
 
-    @Override
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
+    private boolean addOpt( String name, String value )
+    {
+        return addOptPrefix( name, "", value );
+    }
+
+    private boolean addOpt( String name, Path path )
+    {
+        return addOpt( name, path.toString() );
+    }
+
+    private void addOpt( String name, String value, String deflt )
+    {
+        addOpt( name, value == null || value.isEmpty() ? deflt : value );
+    }
+
+    private boolean addOptPrefix( String name, String prefix, String value )
+    {
+        if ( value != null && !value.isEmpty() )
+        {
+            addOpt( name );
+            addOpt( prefix + quoted( value ) );
+            return true;
+        }
+        return false;
+    }
+
+    private void addOptPath( String name, Stream<Path> stream )
+    {
+        addOptPrefixPath( name, "", stream );
+    }
+
+    private void addOptPrefixPath( String name, String prefix, Stream<Path> stream )
+    {
+        addOptPrefix( name, prefix, stream.map( Path::toString ).collect( Collectors.joining( ":" ) ) );
+    }
+
+    private Path selectJavadocExecutable()
     {
         String javadocTool = null;
         Toolchain tc = toolchainManager.getToolchainFromBuildContext( "jdk", session );
@@ -347,51 +279,131 @@ public class JavadocMojo
         {
             javadocExecutable = Paths.get( "/usr/bin/javadoc" );
         }
+        logger.debug( "Using javadoc executable " + javadocExecutable );
+        return javadocExecutable;
+    }
 
+    private void skipJPMSOnSourceBelow9()
+    {
         try
         {
-            List<JavadocModule> modules = discoverModules();
+            ignoreJPMS = Float.parseFloat( release != null ? release : source != null ? source : "9" ) < 9;
+        }
+        catch ( NumberFormatException e )
+        {
+            // pass, we assume that we use modular Java
+        }
+        if ( ignoreJPMS )
+        {
+            logger.info( "Ignoring JPMS" );
+        }
+    }
 
-            if ( StringUtils.isEmpty( encoding ) )
+    private void invokeJavadoc( Path outputDir )
+        throws IOException, InterruptedException, MojoFailureException
+    {
+        ProcessBuilder pb = new ProcessBuilder( selectJavadocExecutable().toString(), "@args" );
+        pb.directory( outputDir.toRealPath().toFile() );
+        pb.redirectInput( new File( "/dev/null" ) );
+        pb.redirectOutput( new File( "/dev/null" ) );
+        pb.redirectError( Redirect.INHERIT );
+        Process process = pb.start();
+
+        int exitCode = process.waitFor();
+        logger.debug( "javadoc exit code is " + exitCode );
+        if ( exitCode != 0 )
+        {
+            throw new MojoFailureException( "Javadoc failed with exit code " + exitCode );
+        }
+    }
+
+    @Override
+    public void execute()
+        throws MojoExecutionException, MojoFailureException
+    {
+        skipJPMSOnSourceBelow9();
+
+        List<JavadocModule> modules = discoverModules();
+
+        Path outputDir = getOutputDir();
+        Path moduleSourcePath = outputDir.resolve( "module-source-path" );
+
+        addOpt( "-private" );
+        addOpt( "-use" );
+        addOpt( "-version" );
+        addOpt( "-Xdoclint:none" );
+        addOpt( "-encoding", encoding, "UTF-8" );
+        addOpt( "-charset", docencoding, "UTF-8" );
+        addOpt( "-d", outputDir );
+        addOpt( "-docencoding", docencoding, "UTF-8" );
+        addOpt( "-doctitle", "Javadoc for package XXX" );
+
+        if ( !addOpt( "--release", release ) )
+        {
+            addOpt( "-source", source );
+        }
+
+        addOptPath( "-classpath", modules.stream() //
+                                         .filter( JavadocModule::isNotModular ) //
+                                         .map( JavadocModule::getClassPaths ) //
+                                         .flatMap( Collection::stream ) );
+
+        addOptPath( "-sourcepath", modules.stream() //
+                                          .filter( JavadocModule::isNotModular ) //
+                                          .map( JavadocModule::getSourcePaths ) //
+                                          .flatMap( Collection::stream ) );
+
+        addOptPath( "--module-path", modules.stream() //
+                                            .filter( JavadocModule::isModular ) //
+                                            .map( JavadocModule::getClassPaths ) //
+                                            .flatMap( Collection::stream ) );
+
+        if ( modules.stream().anyMatch( JavadocModule::isModular ) )
+        {
+            addOpt( "--module-source-path", moduleSourcePath );
+        }
+
+        modules.stream() //
+               .filter( JavadocModule::isModular ) //
+               .forEach( module -> addOptPrefixPath( "--patch-module", module.getModuleName() + "=",
+                                                     module.getSourcePaths().stream() ) );
+        try
+        {
+            Set<Path> sourceFiles = findJavaSources( modules );
+
+            Path modinfoJava = Paths.get( "module-info.java" );
+
+            if ( sourceFiles.stream().map( Path::getFileName ).allMatch( modinfoJava::equals ) )
             {
-                encoding = "UTF-8";
-            }
-            if ( StringUtils.isEmpty( docencoding ) )
-            {
-                docencoding = "UTF-8";
+                logger.warn( "Skipping Javadoc generation: no Java sources found" );
+                return;
             }
 
-            Set<Path> sourcePaths = modules.stream() //
-                                           .map( JavadocModule::getSourcePaths ) //
-                                           .flatMap( Collection::stream ) //
-                                           .collect( Collectors.toSet() );
-            Set<Path> sourceFiles = findFiles( sourcePaths, ".*\\.java" );
+            sourceFiles.stream() //
+                       .filter( file -> !ignoreJPMS || !file.endsWith( modinfoJava ) ) //
+                       .map( JavadocMojo::quoted ) //
+                       .forEach( this::addOpt );
 
-            Path outputDir = buildDirectory.toPath().resolve( "xmvn-apidocs" );
             Files.createDirectories( outputDir );
 
-            if ( writeOpts( outputDir, modules, sourceFiles ) )
+            for ( JavadocModule module : modules )
             {
-                ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "@args" );
-                pb.directory( outputDir.toRealPath().toFile() );
-                pb.redirectInput( new File( "/dev/null" ) );
-                pb.redirectOutput( new File( "/dev/null" ) );
-                pb.redirectError( Redirect.INHERIT );
-                Process process = pb.start();
-
-                int exitCode = process.waitFor();
-                if ( exitCode != 0 )
+                if ( module.isModular() )
                 {
-                    throw new MojoExecutionException( "Javadoc failed with exit code " + exitCode );
+                    Files.createDirectories( moduleSourcePath.resolve( module.getModuleName() ) );
                 }
-
-                // Sign for XMvn lifecycle participant that javadocs were genererated
-                this.outputDir = outputDir;
             }
+
+            Files.write( outputDir.resolve( "args" ), options, StandardOpenOption.CREATE,
+                         StandardOpenOption.TRUNCATE_EXISTING );
+
+            invokeJavadoc( outputDir );
         }
         catch ( IOException | InterruptedException e )
         {
             throw new MojoExecutionException( "Unable to execute javadoc command: " + e.getMessage(), e );
         }
+
+        logger.debug( "Javadoc generated successfully" );
     }
 }

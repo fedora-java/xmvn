@@ -213,7 +213,10 @@ public class XMvnMojoExecutionListener
                 Files.delete( apidocsSymlink );
             }
 
-            Files.createSymbolicLink( apidocsSymlink, javadocDir );
+            if ( Files.isDirectory( javadocDir ) )
+            {
+                Files.createSymbolicLink( apidocsSymlink, javadocDir );
+            }
         }
         catch ( IOException e )
         {

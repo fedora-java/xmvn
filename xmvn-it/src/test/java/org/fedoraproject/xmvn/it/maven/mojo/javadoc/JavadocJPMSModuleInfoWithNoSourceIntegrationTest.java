@@ -41,8 +41,8 @@ public class JavadocJPMSModuleInfoWithNoSourceIntegrationTest
         assumeTrue( getJavaVersion() >= 9 );
         performMojoTest( "verify", "javadoc" );
 
-        assertTrue( getStdout().anyMatch( "[INFO] Skipping Javadoc generation: no Java sources found"::equals ) );
-        assertTrue( Files.exists( Paths.get( "target/xmvn-apidocs" ) ) );
-        assertFalse( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
+        assertTrue( getStdout().anyMatch( "[WARNING] Skipping Javadoc generation: no Java sources found"::equals ) );
+        assertFalse( Files.exists( Paths.get( "target/xmvn-apidocs" ) ) );
+        assertFalse( Files.exists( Paths.get( ".xmvn/apidocs" ) ) );
     }
 }
