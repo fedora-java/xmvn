@@ -1,0 +1,5 @@
+/**
+ * Documented module
+ */
+module a {
+}
