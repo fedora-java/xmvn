@@ -95,6 +95,8 @@ public class JavadocMojo
     @Parameter( defaultValue = "${maven.compiler.release}" )
     private String release;
 
+    private Path outputDir;
+
     private static String quoted( Object obj )
     {
         String arg = obj.toString();
@@ -122,9 +124,10 @@ public class JavadocMojo
         return found;
     }
 
-    private Path getOutputDir()
+    // Called by XMvn lifecycle participant
+    Path getOutputDir()
     {
-        return buildDirectory.toPath().resolve( "xmvn-apidocs" );
+        return outputDir;
     }
 
     private void discoverModule( List<JavadocModule> modules, List<String> reactorArtifacts, MavenProject project )
@@ -203,7 +206,7 @@ public class JavadocMojo
         return modules;
     }
 
-    private List<String> getOpts( Path outputDir, List<JavadocModule> modules, Set<Path> sourceFiles )
+    private boolean writeOpts( Path outputDir, List<JavadocModule> modules, Set<Path> sourceFiles )
         throws IOException
     {
         List<String> opts = new ArrayList<>();
@@ -301,15 +304,23 @@ public class JavadocMojo
         opts.add( "-doctitle" );
         opts.add( quoted( "Javadoc for package XXX" ) );
 
-        for ( Path file : sourceFiles )
+        if ( sourceFiles.stream().allMatch( file -> file.endsWith( "module-info.java" ) ) )
         {
-            if ( !skipModuleInfo || !file.endsWith( "module-info.java" ) )
-            {
-                opts.add( quoted( file ) );
-            }
+            logger.info( "Skipping Javadoc generation: no Java sources found" );
+            return false;
         }
 
-        return opts;
+        Stream<Path> sourcesToAdd = sourceFiles.stream();
+        if ( skipModuleInfo )
+        {
+            sourcesToAdd = sourcesToAdd.filter( file -> !file.endsWith( "module-info.java" ) );
+        }
+        sourcesToAdd.map( JavadocMojo::quoted ).forEach( opts::add );
+
+        Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE,
+                     StandardOpenOption.TRUNCATE_EXISTING );
+
+        return true;
     }
 
     @Override
@@ -356,35 +367,26 @@ public class JavadocMojo
                                            .collect( Collectors.toSet() );
             Set<Path> sourceFiles = findFiles( sourcePaths, ".*\\.java" );
 
-            if ( sourceFiles.isEmpty() )
+            Path outputDir = buildDirectory.toPath().resolve( "xmvn-apidocs" );
+            Files.createDirectories( outputDir );
+
+            if ( writeOpts( outputDir, modules, sourceFiles ) )
             {
-                logger.info( "Skipping Javadoc generation: no Java sources found" );
-                return;
-            }
+                ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "@args" );
+                pb.directory( outputDir.toRealPath().toFile() );
+                pb.redirectInput( new File( "/dev/null" ) );
+                pb.redirectOutput( new File( "/dev/null" ) );
+                pb.redirectError( Redirect.INHERIT );
+                Process process = pb.start();
 
-            Path outputDir = getOutputDir();
-            if ( !Files.isDirectory( outputDir ) )
-            {
-                Files.createDirectories( outputDir );
-            }
-            outputDir = outputDir.toRealPath();
+                int exitCode = process.waitFor();
+                if ( exitCode != 0 )
+                {
+                    throw new MojoExecutionException( "Javadoc failed with exit code " + exitCode );
+                }
 
-            List<String> opts = getOpts( outputDir, modules, sourceFiles );
-
-            Files.write( outputDir.resolve( "args" ), opts, StandardOpenOption.CREATE,
-                         StandardOpenOption.TRUNCATE_EXISTING );
-
-            ProcessBuilder pb = new ProcessBuilder( javadocExecutable.toRealPath().toString(), "@args" );
-            pb.directory( outputDir.toFile() );
-            pb.redirectInput( new File( "/dev/null" ) );
-            pb.redirectOutput( new File( "/dev/null" ) );
-            pb.redirectError( Redirect.INHERIT );
-            Process process = pb.start();
-
-            int exitCode = process.waitFor();
-            if ( exitCode != 0 )
-            {
-                throw new MojoExecutionException( "Javadoc failed with exit code " + exitCode );
+                // Sign for XMvn lifecycle participant that javadocs were genererated
+                this.outputDir = outputDir;
             }
         }
         catch ( IOException | InterruptedException e )
