@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.logging.impl;
 
+import org.fedoraproject.xmvn.logging.Logger;
+
 /**
  * @author Mikolaj Izdebski
  */

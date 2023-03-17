@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.resolver.impl;
 import java.io.IOException;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.logging.impl.Logger;
+import org.fedoraproject.xmvn.logging.Logger;
 
 /**
  * @author Mikolaj Izdebski

@@ -41,8 +41,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
-import org.fedoraproject.xmvn.logging.impl.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;

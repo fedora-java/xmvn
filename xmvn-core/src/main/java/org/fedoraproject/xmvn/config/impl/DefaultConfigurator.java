@@ -37,8 +37,8 @@ import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
+import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
-import org.fedoraproject.xmvn.logging.impl.Logger;
 
 /**
  * Default implementation of XMvn configurator.
