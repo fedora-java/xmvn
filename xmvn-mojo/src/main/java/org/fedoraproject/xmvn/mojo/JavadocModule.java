@@ -25,15 +25,22 @@ import java.util.List;
  */
 class JavadocModule
 {
-    private final String moduleName;
+    private String moduleName;
+
+    private boolean isAutomatic;
+
+    private final Path artifactPath;
 
     private final List<Path> sourcePaths;
 
     private final List<Path> binaryPaths;
 
-    public JavadocModule( String moduleName, Path artifactPath, List<Path> sourcePaths, List<Path> dependencies )
+    public JavadocModule( String moduleName, boolean isAutomatic, Path artifactPath, List<Path> sourcePaths,
+                          List<Path> dependencies )
     {
         this.moduleName = moduleName;
+        this.isAutomatic = isAutomatic;
+        this.artifactPath = artifactPath;
         this.sourcePaths = sourcePaths;
         binaryPaths = new ArrayList<>( Collections.singleton( artifactPath ) );
         binaryPaths.addAll( dependencies );
@@ -54,6 +61,11 @@ class JavadocModule
         return moduleName == null;
     }
 
+    public boolean isAutomatic()
+    {
+        return isAutomatic;
+    }
+
     public List<Path> getSourcePaths()
     {
         return sourcePaths;
@@ -62,5 +74,18 @@ class JavadocModule
     public List<Path> getClassPaths()
     {
         return binaryPaths;
+    }
+
+    public JavadocModule demodularize()
+    {
+        return new JavadocModule( null, false, artifactPath, sourcePaths, binaryPaths );
+    }
+
+    @Override
+    public String toString()
+    {
+        String name = moduleName != null ? moduleName : "UNNAMED";
+        String automatic = isAutomatic ? "automatic" : "non-automatic";
+        return automatic + " module " + name + " at " + artifactPath;
     }
 }
