@@ -24,9 +24,10 @@ import java.io.File;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.logging.Logger;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
+
+import org.fedoraproject.xmvn.logging.Logger;
 
 /**
  * Test if artifacts which files are not regular files are handled properly.

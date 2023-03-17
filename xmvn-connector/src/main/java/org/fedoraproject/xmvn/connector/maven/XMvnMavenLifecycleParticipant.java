@@ -23,8 +23,9 @@ import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
-import org.codehaus.plexus.logging.Logger;
 import org.eclipse.sisu.Nullable;
+
+import org.fedoraproject.xmvn.logging.Logger;
 
 /**
  * Installs some of XMvn extensions for Maven.
