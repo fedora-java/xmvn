@@ -19,6 +19,8 @@ import java.lang.reflect.Method;
 
 import org.slf4j.LoggerFactory;
 
+import org.fedoraproject.xmvn.logging.Logger;
+
 /**
  * @author Mikolaj Izdebski
  * @author Roman Vais

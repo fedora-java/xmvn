@@ -18,6 +18,8 @@ package org.fedoraproject.xmvn.logging.impl;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.fedoraproject.xmvn.logging.Logger;
+
 /**
  * @author Mikolaj Izdebski
  */
