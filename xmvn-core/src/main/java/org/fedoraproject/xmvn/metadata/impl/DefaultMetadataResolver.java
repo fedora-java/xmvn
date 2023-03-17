@@ -41,8 +41,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.logging.Logger;
-import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
@@ -64,13 +64,14 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 public class DefaultMetadataResolver
     implements MetadataResolver
 {
-    @Inject
-    private Logger logger = new ConsoleLogger();
+    private final Logger logger;
 
     private final ThreadPoolExecutor executor;
 
-    public DefaultMetadataResolver()
+    @Inject
+    public DefaultMetadataResolver( Logger logger )
     {
+        this.logger = logger;
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min( Math.max( Runtime.getRuntime().availableProcessors(), 1 ), 8 );
         executor = new ThreadPoolExecutor( nThread, nThread, 1, TimeUnit.MINUTES, queue, runnable ->
@@ -80,6 +81,11 @@ public class DefaultMetadataResolver
             thread.setDaemon( true );
             return thread;
         } );
+    }
+
+    public DefaultMetadataResolver( ServiceLocator locator )
+    {
+        this( locator.getService( Logger.class ) );
     }
 
     @Override

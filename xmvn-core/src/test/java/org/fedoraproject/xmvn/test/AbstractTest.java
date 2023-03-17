@@ -25,7 +25,7 @@ import org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator;
  */
 public class AbstractTest
 {
-    private DefaultServiceLocator locator;
+    protected DefaultServiceLocator locator;
 
     @BeforeEach
     public void configureServiceLocator()

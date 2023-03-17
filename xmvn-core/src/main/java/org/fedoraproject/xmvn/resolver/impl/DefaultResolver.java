@@ -29,7 +29,6 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.logging.Logger;
-import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
@@ -79,7 +78,7 @@ public class DefaultResolver
     {
         this();
 
-        logger = new ConsoleLogger();
+        logger = locator.getService( Logger.class );
         configurator = locator.getService( Configurator.class );
         metadataResolver = locator.getService( MetadataResolver.class );
     }

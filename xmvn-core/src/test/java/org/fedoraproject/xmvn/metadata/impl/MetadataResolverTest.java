@@ -46,7 +46,7 @@ public class MetadataResolverTest
     @BeforeEach
     public void setUp()
     {
-        metadataResolver = new DefaultMetadataResolver();
+        metadataResolver = new DefaultMetadataResolver( locator );
     }
 
     /**
