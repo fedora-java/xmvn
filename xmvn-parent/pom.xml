@@ -81,7 +81,6 @@
     <jcommanderVersion>1.82</jcommanderVersion>
     <mavenResolverVersion>1.9.7</mavenResolverVersion>
     <mavenVersion>3.9.0</mavenVersion>
-    <plexusClassworldsVersion>2.7.0</plexusClassworldsVersion>
     <plexusUtilsVersion>3.5.1</plexusUtilsVersion>
     <pluginToolsVersion>3.8.1</pluginToolsVersion>
     <slf4jVersion>2.0.6</slf4jVersion>
@@ -161,11 +160,6 @@
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <version>${pluginToolsVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-classworlds</artifactId>
-        <version>${plexusClassworldsVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>

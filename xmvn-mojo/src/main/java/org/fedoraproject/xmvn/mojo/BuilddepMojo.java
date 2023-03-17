@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -42,9 +43,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
@@ -100,7 +98,7 @@ public class BuilddepMojo
     private List<MavenProject> reactorProjects;
 
     @Inject
-    private PlexusContainer container;
+    private Map<String, LifecycleMapping> lifecycleMappings;
 
     // Injected through reflection by XMvn lifecycle participant
     private List<String[]> resolutions;
@@ -175,33 +173,16 @@ public class BuilddepMojo
         return visitor.getArtifacts();
     }
 
-    @SuppressWarnings( "resource" )
     private Lifecycle getDefaultLifecycle( MavenProject project )
         throws MojoExecutionException
     {
-        ClassRealm projectRealm = project.getClassRealm();
-        if ( projectRealm == null )
+        LifecycleMapping lifecycleMapping = lifecycleMappings.get( project.getPackaging() );
+        if ( lifecycleMapping == null )
         {
-            projectRealm = container.getContainerRealm();
+            throw new MojoExecutionException( "Unable to get lifecycle for project " + project.getId() );
         }
+        return lifecycleMapping.getLifecycles().get( "default" );
 
-        ClassRealm oldLookupRealm = container.setLookupRealm( projectRealm );
-        ClassLoader oldContextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader( projectRealm );
-
-        try
-        {
-            return container.lookup( LifecycleMapping.class, project.getPackaging() ).getLifecycles().get( "default" );
-        }
-        catch ( ComponentLookupException e )
-        {
-            throw new MojoExecutionException( "Unable to get lifecycle for project " + project.getId(), e );
-        }
-        finally
-        {
-            Thread.currentThread().setContextClassLoader( oldContextClassLoader );
-            container.setLookupRealm( oldLookupRealm );
-        }
     }
 
     private void addLifecycleDependencies( Set<Artifact> artifacts, MavenProject project )
