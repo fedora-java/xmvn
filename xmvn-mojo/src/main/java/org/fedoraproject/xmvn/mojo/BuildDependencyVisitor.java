@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -56,9 +57,12 @@ class BuildDependencyVisitor
         return Collections.unmodifiableSet( artifacts );
     }
 
-    private boolean isExternal( InputLocation location )
+    private boolean isExternal( Function<String, InputLocation> locationGetter, String... locationIds )
     {
-        return location == null || isExternalLocation.apply( location );
+        return Arrays.stream( locationIds ) //
+                     .map( locationGetter::apply ) //
+                     .filter( Objects::nonNull ) //
+                     .allMatch( isExternalLocation::apply );
     }
 
     private void visitParent( Parent parent )
@@ -68,7 +72,7 @@ class BuildDependencyVisitor
 
     private void visitDependency( Dependency dependency )
     {
-        if ( isExternal( dependency.getLocation( "" ) ) )
+        if ( isExternal( dependency::getLocation, "", "groupId", "artifactId", "version" ) )
         {
             return;
         }
@@ -92,7 +96,7 @@ class BuildDependencyVisitor
 
     private void visitBuildPlugin( Plugin plugin )
     {
-        if ( isExternal( plugin.getLocation( "" ) ) )
+        if ( isExternal( plugin::getLocation, "", "groupId", "artifactId", "version" ) )
         {
             return;
         }
@@ -120,7 +124,7 @@ class BuildDependencyVisitor
 
     private void visitBuildPluginDependency( Dependency dependency )
     {
-        if ( isExternal( dependency.getLocation( "" ) ) )
+        if ( isExternal( dependency::getLocation, "", "groupId", "artifactId", "version" ) )
         {
             return;
         }
