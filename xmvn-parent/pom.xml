@@ -79,7 +79,6 @@
 
     <asmVersion>9.4</asmVersion>
     <jcommanderVersion>1.82</jcommanderVersion>
-    <mavenInvokerVersion>3.2.0</mavenInvokerVersion>
     <mavenResolverVersion>1.9.7</mavenResolverVersion>
     <mavenVersion>3.9.0</mavenVersion>
     <plexusClassworldsVersion>2.7.0</plexusClassworldsVersion>
@@ -227,11 +226,6 @@
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
         <version>${jcommanderVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.shared</groupId>
-        <artifactId>maven-invoker</artifactId>
-        <version>${mavenInvokerVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
