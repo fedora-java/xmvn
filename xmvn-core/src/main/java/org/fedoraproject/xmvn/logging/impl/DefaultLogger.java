@@ -18,6 +18,8 @@ package org.fedoraproject.xmvn.logging.impl;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.slf4j.LoggerFactory;
+
 import org.fedoraproject.xmvn.logging.Logger;
 
 /**
@@ -28,11 +30,16 @@ import org.fedoraproject.xmvn.logging.Logger;
 public class DefaultLogger
     implements Logger
 {
-    private Logger delegate;
+    private final org.slf4j.Logger delegate;
 
     public DefaultLogger()
     {
-        delegate = new Slf4jLoggerAdapter();
+        if ( System.getProperty( "xmvn.debug" ) != null )
+        {
+            System.setProperty( "org.slf4j.simpleLogger.log.XMvn", "trace" );
+        }
+
+        delegate = LoggerFactory.getLogger( "XMvn" );
     }
 
     @Override
