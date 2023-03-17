@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 
 import org.apache.maven.execution.AbstractExecutionListener;
 import org.apache.maven.execution.ExecutionEvent;
-import org.codehaus.plexus.logging.Logger;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 

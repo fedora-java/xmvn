@@ -45,7 +45,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlSerializer;
@@ -56,6 +55,7 @@ import org.xml.sax.SAXException;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.logging.Logger;
 
 /**
  * @author Mikolaj Izdebski
