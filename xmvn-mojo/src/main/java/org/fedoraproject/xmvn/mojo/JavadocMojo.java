@@ -181,8 +181,6 @@ public class JavadocMojo
             // Ignore dependency resolution errors
         }
 
-        String moduleName = ignoreJPMS ? null : moduleGleaner.glean( artifactPath );
-
         List<Path> sourcePaths = project.getCompileSourceRoots().stream() //
                                         .filter( Objects::nonNull ) //
                                         .map( Paths::get ) //
@@ -191,7 +189,9 @@ public class JavadocMojo
                                         .filter( Files::isDirectory ) //
                                         .collect( Collectors.toList() );
 
-        modules.add( new JavadocModule( moduleName, artifactPath, sourcePaths, dependencies ) );
+        JavadocModule module = moduleGleaner.glean( artifactPath, sourcePaths, dependencies, ignoreJPMS );
+        modules.add( module );
+        logger.debug( "Gleaner found " + module );
     }
 
     private List<JavadocModule> discoverModules()
@@ -210,6 +210,21 @@ public class JavadocMojo
             {
                 discoverModule( modules, reactorArtifacts, project.getExecutionProject() );
             }
+        }
+
+        long nModular = modules.stream().filter( JavadocModule::isModular ).count();
+        long nAutomatic = modules.stream().filter( JavadocModule::isAutomatic ).count();
+        long nNonAutomatic = nModular - nAutomatic;
+        if ( nAutomatic > 0 && nNonAutomatic > 0 )
+        {
+            logger.warn( "Found " + nNonAutomatic + " non-automacit modules (with module-info) and " + nAutomatic
+                + " automatic modules. Mixing automatic and non-automatic modules is not supported."
+                + " Javadoc is likely to fail. For more info see debug output." );
+        }
+        if ( nAutomatic == nModular )
+        {
+            logger.info( "All discovered modules are automatic modules, thus ignoring JPMS" );
+            modules = modules.stream().map( JavadocModule::demodularize ).collect( Collectors.toList() );
         }
 
         return modules;

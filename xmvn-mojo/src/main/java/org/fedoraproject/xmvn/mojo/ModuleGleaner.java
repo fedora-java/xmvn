@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -34,7 +35,7 @@ import org.objectweb.asm.ModuleVisitor;
  */
 class ModuleGleaner
 {
-    private String gleanFromManifest( Manifest mf )
+    private String gleanAutomaticFromManifest( Manifest mf )
     {
         if ( mf != null )
         {
@@ -47,7 +48,28 @@ class ModuleGleaner
         return null;
     }
 
-    private String gleanFromModuleInfo( InputStream inputStream )
+    private String gleanAutomaticFromJar( Path jarPath )
+    {
+        try ( JarInputStream jis = new JarInputStream( Files.newInputStream( jarPath ) ) )
+        {
+            return gleanAutomaticFromManifest( jis.getManifest() );
+        }
+        catch ( IOException e )
+        {
+            return null;
+        }
+    }
+
+    private String gleanAutomatic( Path path )
+    {
+        if ( path.getFileName().toString().endsWith( ".jar" ) )
+        {
+            return gleanAutomaticFromJar( path );
+        }
+        return null;
+    }
+
+    private String gleanFromModuleInfoClass( InputStream inputStream )
         throws IOException
     {
         String[] moduleName = new String[1];
@@ -64,7 +86,7 @@ class ModuleGleaner
         return moduleName[0];
     }
 
-    private String gleanFromJar( Path jarPath )
+    private String gleanModuleInfoFromJar( Path jarPath )
     {
         try ( JarInputStream jis = new JarInputStream( Files.newInputStream( jarPath ) ) )
         {
@@ -72,14 +94,14 @@ class ModuleGleaner
             {
                 if ( "module-info.class".equals( entry.getName() ) )
                 {
-                    String moduleName = gleanFromModuleInfo( jis );
+                    String moduleName = gleanFromModuleInfoClass( jis );
                     if ( moduleName != null )
                     {
                         return moduleName;
                     }
                 }
             }
-            return gleanFromManifest( jis.getManifest() );
+            return null;
         }
         catch ( IOException e )
         {
@@ -87,14 +109,14 @@ class ModuleGleaner
         }
     }
 
-    private String gleanFromClasses( Path classesPath )
+    private String gleanModuleInfoFromClasses( Path classesPath )
     {
         Path moduleInfoPath = classesPath.resolve( "module-info.class" );
         if ( Files.isRegularFile( moduleInfoPath ) )
         {
             try ( InputStream is = Files.newInputStream( moduleInfoPath ) )
             {
-                return gleanFromModuleInfo( is );
+                return gleanFromModuleInfoClass( is );
             }
             catch ( IOException e )
             {
@@ -103,16 +125,32 @@ class ModuleGleaner
         return null;
     }
 
-    public String glean( Path path )
+    private String gleanModuleInfo( Path path )
     {
         if ( Files.isDirectory( path ) )
         {
-            return gleanFromClasses( path );
+            return gleanModuleInfoFromClasses( path );
         }
         if ( path.getFileName().toString().endsWith( ".jar" ) )
         {
-            return gleanFromJar( path );
+            return gleanModuleInfoFromJar( path );
         }
         return null;
+    }
+
+    public JavadocModule glean( Path artifactPath, List<Path> sourcePaths, List<Path> dependencies, boolean ignoreJPMS )
+    {
+        String moduleName = null;
+        boolean isAutomatic = false;
+        if ( !ignoreJPMS )
+        {
+            moduleName = gleanModuleInfo( artifactPath );
+            if ( moduleName == null )
+            {
+                moduleName = gleanAutomatic( artifactPath );
+                isAutomatic = moduleName != null;
+            }
+        }
+        return new JavadocModule( moduleName, isAutomatic, artifactPath, sourcePaths, dependencies );
     }
 }
