@@ -114,7 +114,7 @@ public class XMvnModelValidator
 
         if ( StringUtils.isEmpty( version ) )
         {
-            logger.debug( "Missing version of dependency " + id + ", using " + Artifact.DEFAULT_VERSION + "." );
+            logger.debug( "Missing version of dependency {}, using {}.", id, Artifact.DEFAULT_VERSION );
             return Artifact.DEFAULT_VERSION;
         }
 
@@ -122,15 +122,15 @@ public class XMvnModelValidator
         {
             if ( VersionRange.createFromVersionSpec( version ).getRecommendedVersion() == null )
             {
-                logger.debug( "Dependency " + id + " has no recommended version, falling back to "
-                    + Artifact.DEFAULT_VERSION + "." );
+                logger.debug( "Dependency {} has no recommended version, falling back to {}.", id,
+                              Artifact.DEFAULT_VERSION );
                 return Artifact.DEFAULT_VERSION;
             }
         }
         catch ( InvalidVersionSpecificationException e )
         {
-            logger.debug( "Dependency " + id + " is using invalid version range, falling back to "
-                + Artifact.DEFAULT_VERSION + "." );
+            logger.debug( "Dependency {} is using invalid version range, falling back to {}.", id,
+                          Artifact.DEFAULT_VERSION );
             return Artifact.DEFAULT_VERSION;
         }
 

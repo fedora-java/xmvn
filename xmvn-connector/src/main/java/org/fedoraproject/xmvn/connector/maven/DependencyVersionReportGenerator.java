@@ -86,14 +86,14 @@ class DependencyVersionReportGenerator
             }
             requestedVersions.add( artifact.getVersion() );
 
-            logger.debug( "  " + artifact + " => " + result.getCompatVersion() + ", provided by " + provider );
+            logger.debug( "  {} => {}, provided by {}", artifact, result.getCompatVersion(), provider );
         } );
 
         logger.debug( "Simplified XMvn dependency report:" );
         logger.debug( "<pkg-name> (<rpm-version>): <requested-versions>" );
         shortReport.forEach( ( provider, versions ) ->
         {
-            logger.debug( "  " + provider + ": " + versions.stream().collect( Collectors.joining( ", " ) ) );
+            logger.debug( "  {}: {}", provider, versions.stream().collect( Collectors.joining( ", " ) ) );
         } );
     }
 }

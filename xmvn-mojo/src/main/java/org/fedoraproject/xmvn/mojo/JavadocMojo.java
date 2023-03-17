@@ -192,7 +192,7 @@ public class JavadocMojo
 
         JavadocModule module = moduleGleaner.glean( artifactPath, sourcePaths, dependencies, ignoreJPMS );
         modules.add( module );
-        logger.debug( "Gleaner found " + module );
+        logger.debug( "Gleaner found {}", module );
     }
 
     private List<JavadocModule> discoverModules()
@@ -218,9 +218,8 @@ public class JavadocMojo
         long nNonAutomatic = nModular - nAutomatic;
         if ( nAutomatic > 0 && nNonAutomatic > 0 )
         {
-            logger.warn( "Found " + nNonAutomatic + " non-automacit modules (with module-info) and " + nAutomatic
-                + " automatic modules. Mixing automatic and non-automatic modules is not supported."
-                + " Javadoc is likely to fail. For more info see debug output." );
+            logger.warn( "Found {} non-automacit modules (with module-info) and {} automatic modules. Mixing automatic and non-automatic modules is not supported. Javadoc is likely to fail. For more info see debug output.",
+                         nNonAutomatic, nAutomatic );
         }
         if ( nAutomatic == nModular )
         {
@@ -234,7 +233,7 @@ public class JavadocMojo
     private void addOpt( String name )
     {
         options.add( name );
-        logger.debug( "Javadc option: " + name );
+        logger.debug( "Javadc option: {}", name );
     }
 
     private boolean addOpt( String name, String value )
@@ -279,7 +278,7 @@ public class JavadocMojo
         Toolchain tc = toolchainManager.getToolchainFromBuildContext( "jdk", session );
         if ( tc != null )
         {
-            logger.info( "Toolchain in xmvn-mojo: " + tc );
+            logger.info( "Toolchain in xmvn-mojo: {}", tc );
             javadocTool = tc.findTool( "javadoc" );
         }
         Path javadocExecutable;
@@ -295,7 +294,7 @@ public class JavadocMojo
         {
             javadocExecutable = Paths.get( "/usr/bin/javadoc" );
         }
-        logger.debug( "Using javadoc executable " + javadocExecutable );
+        logger.debug( "Using javadoc executable {}", javadocExecutable );
         return javadocExecutable;
     }
 
@@ -326,7 +325,7 @@ public class JavadocMojo
         Process process = pb.start();
 
         int exitCode = process.waitFor();
-        logger.debug( "javadoc exit code is " + exitCode );
+        logger.debug( "javadoc exit code is {}", exitCode );
         if ( exitCode != 0 )
         {
             throw new MojoFailureException( "Javadoc failed with exit code " + exitCode );
