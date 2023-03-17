@@ -218,8 +218,9 @@ public class JavadocMojo
         long nNonAutomatic = nModular - nAutomatic;
         if ( nAutomatic > 0 && nNonAutomatic > 0 )
         {
-            logger.warn( "Found {} non-automacit modules (with module-info) and {} automatic modules. Mixing automatic and non-automatic modules is not supported. Javadoc is likely to fail. For more info see debug output.",
-                         nNonAutomatic, nAutomatic );
+            logger.warn( "Found {} non-automacit modules (with module-info) and {} automatic modules."
+                + " Mixing automatic and non-automatic modules is not supported. Javadoc is likely to fail."
+                + " For more info see debug output.", nNonAutomatic, nAutomatic );
         }
         if ( nAutomatic == nModular )
         {
