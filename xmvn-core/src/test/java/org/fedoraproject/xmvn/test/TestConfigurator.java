@@ -16,15 +16,30 @@
 package org.fedoraproject.xmvn.test;
 
 import org.fedoraproject.xmvn.config.Configuration;
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
 
 /**
  * @author Mikolaj Izdebski
  */
 public class TestConfigurator
-    extends DefaultConfigurator
+    implements Configurator
 {
+    private final Configurator delegate;
+
+    public TestConfigurator( ServiceLocator locator )
+    {
+        delegate = new DefaultConfigurator( locator );
+    }
+
+    @Override
+    public Configuration getDefaultConfiguration()
+    {
+        return delegate.getDefaultConfiguration();
+    }
+
     @Override
     public synchronized Configuration getConfiguration()
     {

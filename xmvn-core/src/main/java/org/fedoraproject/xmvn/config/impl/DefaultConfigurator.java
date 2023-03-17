@@ -37,8 +37,8 @@ import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.logging.Logger;
-import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 
 /**
  * Default implementation of XMvn configurator.
@@ -54,8 +54,7 @@ import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 public class DefaultConfigurator
     implements Configurator
 {
-    @Inject
-    private Logger logger = new ConsoleLogger();
+    private final Logger logger;
 
     private final ConfigurationMerger merger = new ConfigurationMerger();
 
@@ -64,6 +63,17 @@ public class DefaultConfigurator
     private Configuration cachedDefaultConfiguration;
 
     private List<Path> configFiles;
+
+    @Inject
+    public DefaultConfigurator( Logger logger )
+    {
+        this.logger = logger;
+    }
+
+    public DefaultConfigurator( ServiceLocator locator )
+    {
+        this( locator.getService( Logger.class ) );
+    }
 
     private Configuration loadConfigurationFromStream( InputStream stream )
         throws IOException

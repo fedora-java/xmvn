@@ -47,7 +47,7 @@ public class MetadataReaderTest
     @BeforeEach
     public void setUp()
     {
-        reader = new DefaultMetadataResolver();
+        reader = new DefaultMetadataResolver( locator );
     }
 
     /**

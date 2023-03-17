@@ -23,6 +23,8 @@ import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.impl.DefaultDeployer;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.logging.Logger;
+import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.impl.DefaultMetadataResolver;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -51,6 +53,7 @@ public class DefaultServiceLocator
 
     public DefaultServiceLocator()
     {
+        addService( Logger.class, ConsoleLogger.class );
         addService( Resolver.class, DefaultResolver.class );
         addService( Deployer.class, DefaultDeployer.class );
         addService( Configurator.class, DefaultConfigurator.class );

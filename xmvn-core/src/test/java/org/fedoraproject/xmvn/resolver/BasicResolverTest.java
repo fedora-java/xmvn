@@ -34,6 +34,7 @@ import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.metadata.DependencyExclusion;
@@ -109,6 +110,7 @@ public class BasicResolverTest
         MetadataResult mockMdResult = EasyMock.createMock( MetadataResult.class );
         MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
         ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
+        EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
         EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
         EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
         EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult );
@@ -135,6 +137,7 @@ public class BasicResolverTest
         MetadataResult mockMdResult = EasyMock.createMock( MetadataResult.class );
         MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
         ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
+        EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
         EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
         EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
         EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult );
@@ -180,6 +183,7 @@ public class BasicResolverTest
         MetadataResult mockMdResult = EasyMock.createMock( MetadataResult.class );
         MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
         ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
+        EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
         EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
         EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
         EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult );
@@ -238,6 +242,7 @@ public class BasicResolverTest
             MetadataResult mockMdResult2 = EasyMock.createMock( MetadataResult.class );
             MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
             ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
+            EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
             EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
             EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
             EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult1 );
