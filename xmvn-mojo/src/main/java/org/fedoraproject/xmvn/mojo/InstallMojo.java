@@ -134,8 +134,8 @@ public class InstallMojo
             {
                 systemDepsFound = true;
 
-                logger.error( "Reactor project " + xmvnArtifact( project.getArtifact() )
-                    + " has system-scoped dependencies: " + Utils.collectionToString( systemDeps, true ) );
+                logger.error( "Reactor project {} has system-scoped dependencies: {}",
+                              xmvnArtifact( project.getArtifact() ), Utils.collectionToString( systemDeps, true ) );
             }
         }
 
@@ -212,13 +212,13 @@ public class InstallMojo
         {
             Artifact mainArtifact = xmvnArtifact( project.getArtifact() );
             Path mainArtifactPath = mainArtifact.getPath();
-            logger.debug( "Installing main artifact " + mainArtifact );
-            logger.debug( "Artifact file is " + mainArtifactPath );
+            logger.debug( "Installing main artifact {}", mainArtifact );
+            logger.debug( "Artifact file is {}", mainArtifactPath );
 
             if ( mainArtifactPath != null && !Files.isRegularFile( mainArtifactPath ) )
             {
-                logger.info( "Skipping installation of artifact " + mainArtifactPath
-                    + ": artifact file is not a regular file" );
+                logger.info( "Skipping installation of artifact {}: artifact file is not a regular file",
+                             mainArtifactPath );
                 mainArtifactPath = null;
             }
 
@@ -235,7 +235,7 @@ public class InstallMojo
                                          mainArtifact.getClassifier(), mainArtifact.getVersion() );
                 File rawPomFile = project.getFile();
                 Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
-                logger.debug( "Raw POM path: " + rawPomPath );
+                logger.debug( "Raw POM path: {}", rawPomPath );
                 rawPomArtifact = rawPomArtifact.setPath( rawPomPath );
                 deployArtifact( rawPomArtifact, type, project.getModel() );
             }
@@ -247,13 +247,13 @@ public class InstallMojo
             for ( Artifact attachedArtifact : attachedArtifacts )
             {
                 Path attachedArtifactPath = attachedArtifact.getPath();
-                logger.debug( "Installing attached artifact " + attachedArtifact );
-                logger.debug( "Artifact file is " + attachedArtifactPath );
+                logger.debug( "Installing attached artifact {}", attachedArtifact );
+                logger.debug( "Artifact file is {}", attachedArtifactPath );
 
                 if ( attachedArtifactPath != null && !Files.isRegularFile( attachedArtifactPath ) )
                 {
-                    logger.info( "Skipping installation of attached artifact " + attachedArtifact
-                        + ": artifact file is not a regular file" );
+                    logger.info( "Skipping installation of attached artifact {}: artifact file is not a regular file",
+                                 attachedArtifact );
                     continue;
                 }
 
