@@ -197,6 +197,10 @@ public class ArchiveLayoutIntegrationTest
 
         expect( 1, 1, "lib/ext/" );
         expect( 1, 1, "lib/ext/README\\.txt" );
+        expect( 1, 1, "lib/ext/hazelcast/" );
+        expect( 1, 1, "lib/ext/hazelcast/README\\.txt" );
+        expect( 1, 1, "lib/ext/redisson/" );
+        expect( 1, 1, "lib/ext/redisson/README\\.txt" );
         expect( 1, 1, "lib/ext/xmvn-connector-.*\\.jar" );
         expect( 1, 1, "lib/ext/xmvn-core-.*\\.jar" );
         expect( 1, 1, "lib/ext/xmvn-api-.*\\.jar" );
