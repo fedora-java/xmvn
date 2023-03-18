@@ -18,10 +18,6 @@ package org.fedoraproject.xmvn.connector.maven;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.FileReader;
-import java.io.Reader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.google.inject.Binder;
@@ -30,10 +26,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.validation.ModelValidator;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,15 +55,6 @@ public class ModelValidatorTest
 
     private ArrayList<Plugin> pl;
 
-    private Path getResource( String resource )
-    {
-        if ( resource == null )
-        {
-            return null;
-        }
-        return Paths.get( "src/test/resources" ).resolve( resource ).toAbsolutePath();
-    }
-
     @Override
     public void configure( Binder binder )
     {
@@ -84,15 +68,6 @@ public class ModelValidatorTest
         configurator = lookup( Configurator.class );
         validator = lookup( ModelValidator.class );
 
-        Xpp3Dom mainCfg;
-        Xpp3Dom glCfg;
-        Xpp3Dom locCfg;
-        try ( Reader reader = new FileReader( getResource( "test.pom.xml" ).toFile() ) )
-        {
-            mainCfg = Xpp3DomBuilder.build( reader );
-        }
-        glCfg = mainCfg.getChild( "basic" ).getChild( "configuration" );
-
         dl = new ArrayList<>();
         Dependency dep = new Dependency();
         dl.add( dep );
@@ -101,41 +76,18 @@ public class ModelValidatorTest
         Extension ext = new Extension();
         el.add( ext );
 
-        ArrayList<PluginExecution> pel;
-        pel = new ArrayList<>();
-
-        PluginExecution exec;
-
-        locCfg = mainCfg.getChild( "invalidst" ).getChild( "configuration" );
-        exec = new PluginExecution();
-        exec.setConfiguration( locCfg );
-        pel.add( exec );
-
-        locCfg = mainCfg.getChild( "invalidnd" ).getChild( "configuration" );
-        exec = new PluginExecution();
-        exec.setConfiguration( locCfg );
-        pel.add( exec );
-
-        locCfg = mainCfg.getChild( "empty" ).getChild( "configuration" );
-        exec = new PluginExecution();
-        exec.setConfiguration( locCfg );
-        pel.add( exec );
-
         pl = new ArrayList<>();
         Plugin plg;
 
         plg = new Plugin();
         plg.setGroupId( "org.apache.maven.plugins" );
         plg.setArtifactId( "maven-compiler-plugin" );
-        plg.setConfiguration( glCfg );
         plg.addDependency( dep );
-        plg.setExecutions( pel );
         pl.add( plg );
 
         plg = new Plugin();
         plg.setGroupId( "org.apache.maven.plugins" );
         plg.setArtifactId( "foo" );
-        plg.setConfiguration( glCfg );
         plg.addDependency( dep );
         plg.setVersion( "starter edition" );
         pl.add( plg );
@@ -143,7 +95,6 @@ public class ModelValidatorTest
         plg = new Plugin();
         plg.setGroupId( "foofoo" );
         plg.setArtifactId( "maven-compiler-plugin" );
-        plg.setConfiguration( glCfg );
         plg.addDependency( dep );
         plg.setVersion( "[1.0]" );
         pl.add( plg );
@@ -151,7 +102,6 @@ public class ModelValidatorTest
         plg = new Plugin();
         plg.setGroupId( "foobar" );
         plg.setArtifactId( "bar" );
-        plg.setConfiguration( glCfg );
         plg.addDependency( dep );
         plg.setVersion( "(" );
         pl.add( plg );
