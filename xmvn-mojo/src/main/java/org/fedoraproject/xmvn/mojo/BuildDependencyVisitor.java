@@ -29,7 +29,6 @@ import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
-import org.codehaus.plexus.util.StringUtils;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -104,11 +103,11 @@ class BuildDependencyVisitor
         String groupId = plugin.getGroupId();
         String artifactId = plugin.getArtifactId();
         String version = plugin.getVersion();
-        if ( StringUtils.isEmpty( groupId ) )
+        if ( groupId == null || groupId.isEmpty() )
         {
             groupId = "org.apache.maven.plugins";
         }
-        if ( StringUtils.isEmpty( version ) )
+        if ( version == null || version.isEmpty() )
         {
             version = Artifact.DEFAULT_VERSION;
         }
