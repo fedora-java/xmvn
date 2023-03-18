@@ -15,8 +15,12 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -322,8 +326,18 @@ public class JavadocMojo
         pb.directory( outputDir.toRealPath().toFile() );
         pb.redirectInput( new File( "/dev/null" ) );
         pb.redirectOutput( new File( "/dev/null" ) );
-        pb.redirectError( Redirect.INHERIT );
+        pb.redirectError( Redirect.PIPE );
         Process process = pb.start();
+
+        try ( InputStream in = process.getErrorStream();
+                        Reader r = new InputStreamReader( in );
+                        BufferedReader br = new BufferedReader( r ) )
+        {
+            for ( String line = br.readLine(); line != null; line = br.readLine() )
+            {
+                logger.info( "{}", line );
+            }
+        }
 
         int exitCode = process.waitFor();
         logger.debug( "javadoc exit code is {}", exitCode );
