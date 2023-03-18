@@ -33,7 +33,6 @@ import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.building.ModelProblemCollector;
 import org.apache.maven.model.validation.DefaultModelValidator;
 import org.apache.maven.model.validation.ModelValidator;
-import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.sisu.Priority;
 
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -91,7 +90,7 @@ public class XMvnModelValidator
 
     private boolean matches( String field, String pattern )
     {
-        return StringUtils.isEmpty( pattern ) || Objects.equals( field, pattern );
+        return pattern == null || pattern.isEmpty() || Objects.equals( field, pattern );
     }
 
     private boolean isSkippedDependency( Dependency d )
@@ -104,7 +103,8 @@ public class XMvnModelValidator
         return configurator.getConfiguration().getBuildSettings().getSkippedPlugins().stream() //
                            .anyMatch( sp -> matches( p.getGroupId(), sp.getGroupId() )
                                && matches( p.getArtifactId(), sp.getArtifactId() )
-                               && StringUtils.isEmpty( sp.getExtension() ) && StringUtils.isEmpty( sp.getClassifier() )
+                               && ( sp.getExtension() == null || sp.getExtension().isEmpty() )
+                               && ( sp.getClassifier() == null || sp.getClassifier().isEmpty() )
                                && matches( p.getVersion(), sp.getVersion() ) );
     }
 
@@ -112,7 +112,7 @@ public class XMvnModelValidator
     {
         String id = groupId + ":" + artifactId;
 
-        if ( StringUtils.isEmpty( version ) )
+        if ( version == null || version.isEmpty() )
         {
             logger.debug( "Missing version of dependency {}, using {}.", id, Artifact.DEFAULT_VERSION );
             return Artifact.DEFAULT_VERSION;
