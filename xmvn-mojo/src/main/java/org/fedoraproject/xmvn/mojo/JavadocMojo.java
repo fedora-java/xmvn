@@ -403,8 +403,11 @@ public class JavadocMojo
 
         modules.stream() //
                .filter( JavadocModule::isModular ) //
-               .forEach( module -> addOptPrefixPath( "--patch-module", module.getModuleName() + "=",
-                                                     module.getSourcePaths().stream() ) );
+               .collect( Collectors.toMap( JavadocModule::getModuleName, JavadocModule::getSourcePaths,
+                                           ( a, b ) -> Stream.concat( a.stream(), b.stream() ) //
+                                                             .collect( Collectors.toList() ) ) ) //
+               .forEach( ( name, paths ) -> addOptPrefixPath( "--patch-module", name + "=", paths.stream() ) );
+
         try
         {
             Set<Path> sourceFiles = findJavaSources( modules );
