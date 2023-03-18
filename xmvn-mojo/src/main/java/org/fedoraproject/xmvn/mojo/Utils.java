@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.model.Dependency;
-import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.ArtifactType;
 
@@ -48,7 +47,7 @@ final class Utils
         ArtifactHandler handler = mavenArtifact.getArtifactHandler();
         String extension = handler.getExtension();
         String classifier = handler.getClassifier();
-        if ( StringUtils.isNotEmpty( mavenArtifact.getClassifier() ) )
+        if ( mavenArtifact.getClassifier() != null && !mavenArtifact.getClassifier().isEmpty() )
         {
             classifier = mavenArtifact.getClassifier();
         }

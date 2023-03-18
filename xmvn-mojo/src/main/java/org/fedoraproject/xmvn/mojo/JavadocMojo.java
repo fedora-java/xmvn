@@ -53,7 +53,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectDependenciesResolver;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
-import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.util.filter.AndDependencyFilter;
 import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
@@ -107,10 +106,7 @@ public class JavadocMojo
 
     private static String quoted( Object obj )
     {
-        String arg = obj.toString();
-        arg = StringUtils.replace( arg, "\\", "\\\\" );
-        arg = StringUtils.replace( arg, "'", "\\'" );
-        return "'" + arg + "'";
+        return "'" + obj.toString().replace( "\\", "\\\\" ).replace( "'", "\\'" ) + "'";
     }
 
     // Called by XMvn lifecycle participant
