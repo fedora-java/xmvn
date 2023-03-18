@@ -226,7 +226,7 @@ public class JavadocMojo
                 + " Mixing automatic and non-automatic modules is not supported. Javadoc is likely to fail."
                 + " For more info see debug output.", nNonAutomatic, nAutomatic );
         }
-        if ( nAutomatic == nModular )
+        if ( nModular > 0 && nAutomatic == nModular )
         {
             logger.info( "All discovered modules are automatic modules, thus ignoring JPMS" );
             modules = modules.stream().map( JavadocModule::demodularize ).collect( Collectors.toList() );
@@ -307,15 +307,16 @@ public class JavadocMojo
     {
         try
         {
-            ignoreJPMS = Float.parseFloat( release != null ? release : source != null ? source : "9" ) < 9;
+            float sourceLevel = Float.parseFloat( release != null ? release : source != null ? source : "9" );
+            if ( sourceLevel < 9 )
+            {
+                logger.info( "Ignoring JPMS as source level {} is below 9", sourceLevel );
+                ignoreJPMS = true;
+            }
         }
         catch ( NumberFormatException e )
         {
             // pass, we assume that we use modular Java
-        }
-        if ( ignoreJPMS )
-        {
-            logger.info( "Ignoring JPMS" );
         }
     }
 
@@ -351,7 +352,14 @@ public class JavadocMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        skipJPMSOnSourceBelow9();
+        if ( ignoreJPMS )
+        {
+            logger.info( "Ignoring JPMS according to configuration (xmvn.javadoc.ignoreJPMS property)" );
+        }
+        else
+        {
+            skipJPMSOnSourceBelow9();
+        }
 
         List<JavadocModule> modules = discoverModules();
 
