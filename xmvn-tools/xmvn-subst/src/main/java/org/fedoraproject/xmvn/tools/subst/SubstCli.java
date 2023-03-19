@@ -26,6 +26,7 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
+import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
@@ -35,12 +36,15 @@ import org.fedoraproject.xmvn.metadata.MetadataResult;
  */
 public class SubstCli
 {
+    private final Logger logger;
+
     private final MetadataResolver metadataResolver;
 
     private final ResolverSettings resolverSettings;
 
-    public SubstCli( Configurator configurator, MetadataResolver metadataResolver )
+    public SubstCli( Logger logger, Configurator configurator, MetadataResolver metadataResolver )
     {
+        this.logger = logger;
         this.metadataResolver = metadataResolver;
         resolverSettings = configurator.getConfiguration().getResolverSettings();
     }
@@ -75,7 +79,7 @@ public class SubstCli
 
         metadataResults.add( resolveMetadata( resolverSettings.getMetadataRepositories() ) );
 
-        ArtifactVisitor visitor = new ArtifactVisitor( cliRequest.isDebug(), metadataResults );
+        ArtifactVisitor visitor = new ArtifactVisitor( logger, metadataResults );
 
         visitor.setTypes( cliRequest.getTypes() );
         visitor.setFollowSymlinks( cliRequest.isFollowSymlinks() );
@@ -115,10 +119,11 @@ public class SubstCli
             }
 
             ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
+            Logger logger = locator.getService( Logger.class );
             Configurator configurator = locator.getService( Configurator.class );
             MetadataResolver metadataResolver = locator.getService( MetadataResolver.class );
 
-            SubstCli cli = new SubstCli( configurator, metadataResolver );
+            SubstCli cli = new SubstCli( logger, configurator, metadataResolver );
 
             return cli.run( cliRequest );
         }

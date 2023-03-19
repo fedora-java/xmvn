@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 
@@ -54,6 +55,7 @@ public class ArtifactVisitorTest
         mf.getMainAttributes().putValue( "JavaPackages-Version", ver );
         try ( OutputStream os = Files.newOutputStream( jarPath ); JarOutputStream jos = new JarOutputStream( os, mf ) )
         {
+            // No files, only manifest
         }
         return jarPath;
     }
@@ -62,6 +64,8 @@ public class ArtifactVisitorTest
     public void testEmptyDirectory()
         throws Exception
     {
+        Logger logger = EasyMock.createNiceMock( Logger.class );
+
         ArtifactMetadata am = new ArtifactMetadata();
         am.setPath( "/foo/bar" );
         MetadataResult mr = EasyMock.createMock( MetadataResult.class );
@@ -74,12 +78,12 @@ public class ArtifactVisitorTest
         Path jar2 = writeJar( "sub/dir/my.jar", "gid", "aid", "ver" );
         Path jar3 = writeJar( "other.jar", "gid", "other", "ver" );
 
-        ArtifactVisitor visitor = new ArtifactVisitor( true, Arrays.asList( mr ) );
+        ArtifactVisitor visitor = new ArtifactVisitor( logger, Arrays.asList( mr ) );
         visitor.setTypes( Collections.singleton( "jar" ) );
 
-        EasyMock.replay( mr );
+        EasyMock.replay( logger, mr );
         Files.walkFileTree( tempDir, visitor );
-        EasyMock.verify( mr );
+        EasyMock.verify( logger, mr );
 
         assertTrue( Files.isSymbolicLink( jar1 ) );
         assertTrue( Files.isSymbolicLink( jar2 ) );
