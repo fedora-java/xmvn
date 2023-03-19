@@ -53,6 +53,7 @@ import org.fedoraproject.xmvn.resolver.Resolver;
  * 
  * @author Mikolaj Izdebski
  */
+@SuppressWarnings( "deprecation" )
 public class MavenExtensionTest
     extends AbstractTest
 {
