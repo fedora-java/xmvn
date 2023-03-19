@@ -27,6 +27,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
+import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -43,10 +44,13 @@ import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionResultListMarshaller;
  */
 public class ResolverCli
 {
+    private final Logger logger;
+
     private final Resolver resolver;
 
-    public ResolverCli( Resolver resolver )
+    public ResolverCli( Logger logger, Resolver resolver )
     {
+        this.logger = logger;
         this.resolver = resolver;
     }
 
@@ -116,7 +120,7 @@ public class ResolverCli
                 if ( result.getArtifactPath() == null )
                 {
                     error = true;
-                    System.err.printf( "ERROR: Unable to resolve artifact %s%n", request.getArtifact() );
+                    logger.error( "Unable to resolve artifact {}", request.getArtifact() );
                 }
             }
 
@@ -154,9 +158,10 @@ public class ResolverCli
             }
 
             ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
+            Logger logger = locator.getService( Logger.class );
             Resolver resolver = locator.getService( Resolver.class );
 
-            ResolverCli cli = new ResolverCli( resolver );
+            ResolverCli cli = new ResolverCli( logger, resolver );
 
             return cli.run( cliRequest );
         }
