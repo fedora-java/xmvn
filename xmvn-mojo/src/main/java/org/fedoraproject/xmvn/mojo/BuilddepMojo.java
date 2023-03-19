@@ -150,7 +150,6 @@ public class BuilddepMojo
             throw new MojoExecutionException( "Unable to get lifecycle for project " + project.getId() );
         }
         return lifecycleMapping.getLifecycles().get( "default" );
-
     }
 
     private void addLifecycleDependencies( Set<Artifact> artifacts, MavenProject project )
