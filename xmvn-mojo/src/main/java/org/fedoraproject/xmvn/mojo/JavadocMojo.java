@@ -435,6 +435,8 @@ public class JavadocMojo
                          StandardOpenOption.TRUNCATE_EXISTING );
 
             invokeJavadoc( outputDir );
+
+            Files.deleteIfExists( outputDir.resolve( "args" ) );
         }
         catch ( IOException | InterruptedException e )
         {
