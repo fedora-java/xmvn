@@ -234,7 +234,7 @@ public class JavadocMojo
     private void addOpt( String name )
     {
         options.add( name );
-        logger.debug( "Javadc option: {}", name );
+        logger.debug( "Javadoc option: {}", name );
     }
 
     private boolean addOpt( String name, String value )
