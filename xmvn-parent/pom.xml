@@ -81,7 +81,7 @@
     <jcommanderVersion>1.82</jcommanderVersion>
     <mavenResolverVersion>1.9.8</mavenResolverVersion>
     <mavenVersion>3.9.1</mavenVersion>
-    <pluginToolsVersion>3.8.2</pluginToolsVersion>
+    <pluginToolsVersion>3.9.0</pluginToolsVersion>
     <slf4jVersion>2.0.7</slf4jVersion>
     <commonsCompressVersion>1.23.0</commonsCompressVersion>
 
