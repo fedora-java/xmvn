@@ -27,7 +27,7 @@ jobs:
     container: quay.io/mizdebsk/maven:latest
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run build
         run: mvn -V -B -Dgpg.skip -Pquality,run-its,release verify
       - name: Upload coverage report to Codecov
