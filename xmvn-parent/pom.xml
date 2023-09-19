@@ -80,7 +80,7 @@
     <asmVersion>9.5</asmVersion>
     <jcommanderVersion>1.82</jcommanderVersion>
     <mavenResolverVersion>1.9.8</mavenResolverVersion>
-    <mavenVersion>3.9.1</mavenVersion>
+    <mavenVersion>3.9.4</mavenVersion>
     <pluginToolsVersion>3.8.2</pluginToolsVersion>
     <slf4jVersion>2.0.7</slf4jVersion>
     <commonsCompressVersion>1.23.0</commonsCompressVersion>
