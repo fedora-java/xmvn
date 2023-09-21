@@ -58,7 +58,12 @@ public class JavaPackage
         super( id );
         this.basePackageName = basePackageName;
         this.metadataDir = metadataDir;
-        metadata.setUuid( UUID.randomUUID().toString() );
+        UUID guid = UUID.randomUUID();
+        if ( System.getenv( "SOURCE_DATE_EPOCH" ) != null )
+        {
+            guid = UUID.nameUUIDFromBytes( ( System.getenv( "SOURCE_DATE_EPOCH" ) + id + basePackageName + metadataDir.toString() ).getBytes() );
+        }
+        metadata.setUuid( guid.toString() );
     }
 
     /**
@@ -71,11 +76,16 @@ public class JavaPackage
     private PackageMetadata getSplitMetadata( String namespace )
     {
         PackageMetadata splitMetadata = new PackageMetadata();
-        splitMetadata.setUuid( UUID.randomUUID().toString() );
         splitMetadata.setProperties( metadata.getProperties() );
         List<ArtifactMetadata> allArtifacts = metadata.getArtifacts();
         List<ArtifactMetadata> splitArtifacts =
             allArtifacts.stream().filter( a -> namespace.equals( a.getNamespace() ) ).collect( Collectors.toList() );
+        UUID guid = UUID.randomUUID();
+        if ( System.getenv( "SOURCE_DATE_EPOCH" ) != null )
+        {
+            guid = UUID.nameUUIDFromBytes( ( System.getenv( "SOURCE_DATE_EPOCH" ) + splitArtifacts.toString() ).getBytes() );
+        }
+        splitMetadata.setUuid( guid.toString() );
         splitMetadata.setArtifacts( splitArtifacts );
         splitMetadata.setSkippedArtifacts( metadata.getSkippedArtifacts() );
         return splitMetadata;

@@ -185,7 +185,12 @@ class DefaultArtifactInstaller
         am.setNamespace( repo.getNamespace() );
 
         // UUID
-        am.setUuid( UUID.randomUUID().toString() );
+        UUID guid = UUID.randomUUID();
+        if ( System.getenv( "SOURCE_DATE_EPOCH" ) != null )
+        {
+            guid = UUID.nameUUIDFromBytes( ( System.getenv( "SOURCE_DATE_EPOCH" ) + repo.getNamespace() + artifact.toString() ).getBytes() );
+        }
+        am.setUuid( guid.toString() );
 
         // Compat version
         for ( String version : rule.getVersions() )
