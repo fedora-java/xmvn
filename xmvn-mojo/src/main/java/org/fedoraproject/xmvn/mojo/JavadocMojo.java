@@ -371,6 +371,7 @@ public class JavadocMojo
         addOpt( "-d", outputDir );
         addOpt( "-docencoding", docencoding, "UTF-8" );
         addOpt( "-doctitle", "Javadoc for package XXX" );
+        addOpt( "-notimestamp" );
 
         if ( !addOpt( "--release", release ) )
         {
