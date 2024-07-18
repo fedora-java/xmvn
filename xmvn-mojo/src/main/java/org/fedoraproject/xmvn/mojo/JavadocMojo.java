@@ -102,6 +102,12 @@ public class JavadocMojo
     @Parameter( property = "xmvn.javadoc.ignoreJPMS" )
     private boolean ignoreJPMS;
 
+    @Parameter( defaultValue = "${project.build.outputTimestamp}" )
+    protected String outputTimestamp;
+
+    @Parameter( property = "notimestamp", defaultValue = "false" )
+    private boolean notimestamp;
+
     private List<String> options = new ArrayList<>();
 
     private static String quoted( Object obj )
@@ -371,6 +377,20 @@ public class JavadocMojo
         addOpt( "-d", outputDir );
         addOpt( "-docencoding", docencoding, "UTF-8" );
         addOpt( "-doctitle", "Javadoc for package XXX" );
+
+        if ( !notimestamp && outputTimestamp != null && outputTimestamp.length() > 1 )
+        {
+            notimestamp = true;
+        }
+        if ( !notimestamp && System.getenv( "SOURCE_DATE_EPOCH" ) != null )
+        {
+            notimestamp = true;
+        }
+        if ( notimestamp )
+        {
+            addOpt( "-notimestamp" );
+        }
+
 
         if ( !addOpt( "--release", release ) )
         {
