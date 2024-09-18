@@ -249,12 +249,17 @@ public final class JarUtils
         try ( ZipFile jar = new ZipFile( backupPath.toFile() );
                         ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
         {
-            try ( InputStream mfIs = jar.getInputStream( jar.getEntry( MANIFEST_PATH ) ) )
+            ZipArchiveEntry jarEntry = jar.getEntry( MANIFEST_PATH );
+            try ( InputStream mfIs = jar.getInputStream( jarEntry ) )
             {
                 Manifest mf = new Manifest( mfIs );
                 updateManifest( artifact, mf );
                 // write manifest
                 ZipArchiveEntry newManifestEntry = new ZipArchiveEntry( MANIFEST_PATH );
+                if ( jarEntry != null )
+                {
+                    newManifestEntry.setTime( jarEntry.getTime() );
+                }
                 os.putArchiveEntry( newManifestEntry );
                 mf.write( os );
                 os.closeArchiveEntry();
