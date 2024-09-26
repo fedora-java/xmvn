@@ -93,7 +93,7 @@
     <checkstylePluginVersion>3.3.0</checkstylePluginVersion>
     <cleanPluginVersion>3.2.0</cleanPluginVersion>
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
-    <dependencyPluginVersion>3.5.0</dependencyPluginVersion>
+    <dependencyPluginVersion>3.8.0</dependencyPluginVersion>
     <deployPluginVersion>3.1.1</deployPluginVersion>
     <easymockVersion>5.4.0</easymockVersion>
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
