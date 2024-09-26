@@ -163,14 +163,6 @@ public abstract class AbstractInstallerTest
         assertDescriptorEquals( mfiles, expected );
     }
 
-    private void unifyUuids( NodeList nodes )
-    {
-        for ( int i = 0; i < nodes.getLength(); i++ )
-        {
-            nodes.item( i ).setTextContent( "uuid-placeholder" );
-        }
-    }
-
     protected void assertMetadataEqual( Path expected, Path actual )
         throws Exception
     {
@@ -191,9 +183,6 @@ public abstract class AbstractInstallerTest
                 pathNode.setTextContent( getResource( path.substring( 3 ) ).toAbsolutePath().toString() );
             }
         }
-
-        unifyUuids( expectedXml.getElementsByTagName( "uuid" ) );
-        unifyUuids( actualXml.getElementsByTagName( "uuid" ) );
 
         XmlAssert.assertThat( expectedXml ).and( actualXml ).ignoreComments().ignoreWhitespace().areSimilar();
     }

@@ -24,7 +24,6 @@ import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -49,7 +48,6 @@ public class AbstractMojoIntegrationTest
         throws Exception
     {
         PackageMetadata md = new PackageMetadata();
-        md.setUuid( UUID.randomUUID().toString() );
 
         for ( String module : Arrays.asList( "xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent" ) )
         {
@@ -59,7 +57,6 @@ public class AbstractMojoIntegrationTest
 
             assertTrue( Files.exists( pomPath ) );
             ArtifactMetadata pomMd = new ArtifactMetadata();
-            pomMd.setUuid( UUID.randomUUID().toString() );
             pomMd.setGroupId( "org.fedoraproject.xmvn" );
             pomMd.setArtifactId( module );
             pomMd.setVersion( "DUMMY_IGNORED" );
@@ -71,7 +68,6 @@ public class AbstractMojoIntegrationTest
             if ( Files.exists( jarPath ) )
             {
                 ArtifactMetadata jarMd = pomMd.clone();
-                jarMd.setUuid( UUID.randomUUID().toString() );
                 jarMd.setExtension( "jar" );
                 jarMd.setPath( jarPath.toString() );
                 md.addArtifact( jarMd );

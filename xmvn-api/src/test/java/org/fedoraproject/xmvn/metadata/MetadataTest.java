@@ -55,8 +55,8 @@ public class MetadataTest
     {
         PackageMetadata md = reader.read( "src/test/resources/metadata2.xml" );
         assertEquals( 2, md.getArtifacts().size() );
-        assertEquals( null, md.getUuid() );
-        assertEquals( null, md.getArtifacts().get( 0 ).getUuid() );
+        assertEquals( "", md.getUuid() );
+        assertEquals( "", md.getArtifacts().get( 0 ).getUuid() );
 
         StringWriter sw = new StringWriter();
         writer.write( sw, md );

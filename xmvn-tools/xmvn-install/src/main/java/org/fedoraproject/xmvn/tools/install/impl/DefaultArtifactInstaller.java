@@ -28,7 +28,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,9 +182,6 @@ class DefaultArtifactInstaller
 
         // Namespace
         am.setNamespace( repo.getNamespace() );
-
-        // UUID
-        am.setUuid( UUID.randomUUID().toString() );
 
         // Compat version
         for ( String version : rule.getVersions() )
