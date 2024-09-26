@@ -40,6 +40,8 @@
         <include>:slf4j-simple</include>
         <include>:asm</include>
         <include>:commons-compress</include>
+        <include>:commons-io</include>
+        <include>:commons-lang3</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <unpack>false</unpack>
