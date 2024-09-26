@@ -126,7 +126,6 @@ public class ArtifactInstallerTest
         assertEquals( 1, metadata.getArtifacts().size() );
         ArtifactMetadata actualArtifact = metadata.getArtifacts().get( 0 );
         assertEquals( "ns", actualArtifact.getNamespace() );
-        assertNotNull( actualArtifact.getUuid() );
 
         assertEquals( 2, pkg.getFiles().size() );
         Iterator<File> iterator = pkg.getFiles().iterator();

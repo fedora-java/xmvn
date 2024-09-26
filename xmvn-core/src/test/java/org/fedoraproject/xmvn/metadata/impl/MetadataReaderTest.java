@@ -115,8 +115,6 @@ public class MetadataReaderTest
 
         PackageMetadata pm = list.iterator().next();
 
-        assertEquals( "p-uuid", pm.getUuid() );
-
         assertNotNull( pm.getProperties() );
         assertEquals( 1, pm.getProperties().size() );
         assertEquals( "key", pm.getProperties().keySet().iterator().next() );
@@ -133,7 +131,6 @@ public class MetadataReaderTest
         assertEquals( "ver", am.getVersion() );
         assertEquals( "/foo/bar", am.getPath() );
         assertEquals( "myscl10", am.getNamespace() );
-        assertEquals( "a-uuid", am.getUuid() );
 
         assertNotNull( am.getProperties() );
         assertEquals( 1, am.getProperties().size() );

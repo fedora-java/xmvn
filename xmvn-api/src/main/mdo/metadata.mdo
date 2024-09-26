@@ -288,8 +288,9 @@
         <field>
           <name>uuid</name>
           <version>2.0.0+</version>
-          <description>Universally unique identifier of this artifact.</description>
+          <description>Deprecated, unused.</description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>
@@ -384,8 +385,9 @@
         <field>
           <name>uuid</name>
           <version>2.0.0+</version>
-          <description>Universally unique identifier of this piece of metadata.</description>
+          <description>Deprecated, unused.</description>
           <type>String</type>
+          <defaultValue></defaultValue>
         </field>
 
         <field>

@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -58,7 +57,6 @@ public class JavaPackage
         super( id );
         this.basePackageName = basePackageName;
         this.metadataDir = metadataDir;
-        metadata.setUuid( UUID.randomUUID().toString() );
     }
 
     /**
@@ -71,7 +69,6 @@ public class JavaPackage
     private PackageMetadata getSplitMetadata( String namespace )
     {
         PackageMetadata splitMetadata = new PackageMetadata();
-        splitMetadata.setUuid( UUID.randomUUID().toString() );
         splitMetadata.setProperties( metadata.getProperties() );
         List<ArtifactMetadata> allArtifacts = metadata.getArtifacts();
         List<ArtifactMetadata> splitArtifacts =
