@@ -441,4 +441,30 @@ public class JarUtilsTest
             Files.delete( backupPath );
         }
     }
+
+    /**
+     * Test JAR if manifest injection is reproducible, i.e. always leads to creation of bit-identical JARs.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testManifestInjectionReproducible()
+        throws Exception
+    {
+        Path testResource = Paths.get( "src/test/resources/example.jar" );
+        Path testJar1 = workDir.resolve( "reproducible1.jar" );
+        Path testJar2 = workDir.resolve( "reproducible2.jar" );
+        Files.copy( testResource, testJar1, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+        Files.copy( testResource, testJar2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING );
+
+        Artifact artifact = new DefaultArtifact( "org.apache.maven", "maven-model", "xsd", "model", "2.2.1" );
+
+        JarUtils.injectManifest( testJar1, artifact );
+        Thread.sleep( 3000 ); // ZIP time granularity is 2 seconds
+        JarUtils.injectManifest( testJar2, artifact );
+
+        byte[] bytes1 = Files.readAllBytes( testJar1 );
+        byte[] bytes2 = Files.readAllBytes( testJar2 );
+        assertArrayEquals( bytes1, bytes2 );
+    }
 }
