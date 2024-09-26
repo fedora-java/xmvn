@@ -22,7 +22,7 @@
   <parent>
     <artifactId>xmvn-tools</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
-    <version>4.3.0</version>
+    <version>4.4.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>xmvn-subst</artifactId>
