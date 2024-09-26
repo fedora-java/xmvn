@@ -64,6 +64,7 @@ public class MetadataResolverTest
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.2-beta3" );
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
+        assertEquals( 1, result.getPackageMetadataMap().size() );
         assertNotNull( am );
         assertEquals( "/foo/bar", am.getPath() );
     }
@@ -83,6 +84,7 @@ public class MetadataResolverTest
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
+        assertEquals( 1, result.getPackageMetadataMap().size() );
         assertNull( am );
     }
 
@@ -101,6 +103,7 @@ public class MetadataResolverTest
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION );
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
+        assertEquals( 1, result.getPackageMetadataMap().size() );
         assertNotNull( am );
         assertEquals( "/foo/bar", am.getPath() );
     }
@@ -120,6 +123,7 @@ public class MetadataResolverTest
         Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
+        assertEquals( 1, result.getPackageMetadataMap().size() );
         assertNull( am );
     }
 
@@ -134,6 +138,7 @@ public class MetadataResolverTest
         Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
+        assertEquals( 1, result.getPackageMetadataMap().size() );
         assertNotNull( am );
         assertEquals( "/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath() );
     }
@@ -150,6 +155,7 @@ public class MetadataResolverTest
         Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
+        assertEquals( 2, result.getPackageMetadataMap().size() );
         assertNull( am );
     }
 
@@ -167,6 +173,7 @@ public class MetadataResolverTest
         Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
         ArtifactMetadata am = result.getMetadataFor( artifact );
 
+        assertEquals( 2, result.getPackageMetadataMap().size() );
         assertNotNull( am );
         assertEquals( "/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath() );
     }

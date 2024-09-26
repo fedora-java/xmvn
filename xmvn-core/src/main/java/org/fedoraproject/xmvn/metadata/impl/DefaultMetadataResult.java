@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.metadata.impl;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -38,13 +39,17 @@ class DefaultMetadataResult
 {
     private final Logger logger;
 
+    private final Map<Path, PackageMetadata> packageMetadataMap;
+
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
-    public DefaultMetadataResult( Logger logger, List<PackageMetadata> metadataList, boolean ignoreDuplicates )
+    public DefaultMetadataResult( Logger logger, Map<Path, PackageMetadata> packageMetadataMap,
+                                  boolean ignoreDuplicates )
     {
         this.logger = logger;
+        this.packageMetadataMap = packageMetadataMap;
 
-        for ( PackageMetadata metadata : metadataList )
+        for ( PackageMetadata metadata : packageMetadataMap.values() )
         {
             for ( ArtifactMetadata installedArtifact : metadata.getArtifacts() )
             {
@@ -122,5 +127,11 @@ class DefaultMetadataResult
     public ArtifactMetadata getMetadataFor( Artifact artifact )
     {
         return artifactMap.get( artifact );
+    }
+
+    @Override
+    public Map<Path, PackageMetadata> getPackageMetadataMap()
+    {
+        return Collections.unmodifiableMap( packageMetadataMap );
     }
 }
