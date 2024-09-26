@@ -115,7 +115,7 @@
     <sitePluginVersion>3.20.0</sitePluginVersion>
     <sourcePluginVersion>3.3.1</sourcePluginVersion>
     <surefireVersion>3.0.0</surefireVersion>
-    <xmlunitVersion>2.9.1</xmlunitVersion>
+    <xmlunitVersion>2.10.0</xmlunitVersion>
 
   </properties>
   <dependencyManagement>
