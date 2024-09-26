@@ -214,6 +214,8 @@ public class ArchiveLayoutIntegrationTest
         expect( 1, 1, "lib/installer/slf4j-simple-.*\\.jar" );
         expect( 1, 1, "lib/installer/asm-.*\\.jar" );
         expect( 1, 1, "lib/installer/commons-compress-.*\\.jar" );
+        expect( 1, 1, "lib/installer/commons-io-.*\\.jar" );
+        expect( 1, 1, "lib/installer/commons-lang3-.*\\.jar" );
 
         expect( 1, 1, "lib/resolver/" );
         expect( 1, 1, "lib/resolver/xmvn-resolve-.*\\.jar" );
