@@ -69,7 +69,7 @@ public final class JarUtils
      */
     public static boolean containsNativeCode( Path jarPath )
     {
-        try ( ZipFile jar = new ZipFile( jarPath.toFile() ) )
+        try ( ZipFile jar = ZipFile.builder().setPath( jarPath ).get() )
         {
             Enumeration<ZipArchiveEntry> entries = jar.getEntries();
             while ( entries.hasMoreElements() )
@@ -131,7 +131,7 @@ public final class JarUtils
      */
     public static boolean usesNativeCode( Path jarPath )
     {
-        try ( ZipFile jar = new ZipFile( jarPath.toFile() ) )
+        try ( ZipFile jar = ZipFile.builder().setPath( jarPath ).get() )
         {
             Enumeration<ZipArchiveEntry> entries = jar.getEntries();
             while ( entries.hasMoreElements() )
@@ -220,7 +220,7 @@ public final class JarUtils
     public static void injectManifest( Path targetJar, Artifact artifact )
     {
         LOGGER.trace( "Trying to inject manifest to {}", artifact );
-        try ( ZipFile jar = new ZipFile( targetJar.toFile() ) )
+        try ( ZipFile jar = ZipFile.builder().setPath( targetJar ).get() )
         {
             if ( jar.getEntry( MANIFEST_PATH ) == null )
             {
@@ -246,7 +246,7 @@ public final class JarUtils
         }
         LOGGER.trace( "Created backup file {}", backupPath );
 
-        try ( ZipFile jar = new ZipFile( backupPath.toFile() );
+        try ( ZipFile jar = ZipFile.builder().setPath( backupPath ).get();
                         ZipArchiveOutputStream os = new ZipArchiveOutputStream( targetJar.toFile() ) )
         {
             ZipArchiveEntry jarEntry = jar.getEntry( MANIFEST_PATH );
