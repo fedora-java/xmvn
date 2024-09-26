@@ -95,7 +95,7 @@
     <compilerPluginVersion>3.11.0</compilerPluginVersion>
     <dependencyPluginVersion>3.5.0</dependencyPluginVersion>
     <deployPluginVersion>3.1.1</deployPluginVersion>
-    <easymockVersion>5.1.0</easymockVersion>
+    <easymockVersion>5.4.0</easymockVersion>
     <gpgPluginVersion>3.0.1</gpgPluginVersion>
     <injectionApiVersion>1</injectionApiVersion>
     <installPluginVersion>3.1.1</installPluginVersion>
