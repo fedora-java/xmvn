@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -95,7 +94,7 @@ public class DefaultMetadataResolver
                                           request.isIgnoreDuplicates() );
     }
 
-    List<PackageMetadata> readMetadata( List<String> metadataLocations )
+    Map<Path, PackageMetadata> readMetadata( List<String> metadataLocations )
     {
         Map<Path, Future<PackageMetadata>> futures = new LinkedHashMap<>();
 
@@ -124,7 +123,7 @@ public class DefaultMetadataResolver
 
         try
         {
-            List<PackageMetadata> result = new ArrayList<>();
+            Map<Path, PackageMetadata> result = new LinkedHashMap<>();
 
             for ( Entry<Path, Future<PackageMetadata>> entry : futures.entrySet() )
             {
@@ -134,7 +133,7 @@ public class DefaultMetadataResolver
                 try
                 {
                     PackageMetadata metadata = future.get();
-                    result.add( metadata );
+                    result.put( path, metadata );
 
                     if ( logger.isDebugEnabled() )
                     {

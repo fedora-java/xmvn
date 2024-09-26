@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,9 +61,9 @@ public class MetadataReaderTest
         throws Exception
     {
         List<String> pathList = Collections.emptyList();
-        List<PackageMetadata> list = reader.readMetadata( pathList );
-        assertNotNull( list );
-        assertTrue( list.isEmpty() );
+        Map<Path, PackageMetadata> map = reader.readMetadata( pathList );
+        assertNotNull( map );
+        assertTrue( map.isEmpty() );
     }
 
     /**
@@ -76,9 +77,9 @@ public class MetadataReaderTest
     {
         Path dir = Files.createTempDirectory( "xmvn-test" );
         List<String> pathList = Collections.singletonList( dir.toString() );
-        List<PackageMetadata> list = reader.readMetadata( pathList );
-        assertNotNull( list );
-        assertTrue( list.isEmpty() );
+        Map<Path, PackageMetadata> map = reader.readMetadata( pathList );
+        assertNotNull( map );
+        assertTrue( map.isEmpty() );
     }
 
     /**
@@ -109,11 +110,11 @@ public class MetadataReaderTest
         throws Exception
     {
         List<String> pathList = Collections.singletonList( "src/test/resources/" + fileName + ".xml" );
-        List<PackageMetadata> list = reader.readMetadata( pathList );
-        assertNotNull( list );
-        assertEquals( 1, list.size() );
+        Map<Path, PackageMetadata> map = reader.readMetadata( pathList );
+        assertNotNull( map );
+        assertEquals( 1, map.size() );
 
-        PackageMetadata pm = list.iterator().next();
+        PackageMetadata pm = map.values().iterator().next();
 
         assertNotNull( pm.getProperties() );
         assertEquals( 1, pm.getProperties().size() );
@@ -183,11 +184,11 @@ public class MetadataReaderTest
     public void testSimpleMetadata()
     {
         List<String> pathList = Collections.singletonList( "src/test/resources/simple.xml" );
-        List<PackageMetadata> list = reader.readMetadata( pathList );
-        assertNotNull( list );
-        assertEquals( 1, list.size() );
+        Map<Path, PackageMetadata> map = reader.readMetadata( pathList );
+        assertNotNull( map );
+        assertEquals( 1, map.size() );
 
-        PackageMetadata pm = list.iterator().next();
+        PackageMetadata pm = map.values().iterator().next();
         Iterator<ArtifactMetadata> iter = pm.getArtifacts().iterator();
 
         assertTrue( iter.hasNext() );
