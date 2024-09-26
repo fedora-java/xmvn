@@ -57,38 +57,41 @@ class ArtifactInstallerFactory
             return cachedPluginsByType.get( type );
         }
 
-        String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
-        try ( InputStream resourceStream =
-            pluginRealm != null ? pluginRealm.getResourceAsStream( resourceName ) : null )
+        if ( pluginRealm != null )
         {
-            if ( resourceStream == null )
+            String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
+            try ( InputStream resourceStream = pluginRealm.getResourceAsStream( resourceName ) )
             {
-                logger.debug( "No XMvn Installer plugin found for packaging type {}", type );
-                cachedPluginsByType.put( type, null );
-                return null;
-            }
+                if ( resourceStream != null )
+                {
+                    String pluginImplClass;
+                    try ( BufferedReader resourceReader =
+                        new BufferedReader( new InputStreamReader( resourceStream ) ) )
+                    {
+                        pluginImplClass = resourceReader.readLine();
+                    }
 
-            String pluginImplClass;
-            try ( BufferedReader resourceReader = new BufferedReader( new InputStreamReader( resourceStream ) ) )
+                    ArtifactInstaller pluggedInInstaller = cachedPluginsByImplClass.get( pluginImplClass );
+                    if ( pluggedInInstaller == null )
+                    {
+                        pluggedInInstaller =
+                            (ArtifactInstaller) pluginRealm.loadClass( pluginImplClass ).getConstructor().newInstance();
+                        cachedPluginsByImplClass.put( pluginImplClass, pluggedInInstaller );
+                    }
+
+                    cachedPluginsByType.put( type, pluggedInInstaller );
+                    return pluggedInInstaller;
+                }
+            }
+            catch ( IOException | ReflectiveOperationException e )
             {
-                pluginImplClass = resourceReader.readLine();
+                throw new RuntimeException( "Unable to load XMvn Installer plugin for packaging type " + type, e );
             }
-
-            ArtifactInstaller pluggedInInstaller = cachedPluginsByImplClass.get( pluginImplClass );
-            if ( pluggedInInstaller == null )
-            {
-                pluggedInInstaller =
-                    (ArtifactInstaller) pluginRealm.loadClass( pluginImplClass ).getConstructor().newInstance();
-                cachedPluginsByImplClass.put( pluginImplClass, pluggedInInstaller );
-            }
-
-            cachedPluginsByType.put( type, pluggedInInstaller );
-            return pluggedInInstaller;
         }
-        catch ( IOException | ReflectiveOperationException e )
-        {
-            throw new RuntimeException( "Unable to load XMvn Installer plugin for packaging type " + type, e );
-        }
+
+        logger.debug( "No XMvn Installer plugin found for packaging type {}", type );
+        cachedPluginsByType.put( type, null );
+        return null;
     }
 
     public ArtifactInstallerFactory( Configurator configurator )

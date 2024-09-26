@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
@@ -146,9 +147,9 @@ public class BasicDeployerTest
 
     private boolean runningAsRoot()
     {
-        try
+        try ( Stream<String> lines = Files.lines( Paths.get( "/proc/self/status" ) ) )
         {
-            return Files.lines( Paths.get( "/proc/self/status" ) ).map( s ->
+            return lines.map( s ->
             {
                 Matcher matcher = PROCESS_UID_PATTERN.matcher( s );
 
