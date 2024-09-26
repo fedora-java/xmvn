@@ -109,7 +109,7 @@
     <nexusStagingPluginVersion>1.6.13</nexusStagingPluginVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.0.0</projectInfoReportsPluginVersion>
-    <ratPluginVersion>0.15</ratPluginVersion>
+    <ratPluginVersion>0.16.1</ratPluginVersion>
     <resourcesPluginVersion>3.3.1</resourcesPluginVersion>
     <sisuVersion>0.3.5</sisuVersion>
     <sitePluginVersion>3.20.0</sitePluginVersion>
