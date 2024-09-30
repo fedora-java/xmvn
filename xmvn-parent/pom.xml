@@ -96,7 +96,7 @@
     <dependencyPluginVersion>3.8.0</dependencyPluginVersion>
     <deployPluginVersion>3.1.3</deployPluginVersion>
     <easymockVersion>5.4.0</easymockVersion>
-    <gpgPluginVersion>3.2.6</gpgPluginVersion>
+    <gpgPluginVersion>3.2.7</gpgPluginVersion>
     <injectionApiVersion>1</injectionApiVersion>
     <installPluginVersion>3.1.3</installPluginVersion>
     <jacocoVersion>0.8.12</jacocoVersion>
