@@ -286,8 +286,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${compilerPluginVersion}</version>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <release>17</release>
           </configuration>
         </plugin>
         <plugin>
@@ -556,12 +555,6 @@
       </activation>
       <build>
         <plugins>
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <release>8</release>
-            </configuration>
-          </plugin>
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
