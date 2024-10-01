@@ -141,7 +141,7 @@ public abstract class File {
         StringBuilder sb = new StringBuilder();
 
         if (accessMode >= 0) {
-            sb.append(String.format("%%attr(0%o,root,root)", accessMode));
+            sb.append("%%attr(0%o,root,root)".formatted(accessMode));
             sb.append(' ');
         }
 
