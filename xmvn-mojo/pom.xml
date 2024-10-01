@@ -93,9 +93,8 @@
         <configuration>
           <goalPrefix>${project.artifactId}</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-          <requirements>
-            <maven>3.0</maven>
-          </requirements>
+	  <requiredJavaVersion>17</requiredJavaVersion>
+	  <requiredMavenVersion>3.9.0</requiredMavenVersion>
         </configuration>
       </plugin>
     </plugins>
