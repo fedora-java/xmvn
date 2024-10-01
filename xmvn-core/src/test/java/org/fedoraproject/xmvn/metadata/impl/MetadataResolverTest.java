@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -49,7 +48,7 @@ public class MetadataResolverTest extends AbstractTest {
      */
     @Test
     public void testCompatExactVersion() throws Exception {
-        List<String> pathList = Collections.singletonList("src/test/resources/metadata1.xml");
+        List<String> pathList = List.of("src/test/resources/metadata1.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.2-beta3");
@@ -67,7 +66,7 @@ public class MetadataResolverTest extends AbstractTest {
      */
     @Test
     public void testCompatNonExactVersion() throws Exception {
-        List<String> pathList = Collections.singletonList("src/test/resources/metadata1.xml");
+        List<String> pathList = List.of("src/test/resources/metadata1.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.1");
@@ -84,7 +83,7 @@ public class MetadataResolverTest extends AbstractTest {
      */
     @Test
     public void testNonCompatExactVersion() throws Exception {
-        List<String> pathList = Collections.singletonList("src/test/resources/metadata1-non-compat.xml");
+        List<String> pathList = List.of("src/test/resources/metadata1-non-compat.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
@@ -102,7 +101,7 @@ public class MetadataResolverTest extends AbstractTest {
      */
     @Test
     public void testNonCompatNonExactVersion() throws Exception {
-        List<String> pathList = Collections.singletonList("src/test/resources/metadata1-non-compat.xml");
+        List<String> pathList = List.of("src/test/resources/metadata1-non-compat.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.1");

@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.connector.maven;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -84,7 +83,7 @@ public class XMvnWorkspaceReader implements WorkspaceReader {
             version = org.fedoraproject.xmvn.artifact.Artifact.DEFAULT_VERSION;
         }
 
-        return Collections.singletonList(version);
+        return List.of(version);
     }
 
     @Override

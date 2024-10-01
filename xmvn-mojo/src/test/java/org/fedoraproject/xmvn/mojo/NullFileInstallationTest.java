@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.List;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -73,7 +73,7 @@ public class NullFileInstallationTest extends AbstractInstallMojoTest {
         getProject().setFile(pomPath.toFile());
 
         InstallMojo mojo = new InstallMojo(new DeployerMock(), getLogger());
-        mojo.setReactorProjects(Collections.singletonList(getProject()));
+        mojo.setReactorProjects(List.of(getProject()));
         deployed = false;
         mojo.execute();
         assertTrue(deployed);

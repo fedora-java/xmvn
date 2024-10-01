@@ -23,7 +23,7 @@ import static org.easymock.EasyMock.verify;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.List;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
@@ -57,7 +57,7 @@ public class DirectoryInstallationTest extends AbstractInstallMojoTest {
         getProject().setArtifact(getArtifact());
 
         InstallMojo mojo = new InstallMojo(deployer, getLogger());
-        mojo.setReactorProjects(Collections.singletonList(getProject()));
+        mojo.setReactorProjects(List.of(getProject()));
         mojo.execute();
 
         verify(deployer, deploymentResult);
