@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -63,9 +63,9 @@ public final class JarUtils {
      */
     public static boolean containsNativeCode(Path jarPath) {
         try (ZipFile jar = ZipFile.builder().setPath(jarPath).get()) {
-            Enumeration<ZipArchiveEntry> entries = jar.getEntries();
-            while (entries.hasMoreElements()) {
-                ZipArchiveEntry entry = entries.nextElement();
+            Iterator<ZipArchiveEntry> entries = jar.getEntries().asIterator();
+            while (entries.hasNext()) {
+                ZipArchiveEntry entry = entries.next();
                 if (entry.isDirectory()) {
                     continue;
                 }
@@ -116,9 +116,9 @@ public final class JarUtils {
      */
     public static boolean usesNativeCode(Path jarPath) {
         try (ZipFile jar = ZipFile.builder().setPath(jarPath).get()) {
-            Enumeration<ZipArchiveEntry> entries = jar.getEntries();
-            while (entries.hasMoreElements()) {
-                ZipArchiveEntry entry = entries.nextElement();
+            Iterator<ZipArchiveEntry> entries = jar.getEntries().asIterator();
+            while (entries.hasNext()) {
+                ZipArchiveEntry entry = entries.next();
                 final String entryName = entry.getName();
                 if (entry.isDirectory() || !entryName.endsWith(".class")) {
                     continue;
