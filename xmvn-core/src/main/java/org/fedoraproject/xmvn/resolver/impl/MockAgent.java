@@ -36,7 +36,7 @@ class MockAgent {
         }
 
         try {
-            String cmd = String.format("%s maven '%s'", requestCommand, artifact.toString());
+            String cmd = "%s maven '%s'".formatted(requestCommand, artifact.toString());
             logger.debug("Trying to install artifact with external command: {}", cmd);
 
             ProcessBuilder pb = new ProcessBuilder("sh", "-c", cmd);
