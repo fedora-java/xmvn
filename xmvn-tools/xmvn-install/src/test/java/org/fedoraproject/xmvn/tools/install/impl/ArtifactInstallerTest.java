@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.PackagingRule;
@@ -77,7 +78,7 @@ public class ArtifactInstallerTest {
         expect(repositoryMock.getPrimaryArtifactPath(
                         isA(Artifact.class), isA(ArtifactContext.class), isA(String.class)))
                 .andReturn(Path.of("com.example-test"));
-        expect(repositoryMock.getRootPaths()).andReturn(Collections.emptySet());
+        expect(repositoryMock.getRootPaths()).andReturn(Set.of());
         expect(repositoryMock.getNamespace()).andReturn("ns");
         replay(repositoryMock);
 
