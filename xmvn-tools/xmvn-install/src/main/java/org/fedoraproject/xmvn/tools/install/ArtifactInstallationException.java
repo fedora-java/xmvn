@@ -15,8 +15,11 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
+import java.io.Serial;
+
 /** @author Mikolaj Izdebski */
 public class ArtifactInstallationException extends Exception {
+    @Serial
     private static final long serialVersionUID = 1;
 
     public ArtifactInstallationException(String message) {
