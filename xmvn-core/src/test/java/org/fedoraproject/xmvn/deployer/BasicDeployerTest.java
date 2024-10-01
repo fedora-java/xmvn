@@ -26,7 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -169,7 +169,7 @@ public class BasicDeployerTest extends AbstractTest {
         try (BufferedWriter bw = Files.newBufferedWriter(plan)) {
             bw.write("<metadata/>");
         }
-        Files.setPosixFilePermissions(plan, Collections.singleton(PosixFilePermission.OTHERS_READ));
+        Files.setPosixFilePermissions(plan, Set.of(PosixFilePermission.OTHERS_READ));
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
         req.setArtifact(new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
