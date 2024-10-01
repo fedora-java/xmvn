@@ -14,14 +14,11 @@
  ! See the License for the specific language governing permissions and
  ! limitations under the License.
  `-->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xmvn-parent</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
+    <artifactId>xmvn-parent</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <relativePath>../xmvn-parent</relativePath>
   </parent>
@@ -59,8 +56,8 @@
   <build>
     <testResources>
       <testResource>
-        <directory>src/test/resources-filtered</directory>
         <filtering>true</filtering>
+        <directory>src/test/resources-filtered</directory>
       </testResource>
     </testResources>
     <pluginManagement>
@@ -71,10 +68,10 @@
           <executions>
             <execution>
               <id>jacoco-report</id>
-              <phase>post-integration-test</phase>
               <goals>
                 <goal>report-aggregate</goal>
               </goals>
+              <phase>post-integration-test</phase>
             </execution>
           </executions>
         </plugin>
@@ -109,10 +106,10 @@
         <executions>
           <execution>
             <id>unpack-dist</id>
-            <phase>process-test-resources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
+            <phase>process-test-resources</phase>
             <configuration>
               <artifactItems>
                 <artifactItem>
@@ -127,10 +124,10 @@
           </execution>
           <execution>
             <id>copy-artifacts</id>
-            <phase>process-test-resources</phase>
             <goals>
               <goal>copy</goal>
             </goals>
+            <phase>process-test-resources</phase>
             <configuration>
               <artifactItems>
                 <artifactItem>

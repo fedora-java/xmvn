@@ -14,26 +14,21 @@
  ! See the License for the specific language governing permissions and
  ! limitations under the License.
  `-->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xmvn-parent</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
+    <artifactId>xmvn-parent</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <relativePath>xmvn-parent</relativePath>
   </parent>
   <artifactId>xmvn</artifactId>
   <packaging>pom</packaging>
   <name>XMvn</name>
-  <description>
-    XMvn is a set of extensions for Apache Maven that can be used to
+  <description>XMvn is a set of extensions for Apache Maven that can be used to
     manage system artifact repository and use it to resolve Maven
     artifacts in offline mode.  It also provides Maven plugins to help
-    with creating packages containing Maven artifacts.
-  </description>
+    with creating packages containing Maven artifacts.</description>
   <modules>
     <module>xmvn-parent</module>
     <module>xmvn-api</module>
@@ -133,10 +128,10 @@
         <executions>
           <execution>
             <id>maven-binaries</id>
-            <phase>package</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
+            <phase>package</phase>
             <configuration>
               <artifactItems>
                 <artifactItem>
@@ -151,10 +146,10 @@
           </execution>
           <execution>
             <id>config-documentation</id>
-            <phase>pre-site</phase>
             <goals>
               <goal>copy</goal>
             </goals>
+            <phase>pre-site</phase>
             <configuration>
               <artifactItems>
                 <artifactItem>
@@ -204,10 +199,10 @@
         <executions>
           <execution>
             <id>create-distro</id>
-            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <phase>package</phase>
             <configuration>
               <descriptors>
                 <descriptor>src/main/assembly/bin.xml</descriptor>

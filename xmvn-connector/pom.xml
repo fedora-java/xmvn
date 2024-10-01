@@ -14,24 +14,19 @@
  ! See the License for the specific language governing permissions and
  ! limitations under the License.
  `-->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xmvn-parent</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
+    <artifactId>xmvn-parent</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <relativePath>../xmvn-parent</relativePath>
   </parent>
   <artifactId>xmvn-connector</artifactId>
   <name>XMvn Connector for Maven Resolver</name>
-  <description>
-    XMvn Connector for Maven Resolver provides integration of Maven
+  <description>XMvn Connector for Maven Resolver provides integration of Maven
     Resolver with XMvn.  It provides an adapter which allows XMvn
-    resolver to be used as Maven workspace reader.
-  </description>
+    resolver to be used as Maven workspace reader.</description>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>

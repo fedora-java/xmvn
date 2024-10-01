@@ -14,23 +14,18 @@
  ! See the License for the specific language governing permissions and
  ! limitations under the License.
  `-->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xmvn-parent</artifactId>
     <groupId>org.fedoraproject.xmvn</groupId>
+    <artifactId>xmvn-parent</artifactId>
     <version>5.0.0-SNAPSHOT</version>
     <relativePath>../xmvn-parent</relativePath>
   </parent>
   <artifactId>xmvn-api</artifactId>
   <name>XMvn API</name>
-  <description>
-    This module contains public interface for functionality
-    implemented by XMvn Core.
-  </description>
+  <description>This module contains public interface for functionality
+    implemented by XMvn Core.</description>
   <build>
     <plugins>
       <plugin>
@@ -48,11 +43,11 @@
         <executions>
           <execution>
             <id>site-docs</id>
-            <phase>pre-site</phase>
             <goals>
               <goal>xdoc</goal>
               <goal>xsd</goal>
             </goals>
+            <phase>pre-site</phase>
           </execution>
           <execution>
             <id>standard</id>
@@ -70,10 +65,10 @@
         <executions>
           <execution>
             <id>attach-mdo</id>
-            <phase>pre-site</phase>
             <goals>
               <goal>attach-artifact</goal>
             </goals>
+            <phase>pre-site</phase>
             <configuration>
               <artifacts>
                 <artifact>

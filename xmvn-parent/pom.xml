@@ -14,20 +14,15 @@
  ! See the License for the specific language governing permissions and
  ! limitations under the License.
  `-->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.fedoraproject.xmvn</groupId>
   <artifactId>xmvn-parent</artifactId>
   <version>5.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>XMvn Parent</name>
-  <description>
-    XMvn Parent is project model from which all other XMvn modules are
-    inheriting.  It defines settings common to all XMvn modules.
-  </description>
+  <description>XMvn Parent is project model from which all other XMvn modules are
+    inheriting.  It defines settings common to all XMvn modules.</description>
   <url>https://fedora-java.github.io/xmvn/</url>
   <inceptionYear>2012</inceptionYear>
   <organization>
@@ -53,16 +48,16 @@
   <mailingLists>
     <mailingList>
       <name>Fedora Java development List</name>
-      <post>java-devel@lists.fedoraproject.org</post>
-      <archive>http://lists.fedoraproject.org/pipermail/java-devel/</archive>
       <subscribe>https://admin.fedoraproject.org/mailman/listinfo/java-devel</subscribe>
       <unsubscribe>https://admin.fedoraproject.org/mailman/listinfo/java-devel</unsubscribe>
+      <post>java-devel@lists.fedoraproject.org</post>
+      <archive>http://lists.fedoraproject.org/pipermail/java-devel/</archive>
     </mailingList>
   </mailingLists>
   <scm>
-    <url>https://github.com/fedora-java/xmvn</url>
     <connection>scm:git:https://github.com/fedora-java/xmvn.git</connection>
     <developerConnection>scm:git:git@github.com:fedora-java/xmvn.git</developerConnection>
+    <url>https://github.com/fedora-java/xmvn</url>
   </scm>
   <issueManagement>
     <system>Github</system>
@@ -340,13 +335,6 @@
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${checkstylePluginVersion}</version>
-          <dependencies>
-            <dependency>
-              <groupId>com.puppycrawl.tools</groupId>
-              <artifactId>checkstyle</artifactId>
-              <version>${checkstyleVersion}</version>
-            </dependency>
-          </dependencies>
           <configuration>
             <sourceDirectories>
               <sourceDirectory>src/main/java</sourceDirectory>
@@ -358,6 +346,13 @@
             <excludes>**/package-info.java</excludes>
             <logViolationCountToConsole>false</logViolationCountToConsole>
           </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyleVersion}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.rat</groupId>
@@ -447,10 +442,10 @@
               </execution>
               <execution>
                 <id>jacoco-report</id>
-                <phase>post-integration-test</phase>
                 <goals>
                   <goal>report</goal>
                 </goals>
+                <phase>post-integration-test</phase>
               </execution>
             </executions>
           </plugin>
@@ -473,10 +468,10 @@
             <executions>
               <execution>
                 <id>source-release-assembly</id>
-                <phase>package</phase>
                 <goals>
                   <goal>single</goal>
                 </goals>
+                <phase>package</phase>
                 <configuration>
                   <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
                   <descriptorRefs>
@@ -514,10 +509,10 @@
             <executions>
               <execution>
                 <id>sign-artifacts</id>
-                <phase>package</phase>
                 <goals>
                   <goal>sign</goal>
                 </goals>
+                <phase>package</phase>
               </execution>
             </executions>
           </plugin>
