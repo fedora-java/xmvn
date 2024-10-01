@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -38,6 +39,7 @@ import org.fedoraproject.xmvn.config.PackagingRule;
  * @author Mikolaj Izdebski
  */
 class EffectivePackagingRule extends PackagingRule {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static boolean isNullOrEmpty(String str) {
