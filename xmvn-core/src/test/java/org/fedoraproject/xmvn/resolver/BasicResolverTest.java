@@ -140,12 +140,15 @@ public class BasicResolverTest extends AbstractTest {
 
         EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
 
-        XmlAssert.assertThat("<project>\n"
-                        + "  <modelVersion>4.0.0</modelVersion>\n"
-                        + "  <groupId>gid</groupId>\n"
-                        + "  <artifactId>aid</artifactId>\n"
-                        + "  <version>ver</version>\n"
-                        + "</project>")
+        XmlAssert.assertThat(
+                        """
+                        <project>
+                          <modelVersion>4.0.0</modelVersion>
+                          <groupId>gid</groupId>
+                          <artifactId>aid</artifactId>
+                          <version>ver</version>
+                        </project>
+                        """)
                 .and(result.getArtifactPath().toFile())
                 .ignoreComments()
                 .ignoreWhitespace()
@@ -189,25 +192,28 @@ public class BasicResolverTest extends AbstractTest {
 
         EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
 
-        XmlAssert.assertThat("<project>\n"
-                        + "  <modelVersion>4.0.0</modelVersion>\n"
-                        + "  <groupId>gid</groupId>\n"
-                        + "  <artifactId>aid</artifactId>\n"
-                        + "  <version>ver</version>\n"
-                        + "  <dependencies>\n"
-                        + "    <dependency>\n"
-                        + "      <groupId>dgid</groupId>\n"
-                        + "      <artifactId>daid</artifactId>\n"
-                        + "      <version>drqv</version>\n"
-                        + "      <exclusions>\n"
-                        + "        <exclusion>\n"
-                        + "          <groupId>egid</groupId>\n"
-                        + "          <artifactId>eaid</artifactId>\n"
-                        + "        </exclusion>\n"
-                        + "      </exclusions>\n"
-                        + "    </dependency>\n"
-                        + "  </dependencies>\n"
-                        + "</project>")
+        XmlAssert.assertThat(
+                        """
+                        <project>
+                          <modelVersion>4.0.0</modelVersion>
+                          <groupId>gid</groupId>
+                          <artifactId>aid</artifactId>
+                          <version>ver</version>
+                          <dependencies>
+                            <dependency>
+                              <groupId>dgid</groupId>
+                              <artifactId>daid</artifactId>
+                              <version>drqv</version>
+                              <exclusions>
+                                <exclusion>
+                                  <groupId>egid</groupId>
+                                  <artifactId>eaid</artifactId>
+                                </exclusion>
+                              </exclusions>
+                            </dependency>
+                          </dependencies>
+                        </project>
+                        """)
                 .and(result.getArtifactPath().toFile())
                 .ignoreComments()
                 .ignoreWhitespace()
