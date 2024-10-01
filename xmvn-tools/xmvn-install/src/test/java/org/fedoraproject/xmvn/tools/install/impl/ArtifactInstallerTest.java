@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,7 +76,7 @@ public class ArtifactInstallerTest {
             throws ArtifactInstallationException {
         expect(repositoryMock.getPrimaryArtifactPath(
                         isA(Artifact.class), isA(ArtifactContext.class), isA(String.class)))
-                .andReturn(Paths.get("com.example-test"));
+                .andReturn(Path.of("com.example-test"));
         expect(repositoryMock.getRootPaths()).andReturn(Collections.emptySet());
         expect(repositoryMock.getNamespace()).andReturn("ns");
         replay(repositoryMock);
@@ -88,8 +87,8 @@ public class ArtifactInstallerTest {
     }
 
     private ArtifactMetadata createArtifact() throws Exception {
-        Path sourceJar = Paths.get("src/test/resources/example.jar");
-        Path tempJar = Paths.get("target/test-temp-resources/example.jar");
+        Path sourceJar = Path.of("src/test/resources/example.jar");
+        Path tempJar = Path.of("target/test-temp-resources/example.jar");
         Files.createDirectories(tempJar.getParent());
         Files.copy(sourceJar, tempJar, StandardCopyOption.REPLACE_EXISTING);
 
@@ -104,7 +103,7 @@ public class ArtifactInstallerTest {
     @Test
     public void testInstallation() throws Exception {
         ArtifactMetadata artifact = createArtifact();
-        JavaPackage pkg = new JavaPackage("", "test", Paths.get("usr/share/maven-metadata"));
+        JavaPackage pkg = new JavaPackage("", "test", Path.of("usr/share/maven-metadata"));
         PackagingRule rule = new PackagingRule();
 
         install(pkg, artifact, rule);
@@ -117,17 +116,17 @@ public class ArtifactInstallerTest {
         assertEquals(2, pkg.getFiles().size());
         Iterator<File> iterator = pkg.getFiles().iterator();
         File file = iterator.next();
-        if (file.getTargetPath().equals(Paths.get("usr/share/maven-metadata/test.xml"))) {
+        if (file.getTargetPath().equals(Path.of("usr/share/maven-metadata/test.xml"))) {
             file = iterator.next();
         }
-        assertEquals(Paths.get("com.example-test"), file.getTargetPath());
+        assertEquals(Path.of("com.example-test"), file.getTargetPath());
         assertEquals("/com.example-test", artifact.getPath());
     }
 
     @Test
     public void testCompatVersion() throws Exception {
         ArtifactMetadata artifact = createArtifact();
-        JavaPackage pkg = new JavaPackage("", "test", Paths.get("usr/share/maven-metadata"));
+        JavaPackage pkg = new JavaPackage("", "test", Path.of("usr/share/maven-metadata"));
         PackagingRule rule = new PackagingRule();
         rule.addVersion("3.4");
         rule.addVersion("3");
@@ -145,7 +144,7 @@ public class ArtifactInstallerTest {
     @Test
     public void testAliases() throws Exception {
         ArtifactMetadata artifact = createArtifact();
-        JavaPackage pkg = new JavaPackage("", "test", Paths.get("usr/share/maven-metadata"));
+        JavaPackage pkg = new JavaPackage("", "test", Path.of("usr/share/maven-metadata"));
         PackagingRule rule = new PackagingRule();
 
         org.fedoraproject.xmvn.config.Artifact alias1 = new org.fedoraproject.xmvn.config.Artifact();

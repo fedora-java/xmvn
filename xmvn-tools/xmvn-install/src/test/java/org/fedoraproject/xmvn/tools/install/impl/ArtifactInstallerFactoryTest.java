@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ import org.junit.jupiter.api.Test;
 public class ArtifactInstallerFactoryTest {
     @Test
     public void testNoPluginsAvailable() {
-        Path pluginDir = Paths.get("src/test/resources/plugins-not-found").toAbsolutePath();
+        Path pluginDir = Path.of("src/test/resources/plugins-not-found").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin-missing");
@@ -40,7 +39,7 @@ public class ArtifactInstallerFactoryTest {
 
     @Test
     public void testMissingPlugin() {
-        Path pluginDir = Paths.get("src/test/resources/plugins").toAbsolutePath();
+        Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin-missing");
@@ -51,7 +50,7 @@ public class ArtifactInstallerFactoryTest {
     @Test
     @SuppressWarnings("deprecation")
     public void testValidPlugin() throws Exception {
-        Path pluginDir = Paths.get("src/test/resources/plugins").toAbsolutePath();
+        Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin1");
@@ -89,7 +88,7 @@ public class ArtifactInstallerFactoryTest {
 
     @Test
     public void testBrokenPlugin() {
-        Path pluginDir = Paths.get("src/test/resources/plugins").toAbsolutePath();
+        Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin2");

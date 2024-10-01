@@ -27,7 +27,6 @@ import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -106,7 +105,7 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
             Class<?> launcherClass = bootClassLoader.loadClass("org.codehaus.plexus.classworlds.launcher.Launcher");
             Object launcher = launcherClass.getConstructor().newInstance();
 
-            try (InputStream config = Files.newInputStream(Paths.get("../../src/test/resources/m2.conf"))) {
+            try (InputStream config = Files.newInputStream(Path.of("../../src/test/resources/m2.conf"))) {
                 launcherClass.getMethod("configure", InputStream.class).invoke(launcher, config);
             }
 

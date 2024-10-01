@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class DirectoryTest extends AbstractFileTest {
      */
     @Test
     public void testSingleDirectoryInstallation() throws Exception {
-        add(new Directory(Paths.get("usr/src/sys/kern")));
+        add(new Directory(Path.of("usr/src/sys/kern")));
         performInstallation();
 
         assertDirectoryStructure("D /usr", "D /usr/src", "D /usr/src/sys", "D /usr/src/sys/kern");
@@ -47,9 +47,9 @@ public class DirectoryTest extends AbstractFileTest {
      */
     @Test
     public void testExistentDirectoryInstallation() throws Exception {
-        add(new Directory(Paths.get("etc/sysconfig/java")));
-        add(new Directory(Paths.get("etc/xmvn")));
-        add(new Directory(Paths.get("etc")));
+        add(new Directory(Path.of("etc/sysconfig/java")));
+        add(new Directory(Path.of("etc/xmvn")));
+        add(new Directory(Path.of("etc")));
         performInstallation();
 
         assertDirectoryStructure("D /etc", "D /etc/sysconfig", "D /etc/sysconfig/java", "D /etc/xmvn");
@@ -62,8 +62,8 @@ public class DirectoryTest extends AbstractFileTest {
     /** Test if directory installation fails if target already exists and is not a directory. */
     @Test
     public void testExistentTargetFile() throws Exception {
-        add(new RegularFile(Paths.get("foo/bar"), new byte[0]));
-        add(new Directory(Paths.get("foo/bar")));
+        add(new RegularFile(Path.of("foo/bar"), new byte[0]));
+        add(new Directory(Path.of("foo/bar")));
         assertThrows(IOException.class, this::performInstallation);
     }
 
@@ -73,15 +73,15 @@ public class DirectoryTest extends AbstractFileTest {
      */
     @Test
     public void testDirectoryCOmponentIsAFile() throws Exception {
-        add(new RegularFile(Paths.get("a/b/c/d"), new byte[0]));
-        add(new Directory(Paths.get("a/b/c/d/e/f/g/h")));
+        add(new RegularFile(Path.of("a/b/c/d"), new byte[0]));
+        add(new Directory(Path.of("a/b/c/d/e/f/g/h")));
         assertThrows(IOException.class, this::performInstallation);
     }
 
     /** Test if custom access mode can be specified. */
     @Test
     public void testAccessMode() throws Exception {
-        add(new Directory(Paths.get("foo"), 320));
+        add(new Directory(Path.of("foo"), 320));
         performInstallation();
 
         assertDirectoryStructure("D /foo");

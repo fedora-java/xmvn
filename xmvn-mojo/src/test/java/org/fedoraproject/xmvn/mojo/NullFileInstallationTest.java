@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -43,7 +42,7 @@ public class NullFileInstallationTest extends AbstractInstallMojoTest {
 
     DeploymentResult result;
 
-    Path pomPath = Paths.get("/some/non/existent.path");
+    Path pomPath = Path.of("/some/non/existent.path");
 
     class DeployerMock implements Deployer {
         @Override

@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
@@ -31,12 +30,12 @@ public final class InstallationPlanLoader {
     }
 
     public static Path prepareInstallationPlanFile(String filename) throws Exception {
-        Path metadataPath = Paths.get("src/test/resources/", filename);
+        Path metadataPath = Path.of("src/test/resources/", filename);
         PackageMetadata metadata = new MetadataStaxReader().read(metadataPath.toString());
         for (ArtifactMetadata artifact : metadata.getArtifacts()) {
             String path = artifact.getPath();
             if (path != null) {
-                path = Paths.get(path).toAbsolutePath().toString();
+                path = Path.of(path).toAbsolutePath().toString();
                 artifact.setPath(path);
             }
         }

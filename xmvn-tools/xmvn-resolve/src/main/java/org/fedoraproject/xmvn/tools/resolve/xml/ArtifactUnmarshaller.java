@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -109,7 +108,7 @@ class ArtifactUnmarshaller {
                             break;
 
                         case StringConstants.PATH:
-                            path = Paths.get(readUntilEnd(StringConstants.PATH));
+                            path = Path.of(readUntilEnd(StringConstants.PATH));
                             break;
 
                         default:

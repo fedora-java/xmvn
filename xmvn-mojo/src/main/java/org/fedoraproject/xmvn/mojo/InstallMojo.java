@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -132,7 +131,7 @@ public class InstallMojo extends AbstractMojo {
     }
 
     private String getProjectProperty(Artifact artifact, String key) {
-        Path propertiesPath = Paths.get(".xmvn/properties");
+        Path propertiesPath = Path.of(".xmvn/properties");
         if (!Files.exists(propertiesPath)) {
             return null;
         }

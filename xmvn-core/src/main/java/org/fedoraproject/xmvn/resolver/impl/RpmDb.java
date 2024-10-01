@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -82,7 +81,7 @@ class RpmDb {
     }
 
     public String lookupPath(String path) {
-        return lookupPath(Paths.get(path));
+        return lookupPath(Path.of(path));
     }
 
     public String lookupPath(Path path) {

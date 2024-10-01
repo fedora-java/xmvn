@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
 import org.junit.jupiter.api.Test;
 
@@ -34,9 +34,9 @@ public class JavadocJPMSAutomaticModuleNameIntegrationTest extends AbstractMojoI
         assumeTrue(getJavaVersion() >= 9);
         performMojoTest("verify", "javadoc");
 
-        assertTrue(Files.isDirectory(Paths.get("target/xmvn-apidocs")));
-        assertTrue(Files.isRegularFile(Paths.get("target/xmvn-apidocs/A.html")));
-        assertTrue(Files.isSymbolicLink(Paths.get(".xmvn/apidocs")));
-        assertTrue(Files.isSameFile(Paths.get(".xmvn/apidocs"), Paths.get("target/xmvn-apidocs")));
+        assertTrue(Files.isDirectory(Path.of("target/xmvn-apidocs")));
+        assertTrue(Files.isRegularFile(Path.of("target/xmvn-apidocs/A.html")));
+        assertTrue(Files.isSymbolicLink(Path.of(".xmvn/apidocs")));
+        assertTrue(Files.isSameFile(Path.of(".xmvn/apidocs"), Path.of("target/xmvn-apidocs")));
     }
 }

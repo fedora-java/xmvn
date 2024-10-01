@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -44,7 +43,7 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
         PackageMetadata md = new PackageMetadata();
 
         for (String module : Arrays.asList("xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent")) {
-            Path moduleDir = Paths.get("../../..").resolve(module);
+            Path moduleDir = Path.of("../../..").resolve(module);
             Path pomPath = moduleDir.resolve("pom.xml");
             Path jarPath = moduleDir.resolve("target/classes");
 
@@ -67,7 +66,7 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
         }
 
         MetadataStaxWriter mdWriter = new MetadataStaxWriter();
-        try (OutputStream os = Files.newOutputStream(Paths.get("mojo-metadata.xml"))) {
+        try (OutputStream os = Files.newOutputStream(Path.of("mojo-metadata.xml"))) {
             mdWriter.write(os, md);
         }
 
@@ -75,9 +74,9 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
         conf.setResolverSettings(new ResolverSettings());
         conf.getResolverSettings().addMetadataRepository("mojo-metadata.xml");
 
-        Files.createDirectories(Paths.get(".xmvn/config.d"));
+        Files.createDirectories(Path.of(".xmvn/config.d"));
         ConfigurationStaxWriter confWriter = new ConfigurationStaxWriter();
-        try (OutputStream os = Files.newOutputStream(Paths.get(".xmvn/config.d/mojo-it-conf.xml"))) {
+        try (OutputStream os = Files.newOutputStream(Path.of(".xmvn/config.d/mojo-it-conf.xml"))) {
             confWriter.write(os, conf);
         }
     }

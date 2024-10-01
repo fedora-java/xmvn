@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.repository.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -53,13 +53,13 @@ public class JppRepositoryTest {
         Artifact artifact1 = new DefaultArtifact("foo.bar", "the-artifact", "baz", "1.2.3");
         ArtifactContext context1 = new ArtifactContext(artifact1);
         assertEquals(
-                Paths.get("my-target/path/aid-1.2.3.baz"),
+                Path.of("my-target/path/aid-1.2.3.baz"),
                 repo.getPrimaryArtifactPath(artifact1, context1, "my-target/path/aid"));
 
         Artifact artifact2 = artifact1.setVersion(null);
         ArtifactContext context2 = new ArtifactContext(artifact2);
         assertEquals(
-                Paths.get("my-target/path/aid.baz"),
+                Path.of("my-target/path/aid.baz"),
                 repo.getPrimaryArtifactPath(artifact2, context2, "my-target/path/aid"));
     }
 }

@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.tools.install.impl;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -313,8 +312,7 @@ public class DefaultInstaller implements Installer {
             logger.debug("Installing {}", pkg);
             pkg.install(request.getInstallRoot());
 
-            Path mfiles =
-                    Paths.get(pkg.getId() == null || pkg.getId().isEmpty() ? ".mfiles" : ".mfiles-" + pkg.getId());
+            Path mfiles = Path.of(pkg.getId() == null || pkg.getId().isEmpty() ? ".mfiles" : ".mfiles-" + pkg.getId());
             if (request.getDescriptorRoot() != null) {
                 mfiles = request.getDescriptorRoot().resolve(mfiles);
             }

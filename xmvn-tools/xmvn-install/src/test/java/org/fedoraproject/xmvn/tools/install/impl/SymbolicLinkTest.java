@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.fedoraproject.xmvn.tools.install.SymbolicLink;
@@ -30,9 +29,9 @@ public class SymbolicLinkTest extends AbstractFileTest {
     @Test
     public void testSymlink() throws Exception {
         Path jar = getResource("example.jar");
-        add(new Directory(Paths.get("usr/share/java")));
-        add(new RegularFile(Paths.get("usr/share/java/foobar.jar"), jar));
-        add(new SymbolicLink(Paths.get("usr/share/java/link.jar"), Paths.get("foobar.jar")));
+        add(new Directory(Path.of("usr/share/java")));
+        add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar));
+        add(new SymbolicLink(Path.of("usr/share/java/link.jar"), Path.of("foobar.jar")));
         Path root = performInstallation();
         assertDirectoryStructure(
                 "D /usr",
@@ -40,8 +39,8 @@ public class SymbolicLinkTest extends AbstractFileTest {
                 "D /usr/share/java",
                 "F /usr/share/java/foobar.jar",
                 "L /usr/share/java/link.jar");
-        Path link = root.resolve(Paths.get("usr/share/java/link.jar"));
-        assertEquals(Files.readSymbolicLink(link), Paths.get("foobar.jar"));
+        Path link = root.resolve(Path.of("usr/share/java/link.jar"));
+        assertEquals(Files.readSymbolicLink(link), Path.of("foobar.jar"));
 
         assertDescriptorEquals(
                 "%attr(0755,root,root) %dir /usr/share/java",

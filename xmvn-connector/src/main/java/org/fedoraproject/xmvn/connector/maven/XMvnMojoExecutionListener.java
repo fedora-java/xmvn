@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +82,7 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
 
     private LegacySupport legacySupport;
 
-    private Path xmvnStateDir = Paths.get(".xmvn");
+    private Path xmvnStateDir = Path.of(".xmvn");
 
     void setXmvnStateDir(Path xmvnStateDir) {
         this.xmvnStateDir = xmvnStateDir;
@@ -208,7 +207,7 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
         if (JAVADOC_AGGREGATE.equals(execution) || XMVN_JAVADOC.equals(execution)) {
             String javadocDir = getBeanProperty(mojo, "getReportOutputDirectory", "getOutputDir");
             if (javadocDir != null) {
-                createApidocsSymlink(Paths.get(javadocDir));
+                createApidocsSymlink(Path.of(javadocDir));
             }
         } else if (MAVEN_COMPILE.equals(execution) || TYCHO_COMPILE.equals(execution)) {
             String target = getBeanProperty(mojo, "getRelease", "getReleaseLevel", "getTarget", "getTargetLevel");

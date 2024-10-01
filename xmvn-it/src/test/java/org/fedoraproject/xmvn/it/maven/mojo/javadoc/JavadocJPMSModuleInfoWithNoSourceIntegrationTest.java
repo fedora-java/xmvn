@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ public class JavadocJPMSModuleInfoWithNoSourceIntegrationTest extends AbstractMo
         performMojoTest("verify", "javadoc");
 
         assertTrue(getStdout().anyMatch("[WARNING] Skipping Javadoc generation: no Java sources found"::equals));
-        assertFalse(Files.exists(Paths.get("target/xmvn-apidocs")));
-        assertFalse(Files.exists(Paths.get(".xmvn/apidocs")));
+        assertFalse(Files.exists(Path.of("target/xmvn-apidocs")));
+        assertFalse(Files.exists(Path.of(".xmvn/apidocs")));
     }
 }

@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,7 +81,7 @@ class ArtifactInstallerFactory {
     }
 
     public ArtifactInstallerFactory(Configurator configurator) {
-        this(configurator, Paths.get("/usr/share/xmvn/lib/installer"));
+        this(configurator, Path.of("/usr/share/xmvn/lib/installer"));
     }
 
     ArtifactInstallerFactory(Configurator configurator, Path pluginDir) {

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -58,7 +57,7 @@ class CacheManager {
             value = defaultValue.toString();
         }
 
-        return Paths.get(value);
+        return Path.of(value);
     }
 
     private static Path getCacheHome() {

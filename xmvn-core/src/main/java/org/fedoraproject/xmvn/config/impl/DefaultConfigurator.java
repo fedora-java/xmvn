@@ -21,7 +21,6 @@ import java.io.StringWriter;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -137,7 +136,7 @@ public class DefaultConfigurator implements Configurator {
     }
 
     private void addXdgBasePath(String location) throws IOException {
-        Path base = Paths.get(location);
+        Path base = Path.of(location);
         if (!base.isAbsolute()) {
             logger.debug("Skipping XDG configuration directory {}: path is not absolute", base);
             return;
@@ -154,8 +153,8 @@ public class DefaultConfigurator implements Configurator {
 
     private Configuration loadConfiguration() {
         try {
-            Path reactorConfDir = Paths.get(".xmvn").toAbsolutePath();
-            Path xdgHome = Paths.get(getEnvDefault("HOME", System.getProperty("user.home")));
+            Path reactorConfDir = Path.of(".xmvn").toAbsolutePath();
+            Path xdgHome = Path.of(getEnvDefault("HOME", System.getProperty("user.home")));
 
             // 1. artifact configuration: pom.xml
             configFiles = new ArrayList<>();

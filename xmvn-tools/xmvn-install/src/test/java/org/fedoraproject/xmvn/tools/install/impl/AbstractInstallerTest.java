@@ -25,7 +25,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -52,7 +51,7 @@ public abstract class AbstractInstallerTest {
 
     @BeforeEach
     public void setUpWorkdir(TestInfo testInfo) throws IOException {
-        Path workPath = Paths.get("target").resolve("test-work");
+        Path workPath = Path.of("target").resolve("test-work");
         workdir = workPath.resolve(testInfo.getTestMethod().get().getName()).toAbsolutePath();
         delete(workdir);
         Files.createDirectories(workdir);
@@ -117,7 +116,7 @@ public abstract class AbstractInstallerTest {
     }
 
     protected Path getResource(String name) {
-        return Paths.get("src/test/resources/", name).toAbsolutePath();
+        return Path.of("src/test/resources/", name).toAbsolutePath();
     }
 
     protected void assertDescriptorEquals(Path mfiles, String... expected) throws IOException {

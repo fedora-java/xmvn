@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.deployer;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,7 +27,7 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 
 /** @author Mikolaj Izdebski */
 public class DeploymentRequest {
-    private static final Path DEFAULT_PLAN_PATH = Paths.get(".xmvn-reactor");
+    private static final Path DEFAULT_PLAN_PATH = Path.of(".xmvn-reactor");
 
     private Artifact artifact;
 

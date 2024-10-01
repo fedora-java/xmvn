@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
@@ -54,7 +54,7 @@ public class MavenRepositoryTest {
         Artifact artifact1 = new DefaultArtifact("foo.bar:the-artifact:baz:1.2.3");
         ArtifactContext context = new ArtifactContext(artifact1);
         assertEquals(
-                Paths.get("foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz"),
+                Path.of("foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz"),
                 repo.getPrimaryArtifactPath(artifact1, context, "IGNORE-ME"));
 
         Artifact artifact2 = artifact1.setVersion(null);

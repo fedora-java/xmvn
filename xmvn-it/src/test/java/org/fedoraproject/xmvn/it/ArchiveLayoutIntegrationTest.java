@@ -25,7 +25,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -82,7 +81,7 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
     }
 
     private void validateJarManifest(String glob) throws Exception {
-        Path globPath = Paths.get(glob);
+        Path globPath = Path.of(glob);
         Path dir = getMavenHome().resolve(globPath.getParent());
         String nameGlob = globPath.getFileName().toString();
 

@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
@@ -87,7 +86,7 @@ public class MavenExtensionTest extends AbstractTest {
     @Test
     public void testVersionResolver() throws Exception {
         ResolutionResult resolutionResult = EasyMock.createMock(ResolutionResult.class);
-        EasyMock.expect(resolutionResult.getArtifactPath()).andReturn(Paths.get("src/test/resources/dummy.pom"));
+        EasyMock.expect(resolutionResult.getArtifactPath()).andReturn(Path.of("src/test/resources/dummy.pom"));
         EasyMock.expect(resolutionResult.getCompatVersion()).andReturn("1.2.3-SNAPSHOT");
         EasyMock.replay(resolutionResult);
 
@@ -121,9 +120,9 @@ public class MavenExtensionTest extends AbstractTest {
 
         ResolutionResult resolutionResult = EasyMock.createMock(ResolutionResult.class);
         EasyMock.expect(resolutionResult.getArtifactPath())
-                .andReturn(Paths.get("src/test/resources/dummy.pom").toAbsolutePath());
+                .andReturn(Path.of("src/test/resources/dummy.pom").toAbsolutePath());
         EasyMock.expect(resolutionResult.getArtifactPath())
-                .andReturn(Paths.get("src/test/resources/dummy.jar").toAbsolutePath());
+                .andReturn(Path.of("src/test/resources/dummy.jar").toAbsolutePath());
         EasyMock.replay(resolutionResult);
 
         EasyMock.expect(resolverMock.resolve(EasyMock.isA(ResolutionRequest.class)))

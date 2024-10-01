@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.inject.Binder;
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import org.easymock.EasyMock;
 import org.eclipse.aether.repository.WorkspaceReader;
@@ -64,7 +64,7 @@ public class WorkspaceReaderTest extends AbstractTest {
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
-        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        EasyMock.expect(result.getArtifactPath()).andReturn(Path.of("/foo/bar"));
         EasyMock.replay(resolver, result);
 
         File file = workspace.findArtifact(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
@@ -95,7 +95,7 @@ public class WorkspaceReaderTest extends AbstractTest {
         ResolutionListener listener = EasyMock.createMock(ResolutionListener.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
-        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        EasyMock.expect(result.getArtifactPath()).andReturn(Path.of("/foo/bar"));
         listener.resolutionRequested(request);
         EasyMock.expectLastCall();
         listener.resolutionCompleted(request, result);
@@ -113,7 +113,7 @@ public class WorkspaceReaderTest extends AbstractTest {
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
-        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        EasyMock.expect(result.getArtifactPath()).andReturn(Path.of("/foo/bar"));
         EasyMock.expect(result.getCompatVersion()).andReturn(null);
         EasyMock.replay(resolver, result);
 
@@ -131,7 +131,7 @@ public class WorkspaceReaderTest extends AbstractTest {
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
-        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        EasyMock.expect(result.getArtifactPath()).andReturn(Path.of("/foo/bar"));
         EasyMock.expect(result.getCompatVersion()).andReturn("4.5.6");
         EasyMock.replay(resolver, result);
 

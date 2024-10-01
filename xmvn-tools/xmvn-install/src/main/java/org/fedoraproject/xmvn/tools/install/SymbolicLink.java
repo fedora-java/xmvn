@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.tools.install;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * A symbolic link installed in target package.
@@ -40,7 +39,7 @@ public class SymbolicLink extends File {
 
         if (referencedPath.isAbsolute()) {
             Path parent = getTargetPath().getParent();
-            Path base = Paths.get("/");
+            Path base = Path.of("/");
             if (parent != null) {
                 base = base.resolve(parent);
             }

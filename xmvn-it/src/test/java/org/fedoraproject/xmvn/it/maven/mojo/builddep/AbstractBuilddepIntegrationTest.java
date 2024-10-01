@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.easymock.EasyMock;
@@ -52,7 +51,7 @@ public abstract class AbstractBuilddepIntegrationTest extends AbstractMojoIntegr
     }
 
     public void verifyBuilddepXml() throws Exception {
-        Path builddepPath = Paths.get(".xmvn-builddep");
+        Path builddepPath = Path.of(".xmvn-builddep");
         assertTrue(Files.isRegularFile(builddepPath));
 
         for (Element dep : DomUtils.parseAsParent(DomUtils.parse(builddepPath))) {

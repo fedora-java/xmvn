@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -41,7 +40,7 @@ class CompoundRepositoryFactory extends AbstractRepositoryFactory {
     public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
         Path prefix = null;
         if (properties.containsKey("prefix")) {
-            prefix = Paths.get(properties.getProperty("prefix"));
+            prefix = Path.of(properties.getProperty("prefix"));
         }
 
         Element repositories = DomUtils.parseAsWrapper(configuration);
