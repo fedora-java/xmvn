@@ -76,7 +76,7 @@ public class XMvnWorkspaceReader implements WorkspaceReader {
         ResolutionResult result = resolve(artifact);
 
         if (result.getArtifactPath() == null) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         String version = result.getCompatVersion();

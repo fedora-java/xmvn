@@ -15,7 +15,6 @@
  */
 package org.apache.maven.plugin;
 
-import java.util.Collections;
 import java.util.List;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -47,6 +46,6 @@ public class MavenPluginValidator {
     }
 
     public List<String> getErrors() {
-        return Collections.emptyList();
+        return List.of();
     }
 }

@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.connector.maven;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
@@ -68,7 +68,7 @@ public class PluginVersionResolverTest {
         EasyMock.expect(session.getWorkspaceReader()).andReturn(reader);
 
         EasyMock.expect(reader.findVersions(EasyMock.anyObject(DefaultArtifact.class)))
-                .andReturn(Collections.emptyList());
+                .andReturn(List.of());
         EasyMock.expect(reader.getRepository()).andReturn(repo);
 
         EasyMock.replay(rq, session, reader);
