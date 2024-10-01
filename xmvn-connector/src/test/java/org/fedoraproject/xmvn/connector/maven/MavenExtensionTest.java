@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
 import java.nio.file.Path;
-import java.util.Collections;
+import java.util.List;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
@@ -130,7 +130,7 @@ public class MavenExtensionTest extends AbstractTest {
                 .anyTimes();
         EasyMock.replay(resolverMock);
 
-        pluginDepsResolver.resolve(plugin, Collections.emptyList(), session);
+        pluginDepsResolver.resolve(plugin, List.of(), session);
 
         EasyMock.verify(resolutionResult, resolverMock);
     }

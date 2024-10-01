@@ -51,7 +51,7 @@ public class MetadataReaderTest extends AbstractTest {
      */
     @Test
     public void testReadingEmptyList() throws Exception {
-        List<String> pathList = Collections.emptyList();
+        List<String> pathList = List.of();
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
         assertNotNull(map);
         assertTrue(map.isEmpty());

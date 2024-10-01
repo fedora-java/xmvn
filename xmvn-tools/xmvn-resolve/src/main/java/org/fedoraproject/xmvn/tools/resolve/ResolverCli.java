@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.tools.resolve;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
@@ -53,7 +52,7 @@ public class ResolverCli {
     private List<ResolutionRequest> parseRequests(ResolverCliRequest cli) throws IOException, XMLStreamException {
         if (cli.isRaw()) {
             List<ResolutionRequest> requests = new ResolutionRequestListUnmarshaller(System.in).unmarshal();
-            return requests != null ? requests : Collections.emptyList();
+            return requests != null ? requests : List.of();
         }
 
         List<ResolutionRequest> requests = new ArrayList<>();
