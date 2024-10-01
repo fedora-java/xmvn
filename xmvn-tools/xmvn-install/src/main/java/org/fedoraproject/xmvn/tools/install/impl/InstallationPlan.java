@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -80,7 +79,7 @@ class InstallationPlan {
                 throw new ArtifactInstallationException("Artifact metadata must have path set");
             }
 
-            Path artifactPath = Paths.get(artifactMetadata.getPath());
+            Path artifactPath = Path.of(artifactMetadata.getPath());
             if (!artifactPath.isAbsolute()) {
                 throw new ArtifactInstallationException("Artifact path is not absolute: " + artifactPath);
             }

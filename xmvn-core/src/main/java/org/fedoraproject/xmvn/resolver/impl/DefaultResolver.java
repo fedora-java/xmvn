@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -155,7 +154,7 @@ public class DefaultResolver implements Resolver {
             }
         }
 
-        Path artifactPath = Paths.get(metadata.getPath());
+        Path artifactPath = Path.of(metadata.getPath());
         try {
             artifactPath = artifactPath.toRealPath();
         } catch (IOException e) {

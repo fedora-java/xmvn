@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
 /** @author Mikolaj Izdebski */
@@ -194,9 +193,9 @@ public class DefaultArtifactTest {
     @Test
     public void testSetPath() throws Exception {
         Artifact artifact = new DefaultArtifact("gid:aid:ext:cla:ver");
-        Artifact newArtifact = artifact.setPath(Paths.get("/tmp/foo"));
+        Artifact newArtifact = artifact.setPath(Path.of("/tmp/foo"));
         assertNotSame(artifact, newArtifact);
-        assertEquals(Paths.get("/tmp/foo"), newArtifact.getPath());
+        assertEquals(Path.of("/tmp/foo"), newArtifact.getPath());
         assertNull(artifact.getPath());
     }
 
@@ -221,7 +220,7 @@ public class DefaultArtifactTest {
     @SuppressWarnings("unlikely-arg-type")
     public void testEquals() throws Exception {
         Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
-        Path path = Paths.get("/some/path");
+        Path path = Path.of("/some/path");
 
         assertTrue(artifact.equals(artifact));
         assertFalse(artifact.equals(null));

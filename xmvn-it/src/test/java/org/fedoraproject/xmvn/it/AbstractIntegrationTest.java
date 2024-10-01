@@ -22,7 +22,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
@@ -57,9 +56,9 @@ public abstract class AbstractIntegrationTest {
     }
 
     public void expandBaseDir(String source, String target) throws Exception {
-        String metadata = new String(Files.readAllBytes(Paths.get(source)), StandardCharsets.UTF_8);
+        String metadata = new String(Files.readAllBytes(Path.of(source)), StandardCharsets.UTF_8);
         metadata = metadata.replaceAll("@@@", baseDir.toString());
-        Files.write(Paths.get(target), metadata.getBytes(StandardCharsets.UTF_8));
+        Files.write(Path.of(target), metadata.getBytes(StandardCharsets.UTF_8));
     }
 
     public void expandBaseDirInPlace(String sourceAndTarget) throws Exception {
@@ -70,7 +69,7 @@ public abstract class AbstractIntegrationTest {
     public static void ensureCorrectWorkingDirectory() throws Exception {
         String workdirSuffix = System.getProperty("xmvnITWorkdirSuffix", "");
         String workdir = "xmvn-it/target/work" + workdirSuffix;
-        Path cwd = Paths.get(".").toRealPath();
+        Path cwd = Path.of(".").toRealPath();
         if (!cwd.endsWith(workdir)) {
             throw new RuntimeException("XMvn integration tests must be ran from " + workdir + " directory");
         }
@@ -78,13 +77,13 @@ public abstract class AbstractIntegrationTest {
 
     @BeforeEach
     public void createBaseDir(TestInfo testInfo) throws Exception {
-        mavenHome = Paths.get("../dependency/xmvn-" + getTestProperty("xmvn.version"))
-                .toAbsolutePath();
+        mavenHome =
+                Path.of("../dependency/xmvn-" + getTestProperty("xmvn.version")).toAbsolutePath();
 
-        baseDir = Paths.get(".").toRealPath();
+        baseDir = Path.of(".").toRealPath();
         delete(baseDir);
         String testName = testInfo.getTestMethod().get().getName();
-        Path baseDirTemplate = Paths.get("../../src/test/resources").resolve(testName);
+        Path baseDirTemplate = Path.of("../../src/test/resources").resolve(testName);
         if (Files.isDirectory(baseDirTemplate, LinkOption.NOFOLLOW_LINKS)) {
             copy(baseDirTemplate, baseDir);
         } else {
@@ -97,7 +96,7 @@ public abstract class AbstractIntegrationTest {
     @AfterEach
     public void saveBaseDir(TestInfo testInfo) throws Exception {
         String testName = testInfo.getTestMethod().get().getName();
-        Path saveDir = Paths.get("../saved-work").resolve(testName).toAbsolutePath();
+        Path saveDir = Path.of("../saved-work").resolve(testName).toAbsolutePath();
         Files.createDirectories(saveDir);
         delete(saveDir);
         copy(baseDir, saveDir);

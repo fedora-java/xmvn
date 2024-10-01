@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
@@ -41,7 +40,7 @@ public class ResolveOneIntegrationTest extends AbstractToolIntegrationTest {
         List<String> out = getStdout().collect(Collectors.toList());
         assertEquals(1, out.size());
 
-        Path jar = Paths.get(out.iterator().next());
+        Path jar = Path.of(out.iterator().next());
         assertTrue(jar.endsWith("src/test/resources/empty.jar"));
         assertTrue(Files.isRegularFile(jar));
     }

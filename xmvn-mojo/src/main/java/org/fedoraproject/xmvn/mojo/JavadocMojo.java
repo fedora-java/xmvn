@@ -140,7 +140,7 @@ public class JavadocMojo extends AbstractMojo {
         if (project.getArtifact().getFile() != null) {
             artifactPath = project.getArtifact().getFile().toPath();
         } else if (project.getBuild().getOutputDirectory() != null) {
-            artifactPath = Paths.get(project.getBuild().getOutputDirectory());
+            artifactPath = Path.of(project.getBuild().getOutputDirectory());
         } else {
             return;
         }
@@ -252,12 +252,12 @@ public class JavadocMojo extends AbstractMojo {
         }
         Path javadocExecutable;
         if (javadocTool != null && !javadocTool.isEmpty()) {
-            javadocExecutable = Paths.get(javadocTool);
+            javadocExecutable = Path.of(javadocTool);
         } else if (System.getenv().containsKey("JAVA_HOME")) {
             javadocExecutable =
-                    Paths.get(System.getenv("JAVA_HOME")).resolve("bin").resolve("javadoc");
+                    Path.of(System.getenv("JAVA_HOME")).resolve("bin").resolve("javadoc");
         } else {
-            javadocExecutable = Paths.get("/usr/bin/javadoc");
+            javadocExecutable = Path.of("/usr/bin/javadoc");
         }
         logger.debug("Using javadoc executable {}", javadocExecutable);
         return javadocExecutable;
@@ -362,7 +362,7 @@ public class JavadocMojo extends AbstractMojo {
         try {
             Set<Path> sourceFiles = findJavaSources(modules);
 
-            Path modinfoJava = Paths.get("module-info.java");
+            Path modinfoJava = Path.of("module-info.java");
 
             if (sourceFiles.stream().map(Path::getFileName).allMatch(modinfoJava::equals)) {
                 logger.warn("Skipping Javadoc generation: no Java sources found");

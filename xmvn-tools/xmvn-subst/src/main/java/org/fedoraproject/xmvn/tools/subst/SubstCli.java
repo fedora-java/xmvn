@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.tools.subst;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -55,13 +54,13 @@ public class SubstCli {
 
         if (cliRequest.getRoot() != null) {
             List<String> metadataRepos = new ArrayList<>();
-            Path root = Paths.get(cliRequest.getRoot());
+            Path root = Path.of(cliRequest.getRoot());
 
             for (String configuredRepo : resolverSettings.getMetadataRepositories()) {
-                Path repoPath = Paths.get(configuredRepo);
+                Path repoPath = Path.of(configuredRepo);
                 if (repoPath.isAbsolute()) {
                     metadataRepos.add(
-                            root.resolve(Paths.get("/").relativize(repoPath)).toString());
+                            root.resolve(Path.of("/").relativize(repoPath)).toString());
                 }
             }
 
@@ -78,7 +77,7 @@ public class SubstCli {
 
         try {
             for (String path : cliRequest.getParameters()) {
-                Files.walkFileTree(Paths.get(path), visitor);
+                Files.walkFileTree(Path.of(path), visitor);
             }
         } catch (IOException e) {
             e.printStackTrace();

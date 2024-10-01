@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.tools.resolve.xml;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
 /** @author Mikolaj Izdebski */
@@ -79,7 +78,7 @@ public class ResolutionResultBean {
             return new ResolutionResult() {
                 @Override
                 public Path getArtifactPath() {
-                    return bean.getArtifactPath() != null ? Paths.get(bean.getArtifactPath()) : null;
+                    return bean.getArtifactPath() != null ? Path.of(bean.getArtifactPath()) : null;
                 }
 
                 @Override

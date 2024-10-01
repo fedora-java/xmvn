@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.resolver.impl;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -56,7 +55,7 @@ class LocalRepositoryResolver implements Resolver {
             path.append('.').append(extension);
         }
 
-        return Paths.get(path.toString());
+        return Path.of(path.toString());
     }
 
     @Override
@@ -64,7 +63,7 @@ class LocalRepositoryResolver implements Resolver {
         Artifact artifact = request.getArtifact();
         Path repoPath = getMavenRepositoryPath(artifact);
 
-        Path repoRoot = Paths.get(".m2").toAbsolutePath();
+        Path repoRoot = Path.of(".m2").toAbsolutePath();
 
         Path artifactPath = repoRoot.resolve(repoPath);
         if (Files.isRegularFile(artifactPath)) {

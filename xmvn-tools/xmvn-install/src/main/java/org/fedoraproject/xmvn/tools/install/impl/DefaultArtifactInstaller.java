@@ -20,7 +20,6 @@ import static org.fedoraproject.xmvn.tools.install.JarUtils.injectManifest;
 import static org.fedoraproject.xmvn.tools.install.JarUtils.usesNativeCode;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -72,7 +71,7 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
         Artifact artifact = am.toArtifact();
 
         // Handle native JARs/WARs etc
-        Path artifactPath = Paths.get(am.getPath());
+        Path artifactPath = Path.of(am.getPath());
         if (usesNativeCode(artifactPath) || containsNativeCode(artifactPath)) {
             am.getProperties().setProperty("native", "true");
         }
@@ -92,9 +91,9 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
         }
 
         Set<Path> basePaths = new LinkedHashSet<>();
-        for (String fileName : rule.getFiles()) basePaths.add(Paths.get(fileName));
+        for (String fileName : rule.getFiles()) basePaths.add(Path.of(fileName));
         if (basePaths.isEmpty()) {
-            basePaths.add(Paths.get(basePackageName).resolve(artifact.getArtifactId()));
+            basePaths.add(Path.of(basePackageName).resolve(artifact.getArtifactId()));
         }
 
         Set<Path> relativePaths = new LinkedHashSet<>();
@@ -135,7 +134,7 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
         // Artifact path
         File artifactFile = new RegularFile(repoPathIterator.next(), artifactPath);
         targetPackage.addFile(artifactFile);
-        Path primaryPath = Paths.get("/").resolve(artifactFile.getTargetPath());
+        Path primaryPath = Path.of("/").resolve(artifactFile.getTargetPath());
         am.setPath(primaryPath.toString());
 
         // Relative symlinks
@@ -146,7 +145,7 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
 
         // Absolute symlinks
         for (Path path : absolutePaths) {
-            StringBuilder sb = new StringBuilder(Paths.get("/").relativize(path).toString());
+            StringBuilder sb = new StringBuilder(Path.of("/").relativize(path).toString());
             if (!versionedArtifact.getVersion().equals(Artifact.DEFAULT_VERSION)) {
                 sb.append('-').append(versionedArtifact.getVersion());
             }
@@ -157,7 +156,7 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
             if (!versionedArtifact.getExtension().equals(Artifact.DEFAULT_VERSION)) {
                 sb.append('.').append(versionedArtifact.getExtension());
             }
-            File symlink = new SymbolicLink(Paths.get(sb.toString()), primaryPath);
+            File symlink = new SymbolicLink(Path.of(sb.toString()), primaryPath);
             targetPackage.addFile(symlink);
         }
 

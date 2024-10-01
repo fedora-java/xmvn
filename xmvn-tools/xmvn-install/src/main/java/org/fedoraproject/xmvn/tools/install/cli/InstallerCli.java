@@ -16,7 +16,7 @@
 package org.fedoraproject.xmvn.tools.install.cli;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
@@ -42,8 +42,8 @@ public class InstallerCli {
         InstallationRequest request = new InstallationRequest();
         request.setCheckForUnmatchedRules(!cliRequest.isRelaxed());
         request.setBasePackageName(cliRequest.getPackageName());
-        request.setInstallRoot(Paths.get(cliRequest.getDestDir()));
-        request.setInstallationPlan(Paths.get(cliRequest.getPlanPath()));
+        request.setInstallRoot(Path.of(cliRequest.getDestDir()));
+        request.setInstallationPlan(Path.of(cliRequest.getPlanPath()));
         request.setRepositoryId(cliRequest.getRepoId());
 
         try {

@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.File;
 import org.fedoraproject.xmvn.tools.install.Package;
@@ -34,7 +33,7 @@ public class PackageTest extends AbstractFileTest {
 
     @Test
     public void testSimplePackage() throws Exception {
-        File jarfile = new RegularFile(Paths.get("usr/share/java/foobar.jar"), jar);
+        File jarfile = new RegularFile(Path.of("usr/share/java/foobar.jar"), jar);
         Package pkg = new Package("my-id");
         assertEquals("my-id", pkg.getId());
         pkg.addFile(jarfile);
@@ -46,9 +45,9 @@ public class PackageTest extends AbstractFileTest {
 
     @Test
     public void testMoreFiles() throws Exception {
-        File dir = new Directory(Paths.get("usr/share/java"));
-        File jarfile = new RegularFile(Paths.get("usr/share/java/foobar.jar"), jar, 0600);
-        File link = new SymbolicLink(Paths.get("usr/share/java/link.jar"), Paths.get("foobar.jar"));
+        File dir = new Directory(Path.of("usr/share/java"));
+        File jarfile = new RegularFile(Path.of("usr/share/java/foobar.jar"), jar, 0600);
+        File link = new SymbolicLink(Path.of("usr/share/java/link.jar"), Path.of("foobar.jar"));
         Package pkg = new Package("my-id");
         assertEquals("my-id", pkg.getId());
         pkg.addFile(dir);
@@ -80,7 +79,7 @@ public class PackageTest extends AbstractFileTest {
 
     @Test
     public void testSameFileTwice() throws Exception {
-        File jarfile = new RegularFile(Paths.get("usr/share/java/foobar.jar"), jar);
+        File jarfile = new RegularFile(Path.of("usr/share/java/foobar.jar"), jar);
         Package pkg = new Package("my-id");
         assertEquals("my-id", pkg.getId());
         pkg.addFile(jarfile);

@@ -18,7 +18,7 @@ package org.fedoraproject.xmvn.it.maven.mojo.builddep;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 public class PackagingBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
     public void testBuilddepPackaging() throws Exception {
-        assumeTrue(Files.isExecutable(Paths.get("/usr/bin/gcc")), "native-maven-plugin requires a C compiler to work");
+        assumeTrue(Files.isExecutable(Path.of("/usr/bin/gcc")), "native-maven-plugin requires a C compiler to work");
         expectBuildDependency("org.codehaus.mojo", "native-maven-plugin");
         expectBuildDependency("junit", "junit");
         performBuilddepTest();

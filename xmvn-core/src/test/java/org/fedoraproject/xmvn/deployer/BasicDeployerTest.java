@@ -24,7 +24,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,7 +54,7 @@ public class BasicDeployerTest extends AbstractTest {
         Path plan = Files.createTempDirectory("xmvn-test").resolve("plan.xml");
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Paths.get("src/test/resources/simple.xml")));
+        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         req.addProperty("foo", "bar");
         req.addDependency(new DefaultArtifact("g1:a1:e1:c1:v1"));
         req.addDependency(
@@ -65,7 +64,7 @@ public class BasicDeployerTest extends AbstractTest {
         deployer.deploy(req);
         DeploymentRequest req2 = new DeploymentRequest();
         req2.setPlanPath(plan);
-        req2.setArtifact(new DefaultArtifact("foo:bar:pom:").setPath(Paths.get("/dev/null")));
+        req2.setArtifact(new DefaultArtifact("foo:bar:pom:").setPath(Path.of("/dev/null")));
         deployer.deploy(req2);
 
         XmlAssert.assertThat("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -129,7 +128,7 @@ public class BasicDeployerTest extends AbstractTest {
         Files.createDirectory(plan);
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Paths.get("src/test/resources/simple.xml")));
+        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));
@@ -140,7 +139,7 @@ public class BasicDeployerTest extends AbstractTest {
     static final Pattern PROCESS_UID_PATTERN = Pattern.compile("^Uid:\\s+\\d+\\s+(\\d+)\\s+\\d+\\s+\\d+\\s*$");
 
     private boolean runningAsRoot() {
-        try (Stream<String> lines = Files.lines(Paths.get("/proc/self/status"))) {
+        try (Stream<String> lines = Files.lines(Path.of("/proc/self/status"))) {
             return lines.map(s -> {
                         Matcher matcher = PROCESS_UID_PATTERN.matcher(s);
 
@@ -170,7 +169,7 @@ public class BasicDeployerTest extends AbstractTest {
         Files.setPosixFilePermissions(plan, Collections.singleton(PosixFilePermission.OTHERS_READ));
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Paths.get("src/test/resources/simple.xml")));
+        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));

@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.w3c.dom.Element;
 
 /**
@@ -50,6 +49,6 @@ class JppRepository extends SimpleRepository {
             path.append('.').append(extension);
         }
 
-        return Paths.get(path.toString());
+        return Path.of(path.toString());
     }
 }

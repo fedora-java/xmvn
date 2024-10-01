@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.tools.install.impl;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -49,7 +48,7 @@ class PackageRegistry {
         JavaPackage pkg = packages.get(id);
 
         if (pkg == null) {
-            Path metadataDir = Paths.get(settings.getMetadataDir());
+            Path metadataDir = Path.of(settings.getMetadataDir());
             pkg = new JavaPackage(id, basePackageName, metadataDir);
             packages.put(id, pkg);
         }

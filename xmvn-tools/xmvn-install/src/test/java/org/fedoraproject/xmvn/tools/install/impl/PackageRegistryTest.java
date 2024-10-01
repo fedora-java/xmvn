@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Set;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.tools.install.File;
@@ -57,7 +57,7 @@ public class PackageRegistryTest {
         Set<File> files = pkg.getFiles();
         assertEquals(1, files.size());
         File metadataFile = files.iterator().next();
-        assertEquals(Paths.get("usr/share/maven-metadata/test-package.xml"), metadataFile.getTargetPath());
+        assertEquals(Path.of("usr/share/maven-metadata/test-package.xml"), metadataFile.getTargetPath());
         assertNotNull(pkg.getMetadata());
     }
 
@@ -67,7 +67,7 @@ public class PackageRegistryTest {
         Set<File> files = pkg.getFiles();
         assertEquals(1, files.size());
         File metadataFile = files.iterator().next();
-        assertEquals(Paths.get("usr/share/maven-metadata/test-package-subpackage.xml"), metadataFile.getTargetPath());
+        assertEquals(Path.of("usr/share/maven-metadata/test-package-subpackage.xml"), metadataFile.getTargetPath());
     }
 
     @Test

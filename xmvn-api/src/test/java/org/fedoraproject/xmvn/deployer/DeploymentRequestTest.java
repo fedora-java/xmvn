@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.easymock.EasyMock;
@@ -166,7 +165,7 @@ public class DeploymentRequestTest {
     /** Test of get and set methods for plan path */
     @Test
     public void planPathTest() throws Exception {
-        Path planPath = Paths.get("/tmp/foo/bar/plan");
+        Path planPath = Path.of("/tmp/foo/bar/plan");
         deployRq.setPlanPath(planPath);
         assertEquals(planPath, deployRq.getPlanPath());
 

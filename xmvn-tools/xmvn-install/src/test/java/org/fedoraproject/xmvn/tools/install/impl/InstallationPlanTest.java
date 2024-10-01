@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 public class InstallationPlanTest {
     @Test
     public void testNonexistent() throws Exception {
-        InstallationPlan plan = new InstallationPlan(Paths.get("not-there"));
+        InstallationPlan plan = new InstallationPlan(Path.of("not-there"));
         assertTrue(plan.getArtifacts().isEmpty());
     }
 

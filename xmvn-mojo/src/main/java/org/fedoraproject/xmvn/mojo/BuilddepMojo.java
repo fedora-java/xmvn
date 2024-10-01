@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -232,7 +232,7 @@ public class BuilddepMojo extends AbstractMojo {
     }
 
     private void serializeArtifacts(Set<NamespacedArtifact> artifacts) throws MojoExecutionException {
-        try (Writer writer = Files.newBufferedWriter(Paths.get(".xmvn-builddep"), StandardCharsets.UTF_8)) {
+        try (Writer writer = Files.newBufferedWriter(Path.of(".xmvn-builddep"), StandardCharsets.UTF_8)) {
             XMLStreamWriter cursor = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
             cursor.writeStartDocument();
             cursor.writeCharacters("\n");

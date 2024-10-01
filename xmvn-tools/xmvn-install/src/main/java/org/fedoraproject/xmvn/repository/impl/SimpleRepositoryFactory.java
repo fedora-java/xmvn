@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
@@ -28,7 +27,7 @@ abstract class SimpleRepositoryFactory extends AbstractRepositoryFactory {
     @Override
     public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
         String rootProperty = properties.getProperty("root");
-        Path root = rootProperty != null ? Paths.get(rootProperty) : null;
+        Path root = rootProperty != null ? Path.of(rootProperty) : null;
 
         if (namespace == null || namespace.isEmpty()) {
             namespace = properties.getProperty("namespace", "");

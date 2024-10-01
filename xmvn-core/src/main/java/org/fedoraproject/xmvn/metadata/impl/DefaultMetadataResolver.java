@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -90,7 +89,7 @@ public class DefaultMetadataResolver implements MetadataResolver {
         Map<Path, Future<PackageMetadata>> futures = new LinkedHashMap<>();
 
         for (String pathString : metadataLocations) {
-            Path path = Paths.get(pathString);
+            Path path = Path.of(pathString);
 
             if (Files.isDirectory(path)) {
                 String[] flist = path.toFile().list();

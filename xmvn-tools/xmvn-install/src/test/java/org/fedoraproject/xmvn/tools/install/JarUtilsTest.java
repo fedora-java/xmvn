@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
@@ -45,12 +44,12 @@ public class JarUtilsTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        workDir = Paths.get("target/test-work");
+        workDir = Path.of("target/test-work");
         Files.createDirectories(workDir);
     }
 
     private void testManifestInjectionInto(String testJarName) throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve(testJarName);
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -110,7 +109,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testManifestInjectionLateManifest() throws Exception {
-        Path testResource = Paths.get("src/test/resources/late-manifest.jar");
+        Path testResource = Path.of("src/test/resources/late-manifest.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -140,7 +139,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testManifestInjectionRecompressionCausesSizeMismatch() throws Exception {
-        Path testResource = Paths.get("src/test/resources/recompression-size.jar");
+        Path testResource = Path.of("src/test/resources/recompression-size.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -167,7 +166,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testManifestInjectionDuplicateManifest() throws Exception {
-        Path testResource = Paths.get("src/test/resources/duplicate-manifest.jar");
+        Path testResource = Path.of("src/test/resources/duplicate-manifest.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -196,7 +195,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testManifestInjectionDefaults() throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest-defaults.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -225,7 +224,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testManifestInjectionSanePermissions() throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -244,9 +243,9 @@ public class JarUtilsTest {
      */
     @Test
     public void testNativeCodeDetection() throws Exception {
-        Path plainJarPath = Paths.get("src/test/resources/example.jar");
-        Path nativeCodeJarPath = Paths.get("src/test/resources/native-code.jar");
-        Path nativeMethodJarPath = Paths.get("src/test/resources/native-method.jar");
+        Path plainJarPath = Path.of("src/test/resources/example.jar");
+        Path nativeCodeJarPath = Path.of("src/test/resources/native-code.jar");
+        Path nativeMethodJarPath = Path.of("src/test/resources/native-method.jar");
 
         assertFalse(JarUtils.usesNativeCode(plainJarPath));
         assertFalse(JarUtils.containsNativeCode(plainJarPath));
@@ -265,7 +264,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testInvalidJar() throws Exception {
-        Path testResource = Paths.get("src/test/resources/invalid.jar");
+        Path testResource = Path.of("src/test/resources/invalid.jar");
         Path testJar = workDir.resolve("invalid.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -287,7 +286,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testSameINode() throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -309,7 +308,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testBackupDeletion() throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -329,7 +328,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testBackupOnFailure() throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -381,7 +380,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testFailWhenBachupPresent() throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
 
@@ -408,7 +407,7 @@ public class JarUtilsTest {
      */
     @Test
     public void testManifestInjectionReproducible() throws Exception {
-        Path testResource = Paths.get("src/test/resources/example.jar");
+        Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar1 = workDir.resolve("reproducible1.jar");
         Path testJar2 = workDir.resolve("reproducible2.jar");
         Files.copy(testResource, testJar1, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);

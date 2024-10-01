@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Artifact;
@@ -70,8 +69,8 @@ public class InstallerTest extends AbstractInstallerTest {
                 String repositoryId) {
             assertEquals("test-pkg", basePackageName);
             assertEquals("test-repo", repositoryId);
-            Path path = Paths.get("usr/share/java/" + artifactMetadata.getArtifactId() + ".jar");
-            File file = new RegularFile(path, Paths.get(artifactMetadata.getPath()));
+            Path path = Path.of("usr/share/java/" + artifactMetadata.getArtifactId() + ".jar");
+            File file = new RegularFile(path, Path.of(artifactMetadata.getPath()));
             targetPackage.addFile(file);
             targetPackage.getMetadata().addArtifact(artifactMetadata);
         }
@@ -171,7 +170,7 @@ public class InstallerTest extends AbstractInstallerTest {
 
     @Test
     public void testResolution() throws Exception {
-        Path dependencyJar = Paths.get("/tmp/bla.jar");
+        Path dependencyJar = Path.of("/tmp/bla.jar");
         addResolution("org.apache.lucene:lucene-benchmark:4.1");
         addResolution("org.apache.lucene:lucene-benchmark", "4", "ns", dependencyJar);
         addResolution("org.apache.lucene:lucene-spatial:4.1");

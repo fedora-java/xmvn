@@ -24,7 +24,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
@@ -56,19 +55,19 @@ public class InstallerIntegrationTest extends AbstractToolIntegrationTest {
         assertFalse(getStdout().findAny().isPresent());
         assertTrue(getStderr().anyMatch("[INFO] Installation successful"::equals));
 
-        Path pomPath = Paths.get("dest/usr/share/maven-poms/xyzzy/junit.pom");
+        Path pomPath = Path.of("dest/usr/share/maven-poms/xyzzy/junit.pom");
         assertTrue(Files.isRegularFile(pomPath, LinkOption.NOFOLLOW_LINKS));
         assertEquals(
                 "NOT A VALID XML <XMvn should not parse this...>",
                 Files.readAllLines(pomPath).iterator().next());
 
-        Path mdPath = Paths.get("dest/usr/share/maven-metadata/xyzzy.xml");
+        Path mdPath = Path.of("dest/usr/share/maven-metadata/xyzzy.xml");
         assertTrue(Files.isRegularFile(mdPath, LinkOption.NOFOLLOW_LINKS));
         assertEquals(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
                 Files.readAllLines(mdPath).iterator().next());
 
-        Path jarPath = Paths.get("dest/usr/share/java/xyzzy/junit.jar");
+        Path jarPath = Path.of("dest/usr/share/java/xyzzy/junit.jar");
         assertTrue(Files.isRegularFile(jarPath, LinkOption.NOFOLLOW_LINKS));
         try (InputStream is = new URL("jar:file:" + jarPath.toAbsolutePath() + "!/META-INF/MANIFEST.MF").openStream()) {
             Attributes mf = new Manifest(is).getMainAttributes();
