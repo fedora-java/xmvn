@@ -20,12 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.inject.Binder;
+import com.google.inject.name.Names;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-
-import com.google.inject.Binder;
-import com.google.inject.name.Names;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
@@ -40,104 +39,100 @@ import org.eclipse.aether.impl.VersionResolver;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.resolution.VersionRequest;
 import org.eclipse.aether.resolution.VersionResult;
+import org.fedoraproject.xmvn.resolver.ResolutionRequest;
+import org.fedoraproject.xmvn.resolver.ResolutionResult;
+import org.fedoraproject.xmvn.resolver.Resolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import org.fedoraproject.xmvn.resolver.ResolutionRequest;
-import org.fedoraproject.xmvn.resolver.ResolutionResult;
-import org.fedoraproject.xmvn.resolver.Resolver;
-
 /**
  * Test whether XMvn Connector can be used as Maven extension.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-@SuppressWarnings( "deprecation" )
-public class MavenExtensionTest
-    extends AbstractTest
-{
+@SuppressWarnings("deprecation")
+public class MavenExtensionTest extends AbstractTest {
     private Resolver resolverMock;
 
     private RepositorySystemSession session;
 
     @Override
-    public void configure( Binder binder )
-    {
-        resolverMock = EasyMock.createMock( org.fedoraproject.xmvn.resolver.Resolver.class );
-        binder.bind( WorkspaceReader.class ).annotatedWith( Names.named( "ide" ) ).to( XMvnWorkspaceReader.class );
-        binder.bind( Resolver.class ).toInstance( resolverMock );
+    public void configure(Binder binder) {
+        resolverMock = EasyMock.createMock(org.fedoraproject.xmvn.resolver.Resolver.class);
+        binder.bind(WorkspaceReader.class).annotatedWith(Names.named("ide")).to(XMvnWorkspaceReader.class);
+        binder.bind(Resolver.class).toInstance(resolverMock);
     }
 
     @BeforeEach
-    public void setUp( @TempDir Path tempDir )
-        throws Exception
-    {
-        RepositorySystem repoSys = lookup( RepositorySystem.class );
-        assertNotNull( repoSys );
+    public void setUp(@TempDir Path tempDir) throws Exception {
+        RepositorySystem repoSys = lookup(RepositorySystem.class);
+        assertNotNull(repoSys);
 
-        ArtifactRepository repoMock = EasyMock.createMock( ArtifactRepository.class );
-        EasyMock.expect( repoMock.getBasedir() ).andReturn( tempDir.toString() ).anyTimes();
-        EasyMock.replay( repoMock );
+        ArtifactRepository repoMock = EasyMock.createMock(ArtifactRepository.class);
+        EasyMock.expect(repoMock.getBasedir()).andReturn(tempDir.toString()).anyTimes();
+        EasyMock.replay(repoMock);
 
         MavenExecutionRequest mavenRequest = new DefaultMavenExecutionRequest();
-        mavenRequest.setLocalRepository( repoMock );
-        DefaultRepositorySystemSessionFactory factory = lookup( DefaultRepositorySystemSessionFactory.class );
-        session = factory.newRepositorySession( mavenRequest );
-        assertNotNull( session );
+        mavenRequest.setLocalRepository(repoMock);
+        DefaultRepositorySystemSessionFactory factory = lookup(DefaultRepositorySystemSessionFactory.class);
+        session = factory.newRepositorySession(mavenRequest);
+        assertNotNull(session);
 
         WorkspaceReader workspace = session.getWorkspaceReader();
-        assertNotNull( workspace );
-        assertInstanceOf( XMvnWorkspaceReader.class, workspace );
+        assertNotNull(workspace);
+        assertInstanceOf(XMvnWorkspaceReader.class, workspace);
     }
 
     @Test
-    public void testVersionResolver()
-        throws Exception
-    {
-        ResolutionResult resolutionResult = EasyMock.createMock( ResolutionResult.class );
-        EasyMock.expect( resolutionResult.getArtifactPath() ).andReturn( Paths.get( "src/test/resources/dummy.pom" ) );
-        EasyMock.expect( resolutionResult.getCompatVersion() ).andReturn( "1.2.3-SNAPSHOT" );
-        EasyMock.replay( resolutionResult );
+    public void testVersionResolver() throws Exception {
+        ResolutionResult resolutionResult = EasyMock.createMock(ResolutionResult.class);
+        EasyMock.expect(resolutionResult.getArtifactPath()).andReturn(Paths.get("src/test/resources/dummy.pom"));
+        EasyMock.expect(resolutionResult.getCompatVersion()).andReturn("1.2.3-SNAPSHOT");
+        EasyMock.replay(resolutionResult);
 
-        EasyMock.expect( resolverMock.resolve( EasyMock.isA( ResolutionRequest.class ) ) ).andReturn( resolutionResult ).anyTimes();
-        EasyMock.replay( resolverMock );
+        EasyMock.expect(resolverMock.resolve(EasyMock.isA(ResolutionRequest.class)))
+                .andReturn(resolutionResult)
+                .anyTimes();
+        EasyMock.replay(resolverMock);
 
-        VersionResolver versionResolver = lookup( VersionResolver.class );
-        assertNotNull( versionResolver );
+        VersionResolver versionResolver = lookup(VersionResolver.class);
+        assertNotNull(versionResolver);
 
         VersionRequest request = new VersionRequest();
-        request.setArtifact( new DefaultArtifact( "com.foo:bar:pom:1.2.3-SNAPSHOT" ) );
-        VersionResult result = versionResolver.resolveVersion( session, request );
+        request.setArtifact(new DefaultArtifact("com.foo:bar:pom:1.2.3-SNAPSHOT"));
+        VersionResult result = versionResolver.resolveVersion(session, request);
         String version = result.getVersion();
-        assertEquals( "1.2.3-SNAPSHOT", version );
-        assertTrue( result.getExceptions().isEmpty() );
+        assertEquals("1.2.3-SNAPSHOT", version);
+        assertTrue(result.getExceptions().isEmpty());
 
-        EasyMock.verify( resolutionResult, resolverMock );
+        EasyMock.verify(resolutionResult, resolverMock);
     }
 
     @Test
-    public void testPluginDependenciesResolver()
-        throws Exception
-    {
-        PluginDependenciesResolver pluginDepsResolver = lookup( PluginDependenciesResolver.class );
-        assertNotNull( pluginDepsResolver );
+    public void testPluginDependenciesResolver() throws Exception {
+        PluginDependenciesResolver pluginDepsResolver = lookup(PluginDependenciesResolver.class);
+        assertNotNull(pluginDepsResolver);
 
         Plugin plugin = new Plugin();
-        plugin.setGroupId( "pgid" );
-        plugin.setArtifactId( "paid" );
-        plugin.setVersion( "pver" );
+        plugin.setGroupId("pgid");
+        plugin.setArtifactId("paid");
+        plugin.setVersion("pver");
 
-        ResolutionResult resolutionResult = EasyMock.createMock( ResolutionResult.class );
-        EasyMock.expect( resolutionResult.getArtifactPath() ).andReturn( Paths.get( "src/test/resources/dummy.pom" ).toAbsolutePath() );
-        EasyMock.expect( resolutionResult.getArtifactPath() ).andReturn( Paths.get( "src/test/resources/dummy.jar" ).toAbsolutePath() );
-        EasyMock.replay( resolutionResult );
+        ResolutionResult resolutionResult = EasyMock.createMock(ResolutionResult.class);
+        EasyMock.expect(resolutionResult.getArtifactPath())
+                .andReturn(Paths.get("src/test/resources/dummy.pom").toAbsolutePath());
+        EasyMock.expect(resolutionResult.getArtifactPath())
+                .andReturn(Paths.get("src/test/resources/dummy.jar").toAbsolutePath());
+        EasyMock.replay(resolutionResult);
 
-        EasyMock.expect( resolverMock.resolve( EasyMock.isA( ResolutionRequest.class ) ) ).andReturn( resolutionResult ).anyTimes();
-        EasyMock.replay( resolverMock );
+        EasyMock.expect(resolverMock.resolve(EasyMock.isA(ResolutionRequest.class)))
+                .andReturn(resolutionResult)
+                .anyTimes();
+        EasyMock.replay(resolverMock);
 
-        pluginDepsResolver.resolve( plugin, Collections.emptyList(), session );
+        pluginDepsResolver.resolve(plugin, Collections.emptyList(), session);
 
-        EasyMock.verify( resolutionResult, resolverMock );
+        EasyMock.verify(resolutionResult, resolverMock);
     }
 }

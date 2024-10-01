@@ -17,14 +17,10 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class ResolutionResultBean
-{
+/** @author Mikolaj Izdebski */
+public class ResolutionResultBean {
     private String artifactPath;
 
     private String provider;
@@ -33,90 +29,71 @@ public class ResolutionResultBean
 
     private String namespace;
 
-    public String getArtifactPath()
-    {
+    public String getArtifactPath() {
         return artifactPath;
     }
 
-    public void setArtifactPath( String artifactPath )
-    {
+    public void setArtifactPath(String artifactPath) {
         this.artifactPath = artifactPath;
     }
 
-    public String getProvider()
-    {
+    public String getProvider() {
         return provider;
     }
 
-    public void setProvider( String provider )
-    {
+    public void setProvider(String provider) {
         this.provider = provider;
     }
 
-    public String getCompatVersion()
-    {
+    public String getCompatVersion() {
         return compatVersion;
     }
 
-    public void setCompatVersion( String compatVersion )
-    {
+    public void setCompatVersion(String compatVersion) {
         this.compatVersion = compatVersion;
     }
 
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return namespace;
     }
 
-    public void setNamespace( String namespace )
-    {
+    public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
 
-    /**
-     * @author Mikolaj Izdebski
-     */
-    public static class Adapter
-    {
-        public ResolutionResultBean marshal( ResolutionResult result )
-            throws Exception
-        {
+    /** @author Mikolaj Izdebski */
+    public static class Adapter {
+        public ResolutionResultBean marshal(ResolutionResult result) throws Exception {
             ResolutionResultBean bean = new ResolutionResultBean();
 
-            bean.setArtifactPath( result.getArtifactPath() != null ? result.getArtifactPath().toString() : null );
-            bean.setProvider( result.getProvider() );
-            bean.setCompatVersion( result.getCompatVersion() );
-            bean.setNamespace( result.getNamespace() );
+            bean.setArtifactPath(
+                    result.getArtifactPath() != null ? result.getArtifactPath().toString() : null);
+            bean.setProvider(result.getProvider());
+            bean.setCompatVersion(result.getCompatVersion());
+            bean.setNamespace(result.getNamespace());
 
             return bean;
         }
 
-        public ResolutionResult unmarshal( final ResolutionResultBean bean )
-            throws Exception
-        {
-            return new ResolutionResult()
-            {
+        public ResolutionResult unmarshal(final ResolutionResultBean bean) throws Exception {
+            return new ResolutionResult() {
                 @Override
-                public Path getArtifactPath()
-                {
-                    return bean.getArtifactPath() != null ? Paths.get( bean.getArtifactPath() ) : null;
+                public Path getArtifactPath() {
+                    return bean.getArtifactPath() != null ? Paths.get(bean.getArtifactPath()) : null;
                 }
 
                 @Override
-                public String getProvider()
-                {
+                public String getProvider() {
                     return bean.getProvider();
                 }
 
                 @Override
-                public String getCompatVersion()
-                {
+                public String getCompatVersion() {
                     return bean.getCompatVersion();
                 }
 
                 @Override
-                public String getNamespace()
-                {
+                public String getNamespace() {
                     return bean.getNamespace();
                 }
             };

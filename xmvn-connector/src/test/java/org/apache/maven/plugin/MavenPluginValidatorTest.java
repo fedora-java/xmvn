@@ -23,41 +23,34 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Roman Vais
- */
-public class MavenPluginValidatorTest
-{
+/** @author Roman Vais */
+public class MavenPluginValidatorTest {
     private MavenPluginValidator validator;
 
     private PluginDescriptor desc;
 
     @BeforeEach
-    public void setUp()
-        throws Exception
-    {
-        validator = new MavenPluginValidator( null );
-        desc = EasyMock.createMock( PluginDescriptor.class );
+    public void setUp() throws Exception {
+        validator = new MavenPluginValidator(null);
+        desc = EasyMock.createMock(PluginDescriptor.class);
     }
 
     @Test
-    public void testMavenPluginValidator()
-        throws Exception
-    {
-        EasyMock.expect( desc.getVersion() ).andReturn( null );
-        desc.setVersion( EasyMock.anyObject( String.class ) );
+    public void testMavenPluginValidator() throws Exception {
+        EasyMock.expect(desc.getVersion()).andReturn(null);
+        desc.setVersion(EasyMock.anyObject(String.class));
         EasyMock.expectLastCall();
-        EasyMock.replay( desc );
+        EasyMock.replay(desc);
 
-        validator.validate( desc );
-        EasyMock.verify( desc );
+        validator.validate(desc);
+        EasyMock.verify(desc);
 
-        EasyMock.reset( desc );
-        EasyMock.expect( desc.getVersion() ).andReturn( "SYSTEM" );
-        EasyMock.replay( desc );
-        validator.validate( desc );
+        EasyMock.reset(desc);
+        EasyMock.expect(desc.getVersion()).andReturn("SYSTEM");
+        EasyMock.replay(desc);
+        validator.validate(desc);
 
-        assertFalse( validator.hasErrors() );
-        assertTrue( validator.getErrors().isEmpty() );
+        assertFalse(validator.hasErrors());
+        assertTrue(validator.getErrors().isEmpty());
     }
 }

@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
@@ -28,16 +27,12 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
+import org.fedoraproject.xmvn.artifact.Artifact;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import org.fedoraproject.xmvn.artifact.Artifact;
-
-/**
- * @author Roman Vais
- */
-public class PluginVersionResolverTest
-{
+/** @author Roman Vais */
+public class PluginVersionResolverTest {
     private PluginVersionResolver resolver;
 
     private PluginVersionRequest rq;
@@ -49,67 +44,64 @@ public class PluginVersionResolverTest
     private WorkspaceRepository repo;
 
     @BeforeEach
-    public void setUp()
-    {
+    public void setUp() {
         resolver = new XMvnPluginVersionResolver();
 
-        rq = EasyMock.createStrictMock( PluginVersionRequest.class );
-        session = EasyMock.createStrictMock( RepositorySystemSession.class );
-        reader = EasyMock.createStrictMock( WorkspaceReader.class );
+        rq = EasyMock.createStrictMock(PluginVersionRequest.class);
+        session = EasyMock.createStrictMock(RepositorySystemSession.class);
+        reader = EasyMock.createStrictMock(WorkspaceReader.class);
         repo = new WorkspaceRepository();
     }
 
     @Test
-    public void testInjection()
-        throws Exception
-    {
-        assertTrue( resolver instanceof XMvnPluginVersionResolver );
+    public void testInjection() throws Exception {
+        assertTrue(resolver instanceof XMvnPluginVersionResolver);
     }
 
     @Test
-    public void testResolution()
-        throws Exception
-    {
+    public void testResolution() throws Exception {
         // test of default version resolution (version list is empty)
-        EasyMock.expect( rq.getRepositorySession() ).andReturn( session );
-        EasyMock.expect( rq.getGroupId() ).andReturn( "test.example" );
-        EasyMock.expect( rq.getArtifactId() ).andReturn( "nonexistent" );
+        EasyMock.expect(rq.getRepositorySession()).andReturn(session);
+        EasyMock.expect(rq.getGroupId()).andReturn("test.example");
+        EasyMock.expect(rq.getArtifactId()).andReturn("nonexistent");
 
-        EasyMock.expect( session.getWorkspaceReader() ).andReturn( reader );
+        EasyMock.expect(session.getWorkspaceReader()).andReturn(reader);
 
-        EasyMock.expect( reader.findVersions( EasyMock.anyObject( DefaultArtifact.class ) ) ).andReturn( Collections.emptyList() );
-        EasyMock.expect( reader.getRepository() ).andReturn( repo );
+        EasyMock.expect(reader.findVersions(EasyMock.anyObject(DefaultArtifact.class)))
+                .andReturn(Collections.emptyList());
+        EasyMock.expect(reader.getRepository()).andReturn(repo);
 
-        EasyMock.replay( rq, session, reader );
+        EasyMock.replay(rq, session, reader);
 
         PluginVersionResult result;
 
-        result = resolver.resolve( rq );
-        assertTrue( result.getRepository().equals( repo ) );
-        assertTrue( result.getVersion().equals( Artifact.DEFAULT_VERSION ) );
+        result = resolver.resolve(rq);
+        assertTrue(result.getRepository().equals(repo));
+        assertTrue(result.getVersion().equals(Artifact.DEFAULT_VERSION));
 
-        EasyMock.verify( rq, session, reader );
+        EasyMock.verify(rq, session, reader);
 
         // test of arbitrary version resolution (version list contains some version)
         ArrayList<String> list = new ArrayList<>();
-        list.add( "1.2.3" );
+        list.add("1.2.3");
 
-        EasyMock.reset( rq, session, reader );
-        EasyMock.expect( rq.getRepositorySession() ).andReturn( session );
-        EasyMock.expect( rq.getGroupId() ).andReturn( "test.example" );
-        EasyMock.expect( rq.getArtifactId() ).andReturn( "nonexistent" );
+        EasyMock.reset(rq, session, reader);
+        EasyMock.expect(rq.getRepositorySession()).andReturn(session);
+        EasyMock.expect(rq.getGroupId()).andReturn("test.example");
+        EasyMock.expect(rq.getArtifactId()).andReturn("nonexistent");
 
-        EasyMock.expect( session.getWorkspaceReader() ).andReturn( reader );
+        EasyMock.expect(session.getWorkspaceReader()).andReturn(reader);
 
-        EasyMock.expect( reader.findVersions( EasyMock.anyObject( DefaultArtifact.class ) ) ).andReturn( list );
-        EasyMock.expect( reader.getRepository() ).andReturn( repo );
+        EasyMock.expect(reader.findVersions(EasyMock.anyObject(DefaultArtifact.class)))
+                .andReturn(list);
+        EasyMock.expect(reader.getRepository()).andReturn(repo);
 
-        EasyMock.replay( rq, session, reader );
+        EasyMock.replay(rq, session, reader);
 
-        result = resolver.resolve( rq );
-        assertTrue( result.getRepository().equals( repo ) );
-        assertTrue( "1.2.3".equals( result.getVersion() ) );
+        result = resolver.resolve(rq);
+        assertTrue(result.getRepository().equals(repo));
+        assertTrue("1.2.3".equals(result.getVersion()));
 
-        EasyMock.verify( rq, session, reader );
+        EasyMock.verify(rq, session, reader);
     }
 }

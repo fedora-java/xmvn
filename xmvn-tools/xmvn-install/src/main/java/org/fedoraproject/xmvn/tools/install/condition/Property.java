@@ -17,22 +17,16 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/**
- * @author Mikolaj Izdebski
- */
-class Property
-    extends StringExpression
-{
+/** @author Mikolaj Izdebski */
+class Property extends StringExpression {
     private final String key;
 
-    public Property( String key )
-    {
+    public Property(String key) {
         this.key = key;
     }
 
     @Override
-    public String getValue( ArtifactContext context )
-    {
-        return context.getProperty( key );
+    public String getValue(ArtifactContext context) {
+        return context.getProperty(key);
     }
 }

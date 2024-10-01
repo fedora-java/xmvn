@@ -16,22 +16,17 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-
-import org.w3c.dom.Element;
-
 import org.fedoraproject.xmvn.repository.Repository;
+import org.w3c.dom.Element;
 
 /**
  * Factory creating JPP repositories.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-class JppRepositoryFactory
-    extends SimpleRepositoryFactory
-{
+class JppRepositoryFactory extends SimpleRepositoryFactory {
     @Override
-    protected Repository newInstance( String namespace, Path root, Element filter )
-    {
-        return new JppRepository( namespace, root, filter );
+    protected Repository newInstance(String namespace, Path root, Element filter) {
+        return new JppRepository(namespace, root, filter);
     }
 }

@@ -18,30 +18,22 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
+import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
 
-import org.fedoraproject.xmvn.repository.Repository;
-
-/**
- * @author Mikolaj Izdebski
- */
-abstract class SimpleRepositoryFactory
-    extends AbstractRepositoryFactory
-{
-    protected abstract Repository newInstance( String namespace, Path root, Element filter );
+/** @author Mikolaj Izdebski */
+abstract class SimpleRepositoryFactory extends AbstractRepositoryFactory {
+    protected abstract Repository newInstance(String namespace, Path root, Element filter);
 
     @Override
-    public Repository getInstance( Element filter, Properties properties, Element configuration, String namespace )
-    {
-        String rootProperty = properties.getProperty( "root" );
-        Path root = rootProperty != null ? Paths.get( rootProperty ) : null;
+    public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
+        String rootProperty = properties.getProperty("root");
+        Path root = rootProperty != null ? Paths.get(rootProperty) : null;
 
-        if ( namespace == null || namespace.isEmpty() )
-        {
-            namespace = properties.getProperty( "namespace", "" );
+        if (namespace == null || namespace.isEmpty()) {
+            namespace = properties.getProperty("namespace", "");
         }
 
-        return newInstance( namespace, root, filter );
+        return newInstance(namespace, root, filter);
     }
 }

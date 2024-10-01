@@ -17,45 +17,36 @@ package org.apache.maven.plugin;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * This is a simple Maven plugin validator that pretends that all plugins have valid descriptors.
- * <p>
- * This is XMvn-specific class and it resides in {@code org.apache.maven} namespace only because it needs to override
+ *
+ * <p>This is XMvn-specific class and it resides in {@code org.apache.maven} namespace only because it needs to override
  * Maven class. If this was a Plexus component then there would be no need to override Maven class, setting default
  * component class in {@code plexus.xml} would be enough.
- * <p>
- * TODO: Try convince Maven upstream to convert this to Plexus component.
- * 
+ *
+ * <p>TODO: Try convince Maven upstream to convert this to Plexus component.
+ *
  * @author Mikolaj Izdebski
  */
-public class MavenPluginValidator
-{
+public class MavenPluginValidator {
     // This constructor must be provided for compatibility with Maven
-    @SuppressWarnings( "unused" )
-    public MavenPluginValidator( org.apache.maven.artifact.Artifact pluginArtifact )
-    {
-    }
+    @SuppressWarnings("unused")
+    public MavenPluginValidator(org.apache.maven.artifact.Artifact pluginArtifact) {}
 
-    public void validate( PluginDescriptor pluginDescriptor )
-    {
-        if ( pluginDescriptor.getVersion() == null )
-        {
-            pluginDescriptor.setVersion( Artifact.DEFAULT_VERSION );
+    public void validate(PluginDescriptor pluginDescriptor) {
+        if (pluginDescriptor.getVersion() == null) {
+            pluginDescriptor.setVersion(Artifact.DEFAULT_VERSION);
         }
     }
 
-    public boolean hasErrors()
-    {
+    public boolean hasErrors() {
         return false;
     }
 
-    public List<String> getErrors()
-    {
+    public List<String> getErrors() {
         return Collections.emptyList();
     }
 }

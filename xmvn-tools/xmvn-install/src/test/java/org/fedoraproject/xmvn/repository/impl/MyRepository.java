@@ -19,35 +19,27 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Path;
 import java.util.Set;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 
-/**
- * @author Mikolaj Izdebski
- */
-class MyRepository
-    implements Repository
-{
+/** @author Mikolaj Izdebski */
+class MyRepository implements Repository {
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
-    {
-        fail( "getPrimaryArtifactPath() was not expected to be called" );
+    public Path getPrimaryArtifactPath(Artifact artifact, ArtifactContext context, String pattern) {
+        fail("getPrimaryArtifactPath() was not expected to be called");
         throw null;
     }
 
     @Override
-    public String getNamespace()
-    {
-        fail( "getNamespace was not expected to be called" );
+    public String getNamespace() {
+        fail("getNamespace was not expected to be called");
         throw null;
     }
 
     @Override
-    public Set<Path> getRootPaths()
-    {
-        fail( "getRootPaths was not expected to be called" );
+    public Set<Path> getRootPaths() {
+        fail("getRootPaths was not expected to be called");
         throw null;
     }
 }

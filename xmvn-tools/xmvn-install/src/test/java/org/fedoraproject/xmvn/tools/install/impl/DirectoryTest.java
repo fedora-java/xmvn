@@ -19,65 +19,52 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class DirectoryTest
-    extends AbstractFileTest
-{
+/** @author Mikolaj Izdebski */
+public class DirectoryTest extends AbstractFileTest {
     /**
      * Basic test for directory installation
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testSingleDirectoryInstallation()
-        throws Exception
-    {
-        add( new Directory( Paths.get( "usr/src/sys/kern" ) ) );
+    public void testSingleDirectoryInstallation() throws Exception {
+        add(new Directory(Paths.get("usr/src/sys/kern")));
         performInstallation();
 
-        assertDirectoryStructure( "D /usr", "D /usr/src", "D /usr/src/sys", "D /usr/src/sys/kern" );
+        assertDirectoryStructure("D /usr", "D /usr/src", "D /usr/src/sys", "D /usr/src/sys/kern");
 
-        assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/src/sys/kern" );
+        assertDescriptorEquals("%attr(0755,root,root) %dir /usr/src/sys/kern");
     }
 
     /**
      * Test if installing directory which already exists doesn't cause I/O (or other) errors
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testExistentDirectoryInstallation()
-        throws Exception
-    {
-        add( new Directory( Paths.get( "etc/sysconfig/java" ) ) );
-        add( new Directory( Paths.get( "etc/xmvn" ) ) );
-        add( new Directory( Paths.get( "etc" ) ) );
+    public void testExistentDirectoryInstallation() throws Exception {
+        add(new Directory(Paths.get("etc/sysconfig/java")));
+        add(new Directory(Paths.get("etc/xmvn")));
+        add(new Directory(Paths.get("etc")));
         performInstallation();
 
-        assertDirectoryStructure( "D /etc", "D /etc/sysconfig", "D /etc/sysconfig/java", "D /etc/xmvn" );
+        assertDirectoryStructure("D /etc", "D /etc/sysconfig", "D /etc/sysconfig/java", "D /etc/xmvn");
 
-        assertDescriptorEquals( "%attr(0755,root,root) %dir /etc", "%attr(0755,root,root) %dir /etc/sysconfig/java",
-                                "%attr(0755,root,root) %dir /etc/xmvn" );
+        assertDescriptorEquals(
+                "%attr(0755,root,root) %dir /etc",
+                "%attr(0755,root,root) %dir /etc/sysconfig/java", "%attr(0755,root,root) %dir /etc/xmvn");
     }
 
-    /**
-     * Test if directory installation fails if target already exists and is not a directory.
-     */
+    /** Test if directory installation fails if target already exists and is not a directory. */
     @Test
-    public void testExistentTargetFile()
-        throws Exception
-    {
-        add( new RegularFile( Paths.get( "foo/bar" ), new byte[0] ) );
-        add( new Directory( Paths.get( "foo/bar" ) ) );
-        assertThrows( IOException.class, this::performInstallation );
+    public void testExistentTargetFile() throws Exception {
+        add(new RegularFile(Paths.get("foo/bar"), new byte[0]));
+        add(new Directory(Paths.get("foo/bar")));
+        assertThrows(IOException.class, this::performInstallation);
     }
 
     /**
@@ -85,26 +72,20 @@ public class DirectoryTest
      * directory.
      */
     @Test
-    public void testDirectoryCOmponentIsAFile()
-        throws Exception
-    {
-        add( new RegularFile( Paths.get( "a/b/c/d" ), new byte[0] ) );
-        add( new Directory( Paths.get( "a/b/c/d/e/f/g/h" ) ) );
-        assertThrows( IOException.class, this::performInstallation );
+    public void testDirectoryCOmponentIsAFile() throws Exception {
+        add(new RegularFile(Paths.get("a/b/c/d"), new byte[0]));
+        add(new Directory(Paths.get("a/b/c/d/e/f/g/h")));
+        assertThrows(IOException.class, this::performInstallation);
     }
 
-    /**
-     * Test if custom access mode can be specified.
-     */
+    /** Test if custom access mode can be specified. */
     @Test
-    public void testAccessMode()
-        throws Exception
-    {
-        add( new Directory( Paths.get( "foo" ), 320 ) );
+    public void testAccessMode() throws Exception {
+        add(new Directory(Paths.get("foo"), 320));
         performInstallation();
 
-        assertDirectoryStructure( "D /foo" );
+        assertDirectoryStructure("D /foo");
 
-        assertDescriptorEquals( "%attr(0500,root,root) %dir /foo" );
+        assertDescriptorEquals("%attr(0500,root,root) %dir /foo");
     }
 }

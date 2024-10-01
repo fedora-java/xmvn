@@ -26,71 +26,60 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
-
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test if non-POM modules which have no artifact file are handled properly.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class NullFileInstallationTest
-    extends AbstractInstallMojoTest
-{
+public class NullFileInstallationTest extends AbstractInstallMojoTest {
     boolean deployed;
 
     DeploymentResult result;
 
-    Path pomPath = Paths.get( "/some/non/existent.path" );
+    Path pomPath = Paths.get("/some/non/existent.path");
 
-    class DeployerMock
-        implements Deployer
-    {
+    class DeployerMock implements Deployer {
         @Override
-        public DeploymentResult deploy( DeploymentRequest request )
-        {
-            assertFalse( deployed );
+        public DeploymentResult deploy(DeploymentRequest request) {
+            assertFalse(deployed);
             deployed = true;
 
             Artifact artifact = request.getArtifact();
-            assertNotNull( artifact );
-            assertEquals( "pom", artifact.getExtension() );
-            assertEquals( pomPath, artifact.getPath() );
+            assertNotNull(artifact);
+            assertEquals("pom", artifact.getExtension());
+            assertEquals(pomPath, artifact.getPath());
             return result;
         }
     }
 
     @Override
-    protected File getArtifactFile()
-        throws Exception
-    {
+    protected File getArtifactFile() throws Exception {
         return null;
     }
 
     @Test
-    public void testNullFileInstallation()
-        throws Exception
-    {
+    public void testNullFileInstallation() throws Exception {
         setMojoMockExpectations();
-        result = EasyMock.createNiceMock( DeploymentResult.class );
-        replay( result );
+        result = EasyMock.createNiceMock(DeploymentResult.class);
+        replay(result);
 
-        getProject().setArtifact( getArtifact() );
-        getProject().setFile( pomPath.toFile() );
+        getProject().setArtifact(getArtifact());
+        getProject().setFile(pomPath.toFile());
 
-        InstallMojo mojo = new InstallMojo( new DeployerMock(), getLogger() );
-        mojo.setReactorProjects( Collections.singletonList( getProject() ) );
+        InstallMojo mojo = new InstallMojo(new DeployerMock(), getLogger());
+        mojo.setReactorProjects(Collections.singletonList(getProject()));
         deployed = false;
         mojo.execute();
-        assertTrue( deployed );
+        assertTrue(deployed);
 
-        verify( result );
+        verify(result);
         verifyMojoMocks();
     }
 }

@@ -20,50 +20,41 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
-/**
- * @author Marian Koncek
- */
-class ResolutionRequestUnmarshaller
-{
+/** @author Marian Koncek */
+class ResolutionRequestUnmarshaller {
     private final XMLEventReader eventReader;
 
-    public ResolutionRequestUnmarshaller( XMLEventReader eventReader )
-    {
+    public ResolutionRequestUnmarshaller(XMLEventReader eventReader) {
         this.eventReader = eventReader;
     }
 
-    ResolutionRequest unmarshal()
-        throws XMLStreamException
-    {
+    ResolutionRequest unmarshal() throws XMLStreamException {
         ResolutionRequestBean resolutionRequestBean = new ResolutionRequestBean();
         boolean isPersistentFileNeeded = true;
 
-        while ( eventReader.hasNext() )
-        {
+        while (eventReader.hasNext()) {
             XMLEvent event = eventReader.nextEvent();
 
-            switch ( event.getEventType() )
-            {
+            switch (event.getEventType()) {
                 case XMLStreamConstants.START_ELEMENT:
                     StartElement startElement = event.asStartElement();
                     String startName = startElement.getName().getLocalPart();
 
-                    switch ( startName )
-                    {
+                    switch (startName) {
                         case "artifact":
-                            resolutionRequestBean.setArtifact( new ArtifactUnmarshaller( eventReader ).unmarshal() );
+                            resolutionRequestBean.setArtifact(new ArtifactUnmarshaller(eventReader).unmarshal());
                             break;
 
                         case "providerNeeded":
-                            resolutionRequestBean.setProviderNeeded( Boolean.valueOf( eventReader.nextEvent().asCharacters().getData() ) );
+                            resolutionRequestBean.setProviderNeeded(Boolean.valueOf(
+                                    eventReader.nextEvent().asCharacters().getData()));
                             break;
 
                         case "persistentFileNeeded":
-                            isPersistentFileNeeded =
-                                Boolean.valueOf( eventReader.nextEvent().asCharacters().getData() );
+                            isPersistentFileNeeded = Boolean.valueOf(
+                                    eventReader.nextEvent().asCharacters().getData());
                             break;
 
                         default:
@@ -72,18 +63,14 @@ class ResolutionRequestUnmarshaller
                     break;
 
                 case XMLStreamConstants.END_ELEMENT:
-                    if ( "request".equals( event.asEndElement().getName().getLocalPart() ) )
-                    {
+                    if ("request".equals(event.asEndElement().getName().getLocalPart())) {
                         ResolutionRequest resolutionRequest;
-                        try
-                        {
-                            resolutionRequest = new ResolutionRequestBean.Adapter().unmarshal( resolutionRequestBean );
+                        try {
+                            resolutionRequest = new ResolutionRequestBean.Adapter().unmarshal(resolutionRequestBean);
+                        } catch (Exception e) {
+                            throw new XMLStreamException("XML stream does not have a proper format", e);
                         }
-                        catch ( Exception e )
-                        {
-                            throw new XMLStreamException( "XML stream does not have a proper format", e );
-                        }
-                        resolutionRequest.setPersistentFileNeeded( isPersistentFileNeeded );
+                        resolutionRequest.setPersistentFileNeeded(isPersistentFileNeeded);
                         return resolutionRequest;
                     }
                     break;
@@ -93,6 +80,6 @@ class ResolutionRequestUnmarshaller
             }
         }
 
-        throw new XMLStreamException( "XML stream does not have a proper format" );
+        throw new XMLStreamException("XML stream does not have a proper format");
     }
 }

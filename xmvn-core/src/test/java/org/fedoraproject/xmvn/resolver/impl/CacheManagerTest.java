@@ -18,30 +18,24 @@ package org.fedoraproject.xmvn.resolver.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.charset.StandardCharsets;
-
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class CacheManagerTest
-{
+/** @author Mikolaj Izdebski */
+public class CacheManagerTest {
     @Test
-    public void testHashing()
-    {
+    public void testHashing() {
         CacheManager mgr = new CacheManager();
-        assertEquals( "9F86D081884C7D659A2FEAA0C55AD015A3BF4F1B2B0B822CD15D6C15B0F00A08",
-                      mgr.hash( "test".getBytes( StandardCharsets.US_ASCII ) ) );
+        assertEquals(
+                "9F86D081884C7D659A2FEAA0C55AD015A3BF4F1B2B0B822CD15D6C15B0F00A08",
+                mgr.hash("test".getBytes(StandardCharsets.US_ASCII)));
     }
 
     @Test
-    /**
-     * Test case when the first hex letter is a zero.
-     */
-    public void testHashing2()
-    {
+    /** Test case when the first hex letter is a zero. */
+    public void testHashing2() {
         CacheManager mgr = new CacheManager();
-        assertEquals( "033C0C34DCC7390311EF0D2CECF963B42A9C6E19D798117A66AF811FB0040A45",
-                      mgr.hash( "TEST4".getBytes( StandardCharsets.US_ASCII ) ) );
+        assertEquals(
+                "033C0C34DCC7390311EF0D2CECF963B42A9C6E19D798117A66AF811FB0040A45",
+                mgr.hash("TEST4".getBytes(StandardCharsets.US_ASCII)));
     }
 }

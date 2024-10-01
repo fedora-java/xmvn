@@ -18,115 +18,98 @@ package org.fedoraproject.xmvn.tools.install.condition;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
+import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.w3c.dom.Element;
 
-import org.fedoraproject.xmvn.repository.ArtifactContext;
-
-/**
- * @author Mikolaj Izdebski
- */
-public class Condition
-{
+/** @author Mikolaj Izdebski */
+public class Condition {
     private final BooleanExpression expr;
 
-    private StringExpression parseString( Element dom )
-    {
-        switch ( dom.getNodeName() )
-        {
+    private StringExpression parseString(Element dom) {
+        switch (dom.getNodeName()) {
             case "groupId":
-                DomUtils.parseAsEmpty( dom );
+                DomUtils.parseAsEmpty(dom);
                 return new GroupId();
 
             case "artifactId":
-                DomUtils.parseAsEmpty( dom );
+                DomUtils.parseAsEmpty(dom);
                 return new ArtifactId();
 
             case "extension":
-                DomUtils.parseAsEmpty( dom );
+                DomUtils.parseAsEmpty(dom);
                 return new Extension();
 
             case "classifier":
-                DomUtils.parseAsEmpty( dom );
+                DomUtils.parseAsEmpty(dom);
                 return new Classifier();
 
             case "version":
-                DomUtils.parseAsEmpty( dom );
+                DomUtils.parseAsEmpty(dom);
                 return new Version();
 
             case "string":
-                return new StringLiteral( DomUtils.parseAsText( dom ) );
+                return new StringLiteral(DomUtils.parseAsText(dom));
 
             case "property":
-                return new Property( DomUtils.parseAsText( dom ) );
+                return new Property(DomUtils.parseAsText(dom));
 
             case "null":
-                DomUtils.parseAsEmpty( dom );
+                DomUtils.parseAsEmpty(dom);
                 return new Null();
 
             default:
-                throw new RuntimeException( "Unable to parse string expression: unknown XML node name: "
-                    + dom.getNodeName() );
+                throw new RuntimeException(
+                        "Unable to parse string expression: unknown XML node name: " + dom.getNodeName());
         }
     }
 
-    private BooleanExpression parseBoolean( Element dom )
-    {
-        switch ( dom.getNodeName() )
-        {
+    private BooleanExpression parseBoolean(Element dom) {
+        switch (dom.getNodeName()) {
             case "true":
-                DomUtils.parseAsEmpty( dom );
-                return new BooleanLiteral( true );
+                DomUtils.parseAsEmpty(dom);
+                return new BooleanLiteral(true);
 
             case "false":
-                DomUtils.parseAsEmpty( dom );
-                return new BooleanLiteral( true );
+                DomUtils.parseAsEmpty(dom);
+                return new BooleanLiteral(true);
 
             case "not":
-                return new Not( parseBoolean( DomUtils.parseAsWrapper( dom ) ) );
+                return new Not(parseBoolean(DomUtils.parseAsWrapper(dom)));
 
             case "and":
-                return new And( parseList( dom, this::parseBoolean ) );
+                return new And(parseList(dom, this::parseBoolean));
 
             case "or":
-                return new Or( parseList( dom, this::parseBoolean ) );
+                return new Or(parseList(dom, this::parseBoolean));
 
             case "xor":
-                return new Xor( parseList( dom, this::parseBoolean ) );
+                return new Xor(parseList(dom, this::parseBoolean));
 
             case "equals":
-                return new Equals( parseList( dom, this::parseString ) );
+                return new Equals(parseList(dom, this::parseString));
 
             case "defined":
-                return new Defined( DomUtils.parseAsText( dom ) );
+                return new Defined(DomUtils.parseAsText(dom));
 
             default:
-                throw new RuntimeException( "Unable to parse string expression: unknown XML node name: "
-                    + dom.getNodeName() );
+                throw new RuntimeException(
+                        "Unable to parse string expression: unknown XML node name: " + dom.getNodeName());
         }
     }
 
-    private static <T> List<T> parseList( Element dom, Function<Element, T> parser )
-    {
-        return DomUtils.parseAsParent( dom ).stream() //
-                       .map( parser::apply ) //
-                       .collect( Collectors.toList() );
+    private static <T> List<T> parseList(Element dom, Function<Element, T> parser) {
+        return DomUtils.parseAsParent(dom).stream().map(parser::apply).collect(Collectors.toList());
     }
 
-    public Condition( Element dom )
-    {
-        if ( dom == null )
-        {
-            expr = new BooleanLiteral( true );
-        }
-        else
-        {
-            expr = parseBoolean( DomUtils.parseAsWrapper( dom ) );
+    public Condition(Element dom) {
+        if (dom == null) {
+            expr = new BooleanLiteral(true);
+        } else {
+            expr = parseBoolean(DomUtils.parseAsWrapper(dom));
         }
     }
 
-    public boolean getValue( ArtifactContext context )
-    {
-        return expr.getValue( context );
+    public boolean getValue(ArtifactContext context) {
+        return expr.getValue(context);
     }
 }

@@ -17,28 +17,27 @@ package org.fedoraproject.xmvn.locator;
 
 /**
  * A service locator for services provided by XMvn.
- * <p>
- * This service locator uses a separate class loader to load XMvn classes and all of its dependencies.
- * 
+ *
+ * <p>This service locator uses a separate class loader to load XMvn classes and all of its dependencies.
+ *
  * @author Mikolaj Izdebski
  */
-public final class ServiceLocatorFactory
-{
+public final class ServiceLocatorFactory {
     /**
      * Load an instance of XMvn service.
-     * 
+     *
      * @return instance of XMvn service, never {@code null}.
      */
-    public ServiceLocator createServiceLocator()
-    {
-        try
-        {
-            return (ServiceLocator) Class.forName( "org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator" ).getConstructor().newInstance();
-        }
-        catch ( ReflectiveOperationException e )
-        {
-            throw new RuntimeException( "Unable to instantiate DefaultServiceLocator, "
-                + "make sure that xmvn-core.jar is available on classpath", e );
+    public ServiceLocator createServiceLocator() {
+        try {
+            return (ServiceLocator) Class.forName("org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator")
+                    .getConstructor()
+                    .newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(
+                    "Unable to instantiate DefaultServiceLocator, "
+                            + "make sure that xmvn-core.jar is available on classpath",
+                    e);
         }
     }
 }

@@ -23,47 +23,31 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.fedoraproject.xmvn.tools.install.File;
 
-/**
- * @author Mikolaj Izdebski
- */
-public abstract class AbstractFileTest
-    extends AbstractInstallerTest
-{
+/** @author Mikolaj Izdebski */
+public abstract class AbstractFileTest extends AbstractInstallerTest {
     private final List<File> files = new ArrayList<>();
 
-    protected void add( File file )
-        throws Exception
-    {
-        files.add( file );
+    protected void add(File file) throws Exception {
+        files.add(file);
     }
 
-    protected Path performInstallation()
-        throws Exception
-    {
-        try
-        {
-            for ( File file : files )
-                file.install( installRoot );
+    protected Path performInstallation() throws Exception {
+        try {
+            for (File file : files) file.install(installRoot);
 
-            for ( File file : files )
-                descriptors.add( file.getDescriptor() );
+            for (File file : files) descriptors.add(file.getDescriptor());
 
             return installRoot;
-        }
-        finally
-        {
+        } finally {
             files.clear();
         }
     }
 
-    void assertFilesEqual( Path expected, Path actual )
-        throws IOException
-    {
-        byte[] expectedContent = Files.readAllBytes( expected );
-        byte[] actualContent = Files.readAllBytes( actual );
-        assertTrue( Arrays.equals( expectedContent, actualContent ) );
+    void assertFilesEqual(Path expected, Path actual) throws IOException {
+        byte[] expectedContent = Files.readAllBytes(expected);
+        byte[] actualContent = Files.readAllBytes(actual);
+        assertTrue(Arrays.equals(expectedContent, actualContent));
     }
 }

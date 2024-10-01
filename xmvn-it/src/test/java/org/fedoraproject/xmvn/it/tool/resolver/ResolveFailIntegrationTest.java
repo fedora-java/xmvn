@@ -19,24 +19,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for XMvn Resolver tool.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ResolveFailIntegrationTest
-    extends AbstractToolIntegrationTest
-{
+public class ResolveFailIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveFail()
-        throws Exception
-    {
-        assertEquals( 1, invokeTool( "xmvn-resolve", "foobar:xyzzy" ) );
-        assertTrue( getStderr().anyMatch( s -> s.endsWith( "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM" ) ) );
-        assertFalse( getStdout().findAny().isPresent() );
+    public void testResolveFail() throws Exception {
+        assertEquals(1, invokeTool("xmvn-resolve", "foobar:xyzzy"));
+        assertTrue(getStderr().anyMatch(s -> s.endsWith("Unable to resolve artifact foobar:xyzzy:jar:SYSTEM")));
+        assertFalse(getStdout().findAny().isPresent());
     }
 }

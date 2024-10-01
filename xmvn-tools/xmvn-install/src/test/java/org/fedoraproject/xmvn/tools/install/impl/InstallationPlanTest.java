@@ -23,203 +23,135 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Paths;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Michael Simacek
- */
-public class InstallationPlanTest
-{
+/** @author Michael Simacek */
+public class InstallationPlanTest {
     @Test
-    public void testNonexistent()
-        throws Exception
-    {
-        InstallationPlan plan = new InstallationPlan( Paths.get( "not-there" ) );
-        assertTrue( plan.getArtifacts().isEmpty() );
+    public void testNonexistent() throws Exception {
+        InstallationPlan plan = new InstallationPlan(Paths.get("not-there"));
+        assertTrue(plan.getArtifacts().isEmpty());
     }
 
     @Test
-    public void testValid()
-        throws Exception
-    {
-        InstallationPlan plan = createInstallationPlan( "valid.xml" );
-        assertFalse( plan.getArtifacts().isEmpty() );
-        assertEquals( 2, plan.getArtifacts().size() );
-        assertEquals( "test", plan.getArtifacts().get( 0 ).getArtifactId() );
-        assertEquals( "test2", plan.getArtifacts().get( 1 ).getArtifactId() );
+    public void testValid() throws Exception {
+        InstallationPlan plan = createInstallationPlan("valid.xml");
+        assertFalse(plan.getArtifacts().isEmpty());
+        assertEquals(2, plan.getArtifacts().size());
+        assertEquals("test", plan.getArtifacts().get(0).getArtifactId());
+        assertEquals("test2", plan.getArtifacts().get(1).getArtifactId());
     }
 
     @Test
-    public void testUuid()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "uuid.xml" ) );
+    public void testUuid() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("uuid.xml"));
     }
 
     @Test
-    public void testNamespace()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "namespace.xml" ) );
+    public void testNamespace() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("namespace.xml"));
     }
 
     @Test
-    public void testAlias()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "alias.xml" ) );
+    public void testAlias() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("alias.xml"));
     }
 
     @Test
-    public void testCompat()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "compat.xml" ) );
+    public void testCompat() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("compat.xml"));
     }
 
     @Test
-    public void testNoGroupId()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-gid.xml" ) );
+    public void testNoGroupId() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-gid.xml"));
     }
 
     @Test
-    public void testNoArtifactId()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-aid.xml" ) );
+    public void testNoArtifactId() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-aid.xml"));
     }
 
     @Test
-    public void testNoVersion()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-version.xml" ) );
+    public void testNoVersion() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-version.xml"));
     }
 
     @Test
-    public void testNoFile()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-file.xml" ) );
+    public void testNoFile() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-file.xml"));
     }
 
     @Test
-    public void testNonexistenFile()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "nonexistent-file.xml" ) );
+    public void testNonexistenFile() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("nonexistent-file.xml"));
     }
 
     @Test
-    public void testNonregularFile()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "nonregular-file.xml" ) );
+    public void testNonregularFile() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("nonregular-file.xml"));
     }
 
     @Test
-    public void testNonreadableFile()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "nonreadable-file.xml" ) );
+    public void testNonreadableFile() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("nonreadable-file.xml"));
     }
 
     @Test
-    public void testNoArtifactIdDep()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-aid-dep.xml" ) );
+    public void testNoArtifactIdDep() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-aid-dep.xml"));
     }
 
     @Test
-    public void testNoGroupIdDep()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-gid-dep.xml" ) );
+    public void testNoGroupIdDep() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-gid-dep.xml"));
     }
 
     @Test
-    public void testNoVersionDep()
-        throws Exception
-    {
-        InstallationPlan plan = createInstallationPlan( "no-version-dep.xml" );
+    public void testNoVersionDep() throws Exception {
+        InstallationPlan plan = createInstallationPlan("no-version-dep.xml");
 
         List<ArtifactMetadata> artifacts = plan.getArtifacts();
-        assertEquals( 2, artifacts.size() );
+        assertEquals(2, artifacts.size());
 
-        List<Dependency> dependencies = artifacts.get( 1 ).getDependencies();
-        assertEquals( 2, dependencies.size() );
+        List<Dependency> dependencies = artifacts.get(1).getDependencies();
+        assertEquals(2, dependencies.size());
 
-        assertEquals( "4.1", dependencies.get( 0 ).getRequestedVersion() );
-        assertEquals( Artifact.DEFAULT_VERSION, dependencies.get( 1 ).getRequestedVersion() );
+        assertEquals("4.1", dependencies.get(0).getRequestedVersion());
+        assertEquals(Artifact.DEFAULT_VERSION, dependencies.get(1).getRequestedVersion());
     }
 
     @Test
-    public void testNamespaceDep()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "namespace-dep.xml" ) );
+    public void testNamespaceDep() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("namespace-dep.xml"));
     }
 
     @Test
-    public void testResolvedVersionDep()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "resolved-version.xml" ) );
+    public void testResolvedVersionDep() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("resolved-version.xml"));
     }
 
     @Test
-    public void testNoArtifactIdExclusion()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-aid-excl.xml" ) );
+    public void testNoArtifactIdExclusion() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-aid-excl.xml"));
     }
 
     @Test
-    public void testNoGroupIdExclusion()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "no-gid-excl.xml" ) );
+    public void testNoGroupIdExclusion() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-gid-excl.xml"));
     }
 
     @Test
-    public void testSkipped()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "skipped.xml" ) );
+    public void testSkipped() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("skipped.xml"));
     }
 
     @Test
-    public void testMetadataUuid()
-        throws Exception
-    {
-        assertThrows( ArtifactInstallationException.class, //
-                      () -> createInstallationPlan( "metadata-uuid.xml" ) );
+    public void testMetadataUuid() throws Exception {
+        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("metadata-uuid.xml"));
     }
 }

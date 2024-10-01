@@ -16,15 +16,10 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.nio.file.Path;
-
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
-/**
- * @author Mikolaj Izdebski
- */
-class DefaultResolutionResult
-    implements ResolutionResult
-{
+/** @author Mikolaj Izdebski */
+class DefaultResolutionResult implements ResolutionResult {
     private final Path artifactPath;
 
     private String provider;
@@ -33,58 +28,48 @@ class DefaultResolutionResult
 
     private String namespace;
 
-    public DefaultResolutionResult()
-    {
-        this( null );
+    public DefaultResolutionResult() {
+        this(null);
     }
 
-    public DefaultResolutionResult( Path artifactPath )
-    {
-        this( artifactPath, null );
+    public DefaultResolutionResult(Path artifactPath) {
+        this(artifactPath, null);
     }
 
-    public DefaultResolutionResult( Path artifactPath, String namespace )
-    {
+    public DefaultResolutionResult(Path artifactPath, String namespace) {
         this.artifactPath = artifactPath;
         this.namespace = namespace;
     }
 
     @Override
-    public Path getArtifactPath()
-    {
+    public Path getArtifactPath() {
         return artifactPath;
     }
 
     @Override
-    public String getProvider()
-    {
+    public String getProvider() {
         return provider;
     }
 
-    public void setProvider( String provider )
-    {
+    public void setProvider(String provider) {
         this.provider = provider;
     }
 
     @Override
-    public String getCompatVersion()
-    {
+    public String getCompatVersion() {
         return compatVersion;
     }
 
-    public void setCompatVersion( String compatVersion )
-    {
+    public void setCompatVersion(String compatVersion) {
         this.compatVersion = compatVersion;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return namespace;
     }
 
-    public void setNamespace( String namespace )
-    {
+    public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
 }

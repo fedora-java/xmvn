@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -29,49 +28,38 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
-/**
- * @author Marian Koncek
- */
-public class ResolutionRequestListUnmarshaller
-{
+/** @author Marian Koncek */
+public class ResolutionRequestListUnmarshaller {
     private final InputStream inputStream;
 
-    public ResolutionRequestListUnmarshaller( InputStream inputStream )
-    {
+    public ResolutionRequestListUnmarshaller(InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
-    public List<ResolutionRequest> unmarshal()
-        throws IOException, XMLStreamException
-    {
+    public List<ResolutionRequest> unmarshal() throws IOException, XMLStreamException {
         List<ResolutionRequest> resolutionRequests = null;
 
-        try ( BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) ) )
-        {
-            XMLEventReader eventReader = XMLInputFactory.newInstance().createXMLEventReader( bufferedReader );
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            XMLEventReader eventReader = XMLInputFactory.newInstance().createXMLEventReader(bufferedReader);
 
-            try
-            {
-                mainLoop: while ( eventReader.hasNext() )
-                {
+            try {
+                mainLoop:
+                while (eventReader.hasNext()) {
                     XMLEvent event = eventReader.nextEvent();
 
-                    switch ( event.getEventType() )
-                    {
+                    switch (event.getEventType()) {
                         case XMLStreamConstants.START_ELEMENT:
                             StartElement startElement = event.asStartElement();
                             String startName = startElement.getName().getLocalPart();
 
-                            switch ( startName )
-                            {
+                            switch (startName) {
                                 case "requests":
                                     resolutionRequests = new ArrayList<>();
                                     break;
                                 case "request":
-                                    resolutionRequests.add( new ResolutionRequestUnmarshaller( eventReader ).unmarshal() );
+                                    resolutionRequests.add(new ResolutionRequestUnmarshaller(eventReader).unmarshal());
                                     break;
 
                                 default:
@@ -83,8 +71,7 @@ public class ResolutionRequestListUnmarshaller
                             EndElement endElement = event.asEndElement();
                             String endName = endElement.getName().getLocalPart();
 
-                            if ( "requests".equals( endName ) )
-                            {
+                            if ("requests".equals(endName)) {
                                 break mainLoop;
                             }
                             break;
@@ -93,9 +80,7 @@ public class ResolutionRequestListUnmarshaller
                             continue;
                     }
                 }
-            }
-            finally
-            {
+            } finally {
                 eventReader.close();
             }
         }

@@ -20,62 +20,51 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import org.w3c.dom.Element;
-
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.fedoraproject.xmvn.tools.install.condition.DomUtils;
+import org.w3c.dom.Element;
 
 /**
  * Factory creating compound repositories.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-class CompoundRepositoryFactory
-    extends AbstractRepositoryFactory
-{
+class CompoundRepositoryFactory extends AbstractRepositoryFactory {
     private final RepositoryConfigurator configurator;
 
-    public CompoundRepositoryFactory( RepositoryConfigurator configurator )
-    {
+    public CompoundRepositoryFactory(RepositoryConfigurator configurator) {
         this.configurator = configurator;
     }
 
     @Override
-    public Repository getInstance( Element filter, Properties properties, Element configuration, String namespace )
-    {
+    public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
         Path prefix = null;
-        if ( properties.containsKey( "prefix" ) )
-        {
-            prefix = Paths.get( properties.getProperty( "prefix" ) );
+        if (properties.containsKey("prefix")) {
+            prefix = Paths.get(properties.getProperty("prefix"));
         }
 
-        Element repositories = DomUtils.parseAsWrapper( configuration );
-        if ( !"repositories".equals( repositories.getNodeName() ) )
-        {
-            throw new RuntimeException( "compound repository expects configuration "
-                + "with exactly one child element: <repositories>" );
+        Element repositories = DomUtils.parseAsWrapper(configuration);
+        if (!"repositories".equals(repositories.getNodeName())) {
+            throw new RuntimeException(
+                    "compound repository expects configuration " + "with exactly one child element: <repositories>");
         }
 
         List<Repository> slaveRepositories = new ArrayList<>();
-        for ( Element child : DomUtils.parseAsParent( repositories ) )
-        {
-            String text = DomUtils.parseAsText( child );
-            if ( !"repository".equals( child.getNodeName() ) )
-            {
-                throw new RuntimeException( "All children of <repositories> must be <repository> text nodes" );
+        for (Element child : DomUtils.parseAsParent(repositories)) {
+            String text = DomUtils.parseAsText(child);
+            if (!"repository".equals(child.getNodeName())) {
+                throw new RuntimeException("All children of <repositories> must be <repository> text nodes");
             }
 
-            Repository slaveRepository = configurator.configureRepository( text, namespace );
-            slaveRepositories.add( slaveRepository );
+            Repository slaveRepository = configurator.configureRepository(text, namespace);
+            slaveRepositories.add(slaveRepository);
         }
 
-        if ( namespace == null || namespace.isEmpty() )
-        {
-            namespace = properties.getProperty( "namespace", "" );
+        if (namespace == null || namespace.isEmpty()) {
+            namespace = properties.getProperty("namespace", "");
         }
 
-        return new CompoundRepository( namespace, prefix, slaveRepositories );
+        return new CompoundRepository(namespace, prefix, slaveRepositories);
     }
 }

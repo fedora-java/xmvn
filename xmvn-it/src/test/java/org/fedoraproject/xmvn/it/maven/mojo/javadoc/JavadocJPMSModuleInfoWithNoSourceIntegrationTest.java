@@ -21,28 +21,22 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for javadoc MOJO.
- * 
+ *
  * @author Marian Koncek
  */
-public class JavadocJPMSModuleInfoWithNoSourceIntegrationTest
-    extends AbstractMojoIntegrationTest
-{
+public class JavadocJPMSModuleInfoWithNoSourceIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
-    public void testJavadocJPMSModuleInfoWithNoSource()
-        throws Exception
-    {
-        assumeTrue( getJavaVersion() >= 9 );
-        performMojoTest( "verify", "javadoc" );
+    public void testJavadocJPMSModuleInfoWithNoSource() throws Exception {
+        assumeTrue(getJavaVersion() >= 9);
+        performMojoTest("verify", "javadoc");
 
-        assertTrue( getStdout().anyMatch( "[WARNING] Skipping Javadoc generation: no Java sources found"::equals ) );
-        assertFalse( Files.exists( Paths.get( "target/xmvn-apidocs" ) ) );
-        assertFalse( Files.exists( Paths.get( ".xmvn/apidocs" ) ) );
+        assertTrue(getStdout().anyMatch("[WARNING] Skipping Javadoc generation: no Java sources found"::equals));
+        assertFalse(Files.exists(Paths.get("target/xmvn-apidocs")));
+        assertFalse(Files.exists(Paths.get(".xmvn/apidocs")));
     }
 }

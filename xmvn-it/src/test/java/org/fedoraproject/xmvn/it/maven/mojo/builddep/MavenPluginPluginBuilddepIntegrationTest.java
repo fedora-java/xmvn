@@ -19,17 +19,13 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for builddep MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class MavenPluginPluginBuilddepIntegrationTest
-    extends AbstractBuilddepIntegrationTest
-{
+public class MavenPluginPluginBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
-    public void testBuilddepMavenPluginPlugin()
-        throws Exception
-    {
-        expectBuildDependency( "org.apache.maven.plugins", "maven-plugin-plugin" );
+    public void testBuilddepMavenPluginPlugin() throws Exception {
+        expectBuildDependency("org.apache.maven.plugins", "maven-plugin-plugin");
         performBuilddepTest();
     }
 }

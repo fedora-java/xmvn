@@ -20,49 +20,41 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 
 /**
  * Compound repository.
- * <p>
- * This repository aggregates zero or more other repositories. The repositories are ordered by preference.
- * <p>
- * All requests are forwarded to repositories backing this compound repository. If no repositories are aggregated then
- * this repository is equivalent to empty repository.
- * 
+ *
+ * <p>This repository aggregates zero or more other repositories. The repositories are ordered by preference.
+ *
+ * <p>All requests are forwarded to repositories backing this compound repository. If no repositories are aggregated
+ * then this repository is equivalent to empty repository.
+ *
  * @author Mikolaj Izdebski
  */
-class CompoundRepository
-    extends AbstractRepository
-{
+class CompoundRepository extends AbstractRepository {
     private final Path prefix;
 
     private final List<Repository> slaveRepositories;
 
-    public CompoundRepository( String namespace, Path prefix, List<Repository> slaveRepositories )
-    {
-        super( namespace );
+    public CompoundRepository(String namespace, Path prefix, List<Repository> slaveRepositories) {
+        super(namespace);
         this.prefix = prefix;
         this.slaveRepositories = slaveRepositories;
     }
 
-    private Path prefix( Path path )
-    {
-        return prefix == null ? path : prefix.resolve( path );
+    private Path prefix(Path path) {
+        return prefix == null ? path : prefix.resolve(path);
     }
 
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
-    {
-        for ( Repository repository : slaveRepositories )
-        {
-            Path path = repository.getPrimaryArtifactPath( artifact, context, pattern );
-            if ( path != null )
-            {
-                return prefix( path );
+    public Path getPrimaryArtifactPath(Artifact artifact, ArtifactContext context, String pattern) {
+        for (Repository repository : slaveRepositories) {
+            Path path = repository.getPrimaryArtifactPath(artifact, context, pattern);
+            if (path != null) {
+                return prefix(path);
             }
         }
 
@@ -70,18 +62,15 @@ class CompoundRepository
     }
 
     @Override
-    public Set<Path> getRootPaths()
-    {
+    public Set<Path> getRootPaths() {
         Set<Path> rootPaths = new LinkedHashSet<>();
 
-        for ( Repository repository : slaveRepositories )
-        {
-            for ( Path rootPath : repository.getRootPaths() )
-            {
-                rootPaths.add( prefix( rootPath ) );
+        for (Repository repository : slaveRepositories) {
+            for (Path rootPath : repository.getRootPaths()) {
+                rootPaths.add(prefix(rootPath));
             }
         }
 
-        return Collections.unmodifiableSet( rootPaths );
+        return Collections.unmodifiableSet(rootPaths);
     }
 }

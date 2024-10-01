@@ -19,16 +19,12 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for builddep MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class UnusedPluginsBuilddepIntegrationTest
-    extends AbstractBuilddepIntegrationTest
-{
+public class UnusedPluginsBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
-    public void testBuilddepUnusedPlugins()
-        throws Exception
-    {
+    public void testBuilddepUnusedPlugins() throws Exception {
         performBuilddepTest();
     }
 }

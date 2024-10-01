@@ -19,174 +19,149 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.inject.Binder;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
-
-import com.google.inject.Binder;
 import org.easymock.EasyMock;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class WorkspaceReaderTest
-    extends AbstractTest
-{
+/** @author Mikolaj Izdebski */
+public class WorkspaceReaderTest extends AbstractTest {
     private WorkspaceReader workspace;
 
     private Resolver resolver;
 
     @Override
-    public void configure( Binder binder )
-    {
+    public void configure(Binder binder) {
         // Nothing to do
     }
 
     @BeforeEach
-    public void setUp()
-        throws Exception
-    {
-        resolver = EasyMock.createMock( Resolver.class );
-        getContainer().addComponent( resolver, Resolver.class, "default" );
+    public void setUp() throws Exception {
+        resolver = EasyMock.createMock(Resolver.class);
+        getContainer().addComponent(resolver, Resolver.class, "default");
 
-        workspace = lookup( WorkspaceReader.class, "ide" );
+        workspace = lookup(WorkspaceReader.class, "ide");
     }
 
     @Test
-    public void testDependencyInjection()
-        throws Exception
-    {
-        assertNotNull( workspace );
-        assertTrue( workspace instanceof XMvnWorkspaceReader );
+    public void testDependencyInjection() throws Exception {
+        assertNotNull(workspace);
+        assertTrue(workspace instanceof XMvnWorkspaceReader);
     }
 
     @Test
-    public void testFindArtifact()
-        throws Exception
-    {
-        ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( "foo:bar:1.2.3" ) );
-        ResolutionResult result = EasyMock.createMock( ResolutionResult.class );
+    public void testFindArtifact() throws Exception {
+        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
-        EasyMock.expect( resolver.resolve( request ) ).andReturn( result );
-        EasyMock.expect( result.getArtifactPath() ).andReturn( Paths.get( "/foo/bar" ) );
-        EasyMock.replay( resolver, result );
+        EasyMock.expect(resolver.resolve(request)).andReturn(result);
+        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        EasyMock.replay(resolver, result);
 
-        File file = workspace.findArtifact( new org.eclipse.aether.artifact.DefaultArtifact( "foo:bar:1.2.3" ) );
-        EasyMock.verify( resolver, result );
+        File file = workspace.findArtifact(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        EasyMock.verify(resolver, result);
 
-        assertEquals( new File( "/foo/bar" ), file );
+        assertEquals(new File("/foo/bar"), file);
     }
 
     @Test
-    public void testArtifactNotFound()
-        throws Exception
-    {
-        ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( "foo:bar:1.2.3" ) );
-        ResolutionResult result = EasyMock.createMock( ResolutionResult.class );
+    public void testArtifactNotFound() throws Exception {
+        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
-        EasyMock.expect( resolver.resolve( request ) ).andReturn( result );
-        EasyMock.expect( result.getArtifactPath() ).andReturn( null );
-        EasyMock.replay( resolver, result );
+        EasyMock.expect(resolver.resolve(request)).andReturn(result);
+        EasyMock.expect(result.getArtifactPath()).andReturn(null);
+        EasyMock.replay(resolver, result);
 
-        File file = workspace.findArtifact( new org.eclipse.aether.artifact.DefaultArtifact( "foo:bar:1.2.3" ) );
-        EasyMock.verify( resolver, result );
+        File file = workspace.findArtifact(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        EasyMock.verify(resolver, result);
 
-        assertEquals( null, file );
+        assertEquals(null, file);
     }
 
     @Test
-    public void testResolutionListener()
-        throws Exception
-    {
-        ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( "foo:bar:1.2.3" ) );
-        ResolutionResult result = EasyMock.createMock( ResolutionResult.class );
-        ResolutionListener listener = EasyMock.createMock( ResolutionListener.class );
+    public void testResolutionListener() throws Exception {
+        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
+        ResolutionListener listener = EasyMock.createMock(ResolutionListener.class);
 
-        EasyMock.expect( resolver.resolve( request ) ).andReturn( result );
-        EasyMock.expect( result.getArtifactPath() ).andReturn( Paths.get( "/foo/bar" ) );
-        listener.resolutionRequested( request );
+        EasyMock.expect(resolver.resolve(request)).andReturn(result);
+        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        listener.resolutionRequested(request);
         EasyMock.expectLastCall();
-        listener.resolutionCompleted( request, result );
+        listener.resolutionCompleted(request, result);
         EasyMock.expectLastCall();
-        EasyMock.replay( resolver, result, listener );
+        EasyMock.replay(resolver, result, listener);
 
-        ( (XMvnWorkspaceReader) workspace ).addResolutionListener( listener );
-        workspace.findArtifact( new org.eclipse.aether.artifact.DefaultArtifact( "foo:bar:1.2.3" ) );
-        EasyMock.verify( resolver, result, listener );
+        ((XMvnWorkspaceReader) workspace).addResolutionListener(listener);
+        workspace.findArtifact(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        EasyMock.verify(resolver, result, listener);
     }
 
     @Test
-    public void testFindVersionsSystem()
-        throws Exception
-    {
-        ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( "foo:bar:1.2.3" ) );
-        ResolutionResult result = EasyMock.createMock( ResolutionResult.class );
+    public void testFindVersionsSystem() throws Exception {
+        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
-        EasyMock.expect( resolver.resolve( request ) ).andReturn( result );
-        EasyMock.expect( result.getArtifactPath() ).andReturn( Paths.get( "/foo/bar" ) );
-        EasyMock.expect( result.getCompatVersion() ).andReturn( null );
-        EasyMock.replay( resolver, result );
+        EasyMock.expect(resolver.resolve(request)).andReturn(result);
+        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        EasyMock.expect(result.getCompatVersion()).andReturn(null);
+        EasyMock.replay(resolver, result);
 
         List<String> versions =
-            workspace.findVersions( new org.eclipse.aether.artifact.DefaultArtifact( "foo:bar:1.2.3" ) );
-        EasyMock.verify( resolver, result );
+                workspace.findVersions(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        EasyMock.verify(resolver, result);
 
-        assertEquals( 1, versions.size() );
-        assertEquals( "SYSTEM", versions.get( 0 ) );
+        assertEquals(1, versions.size());
+        assertEquals("SYSTEM", versions.get(0));
     }
 
     @Test
-    public void testFindVersionsCompat()
-        throws Exception
-    {
-        ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( "foo:bar:1.2.3" ) );
-        ResolutionResult result = EasyMock.createMock( ResolutionResult.class );
+    public void testFindVersionsCompat() throws Exception {
+        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
-        EasyMock.expect( resolver.resolve( request ) ).andReturn( result );
-        EasyMock.expect( result.getArtifactPath() ).andReturn( Paths.get( "/foo/bar" ) );
-        EasyMock.expect( result.getCompatVersion() ).andReturn( "4.5.6" );
-        EasyMock.replay( resolver, result );
+        EasyMock.expect(resolver.resolve(request)).andReturn(result);
+        EasyMock.expect(result.getArtifactPath()).andReturn(Paths.get("/foo/bar"));
+        EasyMock.expect(result.getCompatVersion()).andReturn("4.5.6");
+        EasyMock.replay(resolver, result);
 
         List<String> versions =
-            workspace.findVersions( new org.eclipse.aether.artifact.DefaultArtifact( "foo:bar:1.2.3" ) );
-        EasyMock.verify( resolver, result );
+                workspace.findVersions(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        EasyMock.verify(resolver, result);
 
-        assertEquals( 1, versions.size() );
-        assertEquals( "4.5.6", versions.get( 0 ) );
+        assertEquals(1, versions.size());
+        assertEquals("4.5.6", versions.get(0));
     }
 
     @Test
-    public void testFindVersionsNotFound()
-        throws Exception
-    {
-        ResolutionRequest request = new ResolutionRequest( new DefaultArtifact( "foo:bar:1.2.3" ) );
-        ResolutionResult result = EasyMock.createMock( ResolutionResult.class );
+    public void testFindVersionsNotFound() throws Exception {
+        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
-        EasyMock.expect( resolver.resolve( request ) ).andReturn( result );
-        EasyMock.expect( result.getArtifactPath() ).andReturn( null );
-        EasyMock.replay( resolver, result );
+        EasyMock.expect(resolver.resolve(request)).andReturn(result);
+        EasyMock.expect(result.getArtifactPath()).andReturn(null);
+        EasyMock.replay(resolver, result);
 
         List<String> versions =
-            workspace.findVersions( new org.eclipse.aether.artifact.DefaultArtifact( "foo:bar:1.2.3" ) );
-        EasyMock.verify( resolver, result );
+                workspace.findVersions(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        EasyMock.verify(resolver, result);
 
-        assertEquals( 0, versions.size() );
+        assertEquals(0, versions.size());
     }
 
     @Test
-    public void testGetRepository()
-        throws Exception
-    {
+    public void testGetRepository() throws Exception {
         WorkspaceRepository repository = workspace.getRepository();
-        assertNotNull( repository );
+        assertNotNull(repository);
     }
 }

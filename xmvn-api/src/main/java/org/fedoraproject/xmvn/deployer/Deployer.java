@@ -15,10 +15,7 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
-/**
- * @author Mikolaj Izdebski
- */
-public interface Deployer
-{
-    DeploymentResult deploy( DeploymentRequest request );
+/** @author Mikolaj Izdebski */
+public interface Deployer {
+    DeploymentResult deploy(DeploymentRequest request);
 }

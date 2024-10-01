@@ -15,27 +15,21 @@
  */
 package org.fedoraproject.xmvn.test;
 
-import org.junit.jupiter.api.BeforeEach;
-
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator;
+import org.junit.jupiter.api.BeforeEach;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class AbstractTest
-{
+/** @author Mikolaj Izdebski */
+public class AbstractTest {
     protected DefaultServiceLocator locator;
 
     @BeforeEach
-    public void configureServiceLocator()
-    {
+    public void configureServiceLocator() {
         locator = new DefaultServiceLocator();
-        locator.addService( Configurator.class, TestConfigurator.class );
+        locator.addService(Configurator.class, TestConfigurator.class);
     }
 
-    public <T> T getService( Class<T> role )
-    {
-        return locator.getService( role );
+    public <T> T getService(Class<T> role) {
+        return locator.getService(role);
     }
 }

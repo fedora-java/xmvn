@@ -17,24 +17,21 @@ package org.fedoraproject.xmvn.it.maven.basic;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Basic integration tests for XMvn (Maven with extensions).
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ToolchainManagerBasicIntegrationTest
-    extends AbstractMavenIntegrationTest
-{
+public class ToolchainManagerBasicIntegrationTest extends AbstractMavenIntegrationTest {
     @Test
-    public void testToolchainManager()
-        throws Exception
-    {
-        performTest( "verify" );
-        assertTrue( getStdout().anyMatch( s -> s.matches( "\\[INFO\\] Toolchain in (maven-)?compiler-plugin: JDK\\[/tmp\\]" ) ) );
-        assertTrue( getStdout().anyMatch( s -> s.matches( "\\[INFO\\] Toolchain in (maven-)?surefire-plugin: JDK\\[/tmp\\]" ) ) );
+    public void testToolchainManager() throws Exception {
+        performTest("verify");
+        assertTrue(getStdout()
+                .anyMatch(s -> s.matches("\\[INFO\\] Toolchain in (maven-)?compiler-plugin: JDK\\[/tmp\\]")));
+        assertTrue(getStdout()
+                .anyMatch(s -> s.matches("\\[INFO\\] Toolchain in (maven-)?surefire-plugin: JDK\\[/tmp\\]")));
     }
 }

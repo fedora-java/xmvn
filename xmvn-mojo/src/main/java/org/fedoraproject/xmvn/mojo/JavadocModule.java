@@ -20,11 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
-class JavadocModule
-{
+/** @author Mikolaj Izdebski */
+class JavadocModule {
     private String moduleName;
 
     private boolean isAutomatic;
@@ -35,55 +32,50 @@ class JavadocModule
 
     private final List<Path> binaryPaths;
 
-    public JavadocModule( String moduleName, boolean isAutomatic, Path artifactPath, List<Path> sourcePaths,
-                          List<Path> dependencies )
-    {
+    public JavadocModule(
+            String moduleName,
+            boolean isAutomatic,
+            Path artifactPath,
+            List<Path> sourcePaths,
+            List<Path> dependencies) {
         this.moduleName = moduleName;
         this.isAutomatic = isAutomatic;
         this.artifactPath = artifactPath;
         this.sourcePaths = sourcePaths;
-        binaryPaths = new ArrayList<>( Collections.singleton( artifactPath ) );
-        binaryPaths.addAll( dependencies );
+        binaryPaths = new ArrayList<>(Collections.singleton(artifactPath));
+        binaryPaths.addAll(dependencies);
     }
 
-    public String getModuleName()
-    {
+    public String getModuleName() {
         return moduleName;
     }
 
-    public boolean isModular()
-    {
+    public boolean isModular() {
         return moduleName != null;
     }
 
-    public boolean isNotModular()
-    {
+    public boolean isNotModular() {
         return moduleName == null;
     }
 
-    public boolean isAutomatic()
-    {
+    public boolean isAutomatic() {
         return isAutomatic;
     }
 
-    public List<Path> getSourcePaths()
-    {
+    public List<Path> getSourcePaths() {
         return sourcePaths;
     }
 
-    public List<Path> getClassPaths()
-    {
+    public List<Path> getClassPaths() {
         return binaryPaths;
     }
 
-    public JavadocModule demodularize()
-    {
-        return new JavadocModule( null, false, artifactPath, sourcePaths, binaryPaths );
+    public JavadocModule demodularize() {
+        return new JavadocModule(null, false, artifactPath, sourcePaths, binaryPaths);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         String name = moduleName != null ? moduleName : "UNNAMED";
         String automatic = isAutomatic ? "automatic" : "non-automatic";
         return automatic + " module " + name + " at " + artifactPath;

@@ -19,32 +19,27 @@ import java.util.List;
 
 /**
  * Specifies parameters of metadata resolution.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class MetadataRequest
-{
+public class MetadataRequest {
     private final List<String> metadataRepositories;
 
     private boolean ignoreDuplicates = true;
 
-    public MetadataRequest( List<String> metadataRepositories )
-    {
+    public MetadataRequest(List<String> metadataRepositories) {
         this.metadataRepositories = metadataRepositories;
     }
 
-    public List<String> getMetadataRepositories()
-    {
+    public List<String> getMetadataRepositories() {
         return metadataRepositories;
     }
 
-    public boolean isIgnoreDuplicates()
-    {
+    public boolean isIgnoreDuplicates() {
         return ignoreDuplicates;
     }
 
-    public void setIgnoreDuplicates( boolean ignoreDuplicates )
-    {
+    public void setIgnoreDuplicates(boolean ignoreDuplicates) {
         this.ignoreDuplicates = ignoreDuplicates;
     }
 }

@@ -17,47 +17,39 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.w3c.dom.Element;
 
 /**
  * JPP-style repository JPP layout, either versioned or versionless, depending on properties.
- * <p>
- * Example: {@code g/r/o/u/p/artifact-ver.ext} or {@code g/r/o/u/p/artifact.ext}
- * 
+ *
+ * <p>Example: {@code g/r/o/u/p/artifact-ver.ext} or {@code g/r/o/u/p/artifact.ext}
+ *
  * @author Mikolaj Izdebski
  */
-class JppRepository
-    extends SimpleRepository
-{
-    public JppRepository( String namespace, Path root, Element filter )
-    {
-        super( namespace, root, filter );
+class JppRepository extends SimpleRepository {
+    public JppRepository(String namespace, Path root, Element filter) {
+        super(namespace, root, filter);
     }
 
     @Override
-    protected Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,
-                                    String classifier, String version )
-    {
+    protected Path getArtifactPath(
+            String pattern, String groupId, String artifactId, String extension, String classifier, String version) {
         StringBuilder path = new StringBuilder();
 
-        path.append( pattern.replaceFirst( "^JPP/", "" ) );
+        path.append(pattern.replaceFirst("^JPP/", ""));
 
-        if ( version != null )
-        {
-            path.append( '-' ).append( version );
+        if (version != null) {
+            path.append('-').append(version);
         }
 
-        if ( !classifier.isEmpty() )
-        {
-            path.append( '-' ).append( classifier );
+        if (!classifier.isEmpty()) {
+            path.append('-').append(classifier);
         }
 
-        if ( !extension.isEmpty() )
-        {
-            path.append( '.' ).append( extension );
+        if (!extension.isEmpty()) {
+            path.append('.').append(extension);
         }
 
-        return Paths.get( path.toString() );
+        return Paths.get(path.toString());
     }
 }

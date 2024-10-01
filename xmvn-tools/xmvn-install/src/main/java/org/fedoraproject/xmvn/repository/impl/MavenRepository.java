@@ -17,55 +17,47 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.w3c.dom.Element;
 
 /**
  * Maven repository layout, as used by upstream Maven.
- * <p>
- * Example: {@code g/r/o/u/p/artifact/ver/artifact-ver.ext}
- * 
+ *
+ * <p>Example: {@code g/r/o/u/p/artifact/ver/artifact-ver.ext}
+ *
  * @author Mikolaj Izdebski
  */
-class MavenRepository
-    extends SimpleRepository
-{
-    public MavenRepository( String namespace, Path root, Element filter )
-    {
-        super( namespace, root, filter );
+class MavenRepository extends SimpleRepository {
+    public MavenRepository(String namespace, Path root, Element filter) {
+        super(namespace, root, filter);
     }
 
     @Override
-    protected Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,
-                                    String classifier, String version )
-    {
-        if ( version == null )
-        {
+    protected Path getArtifactPath(
+            String pattern, String groupId, String artifactId, String extension, String classifier, String version) {
+        if (version == null) {
             return null;
         }
 
         StringBuilder path = new StringBuilder();
 
-        path.append( groupId.replace( '.', '/' ) ).append( '/' );
+        path.append(groupId.replace('.', '/')).append('/');
 
-        path.append( artifactId );
+        path.append(artifactId);
 
-        path.append( '/' ).append( version );
+        path.append('/').append(version);
 
-        path.append( '/' ).append( artifactId );
+        path.append('/').append(artifactId);
 
-        path.append( '-' ).append( version );
+        path.append('-').append(version);
 
-        if ( !classifier.isEmpty() )
-        {
-            path.append( '-' ).append( classifier );
+        if (!classifier.isEmpty()) {
+            path.append('-').append(classifier);
         }
 
-        if ( !extension.isEmpty() )
-        {
-            path.append( '.' ).append( extension );
+        if (!extension.isEmpty()) {
+            path.append('.').append(extension);
         }
 
-        return Paths.get( path.toString() );
+        return Paths.get(path.toString());
     }
 }

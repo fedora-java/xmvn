@@ -20,29 +20,23 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for javadoc MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class JavadocJPMSAutomaticModuleReadsIntegrationTest
-    extends AbstractMojoIntegrationTest
-{
+public class JavadocJPMSAutomaticModuleReadsIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
-    public void testJavadocJPMSAutomaticModuleReads()
-        throws Exception
-    {
-        assumeTrue( getJavaVersion() >= 9 );
-        performMojoTest( "verify", "javadoc" );
+    public void testJavadocJPMSAutomaticModuleReads() throws Exception {
+        assumeTrue(getJavaVersion() >= 9);
+        performMojoTest("verify", "javadoc");
 
-        assertTrue( Files.isDirectory( Paths.get( "target/xmvn-apidocs" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/doom/Main.html" ) ) );
-        assertTrue( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
-        assertTrue( Files.isSameFile( Paths.get( ".xmvn/apidocs" ), Paths.get( "target/xmvn-apidocs" ) ) );
+        assertTrue(Files.isDirectory(Paths.get("target/xmvn-apidocs")));
+        assertTrue(Files.isRegularFile(Paths.get("target/xmvn-apidocs/doom/Main.html")));
+        assertTrue(Files.isSymbolicLink(Paths.get(".xmvn/apidocs")));
+        assertTrue(Files.isSameFile(Paths.get(".xmvn/apidocs"), Paths.get("target/xmvn-apidocs")));
     }
 }

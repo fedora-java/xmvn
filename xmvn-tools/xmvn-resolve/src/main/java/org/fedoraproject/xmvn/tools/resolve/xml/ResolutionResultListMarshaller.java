@@ -20,22 +20,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
-/**
- * @author Marian Koncek
- */
-public class ResolutionResultListMarshaller
-{
+/** @author Marian Koncek */
+public class ResolutionResultListMarshaller {
     private final List<ResolutionResult> resolutionResults;
 
-    static class StringConstants
-    {
+    static class StringConstants {
         private static final String RESULT = "result";
 
         private static final String ARTIFACT_PATH = "artifactPath";
@@ -47,56 +41,45 @@ public class ResolutionResultListMarshaller
         private static final String NAMESPACE = "namespace";
     }
 
-    public ResolutionResultListMarshaller( List<ResolutionResult> resolutionResults )
-    {
+    public ResolutionResultListMarshaller(List<ResolutionResult> resolutionResults) {
         this.resolutionResults = resolutionResults;
     }
 
-    public void marshal( OutputStream stream )
-        throws IOException, XMLStreamException
-    {
-        try ( BufferedWriter bw = new BufferedWriter( new OutputStreamWriter( stream ) ) )
-        {
-            XMLStreamWriter xsw = XMLOutputFactory.newInstance().createXMLStreamWriter( bw );
+    public void marshal(OutputStream stream) throws IOException, XMLStreamException {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(stream))) {
+            XMLStreamWriter xsw = XMLOutputFactory.newInstance().createXMLStreamWriter(bw);
 
-            try
-            {
-                xsw.writeStartElement( "results" );
+            try {
+                xsw.writeStartElement("results");
 
-                for ( ResolutionResult resolutionResult : resolutionResults )
-                {
-                    if ( resolutionResult == null )
-                    {
+                for (ResolutionResult resolutionResult : resolutionResults) {
+                    if (resolutionResult == null) {
                         continue;
                     }
 
-                    xsw.writeStartElement( StringConstants.RESULT );
+                    xsw.writeStartElement(StringConstants.RESULT);
 
-                    if ( resolutionResult.getArtifactPath() != null )
-                    {
-                        xsw.writeStartElement( StringConstants.ARTIFACT_PATH );
-                        xsw.writeCharacters( resolutionResult.getArtifactPath().toString() );
+                    if (resolutionResult.getArtifactPath() != null) {
+                        xsw.writeStartElement(StringConstants.ARTIFACT_PATH);
+                        xsw.writeCharacters(resolutionResult.getArtifactPath().toString());
                         xsw.writeEndElement();
                     }
 
-                    if ( resolutionResult.getProvider() != null )
-                    {
-                        xsw.writeStartElement( StringConstants.PROVIDER );
-                        xsw.writeCharacters( resolutionResult.getProvider() );
+                    if (resolutionResult.getProvider() != null) {
+                        xsw.writeStartElement(StringConstants.PROVIDER);
+                        xsw.writeCharacters(resolutionResult.getProvider());
                         xsw.writeEndElement();
                     }
 
-                    if ( resolutionResult.getCompatVersion() != null )
-                    {
-                        xsw.writeStartElement( StringConstants.COMPAT_VERSION );
-                        xsw.writeCharacters( resolutionResult.getCompatVersion() );
+                    if (resolutionResult.getCompatVersion() != null) {
+                        xsw.writeStartElement(StringConstants.COMPAT_VERSION);
+                        xsw.writeCharacters(resolutionResult.getCompatVersion());
                         xsw.writeEndElement();
                     }
 
-                    if ( resolutionResult.getNamespace() != null )
-                    {
-                        xsw.writeStartElement( StringConstants.NAMESPACE );
-                        xsw.writeCharacters( resolutionResult.getNamespace() );
+                    if (resolutionResult.getNamespace() != null) {
+                        xsw.writeStartElement(StringConstants.NAMESPACE);
+                        xsw.writeCharacters(resolutionResult.getNamespace());
                         xsw.writeEndElement();
                     }
 
@@ -104,9 +87,7 @@ public class ResolutionResultListMarshaller
                 }
 
                 xsw.writeEndElement();
-            }
-            finally
-            {
+            } finally {
                 xsw.close();
             }
         }

@@ -22,14 +22,12 @@ import java.util.function.Supplier;
 
 /**
  * A regular file created installed in target package.
- * <p>
- * The file can be installed either by coping an existing file (source file), or by writing provided contents.
- * 
+ *
+ * <p>The file can be installed either by coping an existing file (source file), or by writing provided contents.
+ *
  * @author Mikolaj Izdebski
  */
-public class RegularFile
-    extends File
-{
+public class RegularFile extends File {
     /**
      * Path to source file which contents will be copied to create target file. Can be {@code null}, in which case byte
      * contents are used instead.
@@ -45,50 +43,46 @@ public class RegularFile
     /**
      * Create a regular file object, which contents will be populated from a source file. Target file will have default
      * access mode (0644).
-     * 
+     *
      * @param targetPath file path, relative to installation root
      * @param sourcePath path to source file which will be copied to target path
      */
-    public RegularFile( Path targetPath, Path sourcePath )
-    {
-        this( targetPath, sourcePath, DEFAULT_MODE );
+    public RegularFile(Path targetPath, Path sourcePath) {
+        this(targetPath, sourcePath, DEFAULT_MODE);
     }
 
     /**
      * Create a regular file object, which contents will be populated from a byte array. Target file will have default
      * access mode (0644).
-     * 
+     *
      * @param targetPath file path, relative to installation root
      * @param content array of bytes used to populate target file contents with
      */
-    public RegularFile( Path targetPath, byte[] content )
-    {
-        this( targetPath, content, DEFAULT_MODE );
+    public RegularFile(Path targetPath, byte[] content) {
+        this(targetPath, content, DEFAULT_MODE);
     }
 
     /**
      * Create a regular file object, which contents will be populated from a byte array. Target file will have default
      * access mode (0644).
-     * 
+     *
      * @param targetPath file path, relative to installation root
      * @param content provider of array of bytes used to populate target file contents with
      */
-    public RegularFile( Path targetPath, Supplier<byte[]> content )
-    {
-        this( targetPath, content, DEFAULT_MODE );
+    public RegularFile(Path targetPath, Supplier<byte[]> content) {
+        this(targetPath, content, DEFAULT_MODE);
     }
 
     /**
      * Create a regular file object, which contents will be populated from a source file. Target file will have
      * specified access mode.
-     * 
+     *
      * @param targetPath file path, relative to installation root
      * @param sourcePath path to source file which will be copied to target path
      * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
-    public RegularFile( Path targetPath, Path sourcePath, int accessMode )
-    {
-        super( targetPath, accessMode );
+    public RegularFile(Path targetPath, Path sourcePath, int accessMode) {
+        super(targetPath, accessMode);
 
         this.sourcePath = sourcePath;
         content = null;
@@ -97,14 +91,13 @@ public class RegularFile
     /**
      * Create a regular file object, which contents will be populated from a byte array. Target file will have specified
      * access mode
-     * 
+     *
      * @param targetPath file path, relative to installation root
      * @param content array of bytes used to populate target file contents with
      * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
-    public RegularFile( Path targetPath, byte[] content, int accessMode )
-    {
-        super( targetPath, accessMode );
+    public RegularFile(Path targetPath, byte[] content, int accessMode) {
+        super(targetPath, accessMode);
 
         sourcePath = null;
         this.content = () -> content;
@@ -113,30 +106,24 @@ public class RegularFile
     /**
      * Create a regular file object, which contents will be populated from an input stream. Target file will have
      * specified access mode
-     * 
+     *
      * @param targetPath file path, relative to installation root
      * @param content provider of array of bytes used to populate target file contents with
      * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
-    public RegularFile( Path targetPath, Supplier<byte[]> content, int accessMode )
-    {
-        super( targetPath, accessMode );
+    public RegularFile(Path targetPath, Supplier<byte[]> content, int accessMode) {
+        super(targetPath, accessMode);
 
         sourcePath = null;
         this.content = content;
     }
 
     @Override
-    protected void installContents( Path targetPath )
-        throws IOException
-    {
-        if ( sourcePath != null )
-        {
-            Files.copy( sourcePath, targetPath );
-        }
-        else
-        {
-            Files.write( targetPath, content.get() );
+    protected void installContents(Path targetPath) throws IOException {
+        if (sourcePath != null) {
+            Files.copy(sourcePath, targetPath);
+        } else {
+            Files.write(targetPath, content.get());
         }
     }
 }

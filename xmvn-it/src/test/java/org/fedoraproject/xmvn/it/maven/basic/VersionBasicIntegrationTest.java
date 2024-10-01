@@ -18,25 +18,20 @@ package org.fedoraproject.xmvn.it.maven.basic;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Basic integration tests for XMvn (Maven with extensions).
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class VersionBasicIntegrationTest
-    extends AbstractMavenIntegrationTest
-{
+public class VersionBasicIntegrationTest extends AbstractMavenIntegrationTest {
     @Test
-    public void testVersion()
-        throws Exception
-    {
-        performTest( "-v" );
-        assertTrue( getStdout().anyMatch( s -> s.contains( "Apache Maven" ) ) );
-        assertTrue( getStdout().anyMatch( s -> s.equals( "Maven home: " + getMavenHome() ) ) );
-        assertFalse( getStdout().anyMatch( s -> s.toLowerCase().matches( ".*(error|exception|fail).*" ) ) );
+    public void testVersion() throws Exception {
+        performTest("-v");
+        assertTrue(getStdout().anyMatch(s -> s.contains("Apache Maven")));
+        assertTrue(getStdout().anyMatch(s -> s.equals("Maven home: " + getMavenHome())));
+        assertFalse(getStdout().anyMatch(s -> s.toLowerCase().matches(".*(error|exception|fail).*")));
     }
 }

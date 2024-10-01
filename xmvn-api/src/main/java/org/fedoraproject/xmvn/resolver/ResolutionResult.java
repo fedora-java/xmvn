@@ -19,41 +19,40 @@ import java.nio.file.Path;
 
 /**
  * Provides access to results of artifact resolution.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public interface ResolutionResult
-{
+public interface ResolutionResult {
     /**
      * Get resolved artifact file.
-     * 
+     *
      * @return resolved artifact file or {@code null} if requested artifact could not be resolved
      */
     Path getArtifactPath();
 
     /**
      * Get name of system package providing requested artifact.
-     * 
+     *
      * @return name of system package providing requested artifact or {@code null} if information about artifact
-     *         provider is not available
+     *     provider is not available
      */
     String getProvider();
 
     /**
      * Get compatibility version of resolved artifact.
-     * <p>
-     * Compatibility version is defined only when resolved artifact version is not default version of the artifact in
+     *
+     * <p>Compatibility version is defined only when resolved artifact version is not default version of the artifact in
      * the system.
-     * 
+     *
      * @return compatibility version of resolved artifact or {@code null} if default artifact version was resolved
      */
     String getCompatVersion();
 
     /**
      * Get namespace of resolved artifact, if any.
-     * 
+     *
      * @return namespace of repository from which the artifact was resolved or {@code null} if artifact was not resolved
-     *         from any repository or the repository does not have associated namespace.
+     *     from any repository or the repository does not have associated namespace.
      */
     String getNamespace();
 }

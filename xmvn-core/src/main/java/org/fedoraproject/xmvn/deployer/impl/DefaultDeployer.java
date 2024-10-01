@@ -21,11 +21,9 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.xml.stream.XMLStreamException;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.DependencyDescriptor;
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -40,103 +38,83 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
  * Default implementation of XMvn {@code Deployer} interface.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
- * 
+ *
+ * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only
+ * for technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong>
+ * reference it directly.
+ *
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
-public class DefaultDeployer
-    implements Deployer
-{
+public class DefaultDeployer implements Deployer {
     @Override
-    public DeploymentResult deploy( DeploymentRequest request )
-    {
+    public DeploymentResult deploy(DeploymentRequest request) {
         DefaultDeploymentResult result = new DefaultDeploymentResult();
 
-        try
-        {
-            PackageMetadata plan = readInstallationPlan( request.getPlanPath() );
+        try {
+            PackageMetadata plan = readInstallationPlan(request.getPlanPath());
 
             ArtifactMetadata am = new ArtifactMetadata();
-            plan.addArtifact( am );
+            plan.addArtifact(am);
 
             Artifact artifact = request.getArtifact();
-            am.setGroupId( artifact.getGroupId() );
-            am.setArtifactId( artifact.getArtifactId() );
-            am.setExtension( artifact.getExtension() );
-            am.setClassifier( artifact.getClassifier() );
-            am.setVersion( artifact.getVersion() );
-            am.setPath( artifact.getPath().toString() );
-            am.getProperties().putAll( request.getProperties() );
+            am.setGroupId(artifact.getGroupId());
+            am.setArtifactId(artifact.getArtifactId());
+            am.setExtension(artifact.getExtension());
+            am.setClassifier(artifact.getClassifier());
+            am.setVersion(artifact.getVersion());
+            am.setPath(artifact.getPath().toString());
+            am.getProperties().putAll(request.getProperties());
 
-            for ( DependencyDescriptor depDescriptor : request.getDependencies() )
-            {
+            for (DependencyDescriptor depDescriptor : request.getDependencies()) {
                 Dependency dependency = new Dependency();
-                am.addDependency( dependency );
+                am.addDependency(dependency);
 
                 Artifact dependencyArtifact = depDescriptor.getDependencyArtifact();
-                dependency.setGroupId( dependencyArtifact.getGroupId() );
-                dependency.setArtifactId( dependencyArtifact.getArtifactId() );
-                dependency.setExtension( dependencyArtifact.getExtension() );
-                dependency.setClassifier( dependencyArtifact.getClassifier() );
-                dependency.setRequestedVersion( dependencyArtifact.getVersion() );
-                if ( depDescriptor.isOptional() )
-                {
-                    dependency.setOptional( true );
+                dependency.setGroupId(dependencyArtifact.getGroupId());
+                dependency.setArtifactId(dependencyArtifact.getArtifactId());
+                dependency.setExtension(dependencyArtifact.getExtension());
+                dependency.setClassifier(dependencyArtifact.getClassifier());
+                dependency.setRequestedVersion(dependencyArtifact.getVersion());
+                if (depDescriptor.isOptional()) {
+                    dependency.setOptional(true);
                 }
 
-                for ( Artifact exclusionArtifact : depDescriptor.getExclusions() )
-                {
+                for (Artifact exclusionArtifact : depDescriptor.getExclusions()) {
                     DependencyExclusion exclusion = new DependencyExclusion();
-                    dependency.addExclusion( exclusion );
+                    dependency.addExclusion(exclusion);
 
-                    exclusion.setGroupId( exclusionArtifact.getGroupId() );
-                    exclusion.setArtifactId( exclusionArtifact.getArtifactId() );
+                    exclusion.setGroupId(exclusionArtifact.getGroupId());
+                    exclusion.setArtifactId(exclusionArtifact.getArtifactId());
                 }
             }
 
-            writeInstallationPlan( plan, request.getPlanPath() );
-        }
-        catch ( Exception e )
-        {
-            result.setException( e );
+            writeInstallationPlan(plan, request.getPlanPath());
+        } catch (Exception e) {
+            result.setException(e);
         }
 
         return result;
     }
 
-    private PackageMetadata readInstallationPlan( Path planPath )
-        throws IOException
-    {
-        if ( !Files.exists( planPath ) )
-        {
+    private PackageMetadata readInstallationPlan(Path planPath) throws IOException {
+        if (!Files.exists(planPath)) {
             return new PackageMetadata();
         }
 
-        try ( Reader reader = Files.newBufferedReader( planPath, StandardCharsets.UTF_8 ) )
-        {
-            return new MetadataStaxReader().read( reader );
-        }
-        catch ( XMLStreamException e )
-        {
-            throw new IOException( "Failed to parse reactor installation plan", e );
+        try (Reader reader = Files.newBufferedReader(planPath, StandardCharsets.UTF_8)) {
+            return new MetadataStaxReader().read(reader);
+        } catch (XMLStreamException e) {
+            throw new IOException("Failed to parse reactor installation plan", e);
         }
     }
 
-    private void writeInstallationPlan( PackageMetadata plan, Path planPath )
-        throws IOException
-    {
-        try ( Writer writer = Files.newBufferedWriter( planPath, StandardCharsets.UTF_8 ) )
-        {
-            new MetadataStaxWriter().write( writer, plan );
-        }
-        catch ( XMLStreamException e )
-        {
-            throw new IOException( "Unable to write reactor installation plan", e );
+    private void writeInstallationPlan(PackageMetadata plan, Path planPath) throws IOException {
+        try (Writer writer = Files.newBufferedWriter(planPath, StandardCharsets.UTF_8)) {
+            new MetadataStaxWriter().write(writer, plan);
+        } catch (XMLStreamException e) {
+            throw new IOException("Unable to write reactor installation plan", e);
         }
     }
 }

@@ -16,10 +16,8 @@
 package org.fedoraproject.xmvn.connector.maven;
 
 import java.util.List;
-
 import javax.inject.Named;
 import javax.inject.Singleton;
-
 import org.apache.maven.plugin.version.PluginVersionRequest;
 import org.apache.maven.plugin.version.PluginVersionResolver;
 import org.apache.maven.plugin.version.PluginVersionResult;
@@ -28,40 +26,32 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.repository.ArtifactRepository;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.sisu.Priority;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 
-/**
- * @author Mikolaj Izdebski
- */
+/** @author Mikolaj Izdebski */
 @Named
 @Singleton
-@Priority( 100 )
-public class XMvnPluginVersionResolver
-    implements PluginVersionResolver
-{
+@Priority(100)
+public class XMvnPluginVersionResolver implements PluginVersionResolver {
     @Override
-    public PluginVersionResult resolve( PluginVersionRequest request )
-    {
+    public PluginVersionResult resolve(PluginVersionRequest request) {
         RepositorySystemSession session = request.getRepositorySession();
         WorkspaceReader reader = session.getWorkspaceReader();
-        List<String> versions =
-            reader.findVersions( new DefaultArtifact( request.getGroupId(), request.getArtifactId(),
-                                                      Artifact.DEFAULT_EXTENSION, Artifact.DEFAULT_VERSION ) );
-        final String version = versions.isEmpty() ? Artifact.DEFAULT_VERSION : versions.iterator().next();
+        List<String> versions = reader.findVersions(new DefaultArtifact(
+                request.getGroupId(), request.getArtifactId(), Artifact.DEFAULT_EXTENSION, Artifact.DEFAULT_VERSION));
+        final String version = versions.isEmpty()
+                ? Artifact.DEFAULT_VERSION
+                : versions.iterator().next();
         final ArtifactRepository repository = reader.getRepository();
 
-        return new PluginVersionResult()
-        {
+        return new PluginVersionResult() {
             @Override
-            public ArtifactRepository getRepository()
-            {
+            public ArtifactRepository getRepository() {
                 return repository;
             }
 
             @Override
-            public String getVersion()
-            {
+            public String getVersion() {
                 return version;
             }
         };

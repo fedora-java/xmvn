@@ -21,11 +21,8 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
-/**
- * @author Mikolaj Izdebski
- */
-class ArtifactState
-{
+/** @author Mikolaj Izdebski */
+class ArtifactState {
     private final Artifact artifact;
 
     private final ArtifactMetadata metadata;
@@ -36,61 +33,50 @@ class ArtifactState
 
     private ArtifactInstaller installer;
 
-    public ArtifactState( Artifact artifact, ArtifactMetadata metadata )
-    {
+    public ArtifactState(Artifact artifact, ArtifactMetadata metadata) {
         this.artifact = artifact;
         this.metadata = metadata;
     }
 
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return artifact;
     }
 
-    public ArtifactMetadata getMetadata()
-    {
+    public ArtifactMetadata getMetadata() {
         return metadata;
     }
 
-    public JavaPackage getTargetPackage()
-    {
+    public JavaPackage getTargetPackage() {
         return targetPackage;
     }
 
-    public void setTargetPackage( JavaPackage targetPackage )
-    {
+    public void setTargetPackage(JavaPackage targetPackage) {
         this.targetPackage = targetPackage;
     }
 
-    public PackagingRule getPackagingRule()
-    {
+    public PackagingRule getPackagingRule() {
         return packagingRule;
     }
 
-    public void setPackagingRule( PackagingRule packagingRule )
-    {
+    public void setPackagingRule(PackagingRule packagingRule) {
         this.packagingRule = packagingRule;
     }
 
-    public ArtifactInstaller getInstaller()
-    {
+    public ArtifactInstaller getInstaller() {
         return installer;
     }
 
-    public void setInstaller( ArtifactInstaller installer )
-    {
+    public void setInstaller(ArtifactInstaller installer) {
         this.installer = installer;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return artifact.hashCode();
     }
 
     @Override
-    public boolean equals( Object obj )
-    {
-        return obj != null && getClass() == obj.getClass() && artifact.equals( ( (ArtifactState) obj ).artifact );
+    public boolean equals(Object obj) {
+        return obj != null && getClass() == obj.getClass() && artifact.equals(((ArtifactState) obj).artifact);
     }
 }

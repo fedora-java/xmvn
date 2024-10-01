@@ -20,51 +20,52 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.stream.Collectors;
-
+import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
 
-import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
-
 /**
  * Integration tests for XMvn Resolver tool.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ResolveRawTwoIntegrationTest
-    extends AbstractToolIntegrationTest
-{
+public class ResolveRawTwoIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveRawTwo()
-        throws Exception
-    {
-        String input = String.join( "\n", //
-                                    "<requests>", //
-                                    " <request>", //
-                                    "  <artifact>", //
-                                    "   <groupId>foobar</groupId>", //
-                                    "   <artifactId>xyzzy</artifactId>", //
-                                    "  </artifact>", //
-                                    " </request>", //
-                                    " <request>", //
-                                    "  <artifact>", //
-                                    "   <artifactId>junit</artifactId>", //
-                                    "   <groupId>junit</groupId>", //
-                                    "  </artifact>", //
-                                    " </request>", //
-                                    "</requests>" );
-        assertEquals( 0, invokeToolWithInput( input, "xmvn-resolve", "--raw-request" ) );
-        assertTrue( getStderr().anyMatch( s -> s.endsWith( "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM" ) ) );
-        Path absPath = getBaseDir().resolve( "../../src/test/resources/empty.jar" ).toRealPath();
-        String expectedOutput = String.join( "\n", //
-                                             "<results>", //
-                                             " <result/>", //
-                                             " <result>", //
-                                             "  <artifactPath>" + absPath + "</artifactPath>", //
-                                             "  <compatVersion>SYSTEM</compatVersion>", //
-                                             "  <namespace/>", //
-                                             " </result>", //
-                                             "</results>" );
-        XmlAssert.assertThat( expectedOutput ).and( getStdout().collect( Collectors.joining( "\n" ) ) ).ignoreComments().ignoreWhitespace().areSimilar();
+    public void testResolveRawTwo() throws Exception {
+        String input = String.join(
+                "\n",
+                "<requests>",
+                " <request>",
+                "  <artifact>",
+                "   <groupId>foobar</groupId>",
+                "   <artifactId>xyzzy</artifactId>",
+                "  </artifact>",
+                " </request>",
+                " <request>",
+                "  <artifact>",
+                "   <artifactId>junit</artifactId>",
+                "   <groupId>junit</groupId>",
+                "  </artifact>",
+                " </request>",
+                "</requests>");
+        assertEquals(0, invokeToolWithInput(input, "xmvn-resolve", "--raw-request"));
+        assertTrue(getStderr().anyMatch(s -> s.endsWith("Unable to resolve artifact foobar:xyzzy:jar:SYSTEM")));
+        Path absPath =
+                getBaseDir().resolve("../../src/test/resources/empty.jar").toRealPath();
+        String expectedOutput = String.join(
+                "\n",
+                "<results>",
+                " <result/>",
+                " <result>",
+                "  <artifactPath>" + absPath + "</artifactPath>",
+                "  <compatVersion>SYSTEM</compatVersion>",
+                "  <namespace/>",
+                " </result>",
+                "</results>");
+        XmlAssert.assertThat(expectedOutput)
+                .and(getStdout().collect(Collectors.joining("\n")))
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areSimilar();
     }
 }

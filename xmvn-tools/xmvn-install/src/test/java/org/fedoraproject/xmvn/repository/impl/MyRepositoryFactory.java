@@ -21,31 +21,23 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Properties;
-
+import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
 
-import org.fedoraproject.xmvn.repository.Repository;
-
-/**
- * @author Mikolaj Izdebski
- */
-public class MyRepositoryFactory
-    implements RepositoryFactory
-{
+/** @author Mikolaj Izdebski */
+public class MyRepositoryFactory implements RepositoryFactory {
     @Override
-    public Repository getInstance( Element filter, Properties properties, Element configuration )
-    {
-        assertNotNull( properties );
-        assertEquals( "bar", properties.get( "foo" ) );
-        assertNull( properties.get( "baz" ) );
+    public Repository getInstance(Element filter, Properties properties, Element configuration) {
+        assertNotNull(properties);
+        assertEquals("bar", properties.get("foo"));
+        assertNull(properties.get("baz"));
 
         return new MyRepository();
     }
 
     @Override
-    public Repository getInstance( Element filter, Properties properties, Element configuration, String namespace )
-    {
-        fail( "getInstance was not expected to be called" );
+    public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
+        fail("getInstance was not expected to be called");
         return null;
     }
 }

@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
@@ -30,15 +29,11 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 /**
  * Class describing a Java package as a package which besides other files files also installs Java metadata as an
  * additional file.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class JavaPackage
-    extends Package
-{
-    /**
-     * Metadata associated with this package.
-     */
+public class JavaPackage extends Package {
+    /** Metadata associated with this package. */
     private final PackageMetadata metadata = new PackageMetadata();
 
     private final String basePackageName;
@@ -47,14 +42,13 @@ public class JavaPackage
 
     /**
      * Create an empty Java package with given ID.
-     * 
+     *
      * @param id package ID
      * @param basePackageName name of the source package
      * @param metadataDir installation directory for metadata relative to installation root
      */
-    public JavaPackage( String id, String basePackageName, Path metadataDir )
-    {
-        super( id );
+    public JavaPackage(String id, String basePackageName, Path metadataDir) {
+        super(id);
         this.basePackageName = basePackageName;
         this.metadataDir = metadataDir;
     }
@@ -62,72 +56,65 @@ public class JavaPackage
     /**
      * Create metadata contents split by namespace, so that artifacts with different namespaces don't have conflicting
      * metadata files.
-     * 
+     *
      * @param namespace namespace name
      * @return new metadata with subset of artifacts
      */
-    private PackageMetadata getSplitMetadata( String namespace )
-    {
+    private PackageMetadata getSplitMetadata(String namespace) {
         PackageMetadata splitMetadata = new PackageMetadata();
-        splitMetadata.setProperties( metadata.getProperties() );
+        splitMetadata.setProperties(metadata.getProperties());
         List<ArtifactMetadata> allArtifacts = metadata.getArtifacts();
-        List<ArtifactMetadata> splitArtifacts =
-            allArtifacts.stream().filter( a -> namespace.equals( a.getNamespace() ) ).collect( Collectors.toList() );
-        splitMetadata.setArtifacts( splitArtifacts );
-        splitMetadata.setSkippedArtifacts( metadata.getSkippedArtifacts() );
+        List<ArtifactMetadata> splitArtifacts = allArtifacts.stream()
+                .filter(a -> namespace.equals(a.getNamespace()))
+                .collect(Collectors.toList());
+        splitMetadata.setArtifacts(splitArtifacts);
+        splitMetadata.setSkippedArtifacts(metadata.getSkippedArtifacts());
         return splitMetadata;
     }
 
-    private byte[] getMetadataContents( String namespace )
-    {
-        try
-        {
+    private byte[] getMetadataContents(String namespace) {
+        try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            new MetadataStaxWriter().write( bos, getSplitMetadata( namespace ) );
+            new MetadataStaxWriter().write(bos, getSplitMetadata(namespace));
             return bos.toByteArray();
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( "Failed to generate package metadata", e );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate package metadata", e);
         }
     }
 
-    private Set<String> getNamespaces()
-    {
+    private Set<String> getNamespaces() {
         Set<String> namespaces = new LinkedHashSet<>();
-        for ( ArtifactMetadata am : getMetadata().getArtifacts() )
-        {
-            namespaces.add( am.getNamespace() );
+        for (ArtifactMetadata am : getMetadata().getArtifacts()) {
+            namespaces.add(am.getNamespace());
         }
-        if ( namespaces.isEmpty() )
-        {
-            namespaces.add( "" );
+        if (namespaces.isEmpty()) {
+            namespaces.add("");
         }
         return namespaces;
     }
 
     @Override
-    public Set<File> getFiles()
-    {
-        Set<File> allFiles = new LinkedHashSet<>( super.getFiles() );
-        for ( String namespace : getNamespaces() )
-        {
-            String metadataName = namespace + ( namespace.isEmpty() ? "" : "-" ) + basePackageName
-                + ( getId().isEmpty() ? "" : "-" ) + getId();
-            Path metadataPath = metadataDir.resolve( metadataName + ".xml" );
-            File metadataFile = new RegularFile( metadataPath, () -> getMetadataContents( namespace ) );
-            allFiles.add( metadataFile );
+    public Set<File> getFiles() {
+        Set<File> allFiles = new LinkedHashSet<>(super.getFiles());
+        for (String namespace : getNamespaces()) {
+            String metadataName = namespace
+                    + (namespace.isEmpty() ? "" : "-")
+                    + basePackageName
+                    + (getId().isEmpty() ? "" : "-")
+                    + getId();
+            Path metadataPath = metadataDir.resolve(metadataName + ".xml");
+            File metadataFile = new RegularFile(metadataPath, () -> getMetadataContents(namespace));
+            allFiles.add(metadataFile);
         }
-        return Collections.unmodifiableSet( allFiles );
+        return Collections.unmodifiableSet(allFiles);
     }
 
     /**
      * Get metadata associated with this package.
-     * 
+     *
      * @return package metadata object
      */
-    public PackageMetadata getMetadata()
-    {
+    public PackageMetadata getMetadata() {
         return metadata;
     }
 }

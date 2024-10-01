@@ -17,20 +17,14 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
-class Xor
-    extends BooleanOperator
-{
-    public Xor( List<BooleanExpression> children )
-    {
-        super( false, children );
+/** @author Mikolaj Izdebski */
+class Xor extends BooleanOperator {
+    public Xor(List<BooleanExpression> children) {
+        super(false, children);
     }
 
     @Override
-    protected boolean evaluate( boolean lhs, boolean rhs )
-    {
+    protected boolean evaluate(boolean lhs, boolean rhs) {
         return lhs ^ rhs;
     }
 }

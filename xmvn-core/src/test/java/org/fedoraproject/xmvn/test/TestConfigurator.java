@@ -21,35 +21,28 @@ import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class TestConfigurator
-    implements Configurator
-{
+/** @author Mikolaj Izdebski */
+public class TestConfigurator implements Configurator {
     private final Configurator delegate;
 
-    public TestConfigurator( ServiceLocator locator )
-    {
-        delegate = new DefaultConfigurator( locator );
+    public TestConfigurator(ServiceLocator locator) {
+        delegate = new DefaultConfigurator(locator);
     }
 
     @Override
-    public Configuration getDefaultConfiguration()
-    {
+    public Configuration getDefaultConfiguration() {
         return delegate.getDefaultConfiguration();
     }
 
     @Override
-    public synchronized Configuration getConfiguration()
-    {
+    public synchronized Configuration getConfiguration() {
         Configuration configuration = getDefaultConfiguration();
 
         Repository repository = new Repository();
-        repository.setId( "resolve" );
-        repository.setType( "maven" );
-        repository.addProperty( "root", "/some/nonexistent/path" );
-        configuration.addRepository( repository );
+        repository.setId("resolve");
+        repository.setType("maven");
+        repository.addProperty("root", "/some/nonexistent/path");
+        configuration.addRepository(repository);
 
         return configuration;
     }

@@ -15,10 +15,7 @@
  */
 package org.fedoraproject.xmvn.deployer;
 
-/**
- * @author Mikolaj Izdebski
- */
-public interface DeploymentResult
-{
+/** @author Mikolaj Izdebski */
+public interface DeploymentResult {
     Exception getException();
 }

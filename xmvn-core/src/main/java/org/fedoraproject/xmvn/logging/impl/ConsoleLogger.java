@@ -17,62 +17,50 @@ package org.fedoraproject.xmvn.logging.impl;
 
 import org.fedoraproject.xmvn.logging.Logger;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class ConsoleLogger
-    implements Logger
-{
-    private final boolean debugEnabled = System.getProperty( "xmvn.debug" ) != null;
+/** @author Mikolaj Izdebski */
+public class ConsoleLogger implements Logger {
+    private final boolean debugEnabled = System.getProperty("xmvn.debug") != null;
 
     @Override
-    public boolean isDebugEnabled()
-    {
+    public boolean isDebugEnabled() {
         return debugEnabled;
     }
 
-    private void print( String prefix, String format, Object... args )
-    {
-        StringBuilder sb = new StringBuilder( prefix );
+    private void print(String prefix, String format, Object... args) {
+        StringBuilder sb = new StringBuilder(prefix);
 
         int i = 0;
-        for ( Object arg : args )
-        {
-            int j = format.indexOf( "{}", i );
-            sb.append( format.substring( i, j ) );
-            sb.append( arg );
+        for (Object arg : args) {
+            int j = format.indexOf("{}", i);
+            sb.append(format.substring(i, j));
+            sb.append(arg);
             i = j + 2;
         }
 
-        sb.append( format.substring( i ) );
+        sb.append(format.substring(i));
 
-        System.err.println( sb );
+        System.err.println(sb);
     }
 
     @Override
-    public void debug( String format, Object... args )
-    {
-        if ( debugEnabled )
-        {
-            print( "DEBUG: ", format, args );
+    public void debug(String format, Object... args) {
+        if (debugEnabled) {
+            print("DEBUG: ", format, args);
         }
     }
 
     @Override
-    public void info( String format, Object... args )
-    {
-        print( "", format, args );
+    public void info(String format, Object... args) {
+        print("", format, args);
     }
 
     @Override
-    public void warn( String format, Object... args )
-    {
-        print( "WARNING: ", format, args );
+    public void warn(String format, Object... args) {
+        print("WARNING: ", format, args);
     }
 
     @Override
-    public void error( String format, Object... args )
-    {
-        print( "ERROR: ", format, args );
+    public void error(String format, Object... args) {
+        print("ERROR: ", format, args);
     }
 }

@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.resolver.impl;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -26,14 +25,11 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
  * Resolver that resolves artifacts from local repository.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-class LocalRepositoryResolver
-    implements Resolver
-{
-    private Path getMavenRepositoryPath( Artifact artifact )
-    {
+class LocalRepositoryResolver implements Resolver {
+    private Path getMavenRepositoryPath(Artifact artifact) {
         String groupId = artifact.getGroupId();
         String artifactId = artifact.getArtifactId();
         String extension = artifact.getExtension();
@@ -42,42 +38,38 @@ class LocalRepositoryResolver
 
         StringBuilder path = new StringBuilder();
 
-        path.append( groupId.replace( '.', '/' ) ).append( '/' );
+        path.append(groupId.replace('.', '/')).append('/');
 
-        path.append( artifactId );
+        path.append(artifactId);
 
-        path.append( '/' ).append( version );
+        path.append('/').append(version);
 
-        path.append( '/' ).append( artifactId );
+        path.append('/').append(artifactId);
 
-        path.append( '-' ).append( version );
+        path.append('-').append(version);
 
-        if ( !classifier.isEmpty() )
-        {
-            path.append( '-' ).append( classifier );
+        if (!classifier.isEmpty()) {
+            path.append('-').append(classifier);
         }
 
-        if ( !extension.isEmpty() )
-        {
-            path.append( '.' ).append( extension );
+        if (!extension.isEmpty()) {
+            path.append('.').append(extension);
         }
 
-        return Paths.get( path.toString() );
+        return Paths.get(path.toString());
     }
 
     @Override
-    public ResolutionResult resolve( ResolutionRequest request )
-    {
+    public ResolutionResult resolve(ResolutionRequest request) {
         Artifact artifact = request.getArtifact();
-        Path repoPath = getMavenRepositoryPath( artifact );
+        Path repoPath = getMavenRepositoryPath(artifact);
 
-        Path repoRoot = Paths.get( ".m2" ).toAbsolutePath();
+        Path repoRoot = Paths.get(".m2").toAbsolutePath();
 
-        Path artifactPath = repoRoot.resolve( repoPath );
-        if ( Files.isRegularFile( artifactPath ) )
-        {
-            DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
-            result.setCompatVersion( artifact.getVersion() );
+        Path artifactPath = repoRoot.resolve(repoPath);
+        if (Files.isRegularFile(artifactPath)) {
+            DefaultResolutionResult result = new DefaultResolutionResult(artifactPath);
+            result.setCompatVersion(artifact.getVersion());
             return result;
         }
 

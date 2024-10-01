@@ -24,31 +24,25 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for XMvn Resolver tool.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ResolveOneIntegrationTest
-    extends AbstractToolIntegrationTest
-{
+public class ResolveOneIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveOne()
-        throws Exception
-    {
-        assertEquals( 0, invokeTool( "xmvn-resolve", "junit:junit" ) );
-        assertFalse( getStderr().findAny().isPresent() );
+    public void testResolveOne() throws Exception {
+        assertEquals(0, invokeTool("xmvn-resolve", "junit:junit"));
+        assertFalse(getStderr().findAny().isPresent());
 
-        List<String> out = getStdout().collect( Collectors.toList() );
-        assertEquals( 1, out.size() );
+        List<String> out = getStdout().collect(Collectors.toList());
+        assertEquals(1, out.size());
 
-        Path jar = Paths.get( out.iterator().next() );
-        assertTrue( jar.endsWith( "src/test/resources/empty.jar" ) );
-        assertTrue( Files.isRegularFile( jar ) );
+        Path jar = Paths.get(out.iterator().next());
+        assertTrue(jar.endsWith("src/test/resources/empty.jar"));
+        assertTrue(Files.isRegularFile(jar));
     }
 }

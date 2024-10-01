@@ -15,21 +15,15 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class ArtifactInstallationException
-    extends Exception
-{
+/** @author Mikolaj Izdebski */
+public class ArtifactInstallationException extends Exception {
     private static final long serialVersionUID = 1;
 
-    public ArtifactInstallationException( String message )
-    {
-        super( message );
+    public ArtifactInstallationException(String message) {
+        super(message);
     }
 
-    public ArtifactInstallationException( String message, Throwable cause )
-    {
-        super( message, cause );
+    public ArtifactInstallationException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

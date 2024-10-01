@@ -17,22 +17,16 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/**
- * @author Mikolaj Izdebski
- */
-class Defined
-    extends BooleanExpression
-{
+/** @author Mikolaj Izdebski */
+class Defined extends BooleanExpression {
     private final String key;
 
-    public Defined( String key )
-    {
+    public Defined(String key) {
         this.key = key;
     }
 
     @Override
-    public boolean getValue( ArtifactContext context )
-    {
-        return context.getProperty( key ) != null;
+    public boolean getValue(ArtifactContext context) {
+        return context.getProperty(key) != null;
     }
 }

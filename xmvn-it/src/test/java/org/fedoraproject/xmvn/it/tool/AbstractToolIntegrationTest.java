@@ -35,108 +35,83 @@ import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-
 import org.fedoraproject.xmvn.it.AbstractIntegrationTest;
 
 /**
  * Abstract base class for integration tests that involve invoking XMvn tools (resolve, install, subst).
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public abstract class AbstractToolIntegrationTest
-    extends AbstractIntegrationTest
-{
-    private Path getToolLibDir( String tool )
-    {
+public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTest {
+    private Path getToolLibDir(String tool) {
         String subDir;
-        if ( "xmvn-install".equals( tool ) )
-        {
+        if ("xmvn-install".equals(tool)) {
             subDir = "installer";
-        }
-        else if ( "xmvn-resolve".equals( tool ) )
-        {
+        } else if ("xmvn-resolve".equals(tool)) {
             subDir = "resolver";
-        }
-        else
-        {
-            subDir = tool.replaceAll( "^xmvn-", "" );
+        } else {
+            subDir = tool.replaceAll("^xmvn-", "");
         }
 
-        Path libDir = getMavenHome().resolve( "lib" ).resolve( subDir );
-        assertTrue( Files.isDirectory( libDir, LinkOption.NOFOLLOW_LINKS ) );
+        Path libDir = getMavenHome().resolve("lib").resolve(subDir);
+        assertTrue(Files.isDirectory(libDir, LinkOption.NOFOLLOW_LINKS));
         return libDir;
     }
 
-    private Path getJar( String tool, String glob )
-        throws Exception
-    {
-        try ( DirectoryStream<Path> ds = Files.newDirectoryStream( getToolLibDir( tool ), glob ) )
-        {
+    private Path getJar(String tool, String glob) throws Exception {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(getToolLibDir(tool), glob)) {
             Iterator<Path> it = ds.iterator();
-            assertTrue( it.hasNext(), "JAR not found for glob: " + glob );
+            assertTrue(it.hasNext(), "JAR not found for glob: " + glob);
             Path jar = it.next();
-            assertFalse( it.hasNext(), "More than one JAR found for glob: " + glob );
-            assertTrue( Files.isRegularFile( jar, LinkOption.NOFOLLOW_LINKS ) );
+            assertFalse(it.hasNext(), "More than one JAR found for glob: " + glob);
+            assertTrue(Files.isRegularFile(jar, LinkOption.NOFOLLOW_LINKS));
             return jar;
         }
     }
 
-    private Path findToolJar( String tool )
-        throws Exception
-    {
-        return getJar( tool, tool + "-*.jar" );
+    private Path findToolJar(String tool) throws Exception {
+        return getJar(tool, tool + "-*.jar");
     }
 
     /**
      * For XMvn JARs, replace path to JAR corresponding with path to target/classes so that debugging works out of the
      * box.
      */
-    private Path jar2classes( Path jar )
-    {
+    private Path jar2classes(Path jar) {
         String jarName = jar.getFileName().toString();
-        if ( !jarName.startsWith( "xmvn-" ) )
-        {
+        if (!jarName.startsWith("xmvn-")) {
             return jar;
         }
-        String projectName = jarName.substring( 0, 5 + jarName.substring( 5 ).indexOf( '-' ) );
-        Path projectDir = getRootDir().resolve( "xmvn-tools" ).resolve( projectName );
-        if ( !Files.isDirectory( projectDir, LinkOption.NOFOLLOW_LINKS ) )
-        {
-            projectDir = getRootDir().resolve( projectName );
+        String projectName = jarName.substring(0, 5 + jarName.substring(5).indexOf('-'));
+        Path projectDir = getRootDir().resolve("xmvn-tools").resolve(projectName);
+        if (!Files.isDirectory(projectDir, LinkOption.NOFOLLOW_LINKS)) {
+            projectDir = getRootDir().resolve(projectName);
         }
-        Path classesDir = projectDir.resolve( "target" ).resolve( "classes" );
-        assertTrue( Files.isDirectory( classesDir, LinkOption.NOFOLLOW_LINKS ) );
+        Path classesDir = projectDir.resolve("target").resolve("classes");
+        assertTrue(Files.isDirectory(classesDir, LinkOption.NOFOLLOW_LINKS));
         return classesDir;
     }
 
-    private Attributes readManifest( Path jar )
-        throws Exception
-    {
-        URL mfUrl = new URL( "jar:" + jar.toUri().toURL() + "!/META-INF/MANIFEST.MF" );
-        try ( InputStream is = mfUrl.openConnection().getInputStream() )
-        {
-            return new Manifest( is ).getMainAttributes();
+    private Attributes readManifest(Path jar) throws Exception {
+        URL mfUrl = new URL("jar:" + jar.toUri().toURL() + "!/META-INF/MANIFEST.MF");
+        try (InputStream is = mfUrl.openConnection().getInputStream()) {
+            return new Manifest(is).getMainAttributes();
         }
     }
 
-    public int invokeTool( String tool, String... args )
-        throws Exception
-    {
-        return invokeToolWithInput( "", tool, args );
+    public int invokeTool(String tool, String... args) throws Exception {
+        return invokeToolWithInput("", tool, args);
     }
 
-    public int invokeToolWithInput( String input, String tool, String... args )
-        throws Exception
-    {
-        Path jar = findToolJar( tool );
-        Attributes mf = readManifest( jar );
+    public int invokeToolWithInput(String input, String tool, String... args) throws Exception {
+        Path jar = findToolJar(tool);
+        Attributes mf = readManifest(jar);
         List<URL> classPathList = new ArrayList<>();
-        classPathList.add( jar2classes( jar ).toUri().toURL() );
-        for ( String cpJar : mf.getValue( "Class-Path" ).split( " " ) )
-        {
-            classPathList.add( jar2classes( getJar( tool, cpJar ) ).toUri().toURL() );
+        classPathList.add(jar2classes(jar).toUri().toURL());
+        for (String cpJar : mf.getValue("Class-Path").split(" ")) {
+            classPathList.add(jar2classes(getJar(tool, cpJar)).toUri().toURL());
         }
-        URL[] classPath = classPathList.stream().toArray( URL[]::new );
+        URL[] classPath = classPathList.stream().toArray(URL[]::new);
 
         InputStream oldStdin = System.in;
         PrintStream oldStdout = System.out;
@@ -144,29 +119,26 @@ public abstract class AbstractToolIntegrationTest
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         Properties oldProperties = (Properties) System.getProperties().clone();
 
-        System.setProperty( "xmvn.config.sandbox", "true" );
+        System.setProperty("xmvn.config.sandbox", "true");
 
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
-        try ( InputStream stdin = new ByteArrayInputStream( input.getBytes( StandardCharsets.US_ASCII ) );
-                        PrintStream stdout = new PrintStream( new File( STDOUT ) );
-                        PrintStream stderr = new PrintStream( new File( STDERR ) );
-                        URLClassLoader toolClassLoader = new URLClassLoader( classPath, parentClassLoader ) )
-        {
-            Thread.currentThread().setContextClassLoader( toolClassLoader );
-            System.setIn( stdin );
-            System.setOut( stdout );
-            System.setErr( stderr );
+        try (InputStream stdin = new ByteArrayInputStream(input.getBytes(StandardCharsets.US_ASCII));
+                PrintStream stdout = new PrintStream(new File(STDOUT));
+                PrintStream stderr = new PrintStream(new File(STDERR));
+                URLClassLoader toolClassLoader = new URLClassLoader(classPath, parentClassLoader)) {
+            Thread.currentThread().setContextClassLoader(toolClassLoader);
+            System.setIn(stdin);
+            System.setOut(stdout);
+            System.setErr(stderr);
 
-            Class<?> mainClass = toolClassLoader.loadClass( mf.getValue( "Main-Class" ) );
-            return (Integer) mainClass.getMethod( "doMain", String[].class ).invoke( null, (Object) args );
-        }
-        finally
-        {
-            Thread.currentThread().setContextClassLoader( oldClassLoader );
-            System.setIn( oldStdin );
-            System.setOut( oldStdout );
-            System.setErr( oldStderr );
-            System.setProperties( oldProperties );
+            Class<?> mainClass = toolClassLoader.loadClass(mf.getValue("Main-Class"));
+            return (Integer) mainClass.getMethod("doMain", String[].class).invoke(null, (Object) args);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldClassLoader);
+            System.setIn(oldStdin);
+            System.setOut(oldStdout);
+            System.setErr(oldStderr);
+            System.setProperties(oldProperties);
         }
     }
 }

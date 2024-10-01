@@ -17,23 +17,18 @@ package org.fedoraproject.xmvn.it.maven.mojo.javadoc;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for javadoc MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class JavadocToolchainsIntegrationTest
-    extends AbstractMojoIntegrationTest
-{
+public class JavadocToolchainsIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
-    public void testJavadocToolchains()
-        throws Exception
-    {
-        performMojoTest( "javadoc" );
-        assertTrue( getStdout().anyMatch( "[INFO] Toolchain in xmvn-mojo: JDK[/tmp]"::equals ) );
+    public void testJavadocToolchains() throws Exception {
+        performMojoTest("javadoc");
+        assertTrue(getStdout().anyMatch("[INFO] Toolchain in xmvn-mojo: JDK[/tmp]"::equals));
     }
 }

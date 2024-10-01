@@ -19,25 +19,19 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for builddep MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class PackagingBuilddepIntegrationTest
-    extends AbstractBuilddepIntegrationTest
-{
+public class PackagingBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
-    public void testBuilddepPackaging()
-        throws Exception
-    {
-        assumeTrue( Files.isExecutable( Paths.get( "/usr/bin/gcc" ) ),
-                    "native-maven-plugin requires a C compiler to work" );
-        expectBuildDependency( "org.codehaus.mojo", "native-maven-plugin" );
-        expectBuildDependency( "junit", "junit" );
+    public void testBuilddepPackaging() throws Exception {
+        assumeTrue(Files.isExecutable(Paths.get("/usr/bin/gcc")), "native-maven-plugin requires a C compiler to work");
+        expectBuildDependency("org.codehaus.mojo", "native-maven-plugin");
+        expectBuildDependency("junit", "junit");
         performBuilddepTest();
     }
 }

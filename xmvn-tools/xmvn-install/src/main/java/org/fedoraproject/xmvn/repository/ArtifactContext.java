@@ -17,50 +17,42 @@ package org.fedoraproject.xmvn.repository;
 
 import java.util.Collections;
 import java.util.Map;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class ArtifactContext
-{
+/** @author Mikolaj Izdebski */
+public class ArtifactContext {
     private final Artifact artifact;
 
     private final Map<String, String> properties;
 
-    public ArtifactContext( Artifact artifact )
-    {
+    public ArtifactContext(Artifact artifact) {
         this.artifact = artifact;
         properties = Collections.emptyMap();
     }
 
-    public ArtifactContext( Artifact artifact, Map<String, String> properties )
-    {
+    public ArtifactContext(Artifact artifact, Map<String, String> properties) {
         this.artifact = artifact;
         this.properties = properties;
     }
 
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return artifact;
     }
 
-    public String getProperty( String key )
-    {
-        return properties.get( key );
+    public String getProperty(String key) {
+        return properties.get(key);
     }
 
     @Override
-    public boolean equals( Object rhs )
-    {
-        return rhs != null && getClass() == rhs.getClass() && artifact.equals( ( (ArtifactContext) rhs ).artifact )
-            && properties.equals( ( (ArtifactContext) rhs ).properties );
+    public boolean equals(Object rhs) {
+        return rhs != null
+                && getClass() == rhs.getClass()
+                && artifact.equals(((ArtifactContext) rhs).artifact)
+                && properties.equals(((ArtifactContext) rhs).properties);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return artifact.hashCode() ^ properties.hashCode();
     }
 }

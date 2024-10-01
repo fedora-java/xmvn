@@ -20,10 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.nio.file.Paths;
-
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
@@ -31,38 +28,37 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class MavenRepositoryTest
-{
+/** @author Mikolaj Izdebski */
+public class MavenRepositoryTest {
     @Test
-    public void testMavenRepository()
-        throws Exception
-    {
+    public void testMavenRepository() throws Exception {
         Configuration configuration = new Configuration();
         Repository repository = new Repository();
-        repository.setId( "test123" );
-        repository.setType( "maven" );
-        configuration.addRepository( repository );
+        repository.setId("test123");
+        repository.setType("maven");
+        configuration.addRepository(repository);
 
-        Configurator configurator = EasyMock.createMock( Configurator.class );
-        EasyMock.expect( configurator.getConfiguration() ).andReturn( configuration ).atLeastOnce();
-        EasyMock.replay( configurator );
+        Configurator configurator = EasyMock.createMock(Configurator.class);
+        EasyMock.expect(configurator.getConfiguration())
+                .andReturn(configuration)
+                .atLeastOnce();
+        EasyMock.replay(configurator);
 
-        RepositoryConfigurator repoConfigurator = new DefaultRepositoryConfigurator( configurator );
-        org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository( "test123" );
-        assertNotNull( repo );
-        EasyMock.verify( configurator );
+        RepositoryConfigurator repoConfigurator = new DefaultRepositoryConfigurator(configurator);
+        org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository("test123");
+        assertNotNull(repo);
+        EasyMock.verify(configurator);
 
-        Artifact artifact1 = new DefaultArtifact( "foo.bar:the-artifact:baz:1.2.3" );
-        ArtifactContext context = new ArtifactContext( artifact1 );
-        assertEquals( Paths.get( "foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz" ),
-                      repo.getPrimaryArtifactPath( artifact1, context, "IGNORE-ME" ) );
+        Artifact artifact1 = new DefaultArtifact("foo.bar:the-artifact:baz:1.2.3");
+        ArtifactContext context = new ArtifactContext(artifact1);
+        assertEquals(
+                Paths.get("foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz"),
+                repo.getPrimaryArtifactPath(artifact1, context, "IGNORE-ME"));
 
-        Artifact artifact2 = artifact1.setVersion( null );
-        ArtifactContext context2 = new ArtifactContext( artifact2 );
-        assertNull( repo.getPrimaryArtifactPath( artifact2, context2, "IGNORE-ME" ) );
+        Artifact artifact2 = artifact1.setVersion(null);
+        ArtifactContext context2 = new ArtifactContext(artifact2);
+        assertNull(repo.getPrimaryArtifactPath(artifact2, context2, "IGNORE-ME"));
     }
 }

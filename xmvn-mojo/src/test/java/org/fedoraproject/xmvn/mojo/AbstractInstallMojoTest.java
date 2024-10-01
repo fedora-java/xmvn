@@ -20,20 +20,15 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.io.File;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.project.MavenProject;
 import org.easymock.EasyMock;
+import org.fedoraproject.xmvn.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 
-import org.fedoraproject.xmvn.logging.Logger;
-
-/**
- * Test if artifacts which files are not regular files are handled properly.
- */
-public abstract class AbstractInstallMojoTest
-{
+/** Test if artifacts which files are not regular files are handled properly. */
+public abstract class AbstractInstallMojoTest {
     private MavenProject project;
 
     private Artifact artifact;
@@ -42,58 +37,49 @@ public abstract class AbstractInstallMojoTest
 
     private Logger logger;
 
-    protected MavenProject getProject()
-    {
+    protected MavenProject getProject() {
         return project;
     }
 
-    protected Artifact getArtifact()
-    {
+    protected Artifact getArtifact() {
         return artifact;
     }
 
-    protected Logger getLogger()
-    {
+    protected Logger getLogger() {
         return logger;
     }
 
-    protected abstract File getArtifactFile()
-        throws Exception;
+    protected abstract File getArtifactFile() throws Exception;
 
-    protected void setMojoMockExpectations()
-        throws Exception
-    {
-        expect( artifact.getGroupId() ).andReturn( "test-gid" ).anyTimes();
-        expect( artifact.getArtifactId() ).andReturn( "test-aid" ).anyTimes();
-        expect( artifact.getVersion() ).andReturn( "test-version" ).anyTimes();
-        expect( artifact.getType() ).andReturn( "jar" ).anyTimes();
-        expect( artifact.getClassifier() ).andReturn( "" ).anyTimes();
-        expect( artifact.getFile() ).andReturn( getArtifactFile() ).atLeastOnce();
-        expect( artifact.getArtifactHandler() ).andReturn( artifactHandler ).anyTimes();
+    protected void setMojoMockExpectations() throws Exception {
+        expect(artifact.getGroupId()).andReturn("test-gid").anyTimes();
+        expect(artifact.getArtifactId()).andReturn("test-aid").anyTimes();
+        expect(artifact.getVersion()).andReturn("test-version").anyTimes();
+        expect(artifact.getType()).andReturn("jar").anyTimes();
+        expect(artifact.getClassifier()).andReturn("").anyTimes();
+        expect(artifact.getFile()).andReturn(getArtifactFile()).atLeastOnce();
+        expect(artifact.getArtifactHandler()).andReturn(artifactHandler).anyTimes();
 
-        expect( artifactHandler.getExtension() ).andReturn( "jar" ).anyTimes();
-        expect( artifactHandler.getClassifier() ).andReturn( "" ).anyTimes();
+        expect(artifactHandler.getExtension()).andReturn("jar").anyTimes();
+        expect(artifactHandler.getClassifier()).andReturn("").anyTimes();
 
-        replay( artifact, artifactHandler, logger );
+        replay(artifact, artifactHandler, logger);
     }
 
-    protected void verifyMojoMocks()
-    {
-        verify( artifact, artifactHandler, logger );
+    protected void verifyMojoMocks() {
+        verify(artifact, artifactHandler, logger);
     }
 
     @BeforeEach
-    public void setUp()
-        throws Exception
-    {
+    public void setUp() throws Exception {
         project = new MavenProject();
-        project.setModelVersion( "4.0.0" );
-        project.setGroupId( "test-gid" );
-        project.setArtifactId( "test-aid" );
-        project.setVersion( "test-version" );
+        project.setModelVersion("4.0.0");
+        project.setGroupId("test-gid");
+        project.setArtifactId("test-aid");
+        project.setVersion("test-version");
 
-        artifact = EasyMock.createNiceMock( Artifact.class );
-        artifactHandler = EasyMock.createNiceMock( ArtifactHandler.class );
-        logger = EasyMock.createNiceMock( Logger.class );
+        artifact = EasyMock.createNiceMock(Artifact.class);
+        artifactHandler = EasyMock.createNiceMock(ArtifactHandler.class);
+        logger = EasyMock.createNiceMock(Logger.class);
     }
 }

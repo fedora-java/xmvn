@@ -18,42 +18,33 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import org.w3c.dom.Element;
-
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
+import org.w3c.dom.Element;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class DefaultRepositoryConfigurator
-    implements RepositoryConfigurator
-{
+/** @author Mikolaj Izdebski */
+public class DefaultRepositoryConfigurator implements RepositoryConfigurator {
     private final Configurator configurator;
 
     private final Map<String, RepositoryFactory> repositoryFactories = new LinkedHashMap<>();
 
-    public DefaultRepositoryConfigurator( Configurator configurator )
-    {
+    public DefaultRepositoryConfigurator(Configurator configurator) {
         this.configurator = configurator;
 
-        addRepositoryFactory( "compound", new CompoundRepositoryFactory( this ) );
-        addRepositoryFactory( "jpp", new JppRepositoryFactory() );
-        addRepositoryFactory( "maven", new MavenRepositoryFactory() );
+        addRepositoryFactory("compound", new CompoundRepositoryFactory(this));
+        addRepositoryFactory("jpp", new JppRepositoryFactory());
+        addRepositoryFactory("maven", new MavenRepositoryFactory());
     }
 
-    void addRepositoryFactory( String type, RepositoryFactory repositoryFactory )
-    {
-        repositoryFactories.put( type, repositoryFactory );
+    void addRepositoryFactory(String type, RepositoryFactory repositoryFactory) {
+        repositoryFactories.put(type, repositoryFactory);
     }
 
-    private org.fedoraproject.xmvn.config.Repository findDescriptor( String repoId )
-    {
-        for ( org.fedoraproject.xmvn.config.Repository repository : configurator.getConfiguration().getRepositories() )
-            if ( repository.getId() != null && repository.getId().equals( repoId ) )
-            {
+    private org.fedoraproject.xmvn.config.Repository findDescriptor(String repoId) {
+        for (org.fedoraproject.xmvn.config.Repository repository :
+                configurator.getConfiguration().getRepositories())
+            if (repository.getId() != null && repository.getId().equals(repoId)) {
                 return repository;
             }
 
@@ -61,18 +52,15 @@ public class DefaultRepositoryConfigurator
     }
 
     @Override
-    public Repository configureRepository( String repoId )
-    {
-        return configureRepository( repoId, "" );
+    public Repository configureRepository(String repoId) {
+        return configureRepository(repoId, "");
     }
 
     @Override
-    public Repository configureRepository( String repoId, String namespace )
-    {
-        org.fedoraproject.xmvn.config.Repository desc = findDescriptor( repoId );
-        if ( desc == null )
-        {
-            throw new RuntimeException( "Repository '" + repoId + "' is not configured." );
+    public Repository configureRepository(String repoId, String namespace) {
+        org.fedoraproject.xmvn.config.Repository desc = findDescriptor(repoId);
+        if (desc == null) {
+            throw new RuntimeException("Repository '" + repoId + "' is not configured.");
         }
 
         Properties properties = desc.getProperties();
@@ -80,20 +68,17 @@ public class DefaultRepositoryConfigurator
         Element configurationXml = (Element) desc.getConfiguration();
 
         String type = desc.getType();
-        if ( type == null )
-        {
-            throw new RuntimeException( "Repository '" + repoId + "' has missing type." );
+        if (type == null) {
+            throw new RuntimeException("Repository '" + repoId + "' has missing type.");
         }
 
         Element filter = (Element) desc.getFilter();
 
-        RepositoryFactory factory = repositoryFactories.get( type );
-        if ( factory == null )
-        {
-            throw new RuntimeException( "Unable to create repository of type '" + type
-                + "': no suitable factory found" );
+        RepositoryFactory factory = repositoryFactories.get(type);
+        if (factory == null) {
+            throw new RuntimeException("Unable to create repository of type '" + type + "': no suitable factory found");
         }
 
-        return factory.getInstance( filter, properties, configurationXml );
+        return factory.getInstance(filter, properties, configurationXml);
     }
 }

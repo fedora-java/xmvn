@@ -17,20 +17,14 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import java.util.List;
 
-/**
- * @author Mikolaj Izdebski
- */
-class And
-    extends BooleanOperator
-{
-    public And( List<BooleanExpression> children )
-    {
-        super( true, children );
+/** @author Mikolaj Izdebski */
+class And extends BooleanOperator {
+    public And(List<BooleanExpression> children) {
+        super(true, children);
     }
 
     @Override
-    protected boolean evaluate( boolean lhs, boolean rhs )
-    {
+    protected boolean evaluate(boolean lhs, boolean rhs) {
         return lhs & rhs;
     }
 }

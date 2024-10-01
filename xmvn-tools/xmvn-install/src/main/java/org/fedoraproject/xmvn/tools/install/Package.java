@@ -25,138 +25,114 @@ import java.util.Set;
 
 /**
  * Class describing a binary package as a set of files.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class Package
-{
-    /**
-     * ID of main package.
-     */
+public class Package {
+    /** ID of main package. */
     public static final String MAIN = "";
 
-    /**
-     * Package ID (a unique string).
-     */
+    /** Package ID (a unique string). */
     private final String id;
 
-    /**
-     * List of files that will be installed into this package.
-     */
+    /** List of files that will be installed into this package. */
     private final Set<File> files = new LinkedHashSet<>();
 
     /**
      * Create an empty package with given ID.
-     * 
+     *
      * @param id package ID
      */
-    public Package( String id )
-    {
+    public Package(String id) {
         this.id = id;
     }
 
     /**
      * Get unique string identifying this package.
-     * 
+     *
      * @return package ID
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     /**
      * Get files contained in this package.
-     * 
+     *
      * @return list view of files that will be installed with this package
      */
-    public Set<File> getFiles()
-    {
-        return Collections.unmodifiableSet( files );
+    public Set<File> getFiles() {
+        return Collections.unmodifiableSet(files);
     }
 
     /**
      * Add a file to this package. The package must not already contains the file.
-     * 
+     *
      * @param file file to be added
      */
-    public void addFile( File file )
-    {
-        if ( files.contains( file ) )
-        {
-            throw new IllegalArgumentException( "Package " + id + " already contains file " + file.getTargetPath() );
+    public void addFile(File file) {
+        if (files.contains(file)) {
+            throw new IllegalArgumentException("Package " + id + " already contains file " + file.getTargetPath());
         }
 
-        files.add( file );
+        files.add(file);
     }
 
     /**
      * Add a file to this package if id doesn't already exist in the package.
-     * 
+     *
      * @param file file to be added
      */
-    public void addFileIfNotExists( File file )
-    {
-        if ( !files.contains( file ) )
-        {
-            files.add( file );
+    public void addFileIfNotExists(File file) {
+        if (!files.contains(file)) {
+            files.add(file);
         }
     }
 
     /**
      * Install this package into specified root.
-     * <p>
-     * Package installation is equivalent to installation of all files it contains.
-     * <p>
-     * Target directory won't be overwritten if it already exists, which allows installation of multiple packages into
-     * the same directory.
-     * 
+     *
+     * <p>Package installation is equivalent to installation of all files it contains.
+     *
+     * <p>Target directory won't be overwritten if it already exists, which allows installation of multiple packages
+     * into the same directory.
+     *
      * @param installRoot target directory where package files will be installed
      * @throws IOException
      */
-    public void install( Path installRoot )
-        throws IOException
-    {
-        for ( File file : getFiles() )
-            file.install( installRoot );
+    public void install(Path installRoot) throws IOException {
+        for (File file : getFiles()) file.install(installRoot);
     }
 
     /**
      * Write package descriptor (aka {@code mfiles}) into specified file.
-     * <p>
-     * If target file exists then it shall be overwritten.
-     * 
+     *
+     * <p>If target file exists then it shall be overwritten.
+     *
      * @param descriptorPath path to file into which descriptor shall be written
      * @throws IOException
      */
-    public void writeDescriptor( Path descriptorPath )
-        throws IOException
-    {
-        try ( Writer writer = Files.newBufferedWriter( descriptorPath ) )
-        {
-            for ( File file : getFiles() )
-            {
-                writer.write( file.getDescriptor() );
-                writer.write( '\n' );
+    public void writeDescriptor(Path descriptorPath) throws IOException {
+        try (Writer writer = Files.newBufferedWriter(descriptorPath)) {
+            for (File file : getFiles()) {
+                writer.write(file.getDescriptor());
+                writer.write('\n');
             }
         }
     }
 
     @Override
-    public String toString()
-    {
-        return id.equals( MAIN ) ? "main package" : "package " + getId();
+    public String toString() {
+        return id.equals(MAIN) ? "main package" : "package " + getId();
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return id.hashCode();
     }
 
     @Override
-    public boolean equals( Object rhs )
-    {
-        return rhs != null && getClass() == rhs.getClass() && id.equals( ( (Package) rhs ).id );
+    public boolean equals(Object rhs) {
+        return rhs != null && getClass() == rhs.getClass() && id.equals(((Package) rhs).id);
     }
 }

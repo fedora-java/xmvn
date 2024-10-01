@@ -17,15 +17,10 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/**
- * @author Mikolaj Izdebski
- */
-class Version
-    extends StringExpression
-{
+/** @author Mikolaj Izdebski */
+class Version extends StringExpression {
     @Override
-    public String getValue( ArtifactContext context )
-    {
+    public String getValue(ArtifactContext context) {
         return context.getArtifact().getVersion();
     }
 }

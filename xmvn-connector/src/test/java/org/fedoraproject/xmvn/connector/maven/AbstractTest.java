@@ -23,38 +23,27 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.junit.jupiter.api.BeforeEach;
 
-/**
- * @author Mikolaj Izdebski
- */
-public abstract class AbstractTest
-    implements Module
-{
+/** @author Mikolaj Izdebski */
+public abstract class AbstractTest implements Module {
     private PlexusContainer container;
 
-    public PlexusContainer getContainer()
-    {
+    public PlexusContainer getContainer() {
         return container;
     }
 
     @BeforeEach
-    public void setupPlexusContainer()
-        throws Exception
-    {
+    public void setupPlexusContainer() throws Exception {
         ContainerConfiguration config = new DefaultContainerConfiguration();
-        config.setAutoWiring( true );
-        config.setClassPathScanning( PlexusConstants.SCANNING_INDEX );
-        container = new DefaultPlexusContainer( config, this );
+        config.setAutoWiring(true);
+        config.setClassPathScanning(PlexusConstants.SCANNING_INDEX);
+        container = new DefaultPlexusContainer(config, this);
     }
 
-    public <T> T lookup( Class<T> role )
-        throws Exception
-    {
-        return container.lookup( role );
+    public <T> T lookup(Class<T> role) throws Exception {
+        return container.lookup(role);
     }
 
-    public <T> T lookup( Class<T> role, String hint )
-        throws Exception
-    {
-        return container.lookup( role, hint );
+    public <T> T lookup(Class<T> role, String hint) throws Exception {
+        return container.lookup(role, hint);
     }
 }

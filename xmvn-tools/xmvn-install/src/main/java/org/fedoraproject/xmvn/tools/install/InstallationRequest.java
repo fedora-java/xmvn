@@ -17,11 +17,8 @@ package org.fedoraproject.xmvn.tools.install;
 
 import java.nio.file.Path;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class InstallationRequest
-{
+/** @author Mikolaj Izdebski */
+public class InstallationRequest {
     private boolean checkForUnmatchedRules;
 
     private Path installationPlanPath;
@@ -34,63 +31,51 @@ public class InstallationRequest
 
     private String repositoryId;
 
-    public boolean isCheckForUnmatchedRules()
-    {
+    public boolean isCheckForUnmatchedRules() {
         return checkForUnmatchedRules;
     }
 
-    public void setCheckForUnmatchedRules( boolean checkForUnmatchedRules )
-    {
+    public void setCheckForUnmatchedRules(boolean checkForUnmatchedRules) {
         this.checkForUnmatchedRules = checkForUnmatchedRules;
     }
 
-    public Path getInstallationPlan()
-    {
+    public Path getInstallationPlan() {
         return installationPlanPath;
     }
 
-    public void setInstallationPlan( Path installationPlanPath )
-    {
+    public void setInstallationPlan(Path installationPlanPath) {
         this.installationPlanPath = installationPlanPath;
     }
 
-    public String getBasePackageName()
-    {
+    public String getBasePackageName() {
         return basePackageName;
     }
 
-    public void setBasePackageName( String basePackageName )
-    {
+    public void setBasePackageName(String basePackageName) {
         this.basePackageName = basePackageName;
     }
 
-    public Path getInstallRoot()
-    {
+    public Path getInstallRoot() {
         return installRoot;
     }
 
-    public void setInstallRoot( Path installRoot )
-    {
+    public void setInstallRoot(Path installRoot) {
         this.installRoot = installRoot;
     }
 
-    public Path getDescriptorRoot()
-    {
+    public Path getDescriptorRoot() {
         return descriptorRoot;
     }
 
-    public void setDescriptorRoot( Path descriptorRoot )
-    {
+    public void setDescriptorRoot(Path descriptorRoot) {
         this.descriptorRoot = descriptorRoot;
     }
 
-    public String getRepositoryId()
-    {
+    public String getRepositoryId() {
         return repositoryId;
     }
 
-    public void setRepositoryId( String repositoryId )
-    {
+    public void setRepositoryId(String repositoryId) {
         this.repositoryId = repositoryId;
     }
 }

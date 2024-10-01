@@ -21,53 +21,43 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
-/**
- * @author Mikolaj Izdebski
- */
-class PackageRegistry
-{
+/** @author Mikolaj Izdebski */
+class PackageRegistry {
     private final Map<String, JavaPackage> packages = new LinkedHashMap<>();
 
     private final InstallerSettings settings;
 
     private final String basePackageName;
 
-    public PackageRegistry( InstallerSettings settings, String basePackageName )
-    {
+    public PackageRegistry(InstallerSettings settings, String basePackageName) {
         this.settings = settings;
         this.basePackageName = basePackageName;
     }
 
-    public JavaPackage getPackageById( String id )
-    {
-        if ( id == null || "__default".equals( id ) )
-        {
+    public JavaPackage getPackageById(String id) {
+        if (id == null || "__default".equals(id)) {
             id = "";
         }
 
-        if ( "__noinstall".equals( id ) )
-        {
+        if ("__noinstall".equals(id)) {
             return null;
         }
 
-        JavaPackage pkg = packages.get( id );
+        JavaPackage pkg = packages.get(id);
 
-        if ( pkg == null )
-        {
-            Path metadataDir = Paths.get( settings.getMetadataDir() );
-            pkg = new JavaPackage( id, basePackageName, metadataDir );
-            packages.put( id, pkg );
+        if (pkg == null) {
+            Path metadataDir = Paths.get(settings.getMetadataDir());
+            pkg = new JavaPackage(id, basePackageName, metadataDir);
+            packages.put(id, pkg);
         }
 
         return pkg;
     }
 
-    public Set<JavaPackage> getPackages()
-    {
-        return new LinkedHashSet<>( packages.values() );
+    public Set<JavaPackage> getPackages() {
+        return new LinkedHashSet<>(packages.values());
     }
 }

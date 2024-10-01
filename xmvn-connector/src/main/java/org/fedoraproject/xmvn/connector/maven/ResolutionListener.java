@@ -18,12 +18,9 @@ package org.fedoraproject.xmvn.connector.maven;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
-/**
- * @author Mikolaj Izdebski
- */
-public interface ResolutionListener
-{
-    void resolutionRequested( ResolutionRequest request );
+/** @author Mikolaj Izdebski */
+public interface ResolutionListener {
+    void resolutionRequested(ResolutionRequest request);
 
-    void resolutionCompleted( ResolutionRequest request, ResolutionResult result );
+    void resolutionCompleted(ResolutionRequest request, ResolutionResult result);
 }

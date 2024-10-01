@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
@@ -31,112 +30,92 @@ import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class SubstCli
-{
+/** @author Mikolaj Izdebski */
+public class SubstCli {
     private final Logger logger;
 
     private final MetadataResolver metadataResolver;
 
     private final ResolverSettings resolverSettings;
 
-    public SubstCli( Logger logger, Configurator configurator, MetadataResolver metadataResolver )
-    {
+    public SubstCli(Logger logger, Configurator configurator, MetadataResolver metadataResolver) {
         this.logger = logger;
         this.metadataResolver = metadataResolver;
         resolverSettings = configurator.getConfiguration().getResolverSettings();
     }
 
-    private MetadataResult resolveMetadata( List<String> repos )
-    {
-        MetadataRequest request = new MetadataRequest( repos );
-        request.setIgnoreDuplicates( resolverSettings.isIgnoreDuplicateMetadata() );
-        return metadataResolver.resolveMetadata( request );
+    private MetadataResult resolveMetadata(List<String> repos) {
+        MetadataRequest request = new MetadataRequest(repos);
+        request.setIgnoreDuplicates(resolverSettings.isIgnoreDuplicateMetadata());
+        return metadataResolver.resolveMetadata(request);
     }
 
-    private int run( SubstCliRequest cliRequest )
-    {
+    private int run(SubstCliRequest cliRequest) {
         List<MetadataResult> metadataResults = new ArrayList<>();
 
-        if ( cliRequest.getRoot() != null )
-        {
+        if (cliRequest.getRoot() != null) {
             List<String> metadataRepos = new ArrayList<>();
-            Path root = Paths.get( cliRequest.getRoot() );
+            Path root = Paths.get(cliRequest.getRoot());
 
-            for ( String configuredRepo : resolverSettings.getMetadataRepositories() )
-            {
-                Path repoPath = Paths.get( configuredRepo );
-                if ( repoPath.isAbsolute() )
-                {
-                    metadataRepos.add( root.resolve( Paths.get( "/" ).relativize( repoPath ) ).toString() );
+            for (String configuredRepo : resolverSettings.getMetadataRepositories()) {
+                Path repoPath = Paths.get(configuredRepo);
+                if (repoPath.isAbsolute()) {
+                    metadataRepos.add(
+                            root.resolve(Paths.get("/").relativize(repoPath)).toString());
                 }
             }
 
-            metadataResults.add( resolveMetadata( metadataRepos ) );
+            metadataResults.add(resolveMetadata(metadataRepos));
         }
 
-        metadataResults.add( resolveMetadata( resolverSettings.getMetadataRepositories() ) );
+        metadataResults.add(resolveMetadata(resolverSettings.getMetadataRepositories()));
 
-        ArtifactVisitor visitor = new ArtifactVisitor( logger, metadataResults );
+        ArtifactVisitor visitor = new ArtifactVisitor(logger, metadataResults);
 
-        visitor.setTypes( cliRequest.getTypes() );
-        visitor.setFollowSymlinks( cliRequest.isFollowSymlinks() );
-        visitor.setDryRun( cliRequest.isDryRun() );
+        visitor.setTypes(cliRequest.getTypes());
+        visitor.setFollowSymlinks(cliRequest.isFollowSymlinks());
+        visitor.setDryRun(cliRequest.isDryRun());
 
-        try
-        {
-            for ( String path : cliRequest.getParameters() )
-            {
-                Files.walkFileTree( Paths.get( path ), visitor );
+        try {
+            for (String path : cliRequest.getParameters()) {
+                Files.walkFileTree(Paths.get(path), visitor);
             }
-        }
-        catch ( IOException e )
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         return cliRequest.isStrict() && visitor.getFailureCount() > 0 ? 1 : 0;
     }
 
-    public static int doMain( String[] args )
-    {
-        try
-        {
-            SubstCliRequest cliRequest = SubstCliRequest.build( args );
-            if ( cliRequest == null )
-            {
+    public static int doMain(String[] args) {
+        try {
+            SubstCliRequest cliRequest = SubstCliRequest.build(args);
+            if (cliRequest == null) {
                 return 1;
             }
-            if ( cliRequest.printUsage() )
-            {
+            if (cliRequest.printUsage()) {
                 return 0;
             }
-            if ( cliRequest.isDebug() )
-            {
-                System.setProperty( "xmvn.debug", "true" );
+            if (cliRequest.isDebug()) {
+                System.setProperty("xmvn.debug", "true");
             }
 
             ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
-            Logger logger = locator.getService( Logger.class );
-            Configurator configurator = locator.getService( Configurator.class );
-            MetadataResolver metadataResolver = locator.getService( MetadataResolver.class );
+            Logger logger = locator.getService(Logger.class);
+            Configurator configurator = locator.getService(Configurator.class);
+            MetadataResolver metadataResolver = locator.getService(MetadataResolver.class);
 
-            SubstCli cli = new SubstCli( logger, configurator, metadataResolver );
+            SubstCli cli = new SubstCli(logger, configurator, metadataResolver);
 
-            return cli.run( cliRequest );
-        }
-        catch ( Throwable e )
-        {
-            System.err.println( "Unhandled exception" );
+            return cli.run(cliRequest);
+        } catch (Throwable e) {
+            System.err.println("Unhandled exception");
             e.printStackTrace();
             return 2;
         }
     }
 
-    public static void main( String[] args )
-    {
-        System.exit( doMain( args ) );
+    public static void main(String[] args) {
+        System.exit(doMain(args));
     }
 }

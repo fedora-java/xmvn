@@ -15,12 +15,9 @@
  */
 package org.fedoraproject.xmvn.repository;
 
-/**
- * @author Mikolaj Izdebski
- */
-public interface RepositoryConfigurator
-{
-    Repository configureRepository( String repoId );
+/** @author Mikolaj Izdebski */
+public interface RepositoryConfigurator {
+    Repository configureRepository(String repoId);
 
-    Repository configureRepository( String repoId, String namespace );
+    Repository configureRepository(String repoId, String namespace);
 }

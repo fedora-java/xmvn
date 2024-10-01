@@ -17,12 +17,8 @@ package org.fedoraproject.xmvn.artifact;
 
 import java.nio.file.Path;
 
-/**
- * @author Mikolaj Izdebski
- */
-public final class DefaultArtifact
-    implements Artifact
-{
+/** @author Mikolaj Izdebski */
+public final class DefaultArtifact implements Artifact {
     private final String groupId;
 
     private final String artifactId;
@@ -35,22 +31,20 @@ public final class DefaultArtifact
 
     private final Path path;
 
-    public DefaultArtifact( String coords )
-    {
+    public DefaultArtifact(String coords) {
         String s = coords;
-        int n = s.length() - s.replace( ":", "" ).length();
-        if ( n < 1 || n > 4 )
-        {
-            throw new IllegalArgumentException( "Illegal artifact coordinates " + coords
-                + ", expected coordinates in format <groupId>:<artifactId>[:<extension>[:<classifier>]]:[<version>]" );
+        int n = s.length() - s.replace(":", "").length();
+        if (n < 1 || n > 4) {
+            throw new IllegalArgumentException(
+                    "Illegal artifact coordinates " + coords
+                            + ", expected coordinates in format <groupId>:<artifactId>[:<extension>[:<classifier>]]:[<version>]");
         }
         s += "::::";
         String[] a = new String[5];
-        for ( int j = 0; j < 5; j++ )
-        {
-            int i = s.indexOf( ':' );
-            a[j] = s.substring( 0, i );
-            s = s.substring( i + 1 );
+        for (int j = 0; j < 5; j++) {
+            int i = s.indexOf(':');
+            a[j] = s.substring(0, i);
+            s = s.substring(i + 1);
         }
 
         groupId = a[0];
@@ -61,36 +55,29 @@ public final class DefaultArtifact
         path = null;
     }
 
-    public DefaultArtifact( String groupId, String artifactId )
-    {
-        this( groupId, artifactId, null );
+    public DefaultArtifact(String groupId, String artifactId) {
+        this(groupId, artifactId, null);
     }
 
-    public DefaultArtifact( String groupId, String artifactId, String version )
-    {
-        this( groupId, artifactId, null, version );
+    public DefaultArtifact(String groupId, String artifactId, String version) {
+        this(groupId, artifactId, null, version);
     }
 
-    public DefaultArtifact( String groupId, String artifactId, String extension, String version )
-    {
-        this( groupId, artifactId, extension, null, version );
+    public DefaultArtifact(String groupId, String artifactId, String extension, String version) {
+        this(groupId, artifactId, extension, null, version);
     }
 
-    public DefaultArtifact( String groupId, String artifactId, String extension, String classifier, String version )
-    {
-        this( groupId, artifactId, extension, classifier, version, null );
+    public DefaultArtifact(String groupId, String artifactId, String extension, String classifier, String version) {
+        this(groupId, artifactId, extension, classifier, version, null);
     }
 
-    public DefaultArtifact( String groupId, String artifactId, String extension, String classifier, String version,
-                            Path path )
-    {
-        if ( groupId == null || groupId.isEmpty() )
-        {
-            throw new IllegalArgumentException( "groupId must be specified" );
+    public DefaultArtifact(
+            String groupId, String artifactId, String extension, String classifier, String version, Path path) {
+        if (groupId == null || groupId.isEmpty()) {
+            throw new IllegalArgumentException("groupId must be specified");
         }
-        if ( artifactId == null || artifactId.isEmpty() )
-        {
-            throw new IllegalArgumentException( "artifactId must be specified" );
+        if (artifactId == null || artifactId.isEmpty()) {
+            throw new IllegalArgumentException("artifactId must be specified");
         }
 
         this.groupId = groupId;
@@ -102,86 +89,76 @@ public final class DefaultArtifact
     }
 
     @Override
-    public String getGroupId()
-    {
+    public String getGroupId() {
         return groupId;
     }
 
     @Override
-    public String getArtifactId()
-    {
+    public String getArtifactId() {
         return artifactId;
     }
 
     @Override
-    public String getExtension()
-    {
+    public String getExtension() {
         return extension;
     }
 
     @Override
-    public String getClassifier()
-    {
+    public String getClassifier() {
         return classifier;
     }
 
     @Override
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
     @Override
-    public Path getPath()
-    {
+    public Path getPath() {
         return path;
     }
 
     @Override
-    public Artifact setVersion( String version )
-    {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path );
+    public Artifact setVersion(String version) {
+        return new DefaultArtifact(groupId, artifactId, extension, classifier, version, path);
     }
 
     @Override
-    public Artifact setPath( Path path )
-    {
-        return new DefaultArtifact( groupId, artifactId, extension, classifier, version, path );
+    public Artifact setPath(Path path) {
+        return new DefaultArtifact(groupId, artifactId, extension, classifier, version, path);
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append( groupId );
-        sb.append( ':' ).append( artifactId );
-        sb.append( ':' ).append( extension );
-        if ( !classifier.isEmpty() )
-        {
-            sb.append( ':' ).append( classifier );
+        sb.append(groupId);
+        sb.append(':').append(artifactId);
+        sb.append(':').append(extension);
+        if (!classifier.isEmpty()) {
+            sb.append(':').append(classifier);
         }
-        sb.append( ':' ).append( getVersion() );
+        sb.append(':').append(getVersion());
         return sb.toString();
     }
 
     @Override
-    public boolean equals( Object rhs )
-    {
-        if ( !( rhs instanceof Artifact ) )
-        {
+    public boolean equals(Object rhs) {
+        if (!(rhs instanceof Artifact)) {
             return false;
         }
 
         Artifact x = (Artifact) rhs;
 
-        return groupId.equals( x.getGroupId() ) && artifactId.equals( x.getArtifactId() )
-            && extension.equals( x.getExtension() ) && classifier.equals( x.getClassifier() )
-            && version.equals( x.getVersion() ) && ( path == null ? x.getPath() == null : path.equals( x.getPath() ) );
+        return groupId.equals(x.getGroupId())
+                && artifactId.equals(x.getArtifactId())
+                && extension.equals(x.getExtension())
+                && classifier.equals(x.getClassifier())
+                && version.equals(x.getVersion())
+                && (path == null ? x.getPath() == null : path.equals(x.getPath()));
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return toString().hashCode();
     }
 }

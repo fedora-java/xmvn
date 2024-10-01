@@ -20,34 +20,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.fedoraproject.xmvn.tools.install.SymbolicLink;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Michael Simacek
- */
-public class SymbolicLinkTest
-    extends AbstractFileTest
-{
+/** @author Michael Simacek */
+public class SymbolicLinkTest extends AbstractFileTest {
     @Test
-    public void testSymlink()
-        throws Exception
-    {
-        Path jar = getResource( "example.jar" );
-        add( new Directory( Paths.get( "usr/share/java" ) ) );
-        add( new RegularFile( Paths.get( "usr/share/java/foobar.jar" ), jar ) );
-        add( new SymbolicLink( Paths.get( "usr/share/java/link.jar" ), Paths.get( "foobar.jar" ) ) );
+    public void testSymlink() throws Exception {
+        Path jar = getResource("example.jar");
+        add(new Directory(Paths.get("usr/share/java")));
+        add(new RegularFile(Paths.get("usr/share/java/foobar.jar"), jar));
+        add(new SymbolicLink(Paths.get("usr/share/java/link.jar"), Paths.get("foobar.jar")));
         Path root = performInstallation();
-        assertDirectoryStructure( "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar",
-                                  "L /usr/share/java/link.jar" );
-        Path link = root.resolve( Paths.get( "usr/share/java/link.jar" ) );
-        assertEquals( Files.readSymbolicLink( link ), Paths.get( "foobar.jar" ) );
+        assertDirectoryStructure(
+                "D /usr",
+                "D /usr/share",
+                "D /usr/share/java",
+                "F /usr/share/java/foobar.jar",
+                "L /usr/share/java/link.jar");
+        Path link = root.resolve(Paths.get("usr/share/java/link.jar"));
+        assertEquals(Files.readSymbolicLink(link), Paths.get("foobar.jar"));
 
-        assertDescriptorEquals( "%attr(0755,root,root) %dir /usr/share/java",
-                                "%attr(0644,root,root) /usr/share/java/foobar.jar", "/usr/share/java/link.jar" );
+        assertDescriptorEquals(
+                "%attr(0755,root,root) %dir /usr/share/java",
+                "%attr(0644,root,root) /usr/share/java/foobar.jar", "/usr/share/java/link.jar");
     }
 }

@@ -19,103 +19,92 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
 
-import org.fedoraproject.xmvn.resolver.ResolutionResult;
-
-/**
- * @author Marian Koncek
- */
-public class ResolutionResultMarshallerListTest
-{
+/** @author Marian Koncek */
+public class ResolutionResultMarshallerListTest {
     @Test
-    public void testEmpty()
-        throws Exception
-    {
+    public void testEmpty() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        new ResolutionResultListMarshaller( Arrays.asList( new ResolutionResult[] { null } ) ).marshal( bos );
+        new ResolutionResultListMarshaller(Arrays.asList(new ResolutionResult[] {null})).marshal(bos);
 
-        XmlAssert.assertThat( "<results></results>" ) //
-                 .and( bos.toString() ) //
-                 .ignoreComments() //
-                 .ignoreWhitespace() //
-                 .areIdentical();
+        XmlAssert.assertThat("<results></results>")
+                .and(bos.toString())
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areIdentical();
     }
 
     @Test
-    public void testMultiple()
-        throws Exception
-    {
+    public void testMultiple() throws Exception {
         List<ResolutionResult> list = new ArrayList<>();
 
         ResolutionResultBean temp;
         temp = new ResolutionResultBean();
-        temp.setArtifactPath( "/dev/null" );
-        temp.setCompatVersion( "comp1" );
-        temp.setNamespace( "namespace1" );
-        temp.setProvider( "provider1" );
-        list.add( new ResolutionResultBean.Adapter().unmarshal( temp ) );
+        temp.setArtifactPath("/dev/null");
+        temp.setCompatVersion("comp1");
+        temp.setNamespace("namespace1");
+        temp.setProvider("provider1");
+        list.add(new ResolutionResultBean.Adapter().unmarshal(temp));
 
         temp = new ResolutionResultBean();
-        temp.setArtifactPath( "/dev/null" );
-        temp.setCompatVersion( "comp2" );
-        temp.setNamespace( "namespace2" );
-        temp.setProvider( "provider2" );
-        list.add( new ResolutionResultBean.Adapter().unmarshal( temp ) );
+        temp.setArtifactPath("/dev/null");
+        temp.setCompatVersion("comp2");
+        temp.setNamespace("namespace2");
+        temp.setProvider("provider2");
+        list.add(new ResolutionResultBean.Adapter().unmarshal(temp));
 
-        list.add( null );
+        list.add(null);
 
         temp = new ResolutionResultBean();
-        temp.setArtifactPath( "/dev/null" );
-        temp.setCompatVersion( "comp3" );
-        temp.setNamespace( "namespace3" );
-        temp.setProvider( "provider3" );
-        list.add( new ResolutionResultBean.Adapter().unmarshal( temp ) );
+        temp.setArtifactPath("/dev/null");
+        temp.setCompatVersion("comp3");
+        temp.setNamespace("namespace3");
+        temp.setProvider("provider3");
+        list.add(new ResolutionResultBean.Adapter().unmarshal(temp));
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        new ResolutionResultListMarshaller( list ).marshal( bos );
+        new ResolutionResultListMarshaller(list).marshal(bos);
 
-        XmlAssert.assertThat( "" //
-            + "<results>" //
-            + "  <result>" //
-            + "    <artifactPath>/dev/null</artifactPath>" //
-            + "    <provider>provider1</provider>" //
-            + "    <compatVersion>comp1</compatVersion>" //
-            + "    <namespace>namespace1</namespace>" //
-            + "  </result>" //
-            + "  <result>" //
-            + "    <artifactPath>/dev/null</artifactPath>" //
-            + "    <provider>provider2</provider>" //
-            + "    <compatVersion>comp2</compatVersion>" //
-            + "    <namespace>namespace2</namespace>" //
-            + "  </result>" //
-            + "  <result>" //
-            + "    <artifactPath>/dev/null</artifactPath>" //
-            + "    <provider>provider3</provider>" //
-            + "    <compatVersion>comp3</compatVersion>" //
-            + "    <namespace>namespace3</namespace>" //
-            + "  </result>" //
-            + "</results>" ) //
-                 .and( bos.toString() ) //
-                 .ignoreComments() //
-                 .ignoreWhitespace() //
-                 .areIdentical();
+        XmlAssert.assertThat(""
+                        + "<results>"
+                        + "  <result>"
+                        + "    <artifactPath>/dev/null</artifactPath>"
+                        + "    <provider>provider1</provider>"
+                        + "    <compatVersion>comp1</compatVersion>"
+                        + "    <namespace>namespace1</namespace>"
+                        + "  </result>"
+                        + "  <result>"
+                        + "    <artifactPath>/dev/null</artifactPath>"
+                        + "    <provider>provider2</provider>"
+                        + "    <compatVersion>comp2</compatVersion>"
+                        + "    <namespace>namespace2</namespace>"
+                        + "  </result>"
+                        + "  <result>"
+                        + "    <artifactPath>/dev/null</artifactPath>"
+                        + "    <provider>provider3</provider>"
+                        + "    <compatVersion>comp3</compatVersion>"
+                        + "    <namespace>namespace3</namespace>"
+                        + "  </result>"
+                        + "</results>")
+                .and(bos.toString())
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areIdentical();
     }
 
     @Test
-    public void testSingle()
-        throws Exception
-    {
-        ResolutionResult rr = new ResolutionResultBean.Adapter().unmarshal( new ResolutionResultBean() );
+    public void testSingle() throws Exception {
+        ResolutionResult rr = new ResolutionResultBean.Adapter().unmarshal(new ResolutionResultBean());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        new ResolutionResultListMarshaller( Arrays.asList( new ResolutionResult[] { rr } ) ).marshal( bos );
+        new ResolutionResultListMarshaller(Arrays.asList(new ResolutionResult[] {rr})).marshal(bos);
 
-        XmlAssert.assertThat( "<results><result/></results>" ) //
-                 .and( bos.toString() ) //
-                 .ignoreComments() //
-                 .ignoreWhitespace() //
-                 .areIdentical();
+        XmlAssert.assertThat("<results><result/></results>")
+                .and(bos.toString())
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areIdentical();
     }
 }

@@ -19,17 +19,13 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for builddep MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ExpandVariablesBuilddepIntegrationTest
-    extends AbstractBuilddepIntegrationTest
-{
+public class ExpandVariablesBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
-    public void testBuilddepExpandVariables()
-        throws Exception
-    {
-        expectBuildDependency( "junit", "junit" );
+    public void testBuilddepExpandVariables() throws Exception {
+        expectBuildDependency("junit", "junit");
         performBuilddepTest();
     }
 }

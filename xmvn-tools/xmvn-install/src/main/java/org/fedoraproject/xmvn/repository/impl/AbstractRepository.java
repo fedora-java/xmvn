@@ -17,22 +17,16 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import org.fedoraproject.xmvn.repository.Repository;
 
-/**
- * @author Mikolaj Izdebski
- */
-abstract class AbstractRepository
-    implements Repository
-{
+/** @author Mikolaj Izdebski */
+abstract class AbstractRepository implements Repository {
     private final String namespace;
 
-    public AbstractRepository( String namespace )
-    {
+    public AbstractRepository(String namespace) {
         this.namespace = namespace;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return namespace;
     }
 }

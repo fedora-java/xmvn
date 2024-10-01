@@ -32,19 +32,14 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class ArtifactVisitor
-    implements FileVisitor<Path>
-{
+/** @author Mikolaj Izdebski */
+public class ArtifactVisitor implements FileVisitor<Path> {
     private final Logger logger;
 
     private final Set<String> types = new LinkedHashSet<>();
@@ -57,46 +52,36 @@ public class ArtifactVisitor
 
     private int failureCount;
 
-    public ArtifactVisitor( Logger logger, List<MetadataResult> metadata )
-    {
+    public ArtifactVisitor(Logger logger, List<MetadataResult> metadata) {
         this.logger = logger;
         this.metadata = metadata;
     }
 
-    public void setTypes( Collection<String> types )
-    {
-        this.types.addAll( types );
+    public void setTypes(Collection<String> types) {
+        this.types.addAll(types);
     }
 
-    public void setFollowSymlinks( boolean followSymlinks )
-    {
+    public void setFollowSymlinks(boolean followSymlinks) {
         this.followSymlinks = followSymlinks;
     }
 
-    public void setDryRun( boolean dryRun )
-    {
+    public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
     }
 
-    public int getFailureCount()
-    {
+    public int getFailureCount() {
         return failureCount;
     }
 
     @Override
-    public FileVisitResult postVisitDirectory( Path path, IOException e )
-        throws IOException
-    {
+    public FileVisitResult postVisitDirectory(Path path, IOException e) throws IOException {
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult preVisitDirectory( Path path, BasicFileAttributes attrs )
-        throws IOException
-    {
-        if ( Files.isSymbolicLink( path ) && !followSymlinks )
-        {
-            logger.debug( "Skipping symlink to directory: {}", path );
+    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attrs) throws IOException {
+        if (Files.isSymbolicLink(path) && !followSymlinks) {
+            logger.debug("Skipping symlink to directory: {}", path);
             return FileVisitResult.SKIP_SUBTREE;
         }
 
@@ -104,22 +89,17 @@ public class ArtifactVisitor
     }
 
     @Override
-    public FileVisitResult visitFile( Path path, BasicFileAttributes attrs )
-        throws IOException
-    {
-        if ( !Files.isRegularFile( path ) )
-        {
-            logger.debug( "Skipping {}: not a regular file", path );
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+        if (!Files.isRegularFile(path)) {
+            logger.debug("Skipping {}: not a regular file", path);
             return FileVisitResult.CONTINUE;
         }
 
         String fileName = path.getFileName().toString();
 
-        for ( String type : types )
-        {
-            if ( fileName.endsWith( "." + type ) )
-            {
-                substituteArtifact( path, type );
+        for (String type : types) {
+            if (fileName.endsWith("." + type)) {
+                substituteArtifact(path, type);
             }
         }
 
@@ -127,57 +107,45 @@ public class ArtifactVisitor
     }
 
     @Override
-    public FileVisitResult visitFileFailed( Path path, IOException e )
-        throws IOException
-    {
-        logger.warn( "Failed to access file {}", path );
+    public FileVisitResult visitFileFailed(Path path, IOException e) throws IOException {
+        logger.warn("Failed to access file {}", path);
         return FileVisitResult.CONTINUE;
     }
 
-    private Artifact getArtifactFromManifest( Path path )
-        throws IOException
-    {
-        try ( JarFile jarFile = new JarFile( path.toFile() ) )
-        {
+    private Artifact getArtifactFromManifest(Path path) throws IOException {
+        try (JarFile jarFile = new JarFile(path.toFile())) {
             Manifest mf = jarFile.getManifest();
-            if ( mf == null )
-            {
+            if (mf == null) {
                 return null;
             }
 
-            String groupId = mf.getMainAttributes().getValue( Artifact.MF_KEY_GROUPID );
-            String artifactId = mf.getMainAttributes().getValue( Artifact.MF_KEY_ARTIFACTID );
-            String extension = mf.getMainAttributes().getValue( Artifact.MF_KEY_EXTENSION );
-            String classifier = mf.getMainAttributes().getValue( Artifact.MF_KEY_CLASSIFIER );
-            String version = mf.getMainAttributes().getValue( Artifact.MF_KEY_VERSION );
+            String groupId = mf.getMainAttributes().getValue(Artifact.MF_KEY_GROUPID);
+            String artifactId = mf.getMainAttributes().getValue(Artifact.MF_KEY_ARTIFACTID);
+            String extension = mf.getMainAttributes().getValue(Artifact.MF_KEY_EXTENSION);
+            String classifier = mf.getMainAttributes().getValue(Artifact.MF_KEY_CLASSIFIER);
+            String version = mf.getMainAttributes().getValue(Artifact.MF_KEY_VERSION);
 
-            if ( groupId == null || artifactId == null )
-            {
+            if (groupId == null || artifactId == null) {
                 return null;
             }
 
-            return new DefaultArtifact( groupId, artifactId, extension, classifier, version );
+            return new DefaultArtifact(groupId, artifactId, extension, classifier, version);
         }
     }
 
-    private Artifact getArtifactFromPomProperties( Path path, String extension )
-        throws IOException
-    {
-        try ( ZipInputStream zis = new ZipInputStream( Files.newInputStream( path ) ) )
-        {
+    private Artifact getArtifactFromPomProperties(Path path, String extension) throws IOException {
+        try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(path))) {
             ZipEntry entry;
-            while ( ( entry = zis.getNextEntry() ) != null )
-            {
+            while ((entry = zis.getNextEntry()) != null) {
                 String name = entry.getName();
-                if ( name.startsWith( "META-INF/maven/" ) && name.endsWith( "/pom.properties" ) )
-                {
+                if (name.startsWith("META-INF/maven/") && name.endsWith("/pom.properties")) {
                     Properties properties = new Properties();
-                    properties.load( zis );
+                    properties.load(zis);
 
-                    String groupId = properties.getProperty( "groupId" );
-                    String artifactId = properties.getProperty( "artifactId" );
-                    String version = properties.getProperty( "version" );
-                    return new DefaultArtifact( groupId, artifactId, extension, version );
+                    String groupId = properties.getProperty("groupId");
+                    String artifactId = properties.getProperty("artifactId");
+                    String version = properties.getProperty("version");
+                    return new DefaultArtifact(groupId, artifactId, extension, version);
                 }
             }
 
@@ -185,72 +153,57 @@ public class ArtifactVisitor
         }
     }
 
-    private Artifact readArtifactDefinition( Path path, String extension )
-    {
-        try
-        {
-            Artifact artifact = getArtifactFromManifest( path );
-            if ( artifact != null )
-            {
+    private Artifact readArtifactDefinition(Path path, String extension) {
+        try {
+            Artifact artifact = getArtifactFromManifest(path);
+            if (artifact != null) {
                 return artifact;
             }
 
-            artifact = getArtifactFromPomProperties( path, extension );
-            if ( artifact != null )
-            {
+            artifact = getArtifactFromPomProperties(path, extension);
+            if (artifact != null) {
                 return artifact;
             }
 
             return null;
-        }
-        catch ( IOException e )
-        {
-            logger.error( "Failed to get artifact definition from file {}", path, e );
+        } catch (IOException e) {
+            logger.error("Failed to get artifact definition from file {}", path, e);
             return null;
         }
     }
 
-    private void substituteArtifact( Path path, String type )
-        throws IOException
-    {
-        Artifact artifact = readArtifactDefinition( path, type );
-        if ( artifact == null )
-        {
-            logger.info( "Skipping file {}: No artifact definition found", path );
+    private void substituteArtifact(Path path, String type) throws IOException {
+        Artifact artifact = readArtifactDefinition(path, type);
+        if (artifact == null) {
+            logger.info("Skipping file {}: No artifact definition found", path);
             failureCount++;
             return;
         }
 
-        ArtifactMetadata metadata = resolveMetadata( artifact );
-        if ( metadata == null )
-        {
-            logger.warn( "Skipping file {}: Artifact {} not found in repository", path, artifact );
+        ArtifactMetadata metadata = resolveMetadata(artifact);
+        if (metadata == null) {
+            logger.warn("Skipping file {}: Artifact {} not found in repository", path, artifact);
             failureCount++;
             return;
         }
 
-        Path artifactPath = Paths.get( metadata.getPath() );
+        Path artifactPath = Paths.get(metadata.getPath());
 
-        if ( !dryRun )
-        {
-            Files.delete( path );
-            Files.createSymbolicLink( path, artifactPath );
+        if (!dryRun) {
+            Files.delete(path);
+            Files.createSymbolicLink(path, artifactPath);
         }
 
-        logger.info( "Linked {} to {}", path, artifactPath );
+        logger.info("Linked {} to {}", path, artifactPath);
     }
 
-    private ArtifactMetadata resolveMetadata( Artifact artifact )
-    {
-        List<Artifact> versionedArtifacts = Arrays.asList( artifact, artifact.setVersion( null ) );
+    private ArtifactMetadata resolveMetadata(Artifact artifact) {
+        List<Artifact> versionedArtifacts = Arrays.asList(artifact, artifact.setVersion(null));
 
-        for ( MetadataResult metadataResult : metadata )
-        {
-            for ( Artifact versionedArtifact : versionedArtifacts )
-            {
-                ArtifactMetadata metadata = metadataResult.getMetadataFor( versionedArtifact );
-                if ( metadata != null )
-                {
+        for (MetadataResult metadataResult : metadata) {
+            for (Artifact versionedArtifact : versionedArtifacts) {
+                ArtifactMetadata metadata = metadataResult.getMetadataFor(versionedArtifact);
+                if (metadata != null) {
                     return metadata;
                 }
             }

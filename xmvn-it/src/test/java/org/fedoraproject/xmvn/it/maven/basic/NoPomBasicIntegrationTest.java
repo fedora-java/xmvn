@@ -17,25 +17,21 @@ package org.fedoraproject.xmvn.it.maven.basic;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Basic integration tests for XMvn (Maven with extensions).
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class NoPomBasicIntegrationTest
-    extends AbstractMavenIntegrationTest
-{
+public class NoPomBasicIntegrationTest extends AbstractMavenIntegrationTest {
     @Test
-    public void testNoPom()
-        throws Exception
-    {
+    public void testNoPom() throws Exception {
         expectFailure();
-        performTest( "validate" );
-        assertTrue( getStdout().anyMatch( s -> s.startsWith( "[ERROR] The goal you specified requires a project to execute "
-            + "but there is no POM in this directory" ) ) );
+        performTest("validate");
+        assertTrue(getStdout()
+                .anyMatch(s -> s.startsWith("[ERROR] The goal you specified requires a project to execute "
+                        + "but there is no POM in this directory")));
     }
 }

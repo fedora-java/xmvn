@@ -24,51 +24,43 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test if artifacts which files are not regular files are handled properly.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class DirectoryInstallationTest
-    extends AbstractInstallMojoTest
-{
+public class DirectoryInstallationTest extends AbstractInstallMojoTest {
     @Override
-    protected File getArtifactFile()
-        throws Exception
-    {
-        Path emptyDirectory = Files.createTempDirectory( "xmvn-test" );
+    protected File getArtifactFile() throws Exception {
+        Path emptyDirectory = Files.createTempDirectory("xmvn-test");
         return emptyDirectory.toFile();
     }
 
     @Test
-    public void testDirectoryAsProjectFile()
-        throws Exception
-    {
+    public void testDirectoryAsProjectFile() throws Exception {
         setMojoMockExpectations();
 
-        Deployer deployer = EasyMock.createStrictMock( Deployer.class );
-        DeploymentResult deploymentResult = EasyMock.createNiceMock( DeploymentResult.class );
+        Deployer deployer = EasyMock.createStrictMock(Deployer.class);
+        DeploymentResult deploymentResult = EasyMock.createNiceMock(DeploymentResult.class);
 
         // Expect deployment of POM file only
-        expect( deployer.deploy( isA( DeploymentRequest.class ) ) ).andReturn( deploymentResult );
+        expect(deployer.deploy(isA(DeploymentRequest.class))).andReturn(deploymentResult);
 
-        replay( deployer, deploymentResult );
+        replay(deployer, deploymentResult);
 
-        getProject().setArtifact( getArtifact() );
+        getProject().setArtifact(getArtifact());
 
-        InstallMojo mojo = new InstallMojo( deployer, getLogger() );
-        mojo.setReactorProjects( Collections.singletonList( getProject() ) );
+        InstallMojo mojo = new InstallMojo(deployer, getLogger());
+        mojo.setReactorProjects(Collections.singletonList(getProject()));
         mojo.execute();
 
-        verify( deployer, deploymentResult );
+        verify(deployer, deploymentResult);
         verifyMojoMocks();
     }
 }

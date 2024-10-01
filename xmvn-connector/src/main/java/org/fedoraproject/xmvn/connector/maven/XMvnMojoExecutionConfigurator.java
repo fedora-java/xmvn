@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.connector.maven;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
 import org.apache.maven.lifecycle.MojoExecutionConfigurator;
 import org.apache.maven.lifecycle.internal.DefaultMojoExecutionConfigurator;
 import org.apache.maven.plugin.MojoExecution;
@@ -26,35 +25,28 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Priority;
 
-/**
- * @author Mikolaj Izdebski
- */
+/** @author Mikolaj Izdebski */
 @Named
 @Singleton
-@Priority( 100 )
-public class XMvnMojoExecutionConfigurator
-    implements MojoExecutionConfigurator
-{
+@Priority(100)
+public class XMvnMojoExecutionConfigurator implements MojoExecutionConfigurator {
     @Inject
     private DefaultMojoExecutionConfigurator delegate;
 
     @Override
-    public void configure( MavenProject project, MojoExecution execution, boolean allowPluginLevelConfig )
-    {
-        PluginDescriptor originalPluginDescriptor = execution.getMojoDescriptor().getPluginDescriptor();
+    public void configure(MavenProject project, MojoExecution execution, boolean allowPluginLevelConfig) {
+        PluginDescriptor originalPluginDescriptor =
+                execution.getMojoDescriptor().getPluginDescriptor();
 
         PluginDescriptor aliasedPluginDescriptor = originalPluginDescriptor.clone();
-        aliasedPluginDescriptor.setGroupId( execution.getPlugin().getGroupId() );
-        aliasedPluginDescriptor.setArtifactId( execution.getPlugin().getArtifactId() );
+        aliasedPluginDescriptor.setGroupId(execution.getPlugin().getGroupId());
+        aliasedPluginDescriptor.setArtifactId(execution.getPlugin().getArtifactId());
 
-        try
-        {
-            execution.getMojoDescriptor().setPluginDescriptor( aliasedPluginDescriptor );
-            delegate.configure( project, execution, allowPluginLevelConfig );
-        }
-        finally
-        {
-            execution.getMojoDescriptor().setPluginDescriptor( originalPluginDescriptor );
+        try {
+            execution.getMojoDescriptor().setPluginDescriptor(aliasedPluginDescriptor);
+            delegate.configure(project, execution, allowPluginLevelConfig);
+        } finally {
+            execution.getMojoDescriptor().setPluginDescriptor(originalPluginDescriptor);
         }
     }
 }

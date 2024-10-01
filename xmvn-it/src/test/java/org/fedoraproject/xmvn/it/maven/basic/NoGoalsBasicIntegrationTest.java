@@ -17,24 +17,19 @@ package org.fedoraproject.xmvn.it.maven.basic;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Basic integration tests for XMvn (Maven with extensions).
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class NoGoalsBasicIntegrationTest
-    extends AbstractMavenIntegrationTest
-{
+public class NoGoalsBasicIntegrationTest extends AbstractMavenIntegrationTest {
     @Test
-    public void testNoGoals()
-        throws Exception
-    {
+    public void testNoGoals() throws Exception {
         expectFailure();
         performTest();
-        assertTrue( getStdout().anyMatch( s -> s.startsWith( "[ERROR] No goals have been specified for this build." ) ) );
+        assertTrue(getStdout().anyMatch(s -> s.startsWith("[ERROR] No goals have been specified for this build.")));
     }
 }

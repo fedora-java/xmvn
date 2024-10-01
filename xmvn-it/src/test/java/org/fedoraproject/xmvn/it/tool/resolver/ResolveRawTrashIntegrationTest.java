@@ -19,24 +19,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for XMvn Resolver tool.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ResolveRawTrashIntegrationTest
-    extends AbstractToolIntegrationTest
-{
+public class ResolveRawTrashIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveRawTrash()
-        throws Exception
-    {
-        assertEquals( 2, invokeToolWithInput( "xyzzy", "xmvn-resolve", "--raw-request" ) );
-        assertTrue( getStderr().findAny().isPresent() );
-        assertFalse( getStdout().findAny().isPresent() );
+    public void testResolveRawTrash() throws Exception {
+        assertEquals(2, invokeToolWithInput("xyzzy", "xmvn-resolve", "--raw-request"));
+        assertTrue(getStderr().findAny().isPresent());
+        assertFalse(getStdout().findAny().isPresent());
     }
 }

@@ -19,109 +19,84 @@ import java.util.regex.Pattern;
 
 /**
  * Utility routines for converting glob patterns to regular expressions.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-final class GlobUtils
-{
+final class GlobUtils {
     /**
      * Character with special meaning in regular expression namespace. These characters should be escaped when
      * converting glob expression to regular expression.
      */
     private static final String SPECIAL_CHARS = "(){}.,?*+|<=>!";
 
-    private GlobUtils()
-    {
+    private GlobUtils() {
         // Avoid generating default public constructor
     }
 
     /**
      * Convert wildcard pattern to regular expression.
-     * 
+     *
      * @param glob wildcard pattern to convert
      * @return regular expression
      */
-    public static String glob2re( String glob )
-    {
+    public static String glob2re(String glob) {
         StringBuilder re = new StringBuilder();
         boolean escape = false;
         int level = 0;
 
-        re.append( '^' );
+        re.append('^');
 
-        for ( char ch : glob.toCharArray() )
-        {
-            if ( escape )
-            {
-                if ( SPECIAL_CHARS.indexOf( ch ) >= 0 )
-                {
-                    re.append( '\\' );
+        for (char ch : glob.toCharArray()) {
+            if (escape) {
+                if (SPECIAL_CHARS.indexOf(ch) >= 0) {
+                    re.append('\\');
                 }
-                re.append( ch );
+                re.append(ch);
                 escape = false;
-            }
-            else if ( ch == '\\' )
-            {
+            } else if (ch == '\\') {
                 escape = true;
-            }
-            else if ( ch == '{' )
-            {
+            } else if (ch == '{') {
                 level++;
-                re.append( '(' );
-            }
-            else if ( ch == '}' && level > 0 )
-            {
-                re.append( ')' );
+                re.append('(');
+            } else if (ch == '}' && level > 0) {
+                re.append(')');
                 level--;
-            }
-            else if ( ch == ',' && level > 0 )
-            {
-                re.append( '|' );
-            }
-            else if ( ch == '?' )
-            {
-                re.append( '.' );
-            }
-            else if ( ch == '*' )
-            {
-                re.append( '.' );
-                re.append( '*' );
-            }
-            else
-            {
-                if ( SPECIAL_CHARS.indexOf( ch ) >= 0 )
-                {
-                    re.append( '\\' );
+            } else if (ch == ',' && level > 0) {
+                re.append('|');
+            } else if (ch == '?') {
+                re.append('.');
+            } else if (ch == '*') {
+                re.append('.');
+                re.append('*');
+            } else {
+                if (SPECIAL_CHARS.indexOf(ch) >= 0) {
+                    re.append('\\');
                 }
-                re.append( ch );
+                re.append(ch);
             }
         }
 
-        if ( escape )
-        {
-            throw new Error( "Escape sequence ends prematurely" );
+        if (escape) {
+            throw new Error("Escape sequence ends prematurely");
         }
-        if ( level != 0 )
-        {
-            throw new Error( "Alternative not closed" );
+        if (level != 0) {
+            throw new Error("Alternative not closed");
         }
 
-        re.append( '$' );
+        re.append('$');
         return re.toString();
     }
 
     /**
      * Create {@code Pattern} from wildcard patter.
-     * 
+     *
      * @param glob wildcard pattern to convert
      * @return pattern corresponding to given wildcard pattern
      */
-    public static Pattern glob2pattern( String glob )
-    {
-        if ( glob == null || glob.isEmpty() )
-        {
+    public static Pattern glob2pattern(String glob) {
+        if (glob == null || glob.isEmpty()) {
             return null;
         }
-        return Pattern.compile( glob2re( glob ) );
+        return Pattern.compile(glob2re(glob));
     }
 }

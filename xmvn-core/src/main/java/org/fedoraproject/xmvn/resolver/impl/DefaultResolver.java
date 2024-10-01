@@ -19,11 +19,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
@@ -39,18 +37,16 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 
 /**
  * Default implementation of XMvn {@code Resolver} interface.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
- * 
+ *
+ * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only
+ * for technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong>
+ * reference it directly.
+ *
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
-public class DefaultResolver
-    implements Resolver
-{
+public class DefaultResolver implements Resolver {
     @Inject
     private Logger logger;
 
@@ -74,130 +70,106 @@ public class DefaultResolver
 
     private MockAgent mockAgent;
 
-    public DefaultResolver( ServiceLocator locator )
-    {
+    public DefaultResolver(ServiceLocator locator) {
         this();
 
-        logger = locator.getService( Logger.class );
-        configurator = locator.getService( Configurator.class );
-        metadataResolver = locator.getService( MetadataResolver.class );
+        logger = locator.getService(Logger.class);
+        configurator = locator.getService(Configurator.class);
+        metadataResolver = locator.getService(MetadataResolver.class);
     }
 
-    public DefaultResolver()
-    {
+    public DefaultResolver() {
         localRepoResolver = new LocalRepositoryResolver();
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
     }
 
     @Override
-    public ResolutionResult resolve( ResolutionRequest request )
-    {
+    public ResolutionResult resolve(ResolutionRequest request) {
         Properties properties = new Properties();
-        properties.putAll( System.getProperties() );
+        properties.putAll(System.getProperties());
 
-        ResolutionResult localRepoResult = localRepoResolver.resolve( request );
-        if ( localRepoResult.getArtifactPath() != null )
-        {
+        ResolutionResult localRepoResult = localRepoResolver.resolve(request);
+        if (localRepoResult.getArtifactPath() != null) {
             return localRepoResult;
         }
 
         Artifact artifact = request.getArtifact();
-        logger.debug( "Trying to resolve artifact {}", artifact );
+        logger.debug("Trying to resolve artifact {}", artifact);
 
-        if ( metadataRequest == null )
-        {
+        if (metadataRequest == null) {
             ResolverSettings settings = configurator.getConfiguration().getResolverSettings();
-            metadataRequest = new MetadataRequest( settings.getMetadataRepositories() );
-            metadataRequest.setIgnoreDuplicates( settings.isIgnoreDuplicateMetadata() );
+            metadataRequest = new MetadataRequest(settings.getMetadataRepositories());
+            metadataRequest.setIgnoreDuplicates(settings.isIgnoreDuplicateMetadata());
         }
-        if ( metadataResult == null )
-        {
-            metadataResult = metadataResolver.resolveMetadata( metadataRequest );
+        if (metadataResult == null) {
+            metadataResult = metadataResolver.resolveMetadata(metadataRequest);
         }
-        ArtifactMetadata metadata = metadataResult.getMetadataFor( artifact );
+        ArtifactMetadata metadata = metadataResult.getMetadataFor(artifact);
 
         String compatVersion;
-        if ( metadata == null )
-        {
-            metadata = metadataResult.getMetadataFor( artifact.setVersion( Artifact.DEFAULT_VERSION ) );
+        if (metadata == null) {
+            metadata = metadataResult.getMetadataFor(artifact.setVersion(Artifact.DEFAULT_VERSION));
             compatVersion = null;
-        }
-        else
-        {
+        } else {
             compatVersion = artifact.getVersion();
         }
 
-        if ( mockAgent == null )
-        {
-            mockAgent = new MockAgent( logger );
+        if (mockAgent == null) {
+            mockAgent = new MockAgent(logger);
         }
 
-        if ( metadata == null && mockAgent.tryInstallArtifact( artifact ) )
-        {
-            metadataResult = metadataResolver.resolveMetadata( metadataRequest );
-            metadata = metadataResult.getMetadataFor( artifact );
+        if (metadata == null && mockAgent.tryInstallArtifact(artifact)) {
+            metadataResult = metadataResolver.resolveMetadata(metadataRequest);
+            metadata = metadataResult.getMetadataFor(artifact);
 
-            if ( metadata == null )
-            {
-                metadata = metadataResult.getMetadataFor( artifact.setVersion( Artifact.DEFAULT_VERSION ) );
+            if (metadata == null) {
+                metadata = metadataResult.getMetadataFor(artifact.setVersion(Artifact.DEFAULT_VERSION));
                 compatVersion = null;
-            }
-            else
-            {
+            } else {
                 compatVersion = artifact.getVersion();
             }
         }
 
-        if ( metadata == null )
-        {
-            logger.debug( "Failed to resolve artifact: {}", artifact );
+        if (metadata == null) {
+            logger.debug("Failed to resolve artifact: {}", artifact);
             return new DefaultResolutionResult();
         }
 
-        properties.putAll( metadata.getProperties() );
+        properties.putAll(metadata.getProperties());
 
-        if ( !"true".equals( properties.getProperty( "xmvn.resolver.disableEffectivePom" ) )
-            && "pom".equals( metadata.getExtension() )
-            && ( !"pom".equals( properties.getProperty( "type" ) ) || metadata.getPath() == null ) )
-        {
-            try
-            {
-                Path pomPath = pomGenerator.generateEffectivePom( metadata, artifact );
+        if (!"true".equals(properties.getProperty("xmvn.resolver.disableEffectivePom"))
+                && "pom".equals(metadata.getExtension())
+                && (!"pom".equals(properties.getProperty("type")) || metadata.getPath() == null)) {
+            try {
+                Path pomPath = pomGenerator.generateEffectivePom(metadata, artifact);
 
-                if ( request.isPersistentFileNeeded() )
-                {
-                    pomPath = cacheManager.cacheFile( pomPath );
+                if (request.isPersistentFileNeeded()) {
+                    pomPath = cacheManager.cacheFile(pomPath);
                 }
 
-                metadata.setPath( pomPath.toString() );
-            }
-            catch ( IOException e )
-            {
-                logger.warn( "Failed to generate effective POM", e );
+                metadata.setPath(pomPath.toString());
+            } catch (IOException e) {
+                logger.warn("Failed to generate effective POM", e);
                 return new DefaultResolutionResult();
             }
         }
 
-        Path artifactPath = Paths.get( metadata.getPath() );
-        try
-        {
+        Path artifactPath = Paths.get(metadata.getPath());
+        try {
             artifactPath = artifactPath.toRealPath();
-        }
-        catch ( IOException e )
-        {
+        } catch (IOException e) {
             // Ignore
         }
 
-        DefaultResolutionResult result = new DefaultResolutionResult( artifactPath );
-        result.setNamespace( metadata.getNamespace() );
-        result.setCompatVersion( compatVersion );
-        if ( request.isProviderNeeded() )
-        {
-            result.setProvider( RPMDB.lookupPath( artifactPath ) );
+        DefaultResolutionResult result = new DefaultResolutionResult(artifactPath);
+        result.setNamespace(metadata.getNamespace());
+        result.setCompatVersion(compatVersion);
+        if (request.isProviderNeeded()) {
+            result.setProvider(RPMDB.lookupPath(artifactPath));
         }
 
-        logger.debug( "Artifact {} was resolved to {}", artifact, artifactPath );
+        logger.debug("Artifact {} was resolved to {}", artifact, artifactPath);
         return result;
     }
 }

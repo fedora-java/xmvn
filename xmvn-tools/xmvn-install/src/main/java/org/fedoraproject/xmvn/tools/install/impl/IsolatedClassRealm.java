@@ -31,17 +31,14 @@ import java.util.Set;
 
 /**
  * A generic, isolated class loader.
- * <p>
- * This class loader has its own classpath, separate from the primary Java classpath. It has a parent class loader, to
- * which it delegates loading a set of imported classes. All other classes are loaded from its own classpath.
- * 
+ *
+ * <p>This class loader has its own classpath, separate from the primary Java classpath. It has a parent class loader,
+ * to which it delegates loading a set of imported classes. All other classes are loaded from its own classpath.
+ *
  * @author Mikolaj Izdebski
  */
-class IsolatedClassRealm
-    extends URLClassLoader
-{
-    static
-    {
+class IsolatedClassRealm extends URLClassLoader {
+    static {
         registerAsParallelCapable();
     }
 
@@ -51,160 +48,118 @@ class IsolatedClassRealm
 
     private final Set<String> importsAll = new HashSet<>();
 
-    public IsolatedClassRealm( ClassLoader parent )
-    {
-        super( new URL[0], null );
+    public IsolatedClassRealm(ClassLoader parent) {
+        super(new URL[0], null);
         this.parent = parent;
     }
 
-    public void addJar( Path jar )
-    {
-        try
-        {
-            addURL( jar.toUri().toURL() );
-        }
-        catch ( MalformedURLException e )
-        {
-            throw new RuntimeException( e );
+    public void addJar(Path jar) {
+        try {
+            addURL(jar.toUri().toURL());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void addJarDirectory( Path dir )
-    {
-        try ( DirectoryStream<Path> stream = Files.newDirectoryStream( dir, "*.jar" ) )
-        {
-            for ( Path path : stream )
-            {
-                addJar( path );
+    public void addJarDirectory(Path dir) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, "*.jar")) {
+            for (Path path : stream) {
+                addJar(path);
             }
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( e );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void importPackage( String packageName )
-    {
-        imports.add( packageName );
+    public void importPackage(String packageName) {
+        imports.add(packageName);
     }
 
-    public void importAllPackages( String packageName )
-    {
-        importsAll.add( packageName );
+    public void importAllPackages(String packageName) {
+        importsAll.add(packageName);
     }
 
-    boolean isImported( String name )
-    {
-        int index = name.lastIndexOf( '/' );
+    boolean isImported(String name) {
+        int index = name.lastIndexOf('/');
 
-        if ( index >= 0 )
-        {
-            name = name.replace( '/', '.' );
-        }
-        else
-        {
-            index = Math.max( name.lastIndexOf( '.' ), 0 );
+        if (index >= 0) {
+            name = name.replace('/', '.');
+        } else {
+            index = Math.max(name.lastIndexOf('.'), 0);
         }
 
-        String namespace = name.substring( 0, index );
+        String namespace = name.substring(0, index);
 
-        if ( imports.contains( namespace ) )
-        {
+        if (imports.contains(namespace)) {
             return true;
         }
 
-        while ( !namespace.isEmpty() )
-        {
-            if ( importsAll.contains( namespace ) )
-            {
+        while (!namespace.isEmpty()) {
+            if (importsAll.contains(namespace)) {
                 return true;
             }
 
-            namespace = namespace.substring( 0, Math.max( namespace.lastIndexOf( '.' ), 0 ) );
+            namespace = namespace.substring(0, Math.max(namespace.lastIndexOf('.'), 0));
         }
 
         return false;
     }
 
     @Override
-    public Class<?> loadClass( String name )
-        throws ClassNotFoundException
-    {
-        return loadClass( name, false );
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return loadClass(name, false);
     }
 
     @Override
-    protected Class<?> loadClass( String name, boolean resolve )
-        throws ClassNotFoundException
-    {
-        if ( isImported( name ) )
-        {
-            try
-            {
-                return parent.loadClass( name );
-            }
-            catch ( ClassNotFoundException e )
-            {
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        if (isImported(name)) {
+            try {
+                return parent.loadClass(name);
+            } catch (ClassNotFoundException e) {
             }
         }
 
-        try
-        {
-            return super.loadClass( name, resolve );
-        }
-        catch ( ClassNotFoundException e )
-        {
+        try {
+            return super.loadClass(name, resolve);
+        } catch (ClassNotFoundException e) {
         }
 
-        synchronized ( getClassLoadingLock( name ) )
-        {
-            Class<?> clazz = findLoadedClass( name );
-            if ( clazz != null )
-            {
+        synchronized (getClassLoadingLock(name)) {
+            Class<?> clazz = findLoadedClass(name);
+            if (clazz != null) {
                 return clazz;
             }
 
-            try
-            {
-                return super.findClass( name );
-            }
-            catch ( ClassNotFoundException e )
-            {
+            try {
+                return super.findClass(name);
+            } catch (ClassNotFoundException e) {
             }
         }
 
-        throw new ClassNotFoundException( name );
+        throw new ClassNotFoundException(name);
     }
 
     @Override
-    protected Class<?> findClass( String name )
-        throws ClassNotFoundException
-    {
-        throw new ClassNotFoundException( name );
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        throw new ClassNotFoundException(name);
     }
 
     @Override
-    public URL getResource( String name )
-    {
-        if ( isImported( name ) )
-        {
-            URL resource = parent.getResource( name );
-            if ( resource != null )
-            {
+    public URL getResource(String name) {
+        if (isImported(name)) {
+            URL resource = parent.getResource(name);
+            if (resource != null) {
                 return resource;
             }
         }
 
-        URL resource = super.getResource( name );
-        if ( resource != null )
-        {
+        URL resource = super.getResource(name);
+        if (resource != null) {
             return resource;
         }
 
-        resource = super.findResource( name );
-        if ( resource != null )
-        {
+        resource = super.findResource(name);
+        if (resource != null) {
             return resource;
         }
 
@@ -212,38 +167,26 @@ class IsolatedClassRealm
     }
 
     @Override
-    public Enumeration<URL> getResources( String name )
-        throws IOException
-    {
+    public Enumeration<URL> getResources(String name) throws IOException {
         Collection<URL> resources = new LinkedHashSet<>();
 
-        if ( isImported( name ) )
-        {
-            try
-            {
-                resources.addAll( Collections.list( parent.getResources( name ) ) );
-            }
-            catch ( IOException e )
-            {
+        if (isImported(name)) {
+            try {
+                resources.addAll(Collections.list(parent.getResources(name)));
+            } catch (IOException e) {
             }
         }
 
-        try
-        {
-            resources.addAll( Collections.list( super.getResources( name ) ) );
-        }
-        catch ( IOException e )
-        {
+        try {
+            resources.addAll(Collections.list(super.getResources(name)));
+        } catch (IOException e) {
         }
 
-        try
-        {
-            resources.addAll( Collections.list( super.findResources( name ) ) );
-        }
-        catch ( IOException e )
-        {
+        try {
+            resources.addAll(Collections.list(super.findResources(name)));
+        } catch (IOException e) {
         }
 
-        return Collections.enumeration( resources );
+        return Collections.enumeration(resources);
     }
 }

@@ -23,11 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.Test;
-import org.xmlunit.assertj3.XmlAssert;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
@@ -43,232 +39,228 @@ import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.resolver.impl.DefaultResolver;
 import org.fedoraproject.xmvn.test.AbstractTest;
+import org.junit.jupiter.api.Test;
+import org.xmlunit.assertj3.XmlAssert;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class BasicResolverTest
-    extends AbstractTest
-{
+/** @author Mikolaj Izdebski */
+public class BasicResolverTest extends AbstractTest {
     /**
      * Test if Plexus can load resolver component.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testComponentLookup()
-        throws Exception
-    {
-        Resolver resolver = getService( Resolver.class );
-        assertNotNull( resolver );
+    public void testComponentLookup() throws Exception {
+        Resolver resolver = getService(Resolver.class);
+        assertNotNull(resolver);
     }
 
     /**
      * Test if resolver configuration is present and sane.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testConfigurationExistance()
-        throws Exception
-    {
-        Configurator configurator = getService( Configurator.class );
-        assertNotNull( configurator );
+    public void testConfigurationExistance() throws Exception {
+        Configurator configurator = getService(Configurator.class);
+        assertNotNull(configurator);
 
         Configuration configuration = configurator.getDefaultConfiguration();
-        assertNotNull( configuration );
+        assertNotNull(configuration);
 
         ResolverSettings settings = configuration.getResolverSettings();
-        assertNotNull( settings );
+        assertNotNull(settings);
     }
 
     /**
      * Test if resolver correctly fails to resolve nonexistent artifact.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testResolutionFailure()
-        throws Exception
-    {
-        Resolver resolver = getService( Resolver.class );
+    public void testResolutionFailure() throws Exception {
+        Resolver resolver = getService(Resolver.class);
         ResolutionRequest request =
-            new ResolutionRequest( new DefaultArtifact( "some", "nonexistent", "pom", "artifact" ) );
-        ResolutionResult result = resolver.resolve( request );
-        assertNotNull( result );
-        assertNull( result.getArtifactPath() );
+                new ResolutionRequest(new DefaultArtifact("some", "nonexistent", "pom", "artifact"));
+        ResolutionResult result = resolver.resolve(request);
+        assertNotNull(result);
+        assertNull(result.getArtifactPath());
     }
 
     @Test
-    public void testResolveBasic()
-        throws Exception
-    {
-        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "ver" );
+    public void testResolveBasic() throws Exception {
+        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
-        md.setPath( "/foo/bar" );
+        md.setPath("/foo/bar");
 
-        MetadataResult mockMdResult = EasyMock.createMock( MetadataResult.class );
-        MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
-        ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
-        EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
-        EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
-        EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
-        EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult );
-        EasyMock.expect( mockMdResult.getMetadataFor( artifact ) ).andReturn( md );
-        EasyMock.replay( mockMdResult, mockMdResolver, mockServiceLocator );
+        MetadataResult mockMdResult = EasyMock.createMock(MetadataResult.class);
+        MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
+        ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
+        EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
+        EasyMock.expect(mockServiceLocator.getService(Configurator.class)).andReturn(getService(Configurator.class));
+        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class)).andReturn(mockMdResolver);
+        EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
+                .andReturn(mockMdResult);
+        EasyMock.expect(mockMdResult.getMetadataFor(artifact)).andReturn(md);
+        EasyMock.replay(mockMdResult, mockMdResolver, mockServiceLocator);
 
-        Resolver resolver = new DefaultResolver( mockServiceLocator );
-        ResolutionRequest request = new ResolutionRequest( artifact );
-        ResolutionResult result = resolver.resolve( request );
-        assertNotNull( result );
-        assertNotNull( result.getArtifactPath() );
+        Resolver resolver = new DefaultResolver(mockServiceLocator);
+        ResolutionRequest request = new ResolutionRequest(artifact);
+        ResolutionResult result = resolver.resolve(request);
+        assertNotNull(result);
+        assertNotNull(result.getArtifactPath());
 
-        EasyMock.verify( mockMdResult, mockMdResolver, mockServiceLocator );
+        EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
     }
 
     @Test
-    public void testResolveEmptyPom()
-        throws Exception
-    {
-        Artifact artifact = new DefaultArtifact( "gid", "aid", "pom", "cla", "ver" );
+    public void testResolveEmptyPom() throws Exception {
+        Artifact artifact = new DefaultArtifact("gid", "aid", "pom", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
-        md.setExtension( "pom" );
+        md.setExtension("pom");
 
-        MetadataResult mockMdResult = EasyMock.createMock( MetadataResult.class );
-        MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
-        ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
-        EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
-        EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
-        EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
-        EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult );
-        EasyMock.expect( mockMdResult.getMetadataFor( artifact ) ).andReturn( md );
-        EasyMock.replay( mockMdResult, mockMdResolver, mockServiceLocator );
+        MetadataResult mockMdResult = EasyMock.createMock(MetadataResult.class);
+        MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
+        ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
+        EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
+        EasyMock.expect(mockServiceLocator.getService(Configurator.class)).andReturn(getService(Configurator.class));
+        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class)).andReturn(mockMdResolver);
+        EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
+                .andReturn(mockMdResult);
+        EasyMock.expect(mockMdResult.getMetadataFor(artifact)).andReturn(md);
+        EasyMock.replay(mockMdResult, mockMdResolver, mockServiceLocator);
 
-        Resolver resolver = new DefaultResolver( mockServiceLocator );
-        ResolutionRequest request = new ResolutionRequest( artifact );
-        request.setPersistentFileNeeded( true );
-        ResolutionResult result = resolver.resolve( request );
-        assertNotNull( result );
-        assertNotNull( result.getArtifactPath() );
-        assertTrue( Files.isRegularFile( result.getArtifactPath() ) );
+        Resolver resolver = new DefaultResolver(mockServiceLocator);
+        ResolutionRequest request = new ResolutionRequest(artifact);
+        request.setPersistentFileNeeded(true);
+        ResolutionResult result = resolver.resolve(request);
+        assertNotNull(result);
+        assertNotNull(result.getArtifactPath());
+        assertTrue(Files.isRegularFile(result.getArtifactPath()));
 
-        EasyMock.verify( mockMdResult, mockMdResolver, mockServiceLocator );
+        EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
 
-        XmlAssert.assertThat( "<project>\n" //
-            + "  <modelVersion>4.0.0</modelVersion>\n" //
-            + "  <groupId>gid</groupId>\n" //
-            + "  <artifactId>aid</artifactId>\n" //
-            + "  <version>ver</version>\n" //
-            + "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
+        XmlAssert.assertThat("<project>\n"
+                        + "  <modelVersion>4.0.0</modelVersion>\n"
+                        + "  <groupId>gid</groupId>\n"
+                        + "  <artifactId>aid</artifactId>\n"
+                        + "  <version>ver</version>\n"
+                        + "</project>")
+                .and(result.getArtifactPath().toFile())
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areSimilar();
     }
 
     @Test
-    public void testResolvePomWithDep()
-        throws Exception
-    {
-        Artifact artifact = new DefaultArtifact( "gid", "aid", "pom", "cla", "ver" );
+    public void testResolvePomWithDep() throws Exception {
+        Artifact artifact = new DefaultArtifact("gid", "aid", "pom", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
-        md.setExtension( "pom" );
+        md.setExtension("pom");
         Dependency dep = new Dependency();
-        dep.setGroupId( "dgid" );
-        dep.setArtifactId( "daid" );
-        dep.setRequestedVersion( "drqv" );
-        dep.setResolvedVersion( "drsv" );
+        dep.setGroupId("dgid");
+        dep.setArtifactId("daid");
+        dep.setRequestedVersion("drqv");
+        dep.setResolvedVersion("drsv");
         DependencyExclusion excl = new DependencyExclusion();
-        excl.setGroupId( "egid" );
-        excl.setArtifactId( "eaid" );
-        dep.addExclusion( excl );
-        md.addDependency( dep );
+        excl.setGroupId("egid");
+        excl.setArtifactId("eaid");
+        dep.addExclusion(excl);
+        md.addDependency(dep);
 
-        MetadataResult mockMdResult = EasyMock.createMock( MetadataResult.class );
-        MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
-        ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
-        EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
-        EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
-        EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
-        EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult );
-        EasyMock.expect( mockMdResult.getMetadataFor( artifact ) ).andReturn( md );
-        EasyMock.replay( mockMdResult, mockMdResolver, mockServiceLocator );
+        MetadataResult mockMdResult = EasyMock.createMock(MetadataResult.class);
+        MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
+        ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
+        EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
+        EasyMock.expect(mockServiceLocator.getService(Configurator.class)).andReturn(getService(Configurator.class));
+        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class)).andReturn(mockMdResolver);
+        EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
+                .andReturn(mockMdResult);
+        EasyMock.expect(mockMdResult.getMetadataFor(artifact)).andReturn(md);
+        EasyMock.replay(mockMdResult, mockMdResolver, mockServiceLocator);
 
-        Resolver resolver = new DefaultResolver( mockServiceLocator );
-        ResolutionRequest request = new ResolutionRequest( artifact );
-        request.setPersistentFileNeeded( true );
-        ResolutionResult result = resolver.resolve( request );
-        assertNotNull( result );
-        assertNotNull( result.getArtifactPath() );
-        assertTrue( Files.isRegularFile( result.getArtifactPath() ) );
+        Resolver resolver = new DefaultResolver(mockServiceLocator);
+        ResolutionRequest request = new ResolutionRequest(artifact);
+        request.setPersistentFileNeeded(true);
+        ResolutionResult result = resolver.resolve(request);
+        assertNotNull(result);
+        assertNotNull(result.getArtifactPath());
+        assertTrue(Files.isRegularFile(result.getArtifactPath()));
 
-        EasyMock.verify( mockMdResult, mockMdResolver, mockServiceLocator );
+        EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
 
-        XmlAssert.assertThat( "<project>\n" //
-            + "  <modelVersion>4.0.0</modelVersion>\n" //
-            + "  <groupId>gid</groupId>\n" //
-            + "  <artifactId>aid</artifactId>\n" //
-            + "  <version>ver</version>\n" //
-            + "  <dependencies>\n" //
-            + "    <dependency>\n" //
-            + "      <groupId>dgid</groupId>\n" //
-            + "      <artifactId>daid</artifactId>\n" //
-            + "      <version>drqv</version>\n" //
-            + "      <exclusions>\n" //
-            + "        <exclusion>\n" //
-            + "          <groupId>egid</groupId>\n" //
-            + "          <artifactId>eaid</artifactId>\n" //
-            + "        </exclusion>\n" //
-            + "      </exclusions>\n" //
-            + "    </dependency>\n" //
-            + "  </dependencies>\n" //
-            + "</project>" ).and( result.getArtifactPath().toFile() ).ignoreComments().ignoreWhitespace().areSimilar();
+        XmlAssert.assertThat("<project>\n"
+                        + "  <modelVersion>4.0.0</modelVersion>\n"
+                        + "  <groupId>gid</groupId>\n"
+                        + "  <artifactId>aid</artifactId>\n"
+                        + "  <version>ver</version>\n"
+                        + "  <dependencies>\n"
+                        + "    <dependency>\n"
+                        + "      <groupId>dgid</groupId>\n"
+                        + "      <artifactId>daid</artifactId>\n"
+                        + "      <version>drqv</version>\n"
+                        + "      <exclusions>\n"
+                        + "        <exclusion>\n"
+                        + "          <groupId>egid</groupId>\n"
+                        + "          <artifactId>eaid</artifactId>\n"
+                        + "        </exclusion>\n"
+                        + "      </exclusions>\n"
+                        + "    </dependency>\n"
+                        + "  </dependencies>\n"
+                        + "</project>")
+                .and(result.getArtifactPath().toFile())
+                .ignoreComments()
+                .ignoreWhitespace()
+                .areSimilar();
     }
 
     @Test
-    public void testMockAgent()
-        throws Exception
-    {
+    public void testMockAgent() throws Exception {
         Properties origProps = System.getProperties();
-        Path tempDir = Files.createTempDirectory( "xmvn-test" );
-        Path tempFile = tempDir.resolve( "file" );
-        try
-        {
-            System.setProperties( (Properties) origProps.clone() );
-            System.setProperty( "xmvn.resolver.requestArtifactCmd", "touch '" + tempFile + "' && :" );
+        Path tempDir = Files.createTempDirectory("xmvn-test");
+        Path tempFile = tempDir.resolve("file");
+        try {
+            System.setProperties((Properties) origProps.clone());
+            System.setProperty("xmvn.resolver.requestArtifactCmd", "touch '" + tempFile + "' && :");
 
-            Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "ver" );
-            Artifact versionlessArtifact = new DefaultArtifact( "gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION );
+            Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
+            Artifact versionlessArtifact = new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
             ArtifactMetadata md = new ArtifactMetadata();
-            md.setPath( "/foo/bar" );
+            md.setPath("/foo/bar");
 
-            MetadataResult mockMdResult1 = EasyMock.createMock( MetadataResult.class );
-            MetadataResult mockMdResult2 = EasyMock.createMock( MetadataResult.class );
-            MetadataResolver mockMdResolver = EasyMock.createMock( MetadataResolver.class );
-            ServiceLocator mockServiceLocator = EasyMock.createMock( ServiceLocator.class );
-            EasyMock.expect( mockServiceLocator.getService( Logger.class ) ).andReturn( getService( Logger.class ) );
-            EasyMock.expect( mockServiceLocator.getService( Configurator.class ) ).andReturn( getService( Configurator.class ) );
-            EasyMock.expect( mockServiceLocator.getService( MetadataResolver.class ) ).andReturn( mockMdResolver );
-            EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult1 );
-            EasyMock.expect( mockMdResolver.resolveMetadata( EasyMock.anyObject( MetadataRequest.class ) ) ).andReturn( mockMdResult2 );
-            EasyMock.expect( mockMdResult1.getMetadataFor( artifact ) ).andReturn( null );
-            EasyMock.expect( mockMdResult1.getMetadataFor( versionlessArtifact ) ).andReturn( null );
-            EasyMock.expect( mockMdResult2.getMetadataFor( artifact ) ).andReturn( null );
-            EasyMock.expect( mockMdResult2.getMetadataFor( versionlessArtifact ) ).andReturn( md );
-            EasyMock.replay( mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator );
+            MetadataResult mockMdResult1 = EasyMock.createMock(MetadataResult.class);
+            MetadataResult mockMdResult2 = EasyMock.createMock(MetadataResult.class);
+            MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
+            ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
+            EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
+            EasyMock.expect(mockServiceLocator.getService(Configurator.class))
+                    .andReturn(getService(Configurator.class));
+            EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class))
+                    .andReturn(mockMdResolver);
+            EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
+                    .andReturn(mockMdResult1);
+            EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
+                    .andReturn(mockMdResult2);
+            EasyMock.expect(mockMdResult1.getMetadataFor(artifact)).andReturn(null);
+            EasyMock.expect(mockMdResult1.getMetadataFor(versionlessArtifact)).andReturn(null);
+            EasyMock.expect(mockMdResult2.getMetadataFor(artifact)).andReturn(null);
+            EasyMock.expect(mockMdResult2.getMetadataFor(versionlessArtifact)).andReturn(md);
+            EasyMock.replay(mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator);
 
-            assertFalse( Files.exists( tempFile ) );
+            assertFalse(Files.exists(tempFile));
 
-            Resolver resolver = new DefaultResolver( mockServiceLocator );
-            ResolutionRequest request = new ResolutionRequest( artifact );
-            ResolutionResult result = resolver.resolve( request );
-            assertNotNull( result );
-            assertNotNull( result.getArtifactPath() );
-            assertTrue( Files.isRegularFile( tempFile ) );
+            Resolver resolver = new DefaultResolver(mockServiceLocator);
+            ResolutionRequest request = new ResolutionRequest(artifact);
+            ResolutionResult result = resolver.resolve(request);
+            assertNotNull(result);
+            assertNotNull(result.getArtifactPath());
+            assertTrue(Files.isRegularFile(tempFile));
 
-            EasyMock.verify( mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator );
-        }
-        finally
-        {
-            Files.deleteIfExists( tempFile );
-            Files.deleteIfExists( tempDir );
-            System.setProperties( origProps );
+            EasyMock.verify(mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator);
+        } finally {
+            Files.deleteIfExists(tempFile);
+            Files.deleteIfExists(tempDir);
+            System.setProperties(origProps);
         }
     }
 }

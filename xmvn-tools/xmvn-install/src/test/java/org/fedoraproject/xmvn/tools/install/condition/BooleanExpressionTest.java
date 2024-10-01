@@ -22,65 +22,58 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class BooleanExpressionTest
-{
+/** @author Mikolaj Izdebski */
+public class BooleanExpressionTest {
     @Test
-    public void testBasicExpressions()
-    {
-        Artifact artifact = new DefaultArtifact( "foo", "bar" );
-        ArtifactContext context = new ArtifactContext( artifact );
+    public void testBasicExpressions() {
+        Artifact artifact = new DefaultArtifact("foo", "bar");
+        ArtifactContext context = new ArtifactContext(artifact);
 
-        BooleanExpression trueExpression = new BooleanLiteral( true );
-        assertTrue( trueExpression.getValue( context ) );
+        BooleanExpression trueExpression = new BooleanLiteral(true);
+        assertTrue(trueExpression.getValue(context));
 
-        BooleanExpression falseExpression = new BooleanLiteral( false );
-        assertFalse( falseExpression.getValue( context ) );
+        BooleanExpression falseExpression = new BooleanLiteral(false);
+        assertFalse(falseExpression.getValue(context));
 
-        BooleanExpression andExpression = new And( Arrays.asList( trueExpression, falseExpression ) );
-        assertFalse( andExpression.getValue( context ) );
+        BooleanExpression andExpression = new And(Arrays.asList(trueExpression, falseExpression));
+        assertFalse(andExpression.getValue(context));
 
-        BooleanExpression orExpression = new Or( Arrays.asList( trueExpression, falseExpression ) );
-        assertTrue( orExpression.getValue( context ) );
+        BooleanExpression orExpression = new Or(Arrays.asList(trueExpression, falseExpression));
+        assertTrue(orExpression.getValue(context));
 
-        BooleanExpression xorExpression = new Xor( Arrays.asList( trueExpression, falseExpression ) );
-        assertTrue( xorExpression.getValue( context ) );
+        BooleanExpression xorExpression = new Xor(Arrays.asList(trueExpression, falseExpression));
+        assertTrue(xorExpression.getValue(context));
     }
 
     @Test
-    public void testProperties()
-    {
+    public void testProperties() {
         Map<String, String> properties = new LinkedHashMap<>();
-        properties.put( "foo", "bar" );
-        properties.put( "baz", "" );
-        Artifact artifact = new DefaultArtifact( "dummy", "dummy" );
-        ArtifactContext context = new ArtifactContext( artifact, properties );
+        properties.put("foo", "bar");
+        properties.put("baz", "");
+        Artifact artifact = new DefaultArtifact("dummy", "dummy");
+        ArtifactContext context = new ArtifactContext(artifact, properties);
 
-        StringExpression fooProperty = new Property( "foo" );
-        assertEquals( "bar", fooProperty.getValue( context ) );
+        StringExpression fooProperty = new Property("foo");
+        assertEquals("bar", fooProperty.getValue(context));
 
-        StringExpression bazProperty = new Property( "baz" );
-        assertEquals( "", bazProperty.getValue( context ) );
+        StringExpression bazProperty = new Property("baz");
+        assertEquals("", bazProperty.getValue(context));
 
-        StringExpression xyzzyProperty = new Property( "xyzzy" );
-        assertEquals( null, xyzzyProperty.getValue( context ) );
+        StringExpression xyzzyProperty = new Property("xyzzy");
+        assertEquals(null, xyzzyProperty.getValue(context));
 
-        BooleanExpression fooDefined = new Defined( "foo" );
-        assertTrue( fooDefined.getValue( context ) );
+        BooleanExpression fooDefined = new Defined("foo");
+        assertTrue(fooDefined.getValue(context));
 
-        BooleanExpression bazDefined = new Defined( "baz" );
-        assertTrue( bazDefined.getValue( context ) );
+        BooleanExpression bazDefined = new Defined("baz");
+        assertTrue(bazDefined.getValue(context));
 
-        BooleanExpression xyzzyDefined = new Defined( "xyzzy" );
-        assertFalse( xyzzyDefined.getValue( context ) );
+        BooleanExpression xyzzyDefined = new Defined("xyzzy");
+        assertFalse(xyzzyDefined.getValue(context));
     }
 }

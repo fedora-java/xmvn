@@ -20,27 +20,20 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
 
-/**
- * @author Mikolaj Izdebski
- */
-@Named( "ide" )
+/** @author Mikolaj Izdebski */
+@Named("ide")
 @Singleton
-public class XMvnWorkspaceReader
-    implements WorkspaceReader
-{
+public class XMvnWorkspaceReader implements WorkspaceReader {
     @Inject
     private Resolver resolver;
 
@@ -48,61 +41,54 @@ public class XMvnWorkspaceReader
 
     private final List<ResolutionListener> listeners = new ArrayList<>();
 
-    public void addResolutionListener( ResolutionListener listener )
-    {
-        listeners.add( listener );
+    public void addResolutionListener(ResolutionListener listener) {
+        listeners.add(listener);
     }
 
-    private ResolutionResult resolve( Artifact artifact )
-    {
-        org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact =
-            new org.fedoraproject.xmvn.artifact.DefaultArtifact( artifact.getGroupId(), artifact.getArtifactId(),
-                                                                 artifact.getExtension(), artifact.getClassifier(),
-                                                                 artifact.getVersion() );
-        ResolutionRequest request = new ResolutionRequest( xmvnArtifact );
+    private ResolutionResult resolve(Artifact artifact) {
+        org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact = new org.fedoraproject.xmvn.artifact.DefaultArtifact(
+                artifact.getGroupId(),
+                artifact.getArtifactId(),
+                artifact.getExtension(),
+                artifact.getClassifier(),
+                artifact.getVersion());
+        ResolutionRequest request = new ResolutionRequest(xmvnArtifact);
 
-        for ( ResolutionListener listener : listeners )
-            listener.resolutionRequested( request );
+        for (ResolutionListener listener : listeners) listener.resolutionRequested(request);
 
-        ResolutionResult result = resolver.resolve( request );
+        ResolutionResult result = resolver.resolve(request);
 
-        for ( ResolutionListener listener : listeners )
-            listener.resolutionCompleted( request, result );
+        for (ResolutionListener listener : listeners) listener.resolutionCompleted(request, result);
 
         return result;
     }
 
     @Override
-    public File findArtifact( Artifact artifact )
-    {
-        ResolutionResult result = resolve( artifact );
+    public File findArtifact(Artifact artifact) {
+        ResolutionResult result = resolve(artifact);
 
         Path artifactPath = result.getArtifactPath();
         return artifactPath != null ? artifactPath.toFile() : null;
     }
 
     @Override
-    public List<String> findVersions( Artifact artifact )
-    {
-        ResolutionResult result = resolve( artifact );
+    public List<String> findVersions(Artifact artifact) {
+        ResolutionResult result = resolve(artifact);
 
-        if ( result.getArtifactPath() == null )
-        {
+        if (result.getArtifactPath() == null) {
             return Collections.emptyList();
         }
 
         String version = result.getCompatVersion();
-        if ( version == null )
-        {
+        if (version == null) {
             version = org.fedoraproject.xmvn.artifact.Artifact.DEFAULT_VERSION;
         }
 
-        return Collections.singletonList( version );
+        return Collections.singletonList(version);
     }
 
     @Override
-    public WorkspaceRepository getRepository()
-    {
+    public WorkspaceRepository getRepository() {
         return REPOSITORY;
     }
 }

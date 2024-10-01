@@ -17,43 +17,34 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import java.util.Iterator;
 import java.util.List;
-
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/**
- * @author Mikolaj Izdebski
- */
-class Equals
-    extends BooleanExpression
-{
+/** @author Mikolaj Izdebski */
+class Equals extends BooleanExpression {
     private final StringExpression lhs;
 
     private final StringExpression rhs;
 
-    public Equals( StringExpression lhs, StringExpression rhs )
-    {
+    public Equals(StringExpression lhs, StringExpression rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
     }
 
-    public Equals( List<StringExpression> args )
-    {
+    public Equals(List<StringExpression> args) {
         Iterator<StringExpression> iterator = args.iterator();
         lhs = iterator.next();
         rhs = iterator.next();
-        if ( iterator.hasNext() )
-        {
+        if (iterator.hasNext()) {
             throw new IllegalArgumentException();
         }
     }
 
     @Override
-    public boolean getValue( ArtifactContext context )
-    {
-        String lhsValue = lhs.getValue( context );
-        String rhsValue = rhs.getValue( context );
+    public boolean getValue(ArtifactContext context) {
+        String lhsValue = lhs.getValue(context);
+        String rhsValue = rhs.getValue(context);
 
         return lhsValue == null && rhsValue == null
-            || lhsValue != null && rhsValue != null && lhsValue.equals( rhsValue );
+                || lhsValue != null && rhsValue != null && lhsValue.equals(rhsValue);
     }
 }

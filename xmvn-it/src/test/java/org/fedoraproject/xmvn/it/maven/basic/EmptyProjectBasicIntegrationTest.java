@@ -15,28 +15,23 @@
  */
 package org.fedoraproject.xmvn.it.maven.basic;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Basic integration tests for XMvn (Maven with extensions).
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class EmptyProjectBasicIntegrationTest
-    extends AbstractMavenIntegrationTest
-{
+public class EmptyProjectBasicIntegrationTest extends AbstractMavenIntegrationTest {
     /**
      * This test is supposed to verify that XMvn can be executed and that it can successfully build the most basic
      * project.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testEmptyProject()
-        throws Exception
-    {
-        performTest( "verify" );
+    public void testEmptyProject() throws Exception {
+        performTest("verify");
     }
 }

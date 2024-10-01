@@ -18,26 +18,23 @@ package org.fedoraproject.xmvn.it.maven.mojo.javadoc;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for javadoc MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class JavadocJPMSIgnoreIntegrationTest
-    extends AbstractMojoIntegrationTest
-{
+public class JavadocJPMSIgnoreIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
-    public void testJavadocJPMSIgnore()
-        throws Exception
-    {
-        assumeTrue( getJavaVersion() >= 9 );
+    public void testJavadocJPMSIgnore() throws Exception {
+        assumeTrue(getJavaVersion() >= 9);
         expectFailure();
-        performMojoTest( "verify", "-Dxmvn.javadoc.ignoreJPMS", "javadoc" );
+        performMojoTest("verify", "-Dxmvn.javadoc.ignoreJPMS", "javadoc");
 
-        assertTrue( getStdout().anyMatch( "[INFO] Ignoring JPMS according to configuration (xmvn.javadoc.ignoreJPMS property)"::equals ) );
+        assertTrue(getStdout()
+                .anyMatch(
+                        "[INFO] Ignoring JPMS according to configuration (xmvn.javadoc.ignoreJPMS property)"::equals));
     }
 }

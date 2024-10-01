@@ -22,142 +22,118 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.InputLocation;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Plugin;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
-/**
- * @author Mikolaj Izdebski
- */
-class BuildDependencyVisitor
-{
-    private static final List<String> BUILD_SCOPES = Arrays.asList( null, "compile", "provided", "test", "runtime" );
+/** @author Mikolaj Izdebski */
+class BuildDependencyVisitor {
+    private static final List<String> BUILD_SCOPES = Arrays.asList(null, "compile", "provided", "test", "runtime");
 
-    private static final List<String> RUNTIME_SCOPES = Arrays.asList( null, "compile", "runtime" );
+    private static final List<String> RUNTIME_SCOPES = Arrays.asList(null, "compile", "runtime");
 
     private final Function<InputLocation, Boolean> isExternalLocation;
 
     private final Set<Artifact> artifacts = new LinkedHashSet<>();
 
-    public BuildDependencyVisitor( Function<InputLocation, Boolean> isExternalLocation )
-    {
+    public BuildDependencyVisitor(Function<InputLocation, Boolean> isExternalLocation) {
         this.isExternalLocation = isExternalLocation;
     }
 
-    public Set<Artifact> getArtifacts()
-    {
-        return Collections.unmodifiableSet( artifacts );
+    public Set<Artifact> getArtifacts() {
+        return Collections.unmodifiableSet(artifacts);
     }
 
-    private boolean isExternal( Function<String, InputLocation> locationGetter, String... locationIds )
-    {
-        return Arrays.stream( locationIds ) //
-                     .map( locationGetter::apply ) //
-                     .filter( Objects::nonNull ) //
-                     .allMatch( isExternalLocation::apply );
+    private boolean isExternal(Function<String, InputLocation> locationGetter, String... locationIds) {
+        return Arrays.stream(locationIds)
+                .map(locationGetter::apply)
+                .filter(Objects::nonNull)
+                .allMatch(isExternalLocation::apply);
     }
 
-    private void visitParent( Parent parent )
-    {
-        artifacts.add( new DefaultArtifact( parent.getGroupId(), parent.getArtifactId(), "pom", parent.getVersion() ) );
+    private void visitParent(Parent parent) {
+        artifacts.add(new DefaultArtifact(parent.getGroupId(), parent.getArtifactId(), "pom", parent.getVersion()));
     }
 
-    private void visitDependency( Dependency dependency )
-    {
-        if ( isExternal( dependency::getLocation, "", "groupId", "artifactId", "version" ) )
-        {
+    private void visitDependency(Dependency dependency) {
+        if (isExternal(dependency::getLocation, "", "groupId", "artifactId", "version")) {
             return;
         }
-        if ( !BUILD_SCOPES.contains( dependency.getScope() ) )
-        {
+        if (!BUILD_SCOPES.contains(dependency.getScope())) {
             return;
         }
 
-        artifacts.add( ArtifactTypeRegistry.getDefaultRegistry().createTypedArtifact( dependency.getGroupId(),
-                                                                                      dependency.getArtifactId(),
-                                                                                      dependency.getType(),
-                                                                                      dependency.getClassifier(),
-                                                                                      dependency.getVersion() ) );
+        artifacts.add(ArtifactTypeRegistry.getDefaultRegistry()
+                .createTypedArtifact(
+                        dependency.getGroupId(),
+                        dependency.getArtifactId(),
+                        dependency.getType(),
+                        dependency.getClassifier(),
+                        dependency.getVersion()));
     }
 
-    private void visitBuildExtension( Extension extension )
-    {
-        artifacts.add( new DefaultArtifact( extension.getGroupId(), extension.getArtifactId(),
-                                            extension.getVersion() ) );
+    private void visitBuildExtension(Extension extension) {
+        artifacts.add(new DefaultArtifact(extension.getGroupId(), extension.getArtifactId(), extension.getVersion()));
     }
 
-    private void visitBuildPlugin( Plugin plugin )
-    {
-        if ( isExternal( plugin::getLocation, "", "groupId", "artifactId", "version" ) )
-        {
+    private void visitBuildPlugin(Plugin plugin) {
+        if (isExternal(plugin::getLocation, "", "groupId", "artifactId", "version")) {
             return;
         }
 
         String groupId = plugin.getGroupId();
         String artifactId = plugin.getArtifactId();
         String version = plugin.getVersion();
-        if ( groupId == null || groupId.isEmpty() )
-        {
+        if (groupId == null || groupId.isEmpty()) {
             groupId = "org.apache.maven.plugins";
         }
-        if ( version == null || version.isEmpty() )
-        {
+        if (version == null || version.isEmpty()) {
             version = Artifact.DEFAULT_VERSION;
         }
 
-        Artifact pluginArtifact = new DefaultArtifact( groupId, artifactId, version );
-        artifacts.add( pluginArtifact );
+        Artifact pluginArtifact = new DefaultArtifact(groupId, artifactId, version);
+        artifacts.add(pluginArtifact);
 
-        for ( Dependency dependency : plugin.getDependencies() )
-        {
-            visitBuildPluginDependency( dependency );
+        for (Dependency dependency : plugin.getDependencies()) {
+            visitBuildPluginDependency(dependency);
         }
     }
 
-    private void visitBuildPluginDependency( Dependency dependency )
-    {
-        if ( isExternal( dependency::getLocation, "", "groupId", "artifactId", "version" ) )
-        {
+    private void visitBuildPluginDependency(Dependency dependency) {
+        if (isExternal(dependency::getLocation, "", "groupId", "artifactId", "version")) {
             return;
         }
-        if ( !RUNTIME_SCOPES.contains( dependency.getScope() ) )
-        {
+        if (!RUNTIME_SCOPES.contains(dependency.getScope())) {
             return;
         }
 
-        artifacts.add( ArtifactTypeRegistry.getDefaultRegistry().createTypedArtifact( dependency.getGroupId(),
-                                                                                      dependency.getArtifactId(),
-                                                                                      dependency.getType(),
-                                                                                      dependency.getClassifier(),
-                                                                                      dependency.getVersion() ) );
+        artifacts.add(ArtifactTypeRegistry.getDefaultRegistry()
+                .createTypedArtifact(
+                        dependency.getGroupId(),
+                        dependency.getArtifactId(),
+                        dependency.getType(),
+                        dependency.getClassifier(),
+                        dependency.getVersion()));
     }
 
-    public void visitModel( Model model )
-    {
-        if ( model.getParent() != null )
-        {
-            visitParent( model.getParent() );
+    public void visitModel(Model model) {
+        if (model.getParent() != null) {
+            visitParent(model.getParent());
         }
-        for ( Dependency dependency : model.getDependencies() )
-        {
-            visitDependency( dependency );
+        for (Dependency dependency : model.getDependencies()) {
+            visitDependency(dependency);
         }
-        if ( model.getBuild() != null )
-        {
-            for ( Extension extension : model.getBuild().getExtensions() )
-            {
-                visitBuildExtension( extension );
+        if (model.getBuild() != null) {
+            for (Extension extension : model.getBuild().getExtensions()) {
+                visitBuildExtension(extension);
             }
-            for ( Plugin plugin : model.getBuild().getPlugins() )
-            {
-                visitBuildPlugin( plugin );
+            for (Plugin plugin : model.getBuild().getPlugins()) {
+                visitBuildPlugin(plugin);
             }
         }
     }

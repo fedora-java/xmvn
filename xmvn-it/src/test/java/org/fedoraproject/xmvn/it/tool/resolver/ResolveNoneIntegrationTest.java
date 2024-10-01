@@ -18,24 +18,19 @@ package org.fedoraproject.xmvn.it.tool.resolver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for XMvn Resolver tool.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ResolveNoneIntegrationTest
-    extends AbstractToolIntegrationTest
-{
+public class ResolveNoneIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveNone()
-        throws Exception
-    {
-        assertEquals( 0, invokeTool( "xmvn-resolve" ) );
-        assertFalse( getStderr().findAny().isPresent() );
-        assertFalse( getStdout().findAny().isPresent() );
+    public void testResolveNone() throws Exception {
+        assertEquals(0, invokeTool("xmvn-resolve"));
+        assertFalse(getStderr().findAny().isPresent());
+        assertFalse(getStdout().findAny().isPresent());
     }
 }

@@ -26,64 +26,48 @@ import java.util.List;
 
 /**
  * A file visitor which collects basic information about each file it visits.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-class FileSystemWalker
-    implements FileVisitor<Path>
-{
+class FileSystemWalker implements FileVisitor<Path> {
     private final Path root;
 
     private final List<String> lines;
 
-    public FileSystemWalker( Path root, List<String> lines )
-    {
+    public FileSystemWalker(Path root, List<String> lines) {
         this.root = root;
         this.lines = lines;
     }
 
     @Override
-    public FileVisitResult preVisitDirectory( Path path, BasicFileAttributes attribs )
-        throws IOException
-    {
-        if ( !path.equals( root ) )
-        {
-            lines.add( "D /" + root.relativize( path ) );
+    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attribs) throws IOException {
+        if (!path.equals(root)) {
+            lines.add("D /" + root.relativize(path));
         }
 
         return CONTINUE;
     }
 
     @Override
-    public FileVisitResult postVisitDirectory( Path path, IOException e )
-        throws IOException
-    {
+    public FileVisitResult postVisitDirectory(Path path, IOException e) throws IOException {
         return CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFile( Path path, BasicFileAttributes attribs )
-    {
-        if ( attribs.isRegularFile() )
-        {
-            lines.add( "F /" + root.relativize( path ) );
-        }
-        else if ( attribs.isSymbolicLink() )
-        {
-            lines.add( "L /" + root.relativize( path ) );
-        }
-        else
-        {
-            lines.add( "? /" + root.relativize( path ) );
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attribs) {
+        if (attribs.isRegularFile()) {
+            lines.add("F /" + root.relativize(path));
+        } else if (attribs.isSymbolicLink()) {
+            lines.add("L /" + root.relativize(path));
+        } else {
+            lines.add("? /" + root.relativize(path));
         }
 
         return CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFileFailed( Path path, IOException e )
-        throws IOException
-    {
+    public FileVisitResult visitFileFailed(Path path, IOException e) throws IOException {
         throw e;
     }
 }

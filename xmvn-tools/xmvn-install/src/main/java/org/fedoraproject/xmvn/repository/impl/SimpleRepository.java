@@ -18,38 +18,29 @@ package org.fedoraproject.xmvn.repository.impl;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
-
-import org.w3c.dom.Element;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.tools.install.condition.Condition;
+import org.w3c.dom.Element;
 
-/**
- * @author Mikolaj Izdebski
- */
-abstract class SimpleRepository
-    extends AbstractRepository
-{
+/** @author Mikolaj Izdebski */
+abstract class SimpleRepository extends AbstractRepository {
     private final Path root;
 
     private final Condition condition;
 
-    public SimpleRepository( String namespace, Path root, Element filter )
-    {
-        super( namespace );
+    public SimpleRepository(String namespace, Path root, Element filter) {
+        super(namespace);
         this.root = root;
-        condition = new Condition( filter );
+        condition = new Condition(filter);
     }
 
-    protected abstract Path getArtifactPath( String pattern, String groupId, String artifactId, String extension,
-                                             String classifier, String version );
+    protected abstract Path getArtifactPath(
+            String pattern, String groupId, String artifactId, String extension, String classifier, String version);
 
     @Override
-    public Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern )
-    {
-        if ( !condition.getValue( context ) )
-        {
+    public Path getPrimaryArtifactPath(Artifact artifact, ArtifactContext context, String pattern) {
+        if (!condition.getValue(context)) {
             return null;
         }
 
@@ -58,28 +49,24 @@ abstract class SimpleRepository
         String extension = artifact.getExtension();
         String classifier = artifact.getClassifier();
         String version = artifact.getVersion();
-        if ( version.equals( Artifact.DEFAULT_VERSION ) )
-        {
+        if (version.equals(Artifact.DEFAULT_VERSION)) {
             version = null;
         }
 
-        Path path = getArtifactPath( pattern, groupId, artifactId, extension, classifier, version );
-        if ( path == null )
-        {
+        Path path = getArtifactPath(pattern, groupId, artifactId, extension, classifier, version);
+        if (path == null) {
             return null;
         }
 
-        if ( root != null )
-        {
-            path = root.resolve( path );
+        if (root != null) {
+            path = root.resolve(path);
         }
 
         return path;
     }
 
     @Override
-    public Set<Path> getRootPaths()
-    {
-        return Collections.singleton( root );
+    public Set<Path> getRootPaths() {
+        return Collections.singleton(root);
     }
 }

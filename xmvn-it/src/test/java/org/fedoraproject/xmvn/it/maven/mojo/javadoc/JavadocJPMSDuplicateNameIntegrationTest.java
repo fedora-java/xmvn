@@ -20,32 +20,26 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for javadoc MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class JavadocJPMSDuplicateNameIntegrationTest
-    extends AbstractMojoIntegrationTest
-{
+public class JavadocJPMSDuplicateNameIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
-    public void testJavadocJPMSDuplicateName()
-        throws Exception
-    {
-        assumeTrue( getJavaVersion() >= 9 );
-        performMojoTest( "verify", "javadoc" );
+    public void testJavadocJPMSDuplicateName() throws Exception {
+        assumeTrue(getJavaVersion() >= 9);
+        performMojoTest("verify", "javadoc");
 
-        assertTrue( Files.isDirectory( Paths.get( "target/xmvn-apidocs" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/libAB/app/A.html" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/libAB/app/B.html" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/libAB/app/AB.html" ) ) );
-        assertTrue( Files.isRegularFile( Paths.get( "target/xmvn-apidocs/libAB/module-summary.html" ) ) );
-        assertTrue( Files.isSymbolicLink( Paths.get( ".xmvn/apidocs" ) ) );
-        assertTrue( Files.isSameFile( Paths.get( ".xmvn/apidocs" ), Paths.get( "target/xmvn-apidocs" ) ) );
+        assertTrue(Files.isDirectory(Paths.get("target/xmvn-apidocs")));
+        assertTrue(Files.isRegularFile(Paths.get("target/xmvn-apidocs/libAB/app/A.html")));
+        assertTrue(Files.isRegularFile(Paths.get("target/xmvn-apidocs/libAB/app/B.html")));
+        assertTrue(Files.isRegularFile(Paths.get("target/xmvn-apidocs/libAB/app/AB.html")));
+        assertTrue(Files.isRegularFile(Paths.get("target/xmvn-apidocs/libAB/module-summary.html")));
+        assertTrue(Files.isSymbolicLink(Paths.get(".xmvn/apidocs")));
+        assertTrue(Files.isSameFile(Paths.get(".xmvn/apidocs"), Paths.get("target/xmvn-apidocs")));
     }
 }

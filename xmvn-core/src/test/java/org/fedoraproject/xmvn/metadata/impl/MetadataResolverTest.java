@@ -23,10 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -34,147 +30,130 @@ import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.test.AbstractTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class MetadataResolverTest
-    extends AbstractTest
-{
+/** @author Mikolaj Izdebski */
+public class MetadataResolverTest extends AbstractTest {
     private MetadataResolver metadataResolver;
 
     @BeforeEach
-    public void setUp()
-    {
-        metadataResolver = new DefaultMetadataResolver( locator );
+    public void setUp() {
+        metadataResolver = new DefaultMetadataResolver(locator);
     }
 
     /**
      * Test if metadata resolution works for exact version.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testCompatExactVersion()
-        throws Exception
-    {
-        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1.xml" );
-        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
+    public void testCompatExactVersion() throws Exception {
+        List<String> pathList = Collections.singletonList("src/test/resources/metadata1.xml");
+        MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.2-beta3" );
-        ArtifactMetadata am = result.getMetadataFor( artifact );
+        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.2-beta3");
+        ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals( 1, result.getPackageMetadataMap().size() );
-        assertNotNull( am );
-        assertEquals( "/foo/bar", am.getPath() );
+        assertEquals(1, result.getPackageMetadataMap().size());
+        assertNotNull(am);
+        assertEquals("/foo/bar", am.getPath());
     }
 
     /**
      * Test if metadata resolution does not work for inexact versions.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testCompatNonExactVersion()
-        throws Exception
-    {
-        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1.xml" );
-        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
+    public void testCompatNonExactVersion() throws Exception {
+        List<String> pathList = Collections.singletonList("src/test/resources/metadata1.xml");
+        MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
-        ArtifactMetadata am = result.getMetadataFor( artifact );
+        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.1");
+        ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals( 1, result.getPackageMetadataMap().size() );
-        assertNull( am );
+        assertEquals(1, result.getPackageMetadataMap().size());
+        assertNull(am);
     }
 
     /**
      * Test if metadata resolution works for exact version.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testNonCompatExactVersion()
-        throws Exception
-    {
-        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1-non-compat.xml" );
-        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
+    public void testNonCompatExactVersion() throws Exception {
+        List<String> pathList = Collections.singletonList("src/test/resources/metadata1-non-compat.xml");
+        MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION );
-        ArtifactMetadata am = result.getMetadataFor( artifact );
+        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
+        ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals( 1, result.getPackageMetadataMap().size() );
-        assertNotNull( am );
-        assertEquals( "/foo/bar", am.getPath() );
+        assertEquals(1, result.getPackageMetadataMap().size());
+        assertNotNull(am);
+        assertEquals("/foo/bar", am.getPath());
     }
 
     /**
      * Test if metadata resolution does not work for inexact versions.
-     * 
+     *
      * @throws Exception
      */
     @Test
-    public void testNonCompatNonExactVersion()
-        throws Exception
-    {
-        List<String> pathList = Collections.singletonList( "src/test/resources/metadata1-non-compat.xml" );
-        MetadataResult result = metadataResolver.resolveMetadata( new MetadataRequest( pathList ) );
+    public void testNonCompatNonExactVersion() throws Exception {
+        List<String> pathList = Collections.singletonList("src/test/resources/metadata1-non-compat.xml");
+        MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "cla", "1.1" );
-        ArtifactMetadata am = result.getMetadataFor( artifact );
+        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.1");
+        ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals( 1, result.getPackageMetadataMap().size() );
-        assertNull( am );
+        assertEquals(1, result.getPackageMetadataMap().size());
+        assertNull(am);
     }
 
     @Test
-    public void testRepositoryListedTwice()
-        throws Exception
-    {
+    public void testRepositoryListedTwice() throws Exception {
         String path = "src/test/resources/simple.xml";
-        MetadataRequest request = new MetadataRequest( Arrays.asList( path, path ) );
-        MetadataResult result = metadataResolver.resolveMetadata( request );
+        MetadataRequest request = new MetadataRequest(Arrays.asList(path, path));
+        MetadataResult result = metadataResolver.resolveMetadata(request);
 
-        Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
-        ArtifactMetadata am = result.getMetadataFor( artifact );
+        Artifact artifact = new DefaultArtifact("org.codehaus.plexus", "plexus-ant-factory", "1.0");
+        ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals( 1, result.getPackageMetadataMap().size() );
-        assertNotNull( am );
-        assertEquals( "/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath() );
+        assertEquals(1, result.getPackageMetadataMap().size());
+        assertNotNull(am);
+        assertEquals("/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath());
     }
 
     @Test
-    public void testRepositoryListedTwiceDifferentPaths()
-        throws Exception
-    {
+    public void testRepositoryListedTwiceDifferentPaths() throws Exception {
         String path1 = "src/test/resources/simple.xml";
         String path2 = "src/test/../test/resources/simple.xml";
-        MetadataRequest request = new MetadataRequest( Arrays.asList( path1, path2 ) );
-        MetadataResult result = metadataResolver.resolveMetadata( request );
+        MetadataRequest request = new MetadataRequest(Arrays.asList(path1, path2));
+        MetadataResult result = metadataResolver.resolveMetadata(request);
 
-        Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
-        ArtifactMetadata am = result.getMetadataFor( artifact );
+        Artifact artifact = new DefaultArtifact("org.codehaus.plexus", "plexus-ant-factory", "1.0");
+        ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals( 2, result.getPackageMetadataMap().size() );
-        assertNull( am );
+        assertEquals(2, result.getPackageMetadataMap().size());
+        assertNull(am);
     }
 
     @Test
-    public void testAllowDuplicates()
-        throws Exception
-    {
+    public void testAllowDuplicates() throws Exception {
         String path1 = "src/test/resources/simple.xml";
         String path2 = "src/test/../test/resources/simple.xml";
-        MetadataRequest request = new MetadataRequest( Arrays.asList( path1, path2 ) );
-        assertTrue( request.isIgnoreDuplicates() );
-        request.setIgnoreDuplicates( false );
-        MetadataResult result = metadataResolver.resolveMetadata( request );
+        MetadataRequest request = new MetadataRequest(Arrays.asList(path1, path2));
+        assertTrue(request.isIgnoreDuplicates());
+        request.setIgnoreDuplicates(false);
+        MetadataResult result = metadataResolver.resolveMetadata(request);
 
-        Artifact artifact = new DefaultArtifact( "org.codehaus.plexus", "plexus-ant-factory", "1.0" );
-        ArtifactMetadata am = result.getMetadataFor( artifact );
+        Artifact artifact = new DefaultArtifact("org.codehaus.plexus", "plexus-ant-factory", "1.0");
+        ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals( 2, result.getPackageMetadataMap().size() );
-        assertNotNull( am );
-        assertEquals( "/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath() );
+        assertEquals(2, result.getPackageMetadataMap().size());
+        assertNotNull(am);
+        assertEquals("/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath());
     }
 }

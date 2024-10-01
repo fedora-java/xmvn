@@ -22,62 +22,44 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 
-/**
- * @author Mikolaj Izdebski
- */
-final class TempManager
-{
+/** @author Mikolaj Izdebski */
+final class TempManager {
     private static Path tempDir;
 
-    private TempManager()
-    {
+    private TempManager() {
         // Avoid generating default public constructor
     }
 
-    private static void delete( Path path )
-    {
-        try
-        {
-            if ( Files.isDirectory( path, LinkOption.NOFOLLOW_LINKS ) )
-            {
-                try ( DirectoryStream<Path> ds = Files.newDirectoryStream( path ) )
-                {
-                    for ( Path child : ds )
-                    {
-                        delete( child );
+    private static void delete(Path path) {
+        try {
+            if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+                try (DirectoryStream<Path> ds = Files.newDirectoryStream(path)) {
+                    for (Path child : ds) {
+                        delete(child);
                     }
                 }
             }
 
-            Files.delete( path );
-        }
-        catch ( IOException e )
-        {
+            Files.delete(path);
+        } catch (IOException e) {
             // Ignore
         }
     }
 
-    private static synchronized Path getTempDir()
-        throws IOException
-    {
-        if ( tempDir == null )
-        {
-            tempDir = Files.createTempDirectory( "xmvn-" );
-            Runtime.getRuntime().addShutdownHook( new Thread( () -> delete( tempDir ) ) );
+    private static synchronized Path getTempDir() throws IOException {
+        if (tempDir == null) {
+            tempDir = Files.createTempDirectory("xmvn-");
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> delete(tempDir)));
         }
 
         return tempDir;
     }
 
-    public static Path createTempFile( String prefix, String suffix, FileAttribute<?>... attrs )
-        throws IOException
-    {
-        return Files.createTempFile( getTempDir(), prefix, suffix, attrs );
+    public static Path createTempFile(String prefix, String suffix, FileAttribute<?>... attrs) throws IOException {
+        return Files.createTempFile(getTempDir(), prefix, suffix, attrs);
     }
 
-    public static Path createTempDirectory( String prefix, FileAttribute<?>... attrs )
-        throws IOException
-    {
-        return Files.createTempDirectory( getTempDir(), prefix, attrs );
+    public static Path createTempDirectory(String prefix, FileAttribute<?>... attrs) throws IOException {
+        return Files.createTempDirectory(getTempDir(), prefix, attrs);
     }
 }

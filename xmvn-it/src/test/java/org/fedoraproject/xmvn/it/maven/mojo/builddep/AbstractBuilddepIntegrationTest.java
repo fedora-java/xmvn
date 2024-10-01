@@ -23,66 +23,51 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.easymock.EasyMock;
+import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
+import org.fedoraproject.xmvn.tools.install.condition.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
-import org.fedoraproject.xmvn.tools.install.condition.DomUtils;
-
 /**
  * Integration tests for builddep MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public abstract class AbstractBuilddepIntegrationTest
-    extends AbstractMojoIntegrationTest
-{
-    /**
-     * @author Mikolaj Izdebski
-     */
-    public interface Visitor
-    {
-        void visit( String groupId, String artifactId, String version );
+public abstract class AbstractBuilddepIntegrationTest extends AbstractMojoIntegrationTest {
+    /** @author Mikolaj Izdebski */
+    public interface Visitor {
+        void visit(String groupId, String artifactId, String version);
     }
 
-    private final Visitor visitor = EasyMock.createMock( Visitor.class );
+    private final Visitor visitor = EasyMock.createMock(Visitor.class);
 
-    public void expectBuildDependency( String groupId, String artifactId )
-    {
-        expectBulidDependency( groupId, artifactId, null );
+    public void expectBuildDependency(String groupId, String artifactId) {
+        expectBulidDependency(groupId, artifactId, null);
     }
 
-    public void expectBulidDependency( String groupId, String artifactId, String version )
-    {
-        visitor.visit( groupId, artifactId, version );
+    public void expectBulidDependency(String groupId, String artifactId, String version) {
+        visitor.visit(groupId, artifactId, version);
         EasyMock.expectLastCall();
     }
 
-    public void verifyBuilddepXml()
-        throws Exception
-    {
-        Path builddepPath = Paths.get( ".xmvn-builddep" );
-        assertTrue( Files.isRegularFile( builddepPath ) );
+    public void verifyBuilddepXml() throws Exception {
+        Path builddepPath = Paths.get(".xmvn-builddep");
+        assertTrue(Files.isRegularFile(builddepPath));
 
-        for ( Element dep : DomUtils.parseAsParent( DomUtils.parse( builddepPath ) ) )
-        {
-            assertEquals( "dependency", dep.getNodeName() );
-            Map<String, String> children = DomUtils.parseAsParent( dep ).stream() //
-                                                   .collect( Collectors.toMap( Node::getNodeName,
-                                                                               DomUtils::parseAsText ) );
-            visitor.visit( children.get( "groupId" ), children.get( "artifactId" ), children.get( "version" ) );
+        for (Element dep : DomUtils.parseAsParent(DomUtils.parse(builddepPath))) {
+            assertEquals("dependency", dep.getNodeName());
+            Map<String, String> children = DomUtils.parseAsParent(dep).stream()
+                    .collect(Collectors.toMap(Node::getNodeName, DomUtils::parseAsText));
+            visitor.visit(children.get("groupId"), children.get("artifactId"), children.get("version"));
         }
     }
 
-    public void performBuilddepTest()
-        throws Exception
-    {
-        performMojoTest( "verify", "builddep" );
+    public void performBuilddepTest() throws Exception {
+        performMojoTest("verify", "builddep");
 
-        EasyMock.replay( visitor );
+        EasyMock.replay(visitor);
         verifyBuilddepXml();
-        EasyMock.verify( visitor );
+        EasyMock.verify(visitor);
     }
 }

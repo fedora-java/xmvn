@@ -27,20 +27,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * @author Mikolaj Izdebski
- */
-class ArtifactInstallerFactory
-{
-    private final Logger logger = LoggerFactory.getLogger( ArtifactInstallerFactory.class );
+/** @author Mikolaj Izdebski */
+class ArtifactInstallerFactory {
+    private final Logger logger = LoggerFactory.getLogger(ArtifactInstallerFactory.class);
 
     private final ArtifactInstaller defaultArtifactInstaller;
 
@@ -50,97 +45,78 @@ class ArtifactInstallerFactory
 
     private final Map<String, ArtifactInstaller> cachedPluginsByImplClass = new LinkedHashMap<>();
 
-    private ArtifactInstaller tryLoadPlugin( String type )
-    {
-        if ( cachedPluginsByType.containsKey( type ) )
-        {
-            return cachedPluginsByType.get( type );
+    private ArtifactInstaller tryLoadPlugin(String type) {
+        if (cachedPluginsByType.containsKey(type)) {
+            return cachedPluginsByType.get(type);
         }
 
-        if ( pluginRealm != null )
-        {
+        if (pluginRealm != null) {
             String resourceName = ArtifactInstaller.class.getCanonicalName() + "/" + type;
-            try ( InputStream resourceStream = pluginRealm.getResourceAsStream( resourceName ) )
-            {
-                if ( resourceStream != null )
-                {
+            try (InputStream resourceStream = pluginRealm.getResourceAsStream(resourceName)) {
+                if (resourceStream != null) {
                     String pluginImplClass;
-                    try ( BufferedReader resourceReader =
-                        new BufferedReader( new InputStreamReader( resourceStream ) ) )
-                    {
+                    try (BufferedReader resourceReader = new BufferedReader(new InputStreamReader(resourceStream))) {
                         pluginImplClass = resourceReader.readLine();
                     }
 
-                    ArtifactInstaller pluggedInInstaller = cachedPluginsByImplClass.get( pluginImplClass );
-                    if ( pluggedInInstaller == null )
-                    {
-                        pluggedInInstaller =
-                            (ArtifactInstaller) pluginRealm.loadClass( pluginImplClass ).getConstructor().newInstance();
-                        cachedPluginsByImplClass.put( pluginImplClass, pluggedInInstaller );
+                    ArtifactInstaller pluggedInInstaller = cachedPluginsByImplClass.get(pluginImplClass);
+                    if (pluggedInInstaller == null) {
+                        pluggedInInstaller = (ArtifactInstaller) pluginRealm
+                                .loadClass(pluginImplClass)
+                                .getConstructor()
+                                .newInstance();
+                        cachedPluginsByImplClass.put(pluginImplClass, pluggedInInstaller);
                     }
 
-                    cachedPluginsByType.put( type, pluggedInInstaller );
+                    cachedPluginsByType.put(type, pluggedInInstaller);
                     return pluggedInInstaller;
                 }
-            }
-            catch ( IOException | ReflectiveOperationException e )
-            {
-                throw new RuntimeException( "Unable to load XMvn Installer plugin for packaging type " + type, e );
+            } catch (IOException | ReflectiveOperationException e) {
+                throw new RuntimeException("Unable to load XMvn Installer plugin for packaging type " + type, e);
             }
         }
 
-        logger.debug( "No XMvn Installer plugin found for packaging type {}", type );
-        cachedPluginsByType.put( type, null );
+        logger.debug("No XMvn Installer plugin found for packaging type {}", type);
+        cachedPluginsByType.put(type, null);
         return null;
     }
 
-    public ArtifactInstallerFactory( Configurator configurator )
-    {
-        this( configurator, Paths.get( "/usr/share/xmvn/lib/installer" ) );
+    public ArtifactInstallerFactory(Configurator configurator) {
+        this(configurator, Paths.get("/usr/share/xmvn/lib/installer"));
     }
 
-    ArtifactInstallerFactory( Configurator configurator, Path pluginDir )
-    {
-        defaultArtifactInstaller = new DefaultArtifactInstaller( configurator );
+    ArtifactInstallerFactory(Configurator configurator, Path pluginDir) {
+        defaultArtifactInstaller = new DefaultArtifactInstaller(configurator);
 
-        if ( Files.isDirectory( pluginDir ) )
-        {
+        if (Files.isDirectory(pluginDir)) {
             ClassLoader parentClassLoader = ArtifactInstallerFactory.class.getClassLoader();
-            pluginRealm = new IsolatedClassRealm( parentClassLoader );
-            pluginRealm.addJarDirectory( pluginDir );
-            PLUGIN_IMPORTS.forEach( pluginRealm::importPackage );
-        }
-        else
-        {
+            pluginRealm = new IsolatedClassRealm(parentClassLoader);
+            pluginRealm.addJarDirectory(pluginDir);
+            PLUGIN_IMPORTS.forEach(pluginRealm::importPackage);
+        } else {
             pluginRealm = null;
         }
     }
 
-    /**
-     * List of packages imported from XMvn Installer class loader to plug-in realms.
-     */
+    /** List of packages imported from XMvn Installer class loader to plug-in realms. */
     private static final List<String> PLUGIN_IMPORTS = Arrays.asList( // XMvn API
-                                                                      "org.fedoraproject.xmvn.artifact", //
-                                                                      "org.fedoraproject.xmvn.config", //
-                                                                      "org.fedoraproject.xmvn.deployer", //
-                                                                      "org.fedoraproject.xmvn.locator", //
-                                                                      "org.fedoraproject.xmvn.metadata", //
-                                                                      "org.fedoraproject.xmvn.resolver", //
-                                                                      // XMvn Installer SPI
-                                                                      "org.fedoraproject.xmvn.tools.install", //
-                                                                      // SLF4J API
-                                                                      "org.slf4j" //
-    );
+            "org.fedoraproject.xmvn.artifact",
+            "org.fedoraproject.xmvn.config",
+            "org.fedoraproject.xmvn.deployer",
+            "org.fedoraproject.xmvn.locator",
+            "org.fedoraproject.xmvn.metadata",
+            "org.fedoraproject.xmvn.resolver",
+            // XMvn Installer SPI
+            "org.fedoraproject.xmvn.tools.install",
+            // SLF4J API
+            "org.slf4j");
 
-    @SuppressWarnings( "unused" )
-    public ArtifactInstaller getInstallerFor( Artifact artifact, Properties properties )
-    {
-        String type = properties.getProperty( "type" );
-        if ( type != null )
-        {
-            ArtifactInstaller pluggedInInstaller = tryLoadPlugin( type );
-            if ( pluggedInInstaller != null )
-            {
+    @SuppressWarnings("unused")
+    public ArtifactInstaller getInstallerFor(Artifact artifact, Properties properties) {
+        String type = properties.getProperty("type");
+        if (type != null) {
+            ArtifactInstaller pluggedInInstaller = tryLoadPlugin(type);
+            if (pluggedInInstaller != null) {
                 return pluggedInInstaller;
             }
         }

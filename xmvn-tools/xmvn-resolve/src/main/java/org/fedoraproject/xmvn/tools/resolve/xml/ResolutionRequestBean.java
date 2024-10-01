@@ -18,59 +18,45 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
-/**
- * @author Mikolaj Izdebski
- */
-public class ResolutionRequestBean
-{
+/** @author Mikolaj Izdebski */
+public class ResolutionRequestBean {
     private Artifact artifact;
 
     private boolean isProviderNeeded;
 
-    public Artifact getArtifact()
-    {
+    public Artifact getArtifact() {
         return artifact;
     }
 
-    public void setArtifact( Artifact artifact )
-    {
+    public void setArtifact(Artifact artifact) {
         this.artifact = artifact;
     }
 
-    public boolean isProviderNeeded()
-    {
+    public boolean isProviderNeeded() {
         return isProviderNeeded;
     }
 
-    public void setProviderNeeded( boolean isProviderNeeded )
-    {
+    public void setProviderNeeded(boolean isProviderNeeded) {
         this.isProviderNeeded = isProviderNeeded;
     }
 
-    /**
-     * @author Mikolaj Izdebski
-     */
-    public static class Adapter
-    {
-        public ResolutionRequestBean marshal( ResolutionRequest request )
-            throws Exception
-        {
+    /** @author Mikolaj Izdebski */
+    public static class Adapter {
+        public ResolutionRequestBean marshal(ResolutionRequest request) throws Exception {
             ResolutionRequestBean bean = new ResolutionRequestBean();
 
-            bean.setArtifact( request.getArtifact() );
-            bean.setProviderNeeded( request.isProviderNeeded() );
+            bean.setArtifact(request.getArtifact());
+            bean.setProviderNeeded(request.isProviderNeeded());
 
             return bean;
         }
 
-        public ResolutionRequest unmarshal( ResolutionRequestBean bean )
-            throws Exception
-        {
+        public ResolutionRequest unmarshal(ResolutionRequestBean bean) throws Exception {
             ResolutionRequest request = new ResolutionRequest();
 
-            request.setArtifact( bean.getArtifact() );
-            request.setProviderNeeded( bean.isProviderNeeded() );
-            request.setPersistentFileNeeded( true );
+            request.setArtifact(bean.getArtifact());
+            request.setProviderNeeded(bean.isProviderNeeded());
+            request.setPersistentFileNeeded(true);
 
             return request;
         }

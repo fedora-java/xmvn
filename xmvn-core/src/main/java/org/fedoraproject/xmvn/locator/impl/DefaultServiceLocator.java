@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.locator.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -32,67 +31,53 @@ import org.fedoraproject.xmvn.resolver.impl.DefaultResolver;
 
 /**
  * Service locator for XMvn.
- * <p>
- * <strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only for
- * technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong> reference
- * it directly.
- * 
+ *
+ * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only
+ * for technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong>
+ * reference it directly.
+ *
  * @author Mikolaj Izdebski
  */
-public class DefaultServiceLocator
-    implements ServiceLocator
-{
+public class DefaultServiceLocator implements ServiceLocator {
     private final Map<Class<?>, Class<?>> knownServices = new HashMap<>();
 
     private final Map<Class<?>, Object> runningServices = new HashMap<>();
 
-    public <T> void addService( Class<T> role, Class<? extends T> serviceProvider )
-    {
-        knownServices.put( role, serviceProvider );
+    public <T> void addService(Class<T> role, Class<? extends T> serviceProvider) {
+        knownServices.put(role, serviceProvider);
     }
 
-    public DefaultServiceLocator()
-    {
-        addService( Logger.class, ConsoleLogger.class );
-        addService( Resolver.class, DefaultResolver.class );
-        addService( Deployer.class, DefaultDeployer.class );
-        addService( Configurator.class, DefaultConfigurator.class );
-        addService( MetadataResolver.class, DefaultMetadataResolver.class );
+    public DefaultServiceLocator() {
+        addService(Logger.class, ConsoleLogger.class);
+        addService(Resolver.class, DefaultResolver.class);
+        addService(Deployer.class, DefaultDeployer.class);
+        addService(Configurator.class, DefaultConfigurator.class);
+        addService(MetadataResolver.class, DefaultMetadataResolver.class);
     }
 
-    private Object loadService( Class<?> role )
-    {
-        Class<?> implClass = knownServices.get( role );
-        if ( implClass == null )
-        {
+    private Object loadService(Class<?> role) {
+        Class<?> implClass = knownServices.get(role);
+        if (implClass == null) {
             return null;
         }
 
-        try
-        {
-            try
-            {
-                return implClass.getConstructor( ServiceLocator.class ).newInstance( this );
-            }
-            catch ( NoSuchMethodException e )
-            {
+        try {
+            try {
+                return implClass.getConstructor(ServiceLocator.class).newInstance(this);
+            } catch (NoSuchMethodException e) {
                 return implClass.getConstructor().newInstance();
             }
-        }
-        catch ( ReflectiveOperationException e )
-        {
-            throw new RuntimeException( e );
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public <T> T getService( Class<T> role )
-    {
-        if ( !runningServices.containsKey( role ) )
-        {
-            runningServices.put( role, loadService( role ) );
+    public <T> T getService(Class<T> role) {
+        if (!runningServices.containsKey(role)) {
+            runningServices.put(role, loadService(role));
         }
 
-        return role.cast( runningServices.get( role ) );
+        return role.cast(runningServices.get(role));
     }
 }

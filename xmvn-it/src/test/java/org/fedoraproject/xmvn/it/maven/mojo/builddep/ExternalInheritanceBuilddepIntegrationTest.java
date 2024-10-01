@@ -19,16 +19,12 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for builddep MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ExternalInheritanceBuilddepIntegrationTest
-    extends AbstractBuilddepIntegrationTest
-{
+public class ExternalInheritanceBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
-    public void testBuilddepExternalInheritance()
-        throws Exception
-    {
+    public void testBuilddepExternalInheritance() throws Exception {
         performBuilddepTest();
     }
 }

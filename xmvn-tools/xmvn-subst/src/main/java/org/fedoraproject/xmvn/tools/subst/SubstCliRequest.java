@@ -15,6 +15,10 @@
  */
 package org.fedoraproject.xmvn.tools.subst;
 
+import com.beust.jcommander.DynamicParameter;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -22,161 +26,142 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.beust.jcommander.DynamicParameter;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
-
-/**
- * @author Mikolaj Izdebski
- */
-final class SubstCliRequest
-{
+/** @author Mikolaj Izdebski */
+final class SubstCliRequest {
     @Parameter
     private List<String> parameters = new LinkedList<>();
 
-    @Parameter( names = { "-h", "--help" }, help = true, description = "Display usage information" )
+    @Parameter(
+            names = {"-h", "--help"},
+            help = true,
+            description = "Display usage information")
     private boolean help;
 
-    @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
+    @Parameter(
+            names = {"-X", "--debug"},
+            description = "Display debugging information")
     private boolean debug;
 
-    @Parameter( names = { "-s", "--strict" }, description = "Fail if any artifact cannot be symlinked" )
+    @Parameter(
+            names = {"-s", "--strict"},
+            description = "Fail if any artifact cannot be symlinked")
     private boolean strict;
 
-    @Parameter( names = { "-d",
-        "--dry-run" }, description = "Do not symlink anything but report what would have been symlinked" )
+    @Parameter(
+            names = {"-d", "--dry-run"},
+            description = "Do not symlink anything but report what would have been symlinked")
     private boolean dryRun;
 
-    @Parameter( names = { "-L",
-        "--follow-symlinks" }, description = "Follow symbolic links when traversing directory structure" )
+    @Parameter(
+            names = {"-L", "--follow-symlinks"},
+            description = "Follow symbolic links when traversing directory structure")
     private boolean followSymlinks;
 
-    @Parameter( names = { "-t", "--type" }, description = "Consider artifacts with given type" )
-    private List<String> types = new ArrayList<>( Arrays.asList( "jar", "war" ) );
+    @Parameter(
+            names = {"-t", "--type"},
+            description = "Consider artifacts with given type")
+    private List<String> types = new ArrayList<>(Arrays.asList("jar", "war"));
 
-    @Parameter( names = { "-R", "--root" }, description = "Consider another root when looking for artifacts" )
+    @Parameter(
+            names = {"-R", "--root"},
+            description = "Consider another root when looking for artifacts")
     private String root;
 
-    @DynamicParameter( names = "-D", description = "Define system property" )
+    @DynamicParameter(names = "-D", description = "Define system property")
     private Map<String, String> defines = new TreeMap<>();
 
     private final StringBuilder usage = new StringBuilder();
 
-    public static SubstCliRequest build( String[] args )
-    {
-        try
-        {
-            return new SubstCliRequest( args );
-        }
-        catch ( ParameterException e )
-        {
-            System.err.println( e.getMessage() + ". Specify -h for usage." );
+    public static SubstCliRequest build(String[] args) {
+        try {
+            return new SubstCliRequest(args);
+        } catch (ParameterException e) {
+            System.err.println(e.getMessage() + ". Specify -h for usage.");
             return null;
         }
     }
 
-    private SubstCliRequest( String[] args )
-    {
-        JCommander jcomm = new JCommander( this );
-        jcomm.setProgramName( "xmvn-subst" );
-        jcomm.parse( args );
-        jcomm.getUsageFormatter().usage( usage );
+    private SubstCliRequest(String[] args) {
+        JCommander jcomm = new JCommander(this);
+        jcomm.setProgramName("xmvn-subst");
+        jcomm.parse(args);
+        jcomm.getUsageFormatter().usage(usage);
 
-        for ( String param : defines.keySet() )
-            System.setProperty( param, defines.get( param ) );
+        for (String param : defines.keySet()) System.setProperty(param, defines.get(param));
     }
 
-    public boolean printUsage()
-    {
-        if ( help )
-        {
-            System.out.println( "xmvn-subst: Substitute artifact files with symbolic links" );
+    public boolean printUsage() {
+        if (help) {
+            System.out.println("xmvn-subst: Substitute artifact files with symbolic links");
             System.out.println();
-            System.out.println( usage );
+            System.out.println(usage);
             return true;
         }
 
         return false;
     }
 
-    public List<String> getParameters()
-    {
+    public List<String> getParameters() {
         return parameters;
     }
 
-    public void setParameters( List<String> parameters )
-    {
+    public void setParameters(List<String> parameters) {
         this.parameters = parameters;
     }
 
-    public boolean isDebug()
-    {
+    public boolean isDebug() {
         return debug;
     }
 
-    public void setDebug( boolean debug )
-    {
+    public void setDebug(boolean debug) {
         this.debug = debug;
     }
 
-    public boolean isStrict()
-    {
+    public boolean isStrict() {
         return strict;
     }
 
-    public void setStrict( boolean strict )
-    {
+    public void setStrict(boolean strict) {
         this.strict = strict;
     }
 
-    public boolean isDryRun()
-    {
+    public boolean isDryRun() {
         return dryRun;
     }
 
-    public void setDryRun( boolean dryRun )
-    {
+    public void setDryRun(boolean dryRun) {
         this.dryRun = dryRun;
     }
 
-    public boolean isFollowSymlinks()
-    {
+    public boolean isFollowSymlinks() {
         return followSymlinks;
     }
 
-    public void setFollowSymlinks( boolean followSymlinks )
-    {
+    public void setFollowSymlinks(boolean followSymlinks) {
         this.followSymlinks = followSymlinks;
     }
 
-    public List<String> getTypes()
-    {
+    public List<String> getTypes() {
         return types;
     }
 
-    public void setTypes( List<String> types )
-    {
+    public void setTypes(List<String> types) {
         this.types = types;
     }
 
-    public String getRoot()
-    {
+    public String getRoot() {
         return root;
     }
 
-    public void setRoot( String root )
-    {
+    public void setRoot(String root) {
         this.root = root;
     }
 
-    public Map<String, String> getDefines()
-    {
+    public Map<String, String> getDefines() {
         return defines;
     }
 
-    public void setDefines( Map<String, String> defines )
-    {
+    public void setDefines(Map<String, String> defines) {
         this.defines = defines;
     }
 }

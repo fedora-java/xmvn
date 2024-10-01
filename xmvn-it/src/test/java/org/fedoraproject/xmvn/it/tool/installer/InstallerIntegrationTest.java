@@ -27,49 +27,55 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-
-import org.junit.jupiter.api.Test;
-
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for XMvn Installer tool.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class InstallerIntegrationTest
-    extends AbstractToolIntegrationTest
-{
+public class InstallerIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testInstallJar()
-        throws Exception
-    {
-        expandBaseDirInPlace( "install-plan.xml" );
+    public void testInstallJar() throws Exception {
+        expandBaseDirInPlace("install-plan.xml");
 
-        assertEquals( 0, invokeTool( "xmvn-install", "-n", "xyzzy", "-R", "install-plan.xml", "-d", "dest", "-X", "-i",
-                                     "custom-install" ) );
-        assertFalse( getStdout().findAny().isPresent() );
-        assertTrue( getStderr().anyMatch( "[INFO] Installation successful"::equals ) );
+        assertEquals(
+                0,
+                invokeTool(
+                        "xmvn-install",
+                        "-n",
+                        "xyzzy",
+                        "-R",
+                        "install-plan.xml",
+                        "-d",
+                        "dest",
+                        "-X",
+                        "-i",
+                        "custom-install"));
+        assertFalse(getStdout().findAny().isPresent());
+        assertTrue(getStderr().anyMatch("[INFO] Installation successful"::equals));
 
-        Path pomPath = Paths.get( "dest/usr/share/maven-poms/xyzzy/junit.pom" );
-        assertTrue( Files.isRegularFile( pomPath, LinkOption.NOFOLLOW_LINKS ) );
-        assertEquals( "NOT A VALID XML <XMvn should not parse this...>",
-                      Files.readAllLines( pomPath ).iterator().next() );
+        Path pomPath = Paths.get("dest/usr/share/maven-poms/xyzzy/junit.pom");
+        assertTrue(Files.isRegularFile(pomPath, LinkOption.NOFOLLOW_LINKS));
+        assertEquals(
+                "NOT A VALID XML <XMvn should not parse this...>",
+                Files.readAllLines(pomPath).iterator().next());
 
-        Path mdPath = Paths.get( "dest/usr/share/maven-metadata/xyzzy.xml" );
-        assertTrue( Files.isRegularFile( mdPath, LinkOption.NOFOLLOW_LINKS ) );
-        assertEquals( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", Files.readAllLines( mdPath ).iterator().next() );
+        Path mdPath = Paths.get("dest/usr/share/maven-metadata/xyzzy.xml");
+        assertTrue(Files.isRegularFile(mdPath, LinkOption.NOFOLLOW_LINKS));
+        assertEquals(
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+                Files.readAllLines(mdPath).iterator().next());
 
-        Path jarPath = Paths.get( "dest/usr/share/java/xyzzy/junit.jar" );
-        assertTrue( Files.isRegularFile( jarPath, LinkOption.NOFOLLOW_LINKS ) );
-        try ( InputStream is =
-            new URL( "jar:file:" + jarPath.toAbsolutePath() + "!/META-INF/MANIFEST.MF" ).openStream() )
-        {
-            Attributes mf = new Manifest( is ).getMainAttributes();
-            assertEquals( "junit", mf.getValue( "JavaPackages-GroupId" ) );
-            assertEquals( "junit", mf.getValue( "JavaPackages-ArtifactId" ) );
-            assertEquals( "4.12", mf.getValue( "JavaPackages-Version" ) );
-            assertEquals( "42", mf.getValue( "X-Test1" ) );
+        Path jarPath = Paths.get("dest/usr/share/java/xyzzy/junit.jar");
+        assertTrue(Files.isRegularFile(jarPath, LinkOption.NOFOLLOW_LINKS));
+        try (InputStream is = new URL("jar:file:" + jarPath.toAbsolutePath() + "!/META-INF/MANIFEST.MF").openStream()) {
+            Attributes mf = new Manifest(is).getMainAttributes();
+            assertEquals("junit", mf.getValue("JavaPackages-GroupId"));
+            assertEquals("junit", mf.getValue("JavaPackages-ArtifactId"));
+            assertEquals("4.12", mf.getValue("JavaPackages-Version"));
+            assertEquals("42", mf.getValue("X-Test1"));
         }
     }
 }

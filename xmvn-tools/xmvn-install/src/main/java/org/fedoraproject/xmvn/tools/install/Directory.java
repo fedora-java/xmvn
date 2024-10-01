@@ -22,49 +22,41 @@ import java.nio.file.Path;
 
 /**
  * A directory installed as part of a package.
- * <p>
- * While package doesn't have to own all directories it creates, directories represented by instances of this class are
- * assumed to be owned by the package they belong to.
- * 
+ *
+ * <p>While package doesn't have to own all directories it creates, directories represented by instances of this class
+ * are assumed to be owned by the package they belong to.
+ *
  * @author Mikolaj Izdebski
  */
-public class Directory
-    extends File
-{
+public class Directory extends File {
     /**
      * Create a directory with specified path and default permissions (0755).
-     * 
+     *
      * @param targetPath directory path, relative to installation root
      */
-    public Directory( Path targetPath )
-    {
-        this( targetPath, DIRECTORY_MODE );
+    public Directory(Path targetPath) {
+        this(targetPath, DIRECTORY_MODE);
     }
 
     /**
      * Create a directory with specified path and permissions.
-     * 
+     *
      * @param targetPath directory path, relative to installation root
      * @param accessMode Unix access mode of the file (must be an integer in range from 0 to 0777)
      */
-    public Directory( Path targetPath, int accessMode )
-    {
-        super( targetPath, accessMode );
+    public Directory(Path targetPath, int accessMode) {
+        super(targetPath, accessMode);
     }
 
     @Override
-    protected void installContents( Path targetAbsolutePath )
-        throws IOException
-    {
-        if ( !Files.isDirectory( targetAbsolutePath, LinkOption.NOFOLLOW_LINKS ) )
-        {
-            Files.createDirectory( targetAbsolutePath );
+    protected void installContents(Path targetAbsolutePath) throws IOException {
+        if (!Files.isDirectory(targetAbsolutePath, LinkOption.NOFOLLOW_LINKS)) {
+            Files.createDirectory(targetAbsolutePath);
         }
     }
 
     @Override
-    protected String getDescriptorExtra()
-    {
+    protected String getDescriptorExtra() {
         return "%dir";
     }
 }

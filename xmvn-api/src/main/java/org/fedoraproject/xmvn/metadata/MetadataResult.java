@@ -17,29 +17,27 @@ package org.fedoraproject.xmvn.metadata;
 
 import java.nio.file.Path;
 import java.util.Map;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * Provides access to results of metadata resolution.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public interface MetadataResult
-{
+public interface MetadataResult {
     /**
      * Lookup metadata for specified artifact.
-     * 
+     *
      * @param artifact artifact to lookup metadata for
      * @return metadata for specified artifact, or {@code null} if this result doesn't contain metadata for specified
-     *         artifact
+     *     artifact
      */
-    ArtifactMetadata getMetadataFor( Artifact artifact );
+    ArtifactMetadata getMetadataFor(Artifact artifact);
 
     /**
      * Return a read-only {@link Map} that contains every found metadata file {@link Path}s and a corresponding
      * {@link PackageMetadata}.
-     * 
+     *
      * @return package metadata map, never {@code null}
      */
     Map<Path, PackageMetadata> getPackageMetadataMap();

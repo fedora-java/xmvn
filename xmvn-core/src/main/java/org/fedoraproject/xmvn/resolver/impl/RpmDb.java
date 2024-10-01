@@ -27,99 +27,76 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * @author Mikolaj Izdebski
- */
-class RpmDb
-{
+/** @author Mikolaj Izdebski */
+class RpmDb {
     private static Map<String, String> paths;
 
     private static final Object LOCK = new Object();
 
-    private static Iterable<String> execQuery( String query )
-        throws IOException
-    {
-        String[] cmdLine = new String[] { "/bin/rpm", "-qa", "--qf", query };
+    private static Iterable<String> execQuery(String query) throws IOException {
+        String[] cmdLine = new String[] {"/bin/rpm", "-qa", "--qf", query};
 
-        ProcessBuilder builder = new ProcessBuilder( cmdLine );
-        builder.redirectError( new File( "/dev/null" ) );
+        ProcessBuilder builder = new ProcessBuilder(cmdLine);
+        builder.redirectError(new File("/dev/null"));
         Process child = builder.start();
         child.getOutputStream().close();
 
-        Reader reader = new InputStreamReader( child.getInputStream() );
+        Reader reader = new InputStreamReader(child.getInputStream());
         Collection<String> lines = new ArrayList<>();
-        try ( BufferedReader bufferedReader = new BufferedReader( reader ) )
-        {
+        try (BufferedReader bufferedReader = new BufferedReader(reader)) {
             String line;
-            while ( ( line = bufferedReader.readLine() ) != null )
-            {
-                lines.add( line );
+            while ((line = bufferedReader.readLine()) != null) {
+                lines.add(line);
             }
         }
 
         int exitStatus;
-        try
-        {
+        try {
             exitStatus = child.waitFor();
+        } catch (InterruptedException e) {
+            throw new IOException(e);
         }
-        catch ( InterruptedException e )
-        {
-            throw new IOException( e );
-        }
-        if ( exitStatus != 0 )
-        {
-            throw new IOException( "rpm failed with exit status " + exitStatus );
+        if (exitStatus != 0) {
+            throw new IOException("rpm failed with exit status " + exitStatus);
         }
 
         return lines;
     }
 
-    private static void buildDatabase()
-    {
+    private static void buildDatabase() {
         paths = new TreeMap<>();
 
-        try
-        {
+        try {
             String query = "[%{NAME} (%{VERSION})|%{FILENAMES}\n]";
             Iterable<String> rows;
-            rows = execQuery( query );
+            rows = execQuery(query);
 
-            for ( String row : rows )
-            {
-                int splitPoint = row.indexOf( '|' );
-                String name = row.substring( 0, splitPoint );
-                String path = row.substring( splitPoint + 1 );
-                paths.put( path, name );
+            for (String row : rows) {
+                int splitPoint = row.indexOf('|');
+                String name = row.substring(0, splitPoint);
+                String path = row.substring(splitPoint + 1);
+                paths.put(path, name);
             }
-        }
-        catch ( IOException e )
-        {
+        } catch (IOException e) {
         }
     }
 
-    public String lookupPath( String path )
-    {
-        return lookupPath( Paths.get( path ) );
+    public String lookupPath(String path) {
+        return lookupPath(Paths.get(path));
     }
 
-    public String lookupPath( Path path )
-    {
-        try
-        {
+    public String lookupPath(Path path) {
+        try {
             path = path.toRealPath();
-        }
-        catch ( IOException e )
-        {
+        } catch (IOException e) {
             // Ignore
         }
 
-        synchronized ( LOCK )
-        {
-            if ( paths == null )
-            {
+        synchronized (LOCK) {
+            if (paths == null) {
                 buildDatabase();
             }
-            return paths.get( path.toString() );
+            return paths.get(path.toString());
         }
     }
 }

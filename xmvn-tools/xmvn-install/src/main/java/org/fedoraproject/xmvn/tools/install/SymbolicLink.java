@@ -22,45 +22,36 @@ import java.nio.file.Paths;
 
 /**
  * A symbolic link installed in target package.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class SymbolicLink
-    extends File
-{
-    /**
-     * Path this symlink points to. Can be relative or absolute.
-     */
+public class SymbolicLink extends File {
+    /** Path this symlink points to. Can be relative or absolute. */
     private final Path referencedPath;
 
     /**
      * Create a new symbolic link object.
-     * 
+     *
      * @param targetPath location where the symbolic link will be placed (relative to install root)
      * @param referencedPath path referenced by this symlink (i.e. contents of the symlink)
      */
-    public SymbolicLink( Path targetPath, Path referencedPath )
-    {
-        super( targetPath, -1 );
+    public SymbolicLink(Path targetPath, Path referencedPath) {
+        super(targetPath, -1);
 
-        if ( referencedPath.isAbsolute() )
-        {
+        if (referencedPath.isAbsolute()) {
             Path parent = getTargetPath().getParent();
-            Path base = Paths.get( "/" );
-            if ( parent != null )
-            {
-                base = base.resolve( parent );
+            Path base = Paths.get("/");
+            if (parent != null) {
+                base = base.resolve(parent);
             }
-            referencedPath = base.relativize( referencedPath );
+            referencedPath = base.relativize(referencedPath);
         }
 
         this.referencedPath = referencedPath;
     }
 
     @Override
-    protected void installContents( Path targetAbsolutePath )
-        throws IOException
-    {
-        Files.createSymbolicLink( targetAbsolutePath, referencedPath );
+    protected void installContents(Path targetAbsolutePath) throws IOException {
+        Files.createSymbolicLink(targetAbsolutePath, referencedPath);
     }
 }

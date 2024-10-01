@@ -17,16 +17,15 @@ package org.fedoraproject.xmvn.metadata;
 
 /**
  * Resolves artifact metadata from specified metadata repositories.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public interface MetadataResolver
-{
+public interface MetadataResolver {
     /**
      * Resolve artifact metadata from metadata repositories specified in request.
-     * 
+     *
      * @param request parameters of metadata resolution
      * @return results of metadata resolution, never {@code null}
      */
-    MetadataResult resolveMetadata( MetadataRequest request );
+    MetadataResult resolveMetadata(MetadataRequest request);
 }

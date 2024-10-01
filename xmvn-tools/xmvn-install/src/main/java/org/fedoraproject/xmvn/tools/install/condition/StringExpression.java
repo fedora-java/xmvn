@@ -17,10 +17,7 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/**
- * @author Mikolaj Izdebski
- */
-abstract class StringExpression
-{
-    public abstract String getValue( ArtifactContext context );
+/** @author Mikolaj Izdebski */
+abstract class StringExpression {
+    public abstract String getValue(ArtifactContext context);
 }

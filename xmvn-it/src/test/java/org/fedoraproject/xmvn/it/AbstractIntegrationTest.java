@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,11 +32,10 @@ import org.junit.jupiter.api.TestInfo;
 
 /**
  * Abstract base class for all integration tests.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public abstract class AbstractIntegrationTest
-{
+public abstract class AbstractIntegrationTest {
     public static final String STDOUT = "stdout.txt";
 
     public static final String STDERR = "stderr.txt";
@@ -46,142 +44,108 @@ public abstract class AbstractIntegrationTest
 
     private Path baseDir;
 
-    public Path getMavenHome()
-    {
+    public Path getMavenHome() {
         return mavenHome;
     }
 
-    public Path getBaseDir()
-    {
+    public Path getBaseDir() {
         return baseDir;
     }
 
-    public Path getRootDir()
-    {
+    public Path getRootDir() {
         return getBaseDir().getParent().getParent().getParent();
     }
 
-    public void expandBaseDir( String source, String target )
-        throws Exception
-    {
-        String metadata = new String( Files.readAllBytes( Paths.get( source ) ), StandardCharsets.UTF_8 );
-        metadata = metadata.replaceAll( "@@@", baseDir.toString() );
-        Files.write( Paths.get( target ), metadata.getBytes( StandardCharsets.UTF_8 ) );
+    public void expandBaseDir(String source, String target) throws Exception {
+        String metadata = new String(Files.readAllBytes(Paths.get(source)), StandardCharsets.UTF_8);
+        metadata = metadata.replaceAll("@@@", baseDir.toString());
+        Files.write(Paths.get(target), metadata.getBytes(StandardCharsets.UTF_8));
     }
 
-    public void expandBaseDirInPlace( String sourceAndTarget )
-        throws Exception
-    {
-        expandBaseDir( sourceAndTarget, sourceAndTarget );
+    public void expandBaseDirInPlace(String sourceAndTarget) throws Exception {
+        expandBaseDir(sourceAndTarget, sourceAndTarget);
     }
 
     @BeforeAll
-    public static void ensureCorrectWorkingDirectory()
-        throws Exception
-    {
-        String workdirSuffix = System.getProperty( "xmvnITWorkdirSuffix", "" );
+    public static void ensureCorrectWorkingDirectory() throws Exception {
+        String workdirSuffix = System.getProperty("xmvnITWorkdirSuffix", "");
         String workdir = "xmvn-it/target/work" + workdirSuffix;
-        Path cwd = Paths.get( "." ).toRealPath();
-        if ( !cwd.endsWith( workdir ) )
-        {
-            throw new RuntimeException( "XMvn integration tests must be ran from " + workdir + " directory" );
+        Path cwd = Paths.get(".").toRealPath();
+        if (!cwd.endsWith(workdir)) {
+            throw new RuntimeException("XMvn integration tests must be ran from " + workdir + " directory");
         }
     }
 
     @BeforeEach
-    public void createBaseDir( TestInfo testInfo )
-        throws Exception
-    {
-        mavenHome = Paths.get( "../dependency/xmvn-" + getTestProperty( "xmvn.version" ) ).toAbsolutePath();
+    public void createBaseDir(TestInfo testInfo) throws Exception {
+        mavenHome = Paths.get("../dependency/xmvn-" + getTestProperty("xmvn.version"))
+                .toAbsolutePath();
 
-        baseDir = Paths.get( "." ).toRealPath();
-        delete( baseDir );
+        baseDir = Paths.get(".").toRealPath();
+        delete(baseDir);
         String testName = testInfo.getTestMethod().get().getName();
-        Path baseDirTemplate = Paths.get( "../../src/test/resources" ).resolve( testName );
-        if ( Files.isDirectory( baseDirTemplate, LinkOption.NOFOLLOW_LINKS ) )
-        {
-            copy( baseDirTemplate, baseDir );
-        }
-        else
-        {
-            Files.createDirectories( baseDir );
+        Path baseDirTemplate = Paths.get("../../src/test/resources").resolve(testName);
+        if (Files.isDirectory(baseDirTemplate, LinkOption.NOFOLLOW_LINKS)) {
+            copy(baseDirTemplate, baseDir);
+        } else {
+            Files.createDirectories(baseDir);
         }
 
-        expandBaseDir( "../../src/test/resources/metadata.xml", "metadata.xml" );
+        expandBaseDir("../../src/test/resources/metadata.xml", "metadata.xml");
     }
 
     @AfterEach
-    public void saveBaseDir( TestInfo testInfo )
-        throws Exception
-    {
+    public void saveBaseDir(TestInfo testInfo) throws Exception {
         String testName = testInfo.getTestMethod().get().getName();
-        Path saveDir = Paths.get( "../saved-work" ).resolve( testName ).toAbsolutePath();
-        Files.createDirectories( saveDir );
-        delete( saveDir );
-        copy( baseDir, saveDir );
-        delete( baseDir );
+        Path saveDir = Paths.get("../saved-work").resolve(testName).toAbsolutePath();
+        Files.createDirectories(saveDir);
+        delete(saveDir);
+        copy(baseDir, saveDir);
+        delete(baseDir);
     }
 
-    private void delete( Path path )
-        throws IOException
-    {
-        try ( DirectoryStream<Path> ds = Files.newDirectoryStream( path ) )
-        {
-            for ( Path child : ds )
-            {
-                if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
-                {
-                    delete( child );
+    private void delete(Path path) throws IOException {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(path)) {
+            for (Path child : ds) {
+                if (Files.isDirectory(child, LinkOption.NOFOLLOW_LINKS)) {
+                    delete(child);
                 }
 
-                Files.deleteIfExists( child );
+                Files.deleteIfExists(child);
             }
         }
     }
 
-    private void copy( Path source, Path target )
-        throws Exception
-    {
-        try ( DirectoryStream<Path> ds = Files.newDirectoryStream( source ) )
-        {
-            for ( Path child : ds )
-            {
-                Path targetChild = target.resolve( child.getFileName() );
-                Files.copy( child, targetChild );
+    private void copy(Path source, Path target) throws Exception {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(source)) {
+            for (Path child : ds) {
+                Path targetChild = target.resolve(child.getFileName());
+                Files.copy(child, targetChild);
 
-                if ( Files.isDirectory( child, LinkOption.NOFOLLOW_LINKS ) )
-                {
-                    copy( child, targetChild );
+                if (Files.isDirectory(child, LinkOption.NOFOLLOW_LINKS)) {
+                    copy(child, targetChild);
                 }
             }
         }
     }
 
-    public Stream<String> getStdout()
-        throws Exception
-    {
-        return Files.lines( baseDir.resolve( STDOUT ) );
+    public Stream<String> getStdout() throws Exception {
+        return Files.lines(baseDir.resolve(STDOUT));
     }
 
-    public Stream<String> getStderr()
-        throws Exception
-    {
-        return Files.lines( baseDir.resolve( STDERR ) );
+    public Stream<String> getStderr() throws Exception {
+        return Files.lines(baseDir.resolve(STDERR));
     }
 
-    public static int getJavaVersion()
-    {
-        return Integer.parseInt( System.getProperty( "java.version" ).replaceAll( "\\..*", "" ) );
+    public static int getJavaVersion() {
+        return Integer.parseInt(System.getProperty("java.version").replaceAll("\\..*", ""));
     }
 
-    public String getTestProperty( String name )
-        throws IOException
-    {
-        try ( InputStream is = AbstractIntegrationTest.class.getResourceAsStream( "/xmvn-it.properties" ) )
-        {
+    public String getTestProperty(String name) throws IOException {
+        try (InputStream is = AbstractIntegrationTest.class.getResourceAsStream("/xmvn-it.properties")) {
             Properties properties = new Properties();
-            properties.load( is );
-            return properties.getProperty( name );
+            properties.load(is);
+            return properties.getProperty(name);
         }
     }
 }

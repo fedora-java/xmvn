@@ -19,18 +19,14 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for builddep MOJO.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class ProfileActivationBuilddepIntegrationTest
-    extends AbstractBuilddepIntegrationTest
-{
+public class ProfileActivationBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
-    public void testBuilddepProfileActivation()
-        throws Exception
-    {
-        expectBuildDependency( "junit", "junit" );
-        expectBuildDependency( "org.codehaus.plexus", "plexus-component-metadata" );
+    public void testBuilddepProfileActivation() throws Exception {
+        expectBuildDependency("junit", "junit");
+        expectBuildDependency("org.codehaus.plexus", "plexus-component-metadata");
         performBuilddepTest();
     }
 }

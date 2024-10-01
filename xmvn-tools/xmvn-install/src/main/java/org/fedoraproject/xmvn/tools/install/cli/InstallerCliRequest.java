@@ -15,170 +15,155 @@
  */
 package org.fedoraproject.xmvn.tools.install.cli;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
-/**
- * @author Mikolaj Izdebski
- */
-final class InstallerCliRequest
-{
+/** @author Mikolaj Izdebski */
+final class InstallerCliRequest {
     @Parameter
     private List<String> parameters = new LinkedList<>();
 
-    @Parameter( names = { "-h", "--help" }, help = true, description = "Display usage information" )
+    @Parameter(
+            names = {"-h", "--help"},
+            help = true,
+            description = "Display usage information")
     private boolean help;
 
-    @Parameter( names = { "-X", "--debug" }, description = "Display debugging information" )
+    @Parameter(
+            names = {"-X", "--debug"},
+            description = "Display debugging information")
     private boolean debug;
 
-    @Parameter( names = { "-r", "--relaxed" }, description = "Skip strict rule checking" )
+    @Parameter(
+            names = {"-r", "--relaxed"},
+            description = "Skip strict rule checking")
     private boolean relaxed;
 
-    @Parameter( names = { "-R", "--reactor" }, description = "Path to reactor descriptor" )
+    @Parameter(
+            names = {"-R", "--reactor"},
+            description = "Path to reactor descriptor")
     private String planPath = ".xmvn/reactor.xml";
 
-    @Parameter( names = { "-n", "--name" }, description = "Base package name" )
+    @Parameter(
+            names = {"-n", "--name"},
+            description = "Base package name")
     private String packageName = "pkgname";
 
-    @Parameter( names = { "-d", "--destination" }, description = "Destination directory" )
+    @Parameter(
+            names = {"-d", "--destination"},
+            description = "Destination directory")
     private String destDir = ".xmvn/root";
 
-    @Parameter( names = { "-i", "--repository" }, description = "Installation repository ID" )
+    @Parameter(
+            names = {"-i", "--repository"},
+            description = "Installation repository ID")
     private String repoId = ArtifactInstaller.DEFAULT_REPOSITORY_ID;
 
-    @DynamicParameter( names = "-D", description = "Define system property" )
+    @DynamicParameter(names = "-D", description = "Define system property")
     private Map<String, String> defines = new TreeMap<>();
 
     private final StringBuilder usage = new StringBuilder();
 
-    public static InstallerCliRequest build( String[] args )
-    {
-        try
-        {
-            return new InstallerCliRequest( args );
-        }
-        catch ( ParameterException e )
-        {
-            System.err.println( e.getMessage() + ". Specify -h for usage." );
+    public static InstallerCliRequest build(String[] args) {
+        try {
+            return new InstallerCliRequest(args);
+        } catch (ParameterException e) {
+            System.err.println(e.getMessage() + ". Specify -h for usage.");
             return null;
         }
     }
 
-    private InstallerCliRequest( String[] args )
-    {
-        JCommander jcomm = new JCommander( this );
-        jcomm.setProgramName( "xmvn-install" );
-        jcomm.parse( args );
-        jcomm.getUsageFormatter().usage( usage );
+    private InstallerCliRequest(String[] args) {
+        JCommander jcomm = new JCommander(this);
+        jcomm.setProgramName("xmvn-install");
+        jcomm.parse(args);
+        jcomm.getUsageFormatter().usage(usage);
 
-        if ( debug )
-        {
-            System.setProperty( "org.slf4j.simpleLogger.defaultLogLevel", "trace" );
+        if (debug) {
+            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
         }
-        for ( String param : defines.keySet() )
-            System.setProperty( param, defines.get( param ) );
+        for (String param : defines.keySet()) System.setProperty(param, defines.get(param));
     }
 
-    public boolean printUsage()
-    {
-        if ( help )
-        {
-            System.out.println( "xmvn-install: Install artifacts" );
+    public boolean printUsage() {
+        if (help) {
+            System.out.println("xmvn-install: Install artifacts");
             System.out.println();
-            System.out.println( usage );
+            System.out.println(usage);
             return true;
         }
 
         return false;
     }
 
-    public List<String> getParameters()
-    {
+    public List<String> getParameters() {
         return parameters;
     }
 
-    public void setParameters( List<String> parameters )
-    {
+    public void setParameters(List<String> parameters) {
         this.parameters = parameters;
     }
 
-    public boolean isDebug()
-    {
+    public boolean isDebug() {
         return debug;
     }
 
-    public void setDebug( boolean debug )
-    {
+    public void setDebug(boolean debug) {
         this.debug = debug;
     }
 
-    public boolean isRelaxed()
-    {
+    public boolean isRelaxed() {
         return relaxed;
     }
 
-    public void setRelaxed( boolean relaxed )
-    {
+    public void setRelaxed(boolean relaxed) {
         this.relaxed = relaxed;
     }
 
-    public String getPlanPath()
-    {
+    public String getPlanPath() {
         return planPath;
     }
 
-    public void setPlanPath( String planPath )
-    {
+    public void setPlanPath(String planPath) {
         this.planPath = planPath;
     }
 
-    public String getPackageName()
-    {
+    public String getPackageName() {
         return packageName;
     }
 
-    public void setPackageName( String packageName )
-    {
+    public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
-    public String getDestDir()
-    {
+    public String getDestDir() {
         return destDir;
     }
 
-    public void setDestDir( String destDir )
-    {
+    public void setDestDir(String destDir) {
         this.destDir = destDir;
     }
 
-    public String getRepoId()
-    {
+    public String getRepoId() {
         return repoId;
     }
 
-    public void setRepoId( String repoId )
-    {
+    public void setRepoId(String repoId) {
         this.repoId = repoId;
     }
 
-    public Map<String, String> getDefines()
-    {
+    public Map<String, String> getDefines() {
         return defines;
     }
 
-    public void setDefines( Map<String, String> defines )
-    {
+    public void setDefines(Map<String, String> defines) {
         this.defines = defines;
     }
 }

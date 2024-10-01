@@ -19,27 +19,20 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.stream.Collectors;
-
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.model.Dependency;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.ArtifactType;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
-/**
- * @author Mikolaj Izdebski
- */
-final class Utils
-{
-    private Utils()
-    {
+/** @author Mikolaj Izdebski */
+final class Utils {
+    private Utils() {
         // Avoid generating default public constructor
     }
 
-    public static Artifact xmvnArtifact( org.apache.maven.artifact.Artifact mavenArtifact )
-    {
+    public static Artifact xmvnArtifact(org.apache.maven.artifact.Artifact mavenArtifact) {
         String groupId = mavenArtifact.getGroupId();
         String artifactId = mavenArtifact.getArtifactId();
         String version = mavenArtifact.getVersion();
@@ -47,56 +40,54 @@ final class Utils
         ArtifactHandler handler = mavenArtifact.getArtifactHandler();
         String extension = handler.getExtension();
         String classifier = handler.getClassifier();
-        if ( mavenArtifact.getClassifier() != null && !mavenArtifact.getClassifier().isEmpty() )
-        {
+        if (mavenArtifact.getClassifier() != null
+                && !mavenArtifact.getClassifier().isEmpty()) {
             classifier = mavenArtifact.getClassifier();
         }
 
         File artifactFile = mavenArtifact.getFile();
         Path artifactPath = artifactFile != null ? artifactFile.toPath() : null;
 
-        Artifact artifact = new DefaultArtifact( groupId, artifactId, extension, classifier, version );
-        artifact = artifact.setPath( artifactPath );
+        Artifact artifact = new DefaultArtifact(groupId, artifactId, extension, classifier, version);
+        artifact = artifact.setPath(artifactPath);
         return artifact;
     }
 
-    public static Artifact dependencyArtifact( RepositorySystemSession repoSession, Dependency dependency )
-    {
+    public static Artifact dependencyArtifact(RepositorySystemSession repoSession, Dependency dependency) {
         ArtifactTypeRegistry registry = ArtifactTypeRegistry.getDefaultRegistry();
 
-        if ( repoSession != null && dependency.getType() != null )
-        {
-            ArtifactType type = repoSession.getArtifactTypeRegistry().get( dependency.getType() );
+        if (repoSession != null && dependency.getType() != null) {
+            ArtifactType type = repoSession.getArtifactTypeRegistry().get(dependency.getType());
 
-            if ( type != null )
-            {
-                registry =
-                    registry.registerStereotype( dependency.getType(), type.getExtension(), type.getClassifier() );
+            if (type != null) {
+                registry = registry.registerStereotype(dependency.getType(), type.getExtension(), type.getClassifier());
             }
         }
 
-        return registry.createTypedArtifact( dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(),
-                                             dependency.getClassifier(), dependency.getVersion() );
+        return registry.createTypedArtifact(
+                dependency.getGroupId(),
+                dependency.getArtifactId(),
+                dependency.getType(),
+                dependency.getClassifier(),
+                dependency.getVersion());
     }
 
     /**
      * Convert a collection of artifacts to a human-readable string.
-     * 
+     *
      * @param collection collection of artifacts
      * @param multiLine if multi-line representation should be used instead of single-line
      * @return string representation of given collection of artifacts
      */
-    public static String collectionToString( Collection<Artifact> collection, boolean multiLine )
-    {
-        if ( collection.isEmpty() )
-        {
+    public static String collectionToString(Collection<Artifact> collection, boolean multiLine) {
+        if (collection.isEmpty()) {
             return "[]";
         }
 
         String separator = multiLine ? System.lineSeparator() : " ";
         String indent = multiLine ? "  " : "";
 
-        String str = collection.stream().map( a -> indent + a ).collect( Collectors.joining( "," + separator ) );
+        String str = collection.stream().map(a -> indent + a).collect(Collectors.joining("," + separator));
 
         return "[" + separator + str + separator + "]";
     }

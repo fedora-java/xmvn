@@ -17,58 +17,45 @@ package org.fedoraproject.xmvn.logging.impl;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-
+import org.fedoraproject.xmvn.logging.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.fedoraproject.xmvn.logging.Logger;
-
-/**
- * @author Mikolaj Izdebski
- */
+/** @author Mikolaj Izdebski */
 @Named
 @Singleton
-public class DefaultLogger
-    implements Logger
-{
+public class DefaultLogger implements Logger {
     private final org.slf4j.Logger delegate;
 
-    public DefaultLogger()
-    {
-        if ( System.getProperty( "xmvn.debug" ) != null )
-        {
-            System.setProperty( "org.slf4j.simpleLogger.log.XMvn", "trace" );
+    public DefaultLogger() {
+        if (System.getProperty("xmvn.debug") != null) {
+            System.setProperty("org.slf4j.simpleLogger.log.XMvn", "trace");
         }
 
-        delegate = LoggerFactory.getLogger( "XMvn" );
+        delegate = LoggerFactory.getLogger("XMvn");
     }
 
     @Override
-    public boolean isDebugEnabled()
-    {
+    public boolean isDebugEnabled() {
         return delegate.isDebugEnabled();
     }
 
     @Override
-    public void debug( String format, Object... args )
-    {
-        delegate.debug( format, args );
+    public void debug(String format, Object... args) {
+        delegate.debug(format, args);
     }
 
     @Override
-    public void info( String format, Object... args )
-    {
-        delegate.info( format, args );
+    public void info(String format, Object... args) {
+        delegate.info(format, args);
     }
 
     @Override
-    public void warn( String format, Object... args )
-    {
-        delegate.warn( format, args );
+    public void warn(String format, Object... args) {
+        delegate.warn(format, args);
     }
 
     @Override
-    public void error( String format, Object... args )
-    {
-        delegate.error( format, args );
+    public void error(String format, Object... args) {
+        delegate.error(format, args);
     }
 }

@@ -17,31 +17,29 @@ package org.fedoraproject.xmvn.repository;
 
 import java.nio.file.Path;
 import java.util.Set;
-
 import org.fedoraproject.xmvn.artifact.Artifact;
 
 /**
  * Repository of artifacts.
- * <p>
- * Repository is a container holding repositories. Unlike in case of Maven repositories, artifacts in XMvn repository
+ *
+ * <p>Repository is a container holding repositories. Unlike in case of Maven repositories, artifacts in XMvn repository
  * don't necessarily need to have unique paths -- one artifact can be stored in one of multiple locations. Methods or
  * {@code Repository} interface support multiple artifact paths.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public interface Repository
-{
+public interface Repository {
     /**
      * Obtain the preferred path to given artifact in this repository.
-     * <p>
-     * Returned path is relative to the repository base.
-     * 
+     *
+     * <p>Returned path is relative to the repository base.
+     *
      * @param artifact
      * @param context TODO
      * @param pattern TODO
      * @return preferred artifact path
      */
-    Path getPrimaryArtifactPath( Artifact artifact, ArtifactContext context, String pattern );
+    Path getPrimaryArtifactPath(Artifact artifact, ArtifactContext context, String pattern);
 
     Set<Path> getRootPaths();
 

@@ -16,11 +16,9 @@
 package org.fedoraproject.xmvn.connector.maven;
 
 import java.util.Collections;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
@@ -28,42 +26,29 @@ import org.apache.maven.toolchain.MisconfiguredToolchainException;
 import org.apache.maven.toolchain.ToolchainManagerPrivate;
 import org.apache.maven.toolchain.ToolchainPrivate;
 
-/**
- * @author Mikolaj Izdebski
- */
+/** @author Mikolaj Izdebski */
 @Named
 @Singleton
-public class XMvnToolchainManager
-{
+public class XMvnToolchainManager {
     @Inject
     private ToolchainManagerPrivate toolchainManager;
 
-    public void activate( MavenSession session )
-        throws MavenExecutionException
-    {
+    public void activate(MavenSession session) throws MavenExecutionException {
         MavenProject currentProject = session.getCurrentProject();
 
-        try
-        {
-            for ( ToolchainPrivate toolchain : toolchainManager.getToolchainsForType( "jdk", session ) )
-            {
-                if ( toolchain.matchesRequirements( Collections.singletonMap( "xmvn", "xmvn" ) ) )
-                {
-                    for ( MavenProject project : session.getAllProjects() )
-                    {
-                        session.setCurrentProject( project );
-                        toolchainManager.storeToolchainToBuildContext( toolchain, session );
+        try {
+            for (ToolchainPrivate toolchain : toolchainManager.getToolchainsForType("jdk", session)) {
+                if (toolchain.matchesRequirements(Collections.singletonMap("xmvn", "xmvn"))) {
+                    for (MavenProject project : session.getAllProjects()) {
+                        session.setCurrentProject(project);
+                        toolchainManager.storeToolchainToBuildContext(toolchain, session);
                     }
                 }
             }
-        }
-        catch ( MisconfiguredToolchainException e )
-        {
-            throw new MavenExecutionException( "Unable to configure XMvn toolchain", e );
-        }
-        finally
-        {
-            session.setCurrentProject( currentProject );
+        } catch (MisconfiguredToolchainException e) {
+            throw new MavenExecutionException("Unable to configure XMvn toolchain", e);
+        } finally {
+            session.setCurrentProject(currentProject);
         }
     }
 }

@@ -18,31 +18,26 @@ package org.fedoraproject.xmvn.connector.maven;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.eclipse.sisu.Nullable;
-
 import org.fedoraproject.xmvn.logging.Logger;
 
 /**
  * Installs some of XMvn extensions for Maven.
- * 
+ *
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
-public class XMvnMavenLifecycleParticipant
-    extends AbstractMavenLifecycleParticipant
-{
+public class XMvnMavenLifecycleParticipant extends AbstractMavenLifecycleParticipant {
     @Inject
     private Logger logger;
 
     @Inject
-    @Nullable
-    @Named( "ide" )
+    @Nullable @Named("ide")
     private XMvnWorkspaceReader workspaceReader;
 
     @Inject
@@ -52,29 +47,24 @@ public class XMvnMavenLifecycleParticipant
     private XMvnToolchainManager toolchainManager;
 
     @Override
-    public void afterSessionStart( MavenSession session )
-        throws MavenExecutionException
-    {
+    public void afterSessionStart(MavenSession session) throws MavenExecutionException {
         MavenExecutionRequest request = session.getRequest();
 
-        DependencyVersionReportGenerator reportGenerator = new DependencyVersionReportGenerator( logger );
+        DependencyVersionReportGenerator reportGenerator = new DependencyVersionReportGenerator(logger);
 
-        if ( workspaceReader != null )
-        {
-            workspaceReader.addResolutionListener( mojoExecutionListener );
-            workspaceReader.addResolutionListener( reportGenerator );
+        if (workspaceReader != null) {
+            workspaceReader.addResolutionListener(mojoExecutionListener);
+            workspaceReader.addResolutionListener(reportGenerator);
         }
 
         ChainedExecutionListener chainedListener = new ChainedExecutionListener();
-        chainedListener.addExecutionListener( request.getExecutionListener() );
-        chainedListener.addExecutionListener( reportGenerator );
-        request.setExecutionListener( chainedListener );
+        chainedListener.addExecutionListener(request.getExecutionListener());
+        chainedListener.addExecutionListener(reportGenerator);
+        request.setExecutionListener(chainedListener);
     }
 
     @Override
-    public void afterProjectsRead( MavenSession session )
-        throws MavenExecutionException
-    {
-        toolchainManager.activate( session );
+    public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
+        toolchainManager.activate(session);
     }
 }

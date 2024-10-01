@@ -24,9 +24,6 @@ import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
@@ -34,72 +31,63 @@ import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Abstract base class MOJO integration tests.
- * 
+ *
  * @author Mikolaj Izdebski
  */
-public class AbstractMojoIntegrationTest
-    extends AbstractMavenIntegrationTest
-{
+public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
     @BeforeEach
-    public void addMetadata()
-        throws Exception
-    {
+    public void addMetadata() throws Exception {
         PackageMetadata md = new PackageMetadata();
 
-        for ( String module : Arrays.asList( "xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent" ) )
-        {
-            Path moduleDir = Paths.get( "../../.." ).resolve( module );
-            Path pomPath = moduleDir.resolve( "pom.xml" );
-            Path jarPath = moduleDir.resolve( "target/classes" );
+        for (String module : Arrays.asList("xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent")) {
+            Path moduleDir = Paths.get("../../..").resolve(module);
+            Path pomPath = moduleDir.resolve("pom.xml");
+            Path jarPath = moduleDir.resolve("target/classes");
 
-            assertTrue( Files.exists( pomPath ) );
+            assertTrue(Files.exists(pomPath));
             ArtifactMetadata pomMd = new ArtifactMetadata();
-            pomMd.setGroupId( "org.fedoraproject.xmvn" );
-            pomMd.setArtifactId( module );
-            pomMd.setVersion( "DUMMY_IGNORED" );
-            pomMd.addProperty( "xmvn.resolver.disableEffectivePom", "true" );
-            pomMd.setExtension( "pom" );
-            pomMd.setPath( pomPath.toString() );
-            md.addArtifact( pomMd );
+            pomMd.setGroupId("org.fedoraproject.xmvn");
+            pomMd.setArtifactId(module);
+            pomMd.setVersion("DUMMY_IGNORED");
+            pomMd.addProperty("xmvn.resolver.disableEffectivePom", "true");
+            pomMd.setExtension("pom");
+            pomMd.setPath(pomPath.toString());
+            md.addArtifact(pomMd);
 
-            if ( Files.exists( jarPath ) )
-            {
+            if (Files.exists(jarPath)) {
                 ArtifactMetadata jarMd = pomMd.clone();
-                jarMd.setExtension( "jar" );
-                jarMd.setPath( jarPath.toString() );
-                md.addArtifact( jarMd );
+                jarMd.setExtension("jar");
+                jarMd.setPath(jarPath.toString());
+                md.addArtifact(jarMd);
             }
         }
 
         MetadataStaxWriter mdWriter = new MetadataStaxWriter();
-        try ( OutputStream os = Files.newOutputStream( Paths.get( "mojo-metadata.xml" ) ) )
-        {
-            mdWriter.write( os, md );
+        try (OutputStream os = Files.newOutputStream(Paths.get("mojo-metadata.xml"))) {
+            mdWriter.write(os, md);
         }
 
         Configuration conf = new Configuration();
-        conf.setResolverSettings( new ResolverSettings() );
-        conf.getResolverSettings().addMetadataRepository( "mojo-metadata.xml" );
+        conf.setResolverSettings(new ResolverSettings());
+        conf.getResolverSettings().addMetadataRepository("mojo-metadata.xml");
 
-        Files.createDirectories( Paths.get( ".xmvn/config.d" ) );
+        Files.createDirectories(Paths.get(".xmvn/config.d"));
         ConfigurationStaxWriter confWriter = new ConfigurationStaxWriter();
-        try ( OutputStream os = Files.newOutputStream( Paths.get( ".xmvn/config.d/mojo-it-conf.xml" ) ) )
-        {
-            confWriter.write( os, conf );
+        try (OutputStream os = Files.newOutputStream(Paths.get(".xmvn/config.d/mojo-it-conf.xml"))) {
+            confWriter.write(os, conf);
         }
     }
 
-    public void performMojoTest( String... args )
-        throws Exception
-    {
-        String xmvnVersion = getTestProperty( "xmvn.version" );
-        Deque<String> argList = new ArrayDeque<>( Arrays.asList( args ) );
+    public void performMojoTest(String... args) throws Exception {
+        String xmvnVersion = getTestProperty("xmvn.version");
+        Deque<String> argList = new ArrayDeque<>(Arrays.asList(args));
         String shortGoal = argList.removeLast();
         String fullGoal = "org.fedoraproject.xmvn:xmvn-mojo:" + xmvnVersion + ":" + shortGoal;
-        argList.addLast( fullGoal );
-        super.performTest( argList );
+        argList.addLast(fullGoal);
+        super.performTest(argList);
     }
 }
