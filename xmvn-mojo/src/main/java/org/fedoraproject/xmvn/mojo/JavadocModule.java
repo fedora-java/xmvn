@@ -17,8 +17,8 @@ package org.fedoraproject.xmvn.mojo;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /** @author Mikolaj Izdebski */
 class JavadocModule {
@@ -42,7 +42,7 @@ class JavadocModule {
         this.isAutomatic = isAutomatic;
         this.artifactPath = artifactPath;
         this.sourcePaths = sourcePaths;
-        binaryPaths = new ArrayList<>(Collections.singleton(artifactPath));
+        binaryPaths = new ArrayList<>(Set.of(artifactPath));
         binaryPaths.addAll(dependencies);
     }
 

@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.repository.impl;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.Set;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
@@ -67,6 +66,6 @@ abstract class SimpleRepository extends AbstractRepository {
 
     @Override
     public Set<Path> getRootPaths() {
-        return Collections.singleton(root);
+        return Set.of(root);
     }
 }

@@ -22,7 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Set;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import org.easymock.EasyMock;
@@ -78,7 +78,7 @@ public class ArtifactVisitorTest {
         Path jar3 = writeJar("other.jar", "gid", "other", "ver");
 
         ArtifactVisitor visitor = new ArtifactVisitor(logger, Arrays.asList(mr));
-        visitor.setTypes(Collections.singleton("jar"));
+        visitor.setTypes(Set.of("jar"));
 
         EasyMock.replay(logger, mr);
         Files.walkFileTree(tempDir, visitor);
