@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class MetadataReaderTest extends AbstractTest {
     @Test
     public void testReadingEmptyDirectory() throws Exception {
         Path dir = Files.createTempDirectory("xmvn-test");
-        List<String> pathList = Collections.singletonList(dir.toString());
+        List<String> pathList = List.of(dir.toString());
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
         assertNotNull(map);
         assertTrue(map.isEmpty());
@@ -92,7 +91,7 @@ public class MetadataReaderTest extends AbstractTest {
     }
 
     private void testMetadata1(String fileName) throws Exception {
-        List<String> pathList = Collections.singletonList("src/test/resources/" + fileName + ".xml");
+        List<String> pathList = List.of("src/test/resources/" + fileName + ".xml");
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
         assertNotNull(map);
         assertEquals(1, map.size());
@@ -165,7 +164,7 @@ public class MetadataReaderTest extends AbstractTest {
 
     @Test
     public void testSimpleMetadata() {
-        List<String> pathList = Collections.singletonList("src/test/resources/simple.xml");
+        List<String> pathList = List.of("src/test/resources/simple.xml");
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
         assertNotNull(map);
         assertEquals(1, map.size());
