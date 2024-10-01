@@ -172,18 +172,18 @@ class IsolatedClassRealm extends URLClassLoader {
 
         if (isImported(name)) {
             try {
-                resources.addAll(Collections.list(parent.getResources(name)));
+                parent.getResources(name).asIterator().forEachRemaining(resources::add);
             } catch (IOException e) {
             }
         }
 
         try {
-            resources.addAll(Collections.list(super.getResources(name)));
+            super.getResources(name).asIterator().forEachRemaining(resources::add);
         } catch (IOException e) {
         }
 
         try {
-            resources.addAll(Collections.list(super.findResources(name)));
+            super.findResources(name).asIterator().forEachRemaining(resources::add);
         } catch (IOException e) {
         }
 
