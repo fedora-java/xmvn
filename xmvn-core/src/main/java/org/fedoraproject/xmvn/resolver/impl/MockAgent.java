@@ -108,7 +108,7 @@ class MockAgent {
         try (SocketChannel channel = SocketChannel.open(StandardProtocolFamily.UNIX)) {
             channel.connect(socketAddress);
             send(channel, ByteBuffer.wrap(command.getBytes(StandardCharsets.UTF_8)));
-            return parseResponse(recv(channel, 4));
+            return parseResponse(recv(channel, 3));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
