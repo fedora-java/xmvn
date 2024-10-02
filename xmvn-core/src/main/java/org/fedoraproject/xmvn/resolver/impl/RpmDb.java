@@ -16,10 +16,10 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +36,7 @@ class RpmDb {
         String[] cmdLine = new String[] {"/bin/rpm", "-qa", "--qf", query};
 
         ProcessBuilder builder = new ProcessBuilder(cmdLine);
-        builder.redirectError(new File("/dev/null"));
+        builder.redirectError(Redirect.DISCARD);
         Process child = builder.start();
         child.getOutputStream().close();
 
@@ -66,15 +66,17 @@ class RpmDb {
         paths = new TreeMap<>();
 
         try {
-            String query = "[%{NAME} (%{VERSION})|%{FILENAMES}\n]";
+            String query = "%{NAME} (%{VERSION})\\n[%{FILENAMES}\\n]";
             Iterable<String> rows;
             rows = execQuery(query);
 
+            String name = null;
             for (String row : rows) {
-                int splitPoint = row.indexOf('|');
-                String name = row.substring(0, splitPoint);
-                String path = row.substring(splitPoint + 1);
-                paths.put(path, name);
+                if (row.startsWith("/")) {
+                    paths.put(row, name);
+                } else {
+                    name = row;
+                }
             }
         } catch (IOException e) {
         }
