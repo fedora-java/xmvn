@@ -31,4 +31,4 @@ jobs:
       - name: Run build
         run: mvn -V -B -Dgpg.skip -Pquality,run-its,release verify
       - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v4.6.0
