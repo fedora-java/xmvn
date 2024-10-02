@@ -67,7 +67,7 @@ public class DefaultResolver implements Resolver {
 
     private final CacheManager cacheManager;
 
-    private MockAgent mockAgent;
+    MockAgent mockAgent;
 
     public DefaultResolver(ServiceLocator locator) {
         this();

@@ -16,47 +16,107 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.StandardProtocolFamily;
+import java.net.UnixDomainSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.logging.Logger;
 
 /** @author Mikolaj Izdebski */
 class MockAgent {
-    private final String requestCommand;
-
     private final Logger logger;
+    private final Path socketPath;
 
     public MockAgent(Logger logger) {
+        this(logger, System.getenv("PM_REQUEST_SOCKET"));
+    }
+
+    MockAgent(Logger logger, String socketPath) {
         this.logger = logger;
-        requestCommand = System.getProperty("xmvn.resolver.requestArtifactCmd");
+        this.socketPath = socketPath != null ? Path.of(socketPath) : null;
+    }
+
+    private String formatDep(Artifact art, String pkgver, String ns) {
+        boolean cusExt = !art.getExtension().equals(Artifact.DEFAULT_EXTENSION);
+        boolean cusCla = !art.getClassifier().equals("");
+        boolean cusVer = !art.getVersion().equals(Artifact.DEFAULT_VERSION);
+        StringBuilder sb = new StringBuilder();
+        if (ns != null && !ns.isBlank()) {
+            sb.append(ns);
+            sb.append("-");
+        }
+        sb.append("mvn(");
+        sb.append(art.getGroupId());
+        sb.append(":");
+        sb.append(art.getArtifactId());
+        if (cusCla || cusExt) {
+            sb.append(":");
+        }
+        if (cusExt) {
+            sb.append(art.getExtension());
+        }
+        if (cusCla) {
+            sb.append(":");
+            sb.append(art.getClassifier());
+        }
+        if (cusCla || cusExt || cusVer) {
+            sb.append(":");
+        }
+        if (cusVer) {
+            sb.append(art.getVersion());
+        }
+        sb.append(")");
+        if (pkgver != null) {
+            sb.append(" = ");
+            sb.append(pkgver);
+        }
+        return sb.toString();
+    }
+
+    private void send(SocketChannel ch, ByteBuffer buf) throws IOException {
+        while (buf.remaining() > 0) {
+            ch.write(buf);
+        }
+    }
+
+    private ByteBuffer recv(SocketChannel ch, int n) throws IOException {
+        ByteBuffer buf = ByteBuffer.allocate(n);
+        while (buf.remaining() > 0 && ch.read(buf) >= 0) {}
+        buf.flip();
+        return buf;
+    }
+
+    private boolean parseResponse(ByteBuffer resp) {
+        if (resp.limit() >= 3 && resp.get() == 'o' && resp.get() == 'k' && resp.get() == '\n') {
+            logger.info("Artifact was successfully installed");
+            return true;
+        }
+        logger.info("Artifact was not installed");
+        return false;
+    }
+
+    private boolean sendCommand(String command) {
+        if (socketPath == null) {
+            return false;
+        }
+        logger.debug("Trying to install artifact with mock PM command: {}", command);
+        UnixDomainSocketAddress socketAddress = UnixDomainSocketAddress.of(socketPath);
+        try (SocketChannel channel = SocketChannel.open(StandardProtocolFamily.UNIX)) {
+            channel.connect(socketAddress);
+            send(channel, ByteBuffer.wrap(command.getBytes(StandardCharsets.UTF_8)));
+            return parseResponse(recv(channel, 4));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     public boolean tryInstallArtifact(Artifact artifact) {
-        if (requestCommand == null) {
-            return false;
-        }
-
-        try {
-            String cmd = "%s maven '%s'".formatted(requestCommand, artifact.toString());
-            logger.debug("Trying to install artifact with external command: {}", cmd);
-
-            ProcessBuilder pb = new ProcessBuilder("sh", "-c", cmd);
-            pb.redirectInput();
-            pb.redirectOutput();
-            pb.redirectError();
-            int exit = pb.start().waitFor();
-
-            if (exit == 0) {
-                logger.info("Artifact installed with external command: {}", artifact);
-                return true;
-            } else {
-                logger.info("External command failed, exit code is {}", exit);
-                return false;
-            }
-        } catch (IOException e) {
-            logger.debug("Failed to launch subprocess", e);
-            return false;
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Interrupted when waiting for subprocess to complete", e);
-        }
+        String dependency = formatDep(artifact, null, null);
+        String command = "install %s\n".formatted(dependency);
+        return sendCommand(command);
     }
 }
