@@ -1,6 +1,5 @@
 eclipse.preferences.version=1
-formatter_profile=_XMvn
-formatter_settings_version=22
+formatter_settings_version=23
 org.eclipse.jdt.ui.ignorelowercasenames=true
 org.eclipse.jdt.ui.importorder=java;javax;;org.fedoraproject.xmvn;
 org.eclipse.jdt.ui.ondemandthreshold=99
