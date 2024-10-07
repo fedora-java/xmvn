@@ -72,7 +72,7 @@
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
-    <asmVersion>9.7</asmVersion>
+    <asmVersion>9.7.1</asmVersion>
     <jcommanderVersion>1.82</jcommanderVersion>
     <mavenResolverVersion>1.9.22</mavenResolverVersion>
     <mavenVersion>3.9.9</mavenVersion>
