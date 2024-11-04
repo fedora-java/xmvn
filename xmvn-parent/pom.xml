@@ -94,7 +94,7 @@
     <installPluginVersion>3.1.3</installPluginVersion>
     <jacocoVersion>0.8.12</jacocoVersion>
     <jarPluginVersion>3.4.2</jarPluginVersion>
-    <javadocPluginVersion>3.10.1</javadocPluginVersion>
+    <javadocPluginVersion>3.11.1</javadocPluginVersion>
     <junitVersion>5.11.3</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
