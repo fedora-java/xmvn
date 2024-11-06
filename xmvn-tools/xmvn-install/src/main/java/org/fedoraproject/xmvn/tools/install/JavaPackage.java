@@ -16,6 +16,8 @@
 package org.fedoraproject.xmvn.tools.install;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -24,7 +26,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
  * Class describing a Java package as a package which besides other files files also installs Java
@@ -76,7 +77,9 @@ public class JavaPackage extends Package {
     private byte[] getMetadataContents(String namespace) {
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            new MetadataStaxWriter().write(bos, getSplitMetadata(namespace));
+            try (Writer w = new OutputStreamWriter(bos)) {
+                getSplitMetadata(namespace).writeToXML(w);
+            }
             return bos.toByteArray();
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate package metadata", e);

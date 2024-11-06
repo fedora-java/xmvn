@@ -4,6 +4,7 @@
     <artifact>
       <groupId>com.example</groupId>
       <artifactId>test</artifactId>
+      <version/>
       <path>src/test/resources/example.jar</path>
     </artifact>
   </artifacts>

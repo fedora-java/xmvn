@@ -187,11 +187,13 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "lib/ext/xmvn-connector-.*\\.jar");
         expect(1, 1, "lib/ext/xmvn-core-.*\\.jar");
         expect(1, 1, "lib/ext/xmvn-api-.*\\.jar");
+        expect(1, 1, "lib/ext/kojan-xml-.*\\.jar");
 
         expect(1, 1, "lib/installer/");
         expect(1, 1, "lib/installer/xmvn-install-.*\\.jar");
         expect(1, 1, "lib/installer/xmvn-api-.*\\.jar");
         expect(1, 1, "lib/installer/xmvn-core-.*\\.jar");
+        expect(1, 1, "lib/installer/kojan-xml-.*\\.jar");
         expect(1, 1, "lib/installer/picocli-.*\\.jar");
         expect(1, 1, "lib/installer/slf4j-api-.*\\.jar");
         expect(1, 1, "lib/installer/slf4j-simple-.*\\.jar");
@@ -204,12 +206,14 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "lib/resolver/xmvn-resolve-.*\\.jar");
         expect(1, 1, "lib/resolver/xmvn-api-.*\\.jar");
         expect(1, 1, "lib/resolver/xmvn-core-.*\\.jar");
+        expect(1, 1, "lib/resolver/kojan-xml-.*\\.jar");
         expect(1, 1, "lib/resolver/picocli-.*\\.jar");
 
         expect(1, 1, "lib/subst/");
         expect(1, 1, "lib/subst/xmvn-subst-.*\\.jar");
         expect(1, 1, "lib/subst/xmvn-api-.*\\.jar");
         expect(1, 1, "lib/subst/xmvn-core-.*\\.jar");
+        expect(1, 1, "lib/subst/kojan-xml-.*\\.jar");
         expect(1, 1, "lib/subst/picocli-.*\\.jar");
 
         Path baseDir = getMavenHome();

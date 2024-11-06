@@ -20,6 +20,7 @@
         </dependency>
         <dependency>
           <groupId>org.apache.lucene</groupId>
+          <artifactId/>
           <requestedVersion>4.1</requestedVersion>
         </dependency>
       </dependencies>

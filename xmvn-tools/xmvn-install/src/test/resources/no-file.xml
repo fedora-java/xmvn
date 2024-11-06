@@ -23,6 +23,7 @@
       <groupId>com.example</groupId>
       <artifactId>test</artifactId>
       <version>42</version>
+      <path/>
     </artifact>
   </artifacts>
 </metadata>

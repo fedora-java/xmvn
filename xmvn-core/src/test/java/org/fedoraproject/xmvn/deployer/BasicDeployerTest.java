@@ -75,7 +75,7 @@ public class BasicDeployerTest extends AbstractTest {
         XmlAssert.assertThat(
                         """
                         <?xml version="1.0" encoding="UTF-8"?>
-                        <metadata xmlns="http://fedorahosted.org/xmvn/METADATA/3.2.0">
+                        <metadata>
                           <artifacts>
                             <artifact>
                               <groupId>g</groupId>

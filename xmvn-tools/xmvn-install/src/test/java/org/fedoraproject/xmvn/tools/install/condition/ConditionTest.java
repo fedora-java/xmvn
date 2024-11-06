@@ -19,18 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.Method;
 import java.util.Collections;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 /**
  * @author Mikolaj Izdebski
@@ -53,19 +50,11 @@ public class ConditionTest {
                         Collections.singletonMap("native", "true"));
     }
 
-    private Element buildDom(CharSequence data) throws Exception {
-        Reader stringReader = new StringReader(data.toString());
-        XMLStreamReader xmlReader =
-                XMLInputFactory.newInstance().createXMLStreamReader(stringReader);
-        ConfigurationStaxReader modelloReader = new ConfigurationStaxReader();
-        Method initDocMethod = ConfigurationStaxReader.class.getDeclaredMethod("initDoc");
-        initDocMethod.setAccessible(true);
-        initDocMethod.invoke(modelloReader);
-        Method buildDomMethod =
-                ConfigurationStaxReader.class.getDeclaredMethod(
-                        "buildDom", XMLStreamReader.class, boolean.class);
-        buildDomMethod.setAccessible(true);
-        return (Element) buildDomMethod.invoke(modelloReader, xmlReader, true);
+    private Element buildDom(String xml) throws Exception {
+        return DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder()
+                .parse(new InputSource(new StringReader(xml)))
+                .getDocumentElement();
     }
 
     /**
@@ -87,33 +76,35 @@ public class ConditionTest {
      */
     @Test
     public void testBasicCondition() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<filter>");
-        sb.append("  <or>");
-        sb.append("    <and>");
-        sb.append("      <equals>");
-        sb.append("        <extension/>");
-        sb.append("        <string>jar</string>");
-        sb.append("      </equals>");
-        sb.append("      <not>");
-        sb.append("        <equals>");
-        sb.append("          <property>native</property>");
-        sb.append("          <string>true</string>");
-        sb.append("        </equals>");
-        sb.append("      </not>");
-        sb.append("    </and>");
-        sb.append("    <!-- Maybe /usr/share/java is not the best place to store");
-        sb.append("         ZIP files, but packages are doing so anyways and");
-        sb.append("         allowing ZIPs here simplifies packaging.  TODO: find a");
-        sb.append("         better location for ZIP files.  -->");
-        sb.append("    <equals>");
-        sb.append("      <extension/>");
-        sb.append("      <string>zip</string>");
-        sb.append("    </equals>");
-        sb.append("  </or>");
-        sb.append("</filter>");
+        String xml =
+                """
+                <filter>
+                  <or>
+                    <and>
+                      <equals>
+                        <extension/>
+                        <string>jar</string>
+                      </equals>
+                      <not>
+                        <equals>
+                          <property>native</property>
+                          <string>true</string>
+                        </equals>
+                      </not>
+                    </and>
+                    <!-- Maybe /usr/share/java is not the best place to store
+                         ZIP files, but packages are doing so anyways and
+                         allowing ZIPs here simplifies packaging.  TODO: find a
+                         better location for ZIP files.  -->
+                    <equals>
+                      <extension/>
+                      <string>zip</string>
+                    </equals>
+                  </or>
+                </filter>
+                """;
 
-        Condition cond = new Condition(buildDom(sb));
+        Condition cond = new Condition(buildDom(xml));
         assertTrue(cond.getValue(context1));
         assertFalse(cond.getValue(context2));
     }
@@ -125,24 +116,26 @@ public class ConditionTest {
      */
     @Test
     public void testTernaryOperators() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<filter>");
-        sb.append("  <or>");
-        sb.append("    <and>");
-        sb.append("      <true/>");
-        sb.append("      <false/>");
-        sb.append("      <true/>");
-        sb.append("    </and>");
-        sb.append("    <false/>");
-        sb.append("    <xor>");
-        sb.append("      <false/>");
-        sb.append("      <true/>");
-        sb.append("      <false/>");
-        sb.append("    </xor>");
-        sb.append("  </or>");
-        sb.append("</filter>");
+        String xml =
+                """
+                <filter>
+                  <or>
+                    <and>
+                      <true/>
+                      <false/>
+                      <true/>
+                    </and>
+                    <false/>
+                    <xor>
+                      <false/>
+                      <true/>
+                      <false/>
+                    </xor>
+                  </or>
+                </filter>
+                 """;
 
-        Condition cond = new Condition(buildDom(sb));
+        Condition cond = new Condition(buildDom(xml));
         assertTrue(cond.getValue(context1));
         assertTrue(cond.getValue(context2));
     }
@@ -154,17 +147,19 @@ public class ConditionTest {
      */
     @Test
     public void testSyntaxError() throws Exception {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<filter>");
-        sb.append("  <not>");
-        sb.append("    <xor>");
-        sb.append("      <hello/>");
-        sb.append("    </xor>");
-        sb.append("  </not>");
-        sb.append("</filter>");
+        String xml =
+                """
+                <filter>
+                  <not>
+                    <xor>
+                      <hello/>
+                    </xor>
+                  </not>
+                </filter>
+                """;
 
         try {
-            new Condition(buildDom(sb));
+            new Condition(buildDom(xml));
             fail();
         } catch (RuntimeException e) {
             assertTrue(e.getMessage().contains("unknown XML node name: hello"));

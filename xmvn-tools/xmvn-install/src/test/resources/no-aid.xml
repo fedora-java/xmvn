@@ -21,6 +21,7 @@
     </artifact>
     <artifact>
       <groupId>com.example</groupId>
+      <artifactId/>
       <version>42</version>
       <path>src/test/resources/example.jar</path>
     </artifact>

@@ -15,8 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import io.kojan.xml.XMLException;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,18 +25,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.config.PackagingRule;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.SkippedArtifactMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -117,13 +114,14 @@ public class DefaultInstaller implements Installer {
         artifactState.setPackagingRule(rule);
 
         if (logger.isDebugEnabled()) {
-            try (StringWriter buffer = new StringWriter()) {
+            try {
                 Configuration configuration = new Configuration();
                 configuration.addArtifactManagement(rule);
-                new ConfigurationStaxWriter().write(buffer, configuration);
-
-                logger.debug("Effective packaging rule for artifact {} is:\n{}", artifact, buffer);
-            } catch (IOException | XMLStreamException e) {
+                logger.debug(
+                        "Effective packaging rule for artifact {} is:\n{}",
+                        artifact,
+                        configuration.toXML());
+            } catch (XMLException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -155,13 +153,11 @@ public class DefaultInstaller implements Installer {
         }
 
         if (logger.isDebugEnabled()) {
-            try (StringWriter buffer = new StringWriter()) {
+            try {
                 PackageMetadata meta = new PackageMetadata();
                 meta.setSkippedArtifacts(skippedArtifacts);
-                new MetadataStaxWriter().write(buffer, meta);
-
-                logger.debug("Skipped artifacts are:\n{}", buffer);
-            } catch (IOException | XMLStreamException e) {
+                logger.debug("Skipped artifacts are:\n{}", meta.toXML());
+            } catch (XMLException e) {
                 throw new RuntimeException(e);
             }
         }

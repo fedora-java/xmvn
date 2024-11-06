@@ -17,10 +17,8 @@ package org.fedoraproject.xmvn.config.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.StringWriter;
+import java.nio.file.Path;
 import org.fedoraproject.xmvn.config.Configuration;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 import org.fedoraproject.xmvn.test.AbstractTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,19 +35,17 @@ public class ConfigurationMergerTest extends AbstractTest {
     }
 
     private static String toString(Configuration conf) throws Exception {
-        StringWriter sw = new StringWriter();
-        new ConfigurationStaxWriter().write(sw, conf);
-        return sw.getBuffer().toString().replaceFirst("^<\\?xml[^>]+>", "");
+        return conf.toXML().replaceFirst("^<\\?xml[^>]+>", "");
     }
 
     @Test
     public void testMerge() throws Exception {
         Configuration c1 =
-                new ConfigurationStaxReader().read("src/test/resources/conf-dominant.xml");
+                Configuration.readFromXML(Path.of("src/test/resources/conf-dominant.xml"));
         Configuration c2 =
-                new ConfigurationStaxReader().read("src/test/resources/conf-recessive.xml");
+                Configuration.readFromXML(Path.of("src/test/resources/conf-recessive.xml"));
         Configuration c4 =
-                new ConfigurationStaxReader().read("src/test/resources/conf-superdominant.xml");
+                Configuration.readFromXML(Path.of("src/test/resources/conf-superdominant.xml"));
 
         Configuration c3 = merger.merge(null, c2);
         assertEquals(toString(c2), toString(c3));
@@ -69,7 +65,7 @@ public class ConfigurationMergerTest extends AbstractTest {
         assertEquals("/foo/bar", out.getInstallerSettings().getMetadataDir());
         assertEquals(false, out.getResolverSettings().isIgnoreDuplicateMetadata());
 
-        Configuration c6 = merger.merge(c2, c2.clone());
+        Configuration c6 = merger.merge(c2, c2);
         assertEquals(toString(c2), toString(c6));
     }
 }

@@ -25,6 +25,7 @@
         <include>:xmvn-connector</include>
         <include>:xmvn-api</include>
         <include>:xmvn-core</include>
+        <include>:kojan-xml</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <unpack>false</unpack>
@@ -35,6 +36,7 @@
         <include>:xmvn-install</include>
         <include>:xmvn-api</include>
         <include>:xmvn-core</include>
+        <include>:kojan-xml</include>
         <include>:picocli</include>
         <include>:slf4j-api</include>
         <include>:slf4j-simple</include>
@@ -52,6 +54,7 @@
         <include>:xmvn-resolve</include>
         <include>:xmvn-api</include>
         <include>:xmvn-core</include>
+        <include>:kojan-xml</include>
         <include>:picocli</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
@@ -63,6 +66,7 @@
         <include>:xmvn-subst</include>
         <include>:xmvn-api</include>
         <include>:xmvn-core</include>
+        <include>:kojan-xml</include>
         <include>:picocli</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>

@@ -20,6 +20,8 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -44,7 +46,6 @@ import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 
 /**
  * Default implementation of XMvn {@code MetadataResolver} interface.
@@ -150,8 +151,9 @@ public class DefaultMetadataResolver implements MetadataResolver {
         try (InputStream fis = Files.newInputStream(path)) {
             try (BufferedInputStream bis = new BufferedInputStream(fis, 128)) {
                 try (InputStream is = isCompressed(bis) ? new GZIPInputStream(bis) : bis) {
-                    MetadataStaxReader reader = new MetadataStaxReader();
-                    return reader.read(is);
+                    try (Reader r = new InputStreamReader(is)) {
+                        return PackageMetadata.readFromXML(r);
+                    }
                 }
             }
         }

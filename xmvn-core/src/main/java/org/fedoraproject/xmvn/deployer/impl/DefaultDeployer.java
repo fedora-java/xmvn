@@ -15,15 +15,12 @@
  */
 package org.fedoraproject.xmvn.deployer.impl;
 
+import io.kojan.xml.XMLException;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.deployer.DependencyDescriptor;
 import org.fedoraproject.xmvn.deployer.Deployer;
@@ -33,8 +30,6 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.metadata.DependencyExclusion;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
  * Default implementation of XMvn {@code Deployer} interface.
@@ -103,17 +98,17 @@ public class DefaultDeployer implements Deployer {
             return new PackageMetadata();
         }
 
-        try (Reader reader = Files.newBufferedReader(planPath, StandardCharsets.UTF_8)) {
-            return new MetadataStaxReader().read(reader);
-        } catch (XMLStreamException e) {
+        try {
+            return PackageMetadata.readFromXML(planPath);
+        } catch (XMLException e) {
             throw new IOException("Failed to parse reactor installation plan", e);
         }
     }
 
     private void writeInstallationPlan(PackageMetadata plan, Path planPath) throws IOException {
-        try (Writer writer = Files.newBufferedWriter(planPath, StandardCharsets.UTF_8)) {
-            new MetadataStaxWriter().write(writer, plan);
-        } catch (XMLStreamException e) {
+        try {
+            plan.writeToXML(planPath);
+        } catch (XMLException e) {
             throw new IOException("Unable to write reactor installation plan", e);
         }
     }
