@@ -33,7 +33,8 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
  *
  * @author Mikolaj Izdebski
  */
-class DependencyVersionReportGenerator extends AbstractExecutionListener implements ResolutionListener {
+class DependencyVersionReportGenerator extends AbstractExecutionListener
+        implements ResolutionListener {
     private final Logger logger;
 
     private final Map<Artifact, ResolutionResult> data = new LinkedHashMap<>();
@@ -62,24 +63,33 @@ class DependencyVersionReportGenerator extends AbstractExecutionListener impleme
         logger.debug("Full XMvn dependency report:");
         logger.debug(
                 "<gId>:<aId>:<ext>[:<classifier>:]<version> => <compat-version>, provided by <pkg-name> (<rpm-version>)");
-        data.forEach((artifact, result) -> {
-            String provider = result.getProvider();
-            if (provider == null) {
-                provider = "(none)";
-            }
-            Set<String> requestedVersions = shortReport.get(provider);
-            if (requestedVersions == null) {
-                requestedVersions = new TreeSet<>();
-                shortReport.put(provider, requestedVersions);
-            }
-            requestedVersions.add(artifact.getVersion());
+        data.forEach(
+                (artifact, result) -> {
+                    String provider = result.getProvider();
+                    if (provider == null) {
+                        provider = "(none)";
+                    }
+                    Set<String> requestedVersions = shortReport.get(provider);
+                    if (requestedVersions == null) {
+                        requestedVersions = new TreeSet<>();
+                        shortReport.put(provider, requestedVersions);
+                    }
+                    requestedVersions.add(artifact.getVersion());
 
-            logger.debug("  {} => {}, provided by {}", artifact, result.getCompatVersion(), provider);
-        });
+                    logger.debug(
+                            "  {} => {}, provided by {}",
+                            artifact,
+                            result.getCompatVersion(),
+                            provider);
+                });
 
         logger.debug("Simplified XMvn dependency report:");
         logger.debug("<pkg-name> (<rpm-version>): <requested-versions>");
-        shortReport.forEach((provider, versions) ->
-                logger.debug("  {}: {}", provider, versions.stream().collect(Collectors.joining(", "))));
+        shortReport.forEach(
+                (provider, versions) ->
+                        logger.debug(
+                                "  {}: {}",
+                                provider,
+                                versions.stream().collect(Collectors.joining(", "))));
     }
 }

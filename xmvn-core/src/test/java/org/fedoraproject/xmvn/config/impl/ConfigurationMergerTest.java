@@ -25,7 +25,9 @@ import org.fedoraproject.xmvn.test.AbstractTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ConfigurationMergerTest extends AbstractTest {
     private ConfigurationMerger merger;
 
@@ -42,9 +44,12 @@ public class ConfigurationMergerTest extends AbstractTest {
 
     @Test
     public void testMerge() throws Exception {
-        Configuration c1 = new ConfigurationStaxReader().read("src/test/resources/conf-dominant.xml");
-        Configuration c2 = new ConfigurationStaxReader().read("src/test/resources/conf-recessive.xml");
-        Configuration c4 = new ConfigurationStaxReader().read("src/test/resources/conf-superdominant.xml");
+        Configuration c1 =
+                new ConfigurationStaxReader().read("src/test/resources/conf-dominant.xml");
+        Configuration c2 =
+                new ConfigurationStaxReader().read("src/test/resources/conf-recessive.xml");
+        Configuration c4 =
+                new ConfigurationStaxReader().read("src/test/resources/conf-superdominant.xml");
 
         Configuration c3 = merger.merge(null, c2);
         assertEquals(toString(c2), toString(c3));

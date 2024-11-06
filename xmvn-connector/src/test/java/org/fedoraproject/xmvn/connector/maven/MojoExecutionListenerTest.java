@@ -23,7 +23,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** @author Roman Vais */
+/**
+ * @author Roman Vais
+ */
 public class MojoExecutionListenerTest {
     private interface MojoBeanProperty {
         String getReportOutputDirectory();
@@ -95,9 +97,7 @@ public class MojoExecutionListenerTest {
     public void testListenerAfterSuccess() throws Exception {
         // tests JAVADOC_AGGREGATE
         EasyMock.reset(exec, mojo);
-        EasyMock.expect(mojo.getReportOutputDirectory())
-                .andReturn("/tmp/foo/bar")
-                .once();
+        EasyMock.expect(mojo.getReportOutputDirectory()).andReturn("/tmp/foo/bar").once();
         EasyMock.expect(exec.getGroupId()).andReturn("org.apache.maven.plugins").once();
         EasyMock.expect(exec.getArtifactId()).andReturn("maven-javadoc-plugin").once();
         EasyMock.expect(exec.getGoal()).andReturn("aggregate").once();

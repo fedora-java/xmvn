@@ -32,7 +32,9 @@ import org.fedoraproject.xmvn.test.AbstractTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class MetadataResolverTest extends AbstractTest {
     private MetadataResolver metadataResolver;
 
@@ -86,7 +88,8 @@ public class MetadataResolverTest extends AbstractTest {
         List<String> pathList = List.of("src/test/resources/metadata1-non-compat.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
+        Artifact artifact =
+                new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(1, result.getPackageMetadataMap().size());

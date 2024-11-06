@@ -24,9 +24,9 @@ public interface Configurator {
     /**
      * Returns default XMvn configuration.
      *
-     * <p>Default configuration is minimal correct configuration that is embedded in XMvn itself. It doesn't contain any
-     * customizations coming from configuration files. Default configuration can be useful as a base on which
-     * configuration is built dynamically during runtime.
+     * <p>Default configuration is minimal correct configuration that is embedded in XMvn itself. It
+     * doesn't contain any customizations coming from configuration files. Default configuration can
+     * be useful as a base on which configuration is built dynamically during runtime.
      *
      * @return default configuration
      */
@@ -35,9 +35,9 @@ public interface Configurator {
     /**
      * Returns XMvn master configuration.
      *
-     * <p>Master configuration is combination of multiple configuration files coming from various sources, merged in
-     * certain way. See XMvn documentation for detailed information where master configuration is read from and how it's
-     * merged.
+     * <p>Master configuration is combination of multiple configuration files coming from various
+     * sources, merged in certain way. See XMvn documentation for detailed information where master
+     * configuration is read from and how it's merged.
      *
      * @return master configuration
      */

@@ -24,7 +24,9 @@ import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.junit.jupiter.api.Test;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public class RegularFileTest extends AbstractFileTest {
     @Test
     public void testFileInstallationFromArray() throws Exception {
@@ -33,11 +35,13 @@ public class RegularFileTest extends AbstractFileTest {
         add(new Directory(Path.of("usr/share/java")));
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), content));
         Path root = performInstallation();
-        assertDirectoryStructure("D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
+        assertDirectoryStructure(
+                "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
         assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
 
         assertDescriptorEquals(
-                "%attr(0755,root,root) %dir /usr/share/java", "%attr(0644,root,root) /usr/share/java/foobar.jar");
+                "%attr(0755,root,root) %dir /usr/share/java",
+                "%attr(0644,root,root) /usr/share/java/foobar.jar");
     }
 
     @Test
@@ -46,10 +50,12 @@ public class RegularFileTest extends AbstractFileTest {
         add(new Directory(Path.of("usr/share/java")));
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar));
         Path root = performInstallation();
-        assertDirectoryStructure("D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
+        assertDirectoryStructure(
+                "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
         assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
         assertDescriptorEquals(
-                "%attr(0755,root,root) %dir /usr/share/java", "%attr(0644,root,root) /usr/share/java/foobar.jar");
+                "%attr(0755,root,root) %dir /usr/share/java",
+                "%attr(0644,root,root) /usr/share/java/foobar.jar");
     }
 
     @Test
@@ -57,7 +63,8 @@ public class RegularFileTest extends AbstractFileTest {
         Path jar = getResource("example.jar");
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar));
         Path root = performInstallation();
-        assertDirectoryStructure("D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
+        assertDirectoryStructure(
+                "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
         assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
         assertDescriptorEquals("%attr(0644,root,root) /usr/share/java/foobar.jar");
     }
@@ -75,11 +82,13 @@ public class RegularFileTest extends AbstractFileTest {
         add(new Directory(Path.of("usr/share/java")));
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar, 0666));
         Path root = performInstallation();
-        assertDirectoryStructure("D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
+        assertDirectoryStructure(
+                "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
         assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
 
         assertDescriptorEquals(
-                "%attr(0755,root,root) %dir /usr/share/java", "%attr(0666,root,root) /usr/share/java/foobar.jar");
+                "%attr(0755,root,root) %dir /usr/share/java",
+                "%attr(0666,root,root) /usr/share/java/foobar.jar");
     }
 
     @Test

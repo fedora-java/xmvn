@@ -27,9 +27,12 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.junit.jupiter.api.Test;
 
-/** @author Marian Koncek */
+/**
+ * @author Marian Koncek
+ */
 public class ResolutionRequestUnmarshallerListTest {
-    private final String resourcePath = "src/test/resources/org/fedoraproject/xmvn/tools/resolve/xml";
+    private final String resourcePath =
+            "src/test/resources/org/fedoraproject/xmvn/tools/resolve/xml";
 
     @Test
     public void testEmptierList() throws IOException, XMLStreamException {

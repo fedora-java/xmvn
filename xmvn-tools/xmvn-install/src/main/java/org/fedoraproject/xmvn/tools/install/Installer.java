@@ -17,7 +17,10 @@ package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public interface Installer {
-    InstallationResult install(InstallationRequest request) throws ArtifactInstallationException, IOException;
+    InstallationResult install(InstallationRequest request)
+            throws ArtifactInstallationException, IOException;
 }

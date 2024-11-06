@@ -29,7 +29,9 @@ import org.junit.jupiter.api.Test;
 public class PackagingExternalBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
     @Test
     public void testBuilddepPackagingExternal() throws Exception {
-        assumeTrue(Files.isExecutable(Path.of("/usr/bin/gcc")), "native-maven-plugin requires a C compiler to work");
+        assumeTrue(
+                Files.isExecutable(Path.of("/usr/bin/gcc")),
+                "native-maven-plugin requires a C compiler to work");
         expectBuildDependency("org.codehaus.mojo", "native-maven-plugin");
         performBuilddepTest();
     }

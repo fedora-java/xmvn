@@ -28,7 +28,9 @@ import org.fedoraproject.xmvn.repository.Repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class LayoutTest {
     private Repository mavenRepository;
 
@@ -45,8 +47,9 @@ public class LayoutTest {
 
     private void testPaths(Repository repository, Artifact artifact, String expected) {
         ArtifactContext context = new ArtifactContext(artifact);
-        Path repoPath = repository.getPrimaryArtifactPath(
-                artifact, context, artifact.getGroupId() + "/" + artifact.getArtifactId());
+        Path repoPath =
+                repository.getPrimaryArtifactPath(
+                        artifact, context, artifact.getGroupId() + "/" + artifact.getArtifactId());
 
         if (expected == null) {
             assertNull(repoPath);
@@ -64,15 +67,23 @@ public class LayoutTest {
      */
     @Test
     public void testLayouts() throws Exception {
-        Artifact artifact = new DefaultArtifact("an-example.artifact:used-FOR42.testing:ext-ens.ion:blah-1.2.3-foo");
+        Artifact artifact =
+                new DefaultArtifact(
+                        "an-example.artifact:used-FOR42.testing:ext-ens.ion:blah-1.2.3-foo");
 
         testPaths(
                 mavenRepository,
                 artifact,
                 "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion");
         testPaths(mavenRepository, artifact.setVersion("SYSTEM"), null);
-        testPaths(jppRepository, artifact, "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion");
-        testPaths(jppRepository, artifact.setVersion("SYSTEM"), "an-example.artifact/used-FOR42.testing.ext-ens.ion");
+        testPaths(
+                jppRepository,
+                artifact,
+                "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion");
+        testPaths(
+                jppRepository,
+                artifact.setVersion("SYSTEM"),
+                "an-example.artifact/used-FOR42.testing.ext-ens.ion");
     }
 
     /**

@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import java.util.List;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class And extends BooleanOperator {
     public And(List<BooleanExpression> children) {
         super(true, children);

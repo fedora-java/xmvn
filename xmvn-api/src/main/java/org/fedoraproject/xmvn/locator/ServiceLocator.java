@@ -18,7 +18,8 @@ package org.fedoraproject.xmvn.locator;
 /**
  * A service locator for services provided by XMvn.
  *
- * <p>This service locator uses a separate class loader to load XMvn classes and all of its dependencies.
+ * <p>This service locator uses a separate class loader to load XMvn classes and all of its
+ * dependencies.
  *
  * @author Mikolaj Izdebski
  */

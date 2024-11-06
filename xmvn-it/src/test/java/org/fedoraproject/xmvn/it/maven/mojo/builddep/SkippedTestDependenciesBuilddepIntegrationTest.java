@@ -22,7 +22,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class SkippedTestDependenciesBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
+public class SkippedTestDependenciesBuilddepIntegrationTest
+        extends AbstractBuilddepIntegrationTest {
     @Test
     public void testBuilddepSkippedTestDependencies() throws Exception {
         expectBuildDependency("xpp3", "xpp3");

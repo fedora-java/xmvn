@@ -34,7 +34,9 @@ import org.w3c.dom.Node;
  * @author Mikolaj Izdebski
  */
 public abstract class AbstractBuilddepIntegrationTest extends AbstractMojoIntegrationTest {
-    /** @author Mikolaj Izdebski */
+    /**
+     * @author Mikolaj Izdebski
+     */
     public interface Visitor {
         void visit(String groupId, String artifactId, String version);
     }
@@ -56,9 +58,11 @@ public abstract class AbstractBuilddepIntegrationTest extends AbstractMojoIntegr
 
         for (Element dep : DomUtils.parseAsParent(DomUtils.parse(builddepPath))) {
             assertEquals("dependency", dep.getNodeName());
-            Map<String, String> children = DomUtils.parseAsParent(dep).stream()
-                    .collect(Collectors.toMap(Node::getNodeName, DomUtils::parseAsText));
-            visitor.visit(children.get("groupId"), children.get("artifactId"), children.get("version"));
+            Map<String, String> children =
+                    DomUtils.parseAsParent(dep).stream()
+                            .collect(Collectors.toMap(Node::getNodeName, DomUtils::parseAsText));
+            visitor.visit(
+                    children.get("groupId"), children.get("artifactId"), children.get("version"));
         }
     }
 

@@ -25,16 +25,18 @@ import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.sisu.Priority;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named
 @Singleton
 @Priority(100)
 public class XMvnMojoExecutionConfigurator implements MojoExecutionConfigurator {
-    @Inject
-    private DefaultMojoExecutionConfigurator delegate;
+    @Inject private DefaultMojoExecutionConfigurator delegate;
 
     @Override
-    public void configure(MavenProject project, MojoExecution execution, boolean allowPluginLevelConfig) {
+    public void configure(
+            MavenProject project, MojoExecution execution, boolean allowPluginLevelConfig) {
         PluginDescriptor originalPluginDescriptor =
                 execution.getMojoDescriptor().getPluginDescriptor();
 

@@ -19,7 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DependencyDescriptor {
     private final Artifact dependencyArtifact;
 
@@ -27,7 +29,8 @@ public class DependencyDescriptor {
 
     private final List<Artifact> exclusions;
 
-    public DependencyDescriptor(Artifact dependencyArtifact, boolean optional, List<Artifact> exclusions) {
+    public DependencyDescriptor(
+            Artifact dependencyArtifact, boolean optional, List<Artifact> exclusions) {
         this.dependencyArtifact = dependencyArtifact;
         this.optional = optional;
         this.exclusions = Collections.unmodifiableList(exclusions);

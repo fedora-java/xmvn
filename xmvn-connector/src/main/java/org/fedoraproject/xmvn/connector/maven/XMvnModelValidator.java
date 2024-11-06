@@ -45,22 +45,21 @@ import org.fedoraproject.xmvn.logging.Logger;
 @Singleton
 @Priority(100)
 public class XMvnModelValidator implements ModelValidator {
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
-    @Inject
-    private Configurator configurator;
+    @Inject private Configurator configurator;
 
-    @Inject
-    private DefaultModelValidator delegate;
+    @Inject private DefaultModelValidator delegate;
 
     @Override
-    public void validateRawModel(Model model, ModelBuildingRequest request, ModelProblemCollector problems) {
+    public void validateRawModel(
+            Model model, ModelBuildingRequest request, ModelProblemCollector problems) {
         delegate.validateRawModel(model, request, problems);
     }
 
     @Override
-    public void validateEffectiveModel(Model model, ModelBuildingRequest request, ModelProblemCollector problems) {
+    public void validateEffectiveModel(
+            Model model, ModelBuildingRequest request, ModelProblemCollector problems) {
         customizeModel(model);
         delegate.validateEffectiveModel(model, request, problems);
     }
@@ -74,9 +73,18 @@ public class XMvnModelValidator implements ModelValidator {
         dependencies.removeIf(this::isSkippedDependency);
         plugins.removeIf(this::isSkippedPlugin);
 
-        dependencies.forEach(d -> d.setVersion(replaceVersion(d.getGroupId(), d.getArtifactId(), d.getVersion())));
-        extensions.forEach(e -> e.setVersion(replaceVersion(e.getGroupId(), e.getArtifactId(), e.getVersion())));
-        plugins.forEach(p -> p.setVersion(replaceVersion(p.getGroupId(), p.getArtifactId(), p.getVersion())));
+        dependencies.forEach(
+                d ->
+                        d.setVersion(
+                                replaceVersion(d.getGroupId(), d.getArtifactId(), d.getVersion())));
+        extensions.forEach(
+                e ->
+                        e.setVersion(
+                                replaceVersion(e.getGroupId(), e.getArtifactId(), e.getVersion())));
+        plugins.forEach(
+                p ->
+                        p.setVersion(
+                                replaceVersion(p.getGroupId(), p.getArtifactId(), p.getVersion())));
     }
 
     private boolean matches(String field, String pattern) {
@@ -90,30 +98,39 @@ public class XMvnModelValidator implements ModelValidator {
 
     private boolean isSkippedPlugin(Plugin p) {
         return configurator.getConfiguration().getBuildSettings().getSkippedPlugins().stream()
-                .anyMatch(sp -> matches(p.getGroupId(), sp.getGroupId())
-                        && matches(p.getArtifactId(), sp.getArtifactId())
-                        && (sp.getExtension() == null || sp.getExtension().isEmpty())
-                        && (sp.getClassifier() == null || sp.getClassifier().isEmpty())
-                        && matches(p.getVersion(), sp.getVersion()));
+                .anyMatch(
+                        sp ->
+                                matches(p.getGroupId(), sp.getGroupId())
+                                        && matches(p.getArtifactId(), sp.getArtifactId())
+                                        && (sp.getExtension() == null
+                                                || sp.getExtension().isEmpty())
+                                        && (sp.getClassifier() == null
+                                                || sp.getClassifier().isEmpty())
+                                        && matches(p.getVersion(), sp.getVersion()));
     }
 
     private String replaceVersion(String groupId, String artifactId, String version) {
         String id = groupId + ":" + artifactId;
 
         if (version == null || version.isEmpty()) {
-            logger.debug("Missing version of dependency {}, using {}.", id, Artifact.DEFAULT_VERSION);
+            logger.debug(
+                    "Missing version of dependency {}, using {}.", id, Artifact.DEFAULT_VERSION);
             return Artifact.DEFAULT_VERSION;
         }
 
         try {
             if (VersionRange.createFromVersionSpec(version).getRecommendedVersion() == null) {
                 logger.debug(
-                        "Dependency {} has no recommended version, falling back to {}.", id, Artifact.DEFAULT_VERSION);
+                        "Dependency {} has no recommended version, falling back to {}.",
+                        id,
+                        Artifact.DEFAULT_VERSION);
                 return Artifact.DEFAULT_VERSION;
             }
         } catch (InvalidVersionSpecificationException e) {
             logger.debug(
-                    "Dependency {} is using invalid version range, falling back to {}.", id, Artifact.DEFAULT_VERSION);
+                    "Dependency {} is using invalid version range, falling back to {}.",
+                    id,
+                    Artifact.DEFAULT_VERSION);
             return Artifact.DEFAULT_VERSION;
         }
 

@@ -33,10 +33,11 @@ import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ArtifactVisitorTest {
-    @TempDir
-    private Path tempDir;
+    @TempDir private Path tempDir;
 
     private Path writeJar(String location, String gid, String aid, String ver) throws Exception {
         Path jarPath = tempDir.resolve(location);

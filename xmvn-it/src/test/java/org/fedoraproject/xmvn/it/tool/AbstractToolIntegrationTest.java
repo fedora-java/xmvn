@@ -38,7 +38,8 @@ import java.util.jar.Manifest;
 import org.fedoraproject.xmvn.it.AbstractIntegrationTest;
 
 /**
- * Abstract base class for integration tests that involve invoking XMvn tools (resolve, install, subst).
+ * Abstract base class for integration tests that involve invoking XMvn tools (resolve, install,
+ * subst).
  *
  * @author Mikolaj Izdebski
  */
@@ -74,8 +75,8 @@ public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTes
     }
 
     /**
-     * For XMvn JARs, replace path to JAR corresponding with path to target/classes so that debugging works out of the
-     * box.
+     * For XMvn JARs, replace path to JAR corresponding with path to target/classes so that
+     * debugging works out of the box.
      */
     private Path jar2classes(Path jar) {
         String jarName = jar.getFileName().toString();
@@ -122,7 +123,8 @@ public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTes
         System.setProperty("xmvn.config.sandbox", "true");
 
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
-        try (InputStream stdin = new ByteArrayInputStream(input.getBytes(StandardCharsets.US_ASCII));
+        try (InputStream stdin =
+                        new ByteArrayInputStream(input.getBytes(StandardCharsets.US_ASCII));
                 PrintStream stdout = new PrintStream(new File(STDOUT));
                 PrintStream stderr = new PrintStream(new File(STDERR));
                 URLClassLoader toolClassLoader = new URLClassLoader(classPath, parentClassLoader)) {
@@ -132,7 +134,8 @@ public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTes
             System.setErr(stderr);
 
             Class<?> mainClass = toolClassLoader.loadClass(mf.getValue("Main-Class"));
-            return (Integer) mainClass.getMethod("doMain", String[].class).invoke(null, (Object) args);
+            return (Integer)
+                    mainClass.getMethod("doMain", String[].class).invoke(null, (Object) args);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);
             System.setIn(oldStdin);

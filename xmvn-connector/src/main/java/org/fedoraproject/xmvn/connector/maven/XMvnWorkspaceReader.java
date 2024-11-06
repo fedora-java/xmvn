@@ -29,12 +29,13 @@ import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named("ide")
 @Singleton
 public class XMvnWorkspaceReader implements WorkspaceReader {
-    @Inject
-    private Resolver resolver;
+    @Inject private Resolver resolver;
 
     private static final WorkspaceRepository REPOSITORY = new WorkspaceRepository();
 
@@ -45,12 +46,13 @@ public class XMvnWorkspaceReader implements WorkspaceReader {
     }
 
     private ResolutionResult resolve(Artifact artifact) {
-        org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact = new org.fedoraproject.xmvn.artifact.DefaultArtifact(
-                artifact.getGroupId(),
-                artifact.getArtifactId(),
-                artifact.getExtension(),
-                artifact.getClassifier(),
-                artifact.getVersion());
+        org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact =
+                new org.fedoraproject.xmvn.artifact.DefaultArtifact(
+                        artifact.getGroupId(),
+                        artifact.getArtifactId(),
+                        artifact.getExtension(),
+                        artifact.getClassifier(),
+                        artifact.getVersion());
         ResolutionRequest request = new ResolutionRequest(xmvnArtifact);
 
         for (ResolutionListener listener : listeners) listener.resolutionRequested(request);

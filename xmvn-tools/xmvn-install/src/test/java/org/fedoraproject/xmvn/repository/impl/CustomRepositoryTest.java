@@ -24,7 +24,9 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class CustomRepositoryTest {
     /**
      * Test if simple (non-composite) repository configuration works as expected.
@@ -41,14 +43,14 @@ public class CustomRepositoryTest {
         configuration.addRepository(repository);
 
         Configurator configurator = EasyMock.createMock(Configurator.class);
-        EasyMock.expect(configurator.getConfiguration())
-                .andReturn(configuration)
-                .atLeastOnce();
+        EasyMock.expect(configurator.getConfiguration()).andReturn(configuration).atLeastOnce();
         EasyMock.replay(configurator);
 
-        DefaultRepositoryConfigurator repoConfigurator = new DefaultRepositoryConfigurator(configurator);
+        DefaultRepositoryConfigurator repoConfigurator =
+                new DefaultRepositoryConfigurator(configurator);
         repoConfigurator.addRepositoryFactory("my-type", new MyRepositoryFactory());
-        org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository("test123");
+        org.fedoraproject.xmvn.repository.Repository repo =
+                repoConfigurator.configureRepository("test123");
         EasyMock.verify(configurator);
         assertNotNull(repo);
         assertTrue(repo instanceof MyRepository);

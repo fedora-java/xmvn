@@ -46,7 +46,9 @@ import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
 import org.fedoraproject.xmvn.logging.Logger;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 @Mojo(name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE)
 public class InstallMojo extends AbstractMojo {
     private static final Set<String> TYCHO_PACKAGING_TYPES = new LinkedHashSet<>();
@@ -64,8 +66,7 @@ public class InstallMojo extends AbstractMojo {
         return TYCHO_PACKAGING_TYPES.contains(project.getPackaging());
     }
 
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
     @Parameter(defaultValue = "${reactorProjects}", readonly = true, required = true)
     private List<MavenProject> reactorProjects;
@@ -73,8 +74,7 @@ public class InstallMojo extends AbstractMojo {
     @Parameter(readonly = true, defaultValue = "${repositorySystemSession}")
     private RepositorySystemSession repoSession;
 
-    @Inject
-    private Deployer deployer;
+    @Inject private Deployer deployer;
 
     public InstallMojo() {
         // No-argument constructor is required by Plexus
@@ -89,7 +89,10 @@ public class InstallMojo extends AbstractMojo {
         this.reactorProjects = reactorProjects;
     }
 
-    /** Dump project dependencies with "system" scope and fail if there are any such dependencies are found. */
+    /**
+     * Dump project dependencies with "system" scope and fail if there are any such dependencies are
+     * found.
+     */
     private void handleSystemDependencies() throws MojoFailureException {
         boolean systemDepsFound = false;
 
@@ -103,12 +106,13 @@ public class InstallMojo extends AbstractMojo {
                 }
 
                 if ("system".equals(dependency.getScope())) {
-                    systemDeps.add(new DefaultArtifact(
-                            dependency.getGroupId(),
-                            dependency.getArtifactId(),
-                            dependency.getClassifier(),
-                            dependency.getType(),
-                            dependency.getVersion()));
+                    systemDeps.add(
+                            new DefaultArtifact(
+                                    dependency.getGroupId(),
+                                    dependency.getArtifactId(),
+                                    dependency.getClassifier(),
+                                    dependency.getType(),
+                                    dependency.getVersion()));
                 }
             }
 
@@ -123,10 +127,11 @@ public class InstallMojo extends AbstractMojo {
         }
 
         if (systemDepsFound) {
-            throw new MojoFailureException("Some reactor artifacts have dependencies with scope \"system\"."
-                    + " Such dependencies are not supported by XMvn installer."
-                    + " You should either remove any dependencies with scope \"system\""
-                    + " before the build or not run XMvn instaler.");
+            throw new MojoFailureException(
+                    "Some reactor artifacts have dependencies with scope \"system\"."
+                            + " Such dependencies are not supported by XMvn installer."
+                            + " You should either remove any dependencies with scope \"system\""
+                            + " before the build or not run XMvn instaler.");
         }
     }
 
@@ -143,11 +148,17 @@ public class InstallMojo extends AbstractMojo {
             return null;
         }
 
-        String artifactKey = artifact.getGroupId() + "/" + artifact.getArtifactId() + "/" + artifact.getVersion();
+        String artifactKey =
+                artifact.getGroupId()
+                        + "/"
+                        + artifact.getArtifactId()
+                        + "/"
+                        + artifact.getVersion();
         return properties.getProperty(artifactKey + "/" + key);
     }
 
-    private void deployArtifact(Artifact artifact, String type, Model model) throws MojoExecutionException {
+    private void deployArtifact(Artifact artifact, String type, Model model)
+            throws MojoExecutionException {
         DeploymentRequest request = new DeploymentRequest();
         request.setArtifact(artifact);
         request.addProperty("type", type);
@@ -169,7 +180,8 @@ public class InstallMojo extends AbstractMojo {
 
         DeploymentResult result = deployer.deploy(request);
         if (result.getException() != null) {
-            throw new MojoExecutionException("Failed to deploy artifact " + artifact, result.getException());
+            throw new MojoExecutionException(
+                    "Failed to deploy artifact " + artifact, result.getException());
         }
     }
 
@@ -185,7 +197,8 @@ public class InstallMojo extends AbstractMojo {
 
             if (mainArtifactPath != null && !Files.isRegularFile(mainArtifactPath)) {
                 logger.info(
-                        "Skipping installation of artifact {}: artifact file is not a regular file", mainArtifactPath);
+                        "Skipping installation of artifact {}: artifact file is not a regular file",
+                        mainArtifactPath);
                 mainArtifactPath = null;
             }
 
@@ -195,12 +208,13 @@ public class InstallMojo extends AbstractMojo {
             }
 
             if (!isTychoProject(project)) {
-                Artifact rawPomArtifact = new DefaultArtifact(
-                        mainArtifact.getGroupId(),
-                        mainArtifact.getArtifactId(),
-                        "pom",
-                        mainArtifact.getClassifier(),
-                        mainArtifact.getVersion());
+                Artifact rawPomArtifact =
+                        new DefaultArtifact(
+                                mainArtifact.getGroupId(),
+                                mainArtifact.getArtifactId(),
+                                "pom",
+                                mainArtifact.getClassifier(),
+                                mainArtifact.getVersion());
                 File rawPomFile = project.getFile();
                 Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
                 logger.debug("Raw POM path: {}", rawPomPath);

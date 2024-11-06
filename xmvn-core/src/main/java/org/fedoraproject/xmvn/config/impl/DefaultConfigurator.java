@@ -40,9 +40,9 @@ import org.fedoraproject.xmvn.logging.Logger;
 /**
  * Default implementation of XMvn configurator.
  *
- * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only
- * for technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong>
- * reference it directly.
+ * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is
+ * marked as public only for technical reasons. This class is not part of XMvn API. Client code
+ * using XMvn should <strong>not</strong> reference it directly.
  *
  * @author Mikolaj Izdebski
  */
@@ -95,7 +95,10 @@ public class DefaultConfigurator implements Configurator {
     private String getEnvDefault(String key, Object defaultValue) {
         String value = System.getenv(key);
         if (value == null || value.isEmpty()) {
-            logger.debug("Environmental variable ${} is unset or empty, using default value: {}", key, defaultValue);
+            logger.debug(
+                    "Environmental variable ${} is unset or empty, using default value: {}",
+                    key,
+                    defaultValue);
             return defaultValue.toString();
         }
 
@@ -142,7 +145,9 @@ public class DefaultConfigurator implements Configurator {
             return;
         }
         if (System.getProperty("xmvn.config.sandbox") != null) {
-            logger.debug("Skipping XDG configuration directory {}: running in sandbox environment", base);
+            logger.debug(
+                    "Skipping XDG configuration directory {}: running in sandbox environment",
+                    base);
             return;
         }
 
@@ -175,18 +180,21 @@ public class DefaultConfigurator implements Configurator {
 
             // 8. system configuration directories: $XDG_CONFIG_DIRS/xmvn/config.d/
             // 9. system configuration files: $XDG_CONFIG_DIRS/xmvn/configuration.xml
-            for (String part : getEnvDefault("XDG_CONFIG_DIRS", "/etc/xdg").split(":+")) addXdgBasePath(part);
+            for (String part : getEnvDefault("XDG_CONFIG_DIRS", "/etc/xdg").split(":+"))
+                addXdgBasePath(part);
 
             // 10. system data directories: $XDG_DATA_DIRS/xmvn/config.d/
             // 11. system data files: $XDG_DATA_DIRS/xmvn/configuration.xml
-            for (String part : getEnvDefault("XDG_DATA_DIRS", "/usr/local/share:/usr/share")
-                    .split(":+")) addXdgBasePath(part);
+            for (String part :
+                    getEnvDefault("XDG_DATA_DIRS", "/usr/local/share:/usr/share").split(":+"))
+                addXdgBasePath(part);
 
             // 12. built-in xmvn-core.jar
             Configuration conf = getDefaultConfiguration();
 
             if (configFiles.isEmpty()) {
-                logger.warn("No XMvn configuration files were found. Using default embedded configuration.");
+                logger.warn(
+                        "No XMvn configuration files were found. Using default embedded configuration.");
             } else {
                 logger.debug("XMvn configuration files used:");
                 for (Path file : configFiles) logger.debug("  * {}", file.toString());
@@ -194,7 +202,8 @@ public class DefaultConfigurator implements Configurator {
 
             List<Path> reversedConfigFiles = new ArrayList<>(configFiles);
             Collections.reverse(reversedConfigFiles);
-            for (Path file : reversedConfigFiles) conf = merger.merge(loadConfiguration(file), conf);
+            for (Path file : reversedConfigFiles)
+                conf = merger.merge(loadConfiguration(file), conf);
 
             return conf;
         } catch (IOException e) {

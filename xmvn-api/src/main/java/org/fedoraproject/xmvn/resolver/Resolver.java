@@ -16,13 +16,15 @@
 package org.fedoraproject.xmvn.resolver;
 
 /**
- * Resolves artifacts from system repositories configured in {@code <resolverSettings>} in XMvn configuration.
+ * Resolves artifacts from system repositories configured in {@code <resolverSettings>} in XMvn
+ * configuration.
  *
  * @author Mikolaj Izdebski
  */
 public interface Resolver {
     /**
-     * Resolve artifacts from system repositories configured in {@code <resolverSettings>} in XMvn configuration.
+     * Resolve artifacts from system repositories configured in {@code <resolverSettings>} in XMvn
+     * configuration.
      *
      * @param request parameters of artifact resolution
      * @return results of artifact resolution, never {@code null}

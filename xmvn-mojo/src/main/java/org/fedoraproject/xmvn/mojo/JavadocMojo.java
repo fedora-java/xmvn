@@ -57,17 +57,16 @@ import org.eclipse.aether.util.filter.ExclusionsDependencyFilter;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 import org.fedoraproject.xmvn.logging.Logger;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 @Mojo(name = "javadoc", aggregator = true, requiresDependencyResolution = ResolutionScope.COMPILE)
 public class JavadocMojo extends AbstractMojo {
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
-    @Inject
-    private ProjectDependenciesResolver resolver;
+    @Inject private ProjectDependenciesResolver resolver;
 
-    @Inject
-    private ToolchainManager toolchainManager;
+    @Inject private ToolchainManager toolchainManager;
 
     private ModuleGleaner moduleGleaner = new ModuleGleaner();
 
@@ -107,21 +106,25 @@ public class JavadocMojo extends AbstractMojo {
     }
 
     private Set<Path> findJavaSources(List<JavadocModule> modules) throws IOException {
-        Set<Path> sourcePaths = modules.stream()
-                .map(JavadocModule::getSourcePaths)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+        Set<Path> sourcePaths =
+                modules.stream()
+                        .map(JavadocModule::getSourcePaths)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toSet());
 
         Pattern pattern = Pattern.compile(".*\\.java$");
 
         Set<Path> found = new LinkedHashSet<>();
 
         for (Path dir : sourcePaths) {
-            try (Stream<Path> stream = Files.find(
-                    dir,
-                    Integer.MAX_VALUE,
-                    (path, attributes) -> (attributes.isRegularFile()
-                            && pattern.matcher(path.getFileName().toString()).matches()))) {
+            try (Stream<Path> stream =
+                    Files.find(
+                            dir,
+                            Integer.MAX_VALUE,
+                            (path, attributes) ->
+                                    (attributes.isRegularFile()
+                                            && pattern.matcher(path.getFileName().toString())
+                                                    .matches()))) {
                 stream.forEach(found::add);
             }
         }
@@ -129,7 +132,8 @@ public class JavadocMojo extends AbstractMojo {
         return found;
     }
 
-    private void discoverModule(List<JavadocModule> modules, List<String> reactorArtifacts, MavenProject project) {
+    private void discoverModule(
+            List<JavadocModule> modules, List<String> reactorArtifacts, MavenProject project) {
         if (project == null
                 || "pom".equals(project.getPackaging())
                 || !"java".equals(project.getArtifact().getArtifactHandler().getLanguage())) {
@@ -148,30 +152,40 @@ public class JavadocMojo extends AbstractMojo {
         DependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
         request.setMavenProject(project);
         request.setRepositorySession(session.getRepositorySession());
-        request.setResolutionFilter(new AndDependencyFilter(
-                new ScopeDependencyFilter("runtime", "test"), new ExclusionsDependencyFilter(reactorArtifacts)));
+        request.setResolutionFilter(
+                new AndDependencyFilter(
+                        new ScopeDependencyFilter("runtime", "test"),
+                        new ExclusionsDependencyFilter(reactorArtifacts)));
 
         List<Path> dependencies = new ArrayList<>();
         try {
             DependencyResolutionResult result = resolver.resolve(request);
-            dependencies.addAll(result.getResolvedDependencies().stream()
-                    .map(Dependency::getArtifact)
-                    .map(artifact -> artifact.getFile().toPath())
-                    .collect(Collectors.toList()));
+            dependencies.addAll(
+                    result.getResolvedDependencies().stream()
+                            .map(Dependency::getArtifact)
+                            .map(artifact -> artifact.getFile().toPath())
+                            .collect(Collectors.toList()));
         } catch (DependencyResolutionException e) {
             // Ignore dependency resolution errors
         }
 
-        List<Path> sourcePaths = project.getCompileSourceRoots().stream()
-                .filter(Objects::nonNull)
-                .map(Paths::get)
-                .map(sourcePath -> sourcePath.isAbsolute()
-                        ? sourcePath
-                        : project.getBasedir().toPath().resolve(sourcePath).toAbsolutePath())
-                .filter(Files::isDirectory)
-                .collect(Collectors.toList());
+        List<Path> sourcePaths =
+                project.getCompileSourceRoots().stream()
+                        .filter(Objects::nonNull)
+                        .map(Paths::get)
+                        .map(
+                                sourcePath ->
+                                        sourcePath.isAbsolute()
+                                                ? sourcePath
+                                                : project.getBasedir()
+                                                        .toPath()
+                                                        .resolve(sourcePath)
+                                                        .toAbsolutePath())
+                        .filter(Files::isDirectory)
+                        .collect(Collectors.toList());
 
-        JavadocModule module = moduleGleaner.glean(artifactPath, sourcePaths, dependencies, ignoreJPMS);
+        JavadocModule module =
+                moduleGleaner.glean(artifactPath, sourcePaths, dependencies, ignoreJPMS);
         modules.add(module);
         logger.debug("Gleaner found {}", module);
     }
@@ -179,9 +193,10 @@ public class JavadocMojo extends AbstractMojo {
     private List<JavadocModule> discoverModules() {
         List<JavadocModule> modules = new ArrayList<>();
 
-        List<String> reactorArtifacts = reactorProjects.stream()
-                .map(project -> (project.getGroupId() + ":" + project.getArtifactId()))
-                .collect(Collectors.toList());
+        List<String> reactorArtifacts =
+                reactorProjects.stream()
+                        .map(project -> (project.getGroupId() + ":" + project.getArtifactId()))
+                        .collect(Collectors.toList());
 
         for (MavenProject project : reactorProjects) {
             discoverModule(modules, reactorArtifacts, project);
@@ -203,7 +218,8 @@ public class JavadocMojo extends AbstractMojo {
         }
         if (nModular > 0 && nAutomatic == nModular) {
             logger.info("All discovered modules are automatic modules, thus ignoring JPMS");
-            modules = modules.stream().map(JavadocModule::demodularize).collect(Collectors.toList());
+            modules =
+                    modules.stream().map(JavadocModule::demodularize).collect(Collectors.toList());
         }
 
         return modules;
@@ -265,7 +281,8 @@ public class JavadocMojo extends AbstractMojo {
 
     private void skipJPMSOnSourceBelow9() {
         try {
-            float sourceLevel = Float.parseFloat(release != null ? release : source != null ? source : "9");
+            float sourceLevel =
+                    Float.parseFloat(release != null ? release : source != null ? source : "9");
             if (sourceLevel < 9) {
                 logger.info("Ignoring JPMS as source level {} is below 9", sourceLevel);
                 ignoreJPMS = true;
@@ -275,7 +292,8 @@ public class JavadocMojo extends AbstractMojo {
         }
     }
 
-    private void invokeJavadoc(Path outputDir) throws IOException, InterruptedException, MojoFailureException {
+    private void invokeJavadoc(Path outputDir)
+            throws IOException, InterruptedException, MojoFailureException {
         ProcessBuilder pb = new ProcessBuilder(selectJavadocExecutable().toString(), "@args");
         pb.directory(outputDir.toRealPath().toFile());
         pb.redirectInput(new File("/dev/null"));
@@ -301,7 +319,8 @@ public class JavadocMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (ignoreJPMS) {
-            logger.info("Ignoring JPMS according to configuration (xmvn.javadoc.ignoreJPMS property)");
+            logger.info(
+                    "Ignoring JPMS according to configuration (xmvn.javadoc.ignoreJPMS property)");
         } else {
             skipJPMSOnSourceBelow9();
         }
@@ -353,11 +372,16 @@ public class JavadocMojo extends AbstractMojo {
 
         modules.stream()
                 .filter(JavadocModule::isModular)
-                .collect(Collectors.toMap(
-                        JavadocModule::getModuleName,
-                        JavadocModule::getSourcePaths,
-                        (a, b) -> Stream.concat(a.stream(), b.stream()).collect(Collectors.toList())))
-                .forEach((name, paths) -> addOptPrefixPath("--patch-module", name + "=", paths.stream()));
+                .collect(
+                        Collectors.toMap(
+                                JavadocModule::getModuleName,
+                                JavadocModule::getSourcePaths,
+                                (a, b) ->
+                                        Stream.concat(a.stream(), b.stream())
+                                                .collect(Collectors.toList())))
+                .forEach(
+                        (name, paths) ->
+                                addOptPrefixPath("--patch-module", name + "=", paths.stream()));
 
         try {
             Set<Path> sourceFiles = findJavaSources(modules);
@@ -392,7 +416,8 @@ public class JavadocMojo extends AbstractMojo {
 
             Files.deleteIfExists(outputDir.resolve("args"));
         } catch (IOException | InterruptedException e) {
-            throw new MojoExecutionException("Unable to execute javadoc command: " + e.getMessage(), e);
+            throw new MojoExecutionException(
+                    "Unable to execute javadoc command: " + e.getMessage(), e);
         }
 
         logger.debug("Javadoc generated successfully");

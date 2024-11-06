@@ -23,7 +23,9 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class MyRepository implements Repository {
     @Override
     public Path getPrimaryArtifactPath(Artifact artifact, ArtifactContext context, String pattern) {

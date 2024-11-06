@@ -37,23 +37,20 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 /**
  * Default implementation of XMvn {@code Resolver} interface.
  *
- * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only
- * for technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong>
- * reference it directly.
+ * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is
+ * marked as public only for technical reasons. This class is not part of XMvn API. Client code
+ * using XMvn should <strong>not</strong> reference it directly.
  *
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
 public class DefaultResolver implements Resolver {
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
-    @Inject
-    private Configurator configurator;
+    @Inject private Configurator configurator;
 
-    @Inject
-    private MetadataResolver metadataResolver;
+    @Inject private MetadataResolver metadataResolver;
 
     private MetadataRequest metadataRequest;
 
@@ -123,7 +120,9 @@ public class DefaultResolver implements Resolver {
             metadata = metadataResult.getMetadataFor(artifact);
 
             if (metadata == null) {
-                metadata = metadataResult.getMetadataFor(artifact.setVersion(Artifact.DEFAULT_VERSION));
+                metadata =
+                        metadataResult.getMetadataFor(
+                                artifact.setVersion(Artifact.DEFAULT_VERSION));
                 compatVersion = null;
             } else {
                 compatVersion = artifact.getVersion();

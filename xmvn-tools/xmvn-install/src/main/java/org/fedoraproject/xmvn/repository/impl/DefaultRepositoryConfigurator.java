@@ -23,7 +23,9 @@ import org.fedoraproject.xmvn.repository.Repository;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DefaultRepositoryConfigurator implements RepositoryConfigurator {
     private final Configurator configurator;
 
@@ -76,7 +78,10 @@ public class DefaultRepositoryConfigurator implements RepositoryConfigurator {
 
         RepositoryFactory factory = repositoryFactories.get(type);
         if (factory == null) {
-            throw new RuntimeException("Unable to create repository of type '" + type + "': no suitable factory found");
+            throw new RuntimeException(
+                    "Unable to create repository of type '"
+                            + type
+                            + "': no suitable factory found");
         }
 
         return factory.getInstance(filter, properties, configurationXml);

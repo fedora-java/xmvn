@@ -24,7 +24,9 @@ import java.util.Properties;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class MyRepositoryFactory implements RepositoryFactory {
     @Override
     public Repository getInstance(Element filter, Properties properties, Element configuration) {
@@ -36,7 +38,8 @@ public class MyRepositoryFactory implements RepositoryFactory {
     }
 
     @Override
-    public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
+    public Repository getInstance(
+            Element filter, Properties properties, Element configuration, String namespace) {
         fail("getInstance was not expected to be called");
         return null;
     }

@@ -29,7 +29,9 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class InstallationPlan {
     private final PackageMetadata metadata;
 
@@ -55,7 +57,8 @@ class InstallationPlan {
     }
 
     /**
-     * Make sure that installation plan sets all required fields and that it doesn't contain unwanted data.
+     * Make sure that installation plan sets all required fields and that it doesn't contain
+     * unwanted data.
      *
      * @param installationPlan the installation plan
      * @throws ArtifactInstallationException
@@ -70,7 +73,8 @@ class InstallationPlan {
                 throw new ArtifactInstallationException("Artifact metadata must have group ID set");
             }
             if (isNullOrEmpty(artifactMetadata.getArtifactId())) {
-                throw new ArtifactInstallationException("Artifact metadata must have artifact ID set");
+                throw new ArtifactInstallationException(
+                        "Artifact metadata must have artifact ID set");
             }
             if (isNullOrEmpty(artifactMetadata.getVersion())) {
                 throw new ArtifactInstallationException("Artifact metadata must have version set");
@@ -81,40 +85,51 @@ class InstallationPlan {
 
             Path artifactPath = Path.of(artifactMetadata.getPath());
             if (!artifactPath.isAbsolute()) {
-                throw new ArtifactInstallationException("Artifact path is not absolute: " + artifactPath);
+                throw new ArtifactInstallationException(
+                        "Artifact path is not absolute: " + artifactPath);
             }
             if (!Files.exists(artifactPath)) {
-                throw new ArtifactInstallationException("Artifact path points to a non-existent file: " + artifactPath);
+                throw new ArtifactInstallationException(
+                        "Artifact path points to a non-existent file: " + artifactPath);
             }
             if (!Files.isRegularFile(artifactPath)) {
-                throw new ArtifactInstallationException("Artifact path points to a non-regular file: " + artifactPath);
+                throw new ArtifactInstallationException(
+                        "Artifact path points to a non-regular file: " + artifactPath);
             }
             if (!Files.isReadable(artifactPath)) {
-                throw new ArtifactInstallationException("Artifact path points to a non-readable file: " + artifactPath);
+                throw new ArtifactInstallationException(
+                        "Artifact path points to a non-readable file: " + artifactPath);
             }
 
             if (!isNullOrEmpty(artifactMetadata.getUuid())) {
-                throw new ArtifactInstallationException("Installation plan must not define artifact UUID");
+                throw new ArtifactInstallationException(
+                        "Installation plan must not define artifact UUID");
             }
             if (!isNullOrEmpty(artifactMetadata.getNamespace())) {
-                throw new ArtifactInstallationException("Installation plan must not define artifact namespace");
+                throw new ArtifactInstallationException(
+                        "Installation plan must not define artifact namespace");
             }
             if (artifactMetadata.getCompatVersions().iterator().hasNext()) {
-                throw new ArtifactInstallationException("Installation plan must not define compat versions");
+                throw new ArtifactInstallationException(
+                        "Installation plan must not define compat versions");
             }
             if (artifactMetadata.getAliases().iterator().hasNext()) {
-                throw new ArtifactInstallationException("Installation plan must not define aliases");
+                throw new ArtifactInstallationException(
+                        "Installation plan must not define aliases");
             }
 
             for (Dependency dependency : artifactMetadata.getDependencies()) {
                 if (isNullOrEmpty(dependency.getGroupId())) {
-                    throw new ArtifactInstallationException("Artifact dependency must have group ID set");
+                    throw new ArtifactInstallationException(
+                            "Artifact dependency must have group ID set");
                 }
                 if (isNullOrEmpty(dependency.getArtifactId())) {
-                    throw new ArtifactInstallationException("Artifact dependency must have artifact ID set");
+                    throw new ArtifactInstallationException(
+                            "Artifact dependency must have artifact ID set");
                 }
                 if (isNullOrEmpty(dependency.getRequestedVersion())) {
-                    throw new ArtifactInstallationException("Artifact dependency must have requested version set");
+                    throw new ArtifactInstallationException(
+                            "Artifact dependency must have requested version set");
                 }
 
                 if (!dependency.getResolvedVersion().equals(Artifact.DEFAULT_VERSION)) {
@@ -122,22 +137,26 @@ class InstallationPlan {
                             "Installation plan must not define resolved dependency version");
                 }
                 if (!isNullOrEmpty(dependency.getNamespace())) {
-                    throw new ArtifactInstallationException("Installation plan must not define dependency namespace");
+                    throw new ArtifactInstallationException(
+                            "Installation plan must not define dependency namespace");
                 }
 
                 for (DependencyExclusion dependencyExclusion : dependency.getExclusions()) {
                     if (isNullOrEmpty(dependencyExclusion.getGroupId())) {
-                        throw new ArtifactInstallationException("Dependency exclusion must have group ID set");
+                        throw new ArtifactInstallationException(
+                                "Dependency exclusion must have group ID set");
                     }
                     if (isNullOrEmpty(dependencyExclusion.getArtifactId())) {
-                        throw new ArtifactInstallationException("Dependency exclusion must have artifact ID set");
+                        throw new ArtifactInstallationException(
+                                "Dependency exclusion must have artifact ID set");
                     }
                 }
             }
         }
 
         if (metadata.getSkippedArtifacts().iterator().hasNext()) {
-            throw new ArtifactInstallationException("Installation plan must not include skipped artifacts");
+            throw new ArtifactInstallationException(
+                    "Installation plan must not include skipped artifacts");
         }
     }
 }

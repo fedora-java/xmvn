@@ -22,7 +22,9 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
-/** @author Marian Koncek */
+/**
+ * @author Marian Koncek
+ */
 class ResolutionRequestUnmarshaller {
     private final XMLEventReader eventReader;
 
@@ -44,17 +46,20 @@ class ResolutionRequestUnmarshaller {
 
                     switch (startName) {
                         case "artifact":
-                            resolutionRequestBean.setArtifact(new ArtifactUnmarshaller(eventReader).unmarshal());
+                            resolutionRequestBean.setArtifact(
+                                    new ArtifactUnmarshaller(eventReader).unmarshal());
                             break;
 
                         case "providerNeeded":
-                            resolutionRequestBean.setProviderNeeded(Boolean.valueOf(
-                                    eventReader.nextEvent().asCharacters().getData()));
+                            resolutionRequestBean.setProviderNeeded(
+                                    Boolean.valueOf(
+                                            eventReader.nextEvent().asCharacters().getData()));
                             break;
 
                         case "persistentFileNeeded":
-                            isPersistentFileNeeded = Boolean.valueOf(
-                                    eventReader.nextEvent().asCharacters().getData());
+                            isPersistentFileNeeded =
+                                    Boolean.valueOf(
+                                            eventReader.nextEvent().asCharacters().getData());
                             break;
 
                         default:
@@ -66,9 +71,12 @@ class ResolutionRequestUnmarshaller {
                     if ("request".equals(event.asEndElement().getName().getLocalPart())) {
                         ResolutionRequest resolutionRequest;
                         try {
-                            resolutionRequest = new ResolutionRequestBean.Adapter().unmarshal(resolutionRequestBean);
+                            resolutionRequest =
+                                    new ResolutionRequestBean.Adapter()
+                                            .unmarshal(resolutionRequestBean);
                         } catch (Exception e) {
-                            throw new XMLStreamException("XML stream does not have a proper format", e);
+                            throw new XMLStreamException(
+                                    "XML stream does not have a proper format", e);
                         }
                         resolutionRequest.setPersistentFileNeeded(isPersistentFileNeeded);
                         return resolutionRequest;

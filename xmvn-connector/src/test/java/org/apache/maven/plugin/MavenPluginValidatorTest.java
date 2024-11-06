@@ -23,7 +23,9 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Roman Vais */
+/**
+ * @author Roman Vais
+ */
 public class MavenPluginValidatorTest {
     private MavenPluginValidator validator;
 

@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.logging.impl;
 
 import org.fedoraproject.xmvn.logging.Logger;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ConsoleLogger implements Logger {
     private final boolean debugEnabled = System.getProperty("xmvn.debug") != null;
 

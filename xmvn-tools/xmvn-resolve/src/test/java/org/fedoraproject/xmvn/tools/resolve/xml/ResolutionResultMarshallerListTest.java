@@ -23,12 +23,15 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
 
-/** @author Marian Koncek */
+/**
+ * @author Marian Koncek
+ */
 public class ResolutionResultMarshallerListTest {
     @Test
     public void testEmpty() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        new ResolutionResultListMarshaller(Arrays.asList(new ResolutionResult[] {null})).marshal(bos);
+        new ResolutionResultListMarshaller(Arrays.asList(new ResolutionResult[] {null}))
+                .marshal(bos);
 
         XmlAssert.assertThat("<results></results>")
                 .and(bos.toString())
@@ -99,7 +102,8 @@ public class ResolutionResultMarshallerListTest {
 
     @Test
     public void testSingle() throws Exception {
-        ResolutionResult rr = new ResolutionResultBean.Adapter().unmarshal(new ResolutionResultBean());
+        ResolutionResult rr =
+                new ResolutionResultBean.Adapter().unmarshal(new ResolutionResultBean());
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         new ResolutionResultListMarshaller(Arrays.asList(new ResolutionResult[] {rr})).marshal(bos);
 

@@ -46,7 +46,9 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public class ArtifactInstallerTest {
     Repository repositoryMock;
 
@@ -56,27 +58,29 @@ public class ArtifactInstallerTest {
     public void configure() {
         repositoryMock = EasyMock.createMock(Repository.class);
 
-        RepositoryConfigurator repoConfigurator = new RepositoryConfigurator() {
-            @Override
-            public Repository configureRepository(String repoId) {
-                assertEquals("my-install-repo", repoId);
-                return repositoryMock;
-            }
+        RepositoryConfigurator repoConfigurator =
+                new RepositoryConfigurator() {
+                    @Override
+                    public Repository configureRepository(String repoId) {
+                        assertEquals("my-install-repo", repoId);
+                        return repositoryMock;
+                    }
 
-            @Override
-            public Repository configureRepository(String repoId, String namespace) {
-                fail();
-                return null;
-            }
-        };
+                    @Override
+                    public Repository configureRepository(String repoId, String namespace) {
+                        fail();
+                        return null;
+                    }
+                };
 
         installer = new DefaultArtifactInstaller(repoConfigurator);
     }
 
     private void install(JavaPackage pkg, ArtifactMetadata am, PackagingRule rule)
             throws ArtifactInstallationException {
-        expect(repositoryMock.getPrimaryArtifactPath(
-                        isA(Artifact.class), isA(ArtifactContext.class), isA(String.class)))
+        expect(
+                        repositoryMock.getPrimaryArtifactPath(
+                                isA(Artifact.class), isA(ArtifactContext.class), isA(String.class)))
                 .andReturn(Path.of("com.example-test"));
         expect(repositoryMock.getRootPaths()).andReturn(Set.of());
         expect(repositoryMock.getNamespace()).andReturn("ns");
@@ -148,11 +152,13 @@ public class ArtifactInstallerTest {
         JavaPackage pkg = new JavaPackage("", "test", Path.of("usr/share/maven-metadata"));
         PackagingRule rule = new PackagingRule();
 
-        org.fedoraproject.xmvn.config.Artifact alias1 = new org.fedoraproject.xmvn.config.Artifact();
+        org.fedoraproject.xmvn.config.Artifact alias1 =
+                new org.fedoraproject.xmvn.config.Artifact();
         alias1.setGroupId("com.example");
         alias1.setArtifactId("alias1");
         alias1.setVersion("3.4");
-        org.fedoraproject.xmvn.config.Artifact alias2 = new org.fedoraproject.xmvn.config.Artifact();
+        org.fedoraproject.xmvn.config.Artifact alias2 =
+                new org.fedoraproject.xmvn.config.Artifact();
         alias2.setGroupId("com.example");
         alias2.setArtifactId("alias2");
         alias2.setClassifier("war");

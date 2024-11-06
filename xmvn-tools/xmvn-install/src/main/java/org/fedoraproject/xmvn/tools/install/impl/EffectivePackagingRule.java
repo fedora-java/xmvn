@@ -26,21 +26,20 @@ import org.fedoraproject.xmvn.config.PackagingRule;
 /**
  * Effective artifact packaging rule.
  *
- * <p>In general packaging rules are in n-to-m relation with artifacts. One artifact can have one or more packaging
- * rules and one packaging rule can match zero or more artifacts. This approach is well suited for configuring build
- * process by humans.
+ * <p>In general packaging rules are in n-to-m relation with artifacts. One artifact can have one or
+ * more packaging rules and one packaging rule can match zero or more artifacts. This approach is
+ * well suited for configuring build process by humans.
  *
- * <p>In contrast, effective packaging rules are in 1-to-1 relation with artifacts. Every artifact has exactly one
- * effective packaging rule. This form is best for machine processing.
+ * <p>In contrast, effective packaging rules are in 1-to-1 relation with artifacts. Every artifact
+ * has exactly one effective packaging rule. This form is best for machine processing.
  *
- * <p>Effective packaging rules are created from raw configuration rules by merging and/or splitting and expanding
- * regular expression patterns.
+ * <p>Effective packaging rules are created from raw configuration rules by merging and/or splitting
+ * and expanding regular expression patterns.
  *
  * @author Mikolaj Izdebski
  */
 class EffectivePackagingRule extends PackagingRule {
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private static boolean isNullOrEmpty(String str) {
         return str == null || str.isEmpty();
@@ -59,7 +58,8 @@ class EffectivePackagingRule extends PackagingRule {
 
     private static org.fedoraproject.xmvn.config.Artifact expandBackreferences(
             List<Matcher> matchers, org.fedoraproject.xmvn.config.Artifact source) {
-        org.fedoraproject.xmvn.config.Artifact target = new org.fedoraproject.xmvn.config.Artifact();
+        org.fedoraproject.xmvn.config.Artifact target =
+                new org.fedoraproject.xmvn.config.Artifact();
         target.setStereotype(source.getStereotype());
         target.setGroupId(source.getGroupId());
         target.setArtifactId(source.getArtifactId());
@@ -72,11 +72,14 @@ class EffectivePackagingRule extends PackagingRule {
             for (int i = 1; i <= matcher.groupCount(); i++, group++) {
                 Pattern pattern = Pattern.compile("@" + group);
                 String replacement = matcher.group(i);
-                target.setStereotype(pattern.matcher(target.getStereotype()).replaceAll(replacement));
+                target.setStereotype(
+                        pattern.matcher(target.getStereotype()).replaceAll(replacement));
                 target.setGroupId(pattern.matcher(target.getGroupId()).replaceAll(replacement));
-                target.setArtifactId(pattern.matcher(target.getArtifactId()).replaceAll(replacement));
+                target.setArtifactId(
+                        pattern.matcher(target.getArtifactId()).replaceAll(replacement));
                 target.setExtension(pattern.matcher(target.getExtension()).replaceAll(replacement));
-                target.setClassifier(pattern.matcher(target.getClassifier()).replaceAll(replacement));
+                target.setClassifier(
+                        pattern.matcher(target.getClassifier()).replaceAll(replacement));
                 target.setVersion(pattern.matcher(target.getVersion()).replaceAll(replacement));
             }
         }
@@ -170,7 +173,8 @@ class EffectivePackagingRule extends PackagingRule {
     /**
      * Create effective packaging rule for given artifact.
      *
-     * @param artifactManagement list of raw packaging rules that are foundation of newly constructed effective rule
+     * @param artifactManagement list of raw packaging rules that are foundation of newly
+     *     constructed effective rule
      * @param groupId groupId of artifact for which effective rule is to be created
      * @param artifactId artifactId of artifact for which effective rule is to be created
      * @param extension extension of artifact for which effective rule is to be created

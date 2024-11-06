@@ -24,10 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 final class ResolverCliRequest {
-    @Parameter
-    private List<String> parameters = new LinkedList<>();
+    @Parameter private List<String> parameters = new LinkedList<>();
 
     @Parameter(
             names = {"-h", "--help"},

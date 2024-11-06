@@ -42,7 +42,9 @@ import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public class InstallerTest extends AbstractInstallerTest {
     private final Configuration config = new Configuration();
 
@@ -80,30 +82,34 @@ public class InstallerTest extends AbstractInstallerTest {
     }
 
     private void addResolution(
-            String coordinates, final String compatVersion, final String namespace, final Path path) {
+            String coordinates,
+            final String compatVersion,
+            final String namespace,
+            final Path path) {
         ResolutionRequest request = new ResolutionRequest(new DefaultArtifact(coordinates));
 
-        ResolutionResult result = new ResolutionResult() {
-            @Override
-            public String getProvider() {
-                return "some-package";
-            }
+        ResolutionResult result =
+                new ResolutionResult() {
+                    @Override
+                    public String getProvider() {
+                        return "some-package";
+                    }
 
-            @Override
-            public String getNamespace() {
-                return namespace;
-            }
+                    @Override
+                    public String getNamespace() {
+                        return namespace;
+                    }
 
-            @Override
-            public String getCompatVersion() {
-                return compatVersion;
-            }
+                    @Override
+                    public String getCompatVersion() {
+                        return compatVersion;
+                    }
 
-            @Override
-            public Path getArtifactPath() {
-                return path;
-            }
-        };
+                    @Override
+                    public Path getArtifactPath() {
+                        return path;
+                    }
+                };
 
         expect(resolverMock.resolve(request)).andReturn(result);
     }
@@ -117,7 +123,8 @@ public class InstallerTest extends AbstractInstallerTest {
     }
 
     private void install(String planName) throws Exception {
-        ArtifactInstallerFactory installerFactoryMock = EasyMock.createMock(ArtifactInstallerFactory.class);
+        ArtifactInstallerFactory installerFactoryMock =
+                EasyMock.createMock(ArtifactInstallerFactory.class);
         expect(installerFactoryMock.getInstallerFor(EasyMock.anyObject(), EasyMock.anyObject()))
                 .andReturn(new MockArtifactInstaller())
                 .anyTimes();
@@ -131,7 +138,8 @@ public class InstallerTest extends AbstractInstallerTest {
         request.setDescriptorRoot(descriptorRoot);
         request.setInstallationPlan(prepareInstallationPlanFile(planName));
 
-        DefaultInstaller installer = new DefaultInstaller(configuratorMock, resolverMock, installerFactoryMock);
+        DefaultInstaller installer =
+                new DefaultInstaller(configuratorMock, resolverMock, installerFactoryMock);
         assertNotNull(installer);
         installer.install(request);
 
@@ -165,7 +173,9 @@ public class InstallerTest extends AbstractInstallerTest {
                 "%attr(0644,root,root) /usr/share/java/test.jar",
                 "%attr(0644,root,root) /usr/share/java/test2.jar");
 
-        assertMetadataEqual(getResource("test-pkg.xml"), installRoot.resolve("usr/share/maven-metadata/test-pkg.xml"));
+        assertMetadataEqual(
+                getResource("test-pkg.xml"),
+                installRoot.resolve("usr/share/maven-metadata/test-pkg.xml"));
     }
 
     @Test
@@ -179,7 +189,8 @@ public class InstallerTest extends AbstractInstallerTest {
         install("valid.xml");
 
         assertMetadataEqual(
-                getResource("test-pkg-resolved.xml"), installRoot.resolve("usr/share/maven-metadata/test-pkg.xml"));
+                getResource("test-pkg-resolved.xml"),
+                installRoot.resolve("usr/share/maven-metadata/test-pkg.xml"));
     }
 
     @Test
@@ -223,7 +234,8 @@ public class InstallerTest extends AbstractInstallerTest {
                 "%attr(0644,root,root) /usr/share/java/test2.jar");
 
         assertMetadataEqual(
-                getResource("test-pkg-main.xml"), installRoot.resolve("usr/share/maven-metadata/test-pkg.xml"));
+                getResource("test-pkg-main.xml"),
+                installRoot.resolve("usr/share/maven-metadata/test-pkg.xml"));
         assertMetadataEqual(
                 getResource("test-pkg-sub.xml"),
                 installRoot.resolve("usr/share/maven-metadata/test-pkg-subpackage.xml"));

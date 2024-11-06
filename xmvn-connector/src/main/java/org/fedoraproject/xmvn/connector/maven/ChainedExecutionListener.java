@@ -23,7 +23,8 @@ import org.apache.maven.execution.ExecutionListener;
 /**
  * Forwards Maven execution events to a chain of listeners.
  *
- * <p>Maven allows only one execution listener. This class can be used to workaround for this limitation.
+ * <p>Maven allows only one execution listener. This class can be used to workaround for this
+ * limitation.
  *
  * @author Mikolaj Izdebski
  */

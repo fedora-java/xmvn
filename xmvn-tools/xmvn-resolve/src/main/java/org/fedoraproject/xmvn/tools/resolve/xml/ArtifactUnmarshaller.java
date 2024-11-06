@@ -24,7 +24,9 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import org.fedoraproject.xmvn.artifact.Artifact;
 
-/** @author Marian Koncek */
+/**
+ * @author Marian Koncek
+ */
 class ArtifactUnmarshaller {
     private final XMLEventReader eventReader;
 
@@ -47,7 +49,8 @@ class ArtifactUnmarshaller {
     }
 
     /**
-     * @return A String representation of the nested element or an empty string if end of section has been found
+     * @return A String representation of the nested element or an empty string if end of section
+     *     has been found
      * @throws IOException
      * @throws XMLStreamException
      */
@@ -84,14 +87,16 @@ class ArtifactUnmarshaller {
                         case StringConstants.GROUP_ID:
                             artifactBean.setGroupId(readUntilEnd(StringConstants.GROUP_ID));
                             if (artifactBean.getGroupId().isEmpty()) {
-                                throw new XMLStreamException("Xml read error: groupId must not be empty");
+                                throw new XMLStreamException(
+                                        "Xml read error: groupId must not be empty");
                             }
                             break;
 
                         case StringConstants.ARTIFACT_ID:
                             artifactBean.setArtifactId(readUntilEnd(StringConstants.ARTIFACT_ID));
                             if (artifactBean.getArtifactId().isEmpty()) {
-                                throw new XMLStreamException("Xml read error: artifactId must not be empty");
+                                throw new XMLStreamException(
+                                        "Xml read error: artifactId must not be empty");
                             }
                             break;
 
@@ -119,11 +124,10 @@ class ArtifactUnmarshaller {
                 case XMLStreamConstants.END_ELEMENT:
                     if ("artifact".equals(event.asEndElement().getName().getLocalPart())) {
                         try {
-                            return new ArtifactBean.Adapter()
-                                    .unmarshal(artifactBean)
-                                    .setPath(path);
+                            return new ArtifactBean.Adapter().unmarshal(artifactBean).setPath(path);
                         } catch (Exception e) {
-                            throw new XMLStreamException("XML stream does not have a proper format", e);
+                            throw new XMLStreamException(
+                                    "XML stream does not have a proper format", e);
                         }
                     }
                     break;

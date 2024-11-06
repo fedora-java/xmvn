@@ -23,7 +23,9 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.junit.jupiter.api.BeforeEach;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public abstract class AbstractTest implements Module {
     private PlexusContainer container;
 

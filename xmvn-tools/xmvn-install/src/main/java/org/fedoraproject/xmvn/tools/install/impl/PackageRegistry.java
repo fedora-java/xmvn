@@ -23,7 +23,9 @@ import java.util.Set;
 import org.fedoraproject.xmvn.config.InstallerSettings;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class PackageRegistry {
     private final Map<String, JavaPackage> packages = new LinkedHashMap<>();
 

@@ -29,9 +29,17 @@ public class ToolchainManagerBasicIntegrationTest extends AbstractMavenIntegrati
     @Test
     public void testToolchainManager() throws Exception {
         performTest("verify");
-        assertTrue(getStdout()
-                .anyMatch(s -> s.matches("\\[INFO\\] Toolchain in (maven-)?compiler-plugin: JDK\\[/tmp\\]")));
-        assertTrue(getStdout()
-                .anyMatch(s -> s.matches("\\[INFO\\] Toolchain in (maven-)?surefire-plugin: JDK\\[/tmp\\]")));
+        assertTrue(
+                getStdout()
+                        .anyMatch(
+                                s ->
+                                        s.matches(
+                                                "\\[INFO\\] Toolchain in (maven-)?compiler-plugin: JDK\\[/tmp\\]")));
+        assertTrue(
+                getStdout()
+                        .anyMatch(
+                                s ->
+                                        s.matches(
+                                                "\\[INFO\\] Toolchain in (maven-)?surefire-plugin: JDK\\[/tmp\\]")));
     }
 }

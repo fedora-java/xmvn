@@ -32,7 +32,12 @@ class MavenRepository extends SimpleRepository {
 
     @Override
     protected Path getArtifactPath(
-            String pattern, String groupId, String artifactId, String extension, String classifier, String version) {
+            String pattern,
+            String groupId,
+            String artifactId,
+            String extension,
+            String classifier,
+            String version) {
         if (version == null) {
             return null;
         }

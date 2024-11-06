@@ -22,7 +22,9 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 final class TempManager {
     private static Path tempDir;
 
@@ -55,11 +57,13 @@ final class TempManager {
         return tempDir;
     }
 
-    public static Path createTempFile(String prefix, String suffix, FileAttribute<?>... attrs) throws IOException {
+    public static Path createTempFile(String prefix, String suffix, FileAttribute<?>... attrs)
+            throws IOException {
         return Files.createTempFile(getTempDir(), prefix, suffix, attrs);
     }
 
-    public static Path createTempDirectory(String prefix, FileAttribute<?>... attrs) throws IOException {
+    public static Path createTempDirectory(String prefix, FileAttribute<?>... attrs)
+            throws IOException {
         return Files.createTempDirectory(getTempDir(), prefix, attrs);
     }
 }

@@ -32,7 +32,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ConditionTest {
     private ArtifactContext context1;
 
@@ -40,24 +42,28 @@ public class ConditionTest {
 
     @BeforeEach
     public void setUp() {
-        context1 = new ArtifactContext(
-                new DefaultArtifact("some-gid", "the-aid", "zip", "xyzzy", "1.2.3"),
-                Collections.singletonMap("foo", "bar"));
+        context1 =
+                new ArtifactContext(
+                        new DefaultArtifact("some-gid", "the-aid", "zip", "xyzzy", "1.2.3"),
+                        Collections.singletonMap("foo", "bar"));
 
-        context2 = new ArtifactContext(
-                new DefaultArtifact("org.apache.maven", "maven-model", "3.0.5"),
-                Collections.singletonMap("native", "true"));
+        context2 =
+                new ArtifactContext(
+                        new DefaultArtifact("org.apache.maven", "maven-model", "3.0.5"),
+                        Collections.singletonMap("native", "true"));
     }
 
     private Element buildDom(CharSequence data) throws Exception {
         Reader stringReader = new StringReader(data.toString());
-        XMLStreamReader xmlReader = XMLInputFactory.newInstance().createXMLStreamReader(stringReader);
+        XMLStreamReader xmlReader =
+                XMLInputFactory.newInstance().createXMLStreamReader(stringReader);
         ConfigurationStaxReader modelloReader = new ConfigurationStaxReader();
         Method initDocMethod = ConfigurationStaxReader.class.getDeclaredMethod("initDoc");
         initDocMethod.setAccessible(true);
         initDocMethod.invoke(modelloReader);
         Method buildDomMethod =
-                ConfigurationStaxReader.class.getDeclaredMethod("buildDom", XMLStreamReader.class, boolean.class);
+                ConfigurationStaxReader.class.getDeclaredMethod(
+                        "buildDom", XMLStreamReader.class, boolean.class);
         buildDomMethod.setAccessible(true);
         return (Element) buildDomMethod.invoke(modelloReader, xmlReader, true);
     }

@@ -40,7 +40,8 @@ class FileSystemWalker implements FileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attribs) throws IOException {
+    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attribs)
+            throws IOException {
         if (!path.equals(root)) {
             lines.add("D /" + root.relativize(path));
         }

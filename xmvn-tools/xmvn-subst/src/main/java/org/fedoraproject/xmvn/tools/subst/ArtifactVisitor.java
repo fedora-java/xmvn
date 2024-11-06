@@ -37,7 +37,9 @@ import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ArtifactVisitor implements FileVisitor<Path> {
     private final Logger logger;
 
@@ -78,7 +80,8 @@ public class ArtifactVisitor implements FileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attrs)
+            throws IOException {
         if (Files.isSymbolicLink(path) && !followSymlinks) {
             logger.debug("Skipping symlink to directory: {}", path);
             return FileVisitResult.SKIP_SUBTREE;

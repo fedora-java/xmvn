@@ -59,7 +59,9 @@ public class MavenExtensionTest extends AbstractTest {
     @Override
     public void configure(Binder binder) {
         resolverMock = EasyMock.createMock(org.fedoraproject.xmvn.resolver.Resolver.class);
-        binder.bind(WorkspaceReader.class).annotatedWith(Names.named("ide")).to(XMvnWorkspaceReader.class);
+        binder.bind(WorkspaceReader.class)
+                .annotatedWith(Names.named("ide"))
+                .to(XMvnWorkspaceReader.class);
         binder.bind(Resolver.class).toInstance(resolverMock);
     }
 
@@ -74,7 +76,8 @@ public class MavenExtensionTest extends AbstractTest {
 
         MavenExecutionRequest mavenRequest = new DefaultMavenExecutionRequest();
         mavenRequest.setLocalRepository(repoMock);
-        DefaultRepositorySystemSessionFactory factory = lookup(DefaultRepositorySystemSessionFactory.class);
+        DefaultRepositorySystemSessionFactory factory =
+                lookup(DefaultRepositorySystemSessionFactory.class);
         session = factory.newRepositorySession(mavenRequest);
         assertNotNull(session);
 
@@ -86,7 +89,8 @@ public class MavenExtensionTest extends AbstractTest {
     @Test
     public void testVersionResolver() throws Exception {
         ResolutionResult resolutionResult = EasyMock.createMock(ResolutionResult.class);
-        EasyMock.expect(resolutionResult.getArtifactPath()).andReturn(Path.of("src/test/resources/dummy.pom"));
+        EasyMock.expect(resolutionResult.getArtifactPath())
+                .andReturn(Path.of("src/test/resources/dummy.pom"));
         EasyMock.expect(resolutionResult.getCompatVersion()).andReturn("1.2.3-SNAPSHOT");
         EasyMock.replay(resolutionResult);
 

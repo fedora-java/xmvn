@@ -21,7 +21,9 @@ import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class TestConfigurator implements Configurator {
     private final Configurator delegate;
 

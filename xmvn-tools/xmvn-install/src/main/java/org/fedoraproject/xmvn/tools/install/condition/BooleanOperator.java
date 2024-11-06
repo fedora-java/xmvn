@@ -18,7 +18,9 @@ package org.fedoraproject.xmvn.tools.install.condition;
 import java.util.List;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 abstract class BooleanOperator extends BooleanExpression {
     private final boolean neutralValue;
 

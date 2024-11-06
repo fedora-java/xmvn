@@ -49,7 +49,9 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DefaultInstaller implements Installer {
     private final Logger logger = LoggerFactory.getLogger(DefaultInstaller.class);
 
@@ -69,7 +71,10 @@ public class DefaultInstaller implements Installer {
         this(configurator, resolver, new ArtifactInstallerFactory(configurator));
     }
 
-    DefaultInstaller(Configurator configurator, Resolver resolver, ArtifactInstallerFactory installerFactory) {
+    DefaultInstaller(
+            Configurator configurator,
+            Resolver resolver,
+            ArtifactInstallerFactory installerFactory) {
         this.configurator = configurator;
         this.resolver = resolver;
         this.installerFactory = installerFactory;
@@ -81,14 +86,16 @@ public class DefaultInstaller implements Installer {
      * @param installationPlan
      * @throws ArtifactInstallationException
      */
-    private void buildReactor(InstallationPlan installationPlan) throws ArtifactInstallationException {
+    private void buildReactor(InstallationPlan installationPlan)
+            throws ArtifactInstallationException {
         logger.trace("Building reactor structure");
 
         for (ArtifactMetadata artifactMetadata : installationPlan.getArtifacts()) {
             Artifact artifact = artifactMetadata.toArtifact();
 
             if (!reactor.add(new ArtifactState(artifact, artifactMetadata))) {
-                throw new ArtifactInstallationException("Installation plan contains duplicate artifact: " + artifact);
+                throw new ArtifactInstallationException(
+                        "Installation plan contains duplicate artifact: " + artifact);
             }
         }
     }
@@ -101,10 +108,11 @@ public class DefaultInstaller implements Installer {
     private void constructEffectivePackagingRule(ArtifactState artifactState) {
         Artifact artifact = artifactState.getArtifact();
 
-        PackagingRule rule = new EffectivePackagingRule(
-                configuration.getArtifactManagement(), artifact.getGroupId(),
-                artifact.getArtifactId(), artifact.getExtension(),
-                artifact.getClassifier(), artifact.getVersion());
+        PackagingRule rule =
+                new EffectivePackagingRule(
+                        configuration.getArtifactManagement(), artifact.getGroupId(),
+                        artifact.getArtifactId(), artifact.getExtension(),
+                        artifact.getClassifier(), artifact.getVersion());
 
         artifactState.setPackagingRule(rule);
 
@@ -179,12 +187,15 @@ public class DefaultInstaller implements Installer {
      */
     private void assignArtifactInstaller(ArtifactState artifactState) {
         if (artifactState.getTargetPackage() != null) {
-            artifactState.setInstaller(installerFactory.getInstallerFor(
-                    artifactState.getArtifact(), artifactState.getMetadata().getProperties()));
+            artifactState.setInstaller(
+                    installerFactory.getInstallerFor(
+                            artifactState.getArtifact(),
+                            artifactState.getMetadata().getProperties()));
         }
     }
 
-    private void installArtifact(ArtifactState artifactState, String basePackageName, String repositoryId)
+    private void installArtifact(
+            ArtifactState artifactState, String basePackageName, String repositoryId)
             throws ArtifactInstallationException {
         JavaPackage targetPackage = artifactState.getTargetPackage();
 
@@ -192,7 +203,8 @@ public class DefaultInstaller implements Installer {
             ArtifactInstaller installer = artifactState.getInstaller();
             ArtifactMetadata metadata = artifactState.getMetadata();
             PackagingRule packagingRule = artifactState.getPackagingRule();
-            installer.install(targetPackage, metadata, packagingRule, basePackageName, repositoryId);
+            installer.install(
+                    targetPackage, metadata, packagingRule, basePackageName, repositoryId);
         }
     }
 
@@ -209,7 +221,8 @@ public class DefaultInstaller implements Installer {
                 }
 
                 if (artifactMetadata.getCompatVersions().isEmpty()) {
-                    installedArtifacts.put(artifact.setVersion(Artifact.DEFAULT_VERSION), artifactMetadata);
+                    installedArtifacts.put(
+                            artifact.setVersion(Artifact.DEFAULT_VERSION), artifactMetadata);
                 }
             }
         }
@@ -223,8 +236,10 @@ public class DefaultInstaller implements Installer {
         }
     }
 
-    private void resolveDependency(Dependency dependency, Map<Artifact, ArtifactMetadata> installedArtifacts) {
-        for (String version : Arrays.asList(dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION)) {
+    private void resolveDependency(
+            Dependency dependency, Map<Artifact, ArtifactMetadata> installedArtifacts) {
+        for (String version :
+                Arrays.asList(dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION)) {
             Artifact dependencyArtifact = dependency.toArtifact().setVersion(version);
 
             // First try to resolve dependency from installed artifact
@@ -236,7 +251,8 @@ public class DefaultInstaller implements Installer {
             }
         }
 
-        for (String version : Arrays.asList(dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION)) {
+        for (String version :
+                Arrays.asList(dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION)) {
             Artifact dependencyArtifact = dependency.toArtifact().setVersion(version);
 
             // Next try system artifact resolver
@@ -254,7 +270,8 @@ public class DefaultInstaller implements Installer {
     }
 
     @Override
-    public InstallationResult install(InstallationRequest request) throws ArtifactInstallationException, IOException {
+    public InstallationResult install(InstallationRequest request)
+            throws ArtifactInstallationException, IOException {
         configuration = configurator.getConfiguration();
         InstallerSettings settings = configuration.getInstallerSettings();
         packageRegistry = new PackageRegistry(settings, request.getBasePackageName());
@@ -312,7 +329,11 @@ public class DefaultInstaller implements Installer {
             logger.debug("Installing {}", pkg);
             pkg.install(request.getInstallRoot());
 
-            Path mfiles = Path.of(pkg.getId() == null || pkg.getId().isEmpty() ? ".mfiles" : ".mfiles-" + pkg.getId());
+            Path mfiles =
+                    Path.of(
+                            pkg.getId() == null || pkg.getId().isEmpty()
+                                    ? ".mfiles"
+                                    : ".mfiles-" + pkg.getId());
             if (request.getDescriptorRoot() != null) {
                 mfiles = request.getDescriptorRoot().resolve(mfiles);
             }

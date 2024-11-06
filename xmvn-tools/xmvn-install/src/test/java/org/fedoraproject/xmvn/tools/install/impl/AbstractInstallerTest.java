@@ -39,7 +39,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xmlunit.assertj3.XmlAssert;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public abstract class AbstractInstallerTest {
     protected Path workdir;
 
@@ -144,8 +146,7 @@ public abstract class AbstractInstallerTest {
             Node pathNode = nodes.item(i);
             String path = pathNode.getTextContent();
             if (path.startsWith("???")) {
-                pathNode.setTextContent(
-                        getResource(path.substring(3)).toAbsolutePath().toString());
+                pathNode.setTextContent(getResource(path.substring(3)).toAbsolutePath().toString());
             }
         }
 

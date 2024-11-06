@@ -20,7 +20,9 @@ import javax.inject.Singleton;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named
 @Singleton
 public class DefaultLogger implements Logger {

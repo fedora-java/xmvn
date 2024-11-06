@@ -24,10 +24,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class RpmDbTest {
-    @TempDir
-    private Path tempDir;
+    @TempDir private Path tempDir;
 
     @BeforeAll
     public static void ensureRpmIsPresent() {

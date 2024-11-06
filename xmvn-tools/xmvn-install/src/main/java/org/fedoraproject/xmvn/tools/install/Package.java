@@ -72,7 +72,8 @@ public class Package {
      */
     public void addFile(File file) {
         if (files.contains(file)) {
-            throw new IllegalArgumentException("Package " + id + " already contains file " + file.getTargetPath());
+            throw new IllegalArgumentException(
+                    "Package " + id + " already contains file " + file.getTargetPath());
         }
 
         files.add(file);
@@ -94,8 +95,8 @@ public class Package {
      *
      * <p>Package installation is equivalent to installation of all files it contains.
      *
-     * <p>Target directory won't be overwritten if it already exists, which allows installation of multiple packages
-     * into the same directory.
+     * <p>Target directory won't be overwritten if it already exists, which allows installation of
+     * multiple packages into the same directory.
      *
      * @param installRoot target directory where package files will be installed
      * @throws IOException

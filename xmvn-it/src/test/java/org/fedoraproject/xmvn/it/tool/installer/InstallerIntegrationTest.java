@@ -69,7 +69,9 @@ public class InstallerIntegrationTest extends AbstractToolIntegrationTest {
 
         Path jarPath = Path.of("dest/usr/share/java/xyzzy/junit.jar");
         assertTrue(Files.isRegularFile(jarPath, LinkOption.NOFOLLOW_LINKS));
-        try (InputStream is = new URL("jar:file:" + jarPath.toAbsolutePath() + "!/META-INF/MANIFEST.MF").openStream()) {
+        try (InputStream is =
+                new URL("jar:file:" + jarPath.toAbsolutePath() + "!/META-INF/MANIFEST.MF")
+                        .openStream()) {
             Attributes mf = new Manifest(is).getMainAttributes();
             assertEquals("junit", mf.getValue("JavaPackages-GroupId"));
             assertEquals("junit", mf.getValue("JavaPackages-ArtifactId"));

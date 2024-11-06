@@ -37,7 +37,8 @@ class CompoundRepositoryFactory extends AbstractRepositoryFactory {
     }
 
     @Override
-    public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
+    public Repository getInstance(
+            Element filter, Properties properties, Element configuration, String namespace) {
         Path prefix = null;
         if (properties.containsKey("prefix")) {
             prefix = Path.of(properties.getProperty("prefix"));
@@ -46,14 +47,16 @@ class CompoundRepositoryFactory extends AbstractRepositoryFactory {
         Element repositories = DomUtils.parseAsWrapper(configuration);
         if (!"repositories".equals(repositories.getNodeName())) {
             throw new RuntimeException(
-                    "compound repository expects configuration " + "with exactly one child element: <repositories>");
+                    "compound repository expects configuration "
+                            + "with exactly one child element: <repositories>");
         }
 
         List<Repository> slaveRepositories = new ArrayList<>();
         for (Element child : DomUtils.parseAsParent(repositories)) {
             String text = DomUtils.parseAsText(child);
             if (!"repository".equals(child.getNodeName())) {
-                throw new RuntimeException("All children of <repositories> must be <repository> text nodes");
+                throw new RuntimeException(
+                        "All children of <repositories> must be <repository> text nodes");
             }
 
             Repository slaveRepository = configurator.configureRepository(text, namespace);

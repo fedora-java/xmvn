@@ -54,7 +54,8 @@ public class ResolutionRequest {
     }
 
     /**
-     * Determine whether information about artifact provider should be included in resolution result.
+     * Determine whether information about artifact provider should be included in resolution
+     * result.
      *
      * <p>Artifact provider is name of system package providing requested artifact.
      *
@@ -69,7 +70,8 @@ public class ResolutionRequest {
      *
      * <p>Artifact provider is name of system package providing requested artifact.
      *
-     * @param isProviderNeeded whether information about artifact provider should be included in resolution result
+     * @param isProviderNeeded whether information about artifact provider should be included in
+     *     resolution result
      */
     public void setProviderNeeded(boolean isProviderNeeded) {
         this.isProviderNeeded = isProviderNeeded;
@@ -78,8 +80,8 @@ public class ResolutionRequest {
     /**
      * Determine whether resolved artifact file should be persistent or not.
      *
-     * <p>Non-persistent files may be removed during JVM shutdown, while persistent files are not cleaned up during JVM
-     * shutdown.
+     * <p>Non-persistent files may be removed during JVM shutdown, while persistent files are not
+     * cleaned up during JVM shutdown.
      *
      * @return whether resolved artifact file should be persistent
      */
@@ -90,8 +92,8 @@ public class ResolutionRequest {
     /**
      * Set whether resolved artifact file should be persistent or not.
      *
-     * <p>Non-persistent files may be removed during JVM shutdown, while persistent files are not cleaned up during JVM
-     * shutdown.
+     * <p>Non-persistent files may be removed during JVM shutdown, while persistent files are not
+     * cleaned up during JVM shutdown.
      *
      * @param isPersistentFileNeeded
      */
@@ -136,7 +138,13 @@ public class ResolutionRequest {
 
     @Override
     public String toString() {
-        return ResolutionRequest.class + "{artifact=" + artifact + ",isProviderNeeded=" + isProviderNeeded
-                + ",isPersistentFileNeeded=" + isPersistentFileNeeded + "}";
+        return ResolutionRequest.class
+                + "{artifact="
+                + artifact
+                + ",isProviderNeeded="
+                + isProviderNeeded
+                + ",isPersistentFileNeeded="
+                + isPersistentFileNeeded
+                + "}";
     }
 }

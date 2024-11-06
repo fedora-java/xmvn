@@ -29,7 +29,9 @@ import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class SubstCli {
     private final Logger logger;
 
@@ -59,8 +61,7 @@ public class SubstCli {
             for (String configuredRepo : resolverSettings.getMetadataRepositories()) {
                 Path repoPath = Path.of(configuredRepo);
                 if (repoPath.isAbsolute()) {
-                    metadataRepos.add(
-                            root.resolve(Path.of("/").relativize(repoPath)).toString());
+                    metadataRepos.add(root.resolve(Path.of("/").relativize(repoPath)).toString());
                 }
             }
 

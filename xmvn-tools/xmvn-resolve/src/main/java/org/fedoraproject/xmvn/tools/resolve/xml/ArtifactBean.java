@@ -18,7 +18,9 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ArtifactBean {
     private String groupId;
 
@@ -70,7 +72,9 @@ public class ArtifactBean {
         this.version = version;
     }
 
-    /** @author Mikolaj Izdebski */
+    /**
+     * @author Mikolaj Izdebski
+     */
     public static class Adapter {
         private static String nullify(String value, String defaultValue) {
             return value.equals(defaultValue) ? null : value;

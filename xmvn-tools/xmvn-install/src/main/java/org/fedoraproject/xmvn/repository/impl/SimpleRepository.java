@@ -22,7 +22,9 @@ import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.tools.install.condition.Condition;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 abstract class SimpleRepository extends AbstractRepository {
     private final Path root;
 
@@ -35,7 +37,12 @@ abstract class SimpleRepository extends AbstractRepository {
     }
 
     protected abstract Path getArtifactPath(
-            String pattern, String groupId, String artifactId, String extension, String classifier, String version);
+            String pattern,
+            String groupId,
+            String artifactId,
+            String extension,
+            String classifier,
+            String version);
 
     @Override
     public Path getPrimaryArtifactPath(Artifact artifact, ArtifactContext context, String pattern) {

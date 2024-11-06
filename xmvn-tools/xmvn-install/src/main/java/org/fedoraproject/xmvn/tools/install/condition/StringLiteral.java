@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class StringLiteral extends StringExpression {
     private final String value;
 

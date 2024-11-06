@@ -55,7 +55,8 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
 
     private URL[] getBootClasspath() throws IOException {
         Set<URL> bootClassPath = new LinkedHashSet<>();
-        try (DirectoryStream<Path> dir = Files.newDirectoryStream(getMavenHome().resolve("boot"), "*.jar")) {
+        try (DirectoryStream<Path> dir =
+                Files.newDirectoryStream(getMavenHome().resolve("boot"), "*.jar")) {
             for (Path jar : dir) {
                 bootClassPath.add(jar.toUri().toURL());
             }
@@ -99,13 +100,16 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
 
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
-        try (URLClassLoader bootClassLoader = new URLClassLoader(getBootClasspath(), parentClassLoader)) {
+        try (URLClassLoader bootClassLoader =
+                new URLClassLoader(getBootClasspath(), parentClassLoader)) {
             Thread.currentThread().setContextClassLoader(bootClassLoader);
 
-            Class<?> launcherClass = bootClassLoader.loadClass("org.codehaus.plexus.classworlds.launcher.Launcher");
+            Class<?> launcherClass =
+                    bootClassLoader.loadClass("org.codehaus.plexus.classworlds.launcher.Launcher");
             Object launcher = launcherClass.getConstructor().newInstance();
 
-            try (InputStream config = Files.newInputStream(Path.of("../../src/test/resources/m2.conf"))) {
+            try (InputStream config =
+                    Files.newInputStream(Path.of("../../src/test/resources/m2.conf"))) {
                 launcherClass.getMethod("configure", InputStream.class).invoke(launcher, config);
             }
 
@@ -113,13 +117,18 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
             ClassLoader classRealm =
                     (ClassLoader) launcherClass.getMethod("getMainRealm").invoke(launcher);
 
-            Class<?> cliClass =
-                    (Class<?>) launcherClass.getMethod("getMainClass").invoke(launcher);
-            Object mavenCli = cliClass.getConstructor(classWorld.getClass()).newInstance(classWorld);
+            Class<?> cliClass = (Class<?>) launcherClass.getMethod("getMainClass").invoke(launcher);
+            Object mavenCli =
+                    cliClass.getConstructor(classWorld.getClass()).newInstance(classWorld);
 
             Thread.currentThread().setContextClassLoader(classRealm);
             return (int)
-                    cliClass.getMethod("doMain", String[].class, String.class, PrintStream.class, PrintStream.class)
+                    cliClass.getMethod(
+                                    "doMain",
+                                    String[].class,
+                                    String.class,
+                                    PrintStream.class,
+                                    PrintStream.class)
                             .invoke(mavenCli, args, getBaseDir().toString(), out, err);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);

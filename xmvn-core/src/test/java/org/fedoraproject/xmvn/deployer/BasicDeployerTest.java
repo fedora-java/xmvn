@@ -35,7 +35,9 @@ import org.fedoraproject.xmvn.test.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class BasicDeployerTest extends AbstractTest {
     /**
      * Test if Sisu can load deployer component.
@@ -54,13 +56,16 @@ public class BasicDeployerTest extends AbstractTest {
         Path plan = Files.createTempDirectory("xmvn-test").resolve("plan.xml");
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(
+                new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         req.addProperty("foo", "bar");
         req.addDependency(new DefaultArtifact("g1:a1:e1:c1:v1"));
         req.addDependency(
                 new DefaultArtifact("g2:a2:e2:c2:v2"),
                 true,
-                Arrays.asList(new DefaultArtifact("e:e:e:e:e"), new DefaultArtifact("eg2:ea2:ee2:ec2:ev2")));
+                Arrays.asList(
+                        new DefaultArtifact("e:e:e:e:e"),
+                        new DefaultArtifact("eg2:ea2:ee2:ec2:ev2")));
         deployer.deploy(req);
         DeploymentRequest req2 = new DeploymentRequest();
         req2.setPlanPath(plan);
@@ -131,29 +136,31 @@ public class BasicDeployerTest extends AbstractTest {
         Files.createDirectory(plan);
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(
+                new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));
-        assertEquals(
-                "Failed to parse reactor installation plan", res.getException().getMessage());
+        assertEquals("Failed to parse reactor installation plan", res.getException().getMessage());
     }
 
-    static final Pattern PROCESS_UID_PATTERN = Pattern.compile("^Uid:\\s+\\d+\\s+(\\d+)\\s+\\d+\\s+\\d+\\s*$");
+    static final Pattern PROCESS_UID_PATTERN =
+            Pattern.compile("^Uid:\\s+\\d+\\s+(\\d+)\\s+\\d+\\s+\\d+\\s*$");
 
     private boolean runningAsRoot() {
         try (Stream<String> lines = Files.lines(Path.of("/proc/self/status"))) {
-            return lines.map(s -> {
-                        Matcher matcher = PROCESS_UID_PATTERN.matcher(s);
+            return lines.map(
+                            s -> {
+                                Matcher matcher = PROCESS_UID_PATTERN.matcher(s);
 
-                        if (matcher.matches()) {
-                            if ("0".equals(matcher.group(1))) {
-                                return true;
-                            }
-                        }
+                                if (matcher.matches()) {
+                                    if ("0".equals(matcher.group(1))) {
+                                        return true;
+                                    }
+                                }
 
-                        return false;
-                    })
+                                return false;
+                            })
                     .anyMatch(result -> result);
         } catch (IOException ex) {
             System.err.println("Unable to read from \"/proc/self/status\"");
@@ -172,7 +179,8 @@ public class BasicDeployerTest extends AbstractTest {
         Files.setPosixFilePermissions(plan, Set.of(PosixFilePermission.OTHERS_READ));
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(
+                new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));

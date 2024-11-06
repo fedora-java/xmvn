@@ -23,8 +23,8 @@ import java.nio.file.Path;
 /**
  * A directory installed as part of a package.
  *
- * <p>While package doesn't have to own all directories it creates, directories represented by instances of this class
- * are assumed to be owned by the package they belong to.
+ * <p>While package doesn't have to own all directories it creates, directories represented by
+ * instances of this class are assumed to be owned by the package they belong to.
  *
  * @author Mikolaj Izdebski
  */

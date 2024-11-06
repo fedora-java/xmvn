@@ -32,7 +32,12 @@ class JppRepository extends SimpleRepository {
 
     @Override
     protected Path getArtifactPath(
-            String pattern, String groupId, String artifactId, String extension, String classifier, String version) {
+            String pattern,
+            String groupId,
+            String artifactId,
+            String extension,
+            String classifier,
+            String version) {
         StringBuilder path = new StringBuilder();
 
         path.append(pattern.replaceFirst("^JPP/", ""));

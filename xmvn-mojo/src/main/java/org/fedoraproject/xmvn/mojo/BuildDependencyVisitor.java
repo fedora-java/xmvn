@@ -31,9 +31,12 @@ import org.apache.maven.model.Plugin;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class BuildDependencyVisitor {
-    private static final List<String> BUILD_SCOPES = Arrays.asList(null, "compile", "provided", "test", "runtime");
+    private static final List<String> BUILD_SCOPES =
+            Arrays.asList(null, "compile", "provided", "test", "runtime");
 
     private static final List<String> RUNTIME_SCOPES = Arrays.asList(null, "compile", "runtime");
 
@@ -49,7 +52,8 @@ class BuildDependencyVisitor {
         return Collections.unmodifiableSet(artifacts);
     }
 
-    private boolean isExternal(Function<String, InputLocation> locationGetter, String... locationIds) {
+    private boolean isExternal(
+            Function<String, InputLocation> locationGetter, String... locationIds) {
         return Arrays.stream(locationIds)
                 .map(locationGetter::apply)
                 .filter(Objects::nonNull)
@@ -57,7 +61,9 @@ class BuildDependencyVisitor {
     }
 
     private void visitParent(Parent parent) {
-        artifacts.add(new DefaultArtifact(parent.getGroupId(), parent.getArtifactId(), "pom", parent.getVersion()));
+        artifacts.add(
+                new DefaultArtifact(
+                        parent.getGroupId(), parent.getArtifactId(), "pom", parent.getVersion()));
     }
 
     private void visitDependency(Dependency dependency) {
@@ -68,17 +74,20 @@ class BuildDependencyVisitor {
             return;
         }
 
-        artifacts.add(ArtifactTypeRegistry.getDefaultRegistry()
-                .createTypedArtifact(
-                        dependency.getGroupId(),
-                        dependency.getArtifactId(),
-                        dependency.getType(),
-                        dependency.getClassifier(),
-                        dependency.getVersion()));
+        artifacts.add(
+                ArtifactTypeRegistry.getDefaultRegistry()
+                        .createTypedArtifact(
+                                dependency.getGroupId(),
+                                dependency.getArtifactId(),
+                                dependency.getType(),
+                                dependency.getClassifier(),
+                                dependency.getVersion()));
     }
 
     private void visitBuildExtension(Extension extension) {
-        artifacts.add(new DefaultArtifact(extension.getGroupId(), extension.getArtifactId(), extension.getVersion()));
+        artifacts.add(
+                new DefaultArtifact(
+                        extension.getGroupId(), extension.getArtifactId(), extension.getVersion()));
     }
 
     private void visitBuildPlugin(Plugin plugin) {
@@ -112,13 +121,14 @@ class BuildDependencyVisitor {
             return;
         }
 
-        artifacts.add(ArtifactTypeRegistry.getDefaultRegistry()
-                .createTypedArtifact(
-                        dependency.getGroupId(),
-                        dependency.getArtifactId(),
-                        dependency.getType(),
-                        dependency.getClassifier(),
-                        dependency.getVersion()));
+        artifacts.add(
+                ArtifactTypeRegistry.getDefaultRegistry()
+                        .createTypedArtifact(
+                                dependency.getGroupId(),
+                                dependency.getArtifactId(),
+                                dependency.getType(),
+                                dependency.getClassifier(),
+                                dependency.getVersion()));
     }
 
     public void visitModel(Model model) {

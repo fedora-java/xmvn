@@ -33,8 +33,10 @@ public class JavadocJPMSIgnoreIntegrationTest extends AbstractMojoIntegrationTes
         expectFailure();
         performMojoTest("verify", "-Dxmvn.javadoc.ignoreJPMS", "javadoc");
 
-        assertTrue(getStdout()
-                .anyMatch(
-                        "[INFO] Ignoring JPMS according to configuration (xmvn.javadoc.ignoreJPMS property)"::equals));
+        assertTrue(
+                getStdout()
+                        .anyMatch(
+                                "[INFO] Ignoring JPMS according to configuration (xmvn.javadoc.ignoreJPMS property)"
+                                        ::equals));
     }
 }

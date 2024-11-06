@@ -19,7 +19,9 @@ import java.util.Properties;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 abstract class AbstractRepositoryFactory implements RepositoryFactory {
     @Override
     public Repository getInstance(Element filter, Properties properties, Element configuration) {

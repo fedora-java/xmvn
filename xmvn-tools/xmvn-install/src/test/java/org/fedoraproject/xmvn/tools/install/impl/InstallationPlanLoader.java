@@ -23,7 +23,9 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public final class InstallationPlanLoader {
     private InstallationPlanLoader() {
         // Don't generate default public constructor
