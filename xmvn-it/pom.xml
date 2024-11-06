@@ -120,6 +120,7 @@
                   <type>tar.gz</type>
                 </artifactItem>
               </artifactItems>
+              <skipDuringIncrementalBuild>true</skipDuringIncrementalBuild>
             </configuration>
           </execution>
           <execution>
