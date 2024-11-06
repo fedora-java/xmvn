@@ -17,18 +17,17 @@ package org.fedoraproject.xmvn.tools.install.cli;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.locator.ServiceLocator;
-import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
-import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.InstallationRequest;
 import org.fedoraproject.xmvn.tools.install.Installer;
-import org.fedoraproject.xmvn.tools.install.impl.DefaultInstaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 
 /**
+ * XMvn Install is a command-line interface to XMvn installer. The installer reads reactor metadata
+ * and performs artifact installation according to specified configuration.
+ *
  * @author Mikolaj Izdebski
  */
 public class InstallerCli {
@@ -40,7 +39,7 @@ public class InstallerCli {
         this.installer = installer;
     }
 
-    private int run(InstallerCliRequest cliRequest) {
+    public int run(InstallerCliRequest cliRequest) {
         InstallationRequest request = new InstallationRequest();
         request.setCheckForUnmatchedRules(!cliRequest.isRelaxed());
         request.setBasePackageName(cliRequest.getPackageName());
@@ -58,31 +57,7 @@ public class InstallerCli {
     }
 
     public static int doMain(String[] args) {
-        try {
-            InstallerCliRequest cliRequest = InstallerCliRequest.build(args);
-            if (cliRequest == null) {
-                return 1;
-            }
-            if (cliRequest.printUsage()) {
-                return 0;
-            }
-            if (cliRequest.isDebug()) {
-                System.setProperty("xmvn.debug", "true");
-            }
-
-            ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
-            Configurator configurator = locator.getService(Configurator.class);
-            Resolver resolver = locator.getService(Resolver.class);
-
-            Installer installer = new DefaultInstaller(configurator, resolver);
-            InstallerCli cli = new InstallerCli(installer);
-
-            return cli.run(cliRequest);
-        } catch (Throwable e) {
-            System.err.println("Unhandled exception");
-            e.printStackTrace();
-            return 2;
-        }
+        return new CommandLine(new InstallerCliRequest()).execute(args);
     }
 
     public static void main(String[] args) {

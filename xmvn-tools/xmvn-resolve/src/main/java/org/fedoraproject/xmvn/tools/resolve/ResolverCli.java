@@ -22,19 +22,21 @@ import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
-import org.fedoraproject.xmvn.locator.ServiceLocator;
-import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionRequestListUnmarshaller;
 import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionResultListMarshaller;
+import picocli.CommandLine;
 
 /**
- * Resolve artifacts given on command line.
+ * XMvn Resolver is a very simple commald-line tool to resolve Maven artifacts from system
+ * repositories. Basically it's just an interface to artifact resolution mechanism implemented by
+ * XMvn Core. The primary intended use case of XMvn Resolver is debugging local artifact
+ * repositories.
  *
- * <p>Return 0 when all artifacts are successfully resolved, 1 on failure to resolve one or more
+ * <p>Returns 0 when all artifacts are successfully resolved, 1 on failure to resolve one or more
  * artifacts and 2 when some other error occurs. In the last case a stack trace is printed too.
  *
  * @author Mikolaj Izdebski
@@ -90,7 +92,7 @@ public class ResolverCli {
         }
     }
 
-    private int run(ResolverCliRequest cliRequest) throws IOException, XMLStreamException {
+    public int run(ResolverCliRequest cliRequest) throws IOException, XMLStreamException {
         try {
             boolean error = false;
 
@@ -120,30 +122,7 @@ public class ResolverCli {
     }
 
     public static int doMain(String[] args) {
-        try {
-            ResolverCliRequest cliRequest = ResolverCliRequest.build(args);
-            if (cliRequest == null) {
-                return 1;
-            }
-            if (cliRequest.printUsage()) {
-                return 0;
-            }
-            if (cliRequest.isDebug()) {
-                System.setProperty("xmvn.debug", "true");
-            }
-
-            ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
-            Logger logger = locator.getService(Logger.class);
-            Resolver resolver = locator.getService(Resolver.class);
-
-            ResolverCli cli = new ResolverCli(logger, resolver);
-
-            return cli.run(cliRequest);
-        } catch (Throwable e) {
-            System.err.println("Unhandled exception");
-            e.printStackTrace();
-            return 2;
-        }
+        return new CommandLine(new ResolverCliRequest()).execute(args);
     }
 
     public static void main(String[] args) {
