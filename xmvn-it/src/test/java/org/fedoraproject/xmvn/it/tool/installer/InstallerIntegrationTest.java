@@ -63,9 +63,7 @@ public class InstallerIntegrationTest extends AbstractToolIntegrationTest {
 
         Path mdPath = Path.of("dest/usr/share/maven-metadata/xyzzy.xml");
         assertTrue(Files.isRegularFile(mdPath, LinkOption.NOFOLLOW_LINKS));
-        assertEquals(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-                Files.readAllLines(mdPath).iterator().next());
+        assertEquals("<?xml version=\"1.0\" ?>", Files.readAllLines(mdPath).iterator().next());
 
         Path jarPath = Path.of("dest/usr/share/java/xyzzy/junit.jar");
         assertTrue(Files.isRegularFile(jarPath, LinkOption.NOFOLLOW_LINKS));

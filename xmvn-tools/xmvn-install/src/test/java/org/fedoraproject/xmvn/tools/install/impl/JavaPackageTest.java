@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.junit.jupiter.api.Test;
@@ -55,12 +54,8 @@ public class JavaPackageTest extends AbstractFileTest {
         pkg.install(installRoot);
 
         PackageMetadata actualMetadata =
-                new MetadataStaxReader()
-                        .read(
-                                installRoot
-                                        .resolve("usr/share/maven-metadata/my-pkg-my-id.xml")
-                                        .toString(),
-                                true);
+                PackageMetadata.readFromXML(
+                        installRoot.resolve("usr/share/maven-metadata/my-pkg-my-id.xml"));
         assertTrue(actualMetadata.getProperties().containsKey("foo"));
     }
 

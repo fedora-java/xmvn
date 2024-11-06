@@ -15,13 +15,10 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
  * @author Michael Simacek
@@ -33,7 +30,7 @@ public final class InstallationPlanLoader {
 
     public static Path prepareInstallationPlanFile(String filename) throws Exception {
         Path metadataPath = Path.of("src/test/resources/", filename);
-        PackageMetadata metadata = new MetadataStaxReader().read(metadataPath.toString());
+        PackageMetadata metadata = PackageMetadata.readFromXML(metadataPath);
         for (ArtifactMetadata artifact : metadata.getArtifacts()) {
             String path = artifact.getPath();
             if (path != null) {
@@ -42,9 +39,7 @@ public final class InstallationPlanLoader {
             }
         }
         Path newMetadata = Files.createTempFile(filename, "");
-        try (OutputStream os = Files.newOutputStream(newMetadata)) {
-            new MetadataStaxWriter().write(os, metadata);
-        }
+        metadata.writeToXML(newMetadata);
         return newMetadata;
     }
 

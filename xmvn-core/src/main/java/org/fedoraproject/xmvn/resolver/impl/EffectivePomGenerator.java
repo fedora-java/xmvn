@@ -84,7 +84,7 @@ class EffectivePomGenerator {
                 Artifact.DEFAULT_EXTENSION);
         addTextElement(document, dependencyNode, "classifier", dependency.getClassifier(), "");
         addTextElement(document, dependencyNode, "version", dependency.getRequestedVersion());
-        Boolean optional = dependency.isOptional() != null && dependency.isOptional();
+        Boolean optional = dependency.isOptional();
         addTextElement(document, dependencyNode, "optional", optional.toString(), "false");
 
         Element exclusions = document.createElement("exclusions");

@@ -24,7 +24,8 @@
           <requestedVersion>4.1</requestedVersion>
           <exclusions>
             <exclusion>
-              <groupId>bla</groupId>
+              <groupId/>
+              <artifactId>project</artifactId>
             </exclusion>
           </exclusions>
         </dependency>

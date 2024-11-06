@@ -15,9 +15,11 @@
  */
 package org.fedoraproject.xmvn.config.impl;
 
+import io.kojan.xml.XMLException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,11 +31,8 @@ import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxReader;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.logging.Logger;
 
@@ -69,10 +68,9 @@ public class DefaultConfigurator implements Configurator {
     }
 
     private Configuration loadConfigurationFromStream(InputStream stream) throws IOException {
-        try {
-            ConfigurationStaxReader reader = new ConfigurationStaxReader();
-            return reader.read(stream);
-        } catch (XMLStreamException e) {
+        try (Reader r = new InputStreamReader(stream)) {
+            return Configuration.readFromXML(r);
+        } catch (XMLException e) {
             throw new IOException("Failed to parse configuration", e);
         }
     }
@@ -232,11 +230,9 @@ public class DefaultConfigurator implements Configurator {
     public void dumpConfiguration() {
         Configuration configuration = getConfiguration();
 
-        try (StringWriter writer = new StringWriter()) {
-            ConfigurationStaxWriter dumper = new ConfigurationStaxWriter();
-            dumper.write(writer, configuration);
-            logger.debug("XMvn configuration:\n{}", writer.toString());
-        } catch (IOException | XMLStreamException e) {
+        try {
+            logger.debug("XMvn configuration:\n{}", configuration.toXML());
+        } catch (XMLException e) {
             throw new RuntimeException(e);
         }
     }

@@ -15,18 +15,16 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import io.kojan.xml.XMLException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.metadata.DependencyExclusion;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 
 /**
@@ -43,10 +41,10 @@ class InstallationPlan {
         if (!Files.exists(planPath)) {
             metadata = new PackageMetadata();
         } else {
-            try (InputStream stream = Files.newInputStream(planPath)) {
-                metadata = new MetadataStaxReader().read(stream);
+            try {
+                metadata = PackageMetadata.readFromXML(planPath);
                 validate(metadata);
-            } catch (IOException | XMLStreamException e) {
+            } catch (IOException | XMLException e) {
                 throw new ArtifactInstallationException("Unable to read reactor plan", e);
             }
         }

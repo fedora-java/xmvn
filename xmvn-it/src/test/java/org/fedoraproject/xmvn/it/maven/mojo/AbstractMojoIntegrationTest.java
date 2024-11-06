@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.it.maven.mojo;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
@@ -25,11 +24,9 @@ import java.util.Arrays;
 import java.util.Deque;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.config.io.stax.ConfigurationStaxWriter;
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
-import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
@@ -58,27 +55,25 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
             md.addArtifact(pomMd);
 
             if (Files.exists(jarPath)) {
-                ArtifactMetadata jarMd = pomMd.clone();
+                ArtifactMetadata jarMd = new ArtifactMetadata();
+                jarMd.setGroupId("org.fedoraproject.xmvn");
+                jarMd.setArtifactId(module);
+                jarMd.setVersion("DUMMY_IGNORED");
+                jarMd.addProperty("xmvn.resolver.disableEffectivePom", "true");
                 jarMd.setExtension("jar");
                 jarMd.setPath(jarPath.toString());
                 md.addArtifact(jarMd);
             }
         }
 
-        MetadataStaxWriter mdWriter = new MetadataStaxWriter();
-        try (OutputStream os = Files.newOutputStream(Path.of("mojo-metadata.xml"))) {
-            mdWriter.write(os, md);
-        }
+        md.writeToXML(Path.of("mojo-metadata.xml"));
 
         Configuration conf = new Configuration();
         conf.setResolverSettings(new ResolverSettings());
         conf.getResolverSettings().addMetadataRepository("mojo-metadata.xml");
 
         Files.createDirectories(Path.of(".xmvn/config.d"));
-        ConfigurationStaxWriter confWriter = new ConfigurationStaxWriter();
-        try (OutputStream os = Files.newOutputStream(Path.of(".xmvn/config.d/mojo-it-conf.xml"))) {
-            confWriter.write(os, conf);
-        }
+        conf.writeToXML(Path.of(".xmvn/config.d/mojo-it-conf.xml"));
     }
 
     public void performMojoTest(String... args) throws Exception {
