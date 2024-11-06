@@ -100,7 +100,7 @@
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <modelloVersion>2.4.0</modelloVersion>
     <nexusStagingPluginVersion>1.7.0</nexusStagingPluginVersion>
-    <palantirJavaFormatVersion>2.39.0</palantirJavaFormatVersion>
+    <googleJavaFormatVersion>1.24.0</googleJavaFormatVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.0.0</projectInfoReportsPluginVersion>
     <ratPluginVersion>0.16.1</ratPluginVersion>
@@ -341,10 +341,11 @@
           <version>${spotlessVersion}</version>
           <configuration>
             <java>
-              <palantirJavaFormat>
-                <version>${palantirJavaFormatVersion}</version>
+              <googleJavaFormat>
+                <version>${googleJavaFormatVersion}</version>
+                <style>AOSP</style>
                 <formatJavadoc>true</formatJavadoc>
-              </palantirJavaFormat>
+              </googleJavaFormat>
               <removeUnusedImports/>
               <formatAnnotations/>
               <importOrder/>
