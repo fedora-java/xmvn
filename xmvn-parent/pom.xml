@@ -331,9 +331,6 @@
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefireVersion}</version>
-          <configuration>
-            <argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>com.diffplug.spotless</groupId>
