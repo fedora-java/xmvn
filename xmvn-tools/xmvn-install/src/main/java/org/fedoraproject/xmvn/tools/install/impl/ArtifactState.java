@@ -21,7 +21,9 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.fedoraproject.xmvn.tools.install.JavaPackage;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class ArtifactState {
     private final Artifact artifact;
 
@@ -77,6 +79,8 @@ class ArtifactState {
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null && getClass() == obj.getClass() && artifact.equals(((ArtifactState) obj).artifact);
+        return obj != null
+                && getClass() == obj.getClass()
+                && artifact.equals(((ArtifactState) obj).artifact);
     }
 }

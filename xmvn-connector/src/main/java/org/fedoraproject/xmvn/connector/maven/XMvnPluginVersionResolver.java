@@ -28,7 +28,9 @@ import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.sisu.Priority;
 import org.fedoraproject.xmvn.artifact.Artifact;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 @Named
 @Singleton
 @Priority(100)
@@ -37,11 +39,15 @@ public class XMvnPluginVersionResolver implements PluginVersionResolver {
     public PluginVersionResult resolve(PluginVersionRequest request) {
         RepositorySystemSession session = request.getRepositorySession();
         WorkspaceReader reader = session.getWorkspaceReader();
-        List<String> versions = reader.findVersions(new DefaultArtifact(
-                request.getGroupId(), request.getArtifactId(), Artifact.DEFAULT_EXTENSION, Artifact.DEFAULT_VERSION));
-        final String version = versions.isEmpty()
-                ? Artifact.DEFAULT_VERSION
-                : versions.iterator().next();
+        List<String> versions =
+                reader.findVersions(
+                        new DefaultArtifact(
+                                request.getGroupId(),
+                                request.getArtifactId(),
+                                Artifact.DEFAULT_EXTENSION,
+                                Artifact.DEFAULT_VERSION));
+        final String version =
+                versions.isEmpty() ? Artifact.DEFAULT_VERSION : versions.iterator().next();
         final ArtifactRepository repository = reader.getRepository();
 
         return new PluginVersionResult() {

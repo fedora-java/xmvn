@@ -33,7 +33,9 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class WorkspaceReaderTest extends AbstractTest {
     private WorkspaceReader workspace;
 
@@ -67,7 +69,9 @@ public class WorkspaceReaderTest extends AbstractTest {
         EasyMock.expect(result.getArtifactPath()).andReturn(Path.of("/foo/bar"));
         EasyMock.replay(resolver, result);
 
-        File file = workspace.findArtifact(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        File file =
+                workspace.findArtifact(
+                        new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
         EasyMock.verify(resolver, result);
 
         assertEquals(new File("/foo/bar"), file);
@@ -82,7 +86,9 @@ public class WorkspaceReaderTest extends AbstractTest {
         EasyMock.expect(result.getArtifactPath()).andReturn(null);
         EasyMock.replay(resolver, result);
 
-        File file = workspace.findArtifact(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+        File file =
+                workspace.findArtifact(
+                        new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
         EasyMock.verify(resolver, result);
 
         assertEquals(null, file);
@@ -118,7 +124,8 @@ public class WorkspaceReaderTest extends AbstractTest {
         EasyMock.replay(resolver, result);
 
         List<String> versions =
-                workspace.findVersions(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+                workspace.findVersions(
+                        new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
         EasyMock.verify(resolver, result);
 
         assertEquals(1, versions.size());
@@ -136,7 +143,8 @@ public class WorkspaceReaderTest extends AbstractTest {
         EasyMock.replay(resolver, result);
 
         List<String> versions =
-                workspace.findVersions(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+                workspace.findVersions(
+                        new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
         EasyMock.verify(resolver, result);
 
         assertEquals(1, versions.size());
@@ -153,7 +161,8 @@ public class WorkspaceReaderTest extends AbstractTest {
         EasyMock.replay(resolver, result);
 
         List<String> versions =
-                workspace.findVersions(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
+                workspace.findVersions(
+                        new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
         EasyMock.verify(resolver, result);
 
         assertEquals(0, versions.size());

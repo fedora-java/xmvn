@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.repository.impl;
 
 import org.fedoraproject.xmvn.repository.Repository;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 abstract class AbstractRepository implements Repository {
     private final String namespace;
 

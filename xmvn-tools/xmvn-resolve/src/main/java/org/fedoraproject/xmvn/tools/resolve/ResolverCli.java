@@ -34,8 +34,8 @@ import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionResultListMarshaller;
 /**
  * Resolve artifacts given on command line.
  *
- * <p>Return 0 when all artifacts are successfully resolved, 1 on failure to resolve one or more artifacts and 2 when
- * some other error occurs. In the last case a stack trace is printed too.
+ * <p>Return 0 when all artifacts are successfully resolved, 1 on failure to resolve one or more
+ * artifacts and 2 when some other error occurs. In the last case a stack trace is printed too.
  *
  * @author Mikolaj Izdebski
  */
@@ -49,9 +49,11 @@ public class ResolverCli {
         this.resolver = resolver;
     }
 
-    private List<ResolutionRequest> parseRequests(ResolverCliRequest cli) throws IOException, XMLStreamException {
+    private List<ResolutionRequest> parseRequests(ResolverCliRequest cli)
+            throws IOException, XMLStreamException {
         if (cli.isRaw()) {
-            List<ResolutionRequest> requests = new ResolutionRequestListUnmarshaller(System.in).unmarshal();
+            List<ResolutionRequest> requests =
+                    new ResolutionRequestListUnmarshaller(System.in).unmarshal();
             return requests != null ? requests : List.of();
         }
 
@@ -80,7 +82,9 @@ public class ResolverCli {
             new ResolutionResultListMarshaller(results).marshal(System.out);
         } else if (cli.isClasspath()) {
             System.out.println(
-                    results.stream().map(r -> r.getArtifactPath().toString()).collect(Collectors.joining(":")));
+                    results.stream()
+                            .map(r -> r.getArtifactPath().toString())
+                            .collect(Collectors.joining(":")));
         } else {
             results.forEach(r -> System.out.println(r.getArtifactPath()));
         }

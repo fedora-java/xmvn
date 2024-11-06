@@ -20,12 +20,15 @@ import java.util.Properties;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 abstract class SimpleRepositoryFactory extends AbstractRepositoryFactory {
     protected abstract Repository newInstance(String namespace, Path root, Element filter);
 
     @Override
-    public Repository getInstance(Element filter, Properties properties, Element configuration, String namespace) {
+    public Repository getInstance(
+            Element filter, Properties properties, Element configuration, String namespace) {
         String rootProperty = properties.getProperty("root");
         Path root = rootProperty != null ? Path.of(rootProperty) : null;
 

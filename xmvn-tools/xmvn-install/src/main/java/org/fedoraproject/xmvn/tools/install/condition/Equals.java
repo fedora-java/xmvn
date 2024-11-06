@@ -19,7 +19,9 @@ import java.util.Iterator;
 import java.util.List;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class Equals extends BooleanExpression {
     private final StringExpression lhs;
 

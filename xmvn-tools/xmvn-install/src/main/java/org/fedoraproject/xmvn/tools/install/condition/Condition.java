@@ -21,7 +21,9 @@ import java.util.stream.Collectors;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class Condition {
     private final BooleanExpression expr;
 
@@ -59,7 +61,8 @@ public class Condition {
 
             default:
                 throw new RuntimeException(
-                        "Unable to parse string expression: unknown XML node name: " + dom.getNodeName());
+                        "Unable to parse string expression: unknown XML node name: "
+                                + dom.getNodeName());
         }
     }
 
@@ -93,7 +96,8 @@ public class Condition {
 
             default:
                 throw new RuntimeException(
-                        "Unable to parse string expression: unknown XML node name: " + dom.getNodeName());
+                        "Unable to parse string expression: unknown XML node name: "
+                                + dom.getNodeName());
         }
     }
 

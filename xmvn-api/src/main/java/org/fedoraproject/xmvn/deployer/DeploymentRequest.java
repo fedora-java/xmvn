@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 import org.fedoraproject.xmvn.artifact.Artifact;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DeploymentRequest {
     private static final Path DEFAULT_PLAN_PATH = Path.of(".xmvn-reactor");
 
@@ -57,7 +59,8 @@ public class DeploymentRequest {
         addDependency(dependencyArtifact, false, exclusions);
     }
 
-    public void addDependency(Artifact dependencyArtifact, boolean optional, List<Artifact> exclusions) {
+    public void addDependency(
+            Artifact dependencyArtifact, boolean optional, List<Artifact> exclusions) {
         dependencies.add(new DependencyDescriptor(dependencyArtifact, optional, exclusions));
     }
 

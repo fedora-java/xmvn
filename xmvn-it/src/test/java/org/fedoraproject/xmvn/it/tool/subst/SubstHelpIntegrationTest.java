@@ -22,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class SubstHelpIntegrationTest extends AbstractToolIntegrationTest {
     @Test
     public void testSubstHelp() throws Exception {

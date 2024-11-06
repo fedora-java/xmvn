@@ -15,7 +15,9 @@
  */
 package org.fedoraproject.xmvn.logging;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public interface Logger {
     boolean isDebugEnabled();
 

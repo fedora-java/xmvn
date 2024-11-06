@@ -28,7 +28,9 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public class PackageRegistryTest {
     private InstallerSettings settings;
 
@@ -57,7 +59,8 @@ public class PackageRegistryTest {
         Set<File> files = pkg.getFiles();
         assertEquals(1, files.size());
         File metadataFile = files.iterator().next();
-        assertEquals(Path.of("usr/share/maven-metadata/test-package.xml"), metadataFile.getTargetPath());
+        assertEquals(
+                Path.of("usr/share/maven-metadata/test-package.xml"), metadataFile.getTargetPath());
         assertNotNull(pkg.getMetadata());
     }
 
@@ -67,7 +70,9 @@ public class PackageRegistryTest {
         Set<File> files = pkg.getFiles();
         assertEquals(1, files.size());
         File metadataFile = files.iterator().next();
-        assertEquals(Path.of("usr/share/maven-metadata/test-package-subpackage.xml"), metadataFile.getTargetPath());
+        assertEquals(
+                Path.of("usr/share/maven-metadata/test-package-subpackage.xml"),
+                metadataFile.getTargetPath());
     }
 
     @Test

@@ -38,7 +38,9 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class JarUtilsTest {
     private Path workDir;
 
@@ -51,9 +53,14 @@ public class JarUtilsTest {
     private void testManifestInjectionInto(String testJarName) throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve(testJarName);
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -102,8 +109,8 @@ public class JarUtilsTest {
     }
 
     /**
-     * Test JAR if manifest injection works when MANIFEST.MF file appears later in the file (for example produced by
-     * adding manifest to existing jar with plain zip)
+     * Test JAR if manifest injection works when MANIFEST.MF file appears later in the file (for
+     * example produced by adding manifest to existing jar with plain zip)
      *
      * @throws Exception
      */
@@ -111,9 +118,14 @@ public class JarUtilsTest {
     public void testManifestInjectionLateManifest() throws Exception {
         Path testResource = Path.of("src/test/resources/late-manifest.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -132,8 +144,8 @@ public class JarUtilsTest {
     }
 
     /**
-     * Regression test for a jar which contains an entry that can recompress with a different size, which caused a
-     * mismatch in sizes.
+     * Regression test for a jar which contains an entry that can recompress with a different size,
+     * which caused a mismatch in sizes.
      *
      * @throws Exception
      */
@@ -141,9 +153,15 @@ public class JarUtilsTest {
     public void testManifestInjectionRecompressionCausesSizeMismatch() throws Exception {
         Path testResource = Path.of("src/test/resources/recompression-size.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("org.eclipse.osgi", "osgi.compatibility.state", "1.1.0.v20180409-1212");
+        Artifact artifact =
+                new DefaultArtifact(
+                        "org.eclipse.osgi", "osgi.compatibility.state", "1.1.0.v20180409-1212");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -168,9 +186,14 @@ public class JarUtilsTest {
     public void testManifestInjectionDuplicateManifest() throws Exception {
         Path testResource = Path.of("src/test/resources/duplicate-manifest.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -189,7 +212,8 @@ public class JarUtilsTest {
     }
 
     /**
-     * Test JAR if manifest injection works as expected when some artifact fields have default values.
+     * Test JAR if manifest injection works as expected when some artifact fields have default
+     * values.
      *
      * @throws Exception
      */
@@ -197,7 +221,11 @@ public class JarUtilsTest {
     public void testManifestInjectionDefaults() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest-defaults.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
         Artifact artifact = new DefaultArtifact("xpp3", "xpp3_xpath", "jar", "", "SYSTEM");
         JarUtils.injectManifest(testJar, artifact);
@@ -226,14 +254,22 @@ public class JarUtilsTest {
     public void testManifestInjectionSanePermissions() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        assumeTrue(Files.getPosixFilePermissions(testJar).contains(PosixFilePermission.OTHERS_READ), "sane umask");
+        assumeTrue(
+                Files.getPosixFilePermissions(testJar).contains(PosixFilePermission.OTHERS_READ),
+                "sane umask");
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
-        assertTrue(Files.getPosixFilePermissions(testJar).contains(PosixFilePermission.OTHERS_READ));
+        assertTrue(
+                Files.getPosixFilePermissions(testJar).contains(PosixFilePermission.OTHERS_READ));
     }
 
     /**
@@ -266,7 +302,11 @@ public class JarUtilsTest {
     public void testInvalidJar() throws Exception {
         Path testResource = Path.of("src/test/resources/invalid.jar");
         Path testJar = workDir.resolve("invalid.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
         Artifact artifact = new DefaultArtifact("foo", "bar");
         JarUtils.injectManifest(testJar, artifact);
@@ -288,11 +328,16 @@ public class JarUtilsTest {
     public void testSameINode() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
         long oldInode = (Long) Files.getAttribute(testJar, "unix:ino");
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         JarUtils.injectManifest(testJar, artifact);
 
@@ -302,7 +347,8 @@ public class JarUtilsTest {
     }
 
     /**
-     * Test that the backup file created during injectManifest was deleted after a successful operation
+     * Test that the backup file created during injectManifest was deleted after a successful
+     * operation
      *
      * @throws Exception
      */
@@ -310,9 +356,14 @@ public class JarUtilsTest {
     public void testBackupDeletion() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         Path backupPath = JarUtils.getBackupNameOf(testJar);
         Files.deleteIfExists(backupPath);
@@ -321,8 +372,8 @@ public class JarUtilsTest {
     }
 
     /**
-     * Test that the backup file created during injectManifest remains after an unsuccessful operation and its content
-     * is identical to the original file
+     * Test that the backup file created during injectManifest remains after an unsuccessful
+     * operation and its content is identical to the original file
      *
      * @throws Exception
      */
@@ -330,7 +381,11 @@ public class JarUtilsTest {
     public void testBackupOnFailure() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
         Artifact artifact = EasyMock.createMock(Artifact.class);
         EasyMock.expect(artifact.getGroupId()).andThrow(new RuntimeException("boom"));
@@ -341,7 +396,8 @@ public class JarUtilsTest {
 
         byte[] content = Files.readAllBytes(testJar);
 
-        Exception ex = assertThrows(Exception.class, () -> JarUtils.injectManifest(testJar, artifact));
+        Exception ex =
+                assertThrows(Exception.class, () -> JarUtils.injectManifest(testJar, artifact));
 
         assertTrue(
                 ex.getMessage().contains(backupPath.toString()),
@@ -355,9 +411,14 @@ public class JarUtilsTest {
                 backupContent,
                 "Content of the backup file is different from the content of the original file");
 
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
         try (FileOutputStream os = new FileOutputStream(testJar.toFile(), true)) {
-            /// Append garbage to the original file to check if the content of the backup will be retained
+            /// Append garbage to the original file to check if the content of the backup will be
+            // retained
             os.write(0);
         }
 
@@ -382,9 +443,14 @@ public class JarUtilsTest {
     public void testFailWhenBachupPresent() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
-        Files.copy(testResource, testJar, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         Path backupPath = JarUtils.getBackupNameOf(testJar);
         Files.deleteIfExists(backupPath);
@@ -401,7 +467,8 @@ public class JarUtilsTest {
     }
 
     /**
-     * Test JAR if manifest injection is reproducible, i.e. always leads to creation of bit-identical JARs.
+     * Test JAR if manifest injection is reproducible, i.e. always leads to creation of
+     * bit-identical JARs.
      *
      * @throws Exception
      */
@@ -410,10 +477,19 @@ public class JarUtilsTest {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar1 = workDir.resolve("reproducible1.jar");
         Path testJar2 = workDir.resolve("reproducible2.jar");
-        Files.copy(testResource, testJar1, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(testResource, testJar2, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar1,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                testResource,
+                testJar2,
+                StandardCopyOption.COPY_ATTRIBUTES,
+                StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact =
+                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         JarUtils.injectManifest(testJar1, artifact);
         Thread.sleep(3000); // ZIP time granularity is 2 seconds

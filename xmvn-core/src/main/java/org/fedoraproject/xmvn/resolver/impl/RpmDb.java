@@ -26,7 +26,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class RpmDb {
     private static Map<String, String> paths;
 

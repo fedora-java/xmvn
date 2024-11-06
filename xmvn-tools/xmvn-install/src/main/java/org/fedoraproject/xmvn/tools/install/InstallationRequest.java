@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.tools.install;
 
 import java.nio.file.Path;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class InstallationRequest {
     private boolean checkForUnmatchedRules;
 

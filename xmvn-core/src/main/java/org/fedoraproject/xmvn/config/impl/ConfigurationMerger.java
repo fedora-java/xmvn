@@ -25,7 +25,9 @@ import org.fedoraproject.xmvn.config.PackagingRule;
 import org.fedoraproject.xmvn.config.Repository;
 import org.fedoraproject.xmvn.config.ResolverSettings;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class ConfigurationMerger {
     private void mergeProperties(Properties dominant, Properties recessive) {
         Set<Object> dominantKeySet = dominant.keySet();
@@ -49,7 +51,8 @@ class ConfigurationMerger {
         }
     }
 
-    private void mergeArtifactmanagement(List<PackagingRule> dominant, List<PackagingRule> recessive) {
+    private void mergeArtifactmanagement(
+            List<PackagingRule> dominant, List<PackagingRule> recessive) {
         dominant.addAll(recessive);
     }
 
@@ -90,7 +93,8 @@ class ConfigurationMerger {
         }
         mergeBuildSettings(dominant.getBuildSettings(), recessive.getBuildSettings());
 
-        mergeArtifactmanagement(dominant.getArtifactManagement(), recessive.getArtifactManagement());
+        mergeArtifactmanagement(
+                dominant.getArtifactManagement(), recessive.getArtifactManagement());
 
         if (dominant.getResolverSettings() == null) {
             dominant.setResolverSettings(new ResolverSettings());
@@ -106,13 +110,14 @@ class ConfigurationMerger {
     /**
      * Merge two configurations, with one with one having precedence in the case of conflict.
      *
-     * <p>Caller should not depend on contents of dominant configuration after the merge was attempted as the
-     * implementation is free to modify it. Recessive configuration is never changed.
+     * <p>Caller should not depend on contents of dominant configuration after the merge was
+     * attempted as the implementation is free to modify it. Recessive configuration is never
+     * changed.
      *
-     * @param dominant the dominant configuration into which the recessive configuration will be merged (may be
-     *     {@code null})
-     * @param recessive the recessive configuration from which the configuration will inherited (may not be {@code null}
-     *     )
+     * @param dominant the dominant configuration into which the recessive configuration will be
+     *     merged (may be {@code null})
+     * @param recessive the recessive configuration from which the configuration will inherited (may
+     *     not be {@code null} )
      * @return merged configuration (not {@code null}, may be the same as dominant)
      */
     public Configuration merge(Configuration dominant, Configuration recessive) {

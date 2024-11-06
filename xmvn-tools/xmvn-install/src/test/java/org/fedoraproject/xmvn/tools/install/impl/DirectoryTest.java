@@ -23,7 +23,9 @@ import org.fedoraproject.xmvn.tools.install.Directory;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DirectoryTest extends AbstractFileTest {
     /**
      * Basic test for directory installation
@@ -52,11 +54,13 @@ public class DirectoryTest extends AbstractFileTest {
         add(new Directory(Path.of("etc")));
         performInstallation();
 
-        assertDirectoryStructure("D /etc", "D /etc/sysconfig", "D /etc/sysconfig/java", "D /etc/xmvn");
+        assertDirectoryStructure(
+                "D /etc", "D /etc/sysconfig", "D /etc/sysconfig/java", "D /etc/xmvn");
 
         assertDescriptorEquals(
                 "%attr(0755,root,root) %dir /etc",
-                "%attr(0755,root,root) %dir /etc/sysconfig/java", "%attr(0755,root,root) %dir /etc/xmvn");
+                "%attr(0755,root,root) %dir /etc/sysconfig/java",
+                "%attr(0755,root,root) %dir /etc/xmvn");
     }
 
     /** Test if directory installation fails if target already exists and is not a directory. */
@@ -68,8 +72,8 @@ public class DirectoryTest extends AbstractFileTest {
     }
 
     /**
-     * Test if directory installation fails if component of target directory target already exists and is not a
-     * directory.
+     * Test if directory installation fails if component of target directory target already exists
+     * and is not a directory.
      */
     @Test
     public void testDirectoryCOmponentIsAFile() throws Exception {

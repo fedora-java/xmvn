@@ -22,7 +22,9 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class CacheManager {
     private static final String DIGEST_ALGORITHM = "SHA-256";
 
@@ -34,7 +36,8 @@ class CacheManager {
         try {
             digest = MessageDigest.getInstance(DIGEST_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Digest algorithm " + DIGEST_ALGORITHM + " is not available", e);
+            throw new RuntimeException(
+                    "Digest algorithm " + DIGEST_ALGORITHM + " is not available", e);
         }
     }
 

@@ -28,13 +28,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public final class DomUtils {
     private DomUtils() {
         // Avoid generating default public constructor
     }
 
-    public static Element parse(Path path) throws SAXException, IOException, ParserConfigurationException {
+    public static Element parse(Path path)
+            throws SAXException, IOException, ParserConfigurationException {
         return DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder()
                 .parse(path.toFile())
@@ -49,10 +52,12 @@ public final class DomUtils {
     }
 
     public static List<Element> parseAsParent(Element dom) {
-        Stream<Text> notWsTextContent = DomUtils.childrenOfType(dom, Text.class)
-                .filter(node -> !node.getTextContent().trim().isEmpty());
+        Stream<Text> notWsTextContent =
+                DomUtils.childrenOfType(dom, Text.class)
+                        .filter(node -> !node.getTextContent().trim().isEmpty());
         if (notWsTextContent.findAny().isPresent()) {
-            throw new RuntimeException("XML element " + dom.getNodeName() + " doesn't allow text content.");
+            throw new RuntimeException(
+                    "XML element " + dom.getNodeName() + " doesn't allow text content.");
         }
 
         return childrenOfType(dom, Element.class).collect(Collectors.toList());
@@ -60,7 +65,8 @@ public final class DomUtils {
 
     public static String parseAsText(Element dom) {
         if (childrenOfType(dom, Element.class).findAny().isPresent()) {
-            throw new RuntimeException("XML element " + dom.getNodeName() + " doesn't allow any children.");
+            throw new RuntimeException(
+                    "XML element " + dom.getNodeName() + " doesn't allow any children.");
         }
 
         return dom.getTextContent().trim();
@@ -68,13 +74,15 @@ public final class DomUtils {
 
     public static void parseAsEmpty(Element dom) {
         if (!parseAsText(dom).isEmpty()) {
-            throw new RuntimeException("XML element " + dom.getNodeName() + " doesn't allow text content.");
+            throw new RuntimeException(
+                    "XML element " + dom.getNodeName() + " doesn't allow text content.");
         }
     }
 
     public static Element parseAsWrapper(Element dom) {
         if (childrenOfType(dom, Element.class).count() != 1) {
-            throw new RuntimeException("XML node " + dom.getNodeName() + " must have exactly one child.");
+            throw new RuntimeException(
+                    "XML node " + dom.getNodeName() + " must have exactly one child.");
         }
 
         return childrenOfType(dom, Element.class).findAny().get();

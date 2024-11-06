@@ -25,7 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import org.fedoraproject.xmvn.tools.install.File;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public abstract class AbstractFileTest extends AbstractInstallerTest {
     private final List<File> files = new ArrayList<>();
 

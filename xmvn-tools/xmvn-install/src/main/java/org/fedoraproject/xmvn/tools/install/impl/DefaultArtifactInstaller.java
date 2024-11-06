@@ -46,7 +46,9 @@ import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class DefaultArtifactInstaller implements ArtifactInstaller {
     private final Logger logger = LoggerFactory.getLogger(DefaultArtifactInstaller.class);
 
@@ -87,7 +89,8 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
 
         Repository repo = repositoryConfigurator.configureRepository(repositoryId);
         if (repo == null) {
-            throw new ArtifactInstallationException("Unable to configure installation repository: " + repositoryId);
+            throw new ArtifactInstallationException(
+                    "Unable to configure installation repository: " + repositoryId);
         }
 
         Set<Path> basePaths = new LinkedHashSet<>();
@@ -107,25 +110,29 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
             }
         }
         if (relativePaths.isEmpty()) {
-            throw new RuntimeException("At least one non-absolute file must be specified for artifact " + artifact);
+            throw new RuntimeException(
+                    "At least one non-absolute file must be specified for artifact " + artifact);
         }
 
-        String installedVersion = rule.getVersions().isEmpty()
-                ? null
-                : rule.getVersions().iterator().next();
+        String installedVersion =
+                rule.getVersions().isEmpty() ? null : rule.getVersions().iterator().next();
         Artifact versionedArtifact = artifact.setVersion(installedVersion);
         ArtifactContext context = new ArtifactContext(versionedArtifact, properties);
         List<Path> repoPaths = new ArrayList<>();
         for (Path path : relativePaths) {
-            Path repoPath = repo.getPrimaryArtifactPath(versionedArtifact, context, path.toString());
+            Path repoPath =
+                    repo.getPrimaryArtifactPath(versionedArtifact, context, path.toString());
             if (repoPath == null) {
                 throw new ArtifactInstallationException(
-                        "Installation repository is incapable of holding artifact " + versionedArtifact);
+                        "Installation repository is incapable of holding artifact "
+                                + versionedArtifact);
             }
             repoPaths.add(repoPath);
 
             Set<Path> repoRoots = repo.getRootPaths();
-            for (Path dir = repoPath.getParent(); dir != null && !repoRoots.contains(dir); dir = dir.getParent()) {
+            for (Path dir = repoPath.getParent();
+                    dir != null && !repoRoots.contains(dir);
+                    dir = dir.getParent()) {
                 targetPackage.addFileIfNotExists(new Directory(dir));
             }
         }

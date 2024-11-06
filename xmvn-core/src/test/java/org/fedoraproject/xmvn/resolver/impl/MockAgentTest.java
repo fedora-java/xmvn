@@ -44,10 +44,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class MockAgentTest {
-    @TempDir
-    private Path tempDir;
+    @TempDir private Path tempDir;
 
     private volatile Throwable tt;
 
@@ -88,19 +89,22 @@ public class MockAgentTest {
 
     private void startSocketListener(String expectedRequest, String response) throws Throwable {
         CountDownLatch latch = new CountDownLatch(1);
-        listenerThread = new Thread(() -> {
-            try (ServerSocketChannel serverChannel = ServerSocketChannel.open(StandardProtocolFamily.UNIX)) {
-                serverChannel.bind(socketAddress);
-                latch.countDown();
-                try (SocketChannel channel = serverChannel.accept()) {
-                    String request = recvRequest(channel);
-                    assertEquals(expectedRequest, request);
-                    sendResponse(channel, response);
-                }
-            } catch (Throwable t) {
-                tt = t;
-            }
-        });
+        listenerThread =
+                new Thread(
+                        () -> {
+                            try (ServerSocketChannel serverChannel =
+                                    ServerSocketChannel.open(StandardProtocolFamily.UNIX)) {
+                                serverChannel.bind(socketAddress);
+                                latch.countDown();
+                                try (SocketChannel channel = serverChannel.accept()) {
+                                    String request = recvRequest(channel);
+                                    assertEquals(expectedRequest, request);
+                                    sendResponse(channel, response);
+                                }
+                            } catch (Throwable t) {
+                                tt = t;
+                            }
+                        });
         listenerThread.setDaemon(true);
         listenerThread.start();
         // Wait until the thread binds the socket
@@ -120,7 +124,9 @@ public class MockAgentTest {
         }
     }
 
-    private void performTest(String coords, String expectedRequest, String response, boolean outcome) throws Throwable {
+    private void performTest(
+            String coords, String expectedRequest, String response, boolean outcome)
+            throws Throwable {
         Artifact artifact = new DefaultArtifact(coords);
         startSocketListener(expectedRequest, response);
 

@@ -27,8 +27,8 @@ import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 
 /**
- * Class describing a Java package as a package which besides other files files also installs Java metadata as an
- * additional file.
+ * Class describing a Java package as a package which besides other files files also installs Java
+ * metadata as an additional file.
  *
  * @author Mikolaj Izdebski
  */
@@ -54,8 +54,8 @@ public class JavaPackage extends Package {
     }
 
     /**
-     * Create metadata contents split by namespace, so that artifacts with different namespaces don't have conflicting
-     * metadata files.
+     * Create metadata contents split by namespace, so that artifacts with different namespaces
+     * don't have conflicting metadata files.
      *
      * @param namespace namespace name
      * @return new metadata with subset of artifacts
@@ -64,9 +64,10 @@ public class JavaPackage extends Package {
         PackageMetadata splitMetadata = new PackageMetadata();
         splitMetadata.setProperties(metadata.getProperties());
         List<ArtifactMetadata> allArtifacts = metadata.getArtifacts();
-        List<ArtifactMetadata> splitArtifacts = allArtifacts.stream()
-                .filter(a -> namespace.equals(a.getNamespace()))
-                .collect(Collectors.toList());
+        List<ArtifactMetadata> splitArtifacts =
+                allArtifacts.stream()
+                        .filter(a -> namespace.equals(a.getNamespace()))
+                        .collect(Collectors.toList());
         splitMetadata.setArtifacts(splitArtifacts);
         splitMetadata.setSkippedArtifacts(metadata.getSkippedArtifacts());
         return splitMetadata;
@@ -97,11 +98,12 @@ public class JavaPackage extends Package {
     public Set<File> getFiles() {
         Set<File> allFiles = new LinkedHashSet<>(super.getFiles());
         for (String namespace : getNamespaces()) {
-            String metadataName = namespace
-                    + (namespace.isEmpty() ? "" : "-")
-                    + basePackageName
-                    + (getId().isEmpty() ? "" : "-")
-                    + getId();
+            String metadataName =
+                    namespace
+                            + (namespace.isEmpty() ? "" : "-")
+                            + basePackageName
+                            + (getId().isEmpty() ? "" : "-")
+                            + getId();
             Path metadataPath = metadataDir.resolve(metadataName + ".xml");
             File metadataFile = new RegularFile(metadataPath, () -> getMetadataContents(namespace));
             allFiles.add(metadataFile);

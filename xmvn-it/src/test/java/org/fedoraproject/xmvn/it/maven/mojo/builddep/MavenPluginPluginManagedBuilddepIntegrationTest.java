@@ -22,7 +22,8 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class MavenPluginPluginManagedBuilddepIntegrationTest extends AbstractBuilddepIntegrationTest {
+public class MavenPluginPluginManagedBuilddepIntegrationTest
+        extends AbstractBuilddepIntegrationTest {
     @Test
     public void testBuilddepMavenPluginPluginManaged() throws Exception {
         expectBuildDependency("org.apache.maven.plugins", "maven-plugin-plugin");

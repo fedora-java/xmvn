@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import java.util.List;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class Xor extends BooleanOperator {
     public Xor(List<BooleanExpression> children) {
         super(false, children);

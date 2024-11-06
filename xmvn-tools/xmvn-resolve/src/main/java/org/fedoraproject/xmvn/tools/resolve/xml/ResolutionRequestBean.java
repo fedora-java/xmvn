@@ -18,7 +18,9 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ResolutionRequestBean {
     private Artifact artifact;
 
@@ -40,7 +42,9 @@ public class ResolutionRequestBean {
         this.isProviderNeeded = isProviderNeeded;
     }
 
-    /** @author Mikolaj Izdebski */
+    /**
+     * @author Mikolaj Izdebski
+     */
     public static class Adapter {
         public ResolutionRequestBean marshal(ResolutionRequest request) throws Exception {
             ResolutionRequestBean bean = new ResolutionRequestBean();

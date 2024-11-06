@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DefaultArtifactTest {
     /** Test one-argument constructor. */
     @Test
@@ -90,7 +92,9 @@ public class DefaultArtifactTest {
     /** Test one-argument constructor with too many fields in coordinates. */
     @Test
     public void testTooManyFields() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultArtifact("gid:aid:ext:cla:ver:extra"));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new DefaultArtifact("gid:aid:ext:cla:ver:extra"));
     }
 
     /** Test two-argument constructor with groupId as null pointer. */

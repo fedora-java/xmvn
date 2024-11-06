@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.tools.install.condition;
 
 import java.util.List;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class Or extends BooleanOperator {
     public Or(List<BooleanExpression> children) {
         super(false, children);

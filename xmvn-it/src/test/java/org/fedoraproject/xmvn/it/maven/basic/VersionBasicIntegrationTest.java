@@ -32,6 +32,7 @@ public class VersionBasicIntegrationTest extends AbstractMavenIntegrationTest {
         performTest("-v");
         assertTrue(getStdout().anyMatch(s -> s.contains("Apache Maven")));
         assertTrue(getStdout().anyMatch(s -> s.equals("Maven home: " + getMavenHome())));
-        assertFalse(getStdout().anyMatch(s -> s.toLowerCase().matches(".*(error|exception|fail).*")));
+        assertFalse(
+                getStdout().anyMatch(s -> s.toLowerCase().matches(".*(error|exception|fail).*")));
     }
 }

@@ -71,7 +71,8 @@ public abstract class AbstractIntegrationTest {
         String workdir = "xmvn-it/target/work" + workdirSuffix;
         Path cwd = Path.of(".").toRealPath();
         if (!cwd.endsWith(workdir)) {
-            throw new RuntimeException("XMvn integration tests must be ran from " + workdir + " directory");
+            throw new RuntimeException(
+                    "XMvn integration tests must be ran from " + workdir + " directory");
         }
     }
 
@@ -141,7 +142,8 @@ public abstract class AbstractIntegrationTest {
     }
 
     public String getTestProperty(String name) throws IOException {
-        try (InputStream is = AbstractIntegrationTest.class.getResourceAsStream("/xmvn-it.properties")) {
+        try (InputStream is =
+                AbstractIntegrationTest.class.getResourceAsStream("/xmvn-it.properties")) {
             Properties properties = new Properties();
             properties.load(is);
             return properties.getProperty(name);

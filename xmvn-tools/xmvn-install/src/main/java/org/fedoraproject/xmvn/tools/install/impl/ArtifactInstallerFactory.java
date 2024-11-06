@@ -32,7 +32,9 @@ import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class ArtifactInstallerFactory {
     private final Logger logger = LoggerFactory.getLogger(ArtifactInstallerFactory.class);
 
@@ -54,16 +56,20 @@ class ArtifactInstallerFactory {
             try (InputStream resourceStream = pluginRealm.getResourceAsStream(resourceName)) {
                 if (resourceStream != null) {
                     String pluginImplClass;
-                    try (BufferedReader resourceReader = new BufferedReader(new InputStreamReader(resourceStream))) {
+                    try (BufferedReader resourceReader =
+                            new BufferedReader(new InputStreamReader(resourceStream))) {
                         pluginImplClass = resourceReader.readLine();
                     }
 
-                    ArtifactInstaller pluggedInInstaller = cachedPluginsByImplClass.get(pluginImplClass);
+                    ArtifactInstaller pluggedInInstaller =
+                            cachedPluginsByImplClass.get(pluginImplClass);
                     if (pluggedInInstaller == null) {
-                        pluggedInInstaller = (ArtifactInstaller) pluginRealm
-                                .loadClass(pluginImplClass)
-                                .getConstructor()
-                                .newInstance();
+                        pluggedInInstaller =
+                                (ArtifactInstaller)
+                                        pluginRealm
+                                                .loadClass(pluginImplClass)
+                                                .getConstructor()
+                                                .newInstance();
                         cachedPluginsByImplClass.put(pluginImplClass, pluggedInInstaller);
                     }
 
@@ -71,7 +77,8 @@ class ArtifactInstallerFactory {
                     return pluggedInInstaller;
                 }
             } catch (IOException | ReflectiveOperationException e) {
-                throw new RuntimeException("Unable to load XMvn Installer plugin for packaging type " + type, e);
+                throw new RuntimeException(
+                        "Unable to load XMvn Installer plugin for packaging type " + type, e);
             }
         }
 
@@ -98,17 +105,18 @@ class ArtifactInstallerFactory {
     }
 
     /** List of packages imported from XMvn Installer class loader to plug-in realms. */
-    private static final List<String> PLUGIN_IMPORTS = Arrays.asList( // XMvn API
-            "org.fedoraproject.xmvn.artifact",
-            "org.fedoraproject.xmvn.config",
-            "org.fedoraproject.xmvn.deployer",
-            "org.fedoraproject.xmvn.locator",
-            "org.fedoraproject.xmvn.metadata",
-            "org.fedoraproject.xmvn.resolver",
-            // XMvn Installer SPI
-            "org.fedoraproject.xmvn.tools.install",
-            // SLF4J API
-            "org.slf4j");
+    private static final List<String> PLUGIN_IMPORTS =
+            Arrays.asList( // XMvn API
+                    "org.fedoraproject.xmvn.artifact",
+                    "org.fedoraproject.xmvn.config",
+                    "org.fedoraproject.xmvn.deployer",
+                    "org.fedoraproject.xmvn.locator",
+                    "org.fedoraproject.xmvn.metadata",
+                    "org.fedoraproject.xmvn.resolver",
+                    // XMvn Installer SPI
+                    "org.fedoraproject.xmvn.tools.install",
+                    // SLF4J API
+                    "org.slf4j");
 
     @SuppressWarnings("unused")
     public ArtifactInstaller getInstallerFor(Artifact artifact, Properties properties) {

@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.artifact;
 
 import java.nio.file.Path;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public final class DefaultArtifact implements Artifact {
     private final String groupId;
 
@@ -36,7 +38,8 @@ public final class DefaultArtifact implements Artifact {
         int n = s.length() - s.replace(":", "").length();
         if (n < 1 || n > 4) {
             throw new IllegalArgumentException(
-                    "Illegal artifact coordinates " + coords
+                    "Illegal artifact coordinates "
+                            + coords
                             + ", expected coordinates in format <groupId>:<artifactId>[:<extension>[:<classifier>]]:[<version>]");
         }
         s += "::::";
@@ -67,12 +70,22 @@ public final class DefaultArtifact implements Artifact {
         this(groupId, artifactId, extension, null, version);
     }
 
-    public DefaultArtifact(String groupId, String artifactId, String extension, String classifier, String version) {
+    public DefaultArtifact(
+            String groupId,
+            String artifactId,
+            String extension,
+            String classifier,
+            String version) {
         this(groupId, artifactId, extension, classifier, version, null);
     }
 
     public DefaultArtifact(
-            String groupId, String artifactId, String extension, String classifier, String version, Path path) {
+            String groupId,
+            String artifactId,
+            String extension,
+            String classifier,
+            String version,
+            Path path) {
         if (groupId == null || groupId.isEmpty()) {
             throw new IllegalArgumentException("groupId must be specified");
         }

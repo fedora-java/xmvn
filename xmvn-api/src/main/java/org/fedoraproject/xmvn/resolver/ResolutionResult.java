@@ -33,26 +33,28 @@ public interface ResolutionResult {
     /**
      * Get name of system package providing requested artifact.
      *
-     * @return name of system package providing requested artifact or {@code null} if information about artifact
-     *     provider is not available
+     * @return name of system package providing requested artifact or {@code null} if information
+     *     about artifact provider is not available
      */
     String getProvider();
 
     /**
      * Get compatibility version of resolved artifact.
      *
-     * <p>Compatibility version is defined only when resolved artifact version is not default version of the artifact in
-     * the system.
+     * <p>Compatibility version is defined only when resolved artifact version is not default
+     * version of the artifact in the system.
      *
-     * @return compatibility version of resolved artifact or {@code null} if default artifact version was resolved
+     * @return compatibility version of resolved artifact or {@code null} if default artifact
+     *     version was resolved
      */
     String getCompatVersion();
 
     /**
      * Get namespace of resolved artifact, if any.
      *
-     * @return namespace of repository from which the artifact was resolved or {@code null} if artifact was not resolved
-     *     from any repository or the repository does not have associated namespace.
+     * @return namespace of repository from which the artifact was resolved or {@code null} if
+     *     artifact was not resolved from any repository or the repository does not have associated
+     *     namespace.
      */
     String getNamespace();
 }

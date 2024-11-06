@@ -31,9 +31,14 @@ public class PluginAliasBasicIntegrationTest extends AbstractMavenIntegrationTes
     @Test
     public void testPluginAlias() throws Exception {
         performTest("process-classes");
-        assertTrue(getStdout()
-                .anyMatch(s -> s.startsWith("[INFO] --- plexus-component-metadata:1.7.1:generate-metadata (default)")));
-        assertTrue(Files.isRegularFile(Path.of("src/main/resources/META-INF/plexus/components.xml")));
+        assertTrue(
+                getStdout()
+                        .anyMatch(
+                                s ->
+                                        s.startsWith(
+                                                "[INFO] --- plexus-component-metadata:1.7.1:generate-metadata (default)")));
+        assertTrue(
+                Files.isRegularFile(Path.of("src/main/resources/META-INF/plexus/components.xml")));
         assertTrue(Files.isRegularFile(Path.of("component-metadata-test.xml")));
     }
 }

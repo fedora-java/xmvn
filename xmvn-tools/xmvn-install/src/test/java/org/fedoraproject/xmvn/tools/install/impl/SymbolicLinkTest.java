@@ -24,7 +24,9 @@ import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 import org.junit.jupiter.api.Test;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public class SymbolicLinkTest extends AbstractFileTest {
     @Test
     public void testSymlink() throws Exception {

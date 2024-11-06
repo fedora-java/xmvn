@@ -30,11 +30,12 @@ import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class BasicSubstIntegrationTest extends AbstractToolIntegrationTest {
 
-    @TempDir
-    private Path tempDir;
+    @TempDir private Path tempDir;
 
     private Path writeJar(String name, String... entries) throws IOException {
         Path jarPath = tempDir.resolve(name + ".jar");
@@ -54,10 +55,18 @@ public class BasicSubstIntegrationTest extends AbstractToolIntegrationTest {
     @Test
     public void testSubst() throws Exception {
         Path jarA = writeJar("A");
-        Path jarB = writeJar(
-                "B", "JavaPackages-GroupId=junit", "JavaPackages-ArtifactId=junit", "JavaPackages-Version=1.2.3");
+        Path jarB =
+                writeJar(
+                        "B",
+                        "JavaPackages-GroupId=junit",
+                        "JavaPackages-ArtifactId=junit",
+                        "JavaPackages-Version=1.2.3");
         Path jarC =
-                writeJar("C", "JavaPackages-GroupId=foo", "JavaPackages-ArtifactId=xyzzy", "JavaPackages-Version=42");
+                writeJar(
+                        "C",
+                        "JavaPackages-GroupId=foo",
+                        "JavaPackages-ArtifactId=xyzzy",
+                        "JavaPackages-Version=42");
 
         assertEquals(0, invokeTool("xmvn-subst", tempDir.toString()));
         assertFalse(getStdout().findAny().isPresent());
@@ -66,12 +75,31 @@ public class BasicSubstIntegrationTest extends AbstractToolIntegrationTest {
         assertTrue(Files.isSymbolicLink(jarB));
         assertTrue(Files.isRegularFile(jarC, LinkOption.NOFOLLOW_LINKS));
 
-        assertTrue(getStderr().anyMatch(s -> s.equals("Skipping file " + jarA + ": No artifact definition found")));
-        assertTrue(getStderr()
-                .anyMatch(s ->
-                        s.equals("Linked " + jarB + " to " + getBaseDir() + "/../../src/test/resources/empty.jar")));
-        assertTrue(getStderr()
-                .anyMatch(s -> s.equals(
-                        "WARNING: Skipping file " + jarC + ": Artifact foo:xyzzy:jar:42 not found in repository")));
+        assertTrue(
+                getStderr()
+                        .anyMatch(
+                                s ->
+                                        s.equals(
+                                                "Skipping file "
+                                                        + jarA
+                                                        + ": No artifact definition found")));
+        assertTrue(
+                getStderr()
+                        .anyMatch(
+                                s ->
+                                        s.equals(
+                                                "Linked "
+                                                        + jarB
+                                                        + " to "
+                                                        + getBaseDir()
+                                                        + "/../../src/test/resources/empty.jar")));
+        assertTrue(
+                getStderr()
+                        .anyMatch(
+                                s ->
+                                        s.equals(
+                                                "WARNING: Skipping file "
+                                                        + jarC
+                                                        + ": Artifact foo:xyzzy:jar:42 not found in repository")));
     }
 }

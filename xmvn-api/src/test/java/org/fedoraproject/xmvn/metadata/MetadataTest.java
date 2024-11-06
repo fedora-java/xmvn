@@ -24,7 +24,9 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxWriter;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class MetadataTest {
     private MetadataStaxReader reader = new MetadataStaxReader();
 
@@ -35,8 +37,7 @@ public class MetadataTest {
         PackageMetadata md = reader.read("src/test/resources/metadata1.xml");
         assertEquals(2, md.getArtifacts().size());
         assertEquals("7c399c04-8621-4b4a-9c3b-5514399b228f", md.getUuid());
-        assertEquals(
-                "0ddf2120-12f0-42fe-8810-9a888889aa36", md.getArtifacts().get(0).getUuid());
+        assertEquals("0ddf2120-12f0-42fe-8810-9a888889aa36", md.getArtifacts().get(0).getUuid());
 
         StringWriter sw = new StringWriter();
         writer.write(sw, md);

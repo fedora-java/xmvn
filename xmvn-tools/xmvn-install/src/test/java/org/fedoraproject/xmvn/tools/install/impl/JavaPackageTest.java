@@ -26,7 +26,9 @@ import org.fedoraproject.xmvn.tools.install.JavaPackage;
 import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.junit.jupiter.api.Test;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public class JavaPackageTest extends AbstractFileTest {
     @Test
     public void testJavaPackage() throws Exception {
@@ -39,7 +41,8 @@ public class JavaPackageTest extends AbstractFileTest {
                 "D /usr/share",
                 "D /usr/share/maven-metadata",
                 "F /usr/share/maven-metadata/my-pkg-my-id.xml");
-        assertDescriptorEquals(pkg, "%attr(0644,root,root) /usr/share/maven-metadata/my-pkg-my-id.xml");
+        assertDescriptorEquals(
+                pkg, "%attr(0644,root,root) /usr/share/maven-metadata/my-pkg-my-id.xml");
     }
 
     @Test
@@ -51,12 +54,13 @@ public class JavaPackageTest extends AbstractFileTest {
 
         pkg.install(installRoot);
 
-        PackageMetadata actualMetadata = new MetadataStaxReader()
-                .read(
-                        installRoot
-                                .resolve("usr/share/maven-metadata/my-pkg-my-id.xml")
-                                .toString(),
-                        true);
+        PackageMetadata actualMetadata =
+                new MetadataStaxReader()
+                        .read(
+                                installRoot
+                                        .resolve("usr/share/maven-metadata/my-pkg-my-id.xml")
+                                        .toString(),
+                                true);
         assertTrue(actualMetadata.getProperties().containsKey("foo"));
     }
 
@@ -78,26 +82,36 @@ public class JavaPackageTest extends AbstractFileTest {
         pkg.install(installRoot);
 
         assertMetadataEqual(
-                getResource("ns-foo.xml"), installRoot.resolve("usr/share/maven-metadata/foo-my-pkg-my-id.xml"));
+                getResource("ns-foo.xml"),
+                installRoot.resolve("usr/share/maven-metadata/foo-my-pkg-my-id.xml"));
         assertMetadataEqual(
-                getResource("ns-bar.xml"), installRoot.resolve("usr/share/maven-metadata/bar-my-pkg-my-id.xml"));
+                getResource("ns-bar.xml"),
+                installRoot.resolve("usr/share/maven-metadata/bar-my-pkg-my-id.xml"));
     }
 
     @Test
     public void testSpacesInFileNames() throws Exception {
         JavaPackage pkg = new JavaPackage("", "space-test", Path.of("usr/share/maven-metadata"));
-        pkg.addFile(new RegularFile(
-                Path.of("usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/META-INF/MANIFEST.MF"),
-                new byte[0]));
-        pkg.addFile(new RegularFile(
-                Path.of("usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/file with spaces"),
-                new byte[0]));
-        pkg.addFile(new RegularFile(
-                Path.of("usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\twhitespace"),
-                new byte[0]));
-        pkg.addFile(new RegularFile(
-                Path.of("usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\u000Bwhitespace"),
-                new byte[0]));
+        pkg.addFile(
+                new RegularFile(
+                        Path.of(
+                                "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/META-INF/MANIFEST.MF"),
+                        new byte[0]));
+        pkg.addFile(
+                new RegularFile(
+                        Path.of(
+                                "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/file with spaces"),
+                        new byte[0]));
+        pkg.addFile(
+                new RegularFile(
+                        Path.of(
+                                "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\twhitespace"),
+                        new byte[0]));
+        pkg.addFile(
+                new RegularFile(
+                        Path.of(
+                                "usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/other\u000Bwhitespace"),
+                        new byte[0]));
         assertDescriptorEquals(
                 pkg,
                 "%attr(0644,root,root) /usr/share/eclipse/droplets/space-test/plugins/space-test_1.0.0/META-INF/MANIFEST.MF",

@@ -23,26 +23,27 @@ import java.util.function.Supplier;
 /**
  * A regular file created installed in target package.
  *
- * <p>The file can be installed either by coping an existing file (source file), or by writing provided contents.
+ * <p>The file can be installed either by coping an existing file (source file), or by writing
+ * provided contents.
  *
  * @author Mikolaj Izdebski
  */
 public class RegularFile extends File {
     /**
-     * Path to source file which contents will be copied to create target file. Can be {@code null}, in which case byte
-     * contents are used instead.
+     * Path to source file which contents will be copied to create target file. Can be {@code null},
+     * in which case byte contents are used instead.
      */
     private final Path sourcePath;
 
     /**
-     * Provider of byte array used to populate target file. It is used only if source path is not provided (is
-     * {@code null}).
+     * Provider of byte array used to populate target file. It is used only if source path is not
+     * provided (is {@code null}).
      */
     private final Supplier<byte[]> content;
 
     /**
-     * Create a regular file object, which contents will be populated from a source file. Target file will have default
-     * access mode (0644).
+     * Create a regular file object, which contents will be populated from a source file. Target
+     * file will have default access mode (0644).
      *
      * @param targetPath file path, relative to installation root
      * @param sourcePath path to source file which will be copied to target path
@@ -52,8 +53,8 @@ public class RegularFile extends File {
     }
 
     /**
-     * Create a regular file object, which contents will be populated from a byte array. Target file will have default
-     * access mode (0644).
+     * Create a regular file object, which contents will be populated from a byte array. Target file
+     * will have default access mode (0644).
      *
      * @param targetPath file path, relative to installation root
      * @param content array of bytes used to populate target file contents with
@@ -63,8 +64,8 @@ public class RegularFile extends File {
     }
 
     /**
-     * Create a regular file object, which contents will be populated from a byte array. Target file will have default
-     * access mode (0644).
+     * Create a regular file object, which contents will be populated from a byte array. Target file
+     * will have default access mode (0644).
      *
      * @param targetPath file path, relative to installation root
      * @param content provider of array of bytes used to populate target file contents with
@@ -74,8 +75,8 @@ public class RegularFile extends File {
     }
 
     /**
-     * Create a regular file object, which contents will be populated from a source file. Target file will have
-     * specified access mode.
+     * Create a regular file object, which contents will be populated from a source file. Target
+     * file will have specified access mode.
      *
      * @param targetPath file path, relative to installation root
      * @param sourcePath path to source file which will be copied to target path
@@ -89,8 +90,8 @@ public class RegularFile extends File {
     }
 
     /**
-     * Create a regular file object, which contents will be populated from a byte array. Target file will have specified
-     * access mode
+     * Create a regular file object, which contents will be populated from a byte array. Target file
+     * will have specified access mode
      *
      * @param targetPath file path, relative to installation root
      * @param content array of bytes used to populate target file contents with
@@ -104,8 +105,8 @@ public class RegularFile extends File {
     }
 
     /**
-     * Create a regular file object, which contents will be populated from an input stream. Target file will have
-     * specified access mode
+     * Create a regular file object, which contents will be populated from an input stream. Target
+     * file will have specified access mode
      *
      * @param targetPath file path, relative to installation root
      * @param content provider of array of bytes used to populate target file contents with

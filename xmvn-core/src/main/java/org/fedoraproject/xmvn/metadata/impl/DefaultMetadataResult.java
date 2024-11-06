@@ -30,7 +30,9 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class DefaultMetadataResult implements MetadataResult {
     private final Logger logger;
 
@@ -39,7 +41,9 @@ class DefaultMetadataResult implements MetadataResult {
     private final Map<Artifact, ArtifactMetadata> artifactMap = new LinkedHashMap<>();
 
     public DefaultMetadataResult(
-            Logger logger, Map<Path, PackageMetadata> packageMetadataMap, boolean ignoreDuplicates) {
+            Logger logger,
+            Map<Path, PackageMetadata> packageMetadataMap,
+            boolean ignoreDuplicates) {
         this.logger = logger;
         this.packageMetadataMap = packageMetadataMap;
 
@@ -65,12 +69,13 @@ class DefaultMetadataResult implements MetadataResult {
         }
 
         for (ArtifactAlias alias : metadata.getAliases()) {
-            Artifact aliasArtifact = new DefaultArtifact(
-                    alias.getGroupId(),
-                    alias.getArtifactId(),
-                    alias.getExtension(),
-                    alias.getClassifier(),
-                    metadata.getVersion());
+            Artifact aliasArtifact =
+                    new DefaultArtifact(
+                            alias.getGroupId(),
+                            alias.getArtifactId(),
+                            alias.getExtension(),
+                            alias.getClassifier(),
+                            metadata.getVersion());
 
             for (String version : versions) {
                 artifactSet.add(aliasArtifact.setVersion(version));
@@ -81,7 +86,8 @@ class DefaultMetadataResult implements MetadataResult {
 
         for (Artifact artifact : artifactSet) {
             if (duplicateArtifacts.contains(artifact)) {
-                logger.debug("Ignoring metadata for artifact {} as it was already excluded", artifact);
+                logger.debug(
+                        "Ignoring metadata for artifact {} as it was already excluded", artifact);
                 continue;
             }
 
@@ -96,14 +102,14 @@ class DefaultMetadataResult implements MetadataResult {
 
             if (ignoreDuplicates) {
                 artifactMap.remove(artifact);
-                logger.warn("Ignoring metadata for artifact {} as it has duplicate metadata", artifact);
+                logger.warn(
+                        "Ignoring metadata for artifact {} as it has duplicate metadata", artifact);
                 continue;
             }
 
             logger.warn("Duplicate metadata for artifact {}", artifact);
 
-            if (otherMetadata.getNamespace().isEmpty()
-                    || !metadata.getNamespace().isEmpty()) {
+            if (otherMetadata.getNamespace().isEmpty() || !metadata.getNamespace().isEmpty()) {
                 artifactMap.put(artifact, metadata);
             }
         }

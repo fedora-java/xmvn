@@ -34,7 +34,9 @@ import org.fedoraproject.xmvn.test.AbstractTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class MetadataReaderTest extends AbstractTest {
     private DefaultMetadataResolver reader;
 

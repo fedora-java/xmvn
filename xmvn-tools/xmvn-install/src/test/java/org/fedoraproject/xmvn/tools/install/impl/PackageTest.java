@@ -27,7 +27,9 @@ import org.fedoraproject.xmvn.tools.install.RegularFile;
 import org.fedoraproject.xmvn.tools.install.SymbolicLink;
 import org.junit.jupiter.api.Test;
 
-/** @author msimacek */
+/**
+ * @author msimacek
+ */
 public class PackageTest extends AbstractFileTest {
     private final Path jar = getResource("example.jar");
 
@@ -39,7 +41,8 @@ public class PackageTest extends AbstractFileTest {
         pkg.addFile(jarfile);
 
         pkg.install(installRoot);
-        assertDirectoryStructure("D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
+        assertDirectoryStructure(
+                "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
         assertDescriptorEquals(pkg, "%attr(0644,root,root) /usr/share/java/foobar.jar");
     }
 

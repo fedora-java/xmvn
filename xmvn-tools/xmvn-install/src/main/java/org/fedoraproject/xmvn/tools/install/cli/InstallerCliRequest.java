@@ -25,10 +25,11 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 final class InstallerCliRequest {
-    @Parameter
-    private List<String> parameters = new LinkedList<>();
+    @Parameter private List<String> parameters = new LinkedList<>();
 
     @Parameter(
             names = {"-h", "--help"},

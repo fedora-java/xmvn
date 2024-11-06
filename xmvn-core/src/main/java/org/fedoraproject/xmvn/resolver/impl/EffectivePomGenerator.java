@@ -54,7 +54,8 @@ class EffectivePomGenerator {
         addTextElement(document, parent, name, value, null);
     }
 
-    private void addTextElement(Document document, Element parent, String name, String value, String defaultValue) {
+    private void addTextElement(
+            Document document, Element parent, String name, String value, String defaultValue) {
         if (value == null || defaultValue == null || !value.equals(defaultValue)) {
             Element child = document.createElement(name);
             parent.appendChild(child);
@@ -62,7 +63,8 @@ class EffectivePomGenerator {
         }
     }
 
-    private void addExclusion(Document document, Element exclusions, DependencyExclusion exclusion) {
+    private void addExclusion(
+            Document document, Element exclusions, DependencyExclusion exclusion) {
         Element exclusionNode = document.createElement("exclusion");
         exclusions.appendChild(exclusionNode);
         addTextElement(document, exclusionNode, "groupId", exclusion.getGroupId());
@@ -74,14 +76,20 @@ class EffectivePomGenerator {
         dependencies.appendChild(dependencyNode);
         addTextElement(document, dependencyNode, "groupId", dependency.getGroupId());
         addTextElement(document, dependencyNode, "artifactId", dependency.getArtifactId());
-        addTextElement(document, dependencyNode, "type", dependency.getExtension(), Artifact.DEFAULT_EXTENSION);
+        addTextElement(
+                document,
+                dependencyNode,
+                "type",
+                dependency.getExtension(),
+                Artifact.DEFAULT_EXTENSION);
         addTextElement(document, dependencyNode, "classifier", dependency.getClassifier(), "");
         addTextElement(document, dependencyNode, "version", dependency.getRequestedVersion());
         Boolean optional = dependency.isOptional() != null && dependency.isOptional();
         addTextElement(document, dependencyNode, "optional", optional.toString(), "false");
 
         Element exclusions = document.createElement("exclusions");
-        for (DependencyExclusion exclusion : dependency.getExclusions()) addExclusion(document, exclusions, exclusion);
+        for (DependencyExclusion exclusion : dependency.getExclusions())
+            addExclusion(document, exclusions, exclusion);
         if (exclusions.hasChildNodes()) {
             dependencyNode.appendChild(exclusions);
         }
@@ -96,13 +104,15 @@ class EffectivePomGenerator {
         addTextElement(document, project, "version", artifact.getVersion());
 
         Element dependencies = document.createElement("dependencies");
-        for (Dependency dependency : metadata.getDependencies()) addDependency(document, dependencies, dependency);
+        for (Dependency dependency : metadata.getDependencies())
+            addDependency(document, dependencies, dependency);
         if (dependencies.hasChildNodes()) {
             project.appendChild(dependencies);
         }
     }
 
-    public Path generateEffectivePom(ArtifactMetadata metadata, Artifact artifact) throws IOException {
+    public Path generateEffectivePom(ArtifactMetadata metadata, Artifact artifact)
+            throws IOException {
         String artifactIdNormalized = artifact.getArtifactId().replace('/', '.');
         String versionNormalized = artifact.getVersion().replace('/', '.');
         String artifactFileName = artifactIdNormalized + "-" + versionNormalized + ".pom";

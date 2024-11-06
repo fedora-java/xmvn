@@ -23,7 +23,9 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Roman Vais */
+/**
+ * @author Roman Vais
+ */
 public class ResolutionRequestTest {
     private Artifact artifact;
 

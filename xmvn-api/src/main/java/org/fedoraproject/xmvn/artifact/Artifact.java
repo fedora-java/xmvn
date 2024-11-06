@@ -18,11 +18,11 @@ package org.fedoraproject.xmvn.artifact;
 import java.nio.file.Path;
 
 /**
- * An abstract entity uniquely identified by its coordinates &ndash; group identifier, artifact identifier, extension,
- * classifier and version, with optionally associated artifact file.
+ * An abstract entity uniquely identified by its coordinates &ndash; group identifier, artifact
+ * identifier, extension, classifier and version, with optionally associated artifact file.
  *
- * <p>Artifact objects are immutable &ndash; all methods which modify artifact return a new object and keep the original
- * unmodified.
+ * <p>Artifact objects are immutable &ndash; all methods which modify artifact return a new object
+ * and keep the original unmodified.
  *
  * @author Mikolaj Izdebski
  */
@@ -79,8 +79,8 @@ public interface Artifact {
     String getVersion();
 
     /**
-     * Get local path of artifact file or {@code null} if artifact is not resolved (doesn't have associated artifact
-     * file).
+     * Get local path of artifact file or {@code null} if artifact is not resolved (doesn't have
+     * associated artifact file).
      *
      * @return artifact file path, can be {@code null}.
      */
@@ -89,7 +89,8 @@ public interface Artifact {
     /**
      * Set artifact version.
      *
-     * <p>Since artifacts are immutable, this method returns a new object and leaves the original unmodified.
+     * <p>Since artifacts are immutable, this method returns a new object and leaves the original
+     * unmodified.
      *
      * @param version the new artifact version to set
      * @return copy of artifact with the new version set
@@ -99,7 +100,8 @@ public interface Artifact {
     /**
      * Set artifact path.
      *
-     * <p>Since artifacts are immutable, this method returns a new object and leaves the original unmodified.
+     * <p>Since artifacts are immutable, this method returns a new object and leaves the original
+     * unmodified.
      *
      * @param path the new artifact path to set
      * @return copy of artifact with the new path set

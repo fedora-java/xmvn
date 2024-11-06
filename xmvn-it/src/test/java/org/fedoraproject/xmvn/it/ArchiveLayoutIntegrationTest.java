@@ -68,8 +68,16 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
 
         public void verify(List<String> errors) {
             if (matchCount < lowerBound || matchCount > upperBound) {
-                errors.add("Pattern " + regex + " was expected at least " + lowerBound + " and at most " + upperBound
-                        + " times, but was found " + matchCount + " times");
+                errors.add(
+                        "Pattern "
+                                + regex
+                                + " was expected at least "
+                                + lowerBound
+                                + " and at most "
+                                + upperBound
+                                + " times, but was found "
+                                + matchCount
+                                + " times");
             }
         }
     }
@@ -110,12 +118,11 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         }
     }
 
-    private void matchSingleFile(Path baseDir, Path path, String dirSuffix, List<String> errors) throws Exception {
+    private void matchSingleFile(Path baseDir, Path path, String dirSuffix, List<String> errors)
+            throws Exception {
         String pathStr = baseDir.relativize(path) + dirSuffix;
 
-        if (expectations.stream()
-                        .filter(expectation -> expectation.matches(pathStr))
-                        .count()
+        if (expectations.stream().filter(expectation -> expectation.matches(pathStr)).count()
                 == 0) {
             errors.add("Path " + pathStr + " did not match any pattern");
         }

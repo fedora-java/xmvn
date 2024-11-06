@@ -30,6 +30,11 @@ public class NoGoalsBasicIntegrationTest extends AbstractMavenIntegrationTest {
     public void testNoGoals() throws Exception {
         expectFailure();
         performTest();
-        assertTrue(getStdout().anyMatch(s -> s.startsWith("[ERROR] No goals have been specified for this build.")));
+        assertTrue(
+                getStdout()
+                        .anyMatch(
+                                s ->
+                                        s.startsWith(
+                                                "[ERROR] No goals have been specified for this build.")));
     }
 }

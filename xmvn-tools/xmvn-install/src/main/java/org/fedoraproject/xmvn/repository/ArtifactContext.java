@@ -19,7 +19,9 @@ import java.util.Collections;
 import java.util.Map;
 import org.fedoraproject.xmvn.artifact.Artifact;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ArtifactContext {
     private final Artifact artifact;
 

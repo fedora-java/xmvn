@@ -19,7 +19,9 @@ import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.locator.impl.DefaultServiceLocator;
 import org.junit.jupiter.api.BeforeEach;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class AbstractTest {
     protected DefaultServiceLocator locator;
 

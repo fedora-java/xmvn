@@ -29,14 +29,14 @@ public interface MetadataResult {
      * Lookup metadata for specified artifact.
      *
      * @param artifact artifact to lookup metadata for
-     * @return metadata for specified artifact, or {@code null} if this result doesn't contain metadata for specified
-     *     artifact
+     * @return metadata for specified artifact, or {@code null} if this result doesn't contain
+     *     metadata for specified artifact
      */
     ArtifactMetadata getMetadataFor(Artifact artifact);
 
     /**
-     * Return a read-only {@link Map} that contains every found metadata file {@link Path}s and a corresponding
-     * {@link PackageMetadata}.
+     * Return a read-only {@link Map} that contains every found metadata file {@link Path}s and a
+     * corresponding {@link PackageMetadata}.
      *
      * @return package metadata map, never {@code null}
      */

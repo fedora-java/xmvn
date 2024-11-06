@@ -22,9 +22,10 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 /**
  * Repository of artifacts.
  *
- * <p>Repository is a container holding repositories. Unlike in case of Maven repositories, artifacts in XMvn repository
- * don't necessarily need to have unique paths -- one artifact can be stored in one of multiple locations. Methods or
- * {@code Repository} interface support multiple artifact paths.
+ * <p>Repository is a container holding repositories. Unlike in case of Maven repositories,
+ * artifacts in XMvn repository don't necessarily need to have unique paths -- one artifact can be
+ * stored in one of multiple locations. Methods or {@code Repository} interface support multiple
+ * artifact paths.
  *
  * @author Mikolaj Izdebski
  */

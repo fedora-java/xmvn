@@ -43,7 +43,9 @@ import org.fedoraproject.xmvn.test.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class BasicResolverTest extends AbstractTest {
     /**
      * Test if Plexus can load resolver component.
@@ -82,7 +84,8 @@ public class BasicResolverTest extends AbstractTest {
     public void testResolutionFailure() throws Exception {
         Resolver resolver = getService(Resolver.class);
         ResolutionRequest request =
-                new ResolutionRequest(new DefaultArtifact("some", "nonexistent", "pom", "artifact"));
+                new ResolutionRequest(
+                        new DefaultArtifact("some", "nonexistent", "pom", "artifact"));
         ResolutionResult result = resolver.resolve(request);
         assertNotNull(result);
         assertNull(result.getArtifactPath());
@@ -97,9 +100,12 @@ public class BasicResolverTest extends AbstractTest {
         MetadataResult mockMdResult = EasyMock.createMock(MetadataResult.class);
         MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
         ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
-        EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
-        EasyMock.expect(mockServiceLocator.getService(Configurator.class)).andReturn(getService(Configurator.class));
-        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class)).andReturn(mockMdResolver);
+        EasyMock.expect(mockServiceLocator.getService(Logger.class))
+                .andReturn(getService(Logger.class));
+        EasyMock.expect(mockServiceLocator.getService(Configurator.class))
+                .andReturn(getService(Configurator.class));
+        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class))
+                .andReturn(mockMdResolver);
         EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
                 .andReturn(mockMdResult);
         EasyMock.expect(mockMdResult.getMetadataFor(artifact)).andReturn(md);
@@ -123,9 +129,12 @@ public class BasicResolverTest extends AbstractTest {
         MetadataResult mockMdResult = EasyMock.createMock(MetadataResult.class);
         MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
         ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
-        EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
-        EasyMock.expect(mockServiceLocator.getService(Configurator.class)).andReturn(getService(Configurator.class));
-        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class)).andReturn(mockMdResolver);
+        EasyMock.expect(mockServiceLocator.getService(Logger.class))
+                .andReturn(getService(Logger.class));
+        EasyMock.expect(mockServiceLocator.getService(Configurator.class))
+                .andReturn(getService(Configurator.class));
+        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class))
+                .andReturn(mockMdResolver);
         EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
                 .andReturn(mockMdResult);
         EasyMock.expect(mockMdResult.getMetadataFor(artifact)).andReturn(md);
@@ -175,9 +184,12 @@ public class BasicResolverTest extends AbstractTest {
         MetadataResult mockMdResult = EasyMock.createMock(MetadataResult.class);
         MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
         ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
-        EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
-        EasyMock.expect(mockServiceLocator.getService(Configurator.class)).andReturn(getService(Configurator.class));
-        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class)).andReturn(mockMdResolver);
+        EasyMock.expect(mockServiceLocator.getService(Logger.class))
+                .andReturn(getService(Logger.class));
+        EasyMock.expect(mockServiceLocator.getService(Configurator.class))
+                .andReturn(getService(Configurator.class));
+        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class))
+                .andReturn(mockMdResolver);
         EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
                 .andReturn(mockMdResult);
         EasyMock.expect(mockMdResult.getMetadataFor(artifact)).andReturn(md);
@@ -224,7 +236,8 @@ public class BasicResolverTest extends AbstractTest {
     @Test
     public void testMockAgent() throws Exception {
         Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
-        Artifact versionlessArtifact = new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
+        Artifact versionlessArtifact =
+                new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
         ArtifactMetadata md = new ArtifactMetadata();
         md.setPath("/foo/bar");
 
@@ -234,9 +247,12 @@ public class BasicResolverTest extends AbstractTest {
         MetadataResult mockMdResult2 = EasyMock.createMock(MetadataResult.class);
         MetadataResolver mockMdResolver = EasyMock.createMock(MetadataResolver.class);
         ServiceLocator mockServiceLocator = EasyMock.createMock(ServiceLocator.class);
-        EasyMock.expect(mockServiceLocator.getService(Logger.class)).andReturn(getService(Logger.class));
-        EasyMock.expect(mockServiceLocator.getService(Configurator.class)).andReturn(getService(Configurator.class));
-        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class)).andReturn(mockMdResolver);
+        EasyMock.expect(mockServiceLocator.getService(Logger.class))
+                .andReturn(getService(Logger.class));
+        EasyMock.expect(mockServiceLocator.getService(Configurator.class))
+                .andReturn(getService(Configurator.class));
+        EasyMock.expect(mockServiceLocator.getService(MetadataResolver.class))
+                .andReturn(mockMdResolver);
         EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
                 .andReturn(mockMdResult1);
         EasyMock.expect(mockMdResolver.resolveMetadata(EasyMock.anyObject(MetadataRequest.class)))
@@ -245,7 +261,8 @@ public class BasicResolverTest extends AbstractTest {
         EasyMock.expect(mockMdResult1.getMetadataFor(versionlessArtifact)).andReturn(null);
         EasyMock.expect(mockMdResult2.getMetadataFor(artifact)).andReturn(null);
         EasyMock.expect(mockMdResult2.getMetadataFor(versionlessArtifact)).andReturn(md);
-        EasyMock.replay(mockAgent, mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator);
+        EasyMock.replay(
+                mockAgent, mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator);
 
         DefaultResolver resolver = new DefaultResolver(mockServiceLocator);
         resolver.mockAgent = mockAgent;
@@ -254,6 +271,7 @@ public class BasicResolverTest extends AbstractTest {
         assertNotNull(result);
         assertEquals(Path.of("/foo/bar"), result.getArtifactPath());
 
-        EasyMock.verify(mockAgent, mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator);
+        EasyMock.verify(
+                mockAgent, mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator);
     }
 }

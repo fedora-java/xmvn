@@ -33,24 +33,22 @@ import org.fedoraproject.xmvn.logging.Logger;
 @Named
 @Singleton
 public class XMvnMavenLifecycleParticipant extends AbstractMavenLifecycleParticipant {
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
     @Inject
     @Nullable @Named("ide")
     private XMvnWorkspaceReader workspaceReader;
 
-    @Inject
-    private XMvnMojoExecutionListener mojoExecutionListener;
+    @Inject private XMvnMojoExecutionListener mojoExecutionListener;
 
-    @Inject
-    private XMvnToolchainManager toolchainManager;
+    @Inject private XMvnToolchainManager toolchainManager;
 
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
         MavenExecutionRequest request = session.getRequest();
 
-        DependencyVersionReportGenerator reportGenerator = new DependencyVersionReportGenerator(logger);
+        DependencyVersionReportGenerator reportGenerator =
+                new DependencyVersionReportGenerator(logger);
 
         if (workspaceReader != null) {
             workspaceReader.addResolutionListener(mojoExecutionListener);

@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
  */
 final class GlobUtils {
     /**
-     * Character with special meaning in regular expression namespace. These characters should be escaped when
-     * converting glob expression to regular expression.
+     * Character with special meaning in regular expression namespace. These characters should be
+     * escaped when converting glob expression to regular expression.
      */
     private static final String SPECIAL_CHARS = "(){}.,?*+|<=>!";
 

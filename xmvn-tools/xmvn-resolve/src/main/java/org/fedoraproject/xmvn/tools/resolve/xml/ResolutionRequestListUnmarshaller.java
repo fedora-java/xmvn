@@ -30,7 +30,9 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 
-/** @author Marian Koncek */
+/**
+ * @author Marian Koncek
+ */
 public class ResolutionRequestListUnmarshaller {
     private final InputStream inputStream;
 
@@ -41,8 +43,10 @@ public class ResolutionRequestListUnmarshaller {
     public List<ResolutionRequest> unmarshal() throws IOException, XMLStreamException {
         List<ResolutionRequest> resolutionRequests = null;
 
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-            XMLEventReader eventReader = XMLInputFactory.newInstance().createXMLEventReader(bufferedReader);
+        try (BufferedReader bufferedReader =
+                new BufferedReader(new InputStreamReader(inputStream))) {
+            XMLEventReader eventReader =
+                    XMLInputFactory.newInstance().createXMLEventReader(bufferedReader);
 
             try {
                 mainLoop:
@@ -59,7 +63,9 @@ public class ResolutionRequestListUnmarshaller {
                                     resolutionRequests = new ArrayList<>();
                                     break;
                                 case "request":
-                                    resolutionRequests.add(new ResolutionRequestUnmarshaller(eventReader).unmarshal());
+                                    resolutionRequests.add(
+                                            new ResolutionRequestUnmarshaller(eventReader)
+                                                    .unmarshal());
                                     break;
 
                                 default:

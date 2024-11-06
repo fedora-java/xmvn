@@ -49,9 +49,9 @@ import org.fedoraproject.xmvn.metadata.io.stax.MetadataStaxReader;
 /**
  * Default implementation of XMvn {@code MetadataResolver} interface.
  *
- * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is marked as public only
- * for technical reasons. This class is not part of XMvn API. Client code using XMvn should <strong>not</strong>
- * reference it directly.
+ * <p><strong>WARNING</strong>: This class is part of internal implementation of XMvn and it is
+ * marked as public only for technical reasons. This class is not part of XMvn API. Client code
+ * using XMvn should <strong>not</strong> reference it directly.
  *
  * @author Mikolaj Izdebski
  */
@@ -67,12 +67,20 @@ public class DefaultMetadataResolver implements MetadataResolver {
         this.logger = logger;
         BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         int nThread = 2 * Math.min(Math.max(Runtime.getRuntime().availableProcessors(), 1), 8);
-        executor = new ThreadPoolExecutor(nThread, nThread, 1, TimeUnit.MINUTES, queue, runnable -> {
-            Thread thread = new Thread(runnable);
-            thread.setName(DefaultMetadataResolver.class.getCanonicalName() + ".worker");
-            thread.setDaemon(true);
-            return thread;
-        });
+        executor =
+                new ThreadPoolExecutor(
+                        nThread,
+                        nThread,
+                        1,
+                        TimeUnit.MINUTES,
+                        queue,
+                        runnable -> {
+                            Thread thread = new Thread(runnable);
+                            thread.setName(
+                                    DefaultMetadataResolver.class.getCanonicalName() + ".worker");
+                            thread.setDaemon(true);
+                            return thread;
+                        });
     }
 
     public DefaultMetadataResolver(ServiceLocator locator) {
@@ -82,7 +90,9 @@ public class DefaultMetadataResolver implements MetadataResolver {
     @Override
     public MetadataResult resolveMetadata(MetadataRequest request) {
         return new DefaultMetadataResult(
-                logger, readMetadata(request.getMetadataRepositories()), request.isIgnoreDuplicates());
+                logger,
+                readMetadata(request.getMetadataRepositories()),
+                request.isIgnoreDuplicates());
     }
 
     Map<Path, PackageMetadata> readMetadata(List<String> metadataLocations) {
@@ -123,7 +133,8 @@ public class DefaultMetadataResolver implements MetadataResolver {
                             logger.debug("Added metadata for {}", artifact);
                     }
                 } catch (ExecutionException e) {
-                    // Ignore. Failure to read PackageMetadata of a single package should not break the whole system
+                    // Ignore. Failure to read PackageMetadata of a single package should not break
+                    // the whole system
                     logger.debug("Skipping metadata file {}: {}", path, e);
                 }
             }

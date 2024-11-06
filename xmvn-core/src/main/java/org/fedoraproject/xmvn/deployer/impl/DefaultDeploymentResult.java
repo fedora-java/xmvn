@@ -17,7 +17,9 @@ package org.fedoraproject.xmvn.deployer.impl;
 
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class DefaultDeploymentResult implements DeploymentResult {
     private Exception exception;
 

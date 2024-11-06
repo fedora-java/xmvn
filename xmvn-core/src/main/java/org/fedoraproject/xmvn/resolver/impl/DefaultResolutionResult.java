@@ -18,7 +18,9 @@ package org.fedoraproject.xmvn.resolver.impl;
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class DefaultResolutionResult implements ResolutionResult {
     private final Path artifactPath;
 

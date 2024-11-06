@@ -30,7 +30,9 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** @author Roman Vais */
+/**
+ * @author Roman Vais
+ */
 public class DeploymentRequestTest {
     private ArrayList<Artifact> depExcl;
 
@@ -146,11 +148,15 @@ public class DeploymentRequestTest {
     @Test
     public void propertiesTest() throws Exception {
         // no properties should be present
-        assertTrue(deployRq.getProperties().isEmpty(), "Hash map of properties is not empty before adding first one.");
+        assertTrue(
+                deployRq.getProperties().isEmpty(),
+                "Hash map of properties is not empty before adding first one.");
 
         // tests adding and getting new properties
         deployRq.addProperty("key", null);
-        assertTrue(deployRq.getProperties().isEmpty(), "Property has been added even thou it's value is a null.");
+        assertTrue(
+                deployRq.getProperties().isEmpty(),
+                "Property has been added even thou it's value is a null.");
 
         deployRq.addProperty("key", "value");
         assertEquals("value", deployRq.getProperty("key"));

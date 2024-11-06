@@ -52,7 +52,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 @Mojo(name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE)
 public class BuilddepMojo extends AbstractMojo {
     private static class NamespacedArtifact {
@@ -77,8 +79,7 @@ public class BuilddepMojo extends AbstractMojo {
         }
     }
 
-    @Inject
-    private Logger logger;
+    @Inject private Logger logger;
 
     @Parameter(defaultValue = "xmvn.builddep.skip")
     private boolean skip;
@@ -86,8 +87,7 @@ public class BuilddepMojo extends AbstractMojo {
     @Parameter(defaultValue = "${reactorProjects}", readonly = true, required = true)
     private List<MavenProject> reactorProjects;
 
-    @Inject
-    private Map<String, LifecycleMapping> lifecycleMappings;
+    @Inject private Map<String, LifecycleMapping> lifecycleMappings;
 
     // Injected through reflection by XMvn lifecycle participant
     private List<String[]> resolutions;
@@ -95,7 +95,8 @@ public class BuilddepMojo extends AbstractMojo {
     private Set<Artifact> commonDeps = new LinkedHashSet<>();
 
     public BuilddepMojo() {
-        try (InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream("/common-deps.xml")) {
+        try (InputStream xmlStream =
+                ArtifactTypeRegistry.class.getResourceAsStream("/common-deps.xml")) {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(xmlStream);
             NodeList dependencies = doc.getElementsByTagName("dependency");
@@ -112,7 +113,13 @@ public class BuilddepMojo extends AbstractMojo {
 
     private boolean isExternalLocation(InputLocation location) {
         return !reactorProjects.stream()
-                .map(project -> project.getGroupId() + ':' + project.getArtifactId() + ':' + project.getVersion())
+                .map(
+                        project ->
+                                project.getGroupId()
+                                        + ':'
+                                        + project.getArtifactId()
+                                        + ':'
+                                        + project.getVersion())
                 .anyMatch(location.getSource().getModelId()::equals);
     }
 
@@ -125,12 +132,14 @@ public class BuilddepMojo extends AbstractMojo {
     private Lifecycle getDefaultLifecycle(MavenProject project) throws MojoExecutionException {
         LifecycleMapping lifecycleMapping = lifecycleMappings.get(project.getPackaging());
         if (lifecycleMapping == null) {
-            throw new MojoExecutionException("Unable to get lifecycle for project " + project.getId());
+            throw new MojoExecutionException(
+                    "Unable to get lifecycle for project " + project.getId());
         }
         return lifecycleMapping.getLifecycles().get("default");
     }
 
-    private void addLifecycleDependencies(Set<Artifact> artifacts, MavenProject project) throws MojoExecutionException {
+    private void addLifecycleDependencies(Set<Artifact> artifacts, MavenProject project)
+            throws MojoExecutionException {
         Lifecycle defaultLifecycle = getDefaultLifecycle(project);
         if (defaultLifecycle == null) {
             return;
@@ -147,9 +156,12 @@ public class BuilddepMojo extends AbstractMojo {
                 // - (2) groupId:artifactId:goal
                 // - (3) prefix:goal
 
-                // We don't care about version (currently, plugins can't have compat versions), so we can just parse
-                // plugin groupId and artifactId from string in formats (1) and (2), ignoring goals in format (3).
-                // Format with prefix is rarely (if ever) used and therefore not supported by XMvn. If needed, support
+                // We don't care about version (currently, plugins can't have compat versions), so
+                // we can just parse
+                // plugin groupId and artifactId from string in formats (1) and (2), ignoring goals
+                // in format (3).
+                // Format with prefix is rarely (if ever) used and therefore not supported by XMvn.
+                // If needed, support
                 // for that format can be implemented with help of PluginPrefixResolver.
 
                 String[] goalCoords = mojo.getGoal().split(":");
@@ -201,7 +213,8 @@ public class BuilddepMojo extends AbstractMojo {
         serializeArtifacts(deps);
     }
 
-    private void addOptionalChild(XMLStreamWriter cursor, String tag, String value, String defaultValue)
+    private void addOptionalChild(
+            XMLStreamWriter cursor, String tag, String value, String defaultValue)
             throws XMLStreamException {
         if (defaultValue == null || !value.equals(defaultValue)) {
             cursor.writeCharacters("    ");
@@ -231,8 +244,10 @@ public class BuilddepMojo extends AbstractMojo {
         cursor.writeCharacters("\n");
     }
 
-    private void serializeArtifacts(Set<NamespacedArtifact> artifacts) throws MojoExecutionException {
-        try (Writer writer = Files.newBufferedWriter(Path.of(".xmvn-builddep"), StandardCharsets.UTF_8)) {
+    private void serializeArtifacts(Set<NamespacedArtifact> artifacts)
+            throws MojoExecutionException {
+        try (Writer writer =
+                Files.newBufferedWriter(Path.of(".xmvn-builddep"), StandardCharsets.UTF_8)) {
             XMLStreamWriter cursor = XMLOutputFactory.newInstance().createXMLStreamWriter(writer);
             cursor.writeStartDocument();
             cursor.writeCharacters("\n");

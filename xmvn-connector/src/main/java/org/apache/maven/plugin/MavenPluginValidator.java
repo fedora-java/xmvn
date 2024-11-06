@@ -22,9 +22,9 @@ import org.fedoraproject.xmvn.artifact.Artifact;
 /**
  * This is a simple Maven plugin validator that pretends that all plugins have valid descriptors.
  *
- * <p>This is XMvn-specific class and it resides in {@code org.apache.maven} namespace only because it needs to override
- * Maven class. If this was a Plexus component then there would be no need to override Maven class, setting default
- * component class in {@code plexus.xml} would be enough.
+ * <p>This is XMvn-specific class and it resides in {@code org.apache.maven} namespace only because
+ * it needs to override Maven class. If this was a Plexus component then there would be no need to
+ * override Maven class, setting default component class in {@code plexus.xml} would be enough.
  *
  * <p>TODO: Try convince Maven upstream to convert this to Plexus component.
  *

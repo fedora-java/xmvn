@@ -26,7 +26,9 @@ import java.nio.file.Path;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.logging.Logger;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class MockAgent {
     private final Logger logger;
     private final Path socketPath;

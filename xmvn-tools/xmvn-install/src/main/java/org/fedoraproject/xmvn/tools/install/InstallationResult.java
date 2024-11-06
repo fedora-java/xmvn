@@ -15,5 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public interface InstallationResult {}

@@ -28,7 +28,9 @@ import org.fedoraproject.xmvn.tools.install.impl.DefaultInstaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class InstallerCli {
     private final Logger logger = LoggerFactory.getLogger(InstallerCli.class);
 

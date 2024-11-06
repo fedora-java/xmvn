@@ -29,7 +29,9 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ModuleVisitor;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 class ModuleGleaner {
     private String gleanAutomaticFromManifest(Manifest mf) {
         if (mf != null) {
@@ -58,13 +60,15 @@ class ModuleGleaner {
 
     private String gleanFromModuleInfoClass(InputStream inputStream) throws IOException {
         String[] moduleName = new String[1];
-        ClassVisitor classVisitor = new ClassVisitor(ASM9) {
-            @Override
-            public ModuleVisitor visitModule(String modName, int modAccess, String modVersion) {
-                moduleName[0] = modName;
-                return null;
-            }
-        };
+        ClassVisitor classVisitor =
+                new ClassVisitor(ASM9) {
+                    @Override
+                    public ModuleVisitor visitModule(
+                            String modName, int modAccess, String modVersion) {
+                        moduleName[0] = modName;
+                        return null;
+                    }
+                };
         new ClassReader(inputStream).accept(classVisitor, 0);
         return moduleName[0];
     }
@@ -106,7 +110,11 @@ class ModuleGleaner {
         return null;
     }
 
-    public JavadocModule glean(Path artifactPath, List<Path> sourcePaths, List<Path> dependencies, boolean ignoreJPMS) {
+    public JavadocModule glean(
+            Path artifactPath,
+            List<Path> sourcePaths,
+            List<Path> dependencies,
+            boolean ignoreJPMS) {
         String moduleName = null;
         boolean isAutomatic = false;
         if (!ignoreJPMS) {

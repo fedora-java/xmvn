@@ -29,7 +29,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 final class ArtifactTypeRegistry {
     private static final ArtifactTypeRegistry DEFAULT_REGISTRY = new ArtifactTypeRegistry();
 
@@ -43,7 +45,8 @@ final class ArtifactTypeRegistry {
     }
 
     private ArtifactTypeRegistry() {
-        try (InputStream xmlStream = ArtifactTypeRegistry.class.getResourceAsStream("/stereotypes.xml")) {
+        try (InputStream xmlStream =
+                ArtifactTypeRegistry.class.getResourceAsStream("/stereotypes.xml")) {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(xmlStream);
             NodeList stereotypes = doc.getElementsByTagName("stereotype");
@@ -68,20 +71,27 @@ final class ArtifactTypeRegistry {
         return DEFAULT_REGISTRY;
     }
 
-    public ArtifactTypeRegistry registerStereotype(String type, String extension, String classifier) {
+    public ArtifactTypeRegistry registerStereotype(
+            String type, String extension, String classifier) {
         ArtifactTypeRegistry newRegistry = new ArtifactTypeRegistry(this);
         newRegistry.addStereotype(type, extension, classifier);
         return newRegistry;
     }
 
     public Artifact createTypedArtifact(
-            String groupId, String artifactId, String type, String customClassifier, String version) {
+            String groupId,
+            String artifactId,
+            String type,
+            String customClassifier,
+            String version) {
         if (type == null || extensions.get(type) == null) {
             return new DefaultArtifact(groupId, artifactId, type, customClassifier, version);
         }
 
         String classifier =
-                customClassifier == null || customClassifier.isEmpty() ? classifiers.get(type) : customClassifier;
+                customClassifier == null || customClassifier.isEmpty()
+                        ? classifiers.get(type)
+                        : customClassifier;
         return new DefaultArtifact(groupId, artifactId, extensions.get(type), classifier, version);
     }
 }

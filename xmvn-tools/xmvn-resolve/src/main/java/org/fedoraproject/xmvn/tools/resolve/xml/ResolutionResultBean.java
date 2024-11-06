@@ -18,7 +18,9 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ResolutionResultBean {
     private String artifactPath;
 
@@ -60,7 +62,9 @@ public class ResolutionResultBean {
         this.namespace = namespace;
     }
 
-    /** @author Mikolaj Izdebski */
+    /**
+     * @author Mikolaj Izdebski
+     */
     public static class Adapter {
         public ResolutionResultBean marshal(ResolutionResult result) throws Exception {
             ResolutionResultBean bean = new ResolutionResultBean();

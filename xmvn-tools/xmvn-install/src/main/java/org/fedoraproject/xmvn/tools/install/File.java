@@ -22,7 +22,8 @@ import java.nio.file.Path;
 /**
  * An abstract class denoting a file entry in a package with all relevant attributes.
  *
- * <p>A file does not necessarily mean a regular file, it could be for example a directory or a device file.
+ * <p>A file does not necessarily mean a regular file, it could be for example a directory or a
+ * device file.
  *
  * @author Mikolaj Izdebski
  */
@@ -42,8 +43,9 @@ public abstract class File {
     /**
      * Install the file into specified location.
      *
-     * <p>Implementations of this method can assume that all parent directory of target file already exists. Access mode
-     * of target file doesn't have to be set as it will be manipulated with other means.
+     * <p>Implementations of this method can assume that all parent directory of target file already
+     * exists. Access mode of target file doesn't have to be set as it will be manipulated with
+     * other means.
      *
      * @param targetAbsolutePath absolute path to the target file
      * @throws IOException
@@ -53,7 +55,8 @@ public abstract class File {
     /**
      * Get additional file attributes to be added to file descriptor.
      *
-     * <p>By default there are no extra attributes, but subclasses can override this method and specify it.
+     * <p>By default there are no extra attributes, but subclasses can override this method and
+     * specify it.
      *
      * @return extra descriptor data (can be {@code null})
      */
@@ -81,7 +84,8 @@ public abstract class File {
             throw new IllegalArgumentException("target path must not be absolute");
         }
         if (accessMode < -1 || accessMode > MAX_MODE) {
-            throw new IllegalArgumentException("access mode must be in range from 0 to 0777 or equal to -1");
+            throw new IllegalArgumentException(
+                    "access mode must be in range from 0 to 0777 or equal to -1");
         }
 
         this.targetPath = targetPath;
@@ -117,7 +121,10 @@ public abstract class File {
 
         if (Files.exists(installRoot)) {
             if (!Files.isDirectory(installRoot)) {
-                throw new IOException("Installation root " + installRoot + " already exists and is not a directory.");
+                throw new IOException(
+                        "Installation root "
+                                + installRoot
+                                + " already exists and is not a directory.");
             }
         } else {
             Files.createDirectory(installRoot);
@@ -132,8 +139,8 @@ public abstract class File {
     /**
      * Get descriptor string for given file.
      *
-     * <p>Descriptor is a line containing file path and some attributes. In other words, descriptor is a single line
-     * from {@code .mfiles} describing the file.
+     * <p>Descriptor is a line containing file path and some attributes. In other words, descriptor
+     * is a single line from {@code .mfiles} describing the file.
      *
      * @return descriptor string
      */
@@ -175,6 +182,8 @@ public abstract class File {
 
     @Override
     public boolean equals(Object rhs) {
-        return rhs != null && getClass() == rhs.getClass() && targetPath.equals(((File) rhs).targetPath);
+        return rhs != null
+                && getClass() == rhs.getClass()
+                && targetPath.equals(((File) rhs).targetPath);
     }
 }

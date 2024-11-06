@@ -36,7 +36,8 @@ public class JavadocJPMSIntegrationTest extends AbstractMojoIntegrationTest {
 
         assertTrue(Files.isDirectory(Path.of("target/xmvn-apidocs")));
         assertTrue(Files.isRegularFile(Path.of("target/xmvn-apidocs/test.jpms/foo/Bar.html")));
-        assertTrue(Files.isRegularFile(Path.of("target/xmvn-apidocs/test.jpms/module-summary.html")));
+        assertTrue(
+                Files.isRegularFile(Path.of("target/xmvn-apidocs/test.jpms/module-summary.html")));
         assertTrue(Files.isSymbolicLink(Path.of(".xmvn/apidocs")));
         assertTrue(Files.isSameFile(Path.of(".xmvn/apidocs"), Path.of("target/xmvn-apidocs")));
     }

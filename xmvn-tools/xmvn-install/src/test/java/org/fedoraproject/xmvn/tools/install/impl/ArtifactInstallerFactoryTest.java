@@ -25,7 +25,9 @@ import java.util.Properties;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class ArtifactInstallerFactoryTest {
     @Test
     public void testNoPluginsAvailable() {
@@ -64,7 +66,8 @@ public class ArtifactInstallerFactoryTest {
         } catch (UnsupportedOperationException e) {
             // "Not implemented exception" is thrown by the plugin
             assertEquals("Not implemented", e.getMessage());
-            assertEquals("foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString());
+            assertEquals(
+                    "foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString());
         }
 
         try {
@@ -74,7 +77,8 @@ public class ArtifactInstallerFactoryTest {
         } catch (UnsupportedOperationException e) {
             // "Not implemented exception" is thrown by the plugin
             assertEquals("Not implemented", e.getMessage());
-            assertEquals("foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString());
+            assertEquals(
+                    "foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString());
         }
 
         try {
@@ -82,7 +86,9 @@ public class ArtifactInstallerFactoryTest {
             inst.install(null, null, null, null, "my-repo");
             fail("Expected UnsupportedOperationException");
         } catch (UnsupportedOperationException e) {
-            assertEquals("This artifact installer does not support non-default repository.", e.getMessage());
+            assertEquals(
+                    "This artifact installer does not support non-default repository.",
+                    e.getMessage());
         }
     }
 
@@ -96,10 +102,12 @@ public class ArtifactInstallerFactoryTest {
             aif.getInstallerFor(null, props);
             fail();
         } catch (RuntimeException e) {
-            assertEquals("Unable to load XMvn Installer plugin for packaging type myplugin2", e.getMessage());
+            assertEquals(
+                    "Unable to load XMvn Installer plugin for packaging type myplugin2",
+                    e.getMessage());
             assertNotNull(e.getCause());
-            assertTrue(ReflectiveOperationException.class.isAssignableFrom(
-                    e.getCause().getClass()));
+            assertTrue(
+                    ReflectiveOperationException.class.isAssignableFrom(e.getCause().getClass()));
         }
     }
 }

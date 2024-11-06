@@ -29,7 +29,9 @@ import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.junit.jupiter.api.Test;
 
-/** @author Michael Simacek */
+/**
+ * @author Michael Simacek
+ */
 public class InstallationPlanTest {
     @Test
     public void testNonexistent() throws Exception {
@@ -53,62 +55,80 @@ public class InstallationPlanTest {
 
     @Test
     public void testNamespace() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("namespace.xml"));
+        assertThrows(
+                ArtifactInstallationException.class, () -> createInstallationPlan("namespace.xml"));
     }
 
     @Test
     public void testAlias() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("alias.xml"));
+        assertThrows(
+                ArtifactInstallationException.class, () -> createInstallationPlan("alias.xml"));
     }
 
     @Test
     public void testCompat() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("compat.xml"));
+        assertThrows(
+                ArtifactInstallationException.class, () -> createInstallationPlan("compat.xml"));
     }
 
     @Test
     public void testNoGroupId() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-gid.xml"));
+        assertThrows(
+                ArtifactInstallationException.class, () -> createInstallationPlan("no-gid.xml"));
     }
 
     @Test
     public void testNoArtifactId() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-aid.xml"));
+        assertThrows(
+                ArtifactInstallationException.class, () -> createInstallationPlan("no-aid.xml"));
     }
 
     @Test
     public void testNoVersion() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-version.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("no-version.xml"));
     }
 
     @Test
     public void testNoFile() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-file.xml"));
+        assertThrows(
+                ArtifactInstallationException.class, () -> createInstallationPlan("no-file.xml"));
     }
 
     @Test
     public void testNonexistenFile() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("nonexistent-file.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("nonexistent-file.xml"));
     }
 
     @Test
     public void testNonregularFile() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("nonregular-file.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("nonregular-file.xml"));
     }
 
     @Test
     public void testNonreadableFile() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("nonreadable-file.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("nonreadable-file.xml"));
     }
 
     @Test
     public void testNoArtifactIdDep() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-aid-dep.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("no-aid-dep.xml"));
     }
 
     @Test
     public void testNoGroupIdDep() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-gid-dep.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("no-gid-dep.xml"));
     }
 
     @Test
@@ -127,31 +147,42 @@ public class InstallationPlanTest {
 
     @Test
     public void testNamespaceDep() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("namespace-dep.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("namespace-dep.xml"));
     }
 
     @Test
     public void testResolvedVersionDep() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("resolved-version.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("resolved-version.xml"));
     }
 
     @Test
     public void testNoArtifactIdExclusion() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-aid-excl.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("no-aid-excl.xml"));
     }
 
     @Test
     public void testNoGroupIdExclusion() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("no-gid-excl.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("no-gid-excl.xml"));
     }
 
     @Test
     public void testSkipped() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("skipped.xml"));
+        assertThrows(
+                ArtifactInstallationException.class, () -> createInstallationPlan("skipped.xml"));
     }
 
     @Test
     public void testMetadataUuid() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("metadata-uuid.xml"));
+        assertThrows(
+                ArtifactInstallationException.class,
+                () -> createInstallationPlan("metadata-uuid.xml"));
     }
 }

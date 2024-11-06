@@ -25,7 +25,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
-/** @author Marian Koncek */
+/**
+ * @author Marian Koncek
+ */
 public class ResolutionResultListMarshaller {
     private final List<ResolutionResult> resolutionResults;
 

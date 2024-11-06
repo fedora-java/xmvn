@@ -30,7 +30,9 @@ import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.RepositoryConfigurator;
 import org.junit.jupiter.api.Test;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public class MavenRepositoryTest {
     @Test
     public void testMavenRepository() throws Exception {
@@ -41,13 +43,12 @@ public class MavenRepositoryTest {
         configuration.addRepository(repository);
 
         Configurator configurator = EasyMock.createMock(Configurator.class);
-        EasyMock.expect(configurator.getConfiguration())
-                .andReturn(configuration)
-                .atLeastOnce();
+        EasyMock.expect(configurator.getConfiguration()).andReturn(configuration).atLeastOnce();
         EasyMock.replay(configurator);
 
         RepositoryConfigurator repoConfigurator = new DefaultRepositoryConfigurator(configurator);
-        org.fedoraproject.xmvn.repository.Repository repo = repoConfigurator.configureRepository("test123");
+        org.fedoraproject.xmvn.repository.Repository repo =
+                repoConfigurator.configureRepository("test123");
         assertNotNull(repo);
         EasyMock.verify(configurator);
 

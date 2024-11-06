@@ -72,11 +72,14 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
     private static final MojoGoal MAVEN_COMPILE =
             new MojoGoal("org.apache.maven.plugins", "maven-compiler-plugin", "compile");
 
-    private static final MojoGoal TYCHO_COMPILE = new MojoGoal("org.eclipse.tycho", "tycho-compiler-plugin", "compile");
+    private static final MojoGoal TYCHO_COMPILE =
+            new MojoGoal("org.eclipse.tycho", "tycho-compiler-plugin", "compile");
 
-    private static final MojoGoal XMVN_BUILDDEP = new MojoGoal("org.fedoraproject.xmvn", "xmvn-mojo", "builddep");
+    private static final MojoGoal XMVN_BUILDDEP =
+            new MojoGoal("org.fedoraproject.xmvn", "xmvn-mojo", "builddep");
 
-    private static final MojoGoal XMVN_JAVADOC = new MojoGoal("org.fedoraproject.xmvn", "xmvn-mojo", "javadoc");
+    private static final MojoGoal XMVN_JAVADOC =
+            new MojoGoal("org.fedoraproject.xmvn", "xmvn-mojo", "javadoc");
 
     private MavenPluginManager mavenPluginManager;
 
@@ -89,14 +92,17 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
     }
 
     private Object dispatchBuildPluginManagerMethodCall(
-            @SuppressWarnings("unused") Object proxy, Method method, Object[] args) throws Throwable {
+            @SuppressWarnings("unused") Object proxy, Method method, Object[] args)
+            throws Throwable {
         Object ret = method.invoke(mavenPluginManager, args);
 
         if ("getConfiguredMojo".equals(method.getName())) {
             beforeMojoExecution(ret, (MojoExecution) args[2]);
         } else if ("releaseMojo".equals(method.getName())) {
             afterMojoExecution(
-                    args[0], (MojoExecution) args[1], legacySupport.getSession().getCurrentProject());
+                    args[0],
+                    (MojoExecution) args[1],
+                    legacySupport.getSession().getCurrentProject());
         }
 
         return ret;
@@ -106,14 +112,17 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
 
     @Inject
     public XMvnMojoExecutionListener(
-            BuildPluginManager buildPluginManager, MavenPluginManager mavenPluginManager, LegacySupport legacySupport) {
+            BuildPluginManager buildPluginManager,
+            MavenPluginManager mavenPluginManager,
+            LegacySupport legacySupport) {
         this.mavenPluginManager = mavenPluginManager;
         this.legacySupport = legacySupport;
 
-        Object proxy = Proxy.newProxyInstance(
-                XMvnMojoExecutionListener.class.getClassLoader(),
-                new Class<?>[] {MavenPluginManager.class},
-                this::dispatchBuildPluginManagerMethodCall);
+        Object proxy =
+                Proxy.newProxyInstance(
+                        XMvnMojoExecutionListener.class.getClassLoader(),
+                        new Class<?>[] {MavenPluginManager.class},
+                        this::dispatchBuildPluginManagerMethodCall);
         trySetBeanProperty(buildPluginManager, "mavenPluginManager", proxy);
     }
 
@@ -122,7 +131,9 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
     private static String getBeanProperty(Object bean, String... getterNames) {
         try {
             for (String getterName : getterNames) {
-                for (Class<?> clazz = bean.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
+                for (Class<?> clazz = bean.getClass();
+                        clazz != null;
+                        clazz = clazz.getSuperclass()) {
                     try {
                         Method getter = clazz.getDeclaredMethod(getterName);
                         getter.setAccessible(true);
@@ -192,7 +203,12 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
                 }
             }
 
-            String projectKey = project.getGroupId() + "/" + project.getArtifactId() + "/" + project.getVersion();
+            String projectKey =
+                    project.getGroupId()
+                            + "/"
+                            + project.getArtifactId()
+                            + "/"
+                            + project.getVersion();
             properties.setProperty(projectKey + "/" + key, value);
 
             try (OutputStream stream = Files.newOutputStream(propertiesFile)) {
@@ -210,7 +226,9 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
                 createApidocsSymlink(Path.of(javadocDir));
             }
         } else if (MAVEN_COMPILE.equals(execution) || TYCHO_COMPILE.equals(execution)) {
-            String target = getBeanProperty(mojo, "getRelease", "getReleaseLevel", "getTarget", "getTargetLevel");
+            String target =
+                    getBeanProperty(
+                            mojo, "getRelease", "getReleaseLevel", "getTarget", "getTargetLevel");
             if (target != null) {
                 setProjectProperty(project, "compilerTarget", target);
             }
@@ -225,7 +243,10 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
             // maven-javadoc-plugin >= 3.0.0
             trySetBeanProperty(mojo, "additionalOptions", new String[] {"-Xdoclint:none"});
         } else if (XMVN_BUILDDEP.equals(execution)) {
-            trySetBeanProperty(mojo, "resolutions", Collections.unmodifiableList(new ArrayList<>(resolutions)));
+            trySetBeanProperty(
+                    mojo,
+                    "resolutions",
+                    Collections.unmodifiableList(new ArrayList<>(resolutions)));
         }
     }
 
@@ -238,7 +259,11 @@ public class XMvnMojoExecutionListener implements ResolutionListener {
     public void resolutionCompleted(ResolutionRequest request, ResolutionResult result) {
         if (result.getArtifactPath() != null) {
             String[] tuple =
-                    new String[] {request.getArtifact().toString(), result.getCompatVersion(), result.getNamespace()};
+                    new String[] {
+                        request.getArtifact().toString(),
+                        result.getCompatVersion(),
+                        result.getNamespace()
+                    };
             resolutions.add(tuple);
         }
     }

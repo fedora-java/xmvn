@@ -30,8 +30,12 @@ public class NoPomBasicIntegrationTest extends AbstractMavenIntegrationTest {
     public void testNoPom() throws Exception {
         expectFailure();
         performTest("validate");
-        assertTrue(getStdout()
-                .anyMatch(s -> s.startsWith("[ERROR] The goal you specified requires a project to execute "
-                        + "but there is no POM in this directory")));
+        assertTrue(
+                getStdout()
+                        .anyMatch(
+                                s ->
+                                        s.startsWith(
+                                                "[ERROR] The goal you specified requires a project to execute "
+                                                        + "but there is no POM in this directory")));
     }
 }

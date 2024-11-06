@@ -34,7 +34,9 @@ import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 public final class JarUtils {
     private static final String MANIFEST_PATH = "META-INF/MANIFEST.MF";
 
@@ -54,10 +56,11 @@ public final class JarUtils {
     }
 
     /**
-     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native (architecture-dependent)
-     * code.
+     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file contains native
+     * (architecture-dependent) code.
      *
-     * <p>Currently this code only checks only for ELF binaries, but that behavior can change in future.
+     * <p>Currently this code only checks only for ELF binaries, but that behavior can change in
+     * future.
      *
      * @return {@code true} if native code was found inside given JAR
      */
@@ -84,7 +87,9 @@ public final class JarUtils {
             return false;
         } catch (IOException e) {
             LOGGER.debug(
-                    "I/O exception caught when trying to determine whether JAR contains native code: {}", jarPath, e);
+                    "I/O exception caught when trying to determine whether JAR contains native code: {}",
+                    jarPath,
+                    e);
             return false;
         }
     }
@@ -106,11 +111,11 @@ public final class JarUtils {
     }
 
     /**
-     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file is using native (architecture-dependent)
-     * code.
+     * Heuristically try to determine whether given JAR (or WAR, EAR, ...) file is using native
+     * (architecture-dependent) code.
      *
-     * <p>Currently this code only checks if any class file declares Java native methods, but that behavior can change
-     * in future.
+     * <p>Currently this code only checks if any class file declares Java native methods, but that
+     * behavior can change in future.
      *
      * @return {@code true} given JAR as found inside to use native code
      */
@@ -130,7 +135,11 @@ public final class JarUtils {
                                     new ClassVisitor(Opcodes.ASM4) {
                                         @Override
                                         public MethodVisitor visitMethod(
-                                                int flags, String name, String desc, String sig, String[] exc) {
+                                                int flags,
+                                                String name,
+                                                String desc,
+                                                String sig,
+                                                String[] exc) {
                                             if ((flags & Opcodes.ACC_NATIVE) != 0) {
                                                 throw new NativeMethodFound(entryName, name, sig);
                                             }
@@ -144,17 +153,26 @@ public final class JarUtils {
 
             return false;
         } catch (NativeMethodFound e) {
-            LOGGER.debug("Native method {}({}) found in {}: {}", e.methodName, e.methodSignature, jarPath, e.className);
+            LOGGER.debug(
+                    "Native method {}({}) found in {}: {}",
+                    e.methodName,
+                    e.methodSignature,
+                    jarPath,
+                    e.className);
             return true;
         } catch (IOException e) {
-            LOGGER.debug("I/O exception caught when trying to determine whether JAR uses native code: {}", jarPath, e);
+            LOGGER.debug(
+                    "I/O exception caught when trying to determine whether JAR uses native code: {}",
+                    jarPath,
+                    e);
             return false;
         } catch (RuntimeException e) {
             return false;
         }
     }
 
-    private static void putAttribute(Manifest manifest, String key, String value, String defaultValue) {
+    private static void putAttribute(
+            Manifest manifest, String key, String value, String defaultValue) {
         if (defaultValue == null || !value.equals(defaultValue)) {
             Attributes attributes = manifest.getMainAttributes();
             attributes.putValue(key, value);
@@ -167,18 +185,20 @@ public final class JarUtils {
     private static void updateManifest(Artifact artifact, Manifest mf) {
         putAttribute(mf, Artifact.MF_KEY_GROUPID, artifact.getGroupId(), null);
         putAttribute(mf, Artifact.MF_KEY_ARTIFACTID, artifact.getArtifactId(), null);
-        putAttribute(mf, Artifact.MF_KEY_EXTENSION, artifact.getExtension(), Artifact.DEFAULT_EXTENSION);
+        putAttribute(
+                mf, Artifact.MF_KEY_EXTENSION, artifact.getExtension(), Artifact.DEFAULT_EXTENSION);
         putAttribute(mf, Artifact.MF_KEY_CLASSIFIER, artifact.getClassifier(), "");
         putAttribute(mf, Artifact.MF_KEY_VERSION, artifact.getVersion(), Artifact.DEFAULT_VERSION);
     }
 
     static Path getBackupNameOf(Path p) {
-        return p.getParent().resolve((p.getFileName() + "-backup").replaceAll("\\.jar-backup$", "-backup.jar"));
+        return p.getParent()
+                .resolve((p.getFileName() + "-backup").replaceAll("\\.jar-backup$", "-backup.jar"));
     }
 
     /**
-     * Inject artifact coordinates into manifest of specified JAR (or WAR, EAR, ...) file. The file is modified
-     * in-place.
+     * Inject artifact coordinates into manifest of specified JAR (or WAR, EAR, ...) file. The file
+     * is modified in-place.
      *
      * @param targetJar
      * @param artifact
@@ -187,7 +207,8 @@ public final class JarUtils {
         LOGGER.trace("Trying to inject manifest to {}", artifact);
         try (ZipFile jar = ZipFile.builder().setPath(targetJar).get()) {
             if (jar.getEntry(MANIFEST_PATH) == null) {
-                LOGGER.trace("Manifest injection skipped: no pre-existing manifest found to update");
+                LOGGER.trace(
+                        "Manifest injection skipped: no pre-existing manifest found to update");
                 return;
             }
         } catch (IOException e) {
@@ -200,7 +221,8 @@ public final class JarUtils {
             Files.copy(targetJar, backupPath, StandardCopyOption.COPY_ATTRIBUTES);
         } catch (IOException e) {
             throw new RuntimeException(
-                    "Unable to inject manifest: I/O error when creating backup file: " + backupPath, e);
+                    "Unable to inject manifest: I/O error when creating backup file: " + backupPath,
+                    e);
         }
         LOGGER.trace("Created backup file {}", backupPath);
 
@@ -224,7 +246,8 @@ public final class JarUtils {
         } catch (Exception e) {
             // Re-throw exceptions that occur when processing JAR file after reading header and
             // manifest.
-            throw new RuntimeException("Failed to inject manifest; backup file is available at " + backupPath, e);
+            throw new RuntimeException(
+                    "Failed to inject manifest; backup file is available at " + backupPath, e);
         }
         LOGGER.trace("Manifest injected successfully");
 

@@ -19,12 +19,16 @@ import java.util.Properties;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.w3c.dom.Element;
 
-/** @author Mikolaj Izdebski */
+/**
+ * @author Mikolaj Izdebski
+ */
 interface RepositoryFactory {
     /**
-     * Create a resolver instance configured with given set of properties and repository-specific XML configuration.
+     * Create a resolver instance configured with given set of properties and repository-specific
+     * XML configuration.
      *
-     * <p>The meaning of properties and XML configuration is dependent on particular repository implementation.
+     * <p>The meaning of properties and XML configuration is dependent on particular repository
+     * implementation.
      *
      * @param filter
      * @param properties
@@ -33,14 +37,17 @@ interface RepositoryFactory {
     Repository getInstance(Element filter, Properties properties, Element configuration);
 
     /**
-     * Create a resolver instance configured with given set of properties and repository-specific XML configuration.
+     * Create a resolver instance configured with given set of properties and repository-specific
+     * XML configuration.
      *
-     * <p>The meaning of properties and XML configuration is dependent on particular repository implementation.
+     * <p>The meaning of properties and XML configuration is dependent on particular repository
+     * implementation.
      *
      * @param filter
      * @param properties
      * @param configuration
      * @param namespace
      */
-    Repository getInstance(Element filter, Properties properties, Element configuration, String namespace);
+    Repository getInstance(
+            Element filter, Properties properties, Element configuration, String namespace);
 }
