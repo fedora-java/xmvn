@@ -15,101 +15,104 @@
  */
 package org.fedoraproject.xmvn.tools.install.cli;
 
-import com.beust.jcommander.DynamicParameter;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
+import org.fedoraproject.xmvn.resolver.Resolver;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
+import org.fedoraproject.xmvn.tools.install.Installer;
+import org.fedoraproject.xmvn.tools.install.impl.DefaultInstaller;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.IVersionProvider;
+import picocli.CommandLine.Option;
 
 /**
  * @author Mikolaj Izdebski
  */
-final class InstallerCliRequest {
-    @Parameter private List<String> parameters = new LinkedList<>();
-
-    @Parameter(
-            names = {"-h", "--help"},
-            help = true,
-            description = "Display usage information")
-    private boolean help;
-
-    @Parameter(
+@Command(
+        name = "xmvn-install",
+        description = "Install artifacts into system repository.",
+        mixinStandardHelpOptions = true,
+        versionProvider = InstallerCliRequest.class)
+final class InstallerCliRequest implements Callable<Integer>, IVersionProvider {
+    @Option(
             names = {"-X", "--debug"},
-            description = "Display debugging information")
+            description = "Display debugging information.")
     private boolean debug;
 
-    @Parameter(
+    @Option(
             names = {"-r", "--relaxed"},
-            description = "Skip strict rule checking")
+            description = "Skip strict rule checking.")
     private boolean relaxed;
 
-    @Parameter(
+    @Option(
             names = {"-R", "--reactor"},
-            description = "Path to reactor descriptor")
+            description = "Path to reactor descriptor.")
     private String planPath = ".xmvn/reactor.xml";
 
-    @Parameter(
+    @Option(
             names = {"-n", "--name"},
-            description = "Base package name")
+            description = "Base package name.")
     private String packageName = "pkgname";
 
-    @Parameter(
+    @Option(
             names = {"-d", "--destination"},
-            description = "Destination directory")
+            description = "Destination directory.")
     private String destDir = ".xmvn/root";
 
-    @Parameter(
+    @Option(
             names = {"-i", "--repository"},
-            description = "Installation repository ID")
+            description = "Installation repository ID.")
     private String repoId = ArtifactInstaller.DEFAULT_REPOSITORY_ID;
 
-    @DynamicParameter(names = "-D", description = "Define system property")
+    @Option(names = "-D", description = "Define system property.")
     private Map<String, String> defines = new TreeMap<>();
 
-    private final StringBuilder usage = new StringBuilder();
-
-    public static InstallerCliRequest build(String[] args) {
-        try {
-            return new InstallerCliRequest(args);
-        } catch (ParameterException e) {
-            System.err.println(e.getMessage() + ". Specify -h for usage.");
-            return null;
+    public String[] getVersion() throws Exception {
+        String ver = "UNKNOWN";
+        try (InputStream is =
+                InstallerCliRequest.class.getResourceAsStream(
+                        "/META-INF/maven/org.fedoraproject.xmvn/xmvn-install/pom.properties")) {
+            if (is != null) {
+                Properties properties = new Properties();
+                properties.load(is);
+                ver = properties.getProperty("version");
+            }
         }
+        return new String[] {
+            "${COMMAND-FULL-NAME} version " + ver,
+            "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
+            "OS: ${os.name} ${os.version} ${os.arch}"
+        };
     }
 
-    private InstallerCliRequest(String[] args) {
-        JCommander jcomm = new JCommander(this);
-        jcomm.setProgramName("xmvn-install");
-        jcomm.parse(args);
-        jcomm.getUsageFormatter().usage(usage);
+    public Integer call() {
 
         if (debug) {
             System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+            System.setProperty("xmvn.debug", "true");
         }
         for (String param : defines.keySet()) System.setProperty(param, defines.get(param));
-    }
 
-    public boolean printUsage() {
-        if (help) {
-            System.out.println("xmvn-install: Install artifacts");
-            System.out.println();
-            System.out.println(usage);
-            return true;
+        ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
+        Configurator configurator = locator.getService(Configurator.class);
+        Resolver resolver = locator.getService(Resolver.class);
+
+        Installer installer = new DefaultInstaller(configurator, resolver);
+        InstallerCli cli = new InstallerCli(installer);
+
+        try {
+            return cli.run(this);
+        } catch (Throwable e) {
+            System.err.println("Unhandled exception");
+            e.printStackTrace();
+            return 2;
         }
-
-        return false;
-    }
-
-    public List<String> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(List<String> parameters) {
-        this.parameters = parameters;
     }
 
     public boolean isDebug() {

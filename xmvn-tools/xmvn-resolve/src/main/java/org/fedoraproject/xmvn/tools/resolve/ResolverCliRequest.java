@@ -15,79 +15,95 @@
  */
 package org.fedoraproject.xmvn.tools.resolve;
 
-import com.beust.jcommander.DynamicParameter;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
+import org.fedoraproject.xmvn.logging.Logger;
+import org.fedoraproject.xmvn.resolver.Resolver;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.IVersionProvider;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 /**
  * @author Mikolaj Izdebski
  */
-final class ResolverCliRequest {
-    @Parameter private List<String> parameters = new LinkedList<>();
+@Command(
+        name = "xmvn-resolve",
+        description = "Resolve Maven artifacts from system repositories.",
+        mixinStandardHelpOptions = true,
+        versionProvider = ResolverCliRequest.class)
+final class ResolverCliRequest implements Callable<Integer>, IVersionProvider {
+    @Parameters(paramLabel = "artifacts", description = "Artifact coordinates to resolve.")
+    private List<String> parameters = new LinkedList<>();
 
-    @Parameter(
-            names = {"-h", "--help"},
-            help = true,
-            description = "Display usage information")
-    private boolean help;
-
-    @Parameter(
+    @Option(
             names = {"-X", "--debug"},
-            description = "Display debugging information")
+            description = "Display debugging information.")
     private boolean debug;
 
-    @Parameter(
+    @Option(
             names = {"-c", "--classpath"},
-            description = "Use colon instead of new line to separate resolved artifacts")
+            description = "Use colon instead of new line to separate resolved artifacts.")
     private boolean classpath;
 
-    @Parameter(
+    @Option(
             names = {"--raw-request"},
             description =
-                    "Read a list of raw XMvn XML requests from standard input and print the results on standard output")
+                    "Read a list of raw XMvn XML requests from standard input and print the results on standard output.")
     private boolean raw;
 
-    @DynamicParameter(names = "-D", description = "Define system property")
+    @Option(names = "-D", description = "Define system property.")
     private Map<String, String> defines = new TreeMap<>();
 
-    private final StringBuilder usage = new StringBuilder();
-
-    public static ResolverCliRequest build(String[] args) {
-        try {
-            return new ResolverCliRequest(args);
-        } catch (ParameterException e) {
-            System.err.println(e.getMessage() + ". Specify -h for usage.");
-            return null;
+    public String[] getVersion() throws Exception {
+        String ver = "UNKNOWN";
+        try (InputStream is =
+                ResolverCliRequest.class.getResourceAsStream(
+                        "/META-INF/maven/org.fedoraproject.xmvn/xmvn-resolve/pom.properties")) {
+            if (is != null) {
+                Properties properties = new Properties();
+                properties.load(is);
+                ver = properties.getProperty("version");
+            }
         }
+        return new String[] {
+            "${COMMAND-FULL-NAME} version " + ver,
+            "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
+            "OS: ${os.name} ${os.version} ${os.arch}"
+        };
     }
 
-    private ResolverCliRequest(String[] args) {
-        JCommander jcomm = new JCommander(this);
-        jcomm.setProgramName("xmvn-resolve");
-        jcomm.parse(args);
-        jcomm.getUsageFormatter().usage(usage);
+    public Integer call() {
+        if (isDebug()) {
+            System.setProperty("xmvn.debug", "true");
+        }
 
         if (raw && (classpath || !parameters.isEmpty())) {
-            throw new ParameterException("--raw-request must be used alone");
+            throw new IllegalArgumentException("--raw-request must be used alone");
         }
 
         for (String param : defines.keySet()) System.setProperty(param, defines.get(param));
-    }
 
-    public boolean printUsage() {
-        if (help) {
-            System.out.println("xmvn-resolve: Resolve artifacts from system repository");
-            System.out.println();
-            System.out.println(usage);
-            return true;
+        ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
+        Logger logger = locator.getService(Logger.class);
+        Resolver resolver = locator.getService(Resolver.class);
+
+        ResolverCli cli = new ResolverCli(logger, resolver);
+
+        try {
+            return cli.run(this);
+        } catch (Throwable e) {
+            System.err.println("Unhandled exception");
+            e.printStackTrace();
+            return 2;
         }
-
-        return false;
     }
 
     public List<String> getParameters() {

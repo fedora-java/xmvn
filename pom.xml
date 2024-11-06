@@ -79,8 +79,8 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>

@@ -22,14 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
-import org.fedoraproject.xmvn.locator.ServiceLocator;
-import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
+import picocli.CommandLine;
 
 /**
+ * XMvn Subst is a tool that can substitute Maven artifact files with symbolic links to
+ * corresponding files in artifact repository.
+ *
  * @author Mikolaj Izdebski
  */
 public class SubstCli {
@@ -51,7 +53,7 @@ public class SubstCli {
         return metadataResolver.resolveMetadata(request);
     }
 
-    private int run(SubstCliRequest cliRequest) {
+    public int run(SubstCliRequest cliRequest) {
         List<MetadataResult> metadataResults = new ArrayList<>();
 
         if (cliRequest.getRoot() != null) {
@@ -88,31 +90,7 @@ public class SubstCli {
     }
 
     public static int doMain(String[] args) {
-        try {
-            SubstCliRequest cliRequest = SubstCliRequest.build(args);
-            if (cliRequest == null) {
-                return 1;
-            }
-            if (cliRequest.printUsage()) {
-                return 0;
-            }
-            if (cliRequest.isDebug()) {
-                System.setProperty("xmvn.debug", "true");
-            }
-
-            ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
-            Logger logger = locator.getService(Logger.class);
-            Configurator configurator = locator.getService(Configurator.class);
-            MetadataResolver metadataResolver = locator.getService(MetadataResolver.class);
-
-            SubstCli cli = new SubstCli(logger, configurator, metadataResolver);
-
-            return cli.run(cliRequest);
-        } catch (Throwable e) {
-            System.err.println("Unhandled exception");
-            e.printStackTrace();
-            return 2;
-        }
+        return new CommandLine(new SubstCliRequest()).execute(args);
     }
 
     public static void main(String[] args) {

@@ -15,91 +15,107 @@
  */
 package org.fedoraproject.xmvn.tools.subst;
 
-import com.beust.jcommander.DynamicParameter;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.locator.ServiceLocator;
+import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
+import org.fedoraproject.xmvn.logging.Logger;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.IVersionProvider;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 /**
  * @author Mikolaj Izdebski
  */
-final class SubstCliRequest {
-    @Parameter private List<String> parameters = new LinkedList<>();
+@Command(
+        name = "xmvn-subst",
+        description = "substitute Maven artifact files with symbolic links.",
+        mixinStandardHelpOptions = true,
+        versionProvider = SubstCliRequest.class)
+final class SubstCliRequest implements Callable<Integer>, IVersionProvider {
+    @Parameters private List<String> parameters = new LinkedList<>();
 
-    @Parameter(
-            names = {"-h", "--help"},
-            help = true,
-            description = "Display usage information")
-    private boolean help;
-
-    @Parameter(
+    @Option(
             names = {"-X", "--debug"},
-            description = "Display debugging information")
+            description = "Display debugging information.")
     private boolean debug;
 
-    @Parameter(
+    @Option(
             names = {"-s", "--strict"},
-            description = "Fail if any artifact cannot be symlinked")
+            description = "Fail if any artifact cannot be symlinked.")
     private boolean strict;
 
-    @Parameter(
+    @Option(
             names = {"-d", "--dry-run"},
-            description = "Do not symlink anything but report what would have been symlinked")
+            description = "Do not symlink anything but report what would have been symlinked.")
     private boolean dryRun;
 
-    @Parameter(
+    @Option(
             names = {"-L", "--follow-symlinks"},
-            description = "Follow symbolic links when traversing directory structure")
+            description = "Follow symbolic links when traversing directory structure.")
     private boolean followSymlinks;
 
-    @Parameter(
+    @Option(
             names = {"-t", "--type"},
-            description = "Consider artifacts with given type")
+            description = "Consider artifacts with given type.")
     private List<String> types = new ArrayList<>(Arrays.asList("jar", "war"));
 
-    @Parameter(
+    @Option(
             names = {"-R", "--root"},
-            description = "Consider another root when looking for artifacts")
+            description = "Consider another root when looking for artifacts.")
     private String root;
 
-    @DynamicParameter(names = "-D", description = "Define system property")
+    @Option(names = "-D", description = "Define system property.")
     private Map<String, String> defines = new TreeMap<>();
 
-    private final StringBuilder usage = new StringBuilder();
-
-    public static SubstCliRequest build(String[] args) {
-        try {
-            return new SubstCliRequest(args);
-        } catch (ParameterException e) {
-            System.err.println(e.getMessage() + ". Specify -h for usage.");
-            return null;
+    public String[] getVersion() throws Exception {
+        String ver = "UNKNOWN";
+        try (InputStream is =
+                SubstCliRequest.class.getResourceAsStream(
+                        "/META-INF/maven/org.fedoraproject.xmvn/xmvn-subst/pom.properties")) {
+            if (is != null) {
+                Properties properties = new Properties();
+                properties.load(is);
+                ver = properties.getProperty("version");
+            }
         }
+        return new String[] {
+            "${COMMAND-FULL-NAME} version " + ver,
+            "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
+            "OS: ${os.name} ${os.version} ${os.arch}"
+        };
     }
 
-    private SubstCliRequest(String[] args) {
-        JCommander jcomm = new JCommander(this);
-        jcomm.setProgramName("xmvn-subst");
-        jcomm.parse(args);
-        jcomm.getUsageFormatter().usage(usage);
-
+    public Integer call() {
+        if (isDebug()) {
+            System.setProperty("xmvn.debug", "true");
+        }
         for (String param : defines.keySet()) System.setProperty(param, defines.get(param));
-    }
 
-    public boolean printUsage() {
-        if (help) {
-            System.out.println("xmvn-subst: Substitute artifact files with symbolic links");
-            System.out.println();
-            System.out.println(usage);
-            return true;
+        ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
+        Logger logger = locator.getService(Logger.class);
+        Configurator configurator = locator.getService(Configurator.class);
+        MetadataResolver metadataResolver = locator.getService(MetadataResolver.class);
+
+        SubstCli cli = new SubstCli(logger, configurator, metadataResolver);
+
+        try {
+            return cli.run(this);
+        } catch (Throwable e) {
+            System.err.println("Unhandled exception");
+            e.printStackTrace();
+            return 2;
         }
-
-        return false;
     }
 
     public List<String> getParameters() {
