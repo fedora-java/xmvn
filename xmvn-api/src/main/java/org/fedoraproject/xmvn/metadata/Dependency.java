@@ -18,6 +18,7 @@ package org.fedoraproject.xmvn.metadata;
 import java.util.ArrayList;
 import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * Description of dependency artifact.
@@ -290,8 +291,8 @@ public class Dependency {
                 resolvedVersionDefault.equals(resolvedVersion) ? null : resolvedVersion;
     }
 
-    public org.fedoraproject.xmvn.artifact.Artifact toArtifact() {
-        return new org.fedoraproject.xmvn.artifact.DefaultArtifact(
+    public Artifact toArtifact() {
+        return new DefaultArtifact(
                 getGroupId(),
                 getArtifactId(),
                 getExtension(),
