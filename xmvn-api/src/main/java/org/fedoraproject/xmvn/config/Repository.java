@@ -15,8 +15,6 @@
  */
 package org.fedoraproject.xmvn.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import org.w3c.dom.Element;
 
@@ -32,9 +30,6 @@ public class Repository {
 
     /** Role hint of Plexus component implementing the repository. */
     private String type;
-
-    /** Field stereotypes. */
-    private List<Stereotype> stereotypes = new ArrayList<>();
 
     /** Field properties. */
     private Properties properties = new Properties();
@@ -57,15 +52,6 @@ public class Repository {
      */
     public void addProperty(String key, String value) {
         getProperties().put(key, value);
-    }
-
-    /**
-     * Method addStereotype.
-     *
-     * @param stereotype a stereotype object.
-     */
-    public void addStereotype(Stereotype stereotype) {
-        getStereotypes().add(stereotype);
     }
 
     /**
@@ -107,34 +93,12 @@ public class Repository {
     }
 
     /**
-     * Method getStereotypes.
-     *
-     * @return List
-     */
-    public List<Stereotype> getStereotypes() {
-        return stereotypes;
-    }
-
-    List<Stereotype> getStereotypesOrNull() {
-        return stereotypes.isEmpty() ? null : stereotypes;
-    }
-
-    /**
      * Get role hint of Plexus component implementing the repository.
      *
      * @return String
      */
     public String getType() {
         return type;
-    }
-
-    /**
-     * Method removeStereotype.
-     *
-     * @param stereotype a stereotype object.
-     */
-    public void removeStereotype(Stereotype stereotype) {
-        getStereotypes().remove(stereotype);
     }
 
     /**
@@ -175,16 +139,6 @@ public class Repository {
      */
     public void setProperties(Properties properties) {
         this.properties = properties;
-    }
-
-    /**
-     * Set list of artifact types that can be stored in this repository. Empty list means that this
-     * repository can store any artifact type.
-     *
-     * @param stereotypes a stereotypes object.
-     */
-    public void setStereotypes(List<Stereotype> stereotypes) {
-        this.stereotypes = stereotypes;
     }
 
     /**
