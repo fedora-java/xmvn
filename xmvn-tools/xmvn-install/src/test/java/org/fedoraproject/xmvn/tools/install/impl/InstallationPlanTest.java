@@ -50,7 +50,7 @@ public class InstallationPlanTest {
 
     @Test
     public void testUuid() throws Exception {
-        assertThrows(ArtifactInstallationException.class, () -> createInstallationPlan("uuid.xml"));
+        createInstallationPlan("uuid.xml");
     }
 
     @Test
@@ -181,8 +181,6 @@ public class InstallationPlanTest {
 
     @Test
     public void testMetadataUuid() throws Exception {
-        assertThrows(
-                ArtifactInstallationException.class,
-                () -> createInstallationPlan("metadata-uuid.xml"));
+        createInstallationPlan("metadata-uuid.xml");
     }
 }

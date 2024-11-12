@@ -116,7 +116,7 @@ class EffectivePomGenerator {
         String artifactIdNormalized = artifact.getArtifactId().replace('/', '.');
         String versionNormalized = artifact.getVersion().replace('/', '.');
         String artifactFileName = artifactIdNormalized + "-" + versionNormalized + ".pom";
-        Path pomDir = TempManager.createTempDirectory("xmvn-" + metadata.getUuid());
+        Path pomDir = TempManager.createTempDirectory("xmvn-");
         Path pomPath = pomDir.resolve(artifactFileName);
 
         try (OutputStream os = Files.newOutputStream(pomPath)) {

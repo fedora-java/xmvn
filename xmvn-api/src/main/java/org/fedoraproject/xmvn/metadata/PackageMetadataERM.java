@@ -20,6 +20,7 @@ import io.kojan.xml.Entity;
 import io.kojan.xml.Relationship;
 import java.util.ArrayList;
 import java.util.List;
+import org.fedoraproject.xmvn.xml.IgnoredProperty;
 import org.fedoraproject.xmvn.xml.JavaProperties;
 
 /**
@@ -209,8 +210,7 @@ interface PackageMetadataERM {
                             "namespace",
                             ArtifactMetadata::getNamespaceOrNull,
                             ArtifactMetadata::setNamespace),
-                    Attribute.ofOptional(
-                            "uuid", ArtifactMetadata::getUuidOrNull, ArtifactMetadata::setUuid),
+                    IgnoredProperty.of("uuid"),
                     JavaProperties.of(
                             "properties",
                             ArtifactMetadata::getProperties,
@@ -246,8 +246,7 @@ interface PackageMetadataERM {
             Entity.ofMutable(
                     "metadata",
                     PackageMetadata::new,
-                    Attribute.ofOptional(
-                            "uuid", PackageMetadata::getUuidOrNull, PackageMetadata::setUuid),
+                    IgnoredProperty.of("uuid"),
                     JavaProperties.of(
                             "properties",
                             PackageMetadata::getProperties,
