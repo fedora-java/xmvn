@@ -15,19 +15,18 @@
  */
 package org.fedoraproject.xmvn.tools.resolve;
 
+import io.kojan.xml.XMLException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
-import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionRequestListUnmarshaller;
-import org.fedoraproject.xmvn.tools.resolve.xml.ResolutionResultListMarshaller;
+import org.fedoraproject.xmvn.tools.resolve.xml.ResolverDAO;
 import picocli.CommandLine;
 
 /**
@@ -52,11 +51,9 @@ public class ResolverCli {
     }
 
     private List<ResolutionRequest> parseRequests(ResolverCliRequest cli)
-            throws IOException, XMLStreamException {
+            throws IOException, XMLException {
         if (cli.isRaw()) {
-            List<ResolutionRequest> requests =
-                    new ResolutionRequestListUnmarshaller(System.in).unmarshal();
-            return requests != null ? requests : List.of();
+            return ResolverDAO.unmarshalRequests(System.in);
         }
 
         List<ResolutionRequest> requests = new ArrayList<>();
@@ -79,9 +76,9 @@ public class ResolverCli {
     }
 
     private void printResults(ResolverCliRequest cli, List<ResolutionResult> results)
-            throws IOException, XMLStreamException {
+            throws IOException, XMLException {
         if (cli.isRaw()) {
-            new ResolutionResultListMarshaller(results).marshal(System.out);
+            ResolverDAO.marshalResults(System.out, results);
         } else if (cli.isClasspath()) {
             System.out.println(
                     results.stream()
@@ -92,7 +89,7 @@ public class ResolverCli {
         }
     }
 
-    public int run(ResolverCliRequest cliRequest) throws IOException, XMLStreamException {
+    public int run(ResolverCliRequest cliRequest) throws IOException, XMLException {
         try {
             boolean error = false;
 

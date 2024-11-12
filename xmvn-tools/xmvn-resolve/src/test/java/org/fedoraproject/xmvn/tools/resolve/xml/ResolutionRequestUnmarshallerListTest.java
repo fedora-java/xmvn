@@ -19,10 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import javax.xml.stream.XMLStreamException;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.junit.jupiter.api.Test;
@@ -35,9 +33,9 @@ public class ResolutionRequestUnmarshallerListTest {
             "src/test/resources/org/fedoraproject/xmvn/tools/resolve/xml";
 
     @Test
-    public void testEmptierList() throws IOException, XMLStreamException {
+    public void testEmptierList() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-emptier-list.xml")) {
-            List<ResolutionRequest> list = new ResolutionRequestListUnmarshaller(is).unmarshal();
+            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
 
             // The implementation may change. Any of the two results is correct.
             assertTrue(list == null || list.isEmpty());
@@ -45,9 +43,9 @@ public class ResolutionRequestUnmarshallerListTest {
     }
 
     @Test
-    public void testEmptyList() throws IOException, XMLStreamException {
+    public void testEmptyList() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-empty-list.xml")) {
-            List<ResolutionRequest> list = new ResolutionRequestListUnmarshaller(is).unmarshal();
+            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
 
             // The implementation may change. Any of the two results is correct.
             assertTrue(list == null || list.isEmpty());
@@ -55,9 +53,9 @@ public class ResolutionRequestUnmarshallerListTest {
     }
 
     @Test
-    public void testFullArtifact() throws IOException, XMLStreamException {
+    public void testFullArtifact() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-full-artifact.xml")) {
-            List<ResolutionRequest> list = new ResolutionRequestListUnmarshaller(is).unmarshal();
+            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
 
             assertEquals(1, list.size());
 
@@ -73,9 +71,9 @@ public class ResolutionRequestUnmarshallerListTest {
     }
 
     @Test
-    public void testFullRequests() throws IOException, XMLStreamException {
+    public void testFullRequests() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-full-requests.xml")) {
-            List<ResolutionRequest> list = new ResolutionRequestListUnmarshaller(is).unmarshal();
+            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
 
             assertEquals(6, list.size());
 
@@ -98,9 +96,9 @@ public class ResolutionRequestUnmarshallerListTest {
     }
 
     @Test
-    public void testIntegrationExample() throws IOException, XMLStreamException {
+    public void testIntegrationExample() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-integration-example.xml")) {
-            List<ResolutionRequest> list = new ResolutionRequestListUnmarshaller(is).unmarshal();
+            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
 
             assertEquals(2, list.size());
 
@@ -113,9 +111,9 @@ public class ResolutionRequestUnmarshallerListTest {
     }
 
     @Test
-    public void testMinimalArtifacts() throws IOException, XMLStreamException {
+    public void testMinimalArtifacts() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-minimal-artifacts.xml")) {
-            List<ResolutionRequest> list = new ResolutionRequestListUnmarshaller(is).unmarshal();
+            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
 
             assertEquals(5, list.size());
 
@@ -132,9 +130,9 @@ public class ResolutionRequestUnmarshallerListTest {
     }
 
     @Test
-    public void testNestedBrackets() throws IOException, XMLStreamException {
+    public void testNestedBrackets() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-nested-brackets.xml")) {
-            List<ResolutionRequest> list = new ResolutionRequestListUnmarshaller(is).unmarshal();
+            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
 
             assertEquals(1, list.size());
 
