@@ -62,10 +62,6 @@ class InstallationPlan {
      * @throws ArtifactInstallationException
      */
     private static void validate(PackageMetadata metadata) throws ArtifactInstallationException {
-        if (!isNullOrEmpty(metadata.getUuid())) {
-            throw new ArtifactInstallationException("Installation plan must not set UUID");
-        }
-
         for (ArtifactMetadata artifactMetadata : metadata.getArtifacts()) {
             if (isNullOrEmpty(artifactMetadata.getGroupId())) {
                 throw new ArtifactInstallationException("Artifact metadata must have group ID set");
@@ -99,10 +95,6 @@ class InstallationPlan {
                         "Artifact path points to a non-readable file: " + artifactPath);
             }
 
-            if (!isNullOrEmpty(artifactMetadata.getUuid())) {
-                throw new ArtifactInstallationException(
-                        "Installation plan must not define artifact UUID");
-            }
             if (!isNullOrEmpty(artifactMetadata.getNamespace())) {
                 throw new ArtifactInstallationException(
                         "Installation plan must not define artifact namespace");

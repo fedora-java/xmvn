@@ -55,11 +55,6 @@ public class PackageMetadata {
         PackageMetadataERM.metadataEntity.writeToXML(path, this);
     }
 
-    /** Deprecated, unused. */
-    private String uuid;
-
-    private static final String uuidDefault = "";
-
     /** Field properties. */
     private Properties properties = new Properties();
 
@@ -133,19 +128,6 @@ public class PackageMetadata {
     }
 
     /**
-     * Get deprecated, unused.
-     *
-     * @return String
-     */
-    public String getUuid() {
-        return uuid != null ? uuid : uuidDefault;
-    }
-
-    String getUuidOrNull() {
-        return uuid;
-    }
-
-    /**
      * Method removeArtifact.
      *
      * @param artifactMetadata a artifactMetadata object.
@@ -189,14 +171,5 @@ public class PackageMetadata {
      */
     public void setSkippedArtifacts(List<SkippedArtifactMetadata> skippedArtifacts) {
         this.skippedArtifacts = skippedArtifacts;
-    }
-
-    /**
-     * Set deprecated, unused.
-     *
-     * @param uuid a uuid object.
-     */
-    public void setUuid(String uuid) {
-        this.uuid = uuidDefault.equals(uuid) ? null : uuid;
     }
 }

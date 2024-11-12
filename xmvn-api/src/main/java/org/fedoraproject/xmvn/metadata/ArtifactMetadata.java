@@ -58,11 +58,6 @@ public class ArtifactMetadata {
 
     private static final String namespaceDefault = "";
 
-    /** Deprecated, unused. */
-    private String uuid;
-
-    private static final String uuidDefault = "";
-
     /** Field properties. */
     private Properties properties = new Properties();
 
@@ -219,19 +214,6 @@ public class ArtifactMetadata {
     }
 
     /**
-     * Get deprecated, unused.
-     *
-     * @return String
-     */
-    public String getUuid() {
-        return uuid != null ? uuid : uuidDefault;
-    }
-
-    String getUuidOrNull() {
-        return uuid;
-    }
-
-    /**
      * Get artifact version. This is always upstream version, never compat version nor SYSTEM.
      *
      * @return String
@@ -348,15 +330,6 @@ public class ArtifactMetadata {
      */
     public void setProperties(Properties properties) {
         this.properties = properties;
-    }
-
-    /**
-     * Set deprecated, unused.
-     *
-     * @param uuid a uuid object.
-     */
-    public void setUuid(String uuid) {
-        this.uuid = uuidDefault.equals(uuid) ? null : uuid;
     }
 
     /**
