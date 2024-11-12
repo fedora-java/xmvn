@@ -58,7 +58,7 @@ public class MavenExtensionTest extends AbstractTest {
 
     @Override
     public void configure(Binder binder) {
-        resolverMock = EasyMock.createMock(org.fedoraproject.xmvn.resolver.Resolver.class);
+        resolverMock = EasyMock.createMock(Resolver.class);
         binder.bind(WorkspaceReader.class)
                 .annotatedWith(Names.named("ide"))
                 .to(XMvnWorkspaceReader.class);
