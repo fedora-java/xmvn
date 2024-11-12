@@ -20,6 +20,7 @@ import io.kojan.xml.Entity;
 import io.kojan.xml.Relationship;
 import java.util.ArrayList;
 import java.util.List;
+import org.fedoraproject.xmvn.xml.IgnoredProperty;
 import org.fedoraproject.xmvn.xml.JavaProperties;
 
 /**
@@ -107,29 +108,6 @@ interface ConfigurationERM {
                             "extension", Artifact::getExtension, Artifact::setExtension));
 
     /**
-     * An {@link Entity} modeling mutable data type {@link Stereotype}. It specifies how data should
-     * be read and written as XML {@code <stereotype>} elements.
-     */
-    Entity<Stereotype, Stereotype> stereotypeEntity =
-            Entity.ofMutable(
-                    "stereotype",
-                    Stereotype::new,
-                    Attribute.of("type", Stereotype::getType, Stereotype::setType),
-                    Attribute.of("extension", Stereotype::getExtension, Stereotype::setExtension),
-                    Attribute.of(
-                            "classifier", Stereotype::getClassifier, Stereotype::setClassifier));
-
-    /**
-     * An {@link Entity} modeling {@link List} of {@link Stereotype}s. It specifies how data should
-     * be read and written as XML {@code <stereotypes>} elements.
-     */
-    Entity<List<Stereotype>, List<Stereotype>> stereotypesEntity =
-            Entity.ofMutable(
-                    "stereotypes",
-                    ArrayList<Stereotype>::new,
-                    Relationship.of(stereotypeEntity, x -> x, List::add));
-
-    /**
      * An {@link Entity} modeling mutable data type {@link Repository}. It specifies how data should
      * be read and written as XML {@code <repository>} elements.
      */
@@ -139,10 +117,7 @@ interface ConfigurationERM {
                     Repository::new,
                     Attribute.of("id", Repository::getId, Repository::setId),
                     Attribute.of("type", Repository::getType, Repository::setType),
-                    Relationship.ofSingular(
-                            stereotypesEntity,
-                            Repository::getStereotypes,
-                            Repository::setStereotypes),
+                    IgnoredProperty.of("stereotypes"),
                     JavaProperties.of(
                             "properties", Repository::getProperties, Repository::setProperties),
                     DOM.of(
