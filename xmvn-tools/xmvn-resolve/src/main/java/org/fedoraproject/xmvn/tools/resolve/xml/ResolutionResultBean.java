@@ -15,26 +15,26 @@
  */
 package org.fedoraproject.xmvn.tools.resolve.xml;
 
+import io.kojan.xml.Builder;
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 
 /**
+ * A {@link Builder} for {@link ResolutionResult} objects.
+ *
  * @author Mikolaj Izdebski
  */
-public class ResolutionResultBean {
-    private String artifactPath;
-
+class ResolutionResultBean implements ResolutionResult, Builder<ResolutionResult> {
+    private Path artifactPath;
     private String provider;
-
     private String compatVersion;
-
     private String namespace;
 
-    public String getArtifactPath() {
+    public Path getArtifactPath() {
         return artifactPath;
     }
 
-    public void setArtifactPath(String artifactPath) {
+    public void setArtifactPath(Path artifactPath) {
         this.artifactPath = artifactPath;
     }
 
@@ -62,44 +62,8 @@ public class ResolutionResultBean {
         this.namespace = namespace;
     }
 
-    /**
-     * @author Mikolaj Izdebski
-     */
-    public static class Adapter {
-        public ResolutionResultBean marshal(ResolutionResult result) throws Exception {
-            ResolutionResultBean bean = new ResolutionResultBean();
-
-            bean.setArtifactPath(
-                    result.getArtifactPath() != null ? result.getArtifactPath().toString() : null);
-            bean.setProvider(result.getProvider());
-            bean.setCompatVersion(result.getCompatVersion());
-            bean.setNamespace(result.getNamespace());
-
-            return bean;
-        }
-
-        public ResolutionResult unmarshal(final ResolutionResultBean bean) throws Exception {
-            return new ResolutionResult() {
-                @Override
-                public Path getArtifactPath() {
-                    return bean.getArtifactPath() != null ? Path.of(bean.getArtifactPath()) : null;
-                }
-
-                @Override
-                public String getProvider() {
-                    return bean.getProvider();
-                }
-
-                @Override
-                public String getCompatVersion() {
-                    return bean.getCompatVersion();
-                }
-
-                @Override
-                public String getNamespace() {
-                    return bean.getNamespace();
-                }
-            };
-        }
+    @Override
+    public ResolutionResult build() {
+        return this;
     }
 }

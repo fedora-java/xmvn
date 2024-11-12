@@ -16,6 +16,7 @@
 package org.fedoraproject.xmvn.tools.resolve.xml;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +31,7 @@ public class ResolutionResultMarshallerListTest {
     @Test
     public void testEmpty() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        new ResolutionResultListMarshaller(Arrays.asList(new ResolutionResult[] {null}))
-                .marshal(bos);
+        ResolverDAO.marshalResults(bos, List.of());
 
         XmlAssert.assertThat("<results></results>")
                 .and(bos.toString())
@@ -46,30 +46,28 @@ public class ResolutionResultMarshallerListTest {
 
         ResolutionResultBean temp;
         temp = new ResolutionResultBean();
-        temp.setArtifactPath("/dev/null");
+        temp.setArtifactPath(Path.of("/dev/null"));
         temp.setCompatVersion("comp1");
         temp.setNamespace("namespace1");
         temp.setProvider("provider1");
-        list.add(new ResolutionResultBean.Adapter().unmarshal(temp));
+        list.add(temp.build());
 
         temp = new ResolutionResultBean();
-        temp.setArtifactPath("/dev/null");
+        temp.setArtifactPath(Path.of("/dev/null"));
         temp.setCompatVersion("comp2");
         temp.setNamespace("namespace2");
         temp.setProvider("provider2");
-        list.add(new ResolutionResultBean.Adapter().unmarshal(temp));
-
-        list.add(null);
+        list.add(temp.build());
 
         temp = new ResolutionResultBean();
-        temp.setArtifactPath("/dev/null");
+        temp.setArtifactPath(Path.of("/dev/null"));
         temp.setCompatVersion("comp3");
         temp.setNamespace("namespace3");
         temp.setProvider("provider3");
-        list.add(new ResolutionResultBean.Adapter().unmarshal(temp));
+        list.add(temp.build());
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        new ResolutionResultListMarshaller(list).marshal(bos);
+        ResolverDAO.marshalResults(bos, list);
 
         XmlAssert.assertThat(
                         """
@@ -102,10 +100,9 @@ public class ResolutionResultMarshallerListTest {
 
     @Test
     public void testSingle() throws Exception {
-        ResolutionResult rr =
-                new ResolutionResultBean.Adapter().unmarshal(new ResolutionResultBean());
+        ResolutionResult rr = new ResolutionResultBean().build();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        new ResolutionResultListMarshaller(Arrays.asList(new ResolutionResult[] {rr})).marshal(bos);
+        ResolverDAO.marshalResults(bos, Arrays.asList(new ResolutionResult[] {rr}));
 
         XmlAssert.assertThat("<results><result/></results>")
                 .and(bos.toString())
