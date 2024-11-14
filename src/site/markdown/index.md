@@ -1,11 +1,3 @@
----
-title: XMvn
-author:
-  - Mikolaj Izdebski
-date: 2013-05-23
----
-
-
 XMvn
 ====
 

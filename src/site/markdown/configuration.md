@@ -1,11 +1,3 @@
----
-title: XMvn configuration
-author:
-  - Mikolaj Izdebski
-date: 2013-03-05
----
-
-
 Configuring XMvn
 ================
 
@@ -81,6 +73,7 @@ be present and correct.  Builtin configuration is minimal and it is
 not really usable, but it is used only if no other configuration files
 are provided or available, for example when unsupported compatbility
 level is specified.
+
 
 Configuration merging
 ---------------------
