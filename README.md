@@ -1,4 +1,4 @@
-[![build status](https://img.shields.io/github/actions/workflow/status/fedora-java/xmvn/maven.yml?branch=master)](https://github.com/fedora-java/xmvn/actions/workflows/maven.yml?query=branch%3Amaster) [![test coverage](https://img.shields.io/codecov/c/github/fedora-java/xmvn/master.svg)](https://codecov.io/gh/fedora-java/xmvn)
+[![build status](https://img.shields.io/github/actions/workflow/status/fedora-java/xmvn/maven.yml?branch=master)](https://github.com/fedora-java/xmvn/actions/workflows/maven.yml?query=branch%3Amaster)
 
 
 
