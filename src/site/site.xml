@@ -38,7 +38,6 @@
 
     <menu>
       <item name="About XMvn" href="about.html"/>
-      <item name="Download" href="download.html"/>
     </menu>
 
     <menu name="Project Documentation">
