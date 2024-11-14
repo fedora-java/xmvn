@@ -24,4 +24,5 @@ if [ ! -d target/site ]; then
     exit 1
 fi
 
-tar cC target site | gzip -9 | ssh fedorapeople.org "cd public_html/xmvn/stage && rm -rf site && tar xzv"
+(cd ./target && find site | cpio -o) | gzip -9 | ssh fedorapeople.org "cd public_html/xmvn/stage && rm -rf site && zcat | cpio -id"
+echo "Staged site is at https://mizdebsk.fedorapeople.org/xmvn/stage/site/"
