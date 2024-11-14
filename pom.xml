@@ -142,53 +142,6 @@
               </artifactItems>
             </configuration>
           </execution>
-          <execution>
-            <id>config-documentation</id>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <phase>pre-site</phase>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-api</artifactId>
-                  <version>${project.version}</version>
-                  <type>xdoc</type>
-                  <classifier>config</classifier>
-                  <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
-                  <destFileName>config.xml</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-api</artifactId>
-                  <version>${project.version}</version>
-                  <type>xdoc</type>
-                  <classifier>metadata</classifier>
-                  <outputDirectory>${project.build.directory}/generated-site/xdoc</outputDirectory>
-                  <destFileName>metadata.xml</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-api</artifactId>
-                  <version>${project.version}</version>
-                  <type>xsd</type>
-                  <classifier>config</classifier>
-                  <outputDirectory>${project.build.directory}/generated-site/resources/xsd</outputDirectory>
-                  <destFileName>config-2.0.0.xsd</destFileName>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn-api</artifactId>
-                  <version>${project.version}</version>
-                  <type>xsd</type>
-                  <classifier>metadata</classifier>
-                  <outputDirectory>${project.build.directory}/generated-site/resources/xsd</outputDirectory>
-                  <destFileName>metadata-2.0.0.xsd</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
