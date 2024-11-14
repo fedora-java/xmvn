@@ -51,17 +51,6 @@
       <item name="Configuration Reference" href="config.html"/>
       <item name="Metadata Reference" href="metadata.html"/>
       <item name="API Documentation" href="apidocs/"/>
-      <item name="Tutorials" href="howto/index.html" collapse="true">
-        <!-- FIXME: outdated
-        <item name="Embedding XMvn in your application" href="howto/embed.html"/>
-        -->
-        <!-- Not yet available
-        <item name="Using XMvn from Maven plugin" href="howto/plugin.html"/>
-        -->
-        <!-- FIXME: outdated
-        <item name="Creating extension for XMvn" href="howto/extend.html"/>
-        -->
-      </item>
     </menu>
   </body>
 </project>
