@@ -1,4 +1,7 @@
 [![build status](https://img.shields.io/github/actions/workflow/status/fedora-java/xmvn/maven.yml?branch=master)](https://github.com/fedora-java/xmvn/actions/workflows/maven.yml?query=branch%3Amaster)
+[![License](https://img.shields.io/github/license/fedora-java/xmvn.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Maven Central version](https://img.shields.io/maven-central/v/org.fedoraproject.xmvn/xmvn.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.fedoraproject.xmvn/xmvn)
+[![Javadoc](https://javadoc.io/badge2/org.fedoraproject.xmvn/xmvn/javadoc.svg)](https://javadoc.io/doc/org.fedoraproject.xmvn/xmvn)
 
 
 
