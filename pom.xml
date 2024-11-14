@@ -179,12 +179,6 @@
         <configuration>
           <show>package</show>
           <detectJavaApiLink>false</detectJavaApiLink>
-          <doclet>net.gleamynode.apiviz.APIviz</doclet>
-          <docletArtifact>
-            <groupId>org.jboss.apiviz</groupId>
-            <artifactId>apiviz</artifactId>
-            <version>${apivizVersion}</version>
-          </docletArtifact>
           <doctitle>XMvn ${project.version}</doctitle>
           <header>XMvn ${project.version}</header>
           <footer>XMvn ${project.version}</footer>

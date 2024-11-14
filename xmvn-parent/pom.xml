@@ -82,7 +82,6 @@
     <kojanXmlVersion>1.0.1</kojanXmlVersion>
 
     <!-- Build dependencies -->
-    <apivizVersion>1.3.2.GA</apivizVersion>
     <assemblyPluginVersion>3.7.1</assemblyPluginVersion>
     <buildHelperPluginVersion>3.6.0</buildHelperPluginVersion>
     <cleanPluginVersion>3.4.0</cleanPluginVersion>
