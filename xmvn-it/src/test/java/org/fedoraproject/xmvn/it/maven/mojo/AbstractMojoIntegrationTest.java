@@ -40,7 +40,7 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
         PackageMetadata md = new PackageMetadata();
 
         for (String module : Arrays.asList("xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent")) {
-            Path moduleDir = Path.of("../../..").resolve(module);
+            Path moduleDir = getRootDir().resolve(module);
             Path pomPath = moduleDir.resolve("pom.xml");
             Path jarPath = moduleDir.resolve("target/classes");
 
@@ -77,7 +77,7 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
     }
 
     public void performMojoTest(String... args) throws Exception {
-        String xmvnVersion = getTestProperty("xmvn.version");
+        String xmvnVersion = getTestProperty("xmvn.it.version");
         Deque<String> argList = new ArrayDeque<>(Arrays.asList(args));
         String shortGoal = argList.removeLast();
         String fullGoal = "org.fedoraproject.xmvn:xmvn-mojo:" + xmvnVersion + ":" + shortGoal;

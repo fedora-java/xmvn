@@ -27,6 +27,7 @@
   <description>Integration tests for XMvn</description>
   <properties>
     <itForkCount>1C</itForkCount>
+    <itWorkDir>${project.build.directory}/work-${surefire.forkNumber}</itWorkDir>
     <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
   </properties>
   <dependencies>
@@ -82,9 +83,9 @@
         <configuration>
           <forkCount>${itForkCount}</forkCount>
           <reuseForks>false</reuseForks>
-          <workingDirectory>target/work-${surefire.forkNumber}</workingDirectory>
+          <workingDirectory>${itWorkDir}</workingDirectory>
           <systemPropertyVariables>
-            <xmvnITWorkdirSuffix>-${surefire.forkNumber}</xmvnITWorkdirSuffix>
+            <xmvn.it.workDir>${itWorkDir}</xmvn.it.workDir>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -167,4 +168,40 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>m2e</id>
+      <properties>
+        <itForkCount>1</itForkCount>
+        <itWorkDir>${project.build.directory}/work</itWorkDir>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>make-workdir</id>
+                <goals>
+                  <goal>resources</goal>
+                </goals>
+                <phase>process-test-resources</phase>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/work</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.basedir}/src/test/resources</directory>
+                      <includes>
+                        <include>**/empty.txt</include>
+                      </includes>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

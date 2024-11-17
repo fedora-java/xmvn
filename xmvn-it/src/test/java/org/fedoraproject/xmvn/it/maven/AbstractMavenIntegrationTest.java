@@ -75,9 +75,9 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
         String[] args = argList.toArray(new String[argList.size()]);
 
         try (PrintStream out =
-                        new PrintStream(Files.newOutputStream(getBaseDir().resolve(STDOUT)));
+                        new PrintStream(Files.newOutputStream(getWorkDir().resolve(STDOUT)));
                 PrintStream err =
-                        new PrintStream(Files.newOutputStream(getBaseDir().resolve(STDERR)))) {
+                        new PrintStream(Files.newOutputStream(getWorkDir().resolve(STDERR)))) {
             assertEquals(expectFailure ? 1 : 0, run(out, err, args));
         }
 
@@ -93,8 +93,8 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
         System.setProperties(null);
         System.setProperty("xmvn.it.rootDir", getRootDir().toString());
         System.setProperty("maven.home", getMavenHome().toString());
-        System.setProperty("user.dir", getBaseDir().toString());
-        System.setProperty("maven.multiModuleProjectDirectory", getBaseDir().toString());
+        System.setProperty("user.dir", getWorkDir().toString());
+        System.setProperty("maven.multiModuleProjectDirectory", getWorkDir().toString());
         System.setProperty("xmvn.config.sandbox", "true");
         System.setProperty("xmvn.debug", "true");
 
@@ -108,8 +108,7 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
                     bootClassLoader.loadClass("org.codehaus.plexus.classworlds.launcher.Launcher");
             Object launcher = launcherClass.getConstructor().newInstance();
 
-            try (InputStream config =
-                    Files.newInputStream(Path.of("../../src/test/resources/m2.conf"))) {
+            try (InputStream config = Files.newInputStream(getResourcesDir().resolve("m2.conf"))) {
                 launcherClass.getMethod("configure", InputStream.class).invoke(launcher, config);
             }
 
@@ -129,7 +128,7 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
                                     String.class,
                                     PrintStream.class,
                                     PrintStream.class)
-                            .invoke(mavenCli, args, getBaseDir().toString(), out, err);
+                            .invoke(mavenCli, args, getWorkDir().toString(), out, err);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);
             System.setProperties(originalProperties);
