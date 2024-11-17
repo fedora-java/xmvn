@@ -5,7 +5,7 @@
       <artifactId>junit</artifactId>
       <extension>pom</extension>
       <version>4.12</version>
-      <path>@@@/pom.xml</path>
+      <path>@{xmvn.it.workDir}/pom.xml</path>
       <dependencies>
         <dependency>
           <groupId>org.hamcrest</groupId>
@@ -21,7 +21,7 @@
       <artifactId>junit</artifactId>
       <extension>jar</extension>
       <version>4.12</version>
-      <path>@@@/tgt/junit.jar</path>
+      <path>@{xmvn.it.workDir}/tgt/junit.jar</path>
       <dependencies>
         <dependency>
           <groupId>org.hamcrest</groupId>

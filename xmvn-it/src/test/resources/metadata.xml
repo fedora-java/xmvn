@@ -6,35 +6,35 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>SYSTEM</version>
-      <path>@@@/../../src/test/resources/empty.jar</path>
+      <path>@{xmvn.it.resourcesDir}/empty.jar</path>
       <uuid>3bdab429-d4fc-4471-b238-52855e5a39fe</uuid>
     </artifact>
     <artifact>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
       <version>SYSTEM</version>
-      <path>@@@/../../src/test/resources/empty.jar</path>
+      <path>@{xmvn.it.resourcesDir}/empty.jar</path>
       <uuid>dfd47753-4a98-4197-bb9b-f89718d8496b</uuid>
     </artifact>
     <artifact>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-jar-plugin</artifactId>
       <version>SYSTEM</version>
-      <path>@@@/../dependency/maven-jar-plugin-2.4.jar</path>
+      <path>@{xmvn.it.dependencyDir}/maven-jar-plugin-2.4.jar</path>
       <uuid>b625beec-f3a2-4161-91ce-45f788ef2664</uuid>
     </artifact>
     <artifact>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-plugin-plugin</artifactId>
       <version>SYSTEM</version>
-      <path>@@@/../dependency/maven-plugin-plugin-3.2.jar</path>
+      <path>@{xmvn.it.dependencyDir}/maven-plugin-plugin-3.2.jar</path>
       <uuid>12c74360-c58a-4a89-86ff-1e1e39caca5d</uuid>
     </artifact>
     <artifact>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-metadata</artifactId>
       <version>SYSTEM</version>
-      <path>@@@/../dependency/plexus-component-metadata-1.7.1.jar</path>
+      <path>@{xmvn.it.dependencyDir}/plexus-component-metadata-1.7.1.jar</path>
       <uuid>4fdcec13-40df-428f-a921-089b1177763b</uuid>
       <aliases>
         <alias>
@@ -48,7 +48,7 @@
       <artifactId>plexus-component-metadata</artifactId>
       <version>SYSTEM</version>
       <extension>pom</extension>
-      <path>@@@/../dependency/plexus-component-metadata-1.7.1.pom</path>
+      <path>@{xmvn.it.dependencyDir}/plexus-component-metadata-1.7.1.pom</path>
       <uuid>65097184-1970-440b-bacd-c7c5ba72b75c</uuid>
       <aliases>
         <alias>
@@ -119,7 +119,7 @@
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>native-maven-plugin</artifactId>
       <version>SYSTEM</version>
-      <path>@@@/../dependency/native-maven-plugin-1.0-alpha-8.jar</path>
+      <path>@{xmvn.it.dependencyDir}/native-maven-plugin-1.0-alpha-8.jar</path>
       <uuid>887e0a3d-0658-461b-9535-b018dfaa998e</uuid>
     </artifact>
   </artifacts>

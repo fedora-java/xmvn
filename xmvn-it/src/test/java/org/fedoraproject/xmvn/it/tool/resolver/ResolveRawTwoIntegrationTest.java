@@ -56,7 +56,7 @@ public class ResolveRawTwoIntegrationTest extends AbstractToolIntegrationTest {
                                 s ->
                                         s.endsWith(
                                                 "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM")));
-        Path absPath = getBaseDir().resolve("../../src/test/resources/empty.jar").toRealPath();
+        Path absPath = getResourcesDir().resolve("empty.jar").toRealPath();
         String expectedOutput =
                 String.join(
                         "\n",

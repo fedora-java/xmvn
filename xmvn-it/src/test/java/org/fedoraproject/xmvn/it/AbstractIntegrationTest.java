@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 
@@ -36,28 +35,40 @@ import org.junit.jupiter.api.TestInfo;
  */
 public abstract class AbstractIntegrationTest {
     public static final String STDOUT = "stdout.txt";
-
     public static final String STDERR = "stderr.txt";
 
+    private Path rootDir;
+    private Path workDir;
+    private Path saveDir;
     private Path mavenHome;
+    private Path resourcesDir;
+    private Path dependencyDir;
 
-    private Path baseDir;
+    public Path getRootDir() {
+        return rootDir;
+    }
+
+    public Path getWorkDir() {
+        return workDir;
+    }
 
     public Path getMavenHome() {
         return mavenHome;
     }
 
-    public Path getBaseDir() {
-        return baseDir;
+    public Path getResourcesDir() {
+        return resourcesDir;
     }
 
-    public Path getRootDir() {
-        return getBaseDir().getParent().getParent().getParent();
+    public Path getDependencyDir() {
+        return dependencyDir;
     }
 
     public void expandBaseDir(String source, String target) throws Exception {
         String metadata = new String(Files.readAllBytes(Path.of(source)), StandardCharsets.UTF_8);
-        metadata = metadata.replaceAll("@@@", baseDir.toString());
+        metadata = metadata.replaceAll("@\\{xmvn.it.workDir}", workDir.toString());
+        metadata = metadata.replaceAll("@\\{xmvn.it.resourcesDir}", resourcesDir.toString());
+        metadata = metadata.replaceAll("@\\{xmvn.it.dependencyDir}", dependencyDir.toString());
         Files.write(Path.of(target), metadata.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -65,43 +76,66 @@ public abstract class AbstractIntegrationTest {
         expandBaseDir(sourceAndTarget, sourceAndTarget);
     }
 
-    @BeforeAll
-    public static void ensureCorrectWorkingDirectory() throws Exception {
-        String workdirSuffix = System.getProperty("xmvnITWorkdirSuffix", "");
-        String workdir = "xmvn-it/target/work" + workdirSuffix;
-        Path cwd = Path.of(".").toRealPath();
-        if (!cwd.endsWith(workdir)) {
-            throw new RuntimeException(
-                    "XMvn integration tests must be ran from " + workdir + " directory");
-        }
-    }
-
     @BeforeEach
-    public void createBaseDir(TestInfo testInfo) throws Exception {
-        mavenHome =
-                Path.of("../dependency/xmvn-" + getTestProperty("xmvn.version")).toAbsolutePath();
-
-        baseDir = Path.of(".").toRealPath();
-        delete(baseDir);
+    public void initParams(TestInfo testInfo) throws Exception {
         String testName = testInfo.getTestMethod().get().getName();
-        Path baseDirTemplate = Path.of("../../src/test/resources").resolve(testName);
-        if (Files.isDirectory(baseDirTemplate, LinkOption.NOFOLLOW_LINKS)) {
-            copy(baseDirTemplate, baseDir);
-        } else {
-            Files.createDirectories(baseDir);
+
+        String value = System.getProperty("xmvn.it.workDir");
+        if (value == null) {
+            throw new IllegalArgumentException("Property xmvn.it.workDir must be set");
+        }
+        workDir = Path.of(value);
+        if (!Files.isDirectory(workDir)) {
+            throw new IllegalArgumentException(
+                    "Property xmvn.it.workDir points to a non-existent directory " + workDir);
         }
 
-        expandBaseDir("../../src/test/resources/metadata.xml", "metadata.xml");
+        Path cwd = Path.of(".").toRealPath();
+        if (!cwd.equals(workDir)) {
+            throw new RuntimeException(
+                    "XMvn integration tests must be ran from "
+                            + workDir
+                            + " directory, but CWD was "
+                            + cwd);
+        }
+
+        rootDir = Path.of(getTestProperty("xmvn.it.rootDir"));
+        saveDir = Path.of(getTestProperty("xmvn.it.saveDir")).resolve(testName);
+
+        mavenHome = Path.of(getTestProperty("xmvn.it.mavenHome"));
+        if (!Files.isDirectory(mavenHome)) {
+            throw new IllegalStateException(
+                    "Directory pointed to by xmvn.it.mavenHome property does not exist: "
+                            + mavenHome);
+        }
+
+        resourcesDir = Path.of(getTestProperty("xmvn.it.resourcesDir"));
+
+        dependencyDir = Path.of(getTestProperty("xmvn.it.dependencyDir"));
+        if (!Files.isDirectory(dependencyDir)) {
+            throw new IllegalStateException(
+                    "Directory pointed to by xmvn.it.dependencyDir property does not exist: "
+                            + dependencyDir);
+        }
+
+        Files.createDirectories(saveDir);
+        delete(saveDir);
+
+        Files.createDirectories(workDir);
+        delete(workDir);
+
+        Path workDirTemplate = resourcesDir.resolve(testName);
+        if (Files.isDirectory(workDirTemplate, LinkOption.NOFOLLOW_LINKS)) {
+            copy(workDirTemplate, workDir);
+        }
+
+        expandBaseDir(resourcesDir + "/metadata.xml", "metadata.xml");
     }
 
     @AfterEach
-    public void saveBaseDir(TestInfo testInfo) throws Exception {
-        String testName = testInfo.getTestMethod().get().getName();
-        Path saveDir = Path.of("../saved-work").resolve(testName).toAbsolutePath();
-        Files.createDirectories(saveDir);
-        delete(saveDir);
-        copy(baseDir, saveDir);
-        delete(baseDir);
+    public void saveBaseDir() throws Exception {
+        copy(workDir, saveDir);
+        delete(workDir);
     }
 
     private void delete(Path path) throws IOException {
@@ -130,11 +164,11 @@ public abstract class AbstractIntegrationTest {
     }
 
     public Stream<String> getStdout() throws Exception {
-        return Files.lines(baseDir.resolve(STDOUT));
+        return Files.lines(workDir.resolve(STDOUT));
     }
 
     public Stream<String> getStderr() throws Exception {
-        return Files.lines(baseDir.resolve(STDERR));
+        return Files.lines(workDir.resolve(STDERR));
     }
 
     public static int getJavaVersion() {
@@ -146,7 +180,11 @@ public abstract class AbstractIntegrationTest {
                 AbstractIntegrationTest.class.getResourceAsStream("/xmvn-it.properties")) {
             Properties properties = new Properties();
             properties.load(is);
-            return properties.getProperty(name);
+            String value = properties.getProperty(name);
+            if (value == null) {
+                throw new IllegalArgumentException("Required property " + name + " was not set");
+            }
+            return value;
         }
     }
 }

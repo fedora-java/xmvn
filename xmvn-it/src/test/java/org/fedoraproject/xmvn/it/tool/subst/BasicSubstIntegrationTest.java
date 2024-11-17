@@ -91,8 +91,7 @@ public class BasicSubstIntegrationTest extends AbstractToolIntegrationTest {
                                                 "Linked "
                                                         + jarB
                                                         + " to "
-                                                        + getBaseDir()
-                                                        + "/../../src/test/resources/empty.jar")));
+                                                        + getResourcesDir().resolve("empty.jar"))));
         assertTrue(
                 getStderr()
                         .anyMatch(

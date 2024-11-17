@@ -76,7 +76,7 @@
   </dependencySets>
   <fileSets>
     <fileSet>
-      <directory>target/dependency/apache-maven-${mavenVersion}</directory>
+      <directory>${project.build.directory}/dependency/apache-maven-${mavenVersion}</directory>
       <outputDirectory>.</outputDirectory>
     </fileSet>
   </fileSets>
