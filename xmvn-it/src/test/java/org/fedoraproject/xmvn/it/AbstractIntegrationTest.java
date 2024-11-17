@@ -43,6 +43,7 @@ public abstract class AbstractIntegrationTest {
     private Path mavenHome;
     private Path resourcesDir;
     private Path dependencyDir;
+    private boolean printOutput;
 
     public Path getRootDir() {
         return rootDir;
@@ -62,6 +63,10 @@ public abstract class AbstractIntegrationTest {
 
     public Path getDependencyDir() {
         return dependencyDir;
+    }
+
+    public boolean isPrintOutput() {
+        return printOutput;
     }
 
     public void expandBaseDir(String source, String target) throws Exception {
@@ -117,6 +122,8 @@ public abstract class AbstractIntegrationTest {
                     "Directory pointed to by xmvn.it.dependencyDir property does not exist: "
                             + dependencyDir);
         }
+
+        printOutput = Boolean.valueOf(getTestProperty("xmvn.it.printOutput"));
 
         Files.createDirectories(saveDir);
         delete(saveDir);

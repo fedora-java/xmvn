@@ -28,6 +28,7 @@
   <properties>
     <itForkCount>1C</itForkCount>
     <itWorkDir>${project.build.directory}/work-${surefire.forkNumber}</itWorkDir>
+    <itPrintOutput>false</itPrintOutput>
     <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
   </properties>
   <dependencies>
@@ -174,6 +175,7 @@
       <properties>
         <itForkCount>1</itForkCount>
         <itWorkDir>${project.build.directory}/work</itWorkDir>
+        <itPrintOutput>true</itPrintOutput>
       </properties>
       <build>
         <plugins>

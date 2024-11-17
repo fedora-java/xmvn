@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -33,6 +34,7 @@ import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.fedoraproject.xmvn.it.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -74,11 +76,17 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
         argList.addFirst("--batch-mode");
         String[] args = argList.toArray(new String[argList.size()]);
 
-        try (PrintStream out =
-                        new PrintStream(Files.newOutputStream(getWorkDir().resolve(STDOUT)));
-                PrintStream err =
-                        new PrintStream(Files.newOutputStream(getWorkDir().resolve(STDERR)))) {
-            assertEquals(expectFailure ? 1 : 0, run(out, err, args));
+        try (OutputStream saveStdout = Files.newOutputStream(getWorkDir().resolve(STDOUT));
+                OutputStream saveStderr = Files.newOutputStream(getWorkDir().resolve(STDERR));
+                OutputStream teeStdout = new TeeOutputStream(System.out, saveStdout);
+                OutputStream teeStderr = new TeeOutputStream(System.err, saveStderr);
+                PrintStream printSaveStdout = new PrintStream(saveStdout);
+                PrintStream printSaveStderr = new PrintStream(saveStderr);
+                PrintStream printTeeStdout = new PrintStream(teeStdout);
+                PrintStream printTeeStderr = new PrintStream(teeStderr);
+                PrintStream stdout = isPrintOutput() ? printTeeStdout : printSaveStdout;
+                PrintStream stderr = isPrintOutput() ? printTeeStderr : printSaveStderr) {
+            assertEquals(expectFailure ? 1 : 0, run(stdout, stderr, args));
         }
 
         assertFalse(getStderr().findAny().isPresent());

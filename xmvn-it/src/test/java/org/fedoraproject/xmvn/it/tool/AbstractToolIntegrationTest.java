@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.fedoraproject.xmvn.it.AbstractIntegrationTest;
 
 /**
@@ -125,8 +126,16 @@ public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTes
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
         try (InputStream stdin =
                         new ByteArrayInputStream(input.getBytes(StandardCharsets.US_ASCII));
-                PrintStream stdout = new PrintStream(new File(STDOUT));
-                PrintStream stderr = new PrintStream(new File(STDERR));
+                OutputStream saveStdout = Files.newOutputStream(getWorkDir().resolve(STDOUT));
+                OutputStream saveStderr = Files.newOutputStream(getWorkDir().resolve(STDERR));
+                OutputStream teeStdout = new TeeOutputStream(System.out, saveStdout);
+                OutputStream teeStderr = new TeeOutputStream(System.err, saveStderr);
+                PrintStream printSaveStdout = new PrintStream(saveStdout);
+                PrintStream printSaveStderr = new PrintStream(saveStderr);
+                PrintStream printTeeStdout = new PrintStream(teeStdout);
+                PrintStream printTeeStderr = new PrintStream(teeStderr);
+                PrintStream stdout = isPrintOutput() ? printTeeStdout : printSaveStdout;
+                PrintStream stderr = isPrintOutput() ? printTeeStderr : printSaveStderr;
                 URLClassLoader toolClassLoader = new URLClassLoader(classPath, parentClassLoader)) {
             Thread.currentThread().setContextClassLoader(toolClassLoader);
             System.setIn(stdin);
