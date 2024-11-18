@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.it.maven.mojo.javadoc;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +31,7 @@ import org.junit.jupiter.api.Test;
 public class JavadocJPMSModuleInfoWithNoSourceIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
     public void testJavadocJPMSModuleInfoWithNoSource() throws Exception {
-        assumeTrue(getJavaVersion() >= 9);
+        assumeJavaVersionAtLeast(9);
         performMojoTest("verify", "javadoc");
 
         assertTrue(

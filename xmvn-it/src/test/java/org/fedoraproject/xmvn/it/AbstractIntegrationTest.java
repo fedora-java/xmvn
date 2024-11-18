@@ -15,6 +15,8 @@
  */
 package org.fedoraproject.xmvn.it;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -172,8 +174,9 @@ public abstract class AbstractIntegrationTest {
         return Files.lines(workDir.resolve(STDERR));
     }
 
-    public static int getJavaVersion() {
-        return Integer.parseInt(System.getProperty("java.version").replaceAll("\\..*", ""));
+    public void assumeJavaVersionAtLeast(int minVersion) {
+        int version = Integer.parseInt(System.getProperty("java.version").replaceAll("\\..*", ""));
+        assumeTrue(version >= minVersion, "Java major version is at least " + minVersion);
     }
 
     public String getTestProperty(String name) throws IOException {

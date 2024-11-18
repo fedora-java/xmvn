@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.it.maven.mojo.javadoc;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.fedoraproject.xmvn.it.maven.mojo.AbstractMojoIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ import org.junit.jupiter.api.Test;
 public class JavadocJPMSIgnoreIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
     public void testJavadocJPMSIgnore() throws Exception {
-        assumeTrue(getJavaVersion() >= 9);
+        assumeJavaVersionAtLeast(9);
         expectFailure();
         performMojoTest("verify", "-Dxmvn.javadoc.ignoreJPMS", "javadoc");
 
