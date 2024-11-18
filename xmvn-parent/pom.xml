@@ -576,5 +576,11 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>eclipse</id>
+      <build>
+        <directory>${project.basedir}/eclipse-target</directory>
+      </build>
+    </profile>
   </profiles>
 </project>
