@@ -39,25 +39,24 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
     public void addMetadata() throws Exception {
         PackageMetadata md = new PackageMetadata();
 
-        for (String module : Arrays.asList("xmvn-mojo", "xmvn-core", "xmvn-api", "xmvn-parent")) {
-            Path moduleDir = getRootDir().resolve(module);
-            Path pomPath = moduleDir.resolve("pom.xml");
-            Path jarPath = moduleDir.resolve("target/classes");
-
-            assertTrue(Files.exists(pomPath));
+        for (String module : Arrays.asList("mojo", "core", "api", "parent")) {
+            Path pomPath = Path.of(getTestProperty("xmvn.it.pom." + module));
+            assertTrue(Files.exists(pomPath), pomPath.toString());
             ArtifactMetadata pomMd = new ArtifactMetadata();
             pomMd.setGroupId("org.fedoraproject.xmvn");
-            pomMd.setArtifactId(module);
+            pomMd.setArtifactId("xmvn-" + module);
             pomMd.setVersion("DUMMY_IGNORED");
             pomMd.addProperty("xmvn.resolver.disableEffectivePom", "true");
             pomMd.setExtension("pom");
             pomMd.setPath(pomPath.toString());
             md.addArtifact(pomMd);
 
-            if (Files.exists(jarPath)) {
+            if (!module.equals("parent")) {
+                Path jarPath = Path.of(getTestProperty("xmvn.it.dep." + module));
+                assertTrue(Files.exists(jarPath));
                 ArtifactMetadata jarMd = new ArtifactMetadata();
                 jarMd.setGroupId("org.fedoraproject.xmvn");
-                jarMd.setArtifactId(module);
+                jarMd.setArtifactId("xmvn-" + module);
                 jarMd.setVersion("DUMMY_IGNORED");
                 jarMd.addProperty("xmvn.resolver.disableEffectivePom", "true");
                 jarMd.setExtension("jar");

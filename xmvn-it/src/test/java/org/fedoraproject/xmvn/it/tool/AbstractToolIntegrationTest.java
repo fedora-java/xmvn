@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -78,20 +79,18 @@ public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTes
     /**
      * For XMvn JARs, replace path to JAR corresponding with path to target/classes so that
      * debugging works out of the box.
+     *
+     * @throws IOException
      */
-    private Path jar2classes(Path jar) {
+    private Path jar2classes(Path jar) throws IOException {
         String jarName = jar.getFileName().toString();
         if (!jarName.startsWith("xmvn-")) {
             return jar;
         }
-        String projectName = jarName.substring(0, 5 + jarName.substring(5).indexOf('-'));
-        Path projectDir = getRootDir().resolve("xmvn-tools").resolve(projectName);
-        if (!Files.isDirectory(projectDir, LinkOption.NOFOLLOW_LINKS)) {
-            projectDir = getRootDir().resolve(projectName);
-        }
-        Path classesDir = projectDir.resolve("target").resolve("classes");
-        assertTrue(Files.isDirectory(classesDir, LinkOption.NOFOLLOW_LINKS));
-        return classesDir;
+        String projectName = jarName.substring(5, 5 + jarName.substring(5).indexOf('-'));
+        Path dep = Path.of(getTestProperty("xmvn.it.dep." + projectName));
+        assertTrue(Files.exists(dep, LinkOption.NOFOLLOW_LINKS));
+        return dep;
     }
 
     private Attributes readManifest(Path jar) throws Exception {

@@ -37,17 +37,12 @@ public abstract class AbstractIntegrationTest {
     public static final String STDOUT = "stdout.txt";
     public static final String STDERR = "stderr.txt";
 
-    private Path rootDir;
     private Path workDir;
     private Path saveDir;
     private Path mavenHome;
     private Path resourcesDir;
     private Path dependencyDir;
     private boolean printOutput;
-
-    public Path getRootDir() {
-        return rootDir;
-    }
 
     public Path getWorkDir() {
         return workDir;
@@ -104,7 +99,6 @@ public abstract class AbstractIntegrationTest {
                             + cwd);
         }
 
-        rootDir = Path.of(getTestProperty("xmvn.it.rootDir"));
         saveDir = Path.of(getTestProperty("xmvn.it.saveDir")).resolve(testName);
 
         mavenHome = Path.of(getTestProperty("xmvn.it.mavenHome"));

@@ -99,12 +99,14 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
     private int run(PrintStream out, PrintStream err, String... args) throws Exception {
         Properties originalProperties = System.getProperties();
         System.setProperties(null);
-        System.setProperty("xmvn.it.rootDir", getRootDir().toString());
         System.setProperty("maven.home", getMavenHome().toString());
         System.setProperty("user.dir", getWorkDir().toString());
         System.setProperty("maven.multiModuleProjectDirectory", getWorkDir().toString());
         System.setProperty("xmvn.config.sandbox", "true");
         System.setProperty("xmvn.debug", "true");
+        System.setProperty("xmvn.it.dep.api", getTestProperty("xmvn.it.dep.api"));
+        System.setProperty("xmvn.it.dep.core", getTestProperty("xmvn.it.dep.core"));
+        System.setProperty("xmvn.it.dep.connector", getTestProperty("xmvn.it.dep.connector"));
 
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
