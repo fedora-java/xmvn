@@ -40,6 +40,19 @@ example:
 Note that integration tests are ran as part of commit and pull request
 validation.
 
+Integration tests rely on dist tarball (`xmvn-${version}.tar.gz`) to
+be assembled and available in local Maven repository.  When ITs are
+ran from Maven from command line, the dist tarball should be unpacked
+automatically.  But when ITs are ran from Eclipse JDT, the dist
+tarball needs to be manually assembled and unpacked into the right
+directory.  This can be done by first running `mvn install` from
+command line on the whole XMvn project to assemble the `.tar.gz` and
+install it into Maven local repository, and then unpacking it Eclipse
+by clicking "xmvn-it" -> "Run As" -> "Maven Build", setting "Goals" to
+"process-test-resources", setting "Profiles" to "eclipse,unpack-dist",
+and ensuring that "Resolve Workspace artifacts" is not checked, then
+clicking "Run".
+
 
 Contact
 -------
