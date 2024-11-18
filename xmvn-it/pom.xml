@@ -172,26 +172,7 @@
             <goals>
               <goal>properties</goal>
             </goals>
-            <phase>generate-test-resources</phase>
-          </execution>
-          <execution>
-            <id>unpack-dist</id>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <phase>process-test-resources</phase>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>xmvn</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>bin</classifier>
-                  <type>tar.gz</type>
-                </artifactItem>
-              </artifactItems>
-              <skipDuringIncrementalBuild>true</skipDuringIncrementalBuild>
-            </configuration>
+            <phase>initialize</phase>
           </execution>
           <execution>
             <id>copy-artifacts</id>
@@ -251,6 +232,39 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>unpack-dist</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack-dist</id>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <phase>initialize</phase>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>${project.groupId}</groupId>
+                      <artifactId>xmvn</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>bin</classifier>
+                      <type>tar.gz</type>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>eclipse</id>
       <properties>
