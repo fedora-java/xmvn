@@ -16,7 +16,6 @@
 package org.fedoraproject.xmvn.it.maven.mojo.javadoc;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,7 +30,7 @@ import org.junit.jupiter.api.Test;
 public class JavadocJPMSIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
     public void testJavadocJPMS() throws Exception {
-        assumeTrue(getJavaVersion() >= 9);
+        assumeJavaVersionAtLeast(9);
         performMojoTest("verify", "javadoc");
 
         assertTrue(Files.isDirectory(Path.of("target/xmvn-apidocs")));
