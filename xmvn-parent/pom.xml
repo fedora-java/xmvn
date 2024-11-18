@@ -401,6 +401,7 @@
             <excludes>
               <exclude>src/test/resources/**</exclude>
               <exclude>src/test/resources-filtered/**</exclude>
+              <exclude>eclipse-target/**</exclude>
             </excludes>
           </configuration>
         </plugin>
