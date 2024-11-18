@@ -252,7 +252,7 @@
   </build>
   <profiles>
     <profile>
-      <id>m2e</id>
+      <id>eclipse</id>
       <properties>
         <itForkCount>1</itForkCount>
         <itWorkDir>${project.build.directory}/work</itWorkDir>

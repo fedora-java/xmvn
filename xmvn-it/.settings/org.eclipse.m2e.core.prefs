@@ -1,4 +1,4 @@
-activeProfiles=auto-format,m2e
+activeProfiles=auto-format,eclipse
 eclipse.m2.autoUpdateProjects=true
 eclipse.preferences.version=1
 resolveWorkspaceProjects=true
