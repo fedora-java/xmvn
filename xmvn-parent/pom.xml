@@ -106,7 +106,7 @@
     <sisuVersion>0.9.0.M3</sisuVersion>
     <sitePluginVersion>3.21.0</sitePluginVersion>
     <sourcePluginVersion>3.3.1</sourcePluginVersion>
-    <spotlessVersion>2.43.0</spotlessVersion>
+    <spotlessVersion>2.44.0</spotlessVersion>
     <surefireVersion>3.5.2</surefireVersion>
     <xmlunitVersion>2.10.0</xmlunitVersion>
 
