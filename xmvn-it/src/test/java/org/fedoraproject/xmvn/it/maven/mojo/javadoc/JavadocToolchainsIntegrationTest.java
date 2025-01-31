@@ -28,7 +28,10 @@ import org.junit.jupiter.api.Test;
 public class JavadocToolchainsIntegrationTest extends AbstractMojoIntegrationTest {
     @Test
     public void testJavadocToolchains() throws Exception {
-        performMojoTest("javadoc");
+        performMojoTest(
+                "-Dmaven.installation.toolchains="
+                        + getWorkDir().resolve("toolchains.xml").toString(),
+                "javadoc");
         assertTrue(getStdout().anyMatch("[INFO] Toolchain in xmvn-mojo: JDK[/tmp]"::equals));
     }
 }

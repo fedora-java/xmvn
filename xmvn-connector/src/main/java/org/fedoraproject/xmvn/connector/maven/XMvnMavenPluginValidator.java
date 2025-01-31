@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2020-2025 Red Hat, Inc.
+ * Copyright (c) 2025 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,28 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
-import java.util.Collections;
-import javax.inject.Inject;
+import java.util.List;
+import javax.annotation.Priority;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import org.apache.maven.MavenExecutionException;
-import org.apache.maven.api.Session;
-import org.apache.maven.api.services.ToolchainManager;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.internal.MavenPluginValidator;
 
 /**
+ * This is a simple Maven plugin validator that pretends that all plugins have valid descriptors.
+ *
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
-public class XMvnToolchainManager {
-    @Inject private ToolchainManager toolchainManager;
-
-    public void activate(Session session) throws MavenExecutionException {
-        for (var toolchain : toolchainManager.getToolchainsForType(session, "jdk")) {
-            if (toolchain.matchesRequirements(Collections.singletonMap("xmvn", "xmvn"))) {
-                toolchainManager.storeToolchainToBuildContext(session, toolchain);
-            }
+@Priority(100)
+public class XMvnMavenPluginValidator implements MavenPluginValidator {
+    @Override
+    public void validate(
+            Artifact pluginArtifact, PluginDescriptor pluginDescriptor, List<String> errors) {
+        if (pluginDescriptor.getVersion() == null) {
+            pluginDescriptor.setVersion(org.fedoraproject.xmvn.artifact.Artifact.DEFAULT_VERSION);
         }
     }
 }

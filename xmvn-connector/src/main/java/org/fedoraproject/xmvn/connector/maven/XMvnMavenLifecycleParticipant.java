@@ -63,6 +63,6 @@ public class XMvnMavenLifecycleParticipant extends AbstractMavenLifecyclePartici
 
     @Override
     public void afterProjectsRead(MavenSession session) throws MavenExecutionException {
-        toolchainManager.activate(session);
+        toolchainManager.activate(session.getSession());
     }
 }

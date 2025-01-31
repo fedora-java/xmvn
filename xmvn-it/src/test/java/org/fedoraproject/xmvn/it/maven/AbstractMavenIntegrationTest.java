@@ -73,6 +73,7 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
     }
 
     public void performTest(Deque<String> argList) throws Exception {
+        argList.addFirst("--show-version");
         argList.addFirst("--batch-mode");
         String[] args = argList.toArray(new String[argList.size()]);
 

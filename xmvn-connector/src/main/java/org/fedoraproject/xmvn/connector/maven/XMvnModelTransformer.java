@@ -15,76 +15,82 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.apache.maven.api.model.Build;
+import org.apache.maven.api.model.Dependency;
+import org.apache.maven.api.model.Extension;
+import org.apache.maven.api.model.Model;
+import org.apache.maven.api.model.Plugin;
+import org.apache.maven.api.spi.ModelTransformer;
+import org.apache.maven.api.spi.ModelTransformerException;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.model.Build;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Extension;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.model.building.ModelBuildingRequest;
-import org.apache.maven.model.building.ModelProblemCollector;
-import org.apache.maven.model.validation.DefaultModelValidator;
-import org.apache.maven.model.validation.ModelValidator;
-import org.eclipse.sisu.Priority;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.logging.Logger;
 
 /**
- * Custom Maven object model (POM) validator that overrides default Maven model validator.
- *
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
-@Priority(100)
-public class XMvnModelValidator implements ModelValidator {
+public class XMvnModelTransformer implements ModelTransformer {
+
     @Inject private Logger logger;
 
     @Inject private Configurator configurator;
 
-    @Inject private DefaultModelValidator delegate;
-
     @Override
-    public void validateRawModel(
-            Model model, ModelBuildingRequest request, ModelProblemCollector problems) {
-        delegate.validateRawModel(model, request, problems);
-    }
-
-    @Override
-    public void validateEffectiveModel(
-            Model model, ModelBuildingRequest request, ModelProblemCollector problems) {
-        customizeModel(model);
-        delegate.validateEffectiveModel(model, request, problems);
-    }
-
-    void customizeModel(Model model) {
-        Build build = model.getBuild() != null ? model.getBuild() : new Build();
-        List<Dependency> dependencies = model.getDependencies();
-        List<Extension> extensions = build.getExtensions();
-        List<Plugin> plugins = build.getPlugins();
-
+    public Model transformEffectiveModel(Model model) throws ModelTransformerException {
+        List<Dependency> dependencies = new ArrayList<>(model.getDependencies());
         dependencies.removeIf(this::isSkippedDependency);
-        plugins.removeIf(this::isSkippedPlugin);
+        dependencies =
+                dependencies.stream()
+                        .map(
+                                d ->
+                                        d.withVersion(
+                                                replaceVersion(
+                                                        d.getGroupId(),
+                                                        d.getArtifactId(),
+                                                        d.getVersion())))
+                        .toList();
+        model = model.withDependencies(dependencies);
 
-        dependencies.forEach(
-                d ->
-                        d.setVersion(
-                                replaceVersion(d.getGroupId(), d.getArtifactId(), d.getVersion())));
-        extensions.forEach(
-                e ->
-                        e.setVersion(
-                                replaceVersion(e.getGroupId(), e.getArtifactId(), e.getVersion())));
-        plugins.forEach(
-                p ->
-                        p.setVersion(
-                                replaceVersion(p.getGroupId(), p.getArtifactId(), p.getVersion())));
+        Build build = model.getBuild();
+        if (build != null) {
+            List<Extension> extensions = new ArrayList<>(build.getExtensions());
+            extensions =
+                    extensions.stream()
+                            .map(
+                                    e ->
+                                            e.withVersion(
+                                                    replaceVersion(
+                                                            e.getGroupId(),
+                                                            e.getArtifactId(),
+                                                            e.getVersion())))
+                            .toList();
+            build = build.withExtensions(extensions);
+            List<Plugin> plugins = new ArrayList<>(build.getPlugins());
+            plugins.removeIf(this::isSkippedPlugin);
+            plugins =
+                    plugins.stream()
+                            .map(
+                                    p ->
+                                            p.withVersion(
+                                                    replaceVersion(
+                                                            p.getGroupId(),
+                                                            p.getArtifactId(),
+                                                            p.getVersion())))
+                            .toList();
+            build = build.withPlugins(plugins);
+            model = model.withBuild(build);
+        }
+        return model;
     }
 
     private boolean matches(String field, String pattern) {

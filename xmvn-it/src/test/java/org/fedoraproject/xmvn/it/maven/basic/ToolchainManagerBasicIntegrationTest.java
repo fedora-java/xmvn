@@ -28,7 +28,10 @@ import org.junit.jupiter.api.Test;
 public class ToolchainManagerBasicIntegrationTest extends AbstractMavenIntegrationTest {
     @Test
     public void testToolchainManager() throws Exception {
-        performTest("verify");
+        performTest(
+                "-Dmaven.installation.toolchains="
+                        + getWorkDir().resolve("toolchains.xml").toString(),
+                "verify");
         assertTrue(
                 getStdout()
                         .anyMatch(
