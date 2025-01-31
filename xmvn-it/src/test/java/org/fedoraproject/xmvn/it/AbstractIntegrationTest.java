@@ -132,6 +132,8 @@ public abstract class AbstractIntegrationTest {
             copy(workDirTemplate, workDir);
         }
 
+        Files.createDirectories(workDir.resolve(".mvn"));
+
         expandBaseDir(resourcesDir + "/metadata.xml", "metadata.xml");
     }
 

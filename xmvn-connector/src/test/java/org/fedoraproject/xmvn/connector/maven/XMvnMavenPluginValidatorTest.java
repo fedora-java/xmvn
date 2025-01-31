@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.maven.plugin;
+package org.fedoraproject.xmvn.connector.maven;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.util.List;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +25,19 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Roman Vais
  */
-public class MavenPluginValidatorTest {
-    private MavenPluginValidator validator;
+public class XMvnMavenPluginValidatorTest {
+    private XMvnMavenPluginValidator validator;
 
+    private Artifact art;
     private PluginDescriptor desc;
+    private List<String> err;
 
     @BeforeEach
     public void setUp() throws Exception {
-        validator = new MavenPluginValidator(null);
+        validator = new XMvnMavenPluginValidator();
+        art = EasyMock.createMock(Artifact.class);
         desc = EasyMock.createMock(PluginDescriptor.class);
+        err = EasyMock.createMock(List.class);
     }
 
     @Test
@@ -42,17 +45,15 @@ public class MavenPluginValidatorTest {
         EasyMock.expect(desc.getVersion()).andReturn(null);
         desc.setVersion(EasyMock.anyObject(String.class));
         EasyMock.expectLastCall();
-        EasyMock.replay(desc);
+        EasyMock.replay(art, desc, err);
 
-        validator.validate(desc);
-        EasyMock.verify(desc);
+        validator.validate(art, desc, err);
+        EasyMock.verify(art, desc, err);
 
-        EasyMock.reset(desc);
+        EasyMock.reset(art, desc, err);
         EasyMock.expect(desc.getVersion()).andReturn("SYSTEM");
-        EasyMock.replay(desc);
-        validator.validate(desc);
-
-        assertFalse(validator.hasErrors());
-        assertTrue(validator.getErrors().isEmpty());
+        EasyMock.replay(art, desc, err);
+        validator.validate(art, desc, err);
+        EasyMock.verify(art, desc, err);
     }
 }

@@ -163,7 +163,7 @@ public class JavadocMojo extends AbstractMojo {
             dependencies.addAll(
                     result.getResolvedDependencies().stream()
                             .map(Dependency::getArtifact)
-                            .map(artifact -> artifact.getFile().toPath())
+                            .map(artifact -> artifact.getPath())
                             .collect(Collectors.toList()));
         } catch (DependencyResolutionException e) {
             // Ignore dependency resolution errors

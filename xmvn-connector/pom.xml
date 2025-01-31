@@ -71,7 +71,12 @@
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>6.0.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>

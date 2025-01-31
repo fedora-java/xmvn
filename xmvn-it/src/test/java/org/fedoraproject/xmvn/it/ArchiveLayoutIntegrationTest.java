@@ -157,6 +157,8 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "bin/mvn\\.cmd");
         expect(1, 1, "bin/mvnDebug");
         expect(1, 1, "bin/mvnDebug\\.cmd");
+        expect(1, 1, "bin/mvnenc");
+        expect(1, 1, "bin/mvnenc\\.cmd");
         expect(1, 1, "bin/mvnyjp");
         expect(1, 1, "bin/m2\\.conf");
 
@@ -165,18 +167,19 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "boot/plexus-classworlds.license");
 
         expect(1, 1, "conf/");
+        expect(1, 1, "conf/maven\\.properties");
         expect(1, 1, "conf/settings\\.xml");
         expect(1, 1, "conf/toolchains\\.xml");
         expect(1, 1, "conf/logging/");
         expect(1, 1, "conf/logging/simplelogger\\.properties");
 
         expect(1, 1, "lib/");
-        expect(30, 60, "lib/[^/]*\\.jar");
-        expect(15, 30, "lib/[^/]*\\.license");
+        expect(50, 100, "lib/[^/]*\\.jar");
+        expect(25, 50, "lib/[^/]*\\.license");
 
-        expect(1, 1, "lib/jansi-native/");
-        expect(1, 1, "lib/jansi-native/README\\.txt");
-        expect(3, 9, "lib/jansi-native/Windows/.*");
+        expect(1, 1, "lib/jline-native/");
+        expect(1, 1, "lib/jline-native/README\\.txt");
+        expect(25, 50, "lib/jline-native/(Linux|FreeBSD|Mac|Windows)/.*");
 
         expect(1, 1, "lib/ext/");
         expect(1, 1, "lib/ext/README\\.txt");
