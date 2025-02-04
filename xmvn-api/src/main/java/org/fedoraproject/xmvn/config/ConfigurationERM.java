@@ -181,7 +181,7 @@ interface ConfigurationERM {
      */
     Entity<List<Artifact>, List<Artifact>> aliasesEntity =
             Entity.ofMutable(
-                    "alias",
+                    "aliases",
                     ArrayList<Artifact>::new,
                     Relationship.of(aliasEntity, x -> x, List::add));
 
