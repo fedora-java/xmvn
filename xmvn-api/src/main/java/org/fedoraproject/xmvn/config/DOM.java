@@ -25,8 +25,10 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 class DOM<EnclosingType, EnclosingBean> extends Property<EnclosingType, EnclosingBean, Element> {
 
@@ -48,7 +50,24 @@ class DOM<EnclosingType, EnclosingBean> extends Property<EnclosingType, Enclosin
 
     @Override
     protected void dump(XMLDumper dumper, Element value) throws XMLException {
-        throw new UnsupportedOperationException("DOM dump is not implemented yet");
+        dumper.dumpStartElement(value.getTagName());
+        Node child = value.getFirstChild();
+        boolean haveChild = false;
+        while (child != null) {
+            if (child instanceof Element el) {
+                haveChild = true;
+                dump(dumper, el);
+            } else if (!(child instanceof CharacterData)) {
+                throw new XMLException(
+                        "Node <" + value.getTagName() + "> has non-element XML child Nodes");
+            }
+            child = child.getNextSibling();
+        }
+        String text = value.getTextContent();
+        if (!haveChild && text != null && !text.isBlank()) {
+            dumper.dumpText(text);
+        }
+        dumper.dumpEndElement();
     }
 
     private Element parseElement(XMLParser parser, Document doc) throws XMLException {
