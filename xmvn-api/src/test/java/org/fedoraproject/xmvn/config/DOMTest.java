@@ -25,13 +25,14 @@ class DOMTest {
         Element dom;
     }
 
+    Entity<Bean, Bean> entity =
+            Entity.ofMutable(
+                    "test",
+                    Bean::new,
+                    DOM.of("foo", bean -> bean.dom, (bean, dom) -> bean.dom = dom));
+
     @Test
-    public void testDOM() throws Exception {
-        var entity =
-                Entity.ofMutable(
-                        "test",
-                        Bean::new,
-                        DOM.of("foo", bean -> bean.dom, (bean, dom) -> bean.dom = dom));
+    public void testSimpleDOM() throws Exception {
         String xml =
                 """
 		        <test>
@@ -41,6 +42,18 @@ class DOMTest {
 		              <xyzzy/>
 		            </nested>
 		          </foo>
+		        </test>
+		        """;
+        Bean b = entity.fromXML(xml);
+        String xml2 = entity.toXML(b);
+        XmlAssert.assertThat(xml2).and(xml).ignoreWhitespace().areSimilar();
+    }
+
+    @Test
+    public void testMissingDOM() throws Exception {
+        String xml =
+                """
+		        <test>
 		        </test>
 		        """;
         Bean b = entity.fromXML(xml);

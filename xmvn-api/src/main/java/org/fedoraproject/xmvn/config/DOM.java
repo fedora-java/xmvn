@@ -36,7 +36,15 @@ class DOM<EnclosingType, EnclosingBean> extends Property<EnclosingType, Enclosin
             String tag,
             Getter<EnclosingType, Element> getter,
             Setter<EnclosingBean, Element> setter) {
-        return new DOM<>(tag, x -> List.of(getter.get(x)), setter, true, true);
+        return new DOM<>(
+                tag,
+                x -> {
+                    Element y = getter.get(x);
+                    return y != null ? List.of(y) : List.of();
+                },
+                setter,
+                true,
+                true);
     }
 
     private DOM(
