@@ -152,7 +152,7 @@ interface ConfigurationERM {
             Entity.ofMutable(
                     "versions",
                     ArrayList<String>::new,
-                    Attribute.ofMulti("file", x -> x, List::add));
+                    Attribute.ofMulti("version", x -> x, List::add));
 
     /**
      * An {@link Entity} modeling mutable data type {@link Artifact}. It specifies how data should

@@ -49,4 +49,23 @@ class ConfigurationTest {
                 """;
         Configuration.fromXML(xml);
     }
+
+    @Test
+    public void testCompatVersions() throws Exception {
+        String xml =
+                """
+                <configuration>
+                  <artifactManagement>
+                    <rule>
+                      <artifactGlob/>
+                      <versions>
+                        <version>1.2.3</version>
+                        <version>4.5.6</version>
+                      </versions>
+                    </rule>
+                  </artifactManagement>
+                </configuration>
+                """;
+        Configuration.fromXML(xml);
+    }
 }
