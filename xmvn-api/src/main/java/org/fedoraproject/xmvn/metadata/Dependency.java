@@ -188,7 +188,7 @@ public class Dependency {
      *
      * @return boolean
      */
-    public boolean isOptional() {
+    public Boolean isOptional() {
         return optional != null ? optional : optionalDefault;
     }
 
