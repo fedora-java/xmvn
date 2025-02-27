@@ -65,10 +65,16 @@ public class XMvnWorkspaceReader implements WorkspaceReader {
     }
 
     @Override
-    public File findArtifact(Artifact artifact) {
+    public Path findArtifactPath(Artifact artifact) {
         ResolutionResult result = resolve(artifact);
 
         Path artifactPath = result.getArtifactPath();
+        return artifactPath;
+    }
+
+    @Override
+    public File findArtifact(Artifact artifact) {
+        Path artifactPath = findArtifactPath(artifact);
         return artifactPath != null ? artifactPath.toFile() : null;
     }
 
