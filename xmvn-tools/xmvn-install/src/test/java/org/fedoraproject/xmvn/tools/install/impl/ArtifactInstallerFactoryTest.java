@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Path;
 import java.util.Properties;
+import org.fedoraproject.xmvn.tools.install.ArtifactInstallationException;
 import org.fedoraproject.xmvn.tools.install.ArtifactInstaller;
 import org.junit.jupiter.api.Test;
 
@@ -50,8 +51,7 @@ public class ArtifactInstallerFactoryTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    public void testValidPlugin() throws Exception {
+    public void testLegacyPlugin() throws Exception {
         Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
@@ -60,29 +60,36 @@ public class ArtifactInstallerFactoryTest {
         assertEquals("foo.bar.MyPlugin", inst.getClass().getCanonicalName());
 
         try {
-            // Deprecated call without repoId specified
-            inst.install(null, null, null, null);
-            fail("Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException e) {
+            inst.install(null, null, null, null, "install");
+            fail("Expected AbstractMethodError");
+        } catch (AbstractMethodError e) {
             // "Not implemented exception" is thrown by the plugin
-            assertEquals("Not implemented", e.getMessage());
-            assertEquals(
-                    "foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString());
+            assertTrue(e.getMessage().startsWith("Receiver class foo.bar.MyPlugin"));
+            assertTrue(e.getMessage().contains("abstract void install("));
         }
+    }
+
+    @Test
+    public void testModernPlugin() throws Exception {
+        Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
+        ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
+        Properties props = new Properties();
+        props.setProperty("type", "myplugin3");
+        ArtifactInstaller inst = aif.getInstallerFor(null, props);
+        assertEquals("foo.bar.MyPluginModern", inst.getClass().getCanonicalName());
 
         try {
-            // Modern call with default repoId
             inst.install(null, null, null, null, "install");
             fail("Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException e) {
-            // "Not implemented exception" is thrown by the plugin
-            assertEquals("Not implemented", e.getMessage());
+        } catch (ArtifactInstallationException e) {
+            // "Nothing to do" is thrown by the plugin
+            assertEquals("Nothing to do", e.getMessage());
             assertEquals(
-                    "foo.bar.MyPlugin.install(MyPlugin.java:16)", e.getStackTrace()[0].toString());
+                    "foo.bar.MyPluginModern.install(MyPluginModern.java:35)",
+                    e.getStackTrace()[0].toString());
         }
 
         try {
-            // Modern call with non-default repoId
             inst.install(null, null, null, null, "my-repo");
             fail("Expected UnsupportedOperationException");
         } catch (UnsupportedOperationException e) {
