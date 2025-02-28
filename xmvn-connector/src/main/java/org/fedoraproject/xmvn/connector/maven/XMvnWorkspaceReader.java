@@ -17,7 +17,6 @@ package org.fedoraproject.xmvn.connector.maven;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,12 +38,6 @@ public class XMvnWorkspaceReader implements WorkspaceReader {
 
     private static final WorkspaceRepository REPOSITORY = new WorkspaceRepository();
 
-    private final List<ResolutionListener> listeners = new ArrayList<>();
-
-    public void addResolutionListener(ResolutionListener listener) {
-        listeners.add(listener);
-    }
-
     private ResolutionResult resolve(Artifact artifact) {
         org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact =
                 org.fedoraproject.xmvn.artifact.Artifact.of(
@@ -55,11 +48,7 @@ public class XMvnWorkspaceReader implements WorkspaceReader {
                         artifact.getVersion());
         ResolutionRequest request = new ResolutionRequest(xmvnArtifact);
 
-        for (ResolutionListener listener : listeners) listener.resolutionRequested(request);
-
         ResolutionResult result = resolver.resolve(request);
-
-        for (ResolutionListener listener : listeners) listener.resolutionCompleted(request, result);
 
         return result;
     }
