@@ -41,9 +41,14 @@ import org.fedoraproject.xmvn.logging.Logger;
 @Singleton
 public class XMvnModelTransformer implements ModelTransformer {
 
-    @Inject private Logger logger;
+    private final Logger logger;
+    private final Configurator configurator;
 
-    @Inject private Configurator configurator;
+    @Inject
+    public XMvnModelTransformer(Logger logger, Configurator configurator) {
+        this.logger = logger;
+        this.configurator = configurator;
+    }
 
     @Override
     public Model transformEffectiveModel(Model model) throws ModelTransformerException {

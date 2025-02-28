@@ -47,33 +47,30 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 @Named
 @Singleton
 public class DefaultResolver implements Resolver {
-    @Inject private Logger logger;
 
-    @Inject private Configurator configurator;
-
-    @Inject private MetadataResolver metadataResolver;
+    private Logger logger;
+    private Configurator configurator;
+    private MetadataResolver metadataResolver;
+    private final EffectivePomGenerator pomGenerator = new EffectivePomGenerator();
+    private final CacheManager cacheManager = new CacheManager();
 
     private MetadataRequest metadataRequest;
-
     private MetadataResult metadataResult;
-
-    private final EffectivePomGenerator pomGenerator;
-
-    private final CacheManager cacheManager;
-
     MockAgent mockAgent;
 
     public DefaultResolver(ServiceLocator locator) {
-        this();
-
-        logger = locator.getService(Logger.class);
-        configurator = locator.getService(Configurator.class);
-        metadataResolver = locator.getService(MetadataResolver.class);
+        this(
+                locator.getService(Logger.class),
+                locator.getService(Configurator.class),
+                locator.getService(MetadataResolver.class));
     }
 
-    public DefaultResolver() {
-        pomGenerator = new EffectivePomGenerator();
-        cacheManager = new CacheManager();
+    @Inject
+    public DefaultResolver(
+            Logger logger, Configurator configurator, MetadataResolver metadataResolver) {
+        this.logger = logger;
+        this.configurator = configurator;
+        this.metadataResolver = metadataResolver;
     }
 
     @Override

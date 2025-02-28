@@ -34,9 +34,15 @@ import org.fedoraproject.xmvn.resolver.Resolver;
 @Named("ide")
 @Singleton
 public class XMvnWorkspaceReader implements WorkspaceReader {
-    @Inject private Resolver resolver;
 
     private static final WorkspaceRepository REPOSITORY = new WorkspaceRepository();
+
+    private final Resolver resolver;
+
+    @Inject
+    public XMvnWorkspaceReader(Resolver resolver) {
+        this.resolver = resolver;
+    }
 
     private ResolutionResult resolve(Artifact artifact) {
         org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact =

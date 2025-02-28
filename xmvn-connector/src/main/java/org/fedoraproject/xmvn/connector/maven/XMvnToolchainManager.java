@@ -31,7 +31,13 @@ import org.apache.maven.execution.MavenSession;
 @Named
 @Singleton
 public class XMvnToolchainManager extends AbstractMavenLifecycleParticipant {
-    @Inject private ToolchainManager toolchainManager;
+
+    private final ToolchainManager toolchainManager;
+
+    @Inject
+    public XMvnToolchainManager(ToolchainManager toolchainManager) {
+        this.toolchainManager = toolchainManager;
+    }
 
     @Override
     public void afterProjectsRead(MavenSession mavenSession) {

@@ -32,7 +32,13 @@ import org.eclipse.sisu.Priority;
 @Singleton
 @Priority(100)
 public class XMvnMojoExecutionConfigurator implements MojoExecutionConfigurator {
-    @Inject private DefaultMojoExecutionConfigurator delegate;
+
+    private final DefaultMojoExecutionConfigurator delegate;
+
+    @Inject
+    public XMvnMojoExecutionConfigurator(DefaultMojoExecutionConfigurator delegate) {
+        this.delegate = delegate;
+    }
 
     @Override
     public void configure(
