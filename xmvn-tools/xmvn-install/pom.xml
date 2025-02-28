@@ -35,6 +35,10 @@
       <artifactId>picocli</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.kojan</groupId>
+      <artifactId>kojan-xml</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
       <artifactId>xmvn-api</artifactId>
     </dependency>
@@ -55,6 +59,10 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
