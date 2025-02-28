@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.tools.install;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -95,7 +96,7 @@ public final class JarUtils {
     }
 
     static class NativeMethodFound extends RuntimeException {
-        private static final long serialVersionUID = 1;
+        @Serial private static final long serialVersionUID = 1;
 
         final String className;
 
