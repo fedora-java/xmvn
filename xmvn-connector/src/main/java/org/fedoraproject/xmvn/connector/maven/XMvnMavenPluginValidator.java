@@ -16,12 +16,12 @@
 package org.fedoraproject.xmvn.connector.maven;
 
 import java.util.List;
-import javax.annotation.Priority;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.internal.MavenPluginValidator;
+import org.eclipse.sisu.Priority;
 
 /**
  * This is a simple Maven plugin validator that pretends that all plugins have valid descriptors.
