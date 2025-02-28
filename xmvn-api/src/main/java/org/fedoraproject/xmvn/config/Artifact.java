@@ -42,11 +42,6 @@ public class Artifact {
 
     private static final String classifierDefault = "";
 
-    /** Maven stereotype of the artifact. */
-    private String stereotype;
-
-    private static final String stereotypeDefault = "";
-
     /** Extension of the artifact. */
     private String extension;
 
@@ -105,19 +100,6 @@ public class Artifact {
     }
 
     /**
-     * Get maven stereotype of the artifact.
-     *
-     * @return String
-     */
-    public String getStereotype() {
-        return stereotype != null ? stereotype : stereotypeDefault;
-    }
-
-    String getStereotypeOrNull() {
-        return stereotype;
-    }
-
-    /**
      * Get version of the artifact.
      *
      * @return String
@@ -164,15 +146,6 @@ public class Artifact {
      */
     public void setGroupId(String groupId) {
         this.groupId = groupIdDefault.equals(groupId) ? null : groupId;
-    }
-
-    /**
-     * Set maven stereotype of the artifact.
-     *
-     * @param stereotype a stereotype object.
-     */
-    public void setStereotype(String stereotype) {
-        this.stereotype = stereotypeDefault.equals(stereotype) ? null : stereotype;
     }
 
     /**

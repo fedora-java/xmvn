@@ -60,7 +60,6 @@ class EffectivePackagingRule extends PackagingRule {
             List<Matcher> matchers, org.fedoraproject.xmvn.config.Artifact source) {
         org.fedoraproject.xmvn.config.Artifact target =
                 new org.fedoraproject.xmvn.config.Artifact();
-        target.setStereotype(source.getStereotype());
         target.setGroupId(source.getGroupId());
         target.setArtifactId(source.getArtifactId());
         target.setExtension(source.getExtension());
@@ -72,8 +71,6 @@ class EffectivePackagingRule extends PackagingRule {
             for (int i = 1; i <= matcher.groupCount(); i++, group++) {
                 Pattern pattern = Pattern.compile("@" + group);
                 String replacement = matcher.group(i);
-                target.setStereotype(
-                        pattern.matcher(target.getStereotype()).replaceAll(replacement));
                 target.setGroupId(pattern.matcher(target.getGroupId()).replaceAll(replacement));
                 target.setArtifactId(
                         pattern.matcher(target.getArtifactId()).replaceAll(replacement));
@@ -89,7 +86,6 @@ class EffectivePackagingRule extends PackagingRule {
 
     private void applyRule(PackagingRule rule) {
         Artifact glob = rule.getArtifactGlob();
-        Pattern stereotypePattern = GlobUtils.glob2pattern(glob.getStereotype());
         Pattern groupIdPattern = GlobUtils.glob2pattern(glob.getGroupId());
         Pattern artifactIdPattern = GlobUtils.glob2pattern(glob.getArtifactId());
         Pattern extensionPattern = GlobUtils.glob2pattern(glob.getExtension());
@@ -98,9 +94,6 @@ class EffectivePackagingRule extends PackagingRule {
 
         Artifact artifact = getArtifactGlob();
         List<Matcher> matchers = new ArrayList<>(3);
-        if (stereotypePattern != null) {
-            matchers.add(stereotypePattern.matcher(artifact.getStereotype()));
-        }
         if (groupIdPattern != null) {
             matchers.add(groupIdPattern.matcher(artifact.getGroupId()));
         }
@@ -131,9 +124,6 @@ class EffectivePackagingRule extends PackagingRule {
         for (org.fedoraproject.xmvn.config.Artifact alias : rule.getAliases()) {
             alias = expandBackreferences(matchers, alias);
 
-            if (isNullOrEmpty(alias.getStereotype())) {
-                alias.setStereotype(artifact.getStereotype());
-            }
             if (isNullOrEmpty(alias.getGroupId())) {
                 alias.setGroupId(artifact.getGroupId());
             }

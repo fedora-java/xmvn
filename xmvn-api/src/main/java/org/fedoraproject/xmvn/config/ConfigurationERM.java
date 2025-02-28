@@ -47,8 +47,6 @@ interface ConfigurationERM {
                     Attribute.ofOptional(
                             "classifier", Artifact::getClassifier, Artifact::setClassifier),
                     Attribute.ofOptional(
-                            "stereotype", Artifact::getStereotype, Artifact::setStereotype),
-                    Attribute.ofOptional(
                             "extension", Artifact::getExtension, Artifact::setExtension));
 
     /**
@@ -102,8 +100,6 @@ interface ConfigurationERM {
                             "version", Artifact::getVersionOrNull, Artifact::setVersion),
                     Attribute.ofOptional(
                             "classifier", Artifact::getClassifier, Artifact::setClassifier),
-                    Attribute.ofOptional(
-                            "stereotype", Artifact::getStereotype, Artifact::setStereotype),
                     Attribute.ofOptional(
                             "extension", Artifact::getExtension, Artifact::setExtension));
 
@@ -170,8 +166,6 @@ interface ConfigurationERM {
                             "version", Artifact::getVersionOrNull, Artifact::setVersion),
                     Attribute.ofOptional(
                             "classifier", Artifact::getClassifier, Artifact::setClassifier),
-                    Attribute.ofOptional(
-                            "stereotype", Artifact::getStereotype, Artifact::setStereotype),
                     Attribute.ofOptional(
                             "extension", Artifact::getExtension, Artifact::setExtension));
 
@@ -297,8 +291,6 @@ interface ConfigurationERM {
                             "version", Artifact::getVersionOrNull, Artifact::setVersion),
                     Attribute.ofOptional(
                             "classifier", Artifact::getClassifier, Artifact::setClassifier),
-                    Attribute.ofOptional(
-                            "stereotype", Artifact::getStereotype, Artifact::setStereotype),
                     Attribute.ofOptional(
                             "extension", Artifact::getExtension, Artifact::setExtension));
 
