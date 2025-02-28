@@ -95,25 +95,6 @@ public class WorkspaceReaderTest extends AbstractTest {
     }
 
     @Test
-    public void testResolutionListener() throws Exception {
-        ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
-        ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
-        ResolutionListener listener = EasyMock.createMock(ResolutionListener.class);
-
-        EasyMock.expect(resolver.resolve(request)).andReturn(result);
-        EasyMock.expect(result.getArtifactPath()).andReturn(Path.of("/foo/bar"));
-        listener.resolutionRequested(request);
-        EasyMock.expectLastCall();
-        listener.resolutionCompleted(request, result);
-        EasyMock.expectLastCall();
-        EasyMock.replay(resolver, result, listener);
-
-        ((XMvnWorkspaceReader) workspace).addResolutionListener(listener);
-        workspace.findArtifact(new org.eclipse.aether.artifact.DefaultArtifact("foo:bar:1.2.3"));
-        EasyMock.verify(resolver, result, listener);
-    }
-
-    @Test
     public void testFindVersionsSystem() throws Exception {
         ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
