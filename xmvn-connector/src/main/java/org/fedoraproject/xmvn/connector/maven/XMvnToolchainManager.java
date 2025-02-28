@@ -19,20 +19,24 @@ import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import org.apache.maven.MavenExecutionException;
+import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.api.Session;
+import org.apache.maven.api.Toolchain;
 import org.apache.maven.api.services.ToolchainManager;
+import org.apache.maven.execution.MavenSession;
 
 /**
  * @author Mikolaj Izdebski
  */
 @Named
 @Singleton
-public class XMvnToolchainManager {
+public class XMvnToolchainManager extends AbstractMavenLifecycleParticipant {
     @Inject private ToolchainManager toolchainManager;
 
-    public void activate(Session session) throws MavenExecutionException {
-        for (var toolchain : toolchainManager.getToolchainsForType(session, "jdk")) {
+    @Override
+    public void afterProjectsRead(MavenSession mavenSession) {
+        Session session = mavenSession.getSession();
+        for (Toolchain toolchain : toolchainManager.getToolchainsForType(session, "jdk")) {
             if (toolchain.matchesRequirements(Collections.singletonMap("xmvn", "xmvn"))) {
                 toolchainManager.storeToolchainToBuildContext(session, toolchain);
             }
