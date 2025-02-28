@@ -57,8 +57,6 @@ public class DefaultResolver implements Resolver {
 
     private MetadataResult metadataResult;
 
-    private static final RpmDb RPMDB = new RpmDb();
-
     private final Resolver localRepoResolver;
 
     private final EffectivePomGenerator pomGenerator;
@@ -166,9 +164,6 @@ public class DefaultResolver implements Resolver {
         DefaultResolutionResult result = new DefaultResolutionResult(artifactPath);
         result.setNamespace(metadata.getNamespace());
         result.setCompatVersion(compatVersion);
-        if (request.isProviderNeeded()) {
-            result.setProvider(RPMDB.lookupPath(artifactPath));
-        }
 
         logger.debug("Artifact {} was resolved to {}", artifact, artifactPath);
         return result;
