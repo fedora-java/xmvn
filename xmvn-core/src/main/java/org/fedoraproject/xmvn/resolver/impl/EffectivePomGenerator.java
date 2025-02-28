@@ -15,23 +15,16 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import io.kojan.xml.Attribute;
+import io.kojan.xml.Entity;
+import io.kojan.xml.Relationship;
+import io.kojan.xml.XMLException;
+import java.util.List;
+import java.util.function.Predicate;
 import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.Dependency;
 import org.fedoraproject.xmvn.metadata.DependencyExclusion;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Generates effective POM files from package metadata.
@@ -39,92 +32,74 @@ import org.w3c.dom.Element;
  * @author Mikolaj Izdebski
  */
 class EffectivePomGenerator {
-    private final DocumentBuilderFactory documentBuilderFactory;
 
-    private final TransformerFactory transformerFactory;
-
-    public EffectivePomGenerator() {
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        transformerFactory = TransformerFactory.newInstance();
-    }
-
-    private void addTextElement(Document document, Element parent, String name, String value) {
-        addTextElement(document, parent, name, value, null);
-    }
-
-    private void addTextElement(
-            Document document, Element parent, String name, String value, String defaultValue) {
-        if (value == null || defaultValue == null || !value.equals(defaultValue)) {
-            Element child = document.createElement(name);
-            parent.appendChild(child);
-            child.appendChild(document.createTextNode(value == null ? defaultValue : value));
+    private static <T> T getDefault(T value, Predicate<T> isDefault) {
+        if (isDefault.test(value)) {
+            return null;
         }
-    }
-
-    private void addExclusion(
-            Document document, Element exclusions, DependencyExclusion exclusion) {
-        Element exclusionNode = document.createElement("exclusion");
-        exclusions.appendChild(exclusionNode);
-        addTextElement(document, exclusionNode, "groupId", exclusion.getGroupId());
-        addTextElement(document, exclusionNode, "artifactId", exclusion.getArtifactId());
-    }
-
-    private void addDependency(Document document, Element dependencies, Dependency dependency) {
-        Element dependencyNode = document.createElement("dependency");
-        dependencies.appendChild(dependencyNode);
-        addTextElement(document, dependencyNode, "groupId", dependency.getGroupId());
-        addTextElement(document, dependencyNode, "artifactId", dependency.getArtifactId());
-        addTextElement(
-                document,
-                dependencyNode,
-                "type",
-                dependency.getExtension(),
-                Artifact.DEFAULT_EXTENSION);
-        addTextElement(document, dependencyNode, "classifier", dependency.getClassifier(), "");
-        addTextElement(document, dependencyNode, "version", dependency.getRequestedVersion());
-        Boolean optional = dependency.isOptional();
-        addTextElement(document, dependencyNode, "optional", optional.toString(), "false");
-
-        Element exclusions = document.createElement("exclusions");
-        for (DependencyExclusion exclusion : dependency.getExclusions())
-            addExclusion(document, exclusions, exclusion);
-        if (exclusions.hasChildNodes()) {
-            dependencyNode.appendChild(exclusions);
-        }
-    }
-
-    private void addProject(Document document, ArtifactMetadata metadata, Artifact artifact) {
-        Element project = document.createElement("project");
-        document.appendChild(project);
-        addTextElement(document, project, "modelVersion", "4.0.0");
-        addTextElement(document, project, "groupId", artifact.getGroupId());
-        addTextElement(document, project, "artifactId", artifact.getArtifactId());
-        addTextElement(document, project, "version", artifact.getVersion());
-
-        Element dependencies = document.createElement("dependencies");
-        for (Dependency dependency : metadata.getDependencies())
-            addDependency(document, dependencies, dependency);
-        if (dependencies.hasChildNodes()) {
-            project.appendChild(dependencies);
-        }
+        return value;
     }
 
     public String generateEffectivePom(ArtifactMetadata metadata, Artifact artifact)
-            throws IOException {
-        try (StringWriter sw = new StringWriter()) {
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.newDocument();
-            document.setXmlStandalone(true);
-            addProject(document, metadata, artifact);
+            throws XMLException {
 
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            transformer.transform(new DOMSource(document), new StreamResult(sw));
+        List<Dependency> dependencies = metadata.getDependencies();
 
-            return sw.toString();
-        } catch (ParserConfigurationException | TransformerException e) {
-            throw new IOException("Unable to generate effectvie POM", e);
-        }
+        var exclusionEntity =
+                Entity.of(
+                        "exclusion",
+                        null,
+                        Attribute.of("groupId", DependencyExclusion::getGroupId, null),
+                        Attribute.of("artifactId", DependencyExclusion::getArtifactId, null));
+
+        var dependencyEntity =
+                Entity.of(
+                        "dependency",
+                        null,
+                        Attribute.of("groupId", Dependency::getGroupId, null),
+                        Attribute.of("artifactId", Dependency::getArtifactId, null),
+                        Attribute.of(
+                                "type",
+                                dep ->
+                                        getDefault(
+                                                dep.getExtension(),
+                                                Artifact.DEFAULT_EXTENSION::equals),
+                                null),
+                        Attribute.of(
+                                "classifier",
+                                dep -> getDefault(dep.getClassifier(), ""::equals),
+                                null),
+                        Attribute.of("version", Dependency::getRequestedVersion, null),
+                        Attribute.of(
+                                "optional",
+                                dep -> getDefault(dep.isOptional(), Boolean.FALSE::equals),
+                                null,
+                                Object::toString,
+                                null),
+                        Relationship.ofSingular(
+                                Entity.of(
+                                        "exclusions",
+                                        null,
+                                        Relationship.of(exclusionEntity, x -> x, null)),
+                                dep -> getDefault(dep.getExclusions(), List::isEmpty),
+                                null));
+
+        var projectEntity =
+                Entity.of(
+                        "project",
+                        null,
+                        Attribute.of("modelVersion", x -> "4.0.0", null),
+                        Attribute.of("groupId", x -> artifact.getGroupId(), null),
+                        Attribute.of("artifactId", x -> artifact.getArtifactId(), null),
+                        Attribute.of("version", x -> artifact.getVersion(), null),
+                        Relationship.ofSingular(
+                                Entity.of(
+                                        "dependencies",
+                                        null,
+                                        Relationship.of(dependencyEntity, x -> x, null)),
+                                x -> getDefault(dependencies, List::isEmpty),
+                                null));
+
+        return projectEntity.toXML(null);
     }
 }

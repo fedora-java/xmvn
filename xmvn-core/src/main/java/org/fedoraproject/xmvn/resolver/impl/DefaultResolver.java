@@ -15,6 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
+import io.kojan.xml.XMLException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Properties;
@@ -149,7 +150,7 @@ public class DefaultResolver implements Resolver {
                 Path pomPath = cacheManager.cacheFile(pom, artifactFileName);
 
                 metadata.setPath(pomPath.toString());
-            } catch (IOException e) {
+            } catch (IOException | XMLException e) {
                 logger.warn("Failed to generate effective POM", e);
                 return new DefaultResolutionResult();
             }
