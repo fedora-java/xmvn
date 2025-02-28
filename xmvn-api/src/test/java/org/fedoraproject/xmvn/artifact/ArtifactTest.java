@@ -196,7 +196,7 @@ public class ArtifactTest {
     @Test
     public void testSetPath() throws Exception {
         Artifact artifact = Artifact.of("gid:aid:ext:cla:ver");
-        Artifact newArtifact = artifact.setPath(Path.of("/tmp/foo"));
+        Artifact newArtifact = artifact.withPath(Path.of("/tmp/foo"));
         assertNotSame(artifact, newArtifact);
         assertEquals(Path.of("/tmp/foo"), newArtifact.getPath());
         assertNull(artifact.getPath());
@@ -232,15 +232,15 @@ public class ArtifactTest {
         Artifact artifact0 = Artifact.of("gid:aid:ext:cla:ver");
 
         assertTrue(artifact.equals(artifact0));
-        assertTrue(artifact.setPath(path).equals(artifact0.setPath(path)));
-        assertFalse(artifact.setPath(path).equals(artifact0));
+        assertTrue(artifact.withPath(path).equals(artifact0.withPath(path)));
+        assertFalse(artifact.withPath(path).equals(artifact0));
 
         Artifact artifact1 = Artifact.of("gidX", "aid", "ext", "cla", "ver");
         Artifact artifact2 = Artifact.of("gid", "aidX", "ext", "cla", "ver");
         Artifact artifact3 = Artifact.of("gid", "aid", "extX", "cla", "ver");
         Artifact artifact4 = Artifact.of("gid", "aid", "ext", "claX", "ver");
         Artifact artifact5 = Artifact.of("gid", "aid", "ext", "cla", "verX");
-        Artifact artifact6 = Artifact.of("gid", "aid", "ext", "cla", "ver").setPath(path);
+        Artifact artifact6 = Artifact.of("gid", "aid", "ext", "cla", "ver").withPath(path);
 
         assertFalse(artifact.equals(artifact1));
         assertFalse(artifact.equals(artifact2));

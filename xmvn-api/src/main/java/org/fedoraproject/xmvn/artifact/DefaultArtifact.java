@@ -96,8 +96,8 @@ public final class DefaultArtifact implements Artifact {
     }
 
     @Override
-    public Artifact setPath(Path path) {
-        return delegate.setPath(path);
+    public Artifact withPath(Path path) {
+        return delegate.withPath(path);
     }
 
     @Override

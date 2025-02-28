@@ -106,7 +106,12 @@ public interface Artifact {
      * @param path the new artifact path to set
      * @return copy of artifact with the new path set
      */
-    Artifact setPath(Path path);
+    Artifact withPath(Path path);
+
+    @Deprecated
+    default Artifact setPath(Path path) {
+        return withPath(path);
+    }
 
     static Artifact of(String coords) {
         return new ArtifactImpl(coords);

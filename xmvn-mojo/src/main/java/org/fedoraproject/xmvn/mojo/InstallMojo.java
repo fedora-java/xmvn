@@ -217,7 +217,7 @@ public class InstallMojo extends AbstractMojo {
                 File rawPomFile = project.getFile();
                 Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
                 logger.debug("Raw POM path: {}", rawPomPath);
-                rawPomArtifact = rawPomArtifact.setPath(rawPomPath);
+                rawPomArtifact = rawPomArtifact.withPath(rawPomPath);
                 deployArtifact(rawPomArtifact, type, project.getModel());
             }
 

@@ -132,7 +132,7 @@ final class ArtifactImpl implements Artifact {
     }
 
     @Override
-    public Artifact setPath(Path path) {
+    public Artifact withPath(Path path) {
         return new ArtifactImpl(groupId, artifactId, extension, classifier, version, path);
     }
 

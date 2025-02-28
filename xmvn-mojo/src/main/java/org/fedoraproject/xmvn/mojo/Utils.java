@@ -49,7 +49,7 @@ final class Utils {
         Path artifactPath = artifactFile != null ? artifactFile.toPath() : null;
 
         Artifact artifact = Artifact.of(groupId, artifactId, extension, classifier, version);
-        artifact = artifact.setPath(artifactPath);
+        artifact = artifact.withPath(artifactPath);
         return artifact;
     }
 
