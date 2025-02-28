@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactAlias;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -70,7 +69,7 @@ class DefaultMetadataResult implements MetadataResult {
 
         for (ArtifactAlias alias : metadata.getAliases()) {
             Artifact aliasArtifact =
-                    new DefaultArtifact(
+                    Artifact.of(
                             alias.getGroupId(),
                             alias.getArtifactId(),
                             alias.getExtension(),

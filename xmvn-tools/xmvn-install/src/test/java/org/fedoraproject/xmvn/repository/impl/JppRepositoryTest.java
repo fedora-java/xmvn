@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.nio.file.Path;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
@@ -51,7 +50,7 @@ public class JppRepositoryTest {
         EasyMock.verify(configurator);
         assertNotNull(repo);
 
-        Artifact artifact1 = new DefaultArtifact("foo.bar", "the-artifact", "baz", "1.2.3");
+        Artifact artifact1 = Artifact.of("foo.bar", "the-artifact", "baz", "1.2.3");
         ArtifactContext context1 = new ArtifactContext(artifact1);
         assertEquals(
                 Path.of("my-target/path/aid-1.2.3.baz"),

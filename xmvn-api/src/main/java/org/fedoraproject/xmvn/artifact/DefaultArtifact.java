@@ -20,54 +20,25 @@ import java.nio.file.Path;
 /**
  * @author Mikolaj Izdebski
  */
+@Deprecated
 public final class DefaultArtifact implements Artifact {
-    private final String groupId;
 
-    private final String artifactId;
-
-    private final String extension;
-
-    private final String classifier;
-
-    private final String version;
-
-    private final Path path;
+    private final Artifact delegate;
 
     public DefaultArtifact(String coords) {
-        String s = coords;
-        int n = s.length() - s.replace(":", "").length();
-        if (n < 1 || n > 4) {
-            throw new IllegalArgumentException(
-                    "Illegal artifact coordinates "
-                            + coords
-                            + ", expected coordinates in format <groupId>:<artifactId>[:<extension>[:<classifier>]]:[<version>]");
-        }
-        s += "::::";
-        String[] a = new String[5];
-        for (int j = 0; j < 5; j++) {
-            int i = s.indexOf(':');
-            a[j] = s.substring(0, i);
-            s = s.substring(i + 1);
-        }
-
-        groupId = a[0];
-        artifactId = a[1];
-        extension = n < 3 || a[2].isEmpty() ? DEFAULT_EXTENSION : a[2];
-        classifier = n < 4 ? "" : a[3];
-        version = n < 2 || a[n].isEmpty() ? DEFAULT_VERSION : a[n];
-        path = null;
+        delegate = Artifact.of(coords);
     }
 
     public DefaultArtifact(String groupId, String artifactId) {
-        this(groupId, artifactId, null);
+        delegate = Artifact.of(groupId, artifactId);
     }
 
     public DefaultArtifact(String groupId, String artifactId, String version) {
-        this(groupId, artifactId, null, version);
+        delegate = Artifact.of(groupId, artifactId, version);
     }
 
     public DefaultArtifact(String groupId, String artifactId, String extension, String version) {
-        this(groupId, artifactId, extension, null, version);
+        delegate = Artifact.of(groupId, artifactId, extension, version);
     }
 
     public DefaultArtifact(
@@ -76,7 +47,7 @@ public final class DefaultArtifact implements Artifact {
             String extension,
             String classifier,
             String version) {
-        this(groupId, artifactId, extension, classifier, version, null);
+        delegate = Artifact.of(groupId, artifactId, extension, classifier, version);
     }
 
     public DefaultArtifact(
@@ -86,92 +57,61 @@ public final class DefaultArtifact implements Artifact {
             String classifier,
             String version,
             Path path) {
-        if (groupId == null || groupId.isEmpty()) {
-            throw new IllegalArgumentException("groupId must be specified");
-        }
-        if (artifactId == null || artifactId.isEmpty()) {
-            throw new IllegalArgumentException("artifactId must be specified");
-        }
-
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.extension = extension == null || extension.isEmpty() ? DEFAULT_EXTENSION : extension;
-        this.classifier = classifier == null ? "" : classifier;
-        this.version = version == null || version.isEmpty() ? DEFAULT_VERSION : version;
-        this.path = path;
+        delegate = Artifact.of(groupId, artifactId, extension, classifier, version, path);
     }
 
     @Override
     public String getGroupId() {
-        return groupId;
+        return delegate.getGroupId();
     }
 
     @Override
     public String getArtifactId() {
-        return artifactId;
+        return delegate.getArtifactId();
     }
 
     @Override
     public String getExtension() {
-        return extension;
+        return delegate.getExtension();
     }
 
     @Override
     public String getClassifier() {
-        return classifier;
+        return delegate.getClassifier();
     }
 
     @Override
     public String getVersion() {
-        return version;
+        return delegate.getVersion();
     }
 
     @Override
     public Path getPath() {
-        return path;
+        return delegate.getPath();
     }
 
     @Override
     public Artifact setVersion(String version) {
-        return new DefaultArtifact(groupId, artifactId, extension, classifier, version, path);
+        return delegate.setVersion(version);
     }
 
     @Override
     public Artifact setPath(Path path) {
-        return new DefaultArtifact(groupId, artifactId, extension, classifier, version, path);
+        return delegate.setPath(path);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(groupId);
-        sb.append(':').append(artifactId);
-        sb.append(':').append(extension);
-        if (!classifier.isEmpty()) {
-            sb.append(':').append(classifier);
-        }
-        sb.append(':').append(getVersion());
-        return sb.toString();
+        return delegate.toString();
     }
 
     @Override
     public boolean equals(Object rhs) {
-        if (!(rhs instanceof Artifact)) {
-            return false;
-        }
-
-        Artifact x = (Artifact) rhs;
-
-        return groupId.equals(x.getGroupId())
-                && artifactId.equals(x.getArtifactId())
-                && extension.equals(x.getExtension())
-                && classifier.equals(x.getClassifier())
-                && version.equals(x.getVersion())
-                && (path == null ? x.getPath() == null : path.equals(x.getPath()));
+        return delegate.equals(rhs);
     }
 
     @Override
     public int hashCode() {
-        return toString().hashCode();
+        return delegate.hashCode();
     }
 }

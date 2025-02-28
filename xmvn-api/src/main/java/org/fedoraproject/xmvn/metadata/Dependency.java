@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.metadata;
 import java.util.ArrayList;
 import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * Description of dependency artifact.
@@ -292,7 +291,7 @@ public class Dependency {
     }
 
     public Artifact toArtifact() {
-        return new DefaultArtifact(
+        return Artifact.of(
                 getGroupId(),
                 getArtifactId(),
                 getExtension(),

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.StringReader;
 import java.util.Collections;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,12 +41,12 @@ public class ConditionTest {
     public void setUp() {
         context1 =
                 new ArtifactContext(
-                        new DefaultArtifact("some-gid", "the-aid", "zip", "xyzzy", "1.2.3"),
+                        Artifact.of("some-gid", "the-aid", "zip", "xyzzy", "1.2.3"),
                         Collections.singletonMap("foo", "bar"));
 
         context2 =
                 new ArtifactContext(
-                        new DefaultArtifact("org.apache.maven", "maven-model", "3.0.5"),
+                        Artifact.of("org.apache.maven", "maven-model", "3.0.5"),
                         Collections.singletonMap("native", "true"));
     }
 

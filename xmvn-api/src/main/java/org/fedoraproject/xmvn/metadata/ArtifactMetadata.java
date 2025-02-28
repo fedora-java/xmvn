@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * Information about a single artifact.
@@ -360,7 +359,7 @@ public class ArtifactMetadata {
     }
 
     public Artifact toArtifact() {
-        return new DefaultArtifact(
+        return Artifact.of(
                 getGroupId(), getArtifactId(), getExtension(), getClassifier(), getVersion());
     }
 

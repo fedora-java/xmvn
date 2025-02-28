@@ -26,7 +26,7 @@ import java.util.List;
 import org.easymock.EasyMock;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.repository.WorkspaceRepository;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -62,7 +62,7 @@ public class WorkspaceReaderTest extends AbstractTest {
 
     @Test
     public void testFindArtifact() throws Exception {
-        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
@@ -79,7 +79,7 @@ public class WorkspaceReaderTest extends AbstractTest {
 
     @Test
     public void testArtifactNotFound() throws Exception {
-        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
@@ -96,7 +96,7 @@ public class WorkspaceReaderTest extends AbstractTest {
 
     @Test
     public void testResolutionListener() throws Exception {
-        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
         ResolutionListener listener = EasyMock.createMock(ResolutionListener.class);
 
@@ -115,7 +115,7 @@ public class WorkspaceReaderTest extends AbstractTest {
 
     @Test
     public void testFindVersionsSystem() throws Exception {
-        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
@@ -134,7 +134,7 @@ public class WorkspaceReaderTest extends AbstractTest {
 
     @Test
     public void testFindVersionsCompat() throws Exception {
-        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);
@@ -153,7 +153,7 @@ public class WorkspaceReaderTest extends AbstractTest {
 
     @Test
     public void testFindVersionsNotFound() throws Exception {
-        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact("foo:bar:1.2.3"));
+        ResolutionRequest request = new ResolutionRequest(Artifact.of("foo:bar:1.2.3"));
         ResolutionResult result = EasyMock.createMock(ResolutionResult.class);
 
         EasyMock.expect(resolver.resolve(request)).andReturn(result);

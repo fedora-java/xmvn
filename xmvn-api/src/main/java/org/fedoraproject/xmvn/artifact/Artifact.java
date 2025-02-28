@@ -107,4 +107,39 @@ public interface Artifact {
      * @return copy of artifact with the new path set
      */
     Artifact setPath(Path path);
+
+    static Artifact of(String coords) {
+        return new ArtifactImpl(coords);
+    }
+
+    static Artifact of(String groupId, String artifactId) {
+        return new ArtifactImpl(groupId, artifactId);
+    }
+
+    static Artifact of(String groupId, String artifactId, String version) {
+        return new ArtifactImpl(groupId, artifactId, version);
+    }
+
+    static Artifact of(String groupId, String artifactId, String extension, String version) {
+        return new ArtifactImpl(groupId, artifactId, extension, version);
+    }
+
+    static Artifact of(
+            String groupId,
+            String artifactId,
+            String extension,
+            String classifier,
+            String version) {
+        return new ArtifactImpl(groupId, artifactId, extension, classifier, version);
+    }
+
+    static Artifact of(
+            String groupId,
+            String artifactId,
+            String extension,
+            String classifier,
+            String version,
+            Path path) {
+        return new ArtifactImpl(groupId, artifactId, extension, classifier, version, path);
+    }
 }

@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.test.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.xmlunit.assertj3.XmlAssert;
@@ -56,20 +56,17 @@ public class BasicDeployerTest extends AbstractTest {
         Path plan = Files.createTempDirectory("xmvn-test").resolve("plan.xml");
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(
-                new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(Artifact.of("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         req.addProperty("foo", "bar");
-        req.addDependency(new DefaultArtifact("g1:a1:e1:c1:v1"));
+        req.addDependency(Artifact.of("g1:a1:e1:c1:v1"));
         req.addDependency(
-                new DefaultArtifact("g2:a2:e2:c2:v2"),
+                Artifact.of("g2:a2:e2:c2:v2"),
                 true,
-                Arrays.asList(
-                        new DefaultArtifact("e:e:e:e:e"),
-                        new DefaultArtifact("eg2:ea2:ee2:ec2:ev2")));
+                Arrays.asList(Artifact.of("e:e:e:e:e"), Artifact.of("eg2:ea2:ee2:ec2:ev2")));
         deployer.deploy(req);
         DeploymentRequest req2 = new DeploymentRequest();
         req2.setPlanPath(plan);
-        req2.setArtifact(new DefaultArtifact("foo:bar:pom:").setPath(Path.of("/dev/null")));
+        req2.setArtifact(Artifact.of("foo:bar:pom:").setPath(Path.of("/dev/null")));
         deployer.deploy(req2);
 
         XmlAssert.assertThat(
@@ -136,8 +133,7 @@ public class BasicDeployerTest extends AbstractTest {
         Files.createDirectory(plan);
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(
-                new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(Artifact.of("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));
@@ -179,8 +175,7 @@ public class BasicDeployerTest extends AbstractTest {
         Files.setPosixFilePermissions(plan, Set.of(PosixFilePermission.OTHERS_READ));
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(
-                new DefaultArtifact("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(Artifact.of("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));

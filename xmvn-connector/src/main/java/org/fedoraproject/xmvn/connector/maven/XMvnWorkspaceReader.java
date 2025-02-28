@@ -47,7 +47,7 @@ public class XMvnWorkspaceReader implements WorkspaceReader {
 
     private ResolutionResult resolve(Artifact artifact) {
         org.fedoraproject.xmvn.artifact.Artifact xmvnArtifact =
-                new org.fedoraproject.xmvn.artifact.DefaultArtifact(
+                org.fedoraproject.xmvn.artifact.Artifact.of(
                         artifact.getGroupId(),
                         artifact.getArtifactId(),
                         artifact.getExtension(),

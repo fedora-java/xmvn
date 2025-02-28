@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.nio.file.Path;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.Repository;
@@ -52,7 +51,7 @@ public class MavenRepositoryTest {
         assertNotNull(repo);
         EasyMock.verify(configurator);
 
-        Artifact artifact1 = new DefaultArtifact("foo.bar:the-artifact:baz:1.2.3");
+        Artifact artifact1 = Artifact.of("foo.bar:the-artifact:baz:1.2.3");
         ArtifactContext context = new ArtifactContext(artifact1);
         assertEquals(
                 Path.of("foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz"),

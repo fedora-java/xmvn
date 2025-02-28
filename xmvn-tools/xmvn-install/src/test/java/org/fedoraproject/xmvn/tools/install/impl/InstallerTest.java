@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import org.easymock.EasyMock;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Artifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
@@ -86,7 +85,8 @@ public class InstallerTest extends AbstractInstallerTest {
             final String compatVersion,
             final String namespace,
             final Path path) {
-        ResolutionRequest request = new ResolutionRequest(new DefaultArtifact(coordinates));
+        ResolutionRequest request =
+                new ResolutionRequest(org.fedoraproject.xmvn.artifact.Artifact.of(coordinates));
 
         ResolutionResult result =
                 new ResolutionResult() {

@@ -32,7 +32,6 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
@@ -131,7 +130,7 @@ public class ArtifactVisitor implements FileVisitor<Path> {
                 return null;
             }
 
-            return new DefaultArtifact(groupId, artifactId, extension, classifier, version);
+            return Artifact.of(groupId, artifactId, extension, classifier, version);
         }
     }
 
@@ -147,7 +146,7 @@ public class ArtifactVisitor implements FileVisitor<Path> {
                     String groupId = properties.getProperty("groupId");
                     String artifactId = properties.getProperty("artifactId");
                     String version = properties.getProperty("version");
-                    return new DefaultArtifact(groupId, artifactId, extension, version);
+                    return Artifact.of(groupId, artifactId, extension, version);
                 }
             }
 

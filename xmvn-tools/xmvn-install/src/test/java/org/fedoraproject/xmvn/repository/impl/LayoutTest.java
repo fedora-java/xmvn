@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.nio.file.Path;
 import java.util.Properties;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.fedoraproject.xmvn.repository.Repository;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,8 +67,7 @@ public class LayoutTest {
     @Test
     public void testLayouts() throws Exception {
         Artifact artifact =
-                new DefaultArtifact(
-                        "an-example.artifact:used-FOR42.testing:ext-ens.ion:blah-1.2.3-foo");
+                Artifact.of("an-example.artifact:used-FOR42.testing:ext-ens.ion:blah-1.2.3-foo");
 
         testPaths(
                 mavenRepository,
@@ -93,9 +91,9 @@ public class LayoutTest {
      */
     @Test
     public void testJppPrefixes() throws Exception {
-        Artifact artifact1 = new DefaultArtifact("JPP:testing:abc:1.2.3");
-        Artifact artifact2 = new DefaultArtifact("JPP/group:testing:abc:1.2.3");
-        Artifact artifact3 = new DefaultArtifact("JPP-group:testing:abc:1.2.3");
+        Artifact artifact1 = Artifact.of("JPP:testing:abc:1.2.3");
+        Artifact artifact2 = Artifact.of("JPP/group:testing:abc:1.2.3");
+        Artifact artifact3 = Artifact.of("JPP-group:testing:abc:1.2.3");
 
         testPaths(jppRepository, artifact1.setVersion("SYSTEM"), "testing.abc");
         testPaths(jppRepository, artifact2.setVersion("SYSTEM"), "group/testing.abc");

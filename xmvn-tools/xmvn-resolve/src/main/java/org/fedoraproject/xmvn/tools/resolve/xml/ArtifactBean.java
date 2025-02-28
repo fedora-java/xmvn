@@ -18,7 +18,6 @@ package org.fedoraproject.xmvn.tools.resolve.xml;
 import io.kojan.xml.Builder;
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * A {@link Builder} for {@link Artifact} objects.
@@ -62,7 +61,6 @@ class ArtifactBean implements Builder<Artifact> {
     }
 
     public Artifact build() {
-        return new DefaultArtifact(groupId, artifactId, extension, classifier, version)
-                .setPath(path);
+        return Artifact.of(groupId, artifactId, extension, classifier, version).setPath(path);
     }
 }

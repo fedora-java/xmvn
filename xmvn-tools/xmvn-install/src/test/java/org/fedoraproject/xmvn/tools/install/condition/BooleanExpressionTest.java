@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.repository.ArtifactContext;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,7 @@ import org.junit.jupiter.api.Test;
 public class BooleanExpressionTest {
     @Test
     public void testBasicExpressions() {
-        Artifact artifact = new DefaultArtifact("foo", "bar");
+        Artifact artifact = Artifact.of("foo", "bar");
         ArtifactContext context = new ArtifactContext(artifact);
 
         BooleanExpression trueExpression = new BooleanLiteral(true);
@@ -57,7 +56,7 @@ public class BooleanExpressionTest {
         Map<String, String> properties = new LinkedHashMap<>();
         properties.put("foo", "bar");
         properties.put("baz", "");
-        Artifact artifact = new DefaultArtifact("dummy", "dummy");
+        Artifact artifact = Artifact.of("dummy", "dummy");
         ArtifactContext context = new ArtifactContext(artifact, properties);
 
         StringExpression fooProperty = new Property("foo");

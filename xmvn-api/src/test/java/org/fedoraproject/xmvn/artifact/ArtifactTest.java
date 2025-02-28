@@ -28,11 +28,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class DefaultArtifactTest {
+public class ArtifactTest {
     /** Test one-argument constructor. */
     @Test
     public void testConstructor1() throws Exception {
-        Artifact artifact2 = new DefaultArtifact("gid:aid");
+        Artifact artifact2 = Artifact.of("gid:aid");
         assertEquals("gid", artifact2.getGroupId());
         assertEquals("aid", artifact2.getArtifactId());
         assertEquals("jar", artifact2.getExtension());
@@ -40,7 +40,7 @@ public class DefaultArtifactTest {
         assertEquals("SYSTEM", artifact2.getVersion());
         assertNull(artifact2.getPath());
 
-        Artifact artifact3 = new DefaultArtifact("gid:aid:ver");
+        Artifact artifact3 = Artifact.of("gid:aid:ver");
         assertEquals("gid", artifact3.getGroupId());
         assertEquals("aid", artifact3.getArtifactId());
         assertEquals("jar", artifact3.getExtension());
@@ -48,7 +48,7 @@ public class DefaultArtifactTest {
         assertEquals("ver", artifact3.getVersion());
         assertNull(artifact3.getPath());
 
-        Artifact artifact4 = new DefaultArtifact("gid:aid:ext:ver");
+        Artifact artifact4 = Artifact.of("gid:aid:ext:ver");
         assertEquals("gid", artifact4.getGroupId());
         assertEquals("aid", artifact4.getArtifactId());
         assertEquals("ext", artifact4.getExtension());
@@ -56,7 +56,7 @@ public class DefaultArtifactTest {
         assertEquals("ver", artifact4.getVersion());
         assertNull(artifact4.getPath());
 
-        Artifact artifact5 = new DefaultArtifact("gid:aid:ext:cla:ver");
+        Artifact artifact5 = Artifact.of("gid:aid:ext:cla:ver");
         assertEquals("gid", artifact5.getGroupId());
         assertEquals("aid", artifact5.getArtifactId());
         assertEquals("ext", artifact5.getExtension());
@@ -65,7 +65,7 @@ public class DefaultArtifactTest {
         assertNull(artifact5.getPath());
 
         // Empty extension
-        Artifact artifact6 = new DefaultArtifact("gid:aid::cla:ver");
+        Artifact artifact6 = Artifact.of("gid:aid::cla:ver");
         assertEquals("gid", artifact6.getGroupId());
         assertEquals("aid", artifact6.getArtifactId());
         assertEquals("jar", artifact6.getExtension());
@@ -74,7 +74,7 @@ public class DefaultArtifactTest {
         assertNull(artifact6.getPath());
 
         // Empty version
-        Artifact artifact7 = new DefaultArtifact("gid:aid:ext:cla:");
+        Artifact artifact7 = Artifact.of("gid:aid:ext:cla:");
         assertEquals("gid", artifact7.getGroupId());
         assertEquals("aid", artifact7.getArtifactId());
         assertEquals("ext", artifact7.getExtension());
@@ -86,45 +86,44 @@ public class DefaultArtifactTest {
     /** Test one-argument constructor with invalid coordinates. */
     @Test
     public void testInvalidCoordinates() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultArtifact("foo"));
+        assertThrows(IllegalArgumentException.class, () -> Artifact.of("foo"));
     }
 
     /** Test one-argument constructor with too many fields in coordinates. */
     @Test
     public void testTooManyFields() throws Exception {
         assertThrows(
-                IllegalArgumentException.class,
-                () -> new DefaultArtifact("gid:aid:ext:cla:ver:extra"));
+                IllegalArgumentException.class, () -> Artifact.of("gid:aid:ext:cla:ver:extra"));
     }
 
     /** Test two-argument constructor with groupId as null pointer. */
     @Test
     public void testGroupIdNull() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultArtifact(null, ""));
+        assertThrows(IllegalArgumentException.class, () -> Artifact.of(null, ""));
     }
 
     /** Test two-argument constructor with artifactId as null pointer. */
     @Test
     public void testArtifactIdNull() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultArtifact("gid", null));
+        assertThrows(IllegalArgumentException.class, () -> Artifact.of("gid", null));
     }
 
     /** Test two-argument constructor with groupId as null pointer. */
     @Test
     public void testGroupIdEmpty() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultArtifact("", "aid"));
+        assertThrows(IllegalArgumentException.class, () -> Artifact.of("", "aid"));
     }
 
     /** Test two-argument constructor with artifactId as null pointer. */
     @Test
     public void testArtifactIdEmpty() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> new DefaultArtifact("gid", ""));
+        assertThrows(IllegalArgumentException.class, () -> Artifact.of("gid", ""));
     }
 
     /** Test two-argument constructor. */
     @Test
     public void testConstructor2() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid");
+        Artifact artifact = Artifact.of("gid", "aid");
         assertEquals("gid", artifact.getGroupId());
         assertEquals("aid", artifact.getArtifactId());
         assertEquals("jar", artifact.getExtension());
@@ -136,7 +135,7 @@ public class DefaultArtifactTest {
     /** Test three-argument constructor. */
     @Test
     public void testConstructor3() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "ver");
         assertEquals("gid", artifact.getGroupId());
         assertEquals("aid", artifact.getArtifactId());
         assertEquals("jar", artifact.getExtension());
@@ -148,7 +147,7 @@ public class DefaultArtifactTest {
     /** Test four-argument constructor. */
     @Test
     public void testConstructor4() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "ver");
         assertEquals("gid", artifact.getGroupId());
         assertEquals("aid", artifact.getArtifactId());
         assertEquals("ext", artifact.getExtension());
@@ -160,7 +159,7 @@ public class DefaultArtifactTest {
     /** Test five-argument constructor. */
     @Test
     public void testConstructor5() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
         assertEquals("gid", artifact.getGroupId());
         assertEquals("aid", artifact.getArtifactId());
         assertEquals("ext", artifact.getExtension());
@@ -168,7 +167,7 @@ public class DefaultArtifactTest {
         assertEquals("ver", artifact.getVersion());
         assertNull(artifact.getPath());
 
-        Artifact artifact1 = new DefaultArtifact("gid", "aid", "", "cla", "ver");
+        Artifact artifact1 = Artifact.of("gid", "aid", "", "cla", "ver");
         assertEquals("gid", artifact1.getGroupId());
         assertEquals("aid", artifact1.getArtifactId());
         assertEquals("jar", artifact1.getExtension());
@@ -176,7 +175,7 @@ public class DefaultArtifactTest {
         assertEquals("ver", artifact1.getVersion());
         assertNull(artifact1.getPath());
 
-        Artifact artifact2 = new DefaultArtifact("gid", "aid", "ext", "cla", "");
+        Artifact artifact2 = Artifact.of("gid", "aid", "ext", "cla", "");
         assertEquals("gid", artifact2.getGroupId());
         assertEquals("aid", artifact2.getArtifactId());
         assertEquals("ext", artifact2.getExtension());
@@ -187,7 +186,7 @@ public class DefaultArtifactTest {
 
     @Test
     public void testSetVersion() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid:aid:ext:cla:ver");
+        Artifact artifact = Artifact.of("gid:aid:ext:cla:ver");
         Artifact newArtifact = artifact.setVersion("1.2.3");
         assertNotSame(artifact, newArtifact);
         assertEquals("1.2.3", newArtifact.getVersion());
@@ -196,7 +195,7 @@ public class DefaultArtifactTest {
 
     @Test
     public void testSetPath() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid:aid:ext:cla:ver");
+        Artifact artifact = Artifact.of("gid:aid:ext:cla:ver");
         Artifact newArtifact = artifact.setPath(Path.of("/tmp/foo"));
         assertNotSame(artifact, newArtifact);
         assertEquals(Path.of("/tmp/foo"), newArtifact.getPath());
@@ -206,16 +205,16 @@ public class DefaultArtifactTest {
     /** Test if string conversion produces expected coordinates. */
     @Test
     public void testToString() throws Exception {
-        Artifact artifact2 = new DefaultArtifact("gid", "aid");
+        Artifact artifact2 = Artifact.of("gid", "aid");
         assertEquals("gid:aid:jar:SYSTEM", artifact2.toString());
 
-        Artifact artifact3 = new DefaultArtifact("gid", "aid", "ver");
+        Artifact artifact3 = Artifact.of("gid", "aid", "ver");
         assertEquals("gid:aid:jar:ver", artifact3.toString());
 
-        Artifact artifact4 = new DefaultArtifact("gid", "aid", "ext", "ver");
+        Artifact artifact4 = Artifact.of("gid", "aid", "ext", "ver");
         assertEquals("gid:aid:ext:ver", artifact4.toString());
 
-        Artifact artifact5 = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
+        Artifact artifact5 = Artifact.of("gid", "aid", "ext", "cla", "ver");
         assertEquals("gid:aid:ext:cla:ver", artifact5.toString());
     }
 
@@ -223,25 +222,25 @@ public class DefaultArtifactTest {
     @Test
     @SuppressWarnings("unlikely-arg-type")
     public void testEquals() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
         Path path = Path.of("/some/path");
 
         assertTrue(artifact.equals(artifact));
         assertFalse(artifact.equals(null));
         assertFalse(artifact.equals(42));
 
-        Artifact artifact0 = new DefaultArtifact("gid:aid:ext:cla:ver");
+        Artifact artifact0 = Artifact.of("gid:aid:ext:cla:ver");
 
         assertTrue(artifact.equals(artifact0));
         assertTrue(artifact.setPath(path).equals(artifact0.setPath(path)));
         assertFalse(artifact.setPath(path).equals(artifact0));
 
-        Artifact artifact1 = new DefaultArtifact("gidX", "aid", "ext", "cla", "ver");
-        Artifact artifact2 = new DefaultArtifact("gid", "aidX", "ext", "cla", "ver");
-        Artifact artifact3 = new DefaultArtifact("gid", "aid", "extX", "cla", "ver");
-        Artifact artifact4 = new DefaultArtifact("gid", "aid", "ext", "claX", "ver");
-        Artifact artifact5 = new DefaultArtifact("gid", "aid", "ext", "cla", "verX");
-        Artifact artifact6 = new DefaultArtifact("gid", "aid", "ext", "cla", "ver").setPath(path);
+        Artifact artifact1 = Artifact.of("gidX", "aid", "ext", "cla", "ver");
+        Artifact artifact2 = Artifact.of("gid", "aidX", "ext", "cla", "ver");
+        Artifact artifact3 = Artifact.of("gid", "aid", "extX", "cla", "ver");
+        Artifact artifact4 = Artifact.of("gid", "aid", "ext", "claX", "ver");
+        Artifact artifact5 = Artifact.of("gid", "aid", "ext", "cla", "verX");
+        Artifact artifact6 = Artifact.of("gid", "aid", "ext", "cla", "ver").setPath(path);
 
         assertFalse(artifact.equals(artifact1));
         assertFalse(artifact.equals(artifact2));
@@ -253,8 +252,8 @@ public class DefaultArtifactTest {
 
     @Test
     public void testHashCode() throws Exception {
-        Artifact artifact0 = new DefaultArtifact("gid:aid:ext:cla:ver");
-        Artifact artifact1 = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
+        Artifact artifact0 = Artifact.of("gid:aid:ext:cla:ver");
+        Artifact artifact1 = Artifact.of("gid", "aid", "ext", "cla", "ver");
         assertEquals(artifact0.hashCode(), artifact1.hashCode());
     }
 }
