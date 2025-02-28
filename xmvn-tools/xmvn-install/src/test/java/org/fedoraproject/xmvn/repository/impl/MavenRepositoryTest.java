@@ -57,7 +57,7 @@ public class MavenRepositoryTest {
                 Path.of("foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz"),
                 repo.getPrimaryArtifactPath(artifact1, context, "IGNORE-ME"));
 
-        Artifact artifact2 = artifact1.setVersion(null);
+        Artifact artifact2 = artifact1.withVersion(null);
         ArtifactContext context2 = new ArtifactContext(artifact2);
         assertNull(repo.getPrimaryArtifactPath(artifact2, context2, "IGNORE-ME"));
     }

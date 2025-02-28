@@ -56,7 +56,7 @@ public class JppRepositoryTest {
                 Path.of("my-target/path/aid-1.2.3.baz"),
                 repo.getPrimaryArtifactPath(artifact1, context1, "my-target/path/aid"));
 
-        Artifact artifact2 = artifact1.setVersion(null);
+        Artifact artifact2 = artifact1.withVersion(null);
         ArtifactContext context2 = new ArtifactContext(artifact2);
         assertEquals(
                 Path.of("my-target/path/aid.baz"),

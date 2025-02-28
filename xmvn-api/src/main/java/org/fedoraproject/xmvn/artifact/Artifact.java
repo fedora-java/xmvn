@@ -95,7 +95,12 @@ public interface Artifact {
      * @param version the new artifact version to set
      * @return copy of artifact with the new version set
      */
-    Artifact setVersion(String version);
+    Artifact withVersion(String version);
+
+    @Deprecated
+    default Artifact setVersion(String version) {
+        return withVersion(version);
+    }
 
     /**
      * Set artifact path.

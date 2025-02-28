@@ -105,7 +105,8 @@ public class DefaultResolver implements Resolver {
 
         String compatVersion;
         if (metadata == null) {
-            metadata = metadataResult.getMetadataFor(artifact.setVersion(Artifact.DEFAULT_VERSION));
+            metadata =
+                    metadataResult.getMetadataFor(artifact.withVersion(Artifact.DEFAULT_VERSION));
             compatVersion = null;
         } else {
             compatVersion = artifact.getVersion();
@@ -122,7 +123,7 @@ public class DefaultResolver implements Resolver {
             if (metadata == null) {
                 metadata =
                         metadataResult.getMetadataFor(
-                                artifact.setVersion(Artifact.DEFAULT_VERSION));
+                                artifact.withVersion(Artifact.DEFAULT_VERSION));
                 compatVersion = null;
             } else {
                 compatVersion = artifact.getVersion();

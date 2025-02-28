@@ -73,14 +73,14 @@ public class LayoutTest {
                 mavenRepository,
                 artifact,
                 "an-example/artifact/used-FOR42.testing/blah-1.2.3-foo/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion");
-        testPaths(mavenRepository, artifact.setVersion("SYSTEM"), null);
+        testPaths(mavenRepository, artifact.withVersion("SYSTEM"), null);
         testPaths(
                 jppRepository,
                 artifact,
                 "an-example.artifact/used-FOR42.testing-blah-1.2.3-foo.ext-ens.ion");
         testPaths(
                 jppRepository,
-                artifact.setVersion("SYSTEM"),
+                artifact.withVersion("SYSTEM"),
                 "an-example.artifact/used-FOR42.testing.ext-ens.ion");
     }
 
@@ -95,8 +95,8 @@ public class LayoutTest {
         Artifact artifact2 = Artifact.of("JPP/group:testing:abc:1.2.3");
         Artifact artifact3 = Artifact.of("JPP-group:testing:abc:1.2.3");
 
-        testPaths(jppRepository, artifact1.setVersion("SYSTEM"), "testing.abc");
-        testPaths(jppRepository, artifact2.setVersion("SYSTEM"), "group/testing.abc");
-        testPaths(jppRepository, artifact3.setVersion("SYSTEM"), "JPP-group/testing.abc");
+        testPaths(jppRepository, artifact1.withVersion("SYSTEM"), "testing.abc");
+        testPaths(jppRepository, artifact2.withVersion("SYSTEM"), "group/testing.abc");
+        testPaths(jppRepository, artifact3.withVersion("SYSTEM"), "JPP-group/testing.abc");
     }
 }

@@ -199,7 +199,7 @@ public class ArtifactVisitor implements FileVisitor<Path> {
     }
 
     private ArtifactMetadata resolveMetadata(Artifact artifact) {
-        List<Artifact> versionedArtifacts = Arrays.asList(artifact, artifact.setVersion(null));
+        List<Artifact> versionedArtifacts = Arrays.asList(artifact, artifact.withVersion(null));
 
         for (MetadataResult metadataResult : metadata) {
             for (Artifact versionedArtifact : versionedArtifacts) {
