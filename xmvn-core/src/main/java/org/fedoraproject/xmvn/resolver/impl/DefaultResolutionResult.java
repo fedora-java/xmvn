@@ -24,8 +24,6 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
 class DefaultResolutionResult implements ResolutionResult {
     private final Path artifactPath;
 
-    private String provider;
-
     private String compatVersion;
 
     private String namespace;
@@ -46,15 +44,6 @@ class DefaultResolutionResult implements ResolutionResult {
     @Override
     public Path getArtifactPath() {
         return artifactPath;
-    }
-
-    @Override
-    public String getProvider() {
-        return provider;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
     }
 
     @Override

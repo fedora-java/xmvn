@@ -106,10 +106,6 @@ interface ResolverERM {
                             Object::toString,
                             Path::of),
                     Attribute.of(
-                            "provider",
-                            ResolutionResult::getProvider,
-                            ResolutionResultBean::setProvider),
-                    Attribute.of(
                             "compatVersion",
                             ResolutionResult::getCompatVersion,
                             ResolutionResultBean::setCompatVersion),

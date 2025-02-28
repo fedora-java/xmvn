@@ -26,7 +26,6 @@ import org.fedoraproject.xmvn.resolver.ResolutionResult;
  */
 class ResolutionResultBean implements ResolutionResult, Builder<ResolutionResult> {
     private Path artifactPath;
-    private String provider;
     private String compatVersion;
     private String namespace;
 
@@ -36,14 +35,6 @@ class ResolutionResultBean implements ResolutionResult, Builder<ResolutionResult
 
     public void setArtifactPath(Path artifactPath) {
         this.artifactPath = artifactPath;
-    }
-
-    public String getProvider() {
-        return provider;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
     }
 
     public String getCompatVersion() {

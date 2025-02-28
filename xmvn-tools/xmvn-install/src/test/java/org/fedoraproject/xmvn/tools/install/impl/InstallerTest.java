@@ -91,11 +91,6 @@ public class InstallerTest extends AbstractInstallerTest {
         ResolutionResult result =
                 new ResolutionResult() {
                     @Override
-                    public String getProvider() {
-                        return "some-package";
-                    }
-
-                    @Override
                     public String getNamespace() {
                         return namespace;
                     }
