@@ -56,7 +56,7 @@ public class BasicDeployerTest extends AbstractTest {
         Path plan = Files.createTempDirectory("xmvn-test").resolve("plan.xml");
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(Artifact.of("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(Artifact.of("g:a:v").withPath(Path.of("src/test/resources/simple.xml")));
         req.addProperty("foo", "bar");
         req.addDependency(Artifact.of("g1:a1:e1:c1:v1"));
         req.addDependency(
@@ -66,7 +66,7 @@ public class BasicDeployerTest extends AbstractTest {
         deployer.deploy(req);
         DeploymentRequest req2 = new DeploymentRequest();
         req2.setPlanPath(plan);
-        req2.setArtifact(Artifact.of("foo:bar:pom:").setPath(Path.of("/dev/null")));
+        req2.setArtifact(Artifact.of("foo:bar:pom:").withPath(Path.of("/dev/null")));
         deployer.deploy(req2);
 
         XmlAssert.assertThat(
@@ -133,7 +133,7 @@ public class BasicDeployerTest extends AbstractTest {
         Files.createDirectory(plan);
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(Artifact.of("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(Artifact.of("g:a:v").withPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));
@@ -175,7 +175,7 @@ public class BasicDeployerTest extends AbstractTest {
         Files.setPosixFilePermissions(plan, Set.of(PosixFilePermission.OTHERS_READ));
         DeploymentRequest req = new DeploymentRequest();
         req.setPlanPath(plan);
-        req.setArtifact(Artifact.of("g:a:v").setPath(Path.of("src/test/resources/simple.xml")));
+        req.setArtifact(Artifact.of("g:a:v").withPath(Path.of("src/test/resources/simple.xml")));
         DeploymentResult res = deployer.deploy(req);
         assertNotNull(res.getException());
         assertTrue(IOException.class.isAssignableFrom(res.getException().getClass()));

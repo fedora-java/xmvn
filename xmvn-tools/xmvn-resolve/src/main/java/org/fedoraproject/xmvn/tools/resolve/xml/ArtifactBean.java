@@ -61,6 +61,6 @@ class ArtifactBean implements Builder<Artifact> {
     }
 
     public Artifact build() {
-        return Artifact.of(groupId, artifactId, extension, classifier, version).setPath(path);
+        return Artifact.of(groupId, artifactId, extension, classifier, version).withPath(path);
     }
 }
