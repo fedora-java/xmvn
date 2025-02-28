@@ -1,0 +1,11 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xmvn.it.install.mojo</groupId>
+  <artifactId>install-parent</artifactId>
+  <version>42</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>attached</module>
+    <module>simple</module>
+  </modules>
+</project>

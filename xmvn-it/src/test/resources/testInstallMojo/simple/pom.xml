@@ -1,0 +1,10 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>xmvn.it.install.mojo</groupId>
+    <artifactId>install-parent</artifactId>
+    <version>42</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <artifactId>install-simple</artifactId>
+</project>
