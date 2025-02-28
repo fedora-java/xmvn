@@ -57,8 +57,6 @@ public class DefaultResolver implements Resolver {
 
     private MetadataResult metadataResult;
 
-    private final Resolver localRepoResolver;
-
     private final EffectivePomGenerator pomGenerator;
 
     private final CacheManager cacheManager;
@@ -74,7 +72,6 @@ public class DefaultResolver implements Resolver {
     }
 
     public DefaultResolver() {
-        localRepoResolver = new LocalRepositoryResolver();
         pomGenerator = new EffectivePomGenerator();
         cacheManager = new CacheManager();
     }
@@ -83,11 +80,6 @@ public class DefaultResolver implements Resolver {
     public ResolutionResult resolve(ResolutionRequest request) {
         Properties properties = new Properties();
         properties.putAll(System.getProperties());
-
-        ResolutionResult localRepoResult = localRepoResolver.resolve(request);
-        if (localRepoResult.getArtifactPath() != null) {
-            return localRepoResult;
-        }
 
         Artifact artifact = request.getArtifact();
         logger.debug("Trying to resolve artifact {}", artifact);
