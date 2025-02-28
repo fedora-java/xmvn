@@ -31,14 +31,6 @@ public interface ResolutionResult {
     Path getArtifactPath();
 
     /**
-     * Get name of system package providing requested artifact.
-     *
-     * @return name of system package providing requested artifact or {@code null} if information
-     *     about artifact provider is not available
-     */
-    String getProvider();
-
-    /**
      * Get compatibility version of resolved artifact.
      *
      * <p>Compatibility version is defined only when resolved artifact version is not default

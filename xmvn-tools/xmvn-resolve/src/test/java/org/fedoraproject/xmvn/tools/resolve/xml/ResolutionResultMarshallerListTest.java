@@ -49,21 +49,18 @@ public class ResolutionResultMarshallerListTest {
         temp.setArtifactPath(Path.of("/dev/null"));
         temp.setCompatVersion("comp1");
         temp.setNamespace("namespace1");
-        temp.setProvider("provider1");
         list.add(temp.build());
 
         temp = new ResolutionResultBean();
         temp.setArtifactPath(Path.of("/dev/null"));
         temp.setCompatVersion("comp2");
         temp.setNamespace("namespace2");
-        temp.setProvider("provider2");
         list.add(temp.build());
 
         temp = new ResolutionResultBean();
         temp.setArtifactPath(Path.of("/dev/null"));
         temp.setCompatVersion("comp3");
         temp.setNamespace("namespace3");
-        temp.setProvider("provider3");
         list.add(temp.build());
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -74,19 +71,16 @@ public class ResolutionResultMarshallerListTest {
                         <results>
                           <result>
                             <artifactPath>/dev/null</artifactPath>
-                            <provider>provider1</provider>
                             <compatVersion>comp1</compatVersion>
                             <namespace>namespace1</namespace>
                           </result>
                           <result>
                             <artifactPath>/dev/null</artifactPath>
-                            <provider>provider2</provider>
                             <compatVersion>comp2</compatVersion>
                             <namespace>namespace2</namespace>
                           </result>
                           <result>
                             <artifactPath>/dev/null</artifactPath>
-                            <provider>provider3</provider>
                             <compatVersion>comp3</compatVersion>
                             <namespace>namespace3</namespace>
                           </result>
