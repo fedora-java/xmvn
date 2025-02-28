@@ -16,9 +16,7 @@
 package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.StringWriter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -111,15 +109,9 @@ class EffectivePomGenerator {
         }
     }
 
-    public Path generateEffectivePom(ArtifactMetadata metadata, Artifact artifact)
+    public String generateEffectivePom(ArtifactMetadata metadata, Artifact artifact)
             throws IOException {
-        String artifactIdNormalized = artifact.getArtifactId().replace('/', '.');
-        String versionNormalized = artifact.getVersion().replace('/', '.');
-        String artifactFileName = artifactIdNormalized + "-" + versionNormalized + ".pom";
-        Path pomDir = TempManager.createTempDirectory("xmvn-");
-        Path pomPath = pomDir.resolve(artifactFileName);
-
-        try (OutputStream os = Files.newOutputStream(pomPath)) {
+        try (StringWriter sw = new StringWriter()) {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
             document.setXmlStandalone(true);
@@ -128,9 +120,9 @@ class EffectivePomGenerator {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            transformer.transform(new DOMSource(document), new StreamResult(os));
+            transformer.transform(new DOMSource(document), new StreamResult(sw));
 
-            return pomPath;
+            return sw.toString();
         } catch (ParserConfigurationException | TransformerException e) {
             throw new IOException("Unable to generate effectvie POM", e);
         }

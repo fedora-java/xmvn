@@ -17,6 +17,7 @@ package org.fedoraproject.xmvn.resolver.impl;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -39,10 +40,6 @@ class CacheManager {
             throw new RuntimeException(
                     "Digest algorithm " + DIGEST_ALGORITHM + " is not available", e);
         }
-    }
-
-    private String hash(Path path) throws IOException {
-        return hash(Files.readAllBytes(path));
     }
 
     String hash(byte[] bytes) {
@@ -73,19 +70,16 @@ class CacheManager {
         return cacheHome;
     }
 
-    public Path cacheFile(Path path) throws IOException {
-        String hash = hash(path);
+    public Path cacheFile(String content, String fileName) throws IOException {
+        byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+        String hash = hash(bytes);
         String hash1 = hash.substring(0, 2);
 
         Path cacheDir = getCacheHome().resolve(hash1).resolve(hash);
         Files.createDirectories(cacheDir);
 
-        Path cacheFile = cacheDir.resolve(path.getFileName());
-
-        if (!Files.isRegularFile(cacheFile)) {
-            Files.copy(path, cacheFile);
-        }
-
+        Path cacheFile = cacheDir.resolve(fileName);
+        Files.write(cacheFile, bytes);
         return cacheFile;
     }
 }
