@@ -1,5 +1,0 @@
-/**
- * Documented module
- */
-module a {
-}
