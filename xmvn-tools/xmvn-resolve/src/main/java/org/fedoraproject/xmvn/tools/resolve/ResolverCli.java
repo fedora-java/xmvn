@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
@@ -66,7 +65,7 @@ public class ResolverCli {
                 s += "SYSTEM";
             }
 
-            Artifact artifact = new DefaultArtifact(s);
+            Artifact artifact = Artifact.of(s);
             ResolutionRequest request = new ResolutionRequest(artifact);
             request.setPersistentFileNeeded(true);
             requests.add(request);

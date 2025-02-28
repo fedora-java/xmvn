@@ -34,7 +34,6 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,8 +58,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -124,8 +122,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -160,8 +157,7 @@ public class JarUtilsTest {
                 StandardCopyOption.REPLACE_EXISTING);
 
         Artifact artifact =
-                new DefaultArtifact(
-                        "org.eclipse.osgi", "osgi.compatibility.state", "1.1.0.v20180409-1212");
+                Artifact.of("org.eclipse.osgi", "osgi.compatibility.state", "1.1.0.v20180409-1212");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -192,8 +188,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -227,7 +222,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("xpp3", "xpp3_xpath", "jar", "", "SYSTEM");
+        Artifact artifact = Artifact.of("xpp3", "xpp3_xpath", "jar", "", "SYSTEM");
         JarUtils.injectManifest(testJar, artifact);
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
@@ -264,8 +259,7 @@ public class JarUtilsTest {
                 Files.getPosixFilePermissions(testJar).contains(PosixFilePermission.OTHERS_READ),
                 "sane umask");
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
         assertTrue(
@@ -308,7 +302,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact = new DefaultArtifact("foo", "bar");
+        Artifact artifact = Artifact.of("foo", "bar");
         JarUtils.injectManifest(testJar, artifact);
 
         byte[] testJarContent = Files.readAllBytes(testJar);
@@ -336,8 +330,7 @@ public class JarUtilsTest {
 
         long oldInode = (Long) Files.getAttribute(testJar, "unix:ino");
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         JarUtils.injectManifest(testJar, artifact);
 
@@ -362,8 +355,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         Path backupPath = JarUtils.getBackupNameOf(testJar);
         Files.deleteIfExists(backupPath);
@@ -449,8 +441,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         Path backupPath = JarUtils.getBackupNameOf(testJar);
         Files.deleteIfExists(backupPath);
@@ -488,8 +479,7 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        Artifact artifact =
-                new DefaultArtifact("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
+        Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
 
         JarUtils.injectManifest(testJar1, artifact);
         Thread.sleep(3000); // ZIP time granularity is 2 seconds

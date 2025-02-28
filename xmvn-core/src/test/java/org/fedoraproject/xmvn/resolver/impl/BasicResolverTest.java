@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.config.Configuration;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.ResolverSettings;
@@ -84,8 +83,7 @@ public class BasicResolverTest extends AbstractTest {
     public void testResolutionFailure() throws Exception {
         Resolver resolver = getService(Resolver.class);
         ResolutionRequest request =
-                new ResolutionRequest(
-                        new DefaultArtifact("some", "nonexistent", "pom", "artifact"));
+                new ResolutionRequest(Artifact.of("some", "nonexistent", "pom", "artifact"));
         ResolutionResult result = resolver.resolve(request);
         assertNotNull(result);
         assertNull(result.getArtifactPath());
@@ -93,7 +91,7 @@ public class BasicResolverTest extends AbstractTest {
 
     @Test
     public void testResolveBasic() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
         md.setPath("/foo/bar");
 
@@ -122,7 +120,7 @@ public class BasicResolverTest extends AbstractTest {
 
     @Test
     public void testResolveEmptyPom() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "pom", "cla", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "pom", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
         md.setExtension("pom");
 
@@ -167,7 +165,7 @@ public class BasicResolverTest extends AbstractTest {
 
     @Test
     public void testResolvePomWithDep() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "pom", "cla", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "pom", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
         md.setExtension("pom");
         Dependency dep = new Dependency();
@@ -235,9 +233,9 @@ public class BasicResolverTest extends AbstractTest {
 
     @Test
     public void testMockAgent() throws Exception {
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "ver");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
         Artifact versionlessArtifact =
-                new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
+                Artifact.of("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
         ArtifactMetadata md = new ArtifactMetadata();
         md.setPath("/foo/bar");
 

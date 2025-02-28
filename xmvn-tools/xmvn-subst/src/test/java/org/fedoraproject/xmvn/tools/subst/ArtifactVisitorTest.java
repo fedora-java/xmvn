@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import org.easymock.EasyMock;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
+import org.fedoraproject.xmvn.artifact.Artifact;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataResult;
@@ -61,18 +61,10 @@ public class ArtifactVisitorTest {
         ArtifactMetadata am = new ArtifactMetadata();
         am.setPath("/foo/bar");
         MetadataResult mr = EasyMock.createMock(MetadataResult.class);
-        EasyMock.expect(mr.getMetadataFor(new DefaultArtifact("gid:aid:ver")))
-                .andReturn(null)
-                .times(2);
-        EasyMock.expect(mr.getMetadataFor(new DefaultArtifact("gid:aid:SYSTEM")))
-                .andReturn(am)
-                .times(2);
-        EasyMock.expect(mr.getMetadataFor(new DefaultArtifact("gid:other:ver")))
-                .andReturn(null)
-                .once();
-        EasyMock.expect(mr.getMetadataFor(new DefaultArtifact("gid:other:SYSTEM")))
-                .andReturn(null)
-                .once();
+        EasyMock.expect(mr.getMetadataFor(Artifact.of("gid:aid:ver"))).andReturn(null).times(2);
+        EasyMock.expect(mr.getMetadataFor(Artifact.of("gid:aid:SYSTEM"))).andReturn(am).times(2);
+        EasyMock.expect(mr.getMetadataFor(Artifact.of("gid:other:ver"))).andReturn(null).once();
+        EasyMock.expect(mr.getMetadataFor(Artifact.of("gid:other:SYSTEM"))).andReturn(null).once();
 
         Path jar1 = writeJar("my.jar", "gid", "aid", "ver");
         Path jar2 = writeJar("sub/dir/my.jar", "gid", "aid", "ver");

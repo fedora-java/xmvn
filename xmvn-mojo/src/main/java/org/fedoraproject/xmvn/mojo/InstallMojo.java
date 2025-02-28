@@ -40,7 +40,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystemSession;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.deployer.Deployer;
 import org.fedoraproject.xmvn.deployer.DeploymentRequest;
 import org.fedoraproject.xmvn.deployer.DeploymentResult;
@@ -107,7 +106,7 @@ public class InstallMojo extends AbstractMojo {
 
                 if ("system".equals(dependency.getScope())) {
                     systemDeps.add(
-                            new DefaultArtifact(
+                            Artifact.of(
                                     dependency.getGroupId(),
                                     dependency.getArtifactId(),
                                     dependency.getClassifier(),
@@ -171,7 +170,7 @@ public class InstallMojo extends AbstractMojo {
 
                 List<Artifact> exclusions = new ArrayList<>();
                 for (Exclusion e : dependency.getExclusions()) {
-                    exclusions.add(new DefaultArtifact(e.getGroupId(), e.getArtifactId()));
+                    exclusions.add(Artifact.of(e.getGroupId(), e.getArtifactId()));
                 }
 
                 request.addDependency(dependencyArtifact, dependency.isOptional(), exclusions);
@@ -209,7 +208,7 @@ public class InstallMojo extends AbstractMojo {
 
             if (!isTychoProject(project)) {
                 Artifact rawPomArtifact =
-                        new DefaultArtifact(
+                        Artifact.of(
                                 mainArtifact.getGroupId(),
                                 mainArtifact.getArtifactId(),
                                 "pom",

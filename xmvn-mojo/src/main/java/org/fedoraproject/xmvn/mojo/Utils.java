@@ -24,7 +24,6 @@ import org.apache.maven.model.Dependency;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.ArtifactType;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 
 /**
  * @author Mikolaj Izdebski
@@ -49,8 +48,7 @@ final class Utils {
         File artifactFile = mavenArtifact.getFile();
         Path artifactPath = artifactFile != null ? artifactFile.toPath() : null;
 
-        Artifact artifact =
-                new DefaultArtifact(groupId, artifactId, extension, classifier, version);
+        Artifact artifact = Artifact.of(groupId, artifactId, extension, classifier, version);
         artifact = artifact.setPath(artifactPath);
         return artifact;
     }

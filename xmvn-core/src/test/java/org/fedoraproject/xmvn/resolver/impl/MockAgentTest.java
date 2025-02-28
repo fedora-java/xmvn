@@ -38,7 +38,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -127,7 +126,7 @@ public class MockAgentTest {
     private void performTest(
             String coords, String expectedRequest, String response, boolean outcome)
             throws Throwable {
-        Artifact artifact = new DefaultArtifact(coords);
+        Artifact artifact = Artifact.of(coords);
         startSocketListener(expectedRequest, response);
 
         EasyMock.replay(logger);
@@ -144,7 +143,7 @@ public class MockAgentTest {
     @Test
     public void testNoSocket() throws Exception {
         MockAgent agent = new MockAgent(logger, null);
-        boolean ret = agent.tryInstallArtifact(new DefaultArtifact("foo:bar"));
+        boolean ret = agent.tryInstallArtifact(Artifact.of("foo:bar"));
         assertEquals(false, ret);
     }
 
@@ -152,7 +151,7 @@ public class MockAgentTest {
     public void testMissingSocket() throws Exception {
         try {
             MockAgent agent = new MockAgent(logger, tempDir.resolve("dummy").toString());
-            agent.tryInstallArtifact(new DefaultArtifact("foo:bar"));
+            agent.tryInstallArtifact(Artifact.of("foo:bar"));
             fail("Expected SocketException");
         } catch (UncheckedIOException e) {
             assertInstanceOf(SocketException.class, e.getCause());

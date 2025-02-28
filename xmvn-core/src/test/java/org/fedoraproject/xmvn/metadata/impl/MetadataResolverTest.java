@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.MetadataRequest;
 import org.fedoraproject.xmvn.metadata.MetadataResolver;
@@ -53,7 +52,7 @@ public class MetadataResolverTest extends AbstractTest {
         List<String> pathList = List.of("src/test/resources/metadata1.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.2-beta3");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "1.2-beta3");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(1, result.getPackageMetadataMap().size());
@@ -71,7 +70,7 @@ public class MetadataResolverTest extends AbstractTest {
         List<String> pathList = List.of("src/test/resources/metadata1.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.1");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "1.1");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(1, result.getPackageMetadataMap().size());
@@ -88,8 +87,7 @@ public class MetadataResolverTest extends AbstractTest {
         List<String> pathList = List.of("src/test/resources/metadata1-non-compat.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact =
-                new DefaultArtifact("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(1, result.getPackageMetadataMap().size());
@@ -107,7 +105,7 @@ public class MetadataResolverTest extends AbstractTest {
         List<String> pathList = List.of("src/test/resources/metadata1-non-compat.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
-        Artifact artifact = new DefaultArtifact("gid", "aid", "ext", "cla", "1.1");
+        Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "1.1");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(1, result.getPackageMetadataMap().size());
@@ -120,7 +118,7 @@ public class MetadataResolverTest extends AbstractTest {
         MetadataRequest request = new MetadataRequest(Arrays.asList(path, path));
         MetadataResult result = metadataResolver.resolveMetadata(request);
 
-        Artifact artifact = new DefaultArtifact("org.codehaus.plexus", "plexus-ant-factory", "1.0");
+        Artifact artifact = Artifact.of("org.codehaus.plexus", "plexus-ant-factory", "1.0");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(1, result.getPackageMetadataMap().size());
@@ -135,7 +133,7 @@ public class MetadataResolverTest extends AbstractTest {
         MetadataRequest request = new MetadataRequest(Arrays.asList(path1, path2));
         MetadataResult result = metadataResolver.resolveMetadata(request);
 
-        Artifact artifact = new DefaultArtifact("org.codehaus.plexus", "plexus-ant-factory", "1.0");
+        Artifact artifact = Artifact.of("org.codehaus.plexus", "plexus-ant-factory", "1.0");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(2, result.getPackageMetadataMap().size());
@@ -151,7 +149,7 @@ public class MetadataResolverTest extends AbstractTest {
         request.setIgnoreDuplicates(false);
         MetadataResult result = metadataResolver.resolveMetadata(request);
 
-        Artifact artifact = new DefaultArtifact("org.codehaus.plexus", "plexus-ant-factory", "1.0");
+        Artifact artifact = Artifact.of("org.codehaus.plexus", "plexus-ant-factory", "1.0");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
         assertEquals(2, result.getPackageMetadataMap().size());
