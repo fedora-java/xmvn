@@ -213,12 +213,12 @@ public class DefaultInstaller implements Installer {
                 Artifact artifact = artifactMetadata.toArtifact();
 
                 for (String version : artifactMetadata.getCompatVersions()) {
-                    installedArtifacts.put(artifact.setVersion(version), artifactMetadata);
+                    installedArtifacts.put(artifact.withVersion(version), artifactMetadata);
                 }
 
                 if (artifactMetadata.getCompatVersions().isEmpty()) {
                     installedArtifacts.put(
-                            artifact.setVersion(Artifact.DEFAULT_VERSION), artifactMetadata);
+                            artifact.withVersion(Artifact.DEFAULT_VERSION), artifactMetadata);
                 }
             }
         }
@@ -236,7 +236,7 @@ public class DefaultInstaller implements Installer {
             Dependency dependency, Map<Artifact, ArtifactMetadata> installedArtifacts) {
         for (String version :
                 Arrays.asList(dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION)) {
-            Artifact dependencyArtifact = dependency.toArtifact().setVersion(version);
+            Artifact dependencyArtifact = dependency.toArtifact().withVersion(version);
 
             // First try to resolve dependency from installed artifact
             ArtifactMetadata resolvedMetadata = installedArtifacts.get(dependencyArtifact);
@@ -249,7 +249,7 @@ public class DefaultInstaller implements Installer {
 
         for (String version :
                 Arrays.asList(dependency.getRequestedVersion(), Artifact.DEFAULT_VERSION)) {
-            Artifact dependencyArtifact = dependency.toArtifact().setVersion(version);
+            Artifact dependencyArtifact = dependency.toArtifact().withVersion(version);
 
             // Next try system artifact resolver
             ResolutionRequest request = new ResolutionRequest(dependencyArtifact);

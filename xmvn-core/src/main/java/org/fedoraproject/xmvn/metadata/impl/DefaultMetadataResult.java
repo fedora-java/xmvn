@@ -64,7 +64,7 @@ class DefaultMetadataResult implements MetadataResult {
         Set<Artifact> artifactSet = new LinkedHashSet<>();
 
         for (String version : versions) {
-            artifactSet.add(baseArtifact.setVersion(version));
+            artifactSet.add(baseArtifact.withVersion(version));
         }
 
         for (ArtifactAlias alias : metadata.getAliases()) {
@@ -77,7 +77,7 @@ class DefaultMetadataResult implements MetadataResult {
                             metadata.getVersion());
 
             for (String version : versions) {
-                artifactSet.add(aliasArtifact.setVersion(version));
+                artifactSet.add(aliasArtifact.withVersion(version));
             }
         }
 

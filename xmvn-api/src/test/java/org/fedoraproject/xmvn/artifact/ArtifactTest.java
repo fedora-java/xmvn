@@ -187,7 +187,7 @@ public class ArtifactTest {
     @Test
     public void testSetVersion() throws Exception {
         Artifact artifact = Artifact.of("gid:aid:ext:cla:ver");
-        Artifact newArtifact = artifact.setVersion("1.2.3");
+        Artifact newArtifact = artifact.withVersion("1.2.3");
         assertNotSame(artifact, newArtifact);
         assertEquals("1.2.3", newArtifact.getVersion());
         assertEquals("ver", artifact.getVersion());

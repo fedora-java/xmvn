@@ -127,7 +127,7 @@ final class ArtifactImpl implements Artifact {
     }
 
     @Override
-    public Artifact setVersion(String version) {
+    public Artifact withVersion(String version) {
         return new ArtifactImpl(groupId, artifactId, extension, classifier, version, path);
     }
 

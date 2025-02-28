@@ -116,7 +116,7 @@ class DefaultArtifactInstaller implements ArtifactInstaller {
 
         String installedVersion =
                 rule.getVersions().isEmpty() ? null : rule.getVersions().iterator().next();
-        Artifact versionedArtifact = artifact.setVersion(installedVersion);
+        Artifact versionedArtifact = artifact.withVersion(installedVersion);
         ArtifactContext context = new ArtifactContext(versionedArtifact, properties);
         List<Path> repoPaths = new ArrayList<>();
         for (Path path : relativePaths) {

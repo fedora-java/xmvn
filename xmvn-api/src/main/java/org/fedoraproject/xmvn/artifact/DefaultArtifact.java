@@ -91,8 +91,8 @@ public final class DefaultArtifact implements Artifact {
     }
 
     @Override
-    public Artifact setVersion(String version) {
-        return delegate.setVersion(version);
+    public Artifact withVersion(String version) {
+        return delegate.withVersion(version);
     }
 
     @Override
