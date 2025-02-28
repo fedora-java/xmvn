@@ -39,8 +39,6 @@ public class XMvnMavenLifecycleParticipant extends AbstractMavenLifecyclePartici
     @Nullable @Named("ide")
     private XMvnWorkspaceReader workspaceReader;
 
-    @Inject private XMvnMojoExecutionListener mojoExecutionListener;
-
     @Inject private XMvnToolchainManager toolchainManager;
 
     @Override
@@ -51,7 +49,6 @@ public class XMvnMavenLifecycleParticipant extends AbstractMavenLifecyclePartici
                 new DependencyVersionReportGenerator(logger);
 
         if (workspaceReader != null) {
-            workspaceReader.addResolutionListener(mojoExecutionListener);
             workspaceReader.addResolutionListener(reportGenerator);
         }
 
