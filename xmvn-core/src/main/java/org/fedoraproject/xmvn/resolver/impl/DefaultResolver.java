@@ -141,11 +141,12 @@ public class DefaultResolver implements Resolver {
                 && "pom".equals(metadata.getExtension())
                 && (!"pom".equals(properties.getProperty("type")) || metadata.getPath() == null)) {
             try {
-                Path pomPath = pomGenerator.generateEffectivePom(metadata, artifact);
+                String pom = pomGenerator.generateEffectivePom(metadata, artifact);
 
-                if (request.isPersistentFileNeeded()) {
-                    pomPath = cacheManager.cacheFile(pomPath);
-                }
+                String artifactIdNormalized = artifact.getArtifactId().replace('/', '.');
+                String versionNormalized = artifact.getVersion().replace('/', '.');
+                String artifactFileName = artifactIdNormalized + "-" + versionNormalized + ".pom";
+                Path pomPath = cacheManager.cacheFile(pom, artifactFileName);
 
                 metadata.setPath(pomPath.toString());
             } catch (IOException e) {
