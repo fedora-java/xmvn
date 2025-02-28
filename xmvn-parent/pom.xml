@@ -79,10 +79,12 @@
     <pluginToolsVersion>3.15.1</pluginToolsVersion>
     <slf4jVersion>2.0.17</slf4jVersion>
     <commonsCompressVersion>1.27.1</commonsCompressVersion>
+    <commonsIo>2.18.0</commonsIo>
     <kojanXmlVersion>1.0.1</kojanXmlVersion>
 
     <!-- Build dependencies -->
     <assemblyPluginVersion>3.7.1</assemblyPluginVersion>
+    <assertjVersion>3.27.3</assertjVersion>
     <buildHelperPluginVersion>3.6.0</buildHelperPluginVersion>
     <cleanPluginVersion>3.4.1</cleanPluginVersion>
     <compilerPluginVersion>3.14.0</compilerPluginVersion>
@@ -130,22 +132,27 @@
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
-        <artifactId>maven-model-builder</artifactId>
+        <artifactId>maven-plugin-api</artifactId>
         <version>${mavenVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>
-        <artifactId>maven-plugin-api</artifactId>
+        <artifactId>maven-api-spi</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-model</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-api-core</artifactId>
         <version>${mavenVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.resolver</groupId>
         <artifactId>maven-resolver-api</artifactId>
-        <version>${mavenResolverVersion}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.maven.resolver</groupId>
-        <artifactId>maven-resolver-util</artifactId>
         <version>${mavenResolverVersion}</version>
       </dependency>
       <dependency>
@@ -192,6 +199,11 @@
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${junitVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertjVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -244,6 +256,11 @@
         <version>${commonsCompressVersion}</version>
       </dependency>
       <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commonsIo}</version>
+      </dependency>
+      <dependency>
         <groupId>io.kojan</groupId>
         <artifactId>kojan-xml</artifactId>
         <version>${kojanXmlVersion}</version>
@@ -254,6 +271,11 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

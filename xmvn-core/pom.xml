@@ -29,6 +29,10 @@
     is needed by all other modules.</description>
   <dependencies>
     <dependency>
+      <groupId>io.kojan</groupId>
+      <artifactId>kojan-xml</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.fedoraproject.xmvn</groupId>
       <artifactId>xmvn-api</artifactId>
       <scope>provided</scope>
