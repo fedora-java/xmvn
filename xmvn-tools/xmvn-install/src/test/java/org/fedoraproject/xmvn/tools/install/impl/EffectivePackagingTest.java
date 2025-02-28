@@ -140,7 +140,6 @@ public class EffectivePackagingTest {
         assertTrue(artifactManagement.isEmpty());
 
         Artifact glob = new Artifact();
-        glob.setStereotype("");
         glob.setGroupId("");
         glob.setArtifactId("");
         glob.setExtension("");
@@ -207,7 +206,6 @@ public class EffectivePackagingTest {
         assertTrue(artifactManagement.isEmpty());
 
         Artifact glob = new Artifact();
-        glob.setStereotype("");
         glob.setGroupId("");
         glob.setArtifactId("{*}");
         glob.setExtension("");
@@ -215,7 +213,6 @@ public class EffectivePackagingTest {
         glob.setVersion("");
 
         Artifact alias = new Artifact();
-        alias.setStereotype("");
         alias.setGroupId("");
         alias.setArtifactId("@1-test");
         alias.setExtension("");
