@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.config.impl.DefaultConfigurator;
-import org.fedoraproject.xmvn.deployer.Deployer;
-import org.fedoraproject.xmvn.deployer.impl.DefaultDeployer;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.logging.Logger;
 import org.fedoraproject.xmvn.logging.impl.ConsoleLogger;
@@ -50,7 +48,6 @@ public class DefaultServiceLocator implements ServiceLocator {
     public DefaultServiceLocator() {
         addService(Logger.class, ConsoleLogger.class);
         addService(Resolver.class, DefaultResolver.class);
-        addService(Deployer.class, DefaultDeployer.class);
         addService(Configurator.class, DefaultConfigurator.class);
         addService(MetadataResolver.class, DefaultMetadataResolver.class);
     }
