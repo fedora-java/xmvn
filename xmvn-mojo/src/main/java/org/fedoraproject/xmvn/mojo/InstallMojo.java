@@ -15,77 +15,77 @@
  */
 package org.fedoraproject.xmvn.mojo;
 
-import static org.fedoraproject.xmvn.mojo.Utils.xmvnArtifact;
-
-import java.io.File;
+import io.kojan.xml.XMLException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 import javax.inject.Inject;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Exclusion;
-import org.apache.maven.model.Model;
+import org.apache.maven.api.DependencyCoordinates;
+import org.apache.maven.api.DependencyScope;
+import org.apache.maven.api.DownloadedArtifact;
+import org.apache.maven.api.Exclusion;
+import org.apache.maven.api.ProducedArtifact;
+import org.apache.maven.api.Project;
+import org.apache.maven.api.Session;
+import org.apache.maven.api.model.Model;
+import org.apache.maven.api.services.ArtifactResolverException;
+import org.apache.maven.api.services.DependencyCoordinatesFactory;
+import org.apache.maven.api.services.ProjectManager;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.RepositorySystemSession;
-import org.fedoraproject.xmvn.artifact.Artifact;
-import org.fedoraproject.xmvn.deployer.Deployer;
-import org.fedoraproject.xmvn.deployer.DeploymentRequest;
-import org.fedoraproject.xmvn.deployer.DeploymentResult;
 import org.fedoraproject.xmvn.logging.Logger;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.Dependency;
+import org.fedoraproject.xmvn.metadata.DependencyExclusion;
+import org.fedoraproject.xmvn.metadata.PackageMetadata;
 
 /**
  * @author Mikolaj Izdebski
  */
 @Mojo(name = "install", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE)
 public class InstallMojo extends AbstractMojo {
-    private static final Set<String> TYCHO_PACKAGING_TYPES = new LinkedHashSet<>();
 
-    static {
-        TYCHO_PACKAGING_TYPES.add("eclipse-plugin");
-        TYCHO_PACKAGING_TYPES.add("eclipse-test-plugin");
-        TYCHO_PACKAGING_TYPES.add("eclipse-feature");
-        TYCHO_PACKAGING_TYPES.add("eclipse-update-site");
-        TYCHO_PACKAGING_TYPES.add("eclipse-application");
-        TYCHO_PACKAGING_TYPES.add("eclipse-repository");
-    }
+    private final Logger logger;
+    private final Session session;
+    private final ProjectManager projectManager;
+    private final DependencyCoordinatesFactory dependencyCoordsFactory;
 
-    private static boolean isTychoProject(MavenProject project) {
-        return TYCHO_PACKAGING_TYPES.contains(project.getPackaging());
-    }
-
-    @Inject private Logger logger;
-
-    @Parameter(defaultValue = "${reactorProjects}", readonly = true, required = true)
-    private List<MavenProject> reactorProjects;
-
-    @Parameter(readonly = true, defaultValue = "${repositorySystemSession}")
-    private RepositorySystemSession repoSession;
-
-    @Inject private Deployer deployer;
-
-    public InstallMojo() {
-        // No-argument constructor is required by Plexus
-    }
-
-    InstallMojo(Deployer deployer, Logger logger) {
-        this.deployer = deployer;
+    @Inject
+    public InstallMojo(
+            Logger logger,
+            Session session,
+            ProjectManager projectManager,
+            DependencyCoordinatesFactory dependencyCoordinatesFactory) {
         this.logger = logger;
+        this.session = session;
+        this.projectManager = projectManager;
+        this.dependencyCoordsFactory = dependencyCoordinatesFactory;
     }
 
-    void setReactorProjects(List<MavenProject> reactorProjects) {
-        this.reactorProjects = reactorProjects;
+    private PackageMetadata readInstallationPlan(Path planPath) throws MojoExecutionException {
+        if (!Files.exists(planPath)) {
+            return new PackageMetadata();
+        }
+
+        try {
+            return PackageMetadata.readFromXML(planPath);
+        } catch (XMLException | IOException e) {
+            throw new MojoExecutionException(
+                    "Failed to read reactor installation plan " + planPath, e);
+        }
+    }
+
+    private void writeInstallationPlan(PackageMetadata plan, Path planPath)
+            throws MojoExecutionException {
+        try {
+            plan.writeToXML(planPath);
+        } catch (XMLException | IOException e) {
+            throw new MojoExecutionException(
+                    "Unable to write reactor installation plan " + planPath, e);
+        }
     }
 
     /**
@@ -95,33 +95,18 @@ public class InstallMojo extends AbstractMojo {
     private void handleSystemDependencies() throws MojoFailureException {
         boolean systemDepsFound = false;
 
-        for (MavenProject project : reactorProjects) {
-            Set<Artifact> systemDeps = new LinkedHashSet<>();
-
-            for (Dependency dependency : project.getModel().getDependencies()) {
-                // Ignore dependencies injected by Tycho
-                if (isTychoProject(project)) {
-                    continue;
-                }
-
+        for (Project project : session.getProjects()) {
+            for (org.apache.maven.api.model.Dependency dependency :
+                    project.getModel().getDependencies()) {
                 if ("system".equals(dependency.getScope())) {
-                    systemDeps.add(
-                            Artifact.of(
-                                    dependency.getGroupId(),
-                                    dependency.getArtifactId(),
-                                    dependency.getClassifier(),
-                                    dependency.getType(),
-                                    dependency.getVersion()));
+                    logger.error(
+                            "Reactor project {}:{} has system-scoped dependency: {}:{}",
+                            project.getGroupId(),
+                            project.getArtifactId(),
+                            dependency.getGroupId(),
+                            dependency.getArtifactId());
+                    systemDepsFound = true;
                 }
-            }
-
-            if (!systemDeps.isEmpty()) {
-                systemDepsFound = true;
-
-                logger.error(
-                        "Reactor project {} has system-scoped dependencies: {}",
-                        xmvnArtifact(project.getArtifact()),
-                        Utils.collectionToString(systemDeps, true));
             }
         }
 
@@ -134,111 +119,78 @@ public class InstallMojo extends AbstractMojo {
         }
     }
 
-    private String getProjectProperty(Artifact artifact, String key) {
-        Path propertiesPath = Path.of(".xmvn/properties");
-        if (!Files.exists(propertiesPath)) {
-            return null;
-        }
-
-        Properties properties = new Properties();
-        try (InputStream stream = Files.newInputStream(propertiesPath)) {
-            properties.load(stream);
-        } catch (IOException e) {
-            return null;
-        }
-
-        String artifactKey =
-                artifact.getGroupId()
-                        + "/"
-                        + artifact.getArtifactId()
-                        + "/"
-                        + artifact.getVersion();
-        return properties.getProperty(artifactKey + "/" + key);
-    }
-
-    private void deployArtifact(Artifact artifact, String type, Model model)
+    private void addArtifactToPlan(
+            PackageMetadata plan, DownloadedArtifact mavenArtifact, String type, Model model)
             throws MojoExecutionException {
-        DeploymentRequest request = new DeploymentRequest();
-        request.setArtifact(artifact);
-        request.addProperty("type", type);
-        request.addProperty("requiresJava", getProjectProperty(artifact, "compilerTarget"));
 
-        for (Dependency dependency : model.getDependencies()) {
-            String scope = dependency.getScope();
-            if (scope == null || "compile".equals(scope) || "runtime".equals(scope)) {
-                Artifact dependencyArtifact = Utils.dependencyArtifact(repoSession, dependency);
+        ArtifactMetadata artifact = new ArtifactMetadata();
+        artifact.setGroupId(mavenArtifact.getGroupId());
+        artifact.setArtifactId(mavenArtifact.getArtifactId());
+        artifact.setExtension(mavenArtifact.getExtension());
+        artifact.setClassifier(mavenArtifact.getClassifier());
+        artifact.setVersion(mavenArtifact.getVersion().asString());
+        artifact.setPath(mavenArtifact.getPath().toString());
+        artifact.getProperties().put("type", type);
 
-                List<Artifact> exclusions = new ArrayList<>();
-                for (Exclusion e : dependency.getExclusions()) {
-                    exclusions.add(Artifact.of(e.getGroupId(), e.getArtifactId()));
+        for (var mavenDependency : model.getDependencies()) {
+            DependencyCoordinates coords = dependencyCoordsFactory.create(session, mavenDependency);
+            DependencyScope scope = coords.getScope();
+            if (coords.getScope().is(DependencyScope.UNDEFINED.id())) {
+                scope = DependencyScope.COMPILE;
+            }
+            if (scope.isTransitive()) {
+                Dependency dependency = new Dependency();
+                dependency.setGroupId(coords.getGroupId());
+                dependency.setArtifactId(coords.getArtifactId());
+                dependency.setExtension(coords.getExtension());
+                dependency.setClassifier(coords.getClassifier());
+                dependency.setRequestedVersion(coords.getVersionConstraint().asString());
+                dependency.setOptional(coords.getOptional());
+
+                for (Exclusion mavenExclusion : coords.getExclusions()) {
+                    DependencyExclusion exclusion = new DependencyExclusion();
+                    exclusion.setGroupId(mavenExclusion.getGroupId());
+                    exclusion.setArtifactId(mavenExclusion.getArtifactId());
+                    dependency.addExclusion(exclusion);
                 }
 
-                request.addDependency(dependencyArtifact, dependency.isOptional(), exclusions);
+                artifact.addDependency(dependency);
             }
         }
 
-        DeploymentResult result = deployer.deploy(request);
-        if (result.getException() != null) {
-            throw new MojoExecutionException(
-                    "Failed to deploy artifact " + artifact, result.getException());
-        }
+        plan.addArtifact(artifact);
     }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         handleSystemDependencies();
 
-        for (MavenProject project : reactorProjects) {
-            Artifact mainArtifact = xmvnArtifact(project.getArtifact());
-            Path mainArtifactPath = mainArtifact.getPath();
-            logger.debug("Installing main artifact {}", mainArtifact);
-            logger.debug("Artifact file is {}", mainArtifactPath);
+        Path planPath = Path.of(".xmvn-reactor");
+        PackageMetadata plan = readInstallationPlan(planPath);
 
-            if (mainArtifactPath != null && !Files.isRegularFile(mainArtifactPath)) {
-                logger.info(
-                        "Skipping installation of artifact {}: artifact file is not a regular file",
-                        mainArtifactPath);
-                mainArtifactPath = null;
-            }
+        for (Project project : session.getProjects()) {
 
-            String type = project.getPackaging();
-            if (mainArtifactPath != null) {
-                deployArtifact(mainArtifact, type, project.getModel());
-            }
+            String type = project.getPackaging().type().id();
 
-            if (!isTychoProject(project)) {
-                Artifact rawPomArtifact =
-                        Artifact.of(
-                                mainArtifact.getGroupId(),
-                                mainArtifact.getArtifactId(),
-                                "pom",
-                                mainArtifact.getClassifier(),
-                                mainArtifact.getVersion());
-                File rawPomFile = project.getFile();
-                Path rawPomPath = rawPomFile != null ? rawPomFile.toPath() : null;
-                logger.debug("Raw POM path: {}", rawPomPath);
-                rawPomArtifact = rawPomArtifact.withPath(rawPomPath);
-                deployArtifact(rawPomArtifact, type, project.getModel());
-            }
+            for (ProducedArtifact artifact : projectManager.getAllArtifacts(project)) {
+                logger.debug("Trying to install artifact {}", artifact);
+                try {
+                    DownloadedArtifact resolvedArtifact = session.resolveArtifact(artifact);
+                    logger.debug("Artifact file was resolved to {}", resolvedArtifact.getPath());
+                    if (!Files.isRegularFile(resolvedArtifact.getPath())) {
+                        logger.warn(
+                                "Skipped installation of artifact {}: artifact file is not a regular file",
+                                artifact);
+                        continue;
+                    }
 
-            Set<Artifact> attachedArtifacts = new LinkedHashSet<>();
-            for (org.apache.maven.artifact.Artifact mavenArtifact : project.getAttachedArtifacts())
-                attachedArtifacts.add(xmvnArtifact(mavenArtifact));
-
-            for (Artifact attachedArtifact : attachedArtifacts) {
-                Path attachedArtifactPath = attachedArtifact.getPath();
-                logger.debug("Installing attached artifact {}", attachedArtifact);
-                logger.debug("Artifact file is {}", attachedArtifactPath);
-
-                if (attachedArtifactPath != null && !Files.isRegularFile(attachedArtifactPath)) {
-                    logger.info(
-                            "Skipping installation of attached artifact {}: artifact file is not a regular file",
-                            attachedArtifact);
-                    continue;
+                    addArtifactToPlan(plan, resolvedArtifact, type, project.getModel());
+                } catch (ArtifactResolverException e) {
+                    logger.warn("Unable to install artifact {}: resolution failed", artifact, e);
                 }
-
-                deployArtifact(attachedArtifact, type, project.getModel());
             }
         }
+
+        writeInstallationPlan(plan, planPath);
     }
 }
