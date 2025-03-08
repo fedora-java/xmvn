@@ -15,12 +15,8 @@
  */
 package org.fedoraproject.xmvn.artifact;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -28,212 +24,216 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class ArtifactTest {
+class ArtifactTest {
     /** Test one-argument constructor. */
     @Test
-    public void testConstructor1() throws Exception {
+    void constructor1() throws Exception {
         Artifact artifact2 = Artifact.of("gid:aid");
-        assertEquals("gid", artifact2.getGroupId());
-        assertEquals("aid", artifact2.getArtifactId());
-        assertEquals("jar", artifact2.getExtension());
-        assertEquals("", artifact2.getClassifier());
-        assertEquals("SYSTEM", artifact2.getVersion());
-        assertNull(artifact2.getPath());
+        assertThat(artifact2.getGroupId()).isEqualTo("gid");
+        assertThat(artifact2.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact2.getExtension()).isEqualTo("jar");
+        assertThat(artifact2.getClassifier()).isEqualTo("");
+        assertThat(artifact2.getVersion()).isEqualTo("SYSTEM");
+        assertThat(artifact2.getPath()).isNull();
 
         Artifact artifact3 = Artifact.of("gid:aid:ver");
-        assertEquals("gid", artifact3.getGroupId());
-        assertEquals("aid", artifact3.getArtifactId());
-        assertEquals("jar", artifact3.getExtension());
-        assertEquals("", artifact3.getClassifier());
-        assertEquals("ver", artifact3.getVersion());
-        assertNull(artifact3.getPath());
+        assertThat(artifact3.getGroupId()).isEqualTo("gid");
+        assertThat(artifact3.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact3.getExtension()).isEqualTo("jar");
+        assertThat(artifact3.getClassifier()).isEqualTo("");
+        assertThat(artifact3.getVersion()).isEqualTo("ver");
+        assertThat(artifact3.getPath()).isNull();
 
         Artifact artifact4 = Artifact.of("gid:aid:ext:ver");
-        assertEquals("gid", artifact4.getGroupId());
-        assertEquals("aid", artifact4.getArtifactId());
-        assertEquals("ext", artifact4.getExtension());
-        assertEquals("", artifact4.getClassifier());
-        assertEquals("ver", artifact4.getVersion());
-        assertNull(artifact4.getPath());
+        assertThat(artifact4.getGroupId()).isEqualTo("gid");
+        assertThat(artifact4.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact4.getExtension()).isEqualTo("ext");
+        assertThat(artifact4.getClassifier()).isEqualTo("");
+        assertThat(artifact4.getVersion()).isEqualTo("ver");
+        assertThat(artifact4.getPath()).isNull();
 
         Artifact artifact5 = Artifact.of("gid:aid:ext:cla:ver");
-        assertEquals("gid", artifact5.getGroupId());
-        assertEquals("aid", artifact5.getArtifactId());
-        assertEquals("ext", artifact5.getExtension());
-        assertEquals("cla", artifact5.getClassifier());
-        assertEquals("ver", artifact5.getVersion());
-        assertNull(artifact5.getPath());
+        assertThat(artifact5.getGroupId()).isEqualTo("gid");
+        assertThat(artifact5.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact5.getExtension()).isEqualTo("ext");
+        assertThat(artifact5.getClassifier()).isEqualTo("cla");
+        assertThat(artifact5.getVersion()).isEqualTo("ver");
+        assertThat(artifact5.getPath()).isNull();
 
         // Empty extension
         Artifact artifact6 = Artifact.of("gid:aid::cla:ver");
-        assertEquals("gid", artifact6.getGroupId());
-        assertEquals("aid", artifact6.getArtifactId());
-        assertEquals("jar", artifact6.getExtension());
-        assertEquals("cla", artifact6.getClassifier());
-        assertEquals("ver", artifact6.getVersion());
-        assertNull(artifact6.getPath());
+        assertThat(artifact6.getGroupId()).isEqualTo("gid");
+        assertThat(artifact6.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact6.getExtension()).isEqualTo("jar");
+        assertThat(artifact6.getClassifier()).isEqualTo("cla");
+        assertThat(artifact6.getVersion()).isEqualTo("ver");
+        assertThat(artifact6.getPath()).isNull();
 
         // Empty version
         Artifact artifact7 = Artifact.of("gid:aid:ext:cla:");
-        assertEquals("gid", artifact7.getGroupId());
-        assertEquals("aid", artifact7.getArtifactId());
-        assertEquals("ext", artifact7.getExtension());
-        assertEquals("cla", artifact7.getClassifier());
-        assertEquals("SYSTEM", artifact7.getVersion());
-        assertNull(artifact7.getPath());
+        assertThat(artifact7.getGroupId()).isEqualTo("gid");
+        assertThat(artifact7.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact7.getExtension()).isEqualTo("ext");
+        assertThat(artifact7.getClassifier()).isEqualTo("cla");
+        assertThat(artifact7.getVersion()).isEqualTo("SYSTEM");
+        assertThat(artifact7.getPath()).isNull();
     }
 
     /** Test one-argument constructor with invalid coordinates. */
     @Test
-    public void testInvalidCoordinates() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> Artifact.of("foo"));
+    void invalidCoordinates() throws Exception {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Artifact.of("foo"));
     }
 
     /** Test one-argument constructor with too many fields in coordinates. */
     @Test
-    public void testTooManyFields() throws Exception {
-        assertThrows(
-                IllegalArgumentException.class, () -> Artifact.of("gid:aid:ext:cla:ver:extra"));
+    void tooManyFields() throws Exception {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Artifact.of("gid:aid:ext:cla:ver:extra"));
     }
 
     /** Test two-argument constructor with groupId as null pointer. */
     @Test
-    public void testGroupIdNull() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> Artifact.of(null, ""));
+    void groupIdNull() throws Exception {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Artifact.of(null, ""));
     }
 
     /** Test two-argument constructor with artifactId as null pointer. */
     @Test
-    public void testArtifactIdNull() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> Artifact.of("gid", null));
+    void artifactIdNull() throws Exception {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Artifact.of("gid", null));
     }
 
     /** Test two-argument constructor with groupId as null pointer. */
     @Test
-    public void testGroupIdEmpty() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> Artifact.of("", "aid"));
+    void groupIdEmpty() throws Exception {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Artifact.of("", "aid"));
     }
 
     /** Test two-argument constructor with artifactId as null pointer. */
     @Test
-    public void testArtifactIdEmpty() throws Exception {
-        assertThrows(IllegalArgumentException.class, () -> Artifact.of("gid", ""));
+    void artifactIdEmpty() throws Exception {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> Artifact.of("gid", ""));
     }
 
     /** Test two-argument constructor. */
     @Test
-    public void testConstructor2() throws Exception {
+    void constructor2() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid");
-        assertEquals("gid", artifact.getGroupId());
-        assertEquals("aid", artifact.getArtifactId());
-        assertEquals("jar", artifact.getExtension());
-        assertEquals("", artifact.getClassifier());
-        assertEquals("SYSTEM", artifact.getVersion());
-        assertNull(artifact.getPath());
+        assertThat(artifact.getGroupId()).isEqualTo("gid");
+        assertThat(artifact.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact.getExtension()).isEqualTo("jar");
+        assertThat(artifact.getClassifier()).isEqualTo("");
+        assertThat(artifact.getVersion()).isEqualTo("SYSTEM");
+        assertThat(artifact.getPath()).isNull();
     }
 
     /** Test three-argument constructor. */
     @Test
-    public void testConstructor3() throws Exception {
+    void constructor3() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "ver");
-        assertEquals("gid", artifact.getGroupId());
-        assertEquals("aid", artifact.getArtifactId());
-        assertEquals("jar", artifact.getExtension());
-        assertEquals("", artifact.getClassifier());
-        assertEquals("ver", artifact.getVersion());
-        assertNull(artifact.getPath());
+        assertThat(artifact.getGroupId()).isEqualTo("gid");
+        assertThat(artifact.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact.getExtension()).isEqualTo("jar");
+        assertThat(artifact.getClassifier()).isEqualTo("");
+        assertThat(artifact.getVersion()).isEqualTo("ver");
+        assertThat(artifact.getPath()).isNull();
     }
 
     /** Test four-argument constructor. */
     @Test
-    public void testConstructor4() throws Exception {
+    void constructor4() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "ext", "ver");
-        assertEquals("gid", artifact.getGroupId());
-        assertEquals("aid", artifact.getArtifactId());
-        assertEquals("ext", artifact.getExtension());
-        assertEquals("", artifact.getClassifier());
-        assertEquals("ver", artifact.getVersion());
-        assertNull(artifact.getPath());
+        assertThat(artifact.getGroupId()).isEqualTo("gid");
+        assertThat(artifact.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact.getExtension()).isEqualTo("ext");
+        assertThat(artifact.getClassifier()).isEqualTo("");
+        assertThat(artifact.getVersion()).isEqualTo("ver");
+        assertThat(artifact.getPath()).isNull();
     }
 
     /** Test five-argument constructor. */
     @Test
-    public void testConstructor5() throws Exception {
+    void constructor5() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
-        assertEquals("gid", artifact.getGroupId());
-        assertEquals("aid", artifact.getArtifactId());
-        assertEquals("ext", artifact.getExtension());
-        assertEquals("cla", artifact.getClassifier());
-        assertEquals("ver", artifact.getVersion());
-        assertNull(artifact.getPath());
+        assertThat(artifact.getGroupId()).isEqualTo("gid");
+        assertThat(artifact.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact.getExtension()).isEqualTo("ext");
+        assertThat(artifact.getClassifier()).isEqualTo("cla");
+        assertThat(artifact.getVersion()).isEqualTo("ver");
+        assertThat(artifact.getPath()).isNull();
 
         Artifact artifact1 = Artifact.of("gid", "aid", "", "cla", "ver");
-        assertEquals("gid", artifact1.getGroupId());
-        assertEquals("aid", artifact1.getArtifactId());
-        assertEquals("jar", artifact1.getExtension());
-        assertEquals("cla", artifact1.getClassifier());
-        assertEquals("ver", artifact1.getVersion());
-        assertNull(artifact1.getPath());
+        assertThat(artifact1.getGroupId()).isEqualTo("gid");
+        assertThat(artifact1.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact1.getExtension()).isEqualTo("jar");
+        assertThat(artifact1.getClassifier()).isEqualTo("cla");
+        assertThat(artifact1.getVersion()).isEqualTo("ver");
+        assertThat(artifact1.getPath()).isNull();
 
         Artifact artifact2 = Artifact.of("gid", "aid", "ext", "cla", "");
-        assertEquals("gid", artifact2.getGroupId());
-        assertEquals("aid", artifact2.getArtifactId());
-        assertEquals("ext", artifact2.getExtension());
-        assertEquals("cla", artifact2.getClassifier());
-        assertEquals("SYSTEM", artifact2.getVersion());
-        assertNull(artifact2.getPath());
+        assertThat(artifact2.getGroupId()).isEqualTo("gid");
+        assertThat(artifact2.getArtifactId()).isEqualTo("aid");
+        assertThat(artifact2.getExtension()).isEqualTo("ext");
+        assertThat(artifact2.getClassifier()).isEqualTo("cla");
+        assertThat(artifact2.getVersion()).isEqualTo("SYSTEM");
+        assertThat(artifact2.getPath()).isNull();
     }
 
     @Test
-    public void testSetVersion() throws Exception {
+    void setVersion() throws Exception {
         Artifact artifact = Artifact.of("gid:aid:ext:cla:ver");
         Artifact newArtifact = artifact.withVersion("1.2.3");
-        assertNotSame(artifact, newArtifact);
-        assertEquals("1.2.3", newArtifact.getVersion());
-        assertEquals("ver", artifact.getVersion());
+        assertThat(artifact).isNotSameAs(newArtifact);
+        assertThat(newArtifact.getVersion()).isEqualTo("1.2.3");
+        assertThat(artifact.getVersion()).isEqualTo("ver");
     }
 
     @Test
-    public void testSetPath() throws Exception {
+    void setPath() throws Exception {
         Artifact artifact = Artifact.of("gid:aid:ext:cla:ver");
         Artifact newArtifact = artifact.withPath(Path.of("/tmp/foo"));
-        assertNotSame(artifact, newArtifact);
-        assertEquals(Path.of("/tmp/foo"), newArtifact.getPath());
-        assertNull(artifact.getPath());
+        assertThat(artifact).isNotSameAs(newArtifact);
+        assertThat(newArtifact.getPath()).isEqualTo(Path.of("/tmp/foo"));
+        assertThat(artifact.getPath()).isNull();
     }
 
     /** Test if string conversion produces expected coordinates. */
     @Test
-    public void testToString() throws Exception {
+    void testToString() throws Exception {
         Artifact artifact2 = Artifact.of("gid", "aid");
-        assertEquals("gid:aid:jar:SYSTEM", artifact2.toString());
+        assertThat(artifact2.toString()).isEqualTo("gid:aid:jar:SYSTEM");
 
         Artifact artifact3 = Artifact.of("gid", "aid", "ver");
-        assertEquals("gid:aid:jar:ver", artifact3.toString());
+        assertThat(artifact3.toString()).isEqualTo("gid:aid:jar:ver");
 
         Artifact artifact4 = Artifact.of("gid", "aid", "ext", "ver");
-        assertEquals("gid:aid:ext:ver", artifact4.toString());
+        assertThat(artifact4.toString()).isEqualTo("gid:aid:ext:ver");
 
         Artifact artifact5 = Artifact.of("gid", "aid", "ext", "cla", "ver");
-        assertEquals("gid:aid:ext:cla:ver", artifact5.toString());
+        assertThat(artifact5.toString()).isEqualTo("gid:aid:ext:cla:ver");
     }
 
     /** Test if equality behaves sanely. */
     @Test
-    @SuppressWarnings("unlikely-arg-type")
-    public void testEquals() throws Exception {
+    void equals() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
         Path path = Path.of("/some/path");
 
-        assertTrue(artifact.equals(artifact));
-        assertFalse(artifact.equals(null));
-        assertFalse(artifact.equals(42));
+        assertThat(artifact).isEqualTo(artifact);
+        assertThat(artifact).isNotEqualTo(null);
+        assertThat(artifact).isNotEqualTo(42);
 
         Artifact artifact0 = Artifact.of("gid:aid:ext:cla:ver");
 
-        assertTrue(artifact.equals(artifact0));
-        assertTrue(artifact.withPath(path).equals(artifact0.withPath(path)));
-        assertFalse(artifact.withPath(path).equals(artifact0));
+        assertThat(artifact0).isEqualTo(artifact);
+        assertThat(artifact0.withPath(path)).isEqualTo(artifact.withPath(path));
+        assertThat(artifact0).isNotEqualTo(artifact.withPath(path));
 
         Artifact artifact1 = Artifact.of("gidX", "aid", "ext", "cla", "ver");
         Artifact artifact2 = Artifact.of("gid", "aidX", "ext", "cla", "ver");
@@ -242,18 +242,18 @@ public class ArtifactTest {
         Artifact artifact5 = Artifact.of("gid", "aid", "ext", "cla", "verX");
         Artifact artifact6 = Artifact.of("gid", "aid", "ext", "cla", "ver").withPath(path);
 
-        assertFalse(artifact.equals(artifact1));
-        assertFalse(artifact.equals(artifact2));
-        assertFalse(artifact.equals(artifact3));
-        assertFalse(artifact.equals(artifact4));
-        assertFalse(artifact.equals(artifact5));
-        assertFalse(artifact.equals(artifact6));
+        assertThat(artifact1).isNotEqualTo(artifact);
+        assertThat(artifact2).isNotEqualTo(artifact);
+        assertThat(artifact3).isNotEqualTo(artifact);
+        assertThat(artifact4).isNotEqualTo(artifact);
+        assertThat(artifact5).isNotEqualTo(artifact);
+        assertThat(artifact6).isNotEqualTo(artifact);
     }
 
     @Test
-    public void testHashCode() throws Exception {
+    void testHashCode() throws Exception {
         Artifact artifact0 = Artifact.of("gid:aid:ext:cla:ver");
         Artifact artifact1 = Artifact.of("gid", "aid", "ext", "cla", "ver");
-        assertEquals(artifact0.hashCode(), artifact1.hashCode());
+        assertThat(artifact1.hashCode()).isEqualTo(artifact0.hashCode());
     }
 }

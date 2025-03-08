@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.it;
 
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -178,7 +178,7 @@ public abstract class AbstractIntegrationTest {
 
     public void assumeJavaVersionAtLeast(int minVersion) {
         int version = Integer.parseInt(System.getProperty("java.version").replaceAll("\\..*", ""));
-        assumeTrue(version >= minVersion, "Java major version is at least " + minVersion);
+        assumeThat(version).isGreaterThanOrEqualTo(minVersion);
     }
 
     public String getTestProperty(String name) throws IOException {

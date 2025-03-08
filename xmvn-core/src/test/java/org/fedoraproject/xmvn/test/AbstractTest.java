@@ -26,7 +26,7 @@ public class AbstractTest {
     protected DefaultServiceLocator locator;
 
     @BeforeEach
-    public void configureServiceLocator() {
+    void configureServiceLocator() {
         locator = new DefaultServiceLocator();
         locator.addService(Configurator.class, TestConfigurator.class);
     }

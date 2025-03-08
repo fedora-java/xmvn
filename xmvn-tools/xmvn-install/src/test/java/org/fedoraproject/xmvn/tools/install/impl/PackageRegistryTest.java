@@ -15,10 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.util.Set;
@@ -31,56 +28,55 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Michael Simacek
  */
-public class PackageRegistryTest {
+class PackageRegistryTest {
     private InstallerSettings settings;
 
     private PackageRegistry registry;
 
     @BeforeEach
-    public void setUpRegistry() {
+    void setUpRegistry() {
         settings = new InstallerSettings();
         settings.setMetadataDir("usr/share/maven-metadata");
         registry = new PackageRegistry(settings, "test-package");
     }
 
     @Test
-    public void testDefaultPackage() {
+    void defaultPackage() {
         JavaPackage pkg1 = registry.getPackageById(null);
         JavaPackage pkg2 = registry.getPackageById(null);
-        assertSame(pkg1, pkg2);
+        assertThat(pkg2).isSameAs(pkg1);
         JavaPackage pkg3 = registry.getPackageById("");
-        assertSame(pkg2, pkg3);
-        assertEquals(1, registry.getPackages().size());
+        assertThat(pkg3).isSameAs(pkg2);
+        assertThat(registry.getPackages()).hasSize(1);
     }
 
     @Test
-    public void testMetadata() throws Exception {
+    void metadata() throws Exception {
         JavaPackage pkg = registry.getPackageById(null);
         Set<File> files = pkg.getFiles();
-        assertEquals(1, files.size());
+        assertThat(files).hasSize(1);
         File metadataFile = files.iterator().next();
-        assertEquals(
-                Path.of("usr/share/maven-metadata/test-package.xml"), metadataFile.getTargetPath());
-        assertNotNull(pkg.getMetadata());
+        assertThat(metadataFile.getTargetPath())
+                .isEqualTo(Path.of("usr/share/maven-metadata/test-package.xml"));
+        assertThat(pkg.getMetadata()).isNotNull();
     }
 
     @Test
-    public void testNonDefault() throws Exception {
+    void nonDefault() throws Exception {
         JavaPackage pkg = registry.getPackageById("subpackage");
         Set<File> files = pkg.getFiles();
-        assertEquals(1, files.size());
+        assertThat(files).hasSize(1);
         File metadataFile = files.iterator().next();
-        assertEquals(
-                Path.of("usr/share/maven-metadata/test-package-subpackage.xml"),
-                metadataFile.getTargetPath());
+        assertThat(metadataFile.getTargetPath())
+                .isEqualTo(Path.of("usr/share/maven-metadata/test-package-subpackage.xml"));
     }
 
     @Test
-    public void testMultiple() throws Exception {
+    void multiple() throws Exception {
         registry.getPackageById(null);
         registry.getPackageById("subpackage");
-        assertEquals(2, registry.getPackages().size());
-        assertNull(registry.getPackageById("__noinstall"));
-        assertEquals(2, registry.getPackages().size());
+        assertThat(registry.getPackages()).hasSize(2);
+        assertThat(registry.getPackageById("__noinstall")).isNull();
+        assertThat(registry.getPackages()).hasSize(2);
     }
 }

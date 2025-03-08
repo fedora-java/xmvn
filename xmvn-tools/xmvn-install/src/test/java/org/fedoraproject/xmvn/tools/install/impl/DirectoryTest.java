@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -26,14 +26,14 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class DirectoryTest extends AbstractFileTest {
+class DirectoryTest extends AbstractFileTest {
     /**
      * Basic test for directory installation
      *
      * @throws Exception
      */
     @Test
-    public void testSingleDirectoryInstallation() throws Exception {
+    void singleDirectoryInstallation() throws Exception {
         add(new Directory(Path.of("usr/src/sys/kern")));
         performInstallation();
 
@@ -48,7 +48,7 @@ public class DirectoryTest extends AbstractFileTest {
      * @throws Exception
      */
     @Test
-    public void testExistentDirectoryInstallation() throws Exception {
+    void existentDirectoryInstallation() throws Exception {
         add(new Directory(Path.of("etc/sysconfig/java")));
         add(new Directory(Path.of("etc/xmvn")));
         add(new Directory(Path.of("etc")));
@@ -65,10 +65,10 @@ public class DirectoryTest extends AbstractFileTest {
 
     /** Test if directory installation fails if target already exists and is not a directory. */
     @Test
-    public void testExistentTargetFile() throws Exception {
+    void existentTargetFile() throws Exception {
         add(new RegularFile(Path.of("foo/bar"), new byte[0]));
         add(new Directory(Path.of("foo/bar")));
-        assertThrows(IOException.class, this::performInstallation);
+        assertThatExceptionOfType(IOException.class).isThrownBy(this::performInstallation);
     }
 
     /**
@@ -76,15 +76,15 @@ public class DirectoryTest extends AbstractFileTest {
      * and is not a directory.
      */
     @Test
-    public void testDirectoryCOmponentIsAFile() throws Exception {
+    void directoryCOmponentIsAFile() throws Exception {
         add(new RegularFile(Path.of("a/b/c/d"), new byte[0]));
         add(new Directory(Path.of("a/b/c/d/e/f/g/h")));
-        assertThrows(IOException.class, this::performInstallation);
+        assertThatExceptionOfType(IOException.class).isThrownBy(this::performInstallation);
     }
 
     /** Test if custom access mode can be specified. */
     @Test
-    public void testAccessMode() throws Exception {
+    void accessMode() throws Exception {
         add(new Directory(Path.of("foo"), 320));
         performInstallation();
 

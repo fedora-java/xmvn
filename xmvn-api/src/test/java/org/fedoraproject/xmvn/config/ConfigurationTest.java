@@ -21,7 +21,7 @@ import org.xmlunit.assertj3.XmlAssert;
 class ConfigurationTest {
 
     @Test
-    public void testEmpty() throws Exception {
+    void empty() throws Exception {
         String xml = "<configuration/>";
         Configuration conf = Configuration.fromXML(xml);
         String xml2 = conf.toXML();
@@ -29,7 +29,7 @@ class ConfigurationTest {
     }
 
     @Test
-    public void testAliases() throws Exception {
+    void aliases() throws Exception {
         String xml =
                 """
                 <configuration>
@@ -51,7 +51,7 @@ class ConfigurationTest {
     }
 
     @Test
-    public void testCompatVersions() throws Exception {
+    void compatVersions() throws Exception {
         String xml =
                 """
                 <configuration>

@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
@@ -28,11 +27,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Michael Simacek
  */
-public class JavaPackageTest extends AbstractFileTest {
+class JavaPackageTest extends AbstractFileTest {
     @Test
-    public void testJavaPackage() throws Exception {
+    void javaPackage() throws Exception {
         JavaPackage pkg = new JavaPackage("my-id", "my-pkg", Path.of("usr/share/maven-metadata"));
-        assertEquals("my-id", pkg.getId());
+        assertThat(pkg.getId()).isEqualTo("my-id");
 
         pkg.install(installRoot);
         assertDirectoryStructure(
@@ -45,7 +44,7 @@ public class JavaPackageTest extends AbstractFileTest {
     }
 
     @Test
-    public void testJavaPackageMetadata() throws Exception {
+    void javaPackageMetadata() throws Exception {
         JavaPackage pkg = new JavaPackage("my-id", "my-pkg", Path.of("usr/share/maven-metadata"));
 
         PackageMetadata inputMetadata = pkg.getMetadata();
@@ -56,11 +55,11 @@ public class JavaPackageTest extends AbstractFileTest {
         PackageMetadata actualMetadata =
                 PackageMetadata.readFromXML(
                         installRoot.resolve("usr/share/maven-metadata/my-pkg-my-id.xml"));
-        assertTrue(actualMetadata.getProperties().containsKey("foo"));
+        assertThat(actualMetadata.getProperties()).containsKey("foo");
     }
 
     @Test
-    public void testJavaPackageMetadataSplit() throws Exception {
+    void javaPackageMetadataSplit() throws Exception {
         JavaPackage pkg = new JavaPackage("my-id", "my-pkg", Path.of("usr/share/maven-metadata"));
 
         ArtifactMetadata foo = new ArtifactMetadata();
@@ -85,7 +84,7 @@ public class JavaPackageTest extends AbstractFileTest {
     }
 
     @Test
-    public void testSpacesInFileNames() throws Exception {
+    void spacesInFileNames() throws Exception {
         JavaPackage pkg = new JavaPackage("", "space-test", Path.of("usr/share/maven-metadata"));
         pkg.addFile(
                 new RegularFile(

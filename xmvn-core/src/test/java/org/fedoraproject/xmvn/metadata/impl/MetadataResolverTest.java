@@ -15,10 +15,7 @@
  */
 package org.fedoraproject.xmvn.metadata.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,11 +31,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class MetadataResolverTest extends AbstractTest {
+class MetadataResolverTest extends AbstractTest {
     private MetadataResolver metadataResolver;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         metadataResolver = new DefaultMetadataResolver(locator);
     }
 
@@ -48,16 +45,16 @@ public class MetadataResolverTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testCompatExactVersion() throws Exception {
+    void compatExactVersion() throws Exception {
         List<String> pathList = List.of("src/test/resources/metadata1.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "1.2-beta3");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals(1, result.getPackageMetadataMap().size());
-        assertNotNull(am);
-        assertEquals("/foo/bar", am.getPath());
+        assertThat(result.getPackageMetadataMap()).hasSize(1);
+        assertThat(am).isNotNull();
+        assertThat(am.getPath()).isEqualTo("/foo/bar");
     }
 
     /**
@@ -66,15 +63,15 @@ public class MetadataResolverTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testCompatNonExactVersion() throws Exception {
+    void compatNonExactVersion() throws Exception {
         List<String> pathList = List.of("src/test/resources/metadata1.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "1.1");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals(1, result.getPackageMetadataMap().size());
-        assertNull(am);
+        assertThat(result.getPackageMetadataMap()).hasSize(1);
+        assertThat(am).isNull();
     }
 
     /**
@@ -83,16 +80,16 @@ public class MetadataResolverTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testNonCompatExactVersion() throws Exception {
+    void nonCompatExactVersion() throws Exception {
         List<String> pathList = List.of("src/test/resources/metadata1-non-compat.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals(1, result.getPackageMetadataMap().size());
-        assertNotNull(am);
-        assertEquals("/foo/bar", am.getPath());
+        assertThat(result.getPackageMetadataMap()).hasSize(1);
+        assertThat(am).isNotNull();
+        assertThat(am.getPath()).isEqualTo("/foo/bar");
     }
 
     /**
@@ -101,19 +98,19 @@ public class MetadataResolverTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testNonCompatNonExactVersion() throws Exception {
+    void nonCompatNonExactVersion() throws Exception {
         List<String> pathList = List.of("src/test/resources/metadata1-non-compat.xml");
         MetadataResult result = metadataResolver.resolveMetadata(new MetadataRequest(pathList));
 
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "1.1");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals(1, result.getPackageMetadataMap().size());
-        assertNull(am);
+        assertThat(result.getPackageMetadataMap()).hasSize(1);
+        assertThat(am).isNull();
     }
 
     @Test
-    public void testRepositoryListedTwice() throws Exception {
+    void repositoryListedTwice() throws Exception {
         String path = "src/test/resources/simple.xml";
         MetadataRequest request = new MetadataRequest(Arrays.asList(path, path));
         MetadataResult result = metadataResolver.resolveMetadata(request);
@@ -121,13 +118,13 @@ public class MetadataResolverTest extends AbstractTest {
         Artifact artifact = Artifact.of("org.codehaus.plexus", "plexus-ant-factory", "1.0");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals(1, result.getPackageMetadataMap().size());
-        assertNotNull(am);
-        assertEquals("/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath());
+        assertThat(result.getPackageMetadataMap()).hasSize(1);
+        assertThat(am).isNotNull();
+        assertThat(am.getPath()).isEqualTo("/usr/share/java/plexus/ant-factory-1.0.jar");
     }
 
     @Test
-    public void testRepositoryListedTwiceDifferentPaths() throws Exception {
+    void repositoryListedTwiceDifferentPaths() throws Exception {
         String path1 = "src/test/resources/simple.xml";
         String path2 = "src/test/../test/resources/simple.xml";
         MetadataRequest request = new MetadataRequest(Arrays.asList(path1, path2));
@@ -136,24 +133,24 @@ public class MetadataResolverTest extends AbstractTest {
         Artifact artifact = Artifact.of("org.codehaus.plexus", "plexus-ant-factory", "1.0");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals(2, result.getPackageMetadataMap().size());
-        assertNull(am);
+        assertThat(result.getPackageMetadataMap()).hasSize(2);
+        assertThat(am).isNull();
     }
 
     @Test
-    public void testAllowDuplicates() throws Exception {
+    void allowDuplicates() throws Exception {
         String path1 = "src/test/resources/simple.xml";
         String path2 = "src/test/../test/resources/simple.xml";
         MetadataRequest request = new MetadataRequest(Arrays.asList(path1, path2));
-        assertTrue(request.isIgnoreDuplicates());
+        assertThat(request.isIgnoreDuplicates()).isTrue();
         request.setIgnoreDuplicates(false);
         MetadataResult result = metadataResolver.resolveMetadata(request);
 
         Artifact artifact = Artifact.of("org.codehaus.plexus", "plexus-ant-factory", "1.0");
         ArtifactMetadata am = result.getMetadataFor(artifact);
 
-        assertEquals(2, result.getPackageMetadataMap().size());
-        assertNotNull(am);
-        assertEquals("/usr/share/java/plexus/ant-factory-1.0.jar", am.getPath());
+        assertThat(result.getPackageMetadataMap()).hasSize(2);
+        assertThat(am).isNotNull();
+        assertThat(am.getPath()).isEqualTo("/usr/share/java/plexus/ant-factory-1.0.jar");
     }
 }

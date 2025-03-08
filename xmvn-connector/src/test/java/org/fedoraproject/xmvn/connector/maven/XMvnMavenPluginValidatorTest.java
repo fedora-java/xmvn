@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Roman Vais
  */
-public class XMvnMavenPluginValidatorTest {
+class XMvnMavenPluginValidatorTest {
     private XMvnMavenPluginValidator validator;
 
     private Artifact art;
@@ -33,7 +33,7 @@ public class XMvnMavenPluginValidatorTest {
     private List<String> err;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         validator = new XMvnMavenPluginValidator();
         art = EasyMock.createMock(Artifact.class);
         desc = EasyMock.createMock(PluginDescriptor.class);
@@ -41,7 +41,7 @@ public class XMvnMavenPluginValidatorTest {
     }
 
     @Test
-    public void testMavenPluginValidator() throws Exception {
+    void mavenPluginValidator() throws Exception {
         EasyMock.expect(desc.getVersion()).andReturn(null);
         desc.setVersion(EasyMock.anyObject(String.class));
         EasyMock.expectLastCall();

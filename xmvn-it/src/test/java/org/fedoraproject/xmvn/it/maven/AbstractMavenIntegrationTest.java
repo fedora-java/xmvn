@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.maven;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,13 +85,13 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
                 PrintStream printTeeStderr = new PrintStream(teeStderr);
                 PrintStream stdout = isPrintOutput() ? printTeeStdout : printSaveStdout;
                 PrintStream stderr = isPrintOutput() ? printTeeStderr : printSaveStderr) {
-            assertEquals(expectFailure ? 1 : 0, run(stdout, stderr, args));
+            assertThat(run(stdout, stderr, args)).isEqualTo(expectFailure ? 1 : 0);
         }
 
-        assertFalse(getStderr().findAny().isPresent());
+        assertThat(getStderr()).isEmpty();
 
         if (expectFailure) {
-            assertTrue(getStdout().anyMatch("[INFO] BUILD FAILURE"::equals));
+            assertThat(getStdout()).contains("[INFO] BUILD FAILURE");
         }
     }
 

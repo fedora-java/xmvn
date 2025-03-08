@@ -15,7 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,9 +28,9 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Michael Simacek
  */
-public class RegularFileTest extends AbstractFileTest {
+class RegularFileTest extends AbstractFileTest {
     @Test
-    public void testFileInstallationFromArray() throws Exception {
+    void fileInstallationFromArray() throws Exception {
         Path jar = getResource("example.jar");
         byte[] content = Files.readAllBytes(jar);
         add(new Directory(Path.of("usr/share/java")));
@@ -37,7 +38,7 @@ public class RegularFileTest extends AbstractFileTest {
         Path root = performInstallation();
         assertDirectoryStructure(
                 "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
-        assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
+        assertThat(root.resolve("usr/share/java/foobar.jar")).hasSameBinaryContentAs(jar);
 
         assertDescriptorEquals(
                 "%attr(0755,root,root) %dir /usr/share/java",
@@ -45,46 +46,46 @@ public class RegularFileTest extends AbstractFileTest {
     }
 
     @Test
-    public void testFileInstallationFromFile() throws Exception {
+    void fileInstallationFromFile() throws Exception {
         Path jar = getResource("example.jar");
         add(new Directory(Path.of("usr/share/java")));
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar));
         Path root = performInstallation();
         assertDirectoryStructure(
                 "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
-        assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
+        assertThat(root.resolve("usr/share/java/foobar.jar")).hasSameBinaryContentAs(jar);
         assertDescriptorEquals(
                 "%attr(0755,root,root) %dir /usr/share/java",
                 "%attr(0644,root,root) /usr/share/java/foobar.jar");
     }
 
     @Test
-    public void testCreateParentDirectory() throws Exception {
+    void createParentDirectory() throws Exception {
         Path jar = getResource("example.jar");
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar));
         Path root = performInstallation();
         assertDirectoryStructure(
                 "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
-        assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
+        assertThat(root.resolve("usr/share/java/foobar.jar")).hasSameBinaryContentAs(jar);
         assertDescriptorEquals("%attr(0644,root,root) /usr/share/java/foobar.jar");
     }
 
     @Test
-    public void testNonexistentFile() throws Exception {
+    void nonexistentFile() throws Exception {
         add(new Directory(Path.of("usr/share/java")));
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), Path.of("not-here")));
-        assertThrows(IOException.class, this::performInstallation);
+        assertThatExceptionOfType(IOException.class).isThrownBy(this::performInstallation);
     }
 
     @Test
-    public void testAccessMode() throws Exception {
+    void accessMode() throws Exception {
         Path jar = getResource("example.jar");
         add(new Directory(Path.of("usr/share/java")));
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar, 0666));
         Path root = performInstallation();
         assertDirectoryStructure(
                 "D /usr", "D /usr/share", "D /usr/share/java", "F /usr/share/java/foobar.jar");
-        assertFilesEqual(jar, root.resolve(Path.of("usr/share/java/foobar.jar")));
+        assertThat(root.resolve("usr/share/java/foobar.jar")).hasSameBinaryContentAs(jar);
 
         assertDescriptorEquals(
                 "%attr(0755,root,root) %dir /usr/share/java",
@@ -92,26 +93,37 @@ public class RegularFileTest extends AbstractFileTest {
     }
 
     @Test
-    public void testIncorrectMode() throws Exception {
+    void incorrectMode() throws Exception {
         Path jar = getResource("example.jar");
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar, 01000)));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(
+                        () ->
+                                add(
+                                        new RegularFile(
+                                                Path.of("usr/share/java/foobar.jar"), jar, 01000)));
     }
 
     @Test
-    public void testNegativeMode() throws Exception {
+    void negativeMode() throws Exception {
         Path jar = getResource("example.jar");
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar, -0644)));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(
+                        () ->
+                                add(
+                                        new RegularFile(
+                                                Path.of("usr/share/java/foobar.jar"), jar, -0644)));
     }
 
     @Test
-    public void testAbsoluteTarget() throws Exception {
+    void absoluteTarget() throws Exception {
         Path jar = getResource("example.jar");
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> add(new RegularFile(Path.of("/usr/share/java/foobar.jar"), jar, 01000)));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(
+                        () ->
+                                add(
+                                        new RegularFile(
+                                                Path.of("/usr/share/java/foobar.jar"),
+                                                jar,
+                                                01000)));
     }
 }

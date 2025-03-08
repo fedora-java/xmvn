@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +34,16 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Roman Vais
  */
-public class PluginVersionResolverTest {
+class PluginVersionResolverTest {
     private PluginVersionResolver resolver;
-
     private PluginVersionRequest rq;
-
     private RepositorySystemSession session;
-
     private WorkspaceReader reader;
-
     private WorkspaceRepository repo;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         resolver = new XMvnPluginVersionResolver();
-
         rq = EasyMock.createStrictMock(PluginVersionRequest.class);
         session = EasyMock.createStrictMock(RepositorySystemSession.class);
         reader = EasyMock.createStrictMock(WorkspaceReader.class);
@@ -56,12 +51,12 @@ public class PluginVersionResolverTest {
     }
 
     @Test
-    public void testInjection() throws Exception {
-        assertTrue(resolver instanceof XMvnPluginVersionResolver);
+    void injection() throws Exception {
+        assertThat(resolver).isExactlyInstanceOf(XMvnPluginVersionResolver.class);
     }
 
     @Test
-    public void testResolution() throws Exception {
+    void resolution() throws Exception {
         // test of default version resolution (version list is empty)
         EasyMock.expect(rq.getRepositorySession()).andReturn(session);
         EasyMock.expect(rq.getGroupId()).andReturn("test.example");
@@ -78,8 +73,8 @@ public class PluginVersionResolverTest {
         PluginVersionResult result;
 
         result = resolver.resolve(rq);
-        assertTrue(result.getRepository().equals(repo));
-        assertTrue(result.getVersion().equals(Artifact.DEFAULT_VERSION));
+        assertThat(repo).isEqualTo(result.getRepository());
+        assertThat(result.getVersion()).isEqualTo(Artifact.DEFAULT_VERSION);
 
         EasyMock.verify(rq, session, reader);
 
@@ -101,8 +96,8 @@ public class PluginVersionResolverTest {
         EasyMock.replay(rq, session, reader);
 
         result = resolver.resolve(rq);
-        assertTrue(result.getRepository().equals(repo));
-        assertTrue("1.2.3".equals(result.getVersion()));
+        assertThat(repo).isEqualTo(result.getRepository());
+        assertThat(result.getVersion()).isEqualTo("1.2.3");
 
         EasyMock.verify(rq, session, reader);
     }

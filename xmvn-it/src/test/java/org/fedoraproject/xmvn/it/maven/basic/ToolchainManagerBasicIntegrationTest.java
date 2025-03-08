@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.maven.basic;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -25,24 +25,22 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class ToolchainManagerBasicIntegrationTest extends AbstractMavenIntegrationTest {
+class ToolchainManagerBasicIntegrationTest extends AbstractMavenIntegrationTest {
     @Test
-    public void testToolchainManager() throws Exception {
+    void testToolchainManager() throws Exception {
         performTest(
                 "-Dmaven.installation.toolchains="
                         + getWorkDir().resolve("toolchains.xml").toString(),
                 "verify");
-        assertTrue(
-                getStdout()
-                        .anyMatch(
-                                s ->
-                                        s.matches(
-                                                "\\[INFO\\] Toolchain in (maven-)?compiler-plugin: JDK\\[/tmp\\]")));
-        assertTrue(
-                getStdout()
-                        .anyMatch(
-                                s ->
-                                        s.matches(
-                                                "\\[INFO\\] Toolchain in (maven-)?surefire-plugin: JDK\\[/tmp\\]")));
+        assertThat(getStdout())
+                .anyMatch(
+                        s ->
+                                s.matches(
+                                        "\\[INFO\\] Toolchain in (maven-)?compiler-plugin: JDK\\[/tmp\\]"));
+        assertThat(getStdout())
+                .anyMatch(
+                        s ->
+                                s.matches(
+                                        "\\[INFO\\] Toolchain in (maven-)?surefire-plugin: JDK\\[/tmp\\]"));
     }
 }

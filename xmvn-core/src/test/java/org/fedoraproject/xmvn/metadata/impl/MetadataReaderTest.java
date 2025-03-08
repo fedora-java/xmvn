@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.metadata.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,11 +35,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class MetadataReaderTest extends AbstractTest {
+class MetadataReaderTest extends AbstractTest {
     private DefaultMetadataResolver reader;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         reader = new DefaultMetadataResolver(locator);
     }
 
@@ -51,11 +49,10 @@ public class MetadataReaderTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testReadingEmptyList() throws Exception {
+    void readingEmptyList() throws Exception {
         List<String> pathList = List.of();
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
-        assertNotNull(map);
-        assertTrue(map.isEmpty());
+        assertThat(map).isEmpty();
     }
 
     /**
@@ -64,12 +61,11 @@ public class MetadataReaderTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testReadingEmptyDirectory() throws Exception {
+    void readingEmptyDirectory() throws Exception {
         Path dir = Files.createTempDirectory("xmvn-test");
         List<String> pathList = List.of(dir.toString());
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
-        assertNotNull(map);
-        assertTrue(map.isEmpty());
+        assertThat(map).isEmpty();
     }
 
     /**
@@ -78,7 +74,7 @@ public class MetadataReaderTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testMetadata1() throws Exception {
+    void metadata1() throws Exception {
         testMetadata1("metadata1");
     }
 
@@ -88,122 +84,112 @@ public class MetadataReaderTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testMetadata1WithNamespace() throws Exception {
+    void metadata1WithNamespace() throws Exception {
         testMetadata1("metadata1-ns");
     }
 
     private void testMetadata1(String fileName) throws Exception {
         List<String> pathList = List.of("src/test/resources/" + fileName + ".xml");
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
-        assertNotNull(map);
-        assertEquals(1, map.size());
+        assertThat(map).hasSize(1);
 
         PackageMetadata pm = map.values().iterator().next();
 
-        assertNotNull(pm.getProperties());
-        assertEquals(1, pm.getProperties().size());
-        assertEquals("key", pm.getProperties().keySet().iterator().next());
-        assertEquals("value", pm.getProperties().values().iterator().next());
+        assertThat(pm.getProperties()).hasSize(1);
+        assertThat(pm.getProperties().keySet().iterator().next()).isEqualTo("key");
+        assertThat(pm.getProperties().values().iterator().next()).isEqualTo("value");
 
-        assertNotNull(pm.getArtifacts());
-        assertEquals(1, pm.getArtifacts().size());
+        assertThat(pm.getArtifacts()).hasSize(1);
         ArtifactMetadata am = pm.getArtifacts().iterator().next();
 
-        assertEquals("gid", am.getGroupId());
-        assertEquals("aid", am.getArtifactId());
-        assertEquals("ext", am.getExtension());
-        assertEquals("cla", am.getClassifier());
-        assertEquals("ver", am.getVersion());
-        assertEquals("/foo/bar", am.getPath());
-        assertEquals("myscl10", am.getNamespace());
+        assertThat(am.getGroupId()).isEqualTo("gid");
+        assertThat(am.getArtifactId()).isEqualTo("aid");
+        assertThat(am.getExtension()).isEqualTo("ext");
+        assertThat(am.getClassifier()).isEqualTo("cla");
+        assertThat(am.getVersion()).isEqualTo("ver");
+        assertThat(am.getPath()).isEqualTo("/foo/bar");
+        assertThat(am.getNamespace()).isEqualTo("myscl10");
 
-        assertNotNull(am.getProperties());
-        assertEquals(1, am.getProperties().size());
-        assertEquals("key1", am.getProperties().keySet().iterator().next());
-        assertEquals("value1", am.getProperties().values().iterator().next());
+        assertThat(am.getProperties()).hasSize(1);
+        assertThat(am.getProperties().keySet().iterator().next()).isEqualTo("key1");
+        assertThat(am.getProperties().values().iterator().next()).isEqualTo("value1");
 
-        assertNotNull(am.getCompatVersions());
-        assertEquals(1, am.getCompatVersions().size());
-        assertEquals("1.2-beta3", am.getCompatVersions().iterator().next());
+        assertThat(am.getCompatVersions()).hasSize(1);
+        assertThat(am.getCompatVersions().iterator().next()).isEqualTo("1.2-beta3");
 
-        assertNotNull(am.getAliases());
-        assertEquals(1, am.getAliases().size());
+        assertThat(am.getAliases()).hasSize(1);
         ArtifactAlias alias = am.getAliases().iterator().next();
 
-        assertEquals("a-gid", alias.getGroupId());
-        assertEquals("a-aid", alias.getArtifactId());
-        assertEquals("a-ext", alias.getExtension());
-        assertEquals("a-cla", alias.getClassifier());
+        assertThat(alias.getGroupId()).isEqualTo("a-gid");
+        assertThat(alias.getArtifactId()).isEqualTo("a-aid");
+        assertThat(alias.getExtension()).isEqualTo("a-ext");
+        assertThat(alias.getClassifier()).isEqualTo("a-cla");
 
-        assertNotNull(am.getDependencies());
-        assertEquals(1, am.getDependencies().size());
+        assertThat(am.getDependencies()).hasSize(1);
         Dependency dep = am.getDependencies().iterator().next();
 
-        assertEquals("d-gid", dep.getGroupId());
-        assertEquals("d-aid", dep.getArtifactId());
-        assertEquals("d-ext", dep.getExtension());
-        assertEquals("d-cla", dep.getClassifier());
-        assertEquals("1.2.3", dep.getRequestedVersion());
-        assertEquals("4.5.6", dep.getResolvedVersion());
-        assertEquals("xyzzy", dep.getNamespace());
+        assertThat(dep.getGroupId()).isEqualTo("d-gid");
+        assertThat(dep.getArtifactId()).isEqualTo("d-aid");
+        assertThat(dep.getExtension()).isEqualTo("d-ext");
+        assertThat(dep.getClassifier()).isEqualTo("d-cla");
+        assertThat(dep.getRequestedVersion()).isEqualTo("1.2.3");
+        assertThat(dep.getResolvedVersion()).isEqualTo("4.5.6");
+        assertThat(dep.getNamespace()).isEqualTo("xyzzy");
 
-        assertNotNull(dep.getExclusions());
-        assertEquals(1, dep.getExclusions().size());
+        assertThat(dep.getExclusions()).hasSize(1);
         DependencyExclusion exc = dep.getExclusions().iterator().next();
 
-        assertEquals("e-gid", exc.getGroupId());
-        assertEquals("e-aid", exc.getArtifactId());
+        assertThat(exc.getGroupId()).isEqualTo("e-gid");
+        assertThat(exc.getArtifactId()).isEqualTo("e-aid");
 
-        assertNotNull(pm.getSkippedArtifacts());
-        assertEquals(1, pm.getSkippedArtifacts().size());
+        assertThat(pm.getSkippedArtifacts()).hasSize(1);
         SkippedArtifactMetadata skip = pm.getSkippedArtifacts().iterator().next();
 
-        assertEquals("s-gid", skip.getGroupId());
-        assertEquals("s-aid", skip.getArtifactId());
-        assertEquals("s-ext", skip.getExtension());
-        assertEquals("s-cla", skip.getClassifier());
+        assertThat(skip.getGroupId()).isEqualTo("s-gid");
+        assertThat(skip.getArtifactId()).isEqualTo("s-aid");
+        assertThat(skip.getExtension()).isEqualTo("s-ext");
+        assertThat(skip.getClassifier()).isEqualTo("s-cla");
     }
 
     @Test
-    public void testSimpleMetadata() {
+    void simpleMetadata() {
         List<String> pathList = List.of("src/test/resources/simple.xml");
         Map<Path, PackageMetadata> map = reader.readMetadata(pathList);
-        assertNotNull(map);
-        assertEquals(1, map.size());
+        assertThat(map).hasSize(1);
 
         PackageMetadata pm = map.values().iterator().next();
         Iterator<ArtifactMetadata> iter = pm.getArtifacts().iterator();
 
-        assertTrue(iter.hasNext());
+        assertThat(iter).hasNext();
         ArtifactMetadata am1 = iter.next();
-        assertNotNull(am1);
+        assertThat(am1).isNotNull();
 
-        assertEquals("org.codehaus.plexus", am1.getGroupId());
-        assertEquals("plexus-ant-factory", am1.getArtifactId());
-        assertEquals("jar", am1.getExtension());
-        assertEquals("", am1.getClassifier());
-        assertEquals("1.0", am1.getVersion());
-        assertEquals("ns", am1.getNamespace());
-        assertEquals("/usr/share/java/plexus/ant-factory-1.0.jar", am1.getPath());
+        assertThat(am1.getGroupId()).isEqualTo("org.codehaus.plexus");
+        assertThat(am1.getArtifactId()).isEqualTo("plexus-ant-factory");
+        assertThat(am1.getExtension()).isEqualTo("jar");
+        assertThat(am1.getClassifier()).isEqualTo("");
+        assertThat(am1.getVersion()).isEqualTo("1.0");
+        assertThat(am1.getNamespace()).isEqualTo("ns");
+        assertThat(am1.getPath()).isEqualTo("/usr/share/java/plexus/ant-factory-1.0.jar");
 
         List<String> compatVersions1 = am1.getCompatVersions();
-        assertEquals(1, compatVersions1.size());
-        assertEquals("1.0", compatVersions1.iterator().next());
+        assertThat(compatVersions1).hasSize(1);
+        assertThat(compatVersions1.iterator().next()).isEqualTo("1.0");
 
-        assertTrue(iter.hasNext());
+        assertThat(iter).hasNext();
         ArtifactMetadata am2 = iter.next();
-        assertNotNull(am2);
+        assertThat(am2).isNotNull();
 
-        assertEquals("org.codehaus.plexus", am2.getGroupId());
-        assertEquals("plexus-ant-factory", am2.getArtifactId());
-        assertEquals("pom", am2.getExtension());
-        assertEquals("", am2.getClassifier());
-        assertEquals("1.0", am2.getVersion());
-        assertEquals("ns", am2.getNamespace());
-        assertEquals("/usr/share/maven-poms/JPP.plexus-ant-factory-1.0.pom", am2.getPath());
+        assertThat(am2.getGroupId()).isEqualTo("org.codehaus.plexus");
+        assertThat(am2.getArtifactId()).isEqualTo("plexus-ant-factory");
+        assertThat(am2.getExtension()).isEqualTo("pom");
+        assertThat(am2.getClassifier()).isEqualTo("");
+        assertThat(am2.getVersion()).isEqualTo("1.0");
+        assertThat(am2.getNamespace()).isEqualTo("ns");
+        assertThat(am2.getPath()).isEqualTo("/usr/share/maven-poms/JPP.plexus-ant-factory-1.0.pom");
 
         List<String> compatVersions2 = am2.getCompatVersions();
-        assertEquals(1, compatVersions2.size());
-        assertEquals("1.0", compatVersions2.iterator().next());
+        assertThat(compatVersions2).hasSize(1);
+        assertThat(compatVersions2.iterator().next()).isEqualTo("1.0");
     }
 }

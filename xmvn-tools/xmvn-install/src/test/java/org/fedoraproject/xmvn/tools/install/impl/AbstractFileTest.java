@@ -15,13 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.fedoraproject.xmvn.tools.install.File;
 
@@ -45,11 +40,5 @@ public abstract class AbstractFileTest extends AbstractInstallerTest {
         } finally {
             files.clear();
         }
-    }
-
-    void assertFilesEqual(Path expected, Path actual) throws IOException {
-        byte[] expectedContent = Files.readAllBytes(expected);
-        byte[] actualContent = Files.readAllBytes(actual);
-        assertTrue(Arrays.equals(expectedContent, actualContent));
     }
 }

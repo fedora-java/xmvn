@@ -15,9 +15,8 @@
  */
 package org.fedoraproject.xmvn.it.maven.mojo.install;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,81 +28,81 @@ import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
 import org.fedoraproject.xmvn.metadata.PackageMetadata;
 import org.junit.jupiter.api.Test;
 
-public class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
+class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
     private static String id(ArtifactMetadata amd) {
         return amd.getArtifactId() + ":" + amd.getClassifier() + ":" + amd.getExtension();
     }
 
     @Test
-    public void testInstallMojo() throws Exception {
+    void testInstallMojo() throws Exception {
         performMojoTest("package", "install");
         Path reactorPath = Path.of(".xmvn-reactor");
-        assertTrue(Files.isRegularFile(reactorPath));
+        assertThat(reactorPath).isRegularFile();
         PackageMetadata pmd = PackageMetadata.readFromXML(reactorPath);
-        assertEquals(6, pmd.getArtifacts().size());
+        assertThat(pmd.getArtifacts()).hasSize(6);
 
         var map = pmd.getArtifacts().stream().collect(Collectors.toMap(amd -> id(amd), amd -> amd));
         List<ArtifactMetadata> sortedList = new ArrayList<>(new TreeMap<>(map).values());
         Iterator<ArtifactMetadata> it = sortedList.iterator();
 
-        assertTrue(it.hasNext());
+        assertThat(it).hasNext();
         ArtifactMetadata aj = it.next();
-        assertEquals("xmvn.it.install.mojo", aj.getGroupId());
-        assertEquals("install-attached", aj.getArtifactId());
-        assertEquals("jar", aj.getExtension());
-        assertEquals("", aj.getClassifier());
-        assertEquals("42", aj.getVersion());
-        assertTrue(Files.isRegularFile(Path.of(aj.getPath())));
-        assertEquals(1, aj.getDependencies().size());
+        assertThat(aj.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(aj.getArtifactId()).isEqualTo("install-attached");
+        assertThat(aj.getExtension()).isEqualTo("jar");
+        assertThat(aj.getClassifier()).isEqualTo("");
+        assertThat(aj.getVersion()).isEqualTo("42");
+        assertThat(Path.of(aj.getPath())).isRegularFile();
+        assertThat(aj.getDependencies()).hasSize(1);
 
-        assertTrue(it.hasNext());
+        assertThat(it).hasNext();
         ArtifactMetadata ap = it.next();
-        assertEquals("xmvn.it.install.mojo", ap.getGroupId());
-        assertEquals("install-attached", ap.getArtifactId());
-        assertEquals("pom", ap.getExtension());
-        assertEquals("", ap.getClassifier());
-        assertEquals("42", ap.getVersion());
-        assertTrue(Files.isRegularFile(Path.of(ap.getPath())));
-        assertEquals(1, ap.getDependencies().size());
+        assertThat(ap.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(ap.getArtifactId()).isEqualTo("install-attached");
+        assertThat(ap.getExtension()).isEqualTo("pom");
+        assertThat(ap.getClassifier()).isEqualTo("");
+        assertThat(ap.getVersion()).isEqualTo("42");
+        assertThat(Path.of(ap.getPath())).isRegularFile();
+        assertThat(ap.getDependencies()).hasSize(1);
 
-        assertTrue(it.hasNext());
+        assertThat(it).hasNext();
         ArtifactMetadata at = it.next();
-        assertEquals("xmvn.it.install.mojo", at.getGroupId());
-        assertEquals("install-attached", at.getArtifactId());
-        assertEquals("jar", at.getExtension());
-        assertEquals("tests", at.getClassifier());
-        assertEquals("42", at.getVersion());
-        assertTrue(Files.isRegularFile(Path.of(at.getPath())));
-        assertEquals(1, at.getDependencies().size());
+        assertThat(at.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(at.getArtifactId()).isEqualTo("install-attached");
+        assertThat(at.getExtension()).isEqualTo("jar");
+        assertThat(at.getClassifier()).isEqualTo("tests");
+        assertThat(at.getVersion()).isEqualTo("42");
+        assertThat(Path.of(at.getPath())).isRegularFile();
+        assertThat(at.getDependencies()).hasSize(1);
 
-        assertTrue(it.hasNext());
+        assertThat(it).hasNext();
         ArtifactMetadata pp = it.next();
-        assertEquals("xmvn.it.install.mojo", pp.getGroupId());
-        assertEquals("install-parent", pp.getArtifactId());
-        assertEquals("pom", pp.getExtension());
-        assertEquals("", pp.getClassifier());
-        assertEquals("42", pp.getVersion());
-        assertTrue(Files.isRegularFile(Path.of(pp.getPath())));
-        assertEquals(0, pp.getDependencies().size());
+        assertThat(pp.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(pp.getArtifactId()).isEqualTo("install-parent");
+        assertThat(pp.getExtension()).isEqualTo("pom");
+        assertThat(pp.getClassifier()).isEqualTo("");
+        assertThat(pp.getVersion()).isEqualTo("42");
+        assertThat(Path.of(pp.getPath())).isRegularFile();
+        assertThat(pp.getDependencies()).isEmpty();
 
-        assertTrue(it.hasNext());
+        assertThat(it).hasNext();
         ArtifactMetadata sj = it.next();
-        assertEquals("xmvn.it.install.mojo", sj.getGroupId());
-        assertEquals("install-simple", sj.getArtifactId());
-        assertEquals("jar", sj.getExtension());
-        assertEquals("", sj.getClassifier());
-        assertEquals("42", sj.getVersion());
-        assertTrue(Files.isRegularFile(Path.of(sj.getPath())));
-        assertEquals(0, sj.getDependencies().size());
+        assertThat(sj.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(sj.getArtifactId()).isEqualTo("install-simple");
+        assertThat(sj.getExtension()).isEqualTo("jar");
+        assertThat(sj.getClassifier()).isEqualTo("");
+        assertThat(sj.getVersion()).isEqualTo("42");
+        assertThat(Path.of(sj.getPath())).isRegularFile();
+        assertThat(sj.getDependencies()).isEmpty();
 
-        assertTrue(it.hasNext());
+        assertThat(it).hasNext();
         ArtifactMetadata sp = it.next();
-        assertEquals("xmvn.it.install.mojo", sp.getGroupId());
-        assertEquals("install-simple", sp.getArtifactId());
-        assertEquals("pom", sp.getExtension());
-        assertEquals("", sp.getClassifier());
-        assertEquals("42", sp.getVersion());
-        assertTrue(Files.isRegularFile(Path.of(sp.getPath())));
-        assertEquals(0, sp.getDependencies().size());
+        assertThat(sp.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(sp.getArtifactId()).isEqualTo("install-simple");
+        assertThat(sp.getExtension()).isEqualTo("pom");
+        assertThat(sp.getClassifier()).isEqualTo("");
+        assertThat(sp.getVersion()).isEqualTo("42");
+        assertThat(Path.of(sp.getPath())).isRegularFile();
+        assertThat(sp.getDependencies()).isEmpty();
     }
 }

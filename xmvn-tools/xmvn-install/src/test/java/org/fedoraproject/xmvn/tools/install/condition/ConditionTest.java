@@ -15,9 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.StringReader;
 import java.util.Collections;
@@ -32,13 +31,13 @@ import org.xml.sax.InputSource;
 /**
  * @author Mikolaj Izdebski
  */
-public class ConditionTest {
+class ConditionTest {
     private ArtifactContext context1;
 
     private ArtifactContext context2;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         context1 =
                 new ArtifactContext(
                         Artifact.of("some-gid", "the-aid", "zip", "xyzzy", "1.2.3"),
@@ -63,10 +62,10 @@ public class ConditionTest {
      * @throws Exception
      */
     @Test
-    public void testNullCondition() throws Exception {
+    void nullCondition() throws Exception {
         Condition cond = new Condition(null);
-        assertTrue(cond.getValue(context1));
-        assertTrue(cond.getValue(context2));
+        assertThat(cond.getValue(context1)).isTrue();
+        assertThat(cond.getValue(context2)).isTrue();
     }
 
     /**
@@ -75,7 +74,7 @@ public class ConditionTest {
      * @throws Exception
      */
     @Test
-    public void testBasicCondition() throws Exception {
+    void basicCondition() throws Exception {
         String xml =
                 """
                 <filter>
@@ -105,8 +104,8 @@ public class ConditionTest {
                 """;
 
         Condition cond = new Condition(buildDom(xml));
-        assertTrue(cond.getValue(context1));
-        assertFalse(cond.getValue(context2));
+        assertThat(cond.getValue(context1)).isTrue();
+        assertThat(cond.getValue(context2)).isFalse();
     }
 
     /**
@@ -115,7 +114,7 @@ public class ConditionTest {
      * @throws Exception
      */
     @Test
-    public void testTernaryOperators() throws Exception {
+    void ternaryOperators() throws Exception {
         String xml =
                 """
                 <filter>
@@ -136,8 +135,8 @@ public class ConditionTest {
                  """;
 
         Condition cond = new Condition(buildDom(xml));
-        assertTrue(cond.getValue(context1));
-        assertTrue(cond.getValue(context2));
+        assertThat(cond.getValue(context1)).isTrue();
+        assertThat(cond.getValue(context2)).isTrue();
     }
 
     /**
@@ -146,7 +145,7 @@ public class ConditionTest {
      * @throws Exception
      */
     @Test
-    public void testSyntaxError() throws Exception {
+    void syntaxError() throws Exception {
         String xml =
                 """
                 <filter>
@@ -160,9 +159,9 @@ public class ConditionTest {
 
         try {
             new Condition(buildDom(xml));
-            fail();
+            fail("");
         } catch (RuntimeException e) {
-            assertTrue(e.getMessage().contains("unknown XML node name: hello"));
+            assertThat(e).hasMessageContaining("unknown XML node name: hello");
         }
     }
 }

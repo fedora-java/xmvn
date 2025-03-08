@@ -32,7 +32,7 @@ class DOMTest {
                     DOM.of("foo", bean -> bean.dom, (bean, dom) -> bean.dom = dom));
 
     @Test
-    public void testSimpleDOM() throws Exception {
+    void simpleDOM() throws Exception {
         String xml =
                 """
 		        <test>
@@ -50,7 +50,7 @@ class DOMTest {
     }
 
     @Test
-    public void testMissingDOM() throws Exception {
+    void missingDOM() throws Exception {
         String xml =
                 """
 		        <test>

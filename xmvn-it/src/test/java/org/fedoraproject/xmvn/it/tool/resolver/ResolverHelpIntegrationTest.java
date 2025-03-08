@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool.resolver;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -25,11 +23,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class ResolverHelpIntegrationTest extends AbstractToolIntegrationTest {
+class ResolverHelpIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolverHelp() throws Exception {
-        assertEquals(0, invokeTool("xmvn-resolve", "--help"));
-        assertFalse(getStderr().findAny().isPresent());
-        assertTrue(getStdout().anyMatch(line -> line.startsWith("Usage: xmvn-resolve")));
+    void resolverHelp() throws Exception {
+        assertThat(invokeTool("xmvn-resolve", "--help")).isEqualTo(0);
+        assertThat(getStderr()).isEmpty();
+        assertThat(getStdout()).anyMatch(line -> line.startsWith("Usage: xmvn-resolve"));
     }
 }

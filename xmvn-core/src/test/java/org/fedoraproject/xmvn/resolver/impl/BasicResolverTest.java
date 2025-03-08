@@ -15,12 +15,8 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -45,16 +41,16 @@ import org.xmlunit.assertj3.XmlAssert;
 /**
  * @author Mikolaj Izdebski
  */
-public class BasicResolverTest extends AbstractTest {
+class BasicResolverTest extends AbstractTest {
     /**
      * Test if Plexus can load resolver component.
      *
      * @throws Exception
      */
     @Test
-    public void testComponentLookup() throws Exception {
+    void componentLookup() throws Exception {
         Resolver resolver = getService(Resolver.class);
-        assertNotNull(resolver);
+        assertThat(resolver).isExactlyInstanceOf(DefaultResolver.class);
     }
 
     /**
@@ -63,15 +59,15 @@ public class BasicResolverTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testConfigurationExistance() throws Exception {
+    void configurationExistance() throws Exception {
         Configurator configurator = getService(Configurator.class);
-        assertNotNull(configurator);
+        assertThat(configurator).isNotNull();
 
         Configuration configuration = configurator.getDefaultConfiguration();
-        assertNotNull(configuration);
+        assertThat(configuration).isNotNull();
 
         ResolverSettings settings = configuration.getResolverSettings();
-        assertNotNull(settings);
+        assertThat(settings).isNotNull();
     }
 
     /**
@@ -80,17 +76,17 @@ public class BasicResolverTest extends AbstractTest {
      * @throws Exception
      */
     @Test
-    public void testResolutionFailure() throws Exception {
+    void resolutionFailure() throws Exception {
         Resolver resolver = getService(Resolver.class);
         ResolutionRequest request =
                 new ResolutionRequest(Artifact.of("some", "nonexistent", "pom", "artifact"));
         ResolutionResult result = resolver.resolve(request);
-        assertNotNull(result);
-        assertNull(result.getArtifactPath());
+        assertThat(result).isNotNull();
+        assertThat(result.getArtifactPath()).isNull();
     }
 
     @Test
-    public void testResolveBasic() throws Exception {
+    void resolveBasic() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
         md.setPath("/foo/bar");
@@ -112,14 +108,14 @@ public class BasicResolverTest extends AbstractTest {
         Resolver resolver = new DefaultResolver(mockServiceLocator);
         ResolutionRequest request = new ResolutionRequest(artifact);
         ResolutionResult result = resolver.resolve(request);
-        assertNotNull(result);
-        assertNotNull(result.getArtifactPath());
+        assertThat(result).isNotNull();
+        assertThat(result.getArtifactPath()).isNotNull();
 
         EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
     }
 
     @Test
-    public void testResolveEmptyPom() throws Exception {
+    void resolveEmptyPom() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "pom", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
         md.setExtension("pom");
@@ -142,9 +138,8 @@ public class BasicResolverTest extends AbstractTest {
         ResolutionRequest request = new ResolutionRequest(artifact);
         request.setPersistentFileNeeded(true);
         ResolutionResult result = resolver.resolve(request);
-        assertNotNull(result);
-        assertNotNull(result.getArtifactPath());
-        assertTrue(Files.isRegularFile(result.getArtifactPath()));
+        assertThat(result).isNotNull();
+        assertThat(result.getArtifactPath()).isRegularFile();
 
         EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
 
@@ -164,7 +159,7 @@ public class BasicResolverTest extends AbstractTest {
     }
 
     @Test
-    public void testResolvePomWithDep() throws Exception {
+    void resolvePomWithDep() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "pom", "cla", "ver");
         ArtifactMetadata md = new ArtifactMetadata();
         md.setExtension("pom");
@@ -197,9 +192,8 @@ public class BasicResolverTest extends AbstractTest {
         ResolutionRequest request = new ResolutionRequest(artifact);
         request.setPersistentFileNeeded(true);
         ResolutionResult result = resolver.resolve(request);
-        assertNotNull(result);
-        assertNotNull(result.getArtifactPath());
-        assertTrue(Files.isRegularFile(result.getArtifactPath()));
+        assertThat(result).isNotNull();
+        assertThat(result.getArtifactPath()).isRegularFile();
 
         EasyMock.verify(mockMdResult, mockMdResolver, mockServiceLocator);
 
@@ -232,7 +226,7 @@ public class BasicResolverTest extends AbstractTest {
     }
 
     @Test
-    public void testMockAgent() throws Exception {
+    void mockAgent() throws Exception {
         Artifact artifact = Artifact.of("gid", "aid", "ext", "cla", "ver");
         Artifact versionlessArtifact =
                 Artifact.of("gid", "aid", "ext", "cla", Artifact.DEFAULT_VERSION);
@@ -266,8 +260,8 @@ public class BasicResolverTest extends AbstractTest {
         resolver.mockAgent = mockAgent;
         ResolutionRequest request = new ResolutionRequest(artifact);
         ResolutionResult result = resolver.resolve(request);
-        assertNotNull(result);
-        assertEquals(Path.of("/foo/bar"), result.getArtifactPath());
+        assertThat(result).isNotNull();
+        assertThat(result.getArtifactPath()).isEqualTo(Path.of("/foo/bar"));
 
         EasyMock.verify(
                 mockAgent, mockMdResult1, mockMdResult2, mockMdResolver, mockServiceLocator);

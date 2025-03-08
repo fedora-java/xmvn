@@ -15,10 +15,8 @@
  */
 package org.fedoraproject.xmvn.it;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
@@ -38,7 +36,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
+class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
     private static class PathExpectation {
         private final String regex;
 
@@ -95,24 +93,23 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
 
         try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, nameGlob)) {
             Iterator<Path> it = ds.iterator();
-            assertTrue(it.hasNext());
+            assertThat(it).hasNext();
             Path jarPath = it.next();
-            assertFalse(it.hasNext());
+            assertThat(it.hasNext()).isFalse();
 
             try (InputStream is = Files.newInputStream(jarPath);
                     JarInputStream jis = new JarInputStream(is)) {
                 Manifest mf = jis.getManifest();
-                assertNotNull(mf);
+                assertThat(mf).isNotNull();
 
                 String mainClass = mf.getMainAttributes().getValue("Main-Class");
-                assertNotNull(mainClass);
-                assertTrue(mainClass.startsWith("org.fedoraproject.xmvn.tools."));
+                assertThat(mainClass).startsWith("org.fedoraproject.xmvn.tools.");
 
                 String classPath = mf.getMainAttributes().getValue("Class-Path");
-                assertNotNull(classPath);
+                assertThat(classPath).isNotNull();
                 for (String classPathElement : classPath.split(" +")) {
                     Path depPath = dir.resolve(classPathElement);
-                    assertTrue(Files.isRegularFile(depPath, LinkOption.NOFOLLOW_LINKS));
+                    assertThat(depPath).isRegularFile();
                 }
             }
         }
@@ -143,7 +140,7 @@ public class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testArchiveLayout() throws Exception {
+    void archiveLayout() throws Exception {
         expect(1, 1, "/");
         expect(1, 1, "LICENSE");
         expect(1, 1, "NOTICE");

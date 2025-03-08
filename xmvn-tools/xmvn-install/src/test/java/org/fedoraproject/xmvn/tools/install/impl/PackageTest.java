@@ -15,9 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.tools.install.Directory;
@@ -30,14 +29,14 @@ import org.junit.jupiter.api.Test;
 /**
  * @author msimacek
  */
-public class PackageTest extends AbstractFileTest {
+class PackageTest extends AbstractFileTest {
     private final Path jar = getResource("example.jar");
 
     @Test
-    public void testSimplePackage() throws Exception {
+    void simplePackage() throws Exception {
         File jarfile = new RegularFile(Path.of("usr/share/java/foobar.jar"), jar);
         Package pkg = new Package("my-id");
-        assertEquals("my-id", pkg.getId());
+        assertThat(pkg.getId()).isEqualTo("my-id");
         pkg.addFile(jarfile);
 
         pkg.install(installRoot);
@@ -47,12 +46,12 @@ public class PackageTest extends AbstractFileTest {
     }
 
     @Test
-    public void testMoreFiles() throws Exception {
+    void moreFiles() throws Exception {
         File dir = new Directory(Path.of("usr/share/java"));
         File jarfile = new RegularFile(Path.of("usr/share/java/foobar.jar"), jar, 0600);
         File link = new SymbolicLink(Path.of("usr/share/java/link.jar"), Path.of("foobar.jar"));
         Package pkg = new Package("my-id");
-        assertEquals("my-id", pkg.getId());
+        assertThat(pkg.getId()).isEqualTo("my-id");
         pkg.addFile(dir);
         pkg.addFile(jarfile);
         pkg.addFile(link);
@@ -72,7 +71,7 @@ public class PackageTest extends AbstractFileTest {
     }
 
     @Test
-    public void testEmpty() throws Exception {
+    void empty() throws Exception {
         Package pkg = new Package("my-id");
 
         pkg.install(installRoot);
@@ -81,22 +80,23 @@ public class PackageTest extends AbstractFileTest {
     }
 
     @Test
-    public void testSameFileTwice() throws Exception {
+    void sameFileTwice() throws Exception {
         File jarfile = new RegularFile(Path.of("usr/share/java/foobar.jar"), jar);
         Package pkg = new Package("my-id");
-        assertEquals("my-id", pkg.getId());
+        assertThat(pkg.getId()).isEqualTo("my-id");
         pkg.addFile(jarfile);
-        assertThrows(IllegalArgumentException.class, () -> pkg.addFile(jarfile));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> pkg.addFile(jarfile));
     }
 
     @Test
-    public void testEquality() throws Exception {
+    void equality() throws Exception {
         Package pkg = new Package("my-id");
         Package samePkg = new Package("my-id");
         Package anotherPkg = new Package("other-id");
 
-        assertEquals(samePkg, pkg);
-        assertNotEquals(pkg, anotherPkg);
-        assertNotEquals(samePkg, anotherPkg);
+        assertThat(pkg).isEqualTo(samePkg);
+        assertThat(anotherPkg).isNotEqualTo(pkg);
+        assertThat(anotherPkg).isNotEqualTo(samePkg);
     }
 }

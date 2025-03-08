@@ -15,9 +15,8 @@
  */
 package org.fedoraproject.xmvn.it.maven.basic;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.it.maven.AbstractMavenIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -27,18 +26,16 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class PluginAliasBasicIntegrationTest extends AbstractMavenIntegrationTest {
+class PluginAliasBasicIntegrationTest extends AbstractMavenIntegrationTest {
     @Test
-    public void testPluginAlias() throws Exception {
+    void testPluginAlias() throws Exception {
         performTest("process-classes");
-        assertTrue(
-                getStdout()
-                        .anyMatch(
-                                s ->
-                                        s.startsWith(
-                                                "[INFO] --- plexus-component-metadata:1.7.1:generate-metadata (default)")));
-        assertTrue(
-                Files.isRegularFile(Path.of("src/main/resources/META-INF/plexus/components.xml")));
-        assertTrue(Files.isRegularFile(Path.of("component-metadata-test.xml")));
+        assertThat(getStdout())
+                .anyMatch(
+                        s ->
+                                s.startsWith(
+                                        "[INFO] --- plexus-component-metadata:1.7.1:generate-metadata (default)"));
+        assertThat(Path.of("src/main/resources/META-INF/plexus/components.xml")).isRegularFile();
+        assertThat(Path.of("component-metadata-test.xml")).isRegularFile();
     }
 }

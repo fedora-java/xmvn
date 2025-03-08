@@ -15,10 +15,8 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.nio.file.Path;
 import java.util.Properties;
@@ -29,92 +27,88 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class ArtifactInstallerFactoryTest {
+class ArtifactInstallerFactoryTest {
     @Test
-    public void testNoPluginsAvailable() {
+    void noPluginsAvailable() {
         Path pluginDir = Path.of("src/test/resources/plugins-not-found").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin-missing");
         ArtifactInstaller inst = aif.getInstallerFor(null, props);
-        assertTrue(DefaultArtifactInstaller.class.isAssignableFrom(inst.getClass()));
+        assertThat(inst).isExactlyInstanceOf(DefaultArtifactInstaller.class);
     }
 
     @Test
-    public void testMissingPlugin() {
+    void missingPlugin() {
         Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin-missing");
         ArtifactInstaller inst = aif.getInstallerFor(null, props);
-        assertTrue(DefaultArtifactInstaller.class.isAssignableFrom(inst.getClass()));
+        assertThat(inst).isExactlyInstanceOf(DefaultArtifactInstaller.class);
     }
 
     @Test
-    public void testLegacyPlugin() throws Exception {
+    void legacyPlugin() throws Exception {
         Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin1");
         ArtifactInstaller inst = aif.getInstallerFor(null, props);
-        assertEquals("foo.bar.MyPlugin", inst.getClass().getCanonicalName());
+        assertThat(inst.getClass().getCanonicalName()).isEqualTo("foo.bar.MyPlugin");
 
         try {
             inst.install(null, null, null, null, "install");
             fail("Expected AbstractMethodError");
         } catch (AbstractMethodError e) {
             // "Not implemented exception" is thrown by the plugin
-            assertTrue(e.getMessage().startsWith("Receiver class foo.bar.MyPlugin"));
-            assertTrue(e.getMessage().contains("abstract void install("));
+            assertThat(e).hasMessageStartingWith("Receiver class foo.bar.MyPlugin");
+            assertThat(e).hasMessageContaining("abstract void install(");
         }
     }
 
     @Test
-    public void testModernPlugin() throws Exception {
+    void modernPlugin() throws Exception {
         Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin3");
         ArtifactInstaller inst = aif.getInstallerFor(null, props);
-        assertEquals("foo.bar.MyPluginModern", inst.getClass().getCanonicalName());
+        assertThat(inst.getClass().getCanonicalName()).isEqualTo("foo.bar.MyPluginModern");
 
         try {
             inst.install(null, null, null, null, "install");
             fail("Expected UnsupportedOperationException");
         } catch (ArtifactInstallationException e) {
             // "Nothing to do" is thrown by the plugin
-            assertEquals("Nothing to do", e.getMessage());
-            assertEquals(
-                    "foo.bar.MyPluginModern.install(MyPluginModern.java:35)",
-                    e.getStackTrace()[0].toString());
+            assertThat(e).hasMessage("Nothing to do");
+            assertThat(e.getStackTrace()[0].toString())
+                    .isEqualTo("foo.bar.MyPluginModern.install(MyPluginModern.java:35)");
         }
 
         try {
             inst.install(null, null, null, null, "my-repo");
             fail("Expected UnsupportedOperationException");
         } catch (UnsupportedOperationException e) {
-            assertEquals(
-                    "This artifact installer does not support non-default repository.",
-                    e.getMessage());
+            assertThat(e)
+                    .hasMessage("This artifact installer does not support non-default repository.");
         }
     }
 
     @Test
-    public void testBrokenPlugin() {
+    void brokenPlugin() {
         Path pluginDir = Path.of("src/test/resources/plugins").toAbsolutePath();
         ArtifactInstallerFactory aif = new ArtifactInstallerFactory(null, pluginDir);
         Properties props = new Properties();
         props.setProperty("type", "myplugin2");
         try {
             aif.getInstallerFor(null, props);
-            fail();
+            fail("");
         } catch (RuntimeException e) {
-            assertEquals(
-                    "Unable to load XMvn Installer plugin for packaging type myplugin2",
-                    e.getMessage());
-            assertNotNull(e.getCause());
-            assertTrue(
-                    ReflectiveOperationException.class.isAssignableFrom(e.getCause().getClass()));
+            assertThat(e)
+                    .hasMessage(
+                            "Unable to load XMvn Installer plugin for packaging type myplugin2");
+            assertThat(e).hasCauseInstanceOf(ReflectiveOperationException.class);
         }
     }
 }

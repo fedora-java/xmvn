@@ -39,7 +39,7 @@ class EffectivePomGeneratorTest {
     }
 
     @Test
-    public void testEffectivePomSimple() throws Exception {
+    void effectivePomSimple() throws Exception {
         performTest(
                 Artifact.of("gid", "aid", "ver"),
                 List.of(),
@@ -54,7 +54,7 @@ class EffectivePomGeneratorTest {
     }
 
     @Test
-    public void testEffectivePomDependency() throws Exception {
+    void effectivePomDependency() throws Exception {
         Dependency dep = new Dependency();
         dep.setGroupId("dgid");
         dep.setArtifactId("daid");
@@ -87,7 +87,7 @@ class EffectivePomGeneratorTest {
     }
 
     @Test
-    public void testEffectivePomExclusion() throws Exception {
+    void effectivePomExclusion() throws Exception {
         Dependency dep = new Dependency();
         dep.setGroupId("dgid");
         dep.setArtifactId("daid");

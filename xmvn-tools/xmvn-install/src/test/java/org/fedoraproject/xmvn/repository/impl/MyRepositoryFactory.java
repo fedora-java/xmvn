@@ -15,10 +15,8 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.Properties;
 import org.fedoraproject.xmvn.repository.Repository;
@@ -30,9 +28,9 @@ import org.w3c.dom.Element;
 public class MyRepositoryFactory implements RepositoryFactory {
     @Override
     public Repository getInstance(Element filter, Properties properties, Element configuration) {
-        assertNotNull(properties);
-        assertEquals("bar", properties.get("foo"));
-        assertNull(properties.get("baz"));
+        assertThat(properties).isNotNull();
+        assertThat(properties.get("foo")).isEqualTo("bar");
+        assertThat(properties.get("baz")).isNull();
 
         return new MyRepository();
     }
