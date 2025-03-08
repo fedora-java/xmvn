@@ -34,6 +34,7 @@ import org.fedoraproject.xmvn.artifact.DefaultArtifact;
 /**
  * @author Mikolaj Izdebski
  */
+@Deprecated
 class BuildDependencyVisitor {
     private static final List<String> BUILD_SCOPES =
             Arrays.asList(null, "compile", "provided", "test", "runtime");

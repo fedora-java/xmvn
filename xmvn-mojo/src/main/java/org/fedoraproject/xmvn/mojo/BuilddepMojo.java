@@ -55,6 +55,7 @@ import org.xml.sax.SAXException;
 /**
  * @author Mikolaj Izdebski
  */
+@Deprecated
 @Mojo(name = "builddep", aggregator = true, requiresDependencyResolution = ResolutionScope.NONE)
 public class BuilddepMojo extends AbstractMojo {
     private static class NamespacedArtifact {
