@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.resolve.xml;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -28,124 +27,112 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Marian Koncek
  */
-public class ResolutionRequestUnmarshallerListTest {
+class ResolutionRequestUnmarshallerListTest {
     private final String resourcePath =
             "src/test/resources/org/fedoraproject/xmvn/tools/resolve/xml";
 
     @Test
-    public void testEmptierList() throws Exception {
+    void emptierList() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-emptier-list.xml")) {
-            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
-
-            // The implementation may change. Any of the two results is correct.
-            assertTrue(list == null || list.isEmpty());
+            assertThat(ResolverDAO.unmarshalRequests(is)).isEmpty();
         }
     }
 
     @Test
-    public void testEmptyList() throws Exception {
+    void emptyList() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-empty-list.xml")) {
-            List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
-
-            // The implementation may change. Any of the two results is correct.
-            assertTrue(list == null || list.isEmpty());
+            assertThat(ResolverDAO.unmarshalRequests(is)).isEmpty();
         }
     }
 
     @Test
-    public void testFullArtifact() throws Exception {
+    void fullArtifact() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-full-artifact.xml")) {
             List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
-
-            assertEquals(1, list.size());
+            assertThat(list).hasSize(1);
 
             Artifact artifact = list.get(0).getArtifact();
 
-            assertEquals("test1", artifact.getArtifactId());
-            assertEquals("test1", artifact.getGroupId());
-            assertEquals("test1", artifact.getExtension());
-            assertEquals("test1", artifact.getClassifier());
-            assertEquals("test1", artifact.getVersion());
-            assertEquals("/dev/null", artifact.getPath().toString());
+            assertThat(artifact.getArtifactId()).isEqualTo("test1");
+            assertThat(artifact.getGroupId()).isEqualTo("test1");
+            assertThat(artifact.getExtension()).isEqualTo("test1");
+            assertThat(artifact.getClassifier()).isEqualTo("test1");
+            assertThat(artifact.getVersion()).isEqualTo("test1");
+            assertThat(artifact.getPath().toString()).isEqualTo("/dev/null");
         }
     }
 
     @Test
-    public void testFullRequests() throws Exception {
+    void fullRequests() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-full-requests.xml")) {
             List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
+            assertThat(list).hasSize(6);
 
-            assertEquals(6, list.size());
+            assertThat(list.get(0).isProviderNeeded()).isTrue();
+            assertThat(list.get(0).isPersistentFileNeeded()).isTrue();
 
-            assertEquals(true, list.get(0).isProviderNeeded());
-            assertEquals(true, list.get(0).isPersistentFileNeeded());
+            assertThat(list.get(1).isProviderNeeded()).isFalse();
+            assertThat(list.get(1).isPersistentFileNeeded()).isFalse();
 
-            assertEquals(false, list.get(1).isProviderNeeded());
-            assertEquals(false, list.get(1).isPersistentFileNeeded());
+            assertThat(list.get(2).isProviderNeeded()).isFalse();
+            assertThat(list.get(2).isPersistentFileNeeded()).isTrue();
 
-            assertEquals(false, list.get(2).isProviderNeeded());
-            assertEquals(true, list.get(2).isPersistentFileNeeded());
+            assertThat(list.get(3).isProviderNeeded()).isTrue();
+            assertThat(list.get(3).isPersistentFileNeeded()).isFalse();
 
-            assertEquals(true, list.get(3).isProviderNeeded());
-            assertEquals(false, list.get(3).isPersistentFileNeeded());
+            assertThat(list.get(4).isPersistentFileNeeded()).isTrue();
 
-            assertEquals(true, list.get(4).isPersistentFileNeeded());
-
-            assertEquals(true, list.get(5).isProviderNeeded());
+            assertThat(list.get(5).isProviderNeeded()).isTrue();
         }
     }
 
     @Test
-    public void testIntegrationExample() throws Exception {
+    void integrationExample() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-integration-example.xml")) {
             List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
+            assertThat(list).hasSize(2);
 
-            assertEquals(2, list.size());
+            assertThat(list.get(0).getArtifact().getGroupId()).isEqualTo("foobar");
+            assertThat(list.get(0).getArtifact().getArtifactId()).isEqualTo("xyzzy");
 
-            assertEquals("foobar", list.get(0).getArtifact().getGroupId());
-            assertEquals("xyzzy", list.get(0).getArtifact().getArtifactId());
-
-            assertEquals("junit", list.get(1).getArtifact().getArtifactId());
-            assertEquals("junit", list.get(1).getArtifact().getGroupId());
+            assertThat(list.get(1).getArtifact().getArtifactId()).isEqualTo("junit");
+            assertThat(list.get(1).getArtifact().getGroupId()).isEqualTo("junit");
         }
     }
 
     @Test
-    public void testMinimalArtifacts() throws Exception {
+    void minimalArtifacts() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-minimal-artifacts.xml")) {
             List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
-
-            assertEquals(5, list.size());
+            assertThat(list).hasSize(5);
 
             int artifactNum = 1;
-
             for (ResolutionRequest rr : list) {
                 Artifact artifact = rr.getArtifact();
-
-                assertEquals("test" + Integer.toString(artifactNum), artifact.getArtifactId());
-                assertEquals("test" + Integer.toString(artifactNum), artifact.getGroupId());
+                assertThat(artifact.getArtifactId()).isEqualTo("test" + artifactNum);
+                assertThat(artifact.getGroupId()).isEqualTo("test" + artifactNum);
                 ++artifactNum;
             }
         }
     }
 
     @Test
-    public void testNestedBrackets() throws Exception {
+    void nestedBrackets() throws Exception {
         try (InputStream is = new FileInputStream(resourcePath + "/test-nested-brackets.xml")) {
             List<ResolutionRequest> list = ResolverDAO.unmarshalRequests(is);
+            assertThat(list).hasSize(1);
 
-            assertEquals(1, list.size());
-
-            assertEquals(false, list.get(0).isPersistentFileNeeded());
+            assertThat(list.get(0).isPersistentFileNeeded()).isFalse();
 
             list.get(0).getArtifact();
             list.get(0).getArtifact().getExtension();
-            assertEquals("jar", list.get(0).getArtifact().getExtension());
-            assertEquals("aliased-component-metadata", list.get(0).getArtifact().getArtifactId());
-            assertEquals("any", list.get(0).getArtifact().getVersion());
-            assertEquals("alias-test", list.get(0).getArtifact().getGroupId());
+            assertThat(list.get(0).getArtifact().getExtension()).isEqualTo("jar");
+            assertThat(list.get(0).getArtifact().getArtifactId())
+                    .isEqualTo("aliased-component-metadata");
+            assertThat(list.get(0).getArtifact().getVersion()).isEqualTo("any");
+            assertThat(list.get(0).getArtifact().getGroupId()).isEqualTo("alias-test");
 
-            assertEquals(false, list.get(0).isProviderNeeded());
+            assertThat(list.get(0).isProviderNeeded()).isFalse();
         }
     }
 }

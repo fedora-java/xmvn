@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.condition;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -29,30 +27,30 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class BooleanExpressionTest {
+class BooleanExpressionTest {
     @Test
-    public void testBasicExpressions() {
+    void basicExpressions() {
         Artifact artifact = Artifact.of("foo", "bar");
         ArtifactContext context = new ArtifactContext(artifact);
 
         BooleanExpression trueExpression = new BooleanLiteral(true);
-        assertTrue(trueExpression.getValue(context));
+        assertThat(trueExpression.getValue(context)).isTrue();
 
         BooleanExpression falseExpression = new BooleanLiteral(false);
-        assertFalse(falseExpression.getValue(context));
+        assertThat(falseExpression.getValue(context)).isFalse();
 
         BooleanExpression andExpression = new And(Arrays.asList(trueExpression, falseExpression));
-        assertFalse(andExpression.getValue(context));
+        assertThat(andExpression.getValue(context)).isFalse();
 
         BooleanExpression orExpression = new Or(Arrays.asList(trueExpression, falseExpression));
-        assertTrue(orExpression.getValue(context));
+        assertThat(orExpression.getValue(context)).isTrue();
 
         BooleanExpression xorExpression = new Xor(Arrays.asList(trueExpression, falseExpression));
-        assertTrue(xorExpression.getValue(context));
+        assertThat(xorExpression.getValue(context)).isTrue();
     }
 
     @Test
-    public void testProperties() {
+    void properties() {
         Map<String, String> properties = new LinkedHashMap<>();
         properties.put("foo", "bar");
         properties.put("baz", "");
@@ -60,21 +58,21 @@ public class BooleanExpressionTest {
         ArtifactContext context = new ArtifactContext(artifact, properties);
 
         StringExpression fooProperty = new Property("foo");
-        assertEquals("bar", fooProperty.getValue(context));
+        assertThat(fooProperty.getValue(context)).isEqualTo("bar");
 
         StringExpression bazProperty = new Property("baz");
-        assertEquals("", bazProperty.getValue(context));
+        assertThat(bazProperty.getValue(context)).isEmpty();
 
         StringExpression xyzzyProperty = new Property("xyzzy");
-        assertEquals(null, xyzzyProperty.getValue(context));
+        assertThat(xyzzyProperty.getValue(context)).isNull();
 
         BooleanExpression fooDefined = new Defined("foo");
-        assertTrue(fooDefined.getValue(context));
+        assertThat(fooDefined.getValue(context)).isTrue();
 
         BooleanExpression bazDefined = new Defined("baz");
-        assertTrue(bazDefined.getValue(context));
+        assertThat(bazDefined.getValue(context)).isTrue();
 
         BooleanExpression xyzzyDefined = new Defined("xyzzy");
-        assertFalse(xyzzyDefined.getValue(context));
+        assertThat(xyzzyDefined.getValue(context)).isFalse();
     }
 }

@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.subst;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * @author Mikolaj Izdebski
  */
-public class ArtifactVisitorTest {
+class ArtifactVisitorTest {
     @TempDir private Path tempDir;
 
     private Path writeJar(String location, String gid, String aid, String ver) throws Exception {
@@ -55,7 +55,7 @@ public class ArtifactVisitorTest {
     }
 
     @Test
-    public void testEmptyDirectory() throws Exception {
+    void emptyDirectory() throws Exception {
         Logger logger = EasyMock.createNiceMock(Logger.class);
 
         ArtifactMetadata am = new ArtifactMetadata();
@@ -77,8 +77,8 @@ public class ArtifactVisitorTest {
         Files.walkFileTree(tempDir, visitor);
         EasyMock.verify(logger, mr);
 
-        assertTrue(Files.isSymbolicLink(jar1));
-        assertTrue(Files.isSymbolicLink(jar2));
-        assertTrue(Files.isRegularFile(jar3, LinkOption.NOFOLLOW_LINKS));
+        assertThat(jar1).isSymbolicLink();
+        assertThat(jar2).isSymbolicLink();
+        assertThat(Files.isRegularFile(jar3, LinkOption.NOFOLLOW_LINKS)).isTrue();
     }
 }

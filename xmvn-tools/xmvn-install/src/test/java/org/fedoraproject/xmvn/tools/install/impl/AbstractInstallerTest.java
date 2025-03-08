@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -26,8 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,11 +41,8 @@ import org.xmlunit.assertj3.XmlAssert;
  */
 public abstract class AbstractInstallerTest {
     protected Path workdir;
-
     protected Path installRoot;
-
     protected Path descriptorRoot;
-
     protected final List<String> descriptors = new ArrayList<>();
 
     @BeforeEach
@@ -82,39 +76,11 @@ public abstract class AbstractInstallerTest {
     protected void assertDirectoryStructure(Path root, String... expected) throws Exception {
         List<String> actualList = new ArrayList<>();
         Files.walkFileTree(root, new FileSystemWalker(root, actualList));
-        assertEqualsImpl(actualList, "directory structure", expected);
+        assertThat(actualList).containsExactlyInAnyOrderElementsOf(Arrays.asList(expected));
     }
 
     protected void assertDescriptorEquals(String... expected) {
-        assertEqualsImpl(descriptors, "file descriptor", expected);
-    }
-
-    private void assertEqualsImpl(List<String> actualList, String what, String... expected) {
-        List<String> expectedList = new ArrayList<>();
-        for (String string : expected) expectedList.add(string);
-
-        Collections.sort(expectedList);
-        Collections.sort(actualList);
-
-        try {
-            Iterator<String> expectedIterator = expectedList.iterator();
-            Iterator<String> actualIterator = actualList.iterator();
-
-            while (expectedIterator.hasNext() && actualIterator.hasNext()) {
-                assertEquals(expectedIterator.next(), actualIterator.next());
-            }
-
-            assertFalse(expectedIterator.hasNext());
-            assertFalse(actualIterator.hasNext());
-        } catch (AssertionError e) {
-            System.err.println("EXPECTED " + what + ":");
-            for (String string : expectedList) System.err.println("  " + string);
-
-            System.err.println("ACTUAL " + what + ":");
-            for (String string : actualList) System.err.println("  " + string);
-
-            throw e;
-        }
+        assertThat(descriptors).containsExactlyInAnyOrder(expected);
     }
 
     protected Path getResource(String name) {
@@ -124,7 +90,7 @@ public abstract class AbstractInstallerTest {
     protected void assertDescriptorEquals(Path mfiles, String... expected) throws IOException {
         List<String> lines = Files.readAllLines(mfiles, Charset.defaultCharset());
 
-        assertEqualsImpl(lines, "descriptor", expected);
+        assertThat(lines).containsExactlyInAnyOrderElementsOf(Arrays.asList(expected));
     }
 
     protected void assertDescriptorEquals(Package pkg, String... expected) throws IOException {
@@ -134,7 +100,7 @@ public abstract class AbstractInstallerTest {
     }
 
     protected void assertMetadataEqual(Path expected, Path actual) throws Exception {
-        assertTrue(Files.isRegularFile(actual));
+        assertThat(actual).isRegularFile();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document expectedXml = builder.parse(expected.toString());

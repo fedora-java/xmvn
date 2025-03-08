@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -57,17 +56,17 @@ public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTes
         }
 
         Path libDir = getMavenHome().resolve("lib").resolve(subDir);
-        assertTrue(Files.isDirectory(libDir, LinkOption.NOFOLLOW_LINKS));
+        assertThat(Files.isDirectory(libDir, LinkOption.NOFOLLOW_LINKS)).isTrue();
         return libDir;
     }
 
     private Path getJar(String tool, String glob) throws Exception {
         try (DirectoryStream<Path> ds = Files.newDirectoryStream(getToolLibDir(tool), glob)) {
             Iterator<Path> it = ds.iterator();
-            assertTrue(it.hasNext(), "JAR not found for glob: " + glob);
+            assertThat(it).as("JAR not found for glob: " + glob).hasNext();
             Path jar = it.next();
-            assertFalse(it.hasNext(), "More than one JAR found for glob: " + glob);
-            assertTrue(Files.isRegularFile(jar, LinkOption.NOFOLLOW_LINKS));
+            assertThat(it.hasNext()).as("More than one JAR found for glob: " + glob).isFalse();
+            assertThat(Files.isRegularFile(jar, LinkOption.NOFOLLOW_LINKS)).isTrue();
             return jar;
         }
     }
@@ -89,7 +88,7 @@ public abstract class AbstractToolIntegrationTest extends AbstractIntegrationTes
         }
         String projectName = jarName.substring(5, 5 + jarName.substring(5).indexOf('-'));
         Path dep = Path.of(getTestProperty("xmvn.it.dep." + projectName));
-        assertTrue(Files.exists(dep, LinkOption.NOFOLLOW_LINKS));
+        assertThat(Files.exists(dep, LinkOption.NOFOLLOW_LINKS)).isTrue();
         return dep;
     }
 

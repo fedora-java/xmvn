@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool.resolver;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Collectors;
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
@@ -28,11 +27,12 @@ import org.xmlunit.assertj3.XmlAssert;
  *
  * @author Mikolaj Izdebski
  */
-public class ResolveRawNoneIntegrationTest extends AbstractToolIntegrationTest {
+class ResolveRawNoneIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveRawNone() throws Exception {
-        assertEquals(0, invokeToolWithInput("<requests/>", "xmvn-resolve", "--raw-request"));
-        assertFalse(getStderr().findAny().isPresent());
+    void resolveRawNone() throws Exception {
+        assertThat(invokeToolWithInput("<requests/>", "xmvn-resolve", "--raw-request"))
+                .isEqualTo(0);
+        assertThat(getStderr()).isEmpty();
         XmlAssert.assertThat("<results/>")
                 .and(getStdout().collect(Collectors.joining()))
                 .areSimilar();

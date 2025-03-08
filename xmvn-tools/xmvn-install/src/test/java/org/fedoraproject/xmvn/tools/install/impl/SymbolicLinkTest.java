@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,9 +27,9 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Michael Simacek
  */
-public class SymbolicLinkTest extends AbstractFileTest {
+class SymbolicLinkTest extends AbstractFileTest {
     @Test
-    public void testSymlink() throws Exception {
+    void symlink() throws Exception {
         Path jar = getResource("example.jar");
         add(new Directory(Path.of("usr/share/java")));
         add(new RegularFile(Path.of("usr/share/java/foobar.jar"), jar));
@@ -42,7 +42,8 @@ public class SymbolicLinkTest extends AbstractFileTest {
                 "F /usr/share/java/foobar.jar",
                 "L /usr/share/java/link.jar");
         Path link = root.resolve(Path.of("usr/share/java/link.jar"));
-        assertEquals(Files.readSymbolicLink(link), Path.of("foobar.jar"));
+        assertThat(link).isSymbolicLink();
+        assertThat(Files.readSymbolicLink(link)).isEqualTo(Path.of("foobar.jar"));
 
         assertDescriptorEquals(
                 "%attr(0755,root,root) %dir /usr/share/java",

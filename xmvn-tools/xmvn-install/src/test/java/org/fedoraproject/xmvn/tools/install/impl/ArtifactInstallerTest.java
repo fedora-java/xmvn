@@ -15,18 +15,16 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -49,26 +47,26 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Michael Simacek
  */
-public class ArtifactInstallerTest {
+class ArtifactInstallerTest {
     Repository repositoryMock;
 
     private ArtifactInstaller installer;
 
     @BeforeEach
-    public void configure() {
+    void configure() {
         repositoryMock = EasyMock.createMock(Repository.class);
 
         RepositoryConfigurator repoConfigurator =
                 new RepositoryConfigurator() {
                     @Override
                     public Repository configureRepository(String repoId) {
-                        assertEquals("my-install-repo", repoId);
+                        assertThat(repoId).isEqualTo("my-install-repo");
                         return repositoryMock;
                     }
 
                     @Override
                     public Repository configureRepository(String repoId, String namespace) {
-                        fail();
+                        fail("");
                         return null;
                     }
                 };
@@ -106,7 +104,7 @@ public class ArtifactInstallerTest {
     }
 
     @Test
-    public void testInstallation() throws Exception {
+    void installation() throws Exception {
         ArtifactMetadata artifact = createArtifact();
         JavaPackage pkg = new JavaPackage("", "test", Path.of("usr/share/maven-metadata"));
         PackagingRule rule = new PackagingRule();
@@ -114,22 +112,22 @@ public class ArtifactInstallerTest {
         install(pkg, artifact, rule);
 
         PackageMetadata metadata = pkg.getMetadata();
-        assertEquals(1, metadata.getArtifacts().size());
+        assertThat(metadata.getArtifacts()).hasSize(1);
         ArtifactMetadata actualArtifact = metadata.getArtifacts().get(0);
-        assertEquals("ns", actualArtifact.getNamespace());
+        assertThat(actualArtifact.getNamespace()).isEqualTo("ns");
 
-        assertEquals(2, pkg.getFiles().size());
+        assertThat(pkg.getFiles()).hasSize(2);
         Iterator<File> iterator = pkg.getFiles().iterator();
         File file = iterator.next();
         if (file.getTargetPath().equals(Path.of("usr/share/maven-metadata/test.xml"))) {
             file = iterator.next();
         }
-        assertEquals(Path.of("com.example-test"), file.getTargetPath());
-        assertEquals("/com.example-test", artifact.getPath());
+        assertThat(file.getTargetPath()).isEqualTo(Path.of("com.example-test"));
+        assertThat(artifact.getPath()).isEqualTo("/com.example-test");
     }
 
     @Test
-    public void testCompatVersion() throws Exception {
+    void compatVersion() throws Exception {
         ArtifactMetadata artifact = createArtifact();
         JavaPackage pkg = new JavaPackage("", "test", Path.of("usr/share/maven-metadata"));
         PackagingRule rule = new PackagingRule();
@@ -139,15 +137,13 @@ public class ArtifactInstallerTest {
         install(pkg, artifact, rule);
 
         PackageMetadata metadata = pkg.getMetadata();
-        assertEquals(1, metadata.getArtifacts().size());
+        assertThat(metadata.getArtifacts()).hasSize(1);
         ArtifactMetadata actualArtifact = metadata.getArtifacts().get(0);
-        List<String> actualVersions = actualArtifact.getCompatVersions();
-        Collections.sort(actualVersions);
-        assertEquals(Arrays.asList(new String[] {"3", "3.4"}), actualVersions);
+        assertThat(actualArtifact.getCompatVersions()).containsExactlyInAnyOrder("3", "3.4");
     }
 
     @Test
-    public void testAliases() throws Exception {
+    void aliases() throws Exception {
         ArtifactMetadata artifact = createArtifact();
         JavaPackage pkg = new JavaPackage("", "test", Path.of("usr/share/maven-metadata"));
         PackagingRule rule = new PackagingRule();
@@ -168,14 +164,14 @@ public class ArtifactInstallerTest {
         install(pkg, artifact, rule);
 
         PackageMetadata metadata = pkg.getMetadata();
-        assertEquals(1, metadata.getArtifacts().size());
+        assertThat(metadata.getArtifacts()).hasSize(1);
         ArtifactMetadata actualArtifact = metadata.getArtifacts().get(0);
         List<ArtifactAlias> actualAliases = actualArtifact.getAliases();
-        assertEquals(2, actualAliases.size());
-        assertEquals("com.example", actualAliases.get(0).getGroupId());
-        assertEquals("alias1", actualAliases.get(0).getArtifactId());
-        assertEquals("com.example", actualAliases.get(1).getGroupId());
-        assertEquals("alias2", actualAliases.get(1).getArtifactId());
-        assertEquals("war", actualAliases.get(1).getClassifier());
+        assertThat(actualAliases).hasSize(2);
+        assertThat(actualAliases.get(0).getGroupId()).isEqualTo("com.example");
+        assertThat(actualAliases.get(0).getArtifactId()).isEqualTo("alias1");
+        assertThat(actualAliases.get(1).getGroupId()).isEqualTo("com.example");
+        assertThat(actualAliases.get(1).getArtifactId()).isEqualTo("alias2");
+        assertThat(actualAliases.get(1).getClassifier()).isEqualTo("war");
     }
 }

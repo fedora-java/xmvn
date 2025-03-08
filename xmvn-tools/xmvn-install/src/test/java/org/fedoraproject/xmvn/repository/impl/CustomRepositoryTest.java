@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.config.Configuration;
@@ -27,14 +26,14 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class CustomRepositoryTest {
+class CustomRepositoryTest {
     /**
      * Test if simple (non-composite) repository configuration works as expected.
      *
      * @throws Exception
      */
     @Test
-    public void testCustomRepository() throws Exception {
+    void customRepository() throws Exception {
         Configuration configuration = new Configuration();
         Repository repository = new Repository();
         repository.setId("test123");
@@ -52,7 +51,6 @@ public class CustomRepositoryTest {
         org.fedoraproject.xmvn.repository.Repository repo =
                 repoConfigurator.configureRepository("test123");
         EasyMock.verify(configurator);
-        assertNotNull(repo);
-        assertTrue(repo instanceof MyRepository);
+        assertThat(repo).isExactlyInstanceOf(MyRepository.class);
     }
 }

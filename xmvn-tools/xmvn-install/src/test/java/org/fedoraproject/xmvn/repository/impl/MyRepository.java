@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.nio.file.Path;
 import java.util.Set;

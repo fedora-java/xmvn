@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.resolver;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.easymock.EasyMock;
 import org.fedoraproject.xmvn.artifact.Artifact;
@@ -26,13 +25,13 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Roman Vais
  */
-public class ResolutionRequestTest {
+class ResolutionRequestTest {
     private Artifact artifact;
 
     private final ResolutionRequest rrq = new ResolutionRequest();
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         artifact = EasyMock.createMock(Artifact.class);
         rrq.setArtifact(null);
         rrq.setProviderNeeded(false);
@@ -41,55 +40,55 @@ public class ResolutionRequestTest {
 
     /** Test of get and set methods */
     @Test
-    public void getSetTest() throws Exception {
+    void getSetTest() throws Exception {
         // tests set and get artifact
         rrq.setArtifact(artifact);
-        assertTrue(artifact == rrq.getArtifact());
+        assertThat(artifact).isSameAs(rrq.getArtifact());
 
         // tests set and get 'ProviderNeeded'
         rrq.setProviderNeeded(true);
-        assertTrue(rrq.isProviderNeeded());
+        assertThat(rrq.isProviderNeeded()).isTrue();
         rrq.setProviderNeeded(false);
-        assertFalse(rrq.isProviderNeeded());
+        assertThat(rrq.isProviderNeeded()).isFalse();
 
         // tests set and get 'PersistentFileNeeded'
         rrq.setPersistentFileNeeded(true);
-        assertTrue(rrq.isPersistentFileNeeded());
+        assertThat(rrq.isPersistentFileNeeded()).isTrue();
         rrq.setPersistentFileNeeded(false);
-        assertFalse(rrq.isPersistentFileNeeded());
+        assertThat(rrq.isPersistentFileNeeded()).isFalse();
     }
 
     /** Test of constructor wit artifact argument */
     @Test
-    public void extraConstructorTest() throws Exception {
+    void extraConstructorTest() throws Exception {
         ResolutionRequest extraRq = new ResolutionRequest(artifact);
-        assertTrue(artifact == extraRq.getArtifact());
+        assertThat(artifact).isSameAs(extraRq.getArtifact());
     }
 
     /** Test of equality method */
     @Test
-    public void equalityTest() throws Exception {
-        assertTrue(rrq.equals(rrq));
-        assertFalse(rrq.equals(null));
-        assertFalse(rrq.equals(new Object()));
+    void equalityTest() throws Exception {
+        assertThat(rrq).isEqualTo(rrq);
+        assertThat(rrq).isNotEqualTo(null);
+        assertThat(new Object()).isNotEqualTo(rrq);
 
         ResolutionRequest extraRq = new ResolutionRequest();
-        assertTrue(rrq.equals(extraRq));
+        assertThat(extraRq).isEqualTo(rrq);
 
         extraRq.setArtifact(artifact);
-        assertFalse(rrq.equals(extraRq));
+        assertThat(extraRq).isNotEqualTo(rrq);
 
         rrq.setArtifact(artifact);
-        assertTrue(rrq.equals(extraRq));
+        assertThat(extraRq).isEqualTo(rrq);
 
         rrq.setProviderNeeded(true);
-        assertFalse(rrq.equals(extraRq));
+        assertThat(extraRq).isNotEqualTo(rrq);
 
         rrq.setProviderNeeded(false);
         rrq.setPersistentFileNeeded(true);
-        assertFalse(rrq.equals(extraRq));
+        assertThat(extraRq).isNotEqualTo(rrq);
 
         extraRq.setArtifact(EasyMock.createMock(Artifact.class));
-        assertFalse(rrq.equals(extraRq));
+        assertThat(extraRq).isNotEqualTo(rrq);
     }
 }

@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.config.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import org.fedoraproject.xmvn.config.Configuration;
@@ -26,11 +26,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class ConfigurationMergerTest extends AbstractTest {
+class ConfigurationMergerTest extends AbstractTest {
     private ConfigurationMerger merger;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         merger = new ConfigurationMerger();
     }
 
@@ -39,7 +39,7 @@ public class ConfigurationMergerTest extends AbstractTest {
     }
 
     @Test
-    public void testMerge() throws Exception {
+    void merge() throws Exception {
         Configuration c1 =
                 Configuration.readFromXML(Path.of("src/test/resources/conf-dominant.xml"));
         Configuration c2 =
@@ -48,24 +48,24 @@ public class ConfigurationMergerTest extends AbstractTest {
                 Configuration.readFromXML(Path.of("src/test/resources/conf-superdominant.xml"));
 
         Configuration c3 = merger.merge(null, c2);
-        assertEquals(toString(c2), toString(c3));
+        assertThat(toString(c3)).isEqualTo(toString(c2));
 
         Configuration c5 = merger.merge(c1, c2);
 
         Configuration out = merger.merge(c4, c5);
 
-        assertEquals(3, out.getProperties().size());
-        assertEquals("v1", out.getProperties().get("p1"));
-        assertEquals("v2", out.getProperties().get("p2"));
-        assertEquals("v3", out.getProperties().get("p3"));
-        assertEquals(true, out.getBuildSettings().isDebug());
-        assertEquals(false, out.getBuildSettings().isSkipTests());
-        assertEquals(true, out.getResolverSettings().isDebug());
-        assertEquals(true, out.getInstallerSettings().isDebug());
-        assertEquals("/foo/bar", out.getInstallerSettings().getMetadataDir());
-        assertEquals(false, out.getResolverSettings().isIgnoreDuplicateMetadata());
+        assertThat(out.getProperties()).hasSize(3);
+        assertThat(out.getProperties().get("p1")).isEqualTo("v1");
+        assertThat(out.getProperties().get("p2")).isEqualTo("v2");
+        assertThat(out.getProperties().get("p3")).isEqualTo("v3");
+        assertThat(out.getBuildSettings().isDebug()).isTrue();
+        assertThat(out.getBuildSettings().isSkipTests()).isFalse();
+        assertThat(out.getResolverSettings().isDebug()).isTrue();
+        assertThat(out.getInstallerSettings().isDebug()).isTrue();
+        assertThat(out.getInstallerSettings().getMetadataDir()).isEqualTo("/foo/bar");
+        assertThat(out.getResolverSettings().isIgnoreDuplicateMetadata()).isFalse();
 
         Configuration c6 = merger.merge(c2, c2);
-        assertEquals(toString(c2), toString(c6));
+        assertThat(toString(c6)).isEqualTo(toString(c2));
     }
 }

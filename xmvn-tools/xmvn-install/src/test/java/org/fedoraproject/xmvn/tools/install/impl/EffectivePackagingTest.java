@@ -15,10 +15,7 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.fedoraproject.xmvn.config.Artifact;
@@ -29,17 +26,17 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class EffectivePackagingTest {
+class EffectivePackagingTest {
     /**
      * Test if multiple rules are correctly aggregated into single effective rule.
      *
      * @throws Exception
      */
     @Test
-    public void testRuleAggregation() throws Exception {
+    void ruleAggregation() throws Exception {
         Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
-        assertTrue(artifactManagement.isEmpty());
+        assertThat(artifactManagement).isEmpty();
 
         Artifact glob = new Artifact();
         glob.setGroupId("foo");
@@ -61,9 +58,9 @@ public class EffectivePackagingTest {
         PackagingRule effectiveRule =
                 new EffectivePackagingRule(
                         artifactManagement, "foo", "bar", "the=ext", "_my_clasfr", "baz");
-        assertTrue("file1".equals(effectiveRule.getFiles().get(0)));
-        assertTrue("file2".equals(effectiveRule.getFiles().get(1)));
-        assertEquals(effectiveRule.getFiles().size(), 2);
+        assertThat(effectiveRule.getFiles().get(0)).isEqualTo("file1");
+        assertThat(effectiveRule.getFiles().get(1)).isEqualTo("file2");
+        assertThat(effectiveRule.getFiles()).hasSize(2);
     }
 
     /**
@@ -72,10 +69,10 @@ public class EffectivePackagingTest {
      * @throws Exception
      */
     @Test
-    public void testWildcards() throws Exception {
+    void wildcards() throws Exception {
         Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
-        assertTrue(artifactManagement.isEmpty());
+        assertThat(artifactManagement).isEmpty();
 
         Artifact glob = new Artifact();
         glob.setGroupId("foo*bar");
@@ -90,19 +87,19 @@ public class EffectivePackagingTest {
         PackagingRule effRule1 =
                 new EffectivePackagingRule(
                         artifactManagement, "foo-test-bar", "ipsum-dolor", "jar", "", "1.2.3");
-        assertNotNull(effRule1.getTargetPackage());
-        assertTrue("pkgX".equals(effRule1.getTargetPackage()));
+        assertThat(effRule1.getTargetPackage()).isNotNull();
+        assertThat(effRule1.getTargetPackage()).isEqualTo("pkgX");
 
         PackagingRule effRule2 =
                 new EffectivePackagingRule(
                         artifactManagement, "foobar", "lorem-dolor", "jar", "", "1.2.3");
-        assertNotNull(effRule2.getTargetPackage());
-        assertTrue("pkgX".equals(effRule2.getTargetPackage()));
+        assertThat(effRule2.getTargetPackage()).isNotNull();
+        assertThat(effRule2.getTargetPackage()).isEqualTo("pkgX");
 
         PackagingRule effRule3 =
                 new EffectivePackagingRule(
                         artifactManagement, "foobar", "lorem-dolor", "jar", "", "1.253");
-        assertNull(effRule3.getTargetPackage());
+        assertThat(effRule3.getTargetPackage()).isNull();
     }
 
     /**
@@ -111,10 +108,10 @@ public class EffectivePackagingTest {
      * @throws Exception
      */
     @Test
-    public void testEmptyGlob() throws Exception {
+    void emptyGlob() throws Exception {
         Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
-        assertTrue(artifactManagement.isEmpty());
+        assertThat(artifactManagement).isEmpty();
 
         PackagingRule rule = new PackagingRule();
         rule.setArtifactGlob(new Artifact());
@@ -124,8 +121,8 @@ public class EffectivePackagingTest {
         PackagingRule effRule1 =
                 new EffectivePackagingRule(
                         artifactManagement, "maven-plugin", "com.example", "jar", "funny", "0.42");
-        assertNotNull(effRule1.getTargetPackage());
-        assertTrue("somePackage".equals(effRule1.getTargetPackage()));
+        assertThat(effRule1.getTargetPackage()).isNotNull();
+        assertThat(effRule1.getTargetPackage()).isEqualTo("somePackage");
     }
 
     /**
@@ -134,10 +131,10 @@ public class EffectivePackagingTest {
      * @throws Exception
      */
     @Test
-    public void testEmptyPattern() throws Exception {
+    void emptyPattern() throws Exception {
         Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
-        assertTrue(artifactManagement.isEmpty());
+        assertThat(artifactManagement).isEmpty();
 
         Artifact glob = new Artifact();
         glob.setGroupId("");
@@ -153,9 +150,9 @@ public class EffectivePackagingTest {
 
         PackagingRule effectiveRule =
                 new EffectivePackagingRule(artifactManagement, "bar", "baz", "xy", "zzy", "1.2.3");
-        assertNotNull(effectiveRule);
-        assertNotNull(effectiveRule.getTargetPackage());
-        assertTrue("fooBar".equals(effectiveRule.getTargetPackage()));
+        assertThat(effectiveRule).isNotNull();
+        assertThat(effectiveRule.getTargetPackage()).isNotNull();
+        assertThat(effectiveRule.getTargetPackage()).isEqualTo("fooBar");
     }
 
     /**
@@ -164,10 +161,10 @@ public class EffectivePackagingTest {
      * @throws Exception
      */
     @Test
-    public void testSingletonAndSpecificRule() throws Exception {
+    void singletonAndSpecificRule() throws Exception {
         Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
-        assertTrue(artifactManagement.isEmpty());
+        assertThat(artifactManagement).isEmpty();
 
         Artifact glob1 = new Artifact();
         glob1.setGroupId("");
@@ -190,8 +187,8 @@ public class EffectivePackagingTest {
         PackagingRule effRule =
                 new EffectivePackagingRule(
                         artifactManagement, "org.sonatype.sisu", "sisu-parent", "pom", "", "2.3.0");
-        assertNotNull(effRule.getTargetPackage());
-        assertTrue("parent".equals(effRule.getTargetPackage()));
+        assertThat(effRule.getTargetPackage()).isNotNull();
+        assertThat(effRule.getTargetPackage()).isEqualTo("parent");
     }
 
     /**
@@ -200,10 +197,10 @@ public class EffectivePackagingTest {
      * @throws Exception
      */
     @Test
-    public void testAliases() throws Exception {
+    void aliases() throws Exception {
         Configuration configuration = new Configuration();
         List<PackagingRule> artifactManagement = configuration.getArtifactManagement();
-        assertTrue(artifactManagement.isEmpty());
+        assertThat(artifactManagement).isEmpty();
 
         Artifact glob = new Artifact();
         glob.setGroupId("");
@@ -227,11 +224,11 @@ public class EffectivePackagingTest {
         PackagingRule effRule =
                 new EffectivePackagingRule(artifactManagement, "foo", "bar", "jar", "", "1.2.3");
 
-        assertEquals(effRule.getAliases().size(), 1);
+        assertThat(effRule.getAliases()).hasSize(1);
         Artifact effAlias = effRule.getAliases().iterator().next();
 
-        assertEquals(effAlias.getGroupId(), "foo");
-        assertEquals(effAlias.getArtifactId(), "bar-test");
-        assertEquals(effAlias.getVersion(), "1.2.3");
+        assertThat(effAlias.getGroupId()).isEqualTo("foo");
+        assertThat(effAlias.getArtifactId()).isEqualTo("bar-test");
+        assertThat(effAlias.getVersion()).isEqualTo("1.2.3");
     }
 }

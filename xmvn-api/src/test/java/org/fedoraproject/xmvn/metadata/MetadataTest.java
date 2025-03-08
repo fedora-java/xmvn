@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.metadata;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -24,24 +23,22 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class MetadataTest {
+class MetadataTest {
     @Test
-    void testMetadataWithUuid() throws Exception {
+    void metadataWithUuid() throws Exception {
         PackageMetadata md =
                 PackageMetadata.readFromXML(Path.of("src/test/resources/metadata1.xml"));
-        assertEquals(2, md.getArtifacts().size());
+        assertThat(md.getArtifacts()).hasSize(2);
 
-        String xml = md.toXML();
-        assertFalse(xml.contains("uuid"));
+        assertThat(md.toXML()).doesNotContain("uuid");
     }
 
     @Test
-    void testMetadataWithoutUuid() throws Exception {
+    void metadataWithoutUuid() throws Exception {
         PackageMetadata md =
                 PackageMetadata.readFromXML(Path.of("src/test/resources/metadata2.xml"));
-        assertEquals(2, md.getArtifacts().size());
+        assertThat(md.getArtifacts()).hasSize(2);
 
-        String xml = md.toXML();
-        assertFalse(xml.contains("uuid"));
+        assertThat(md.toXML()).doesNotContain("uuid");
     }
 }

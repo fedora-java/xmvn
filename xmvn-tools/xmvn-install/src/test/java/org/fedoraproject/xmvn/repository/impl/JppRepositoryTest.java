@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import org.easymock.EasyMock;
@@ -31,9 +30,9 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class JppRepositoryTest {
+class JppRepositoryTest {
     @Test
-    public void testJppRepository() throws Exception {
+    void jppRepository() throws Exception {
         Configuration configuration = new Configuration();
         Repository repository = new Repository();
         repository.setId("test123");
@@ -48,18 +47,16 @@ public class JppRepositoryTest {
         org.fedoraproject.xmvn.repository.Repository repo =
                 repoConfigurator.configureRepository("test123");
         EasyMock.verify(configurator);
-        assertNotNull(repo);
+        assertThat(repo).isNotNull();
 
         Artifact artifact1 = Artifact.of("foo.bar", "the-artifact", "baz", "1.2.3");
         ArtifactContext context1 = new ArtifactContext(artifact1);
-        assertEquals(
-                Path.of("my-target/path/aid-1.2.3.baz"),
-                repo.getPrimaryArtifactPath(artifact1, context1, "my-target/path/aid"));
+        assertThat(repo.getPrimaryArtifactPath(artifact1, context1, "my-target/path/aid"))
+                .isEqualTo(Path.of("my-target/path/aid-1.2.3.baz"));
 
         Artifact artifact2 = artifact1.withVersion(null);
         ArtifactContext context2 = new ArtifactContext(artifact2);
-        assertEquals(
-                Path.of("my-target/path/aid.baz"),
-                repo.getPrimaryArtifactPath(artifact2, context2, "my-target/path/aid"));
+        assertThat(repo.getPrimaryArtifactPath(artifact2, context2, "my-target/path/aid"))
+                .isEqualTo(Path.of("my-target/path/aid.baz"));
     }
 }

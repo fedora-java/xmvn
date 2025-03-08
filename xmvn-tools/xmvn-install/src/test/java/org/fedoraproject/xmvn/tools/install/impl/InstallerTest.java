@@ -15,12 +15,11 @@
  */
 package org.fedoraproject.xmvn.tools.install.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.fedoraproject.xmvn.tools.install.impl.InstallationPlanLoader.prepareInstallationPlanFile;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.nio.file.Path;
 import org.easymock.EasyMock;
@@ -44,7 +43,7 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Michael Simacek
  */
-public class InstallerTest extends AbstractInstallerTest {
+class InstallerTest extends AbstractInstallerTest {
     private final Configuration config = new Configuration();
 
     private Configurator configuratorMock;
@@ -52,7 +51,7 @@ public class InstallerTest extends AbstractInstallerTest {
     private Resolver resolverMock;
 
     @BeforeEach
-    public void setUpSettings() {
+    void setUpSettings() {
         InstallerSettings settings = new InstallerSettings();
         settings.setMetadataDir("usr/share/maven-metadata");
         config.setInstallerSettings(settings);
@@ -68,8 +67,8 @@ public class InstallerTest extends AbstractInstallerTest {
                 PackagingRule packagingRule,
                 String basePackageName,
                 String repositoryId) {
-            assertEquals("test-pkg", basePackageName);
-            assertEquals("test-repo", repositoryId);
+            assertThat(basePackageName).isEqualTo("test-pkg");
+            assertThat(repositoryId).isEqualTo("test-repo");
             Path path = Path.of("usr/share/java/" + artifactMetadata.getArtifactId() + ".jar");
             File file = new RegularFile(path, Path.of(artifactMetadata.getPath()));
             targetPackage.addFile(file);
@@ -135,7 +134,7 @@ public class InstallerTest extends AbstractInstallerTest {
 
         DefaultInstaller installer =
                 new DefaultInstaller(configuratorMock, resolverMock, installerFactoryMock);
-        assertNotNull(installer);
+        assertThat(installer).isNotNull();
         installer.install(request);
 
         verify(resolverMock, configuratorMock, installerFactoryMock);
@@ -149,7 +148,7 @@ public class InstallerTest extends AbstractInstallerTest {
     }
 
     @Test
-    public void testInstall() throws Exception {
+    void testInstall() throws Exception {
         addEmptyResolutions();
 
         install("valid.xml");
@@ -174,7 +173,7 @@ public class InstallerTest extends AbstractInstallerTest {
     }
 
     @Test
-    public void testResolution() throws Exception {
+    void resolution() throws Exception {
         Path dependencyJar = Path.of("/tmp/bla.jar");
         addResolution("org.apache.lucene:lucene-benchmark:4.1");
         addResolution("org.apache.lucene:lucene-benchmark", "4", "ns", dependencyJar);
@@ -189,7 +188,7 @@ public class InstallerTest extends AbstractInstallerTest {
     }
 
     @Test
-    public void testSelfRequires() throws Exception {
+    void selfRequires() throws Exception {
         install("self-requires.xml");
         assertMetadataEqual(
                 getResource("self-requires-resolved.xml"),
@@ -197,7 +196,7 @@ public class InstallerTest extends AbstractInstallerTest {
     }
 
     @Test
-    public void testSubpackage() throws Exception {
+    void subpackage() throws Exception {
         addEmptyResolutions();
 
         PackagingRule rule = new PackagingRule();

@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool.installer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -34,13 +32,12 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class InstallerIntegrationTest extends AbstractToolIntegrationTest {
+class InstallerIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testInstallJar() throws Exception {
+    void testInstallJar() throws Exception {
         expandBaseDirInPlace("install-plan.xml");
 
-        assertEquals(
-                0,
+        int rc =
                 invokeTool(
                         "xmvn-install",
                         "-n",
@@ -51,30 +48,31 @@ public class InstallerIntegrationTest extends AbstractToolIntegrationTest {
                         "dest",
                         "-X",
                         "-i",
-                        "custom-install"));
-        assertFalse(getStdout().findAny().isPresent());
-        assertTrue(getStderr().anyMatch("[INFO] Installation successful"::equals));
+                        "custom-install");
+        assertThat(rc).isEqualTo(0);
+        assertThat(getStdout()).isEmpty();
+        assertThat(getStderr()).contains("[INFO] Installation successful");
 
         Path pomPath = Path.of("dest/usr/share/maven-poms/xyzzy/junit.pom");
-        assertTrue(Files.isRegularFile(pomPath, LinkOption.NOFOLLOW_LINKS));
-        assertEquals(
-                "NOT A VALID XML <XMvn should not parse this...>",
-                Files.readAllLines(pomPath).iterator().next());
+        assertThat(Files.isRegularFile(pomPath, LinkOption.NOFOLLOW_LINKS)).isTrue();
+        assertThat(Files.readAllLines(pomPath))
+                .first()
+                .isEqualTo("NOT A VALID XML <XMvn should not parse this...>");
 
         Path mdPath = Path.of("dest/usr/share/maven-metadata/xyzzy.xml");
-        assertTrue(Files.isRegularFile(mdPath, LinkOption.NOFOLLOW_LINKS));
-        assertEquals("<?xml version=\"1.0\" ?>", Files.readAllLines(mdPath).iterator().next());
+        assertThat(Files.isRegularFile(mdPath, LinkOption.NOFOLLOW_LINKS)).isTrue();
+        assertThat(Files.readAllLines(mdPath)).first().isEqualTo("<?xml version=\"1.0\" ?>");
 
         Path jarPath = Path.of("dest/usr/share/java/xyzzy/junit.jar");
-        assertTrue(Files.isRegularFile(jarPath, LinkOption.NOFOLLOW_LINKS));
+        assertThat(Files.isRegularFile(jarPath, LinkOption.NOFOLLOW_LINKS)).isTrue();
         try (InputStream is =
                 new URL("jar:file:" + jarPath.toAbsolutePath() + "!/META-INF/MANIFEST.MF")
                         .openStream()) {
             Attributes mf = new Manifest(is).getMainAttributes();
-            assertEquals("junit", mf.getValue("JavaPackages-GroupId"));
-            assertEquals("junit", mf.getValue("JavaPackages-ArtifactId"));
-            assertEquals("4.12", mf.getValue("JavaPackages-Version"));
-            assertEquals("42", mf.getValue("X-Test1"));
+            assertThat(mf.getValue("JavaPackages-GroupId")).isEqualTo("junit");
+            assertThat(mf.getValue("JavaPackages-ArtifactId")).isEqualTo("junit");
+            assertThat(mf.getValue("JavaPackages-Version")).isEqualTo("4.12");
+            assertThat(mf.getValue("X-Test1")).isEqualTo("42");
         }
     }
 }

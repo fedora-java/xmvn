@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.connector.maven;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.inject.Binder;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class ModelTransformerTest extends AbstractTest {
     }
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         configurator = lookup(Configurator.class);
         transformer = lookup(ModelTransformer.class);
 
@@ -98,14 +97,14 @@ public class ModelTransformerTest extends AbstractTest {
     }
 
     @Test
-    public void testMinimalModelTransformation() throws Exception {
+    void minimalModelTransformation() throws Exception {
         Model model = Model.newInstance();
-        assertTrue(transformer instanceof XMvnModelTransformer);
+        assertThat(transformer).isExactlyInstanceOf(XMvnModelTransformer.class);
         transformer.transformEffectiveModel(model);
     }
 
     @Test
-    public void testFullModelTransformation() throws Exception {
+    void fullModelTransformation() throws Exception {
         Model model =
                 Model.newBuilder()
                         .build(Build.newBuilder().extensions(el).plugins(pl).build())
@@ -115,7 +114,7 @@ public class ModelTransformerTest extends AbstractTest {
     }
 
     @Test
-    public void testRemovingTestDeps() throws Exception {
+    void removingTestDeps() throws Exception {
         configurator.getConfiguration().getBuildSettings().setSkipTests(true);
         dl.add(0, dl.remove(0).withScope("test"));
 
@@ -125,11 +124,11 @@ public class ModelTransformerTest extends AbstractTest {
                         .build();
         model = transformer.transformEffectiveModel(model);
 
-        assertEquals(0, model.getDependencies().size());
+        assertThat(model.getDependencies()).isEmpty();
     }
 
     @Test
-    public void testSkippedPlugins() throws Exception {
+    void skippedPlugins() throws Exception {
         Artifact sp1 = new Artifact();
         sp1.setArtifactId("maven-compiler-plugin");
         configurator.getConfiguration().getBuildSettings().getSkippedPlugins().add(sp1);
@@ -141,9 +140,9 @@ public class ModelTransformerTest extends AbstractTest {
         Model model = Model.newBuilder().build(Build.newBuilder().plugins(pl).build()).build();
         model = transformer.transformEffectiveModel(model);
 
-        assertEquals(1, model.getBuild().getPlugins().size());
+        assertThat(model.getBuild().getPlugins()).hasSize(1);
         Plugin plugin = model.getBuild().getPlugins().iterator().next();
-        assertEquals("foobar", plugin.getGroupId());
-        assertEquals("bar", plugin.getArtifactId());
+        assertThat(plugin.getGroupId()).isEqualTo("foobar");
+        assertThat(plugin.getArtifactId()).isEqualTo("bar");
     }
 }

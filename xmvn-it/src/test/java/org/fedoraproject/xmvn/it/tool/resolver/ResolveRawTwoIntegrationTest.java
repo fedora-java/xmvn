@@ -15,8 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool.resolver;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.util.stream.Collectors;
@@ -29,9 +28,9 @@ import org.xmlunit.assertj3.XmlAssert;
  *
  * @author Mikolaj Izdebski
  */
-public class ResolveRawTwoIntegrationTest extends AbstractToolIntegrationTest {
+class ResolveRawTwoIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveRawTwo() throws Exception {
+    void testResolveRawTwo() throws Exception {
         String input =
                 String.join(
                         "\n",
@@ -49,13 +48,9 @@ public class ResolveRawTwoIntegrationTest extends AbstractToolIntegrationTest {
                         "  </artifact>",
                         " </request>",
                         "</requests>");
-        assertEquals(0, invokeToolWithInput(input, "xmvn-resolve", "--raw-request"));
-        assertTrue(
-                getStderr()
-                        .anyMatch(
-                                s ->
-                                        s.endsWith(
-                                                "Unable to resolve artifact foobar:xyzzy:jar:SYSTEM")));
+        assertThat(invokeToolWithInput(input, "xmvn-resolve", "--raw-request")).isEqualTo(0);
+        assertThat(getStderr())
+                .anyMatch(s -> s.endsWith("Unable to resolve artifact foobar:xyzzy:jar:SYSTEM"));
         Path absPath = getResourcesDir().resolve("empty.jar").toRealPath();
         String expectedOutput =
                 String.join(

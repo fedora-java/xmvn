@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.maven.mojo;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,12 +36,12 @@ import org.junit.jupiter.api.BeforeEach;
  */
 public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
     @BeforeEach
-    public void addMetadata() throws Exception {
+    void addMetadata() throws Exception {
         PackageMetadata md = new PackageMetadata();
 
         for (String module : Arrays.asList("mojo", "core", "api", "parent")) {
             Path pomPath = Path.of(getTestProperty("xmvn.it.pom." + module));
-            assertTrue(Files.exists(pomPath), pomPath.toString());
+            assertThat(pomPath).exists();
             ArtifactMetadata pomMd = new ArtifactMetadata();
             pomMd.setGroupId("org.fedoraproject.xmvn");
             pomMd.setArtifactId("xmvn-" + module);
@@ -53,7 +53,7 @@ public class AbstractMojoIntegrationTest extends AbstractMavenIntegrationTest {
 
             if (!module.equals("parent")) {
                 Path jarPath = Path.of(getTestProperty("xmvn.it.dep." + module));
-                assertTrue(Files.exists(jarPath));
+                assertThat(jarPath).exists();
                 ArtifactMetadata jarMd = new ArtifactMetadata();
                 jarMd.setGroupId("org.fedoraproject.xmvn");
                 jarMd.setArtifactId("xmvn-" + module);

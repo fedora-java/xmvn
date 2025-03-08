@@ -15,11 +15,8 @@
  */
 package org.fedoraproject.xmvn.resolver.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,7 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * @author Mikolaj Izdebski
  */
-public class MockAgentTest {
+class MockAgentTest {
     @TempDir private Path tempDir;
 
     private volatile Throwable tt;
@@ -59,7 +56,7 @@ public class MockAgentTest {
     private SocketAddress socketAddress;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         logger = EasyMock.createNiceMock(Logger.class);
         socketPath = tempDir.resolve("sock");
         socketAddress = UnixDomainSocketAddress.of(socketPath);
@@ -97,7 +94,7 @@ public class MockAgentTest {
                                 latch.countDown();
                                 try (SocketChannel channel = serverChannel.accept()) {
                                     String request = recvRequest(channel);
-                                    assertEquals(expectedRequest, request);
+                                    assertThat(request).isEqualTo(expectedRequest);
                                     sendResponse(channel, response);
                                 }
                             } catch (Throwable t) {
@@ -111,9 +108,9 @@ public class MockAgentTest {
         if (tt != null) {
             throw tt;
         }
-        assertTrue(Files.exists(socketPath));
-        assertFalse(Files.isRegularFile(socketPath));
-        assertFalse(Files.isDirectory(socketPath));
+        assertThat(socketPath).exists();
+        assertThat(Files.isRegularFile(socketPath)).isFalse();
+        assertThat(Files.isDirectory(socketPath)).isFalse();
     }
 
     private void joinSocketListener() throws Throwable {
@@ -133,7 +130,7 @@ public class MockAgentTest {
 
         MockAgent agent = new MockAgent(logger, socketPath.toString());
         boolean ret = agent.tryInstallArtifact(artifact);
-        assertEquals(outcome, ret);
+        assertThat(ret).isEqualTo(outcome);
 
         EasyMock.verify(logger);
 
@@ -141,50 +138,50 @@ public class MockAgentTest {
     }
 
     @Test
-    public void testNoSocket() throws Exception {
+    void noSocket() throws Exception {
         MockAgent agent = new MockAgent(logger, null);
         boolean ret = agent.tryInstallArtifact(Artifact.of("foo:bar"));
-        assertEquals(false, ret);
+        assertThat(ret).isFalse();
     }
 
     @Test
-    public void testMissingSocket() throws Exception {
+    void missingSocket() throws Exception {
         try {
             MockAgent agent = new MockAgent(logger, tempDir.resolve("dummy").toString());
             agent.tryInstallArtifact(Artifact.of("foo:bar"));
             fail("Expected SocketException");
         } catch (UncheckedIOException e) {
-            assertInstanceOf(SocketException.class, e.getCause());
+            assertThat(e).hasCauseInstanceOf(SocketException.class);
         }
     }
 
     @Test
-    public void testSimple() throws Throwable {
+    void simple() throws Throwable {
         performTest("foo:bar", "install mvn(foo:bar)\n", "ok\n", true);
     }
 
     @Test
-    public void testCompatVersion() throws Throwable {
+    void compatVersion() throws Throwable {
         performTest("foo:bar:1.2.3", "install mvn(foo:bar:1.2.3)\n", "ok\n", true);
     }
 
     @Test
-    public void testClassifier() throws Throwable {
+    void classifier() throws Throwable {
         performTest("foo:bar::no_aop:", "install mvn(foo:bar::no_aop:)\n", "ok\n", true);
     }
 
     @Test
-    public void testNOK() throws Throwable {
+    void nok() throws Throwable {
         performTest("foo:bar:pom:", "install mvn(foo:bar:pom:)\n", "nok\n", false);
     }
 
     @Test
-    public void testProtocolError() throws Throwable {
+    void protocolError() throws Throwable {
         performTest("foo:bar", "install mvn(foo:bar)\n", "BOOM", false);
     }
 
     @Test
-    public void testNoResponse() throws Throwable {
+    void noResponse() throws Throwable {
         performTest("foo:bar", "install mvn(foo:bar)\n", "", false);
     }
 }

@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.util.Properties;
@@ -30,18 +28,18 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class LayoutTest {
+class LayoutTest {
     private Repository mavenRepository;
 
     private Repository jppRepository;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         mavenRepository = new MavenRepositoryFactory().getInstance(null, new Properties(), null);
         jppRepository = new JppRepositoryFactory().getInstance(null, new Properties(), null);
 
-        assertNotNull(mavenRepository);
-        assertNotNull(jppRepository);
+        assertThat(mavenRepository).isNotNull();
+        assertThat(jppRepository).isNotNull();
     }
 
     private void testPaths(Repository repository, Artifact artifact, String expected) {
@@ -51,11 +49,10 @@ public class LayoutTest {
                         artifact, context, artifact.getGroupId() + "/" + artifact.getArtifactId());
 
         if (expected == null) {
-            assertNull(repoPath);
+            assertThat(repoPath).isNull();
         } else {
-            assertNotNull(repoPath);
-            assertNotNull(repoPath);
-            assertEquals(expected, repoPath.toString());
+            assertThat(repoPath).isNotNull();
+            assertThat(repoPath.toString()).isEqualTo(expected);
         }
     }
 
@@ -65,7 +62,7 @@ public class LayoutTest {
      * @throws Exception
      */
     @Test
-    public void testLayouts() throws Exception {
+    void layouts() throws Exception {
         Artifact artifact =
                 Artifact.of("an-example.artifact:used-FOR42.testing:ext-ens.ion:blah-1.2.3-foo");
 
@@ -90,7 +87,7 @@ public class LayoutTest {
      * @throws Exception
      */
     @Test
-    public void testJppPrefixes() throws Exception {
+    void jppPrefixes() throws Exception {
         Artifact artifact1 = Artifact.of("JPP:testing:abc:1.2.3");
         Artifact artifact2 = Artifact.of("JPP/group:testing:abc:1.2.3");
         Artifact artifact3 = Artifact.of("JPP-group:testing:abc:1.2.3");

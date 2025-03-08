@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.repository.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import org.easymock.EasyMock;
@@ -32,9 +30,9 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class MavenRepositoryTest {
+class MavenRepositoryTest {
     @Test
-    public void testMavenRepository() throws Exception {
+    void mavenRepository() throws Exception {
         Configuration configuration = new Configuration();
         Repository repository = new Repository();
         repository.setId("test123");
@@ -48,17 +46,16 @@ public class MavenRepositoryTest {
         RepositoryConfigurator repoConfigurator = new DefaultRepositoryConfigurator(configurator);
         org.fedoraproject.xmvn.repository.Repository repo =
                 repoConfigurator.configureRepository("test123");
-        assertNotNull(repo);
+        assertThat(repo).isNotNull();
         EasyMock.verify(configurator);
 
         Artifact artifact1 = Artifact.of("foo.bar:the-artifact:baz:1.2.3");
         ArtifactContext context = new ArtifactContext(artifact1);
-        assertEquals(
-                Path.of("foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz"),
-                repo.getPrimaryArtifactPath(artifact1, context, "IGNORE-ME"));
+        assertThat(repo.getPrimaryArtifactPath(artifact1, context, "IGNORE-ME"))
+                .isEqualTo(Path.of("foo/bar/the-artifact/1.2.3/the-artifact-1.2.3.baz"));
 
         Artifact artifact2 = artifact1.withVersion(null);
         ArtifactContext context2 = new ArtifactContext(artifact2);
-        assertNull(repo.getPrimaryArtifactPath(artifact2, context2, "IGNORE-ME"));
+        assertThat(repo.getPrimaryArtifactPath(artifact2, context2, "IGNORE-ME")).isNull();
     }
 }

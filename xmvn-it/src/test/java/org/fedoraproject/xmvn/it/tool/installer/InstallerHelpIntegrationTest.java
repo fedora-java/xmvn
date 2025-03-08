@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool.installer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -27,11 +25,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class InstallerHelpIntegrationTest extends AbstractToolIntegrationTest {
+class InstallerHelpIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testInstallerHelp() throws Exception {
-        assertEquals(0, invokeTool("xmvn-install", "--help"));
-        assertFalse(getStderr().findAny().isPresent());
-        assertTrue(getStdout().anyMatch(line -> line.startsWith("Usage: xmvn-install")));
+    void installerHelp() throws Exception {
+        assertThat(invokeTool("xmvn-install", "--help")).isEqualTo(0);
+        assertThat(getStderr()).isEmpty();
+        assertThat(getStdout()).anyMatch(line -> line.startsWith("Usage: xmvn-install"));
     }
 }

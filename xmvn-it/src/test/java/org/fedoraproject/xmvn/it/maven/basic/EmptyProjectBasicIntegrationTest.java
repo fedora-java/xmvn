@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class EmptyProjectBasicIntegrationTest extends AbstractMavenIntegrationTest {
+class EmptyProjectBasicIntegrationTest extends AbstractMavenIntegrationTest {
     /**
      * This test is supposed to verify that XMvn can be executed and that it can successfully build
      * the most basic project.
@@ -31,7 +31,7 @@ public class EmptyProjectBasicIntegrationTest extends AbstractMavenIntegrationTe
      * @throws Exception
      */
     @Test
-    public void testEmptyProject() throws Exception {
+    void testEmptyProject() throws Exception {
         performTest("verify");
     }
 }

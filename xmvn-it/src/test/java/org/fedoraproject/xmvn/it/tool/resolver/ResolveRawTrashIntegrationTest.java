@@ -15,9 +15,7 @@
  */
 package org.fedoraproject.xmvn.it.tool.resolver;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.fedoraproject.xmvn.it.tool.AbstractToolIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -27,11 +25,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author Mikolaj Izdebski
  */
-public class ResolveRawTrashIntegrationTest extends AbstractToolIntegrationTest {
+class ResolveRawTrashIntegrationTest extends AbstractToolIntegrationTest {
     @Test
-    public void testResolveRawTrash() throws Exception {
-        assertEquals(2, invokeToolWithInput("xyzzy", "xmvn-resolve", "--raw-request"));
-        assertTrue(getStderr().findAny().isPresent());
-        assertFalse(getStdout().findAny().isPresent());
+    void resolveRawTrash() throws Exception {
+        assertThat(invokeToolWithInput("xyzzy", "xmvn-resolve", "--raw-request")).isEqualTo(2);
+        assertThat(getStderr()).isNotEmpty();
+        assertThat(getStdout()).isEmpty();
     }
 }

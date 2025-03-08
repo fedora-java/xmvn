@@ -15,20 +15,15 @@
  */
 package org.fedoraproject.xmvn.tools.install;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.Arrays;
 import java.util.jar.Attributes;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -40,11 +35,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Mikolaj Izdebski
  */
-public class JarUtilsTest {
+class JarUtilsTest {
     private Path workDir;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
         workDir = Path.of("target/test-work");
         Files.createDirectories(workDir);
     }
@@ -63,16 +58,16 @@ public class JarUtilsTest {
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
             Manifest mf = jis.getManifest();
-            assertNotNull(mf);
+            assertThat(mf).isNotNull();
 
             Attributes attr = mf.getMainAttributes();
-            assertNotNull(attr);
+            assertThat(attr).isNotNull();
 
-            assertEquals("org.apache.maven", attr.getValue("JavaPackages-GroupId"));
-            assertEquals("maven-model", attr.getValue("JavaPackages-ArtifactId"));
-            assertEquals("xsd", attr.getValue("JavaPackages-Extension"));
-            assertEquals("model", attr.getValue("JavaPackages-Classifier"));
-            assertEquals("2.2.1", attr.getValue("JavaPackages-Version"));
+            assertThat(attr.getValue("JavaPackages-GroupId")).isEqualTo("org.apache.maven");
+            assertThat(attr.getValue("JavaPackages-ArtifactId")).isEqualTo("maven-model");
+            assertThat(attr.getValue("JavaPackages-Extension")).isEqualTo("xsd");
+            assertThat(attr.getValue("JavaPackages-Classifier")).isEqualTo("model");
+            assertThat(attr.getValue("JavaPackages-Version")).isEqualTo("2.2.1");
         }
     }
 
@@ -82,7 +77,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjection() throws Exception {
+    void manifestInjection() throws Exception {
         testManifestInjectionInto("manifest.jar");
     }
 
@@ -92,7 +87,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionNoJarSuffix() throws Exception {
+    void manifestInjectionNoJarSuffix() throws Exception {
         testManifestInjectionInto("foo");
     }
 
@@ -102,7 +97,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionHiddenFilename() throws Exception {
+    void manifestInjectionHiddenFilename() throws Exception {
         testManifestInjectionInto(".f");
     }
 
@@ -113,7 +108,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionLateManifest() throws Exception {
+    void manifestInjectionLateManifest() throws Exception {
         Path testResource = Path.of("src/test/resources/late-manifest.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -127,16 +122,16 @@ public class JarUtilsTest {
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
             Manifest mf = jis.getManifest();
-            assertNotNull(mf);
+            assertThat(mf).isNotNull();
 
             Attributes attr = mf.getMainAttributes();
-            assertNotNull(attr);
+            assertThat(attr).isNotNull();
 
-            assertEquals("org.apache.maven", attr.getValue("JavaPackages-GroupId"));
-            assertEquals("maven-model", attr.getValue("JavaPackages-ArtifactId"));
-            assertEquals("xsd", attr.getValue("JavaPackages-Extension"));
-            assertEquals("model", attr.getValue("JavaPackages-Classifier"));
-            assertEquals("2.2.1", attr.getValue("JavaPackages-Version"));
+            assertThat(attr.getValue("JavaPackages-GroupId")).isEqualTo("org.apache.maven");
+            assertThat(attr.getValue("JavaPackages-ArtifactId")).isEqualTo("maven-model");
+            assertThat(attr.getValue("JavaPackages-Extension")).isEqualTo("xsd");
+            assertThat(attr.getValue("JavaPackages-Classifier")).isEqualTo("model");
+            assertThat(attr.getValue("JavaPackages-Version")).isEqualTo("2.2.1");
         }
     }
 
@@ -147,7 +142,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionRecompressionCausesSizeMismatch() throws Exception {
+    void manifestInjectionRecompressionCausesSizeMismatch() throws Exception {
         Path testResource = Path.of("src/test/resources/recompression-size.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -162,14 +157,15 @@ public class JarUtilsTest {
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
             Manifest mf = jis.getManifest();
-            assertNotNull(mf);
+            assertThat(mf).isNotNull();
 
             Attributes attr = mf.getMainAttributes();
-            assertNotNull(attr);
+            assertThat(attr).isNotNull();
 
-            assertEquals("org.eclipse.osgi", attr.getValue("JavaPackages-GroupId"));
-            assertEquals("osgi.compatibility.state", attr.getValue("JavaPackages-ArtifactId"));
-            assertEquals("1.1.0.v20180409-1212", attr.getValue("JavaPackages-Version"));
+            assertThat(attr.getValue("JavaPackages-GroupId")).isEqualTo("org.eclipse.osgi");
+            assertThat(attr.getValue("JavaPackages-ArtifactId"))
+                    .isEqualTo("osgi.compatibility.state");
+            assertThat(attr.getValue("JavaPackages-Version")).isEqualTo("1.1.0.v20180409-1212");
         }
     }
 
@@ -179,7 +175,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionDuplicateManifest() throws Exception {
+    void manifestInjectionDuplicateManifest() throws Exception {
         Path testResource = Path.of("src/test/resources/duplicate-manifest.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -193,16 +189,16 @@ public class JarUtilsTest {
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
             Manifest mf = jis.getManifest();
-            assertNotNull(mf);
+            assertThat(mf).isNotNull();
 
             Attributes attr = mf.getMainAttributes();
-            assertNotNull(attr);
+            assertThat(attr).isNotNull();
 
-            assertEquals("org.apache.maven", attr.getValue("JavaPackages-GroupId"));
-            assertEquals("maven-model", attr.getValue("JavaPackages-ArtifactId"));
-            assertEquals("xsd", attr.getValue("JavaPackages-Extension"));
-            assertEquals("model", attr.getValue("JavaPackages-Classifier"));
-            assertEquals("2.2.1", attr.getValue("JavaPackages-Version"));
+            assertThat(attr.getValue("JavaPackages-GroupId")).isEqualTo("org.apache.maven");
+            assertThat(attr.getValue("JavaPackages-ArtifactId")).isEqualTo("maven-model");
+            assertThat(attr.getValue("JavaPackages-Extension")).isEqualTo("xsd");
+            assertThat(attr.getValue("JavaPackages-Classifier")).isEqualTo("model");
+            assertThat(attr.getValue("JavaPackages-Version")).isEqualTo("2.2.1");
         }
     }
 
@@ -213,7 +209,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionDefaults() throws Exception {
+    void manifestInjectionDefaults() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest-defaults.jar");
         Files.copy(
@@ -227,16 +223,16 @@ public class JarUtilsTest {
 
         try (JarInputStream jis = new JarInputStream(Files.newInputStream(testJar))) {
             Manifest mf = jis.getManifest();
-            assertNotNull(mf);
+            assertThat(mf).isNotNull();
 
             Attributes attr = mf.getMainAttributes();
-            assertNotNull(attr);
+            assertThat(attr).isNotNull();
 
-            assertEquals("xpp3", attr.getValue("JavaPackages-GroupId"));
-            assertEquals("xpp3_xpath", attr.getValue("JavaPackages-ArtifactId"));
-            assertEquals(null, attr.getValue("JavaPackages-Extension"));
-            assertEquals(null, attr.getValue("JavaPackages-Classifier"));
-            assertEquals(null, attr.getValue("JavaPackages-Version"));
+            assertThat(attr.getValue("JavaPackages-GroupId")).isEqualTo("xpp3");
+            assertThat(attr.getValue("JavaPackages-ArtifactId")).isEqualTo("xpp3_xpath");
+            assertThat(attr.getValue("JavaPackages-Extension")).isNull();
+            assertThat(attr.getValue("JavaPackages-Classifier")).isNull();
+            assertThat(attr.getValue("JavaPackages-Version")).isNull();
         }
     }
 
@@ -246,7 +242,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionSanePermissions() throws Exception {
+    void manifestInjectionSanePermissions() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -255,15 +251,14 @@ public class JarUtilsTest {
                 StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING);
 
-        assumeTrue(
-                Files.getPosixFilePermissions(testJar).contains(PosixFilePermission.OTHERS_READ),
-                "sane umask");
+        assumeThat(Files.getPosixFilePermissions(testJar))
+                .contains(PosixFilePermission.OTHERS_READ);
 
         Artifact artifact = Artifact.of("org.apache.maven", "maven-model", "xsd", "model", "2.2.1");
         JarUtils.injectManifest(testJar, artifact);
 
-        assertTrue(
-                Files.getPosixFilePermissions(testJar).contains(PosixFilePermission.OTHERS_READ));
+        assertThat(Files.getPosixFilePermissions(testJar))
+                .contains(PosixFilePermission.OTHERS_READ);
     }
 
     /**
@@ -272,19 +267,19 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testNativeCodeDetection() throws Exception {
+    void nativeCodeDetection() throws Exception {
         Path plainJarPath = Path.of("src/test/resources/example.jar");
         Path nativeCodeJarPath = Path.of("src/test/resources/native-code.jar");
         Path nativeMethodJarPath = Path.of("src/test/resources/native-method.jar");
 
-        assertFalse(JarUtils.usesNativeCode(plainJarPath));
-        assertFalse(JarUtils.containsNativeCode(plainJarPath));
+        assertThat(JarUtils.usesNativeCode(plainJarPath)).isFalse();
+        assertThat(JarUtils.containsNativeCode(plainJarPath)).isFalse();
 
-        assertFalse(JarUtils.usesNativeCode(nativeCodeJarPath));
-        assertTrue(JarUtils.containsNativeCode(nativeCodeJarPath));
+        assertThat(JarUtils.usesNativeCode(nativeCodeJarPath)).isFalse();
+        assertThat(JarUtils.containsNativeCode(nativeCodeJarPath)).isTrue();
 
-        assertTrue(JarUtils.usesNativeCode(nativeMethodJarPath));
-        assertFalse(JarUtils.containsNativeCode(nativeMethodJarPath));
+        assertThat(JarUtils.usesNativeCode(nativeMethodJarPath)).isTrue();
+        assertThat(JarUtils.containsNativeCode(nativeMethodJarPath)).isFalse();
     }
 
     /**
@@ -293,7 +288,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testInvalidJar() throws Exception {
+    void invalidJar() throws Exception {
         Path testResource = Path.of("src/test/resources/invalid.jar");
         Path testJar = workDir.resolve("invalid.jar");
         Files.copy(
@@ -305,12 +300,10 @@ public class JarUtilsTest {
         Artifact artifact = Artifact.of("foo", "bar");
         JarUtils.injectManifest(testJar, artifact);
 
-        byte[] testJarContent = Files.readAllBytes(testJar);
-        byte[] testResourceContent = Files.readAllBytes(testResource);
-        assertTrue(Arrays.equals(testJarContent, testResourceContent));
+        assertThat(testJar).hasSameBinaryContentAs(testResource);
 
-        assertFalse(JarUtils.usesNativeCode(testResource));
-        assertFalse(JarUtils.containsNativeCode(testResource));
+        assertThat(JarUtils.usesNativeCode(testResource)).isFalse();
+        assertThat(JarUtils.containsNativeCode(testResource)).isFalse();
     }
 
     /**
@@ -319,7 +312,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testSameINode() throws Exception {
+    void sameINode() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -336,7 +329,7 @@ public class JarUtilsTest {
 
         long newInode = (Long) Files.getAttribute(testJar, "unix:ino");
 
-        assertEquals(oldInode, newInode, "Different manifest I-node after injection");
+        assertThat(newInode).as("Different manifest I-node after injection").isEqualTo(oldInode);
     }
 
     /**
@@ -346,7 +339,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testBackupDeletion() throws Exception {
+    void backupDeletion() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -360,7 +353,7 @@ public class JarUtilsTest {
         Path backupPath = JarUtils.getBackupNameOf(testJar);
         Files.deleteIfExists(backupPath);
         JarUtils.injectManifest(testJar, artifact);
-        assertFalse(Files.exists(backupPath));
+        assertThat(backupPath).doesNotExist();
     }
 
     /**
@@ -370,7 +363,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testBackupOnFailure() throws Exception {
+    void backupOnFailure() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -386,22 +379,10 @@ public class JarUtilsTest {
         Path backupPath = JarUtils.getBackupNameOf(testJar);
         Files.deleteIfExists(backupPath);
 
-        byte[] content = Files.readAllBytes(testJar);
-
-        Exception ex =
-                assertThrows(Exception.class, () -> JarUtils.injectManifest(testJar, artifact));
-
-        assertTrue(
-                ex.getMessage().contains(backupPath.toString()),
-                "An exception thrown when injecting manifest does not mention stored backup file");
-        assertTrue(Files.exists(backupPath));
-
-        byte[] backupContent = Files.readAllBytes(backupPath);
-
-        assertArrayEquals(
-                content,
-                backupContent,
-                "Content of the backup file is different from the content of the original file");
+        assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> JarUtils.injectManifest(testJar, artifact))
+                .withMessageContaining(backupPath.toString());
+        assertThat(backupPath).hasSameBinaryContentAs(testResource);
 
         Files.copy(
                 testResource,
@@ -414,12 +395,10 @@ public class JarUtilsTest {
             os.write(0);
         }
 
-        assertThrows(Exception.class, () -> JarUtils.injectManifest(testJar, artifact));
+        assertThatExceptionOfType(Exception.class)
+                .isThrownBy(() -> JarUtils.injectManifest(testJar, artifact));
 
-        assertArrayEquals(
-                backupContent,
-                Files.readAllBytes(backupPath),
-                "Backup file content was overwritten after an unsuccessful injection");
+        assertThat(backupPath).hasSameBinaryContentAs(testResource);
 
         EasyMock.verify(artifact);
 
@@ -432,7 +411,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testFailWhenBachupPresent() throws Exception {
+    void failWhenBachupPresent() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar = workDir.resolve("manifest.jar");
         Files.copy(
@@ -448,10 +427,8 @@ public class JarUtilsTest {
         Files.createFile(backupPath);
 
         try {
-            assertThrows(
-                    Exception.class,
-                    () -> JarUtils.injectManifest(testJar, artifact),
-                    "Expected failure because the the backup file already exists");
+            assertThatExceptionOfType(Exception.class)
+                    .isThrownBy(() -> JarUtils.injectManifest(testJar, artifact));
         } finally {
             Files.delete(backupPath);
         }
@@ -464,7 +441,7 @@ public class JarUtilsTest {
      * @throws Exception
      */
     @Test
-    public void testManifestInjectionReproducible() throws Exception {
+    void manifestInjectionReproducible() throws Exception {
         Path testResource = Path.of("src/test/resources/example.jar");
         Path testJar1 = workDir.resolve("reproducible1.jar");
         Path testJar2 = workDir.resolve("reproducible2.jar");
@@ -485,8 +462,6 @@ public class JarUtilsTest {
         Thread.sleep(3000); // ZIP time granularity is 2 seconds
         JarUtils.injectManifest(testJar2, artifact);
 
-        byte[] bytes1 = Files.readAllBytes(testJar1);
-        byte[] bytes2 = Files.readAllBytes(testJar2);
-        assertArrayEquals(bytes1, bytes2);
+        assertThat(testJar1).hasSameBinaryContentAs(testJar2);
     }
 }

@@ -15,7 +15,7 @@
  */
 package org.fedoraproject.xmvn.logging.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -41,36 +41,36 @@ class ConsoleLoggerTest {
     }
 
     @Test
-    void testIsDebugEnabled() {
+    void isDebugEnabled() {
         boolean debugExpected = System.getProperty("xmvn.debug") != null;
-        assertEquals(debugExpected, logger.isDebugEnabled());
+        assertThat(logger.isDebugEnabled()).isEqualTo(debugExpected);
     }
 
     @Test
-    void testDebugLogging() {
+    void debugLogging() {
         System.setProperty("xmvn.debug", "true");
         logger = new ConsoleLogger();
         logger.debug("Debug message {}", 123);
-        assertTrue(getLog().contains("DEBUG: Debug message 123"));
+        assertThat(getLog()).contains("DEBUG: Debug message 123");
         System.clearProperty("xmvn.debug");
     }
 
     @Test
-    void testInfoLogging() {
+    void infoLogging() {
         logger.info("Info message {}", 42);
-        assertTrue(getLog().contains("Info message 42"));
+        assertThat(getLog()).contains("Info message 42");
     }
 
     @Test
-    void testWarnLogging() {
+    void warnLogging() {
         logger.warn("Warning message {}");
-        assertTrue(getLog().contains("WARNING: Warning message"));
+        assertThat(getLog()).contains("WARNING: Warning message");
     }
 
     @Test
-    void testErrorLogging() {
+    void errorLogging() {
         logger.error("Error message {}", "Critical");
-        assertTrue(getLog().contains("ERROR: Error message Critical"));
+        assertThat(getLog()).contains("ERROR: Error message Critical");
     }
 
     @BeforeEach

@@ -27,9 +27,9 @@ import org.xmlunit.assertj3.XmlAssert;
 /**
  * @author Marian Koncek
  */
-public class ResolutionResultMarshallerListTest {
+class ResolutionResultMarshallerListTest {
     @Test
-    public void testEmpty() throws Exception {
+    void empty() throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ResolverDAO.marshalResults(bos, List.of());
 
@@ -41,7 +41,7 @@ public class ResolutionResultMarshallerListTest {
     }
 
     @Test
-    public void testMultiple() throws Exception {
+    void multiple() throws Exception {
         List<ResolutionResult> list = new ArrayList<>();
 
         ResolutionResultBean temp;
@@ -93,7 +93,7 @@ public class ResolutionResultMarshallerListTest {
     }
 
     @Test
-    public void testSingle() throws Exception {
+    void single() throws Exception {
         ResolutionResult rr = new ResolutionResultBean().build();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ResolverDAO.marshalResults(bos, Arrays.asList(new ResolutionResult[] {rr}));
