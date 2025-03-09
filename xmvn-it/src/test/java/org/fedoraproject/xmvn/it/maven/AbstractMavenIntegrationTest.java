@@ -73,7 +73,6 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
     public void performTest(Deque<String> argList) throws Exception {
         argList.addFirst("--show-version");
         argList.addFirst("--batch-mode");
-        String[] args = argList.toArray(new String[argList.size()]);
 
         try (OutputStream saveStdout = Files.newOutputStream(getWorkDir().resolve(STDOUT));
                 OutputStream saveStderr = Files.newOutputStream(getWorkDir().resolve(STDERR));
@@ -85,7 +84,7 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
                 PrintStream printTeeStderr = new PrintStream(teeStderr);
                 PrintStream stdout = isPrintOutput() ? printTeeStdout : printSaveStdout;
                 PrintStream stderr = isPrintOutput() ? printTeeStderr : printSaveStderr) {
-            assertThat(run(stdout, stderr, args)).isEqualTo(expectFailure ? 1 : 0);
+            assertThat(run(stdout, stderr, argList)).isEqualTo(expectFailure ? 1 : 0);
         }
 
         assertThat(getStderr()).isEmpty();
@@ -95,7 +94,7 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
         }
     }
 
-    private int run(PrintStream out, PrintStream err, String... args) throws Exception {
+    private int run(PrintStream out, PrintStream err, Deque<String> argList) throws Exception {
         Properties originalProperties = System.getProperties();
         System.setProperties(null);
         System.setProperty("maven.home", getMavenHome().toString());
@@ -106,6 +105,9 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
         System.setProperty("xmvn.it.dep.api", getTestProperty("xmvn.it.dep.api"));
         System.setProperty("xmvn.it.dep.core", getTestProperty("xmvn.it.dep.core"));
         System.setProperty("xmvn.it.dep.connector", getTestProperty("xmvn.it.dep.connector"));
+
+        // XXX this is slow, find a better way how to cache downloaded artifacts between IT runs
+        argList.addFirst("-Dmaven.repo.local=" + getWorkDir().resolve("repo-local"));
 
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader parentClassLoader = ClassLoader.getSystemClassLoader().getParent();
@@ -137,7 +139,12 @@ public abstract class AbstractMavenIntegrationTest extends AbstractIntegrationTe
                                     String.class,
                                     PrintStream.class,
                                     PrintStream.class)
-                            .invoke(mavenCli, args, getWorkDir().toString(), out, err);
+                            .invoke(
+                                    mavenCli,
+                                    argList.toArray(new String[argList.size()]),
+                                    getWorkDir().toString(),
+                                    out,
+                                    err);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);
             System.setProperties(originalProperties);

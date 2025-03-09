@@ -16,11 +16,14 @@
 package org.fedoraproject.xmvn.connector.maven;
 
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
+import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
+import org.apache.maven.api.SessionData;
 import org.apache.maven.api.Toolchain;
 import org.apache.maven.api.services.ToolchainManager;
 import org.apache.maven.execution.MavenSession;
@@ -40,11 +43,21 @@ public class XMvnToolchainManager extends AbstractMavenLifecycleParticipant {
     }
 
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void afterProjectsRead(MavenSession mavenSession) {
         Session session = mavenSession.getSession();
-        for (Toolchain toolchain : toolchainManager.getToolchainsForType(session, "jdk")) {
+        SessionData.Key<ConcurrentHashMap<Project, ConcurrentHashMap<String, Object>>>
+                toolchainContextKey =
+                        (SessionData.Key)
+                                SessionData.key(ConcurrentHashMap.class, "toolchain-context");
+        for (Toolchain toolchain : toolchainManager.getToolchains(session, "jdk")) {
             if (toolchain.matchesRequirements(Collections.singletonMap("xmvn", "xmvn"))) {
-                toolchainManager.storeToolchainToBuildContext(session, toolchain);
+                for (Project project : session.getProjects()) {
+                    session.getData()
+                            .computeIfAbsent(toolchainContextKey, ConcurrentHashMap::new)
+                            .computeIfAbsent(project, p -> new ConcurrentHashMap<>())
+                            .put("toolchain-" + toolchain.getType(), toolchain.getModel());
+                }
             }
         }
     }

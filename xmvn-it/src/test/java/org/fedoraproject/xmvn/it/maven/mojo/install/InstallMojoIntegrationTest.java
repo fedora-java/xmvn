@@ -39,7 +39,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         Path reactorPath = Path.of(".xmvn-reactor");
         assertThat(reactorPath).isRegularFile();
         PackageMetadata pmd = PackageMetadata.readFromXML(reactorPath);
-        assertThat(pmd.getArtifacts()).hasSize(6);
+        assertThat(pmd.getArtifacts()).hasSize(9);
 
         var map = pmd.getArtifacts().stream().collect(Collectors.toMap(amd -> id(amd), amd -> amd));
         List<ArtifactMetadata> sortedList = new ArrayList<>(new TreeMap<>(map).values());
@@ -66,6 +66,16 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(ap.getDependencies()).hasSize(1);
 
         assertThat(it).hasNext();
+        ArtifactMetadata apc = it.next();
+        assertThat(apc.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(apc.getArtifactId()).isEqualTo("install-attached");
+        assertThat(apc.getExtension()).isEqualTo("pom");
+        assertThat(apc.getClassifier()).isEqualTo("consumer");
+        assertThat(apc.getVersion()).isEqualTo("42");
+        assertThat(Path.of(apc.getPath())).isRegularFile();
+        assertThat(apc.getDependencies()).hasSize(1);
+
+        assertThat(it).hasNext();
         ArtifactMetadata at = it.next();
         assertThat(at.getGroupId()).isEqualTo("xmvn.it.install.mojo");
         assertThat(at.getArtifactId()).isEqualTo("install-attached");
@@ -86,6 +96,16 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(pp.getDependencies()).isEmpty();
 
         assertThat(it).hasNext();
+        ArtifactMetadata ppc = it.next();
+        assertThat(ppc.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(ppc.getArtifactId()).isEqualTo("install-parent");
+        assertThat(ppc.getExtension()).isEqualTo("pom");
+        assertThat(ppc.getClassifier()).isEqualTo("consumer");
+        assertThat(ppc.getVersion()).isEqualTo("42");
+        assertThat(Path.of(ppc.getPath())).isRegularFile();
+        assertThat(ppc.getDependencies()).isEmpty();
+
+        assertThat(it).hasNext();
         ArtifactMetadata sj = it.next();
         assertThat(sj.getGroupId()).isEqualTo("xmvn.it.install.mojo");
         assertThat(sj.getArtifactId()).isEqualTo("install-simple");
@@ -104,5 +124,15 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(sp.getVersion()).isEqualTo("42");
         assertThat(Path.of(sp.getPath())).isRegularFile();
         assertThat(sp.getDependencies()).isEmpty();
+
+        assertThat(it).hasNext();
+        ArtifactMetadata spc = it.next();
+        assertThat(spc.getGroupId()).isEqualTo("xmvn.it.install.mojo");
+        assertThat(spc.getArtifactId()).isEqualTo("install-simple");
+        assertThat(spc.getExtension()).isEqualTo("pom");
+        assertThat(spc.getClassifier()).isEqualTo("consumer");
+        assertThat(spc.getVersion()).isEqualTo("42");
+        assertThat(Path.of(spc.getPath())).isRegularFile();
+        assertThat(spc.getDependencies()).isEmpty();
     }
 }
