@@ -156,6 +156,8 @@ class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "bin/mvnDebug\\.cmd");
         expect(1, 1, "bin/mvnenc");
         expect(1, 1, "bin/mvnenc\\.cmd");
+        expect(1, 1, "bin/mvnsh");
+        expect(1, 1, "bin/mvnsh\\.cmd");
         expect(1, 1, "bin/mvnyjp");
         expect(1, 1, "bin/m2\\.conf");
 
@@ -168,7 +170,7 @@ class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "conf/settings\\.xml");
         expect(1, 1, "conf/toolchains\\.xml");
         expect(1, 1, "conf/logging/");
-        expect(1, 1, "conf/logging/simplelogger\\.properties");
+        expect(1, 1, "conf/logging/maven\\.logger\\.properties");
 
         expect(1, 1, "lib/");
         expect(50, 100, "lib/[^/]*\\.jar");

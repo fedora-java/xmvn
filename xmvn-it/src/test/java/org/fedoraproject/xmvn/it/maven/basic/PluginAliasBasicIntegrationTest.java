@@ -34,7 +34,7 @@ class PluginAliasBasicIntegrationTest extends AbstractMavenIntegrationTest {
                 .anyMatch(
                         s ->
                                 s.startsWith(
-                                        "[INFO] --- plexus-component-metadata:1.7.1:generate-metadata (default)"));
+                                        "[INFO] --- plexus-component-metadata:2.2.0:generate-metadata (default)"));
         assertThat(Path.of("src/main/resources/META-INF/plexus/components.xml")).isRegularFile();
         assertThat(Path.of("component-metadata-test.xml")).isRegularFile();
     }

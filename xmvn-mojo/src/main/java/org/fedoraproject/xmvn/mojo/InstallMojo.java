@@ -120,7 +120,11 @@ public class InstallMojo extends AbstractMojo {
     }
 
     private void addArtifactToPlan(
-            PackageMetadata plan, DownloadedArtifact mavenArtifact, String type, Model model)
+            PackageMetadata plan,
+            ProducedArtifact mavenArtifact,
+            Path artifactPath,
+            String type,
+            Model model)
             throws MojoExecutionException {
 
         ArtifactMetadata artifact = new ArtifactMetadata();
@@ -129,7 +133,7 @@ public class InstallMojo extends AbstractMojo {
         artifact.setExtension(mavenArtifact.getExtension());
         artifact.setClassifier(mavenArtifact.getClassifier());
         artifact.setVersion(mavenArtifact.getVersion().asString());
-        artifact.setPath(mavenArtifact.getPath().toString());
+        artifact.setPath(artifactPath.toString());
         artifact.getProperties().put("type", type);
 
         for (var mavenDependency : model.getDependencies()) {
@@ -184,7 +188,8 @@ public class InstallMojo extends AbstractMojo {
                         continue;
                     }
 
-                    addArtifactToPlan(plan, resolvedArtifact, type, project.getModel());
+                    addArtifactToPlan(
+                            plan, artifact, resolvedArtifact.getPath(), type, project.getModel());
                 } catch (ArtifactResolverException e) {
                     logger.warn("Unable to install artifact {}: resolution failed", artifact, e);
                 }

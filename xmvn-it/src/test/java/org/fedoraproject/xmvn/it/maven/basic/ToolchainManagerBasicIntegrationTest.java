@@ -33,14 +33,8 @@ class ToolchainManagerBasicIntegrationTest extends AbstractMavenIntegrationTest 
                         + getWorkDir().resolve("toolchains.xml").toString(),
                 "verify");
         assertThat(getStdout())
-                .anyMatch(
-                        s ->
-                                s.matches(
-                                        "\\[INFO\\] Toolchain in (maven-)?compiler-plugin: JDK\\[/tmp\\]"));
+                .anyMatch(s -> s.startsWith("[INFO] Toolchain in maven-compiler-plugin: "));
         assertThat(getStdout())
-                .anyMatch(
-                        s ->
-                                s.matches(
-                                        "\\[INFO\\] Toolchain in (maven-)?surefire-plugin: JDK\\[/tmp\\]"));
+                .anyMatch(s -> s.startsWith("[INFO] Toolchain in maven-surefire-plugin: "));
     }
 }
