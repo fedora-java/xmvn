@@ -52,7 +52,7 @@ class ResolveRawOneIntegrationTest extends AbstractToolIntegrationTest {
         assertThat(invokeToolWithInput(input, "xmvn-resolve", "--raw-request")).isEqualTo(0);
         assertThat(getStderr()).isEmpty();
         Path absPath =
-                getDependencyDir().resolve("plexus-component-metadata-1.7.1.jar").toRealPath();
+                getDependencyDir().resolve("plexus-component-metadata-2.2.0.jar").toRealPath();
         String expectedOutput =
                 String.join(
                         "\n",
