@@ -30,7 +30,7 @@ public class DefaultLogger implements Logger {
 
     public DefaultLogger() {
         if (System.getProperty("xmvn.debug") != null) {
-            System.setProperty("org.slf4j.simpleLogger.log.XMvn", "trace");
+            System.setProperty("maven.logger.log.XMvn", "trace");
         }
 
         delegate = LoggerFactory.getLogger("XMvn");
