@@ -29,26 +29,27 @@ import java.security.NoSuchAlgorithmException;
 class CacheManager {
     private static final String DIGEST_ALGORITHM = "SHA-256";
 
-    private final MessageDigest digest;
-
-    private static volatile Path cacheHome;
+    private final Path cacheHome;
 
     public CacheManager() {
+        Path xdgHome = getPathDefault("HOME", System.getProperty("user.home"));
+        Path cacheRoot = getPathDefault("XDG_CONFIG_HOME", xdgHome.resolve(".cache"));
+        cacheHome = cacheRoot.resolve("xmvn");
+    }
+
+    String hash(byte[] bytes) {
         try {
-            digest = MessageDigest.getInstance(DIGEST_ALGORITHM);
+            MessageDigest md = MessageDigest.getInstance(DIGEST_ALGORITHM);
+            byte[] digest = md.digest(bytes);
+            return new BigInteger(1, digest)
+                    .setBit(digest.length << 3)
+                    .toString(16)
+                    .substring(1)
+                    .toUpperCase();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(
                     "Digest algorithm " + DIGEST_ALGORITHM + " is not available", e);
         }
-    }
-
-    String hash(byte[] bytes) {
-        byte[] digest = this.digest.digest(bytes);
-        return new BigInteger(1, digest)
-                .setBit(digest.length << 3)
-                .toString(16)
-                .substring(1)
-                .toUpperCase();
     }
 
     private static Path getPathDefault(String key, Object defaultValue) {
@@ -60,22 +61,12 @@ class CacheManager {
         return Path.of(value);
     }
 
-    private static Path getCacheHome() {
-        if (cacheHome == null) {
-            Path xdgHome = getPathDefault("HOME", System.getProperty("user.home"));
-            Path cacheRoot = getPathDefault("XDG_CONFIG_HOME", xdgHome.resolve(".cache"));
-            cacheHome = cacheRoot.resolve("xmvn");
-        }
-
-        return cacheHome;
-    }
-
     public Path cacheFile(String content, String fileName) throws IOException {
         byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
         String hash = hash(bytes);
         String hash1 = hash.substring(0, 2);
 
-        Path cacheDir = getCacheHome().resolve(hash1).resolve(hash);
+        Path cacheDir = cacheHome.resolve(hash1).resolve(hash);
         Files.createDirectories(cacheDir);
 
         Path cacheFile = cacheDir.resolve(fileName);
