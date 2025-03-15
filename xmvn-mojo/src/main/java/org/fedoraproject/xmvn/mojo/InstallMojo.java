@@ -19,16 +19,16 @@ import io.kojan.xml.XMLException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import javax.inject.Inject;
 import org.apache.maven.api.DependencyCoordinates;
 import org.apache.maven.api.DependencyScope;
-import org.apache.maven.api.DownloadedArtifact;
 import org.apache.maven.api.Exclusion;
 import org.apache.maven.api.ProducedArtifact;
 import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
 import org.apache.maven.api.model.Model;
-import org.apache.maven.api.services.ArtifactResolverException;
+import org.apache.maven.api.services.ArtifactManager;
 import org.apache.maven.api.services.DependencyCoordinatesFactory;
 import org.apache.maven.api.services.ProjectManager;
 import org.apache.maven.plugin.AbstractMojo;
@@ -51,6 +51,7 @@ public class InstallMojo extends AbstractMojo {
     private final Logger logger;
     private final Session session;
     private final ProjectManager projectManager;
+    private final ArtifactManager artifactManager;
     private final DependencyCoordinatesFactory dependencyCoordsFactory;
 
     @Inject
@@ -58,10 +59,12 @@ public class InstallMojo extends AbstractMojo {
             Logger logger,
             Session session,
             ProjectManager projectManager,
+            ArtifactManager artifactManager,
             DependencyCoordinatesFactory dependencyCoordinatesFactory) {
         this.logger = logger;
         this.session = session;
         this.projectManager = projectManager;
+        this.artifactManager = artifactManager;
         this.dependencyCoordsFactory = dependencyCoordinatesFactory;
     }
 
@@ -178,21 +181,24 @@ public class InstallMojo extends AbstractMojo {
 
             for (ProducedArtifact artifact : projectManager.getAllArtifacts(project)) {
                 logger.debug("Trying to install artifact {}", artifact);
-                try {
-                    DownloadedArtifact resolvedArtifact = session.resolveArtifact(artifact);
-                    logger.debug("Artifact file was resolved to {}", resolvedArtifact.getPath());
-                    if (!Files.isRegularFile(resolvedArtifact.getPath())) {
-                        logger.warn(
-                                "Skipped installation of artifact {}: artifact file is not a regular file",
-                                artifact);
-                        continue;
-                    }
-
-                    addArtifactToPlan(
-                            plan, artifact, resolvedArtifact.getPath(), type, project.getModel());
-                } catch (ArtifactResolverException e) {
-                    logger.warn("Unable to install artifact {}: resolution failed", artifact, e);
+                Optional<Path> optionalPath = artifactManager.getPath(artifact);
+                if (optionalPath.isEmpty()) {
+                    logger.warn(
+                            "Skipped installation of artifact {}: artifact was not produced yet",
+                            artifact);
+                    continue;
                 }
+                Path path = optionalPath.get();
+                logger.debug("Artifact file was resolved to {}", path);
+                if (!Files.isRegularFile(path)) {
+                    logger.warn(
+                            "Skipped installation of artifact {}: artifact file {} is not a regular file",
+                            artifact,
+                            path);
+                    continue;
+                }
+
+                addArtifactToPlan(plan, artifact, path, type, project.getModel());
             }
         }
 
