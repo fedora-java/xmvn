@@ -175,6 +175,9 @@ public class InstallMojo extends AbstractMojo {
         Path planPath = Path.of(".xmvn-reactor");
         PackageMetadata plan = readInstallationPlan(planPath);
 
+        Path storageDir = Path.of(".xmvn").resolve("install-repo");
+        InstallationPlanStorage storage = new InstallationPlanStorage(storageDir);
+
         for (Project project : session.getProjects()) {
 
             String type = project.getPackaging().type().id();
@@ -198,7 +201,9 @@ public class InstallMojo extends AbstractMojo {
                     continue;
                 }
 
-                addArtifactToPlan(plan, artifact, path, type, project.getModel());
+                Path persistentPath = storage.persistArtifact(path);
+
+                addArtifactToPlan(plan, artifact, persistentPath, type, project.getModel());
             }
         }
 
