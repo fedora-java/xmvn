@@ -32,7 +32,7 @@ class InstallationPlanStorage {
     private final Path storageDir;
 
     public InstallationPlanStorage(Path storageDir) {
-        this.storageDir = storageDir;
+        this.storageDir = storageDir.toAbsolutePath();
     }
 
     private String hash(byte[] bytes) {

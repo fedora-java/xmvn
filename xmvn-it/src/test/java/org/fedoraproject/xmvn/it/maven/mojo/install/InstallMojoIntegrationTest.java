@@ -52,7 +52,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(aj.getExtension()).isEqualTo("jar");
         assertThat(aj.getClassifier()).isEqualTo("");
         assertThat(aj.getVersion()).isEqualTo("42");
-        assertThat(Path.of(aj.getPath())).isRegularFile();
+        assertThat(Path.of(aj.getPath())).isRegularFile().isAbsolute();
         assertThat(aj.getDependencies()).hasSize(1);
 
         assertThat(it).hasNext();
@@ -62,7 +62,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(ap.getExtension()).isEqualTo("pom");
         assertThat(ap.getClassifier()).isEqualTo("");
         assertThat(ap.getVersion()).isEqualTo("42");
-        assertThat(Path.of(ap.getPath())).isRegularFile();
+        assertThat(Path.of(ap.getPath())).isRegularFile().isAbsolute();
         assertThat(ap.getDependencies()).hasSize(1);
 
         assertThat(it).hasNext();
@@ -72,7 +72,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(apc.getExtension()).isEqualTo("pom");
         assertThat(apc.getClassifier()).isEqualTo("consumer");
         assertThat(apc.getVersion()).isEqualTo("42");
-        assertThat(Path.of(apc.getPath())).isRegularFile();
+        assertThat(Path.of(apc.getPath())).isRegularFile().isAbsolute();
         assertThat(apc.getDependencies()).hasSize(1);
 
         assertThat(it).hasNext();
@@ -82,7 +82,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(at.getExtension()).isEqualTo("jar");
         assertThat(at.getClassifier()).isEqualTo("tests");
         assertThat(at.getVersion()).isEqualTo("42");
-        assertThat(Path.of(at.getPath())).isRegularFile();
+        assertThat(Path.of(at.getPath())).isRegularFile().isAbsolute();
         assertThat(at.getDependencies()).hasSize(1);
 
         assertThat(it).hasNext();
@@ -92,7 +92,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(pp.getExtension()).isEqualTo("pom");
         assertThat(pp.getClassifier()).isEqualTo("");
         assertThat(pp.getVersion()).isEqualTo("42");
-        assertThat(Path.of(pp.getPath())).isRegularFile();
+        assertThat(Path.of(pp.getPath())).isRegularFile().isAbsolute();
         assertThat(pp.getDependencies()).isEmpty();
 
         assertThat(it).hasNext();
@@ -102,7 +102,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(ppc.getExtension()).isEqualTo("pom");
         assertThat(ppc.getClassifier()).isEqualTo("consumer");
         assertThat(ppc.getVersion()).isEqualTo("42");
-        assertThat(Path.of(ppc.getPath())).isRegularFile();
+        assertThat(Path.of(ppc.getPath())).isRegularFile().isAbsolute();
         assertThat(ppc.getDependencies()).isEmpty();
 
         assertThat(it).hasNext();
@@ -112,7 +112,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(sj.getExtension()).isEqualTo("jar");
         assertThat(sj.getClassifier()).isEqualTo("");
         assertThat(sj.getVersion()).isEqualTo("42");
-        assertThat(Path.of(sj.getPath())).isRegularFile();
+        assertThat(Path.of(sj.getPath())).isRegularFile().isAbsolute();
         assertThat(sj.getDependencies()).isEmpty();
 
         assertThat(it).hasNext();
@@ -122,7 +122,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(sp.getExtension()).isEqualTo("pom");
         assertThat(sp.getClassifier()).isEqualTo("");
         assertThat(sp.getVersion()).isEqualTo("42");
-        assertThat(Path.of(sp.getPath())).isRegularFile();
+        assertThat(Path.of(sp.getPath())).isRegularFile().isAbsolute();
         assertThat(sp.getDependencies()).isEmpty();
 
         assertThat(it).hasNext();
@@ -132,7 +132,7 @@ class InstallMojoIntegrationTest extends AbstractMojoIntegrationTest {
         assertThat(spc.getExtension()).isEqualTo("pom");
         assertThat(spc.getClassifier()).isEqualTo("consumer");
         assertThat(spc.getVersion()).isEqualTo("42");
-        assertThat(Path.of(spc.getPath())).isRegularFile();
+        assertThat(Path.of(spc.getPath())).isRegularFile().isAbsolute();
         assertThat(spc.getDependencies()).isEmpty();
     }
 }
