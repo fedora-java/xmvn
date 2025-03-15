@@ -142,10 +142,12 @@ public class InstallMojo extends AbstractMojo {
         for (var mavenDependency : model.getDependencies()) {
             DependencyCoordinates coords = dependencyCoordsFactory.create(session, mavenDependency);
             DependencyScope scope = coords.getScope();
-            if (coords.getScope().is(DependencyScope.UNDEFINED.id())) {
+            logger.debug("Processing dependency {} with scope {}", coords, scope);
+            if (scope.is(DependencyScope.UNDEFINED.id())) {
                 scope = DependencyScope.COMPILE;
             }
             if (scope.isTransitive()) {
+                logger.debug("Dependency is included");
                 Dependency dependency = new Dependency();
                 dependency.setGroupId(coords.getGroupId());
                 dependency.setArtifactId(coords.getArtifactId());
@@ -162,6 +164,8 @@ public class InstallMojo extends AbstractMojo {
                 }
 
                 artifact.addDependency(dependency);
+            } else {
+                logger.debug("Dependency is not included, scope {} is not transitive", scope);
             }
         }
 
