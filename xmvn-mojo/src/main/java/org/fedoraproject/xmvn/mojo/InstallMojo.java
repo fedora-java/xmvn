@@ -22,11 +22,10 @@ import java.nio.file.Path;
 import java.util.Optional;
 import javax.inject.Inject;
 import org.apache.maven.api.DependencyCoordinates;
-import org.apache.maven.api.DependencyScope;
-import org.apache.maven.api.Exclusion;
 import org.apache.maven.api.ProducedArtifact;
 import org.apache.maven.api.Project;
 import org.apache.maven.api.Session;
+import org.apache.maven.api.model.Exclusion;
 import org.apache.maven.api.model.Model;
 import org.apache.maven.api.services.ArtifactManager;
 import org.apache.maven.api.services.DependencyCoordinatesFactory;
@@ -141,12 +140,12 @@ public class InstallMojo extends AbstractMojo {
 
         for (var mavenDependency : model.getDependencies()) {
             DependencyCoordinates coords = dependencyCoordsFactory.create(session, mavenDependency);
-            DependencyScope scope = coords.getScope();
+            String scope = mavenDependency.getScope();
             logger.debug("Processing dependency {} with scope {}", coords, scope);
-            if (scope.is(DependencyScope.UNDEFINED.id())) {
-                scope = DependencyScope.COMPILE;
-            }
-            if (scope.isTransitive()) {
+            if (scope == null
+                    || scope.isEmpty()
+                    || scope.equals("compile")
+                    || scope.equals("runtime")) {
                 logger.debug("Dependency is included");
                 Dependency dependency = new Dependency();
                 dependency.setGroupId(coords.getGroupId());
@@ -154,9 +153,9 @@ public class InstallMojo extends AbstractMojo {
                 dependency.setExtension(coords.getExtension());
                 dependency.setClassifier(coords.getClassifier());
                 dependency.setRequestedVersion(coords.getVersionConstraint().asString());
-                dependency.setOptional(coords.getOptional());
+                dependency.setOptional(mavenDependency.isOptional());
 
-                for (Exclusion mavenExclusion : coords.getExclusions()) {
+                for (Exclusion mavenExclusion : mavenDependency.getExclusions()) {
                     DependencyExclusion exclusion = new DependencyExclusion();
                     exclusion.setGroupId(mavenExclusion.getGroupId());
                     exclusion.setArtifactId(mavenExclusion.getArtifactId());
