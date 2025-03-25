@@ -23,6 +23,7 @@
     <relativePath>../xmvn-parent</relativePath>
   </parent>
   <artifactId>xmvn-it</artifactId>
+  <packaging>pom</packaging>
   <name>XMvn Integration Tests</name>
   <description>Integration tests for XMvn</description>
   <properties>
