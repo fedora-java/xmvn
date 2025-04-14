@@ -79,7 +79,7 @@
     <pluginToolsVersion>3.15.1</pluginToolsVersion>
     <slf4jVersion>2.0.17</slf4jVersion>
     <commonsCompressVersion>1.27.1</commonsCompressVersion>
-    <commonsIo>2.18.0</commonsIo>
+    <commonsIo>2.19.0</commonsIo>
     <kojanXmlVersion>1.0.1</kojanXmlVersion>
 
     <!-- Build dependencies -->
