@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.fedoraproject.xmvn</groupId>
     <artifactId>xmvn-tools</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>xmvn-subst</artifactId>
