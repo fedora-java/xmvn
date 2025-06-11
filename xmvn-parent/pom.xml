@@ -63,12 +63,6 @@
     <system>Github</system>
     <url>https://github.com/fedora-java/xmvn/issues/</url>
   </issueManagement>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
@@ -86,11 +80,13 @@
     <assemblyPluginVersion>3.7.1</assemblyPluginVersion>
     <assertjVersion>3.27.3</assertjVersion>
     <buildHelperPluginVersion>3.6.1</buildHelperPluginVersion>
+    <centralPublishingPluginVersion>0.7.0</centralPublishingPluginVersion>
     <cleanPluginVersion>3.5.0</cleanPluginVersion>
     <compilerPluginVersion>3.14.0</compilerPluginVersion>
     <dependencyPluginVersion>3.8.1</dependencyPluginVersion>
     <deployPluginVersion>3.1.4</deployPluginVersion>
     <easymockVersion>5.6.0</easymockVersion>
+    <googleJavaFormatVersion>1.24.0</googleJavaFormatVersion>
     <gpgPluginVersion>3.2.7</gpgPluginVersion>
     <injectionApiVersion>1</injectionApiVersion>
     <installPluginVersion>3.1.4</installPluginVersion>
@@ -99,8 +95,6 @@
     <junitVersion>5.13.1</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
-    <nexusStagingPluginVersion>1.7.0</nexusStagingPluginVersion>
-    <googleJavaFormatVersion>1.24.0</googleJavaFormatVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.9.0</projectInfoReportsPluginVersion>
     <ratPluginVersion>0.16.1</ratPluginVersion>
@@ -443,13 +437,11 @@
           <version>${gpgPluginVersion}</version>
         </plugin>
         <plugin>
-          <groupId>org.sonatype.plugins</groupId>
-          <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>${nexusStagingPluginVersion}</version>
+          <groupId>org.sonatype.central</groupId>
+          <artifactId>central-publishing-maven-plugin</artifactId>
+          <version>${centralPublishingPluginVersion}</version>
           <configuration>
-            <serverId>ossrh</serverId>
-            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            <publishingServerId>central</publishingServerId>
           </configuration>
         </plugin>
         <plugin>
@@ -573,8 +565,8 @@
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
             <extensions>true</extensions>
           </plugin>
           <plugin>
