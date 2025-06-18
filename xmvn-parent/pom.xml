@@ -80,7 +80,7 @@
     <assemblyPluginVersion>3.7.1</assemblyPluginVersion>
     <assertjVersion>3.27.3</assertjVersion>
     <buildHelperPluginVersion>3.6.1</buildHelperPluginVersion>
-    <centralPublishingPluginVersion>0.7.0</centralPublishingPluginVersion>
+    <centralPublishingPluginVersion>0.8.0</centralPublishingPluginVersion>
     <cleanPluginVersion>3.5.0</cleanPluginVersion>
     <compilerPluginVersion>3.14.0</compilerPluginVersion>
     <dependencyPluginVersion>3.8.1</dependencyPluginVersion>
