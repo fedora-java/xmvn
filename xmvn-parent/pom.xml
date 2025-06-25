@@ -92,7 +92,7 @@
     <installPluginVersion>3.1.4</installPluginVersion>
     <jarPluginVersion>3.4.2</jarPluginVersion>
     <javadocPluginVersion>3.11.2</javadocPluginVersion>
-    <junitVersion>5.13.1</junitVersion>
+    <junitVersion>5.13.2</junitVersion>
     <jxrPluginVersion>2.3</jxrPluginVersion>
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
