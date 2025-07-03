@@ -17,11 +17,23 @@ package org.fedoraproject.xmvn.tools.resolve;
 
 import io.kojan.xml.XMLException;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.fedoraproject.xmvn.artifact.Artifact;
+import org.fedoraproject.xmvn.config.Configuration;
+import org.fedoraproject.xmvn.config.Configurator;
+import org.fedoraproject.xmvn.config.ResolverSettings;
 import org.fedoraproject.xmvn.logging.Logger;
+import org.fedoraproject.xmvn.metadata.ArtifactMetadata;
+import org.fedoraproject.xmvn.metadata.Dependency;
+import org.fedoraproject.xmvn.metadata.MetadataRequest;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
+import org.fedoraproject.xmvn.metadata.MetadataResult;
 import org.fedoraproject.xmvn.resolver.ResolutionRequest;
 import org.fedoraproject.xmvn.resolver.ResolutionResult;
 import org.fedoraproject.xmvn.resolver.Resolver;
@@ -41,12 +53,19 @@ import picocli.CommandLine;
  */
 public class ResolverCli {
     private final Logger logger;
-
     private final Resolver resolver;
+    private final Configurator configurator;
+    private final MetadataResolver metadataResolver;
 
-    public ResolverCli(Logger logger, Resolver resolver) {
+    public ResolverCli(
+            Logger logger,
+            Resolver resolver,
+            Configurator configurator,
+            MetadataResolver metadataResolver) {
         this.logger = logger;
         this.resolver = resolver;
+        this.configurator = configurator;
+        this.metadataResolver = metadataResolver;
     }
 
     private List<ResolutionRequest> parseRequests(ResolverCliRequest cli)
@@ -92,16 +111,59 @@ public class ResolverCli {
         try {
             boolean error = false;
 
-            List<ResolutionRequest> requests = parseRequests(cliRequest);
+            Queue<ResolutionRequest> requestsQueue = new ArrayDeque<>(parseRequests(cliRequest));
             List<ResolutionResult> results = new ArrayList<>();
 
-            for (ResolutionRequest request : requests) {
+            Set<Artifact> requestedArtifacts = new LinkedHashSet<>();
+            for (ResolutionRequest request : requestsQueue) {
+                requestedArtifacts.add(request.getArtifact());
+            }
+
+            MetadataResult metadataResult = null;
+            if (cliRequest.isRecursive()) {
+                Configuration configuration = configurator.getConfiguration();
+                ResolverSettings resolverSettings = configuration.getResolverSettings();
+                List<String> metadataRepositories = resolverSettings.getMetadataRepositories();
+                MetadataRequest metadataRequest = new MetadataRequest(metadataRepositories);
+                metadataResult = metadataResolver.resolveMetadata(metadataRequest);
+            }
+
+            while (!requestsQueue.isEmpty()) {
+                ResolutionRequest request = requestsQueue.remove();
                 ResolutionResult result = resolver.resolve(request);
                 results.add(result);
 
                 if (result.getArtifactPath() == null) {
                     error = true;
                     logger.error("Unable to resolve artifact {}", request.getArtifact());
+                    continue;
+                }
+
+                if (cliRequest.isRecursive()) {
+                    Artifact requestedArtifact = request.getArtifact();
+                    String resolvedVersion = result.getCompatVersion();
+                    Artifact resolvedArtifact = requestedArtifact.withVersion(resolvedVersion);
+                    ArtifactMetadata artifactMetadata =
+                            metadataResult.getMetadataFor(resolvedArtifact);
+                    for (Dependency dependency : artifactMetadata.getDependencies()) {
+                        Artifact dependencyArtifact =
+                                Artifact.of(
+                                        dependency.getGroupId(),
+                                        dependency.getArtifactId(),
+                                        dependency.getExtension(),
+                                        dependency.getClassifier(),
+                                        dependency.getResolvedVersion());
+                        logger.debug(
+                                "Also resolving artifact {} as a dependency of {}",
+                                dependencyArtifact,
+                                requestedArtifact);
+                        if (requestedArtifacts.add(dependencyArtifact)) {
+                            ResolutionRequest dependencyRequest =
+                                    new ResolutionRequest(dependencyArtifact);
+                            dependencyRequest.setPersistentFileNeeded(true);
+                            requestsQueue.add(dependencyRequest);
+                        }
+                    }
                 }
             }
 
