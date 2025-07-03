@@ -155,6 +155,30 @@
     </pluginManagement>
     <plugins>
       <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>compile-integration-tests</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-integration-test-resources</id>
+            <goals>
+              <goal>testResources</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkCount>${itForkCount}</forkCount>
@@ -164,6 +188,18 @@
             <xmvn.it.workDir>${itWorkDir}</xmvn.it.workDir>
           </systemPropertyVariables>
         </configuration>
+        <executions>
+          <execution>
+            <id>run-integration-tests</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <skipTests>false</skipTests>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
