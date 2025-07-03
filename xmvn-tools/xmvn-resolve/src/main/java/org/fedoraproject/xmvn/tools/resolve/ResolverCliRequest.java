@@ -22,9 +22,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import org.fedoraproject.xmvn.config.Configurator;
 import org.fedoraproject.xmvn.locator.ServiceLocator;
 import org.fedoraproject.xmvn.locator.ServiceLocatorFactory;
 import org.fedoraproject.xmvn.logging.Logger;
+import org.fedoraproject.xmvn.metadata.MetadataResolver;
 import org.fedoraproject.xmvn.resolver.Resolver;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
@@ -52,6 +54,12 @@ final class ResolverCliRequest implements Callable<Integer>, IVersionProvider {
             names = {"-c", "--classpath"},
             description = "Use colon instead of new line to separate resolved artifacts.")
     private boolean classpath;
+
+    @Option(
+            names = {"-r", "--recursive"},
+            description =
+                    "Also include all runtime dependencies of specified artifacts, recursively.")
+    private boolean recursive;
 
     @Option(
             names = {"--raw-request"},
@@ -85,17 +93,21 @@ final class ResolverCliRequest implements Callable<Integer>, IVersionProvider {
             System.setProperty("xmvn.debug", "true");
         }
 
-        if (raw && (classpath || !parameters.isEmpty())) {
+        if (raw && (classpath || !parameters.isEmpty() || recursive)) {
             throw new IllegalArgumentException("--raw-request must be used alone");
         }
 
-        for (String param : defines.keySet()) System.setProperty(param, defines.get(param));
+        for (String param : defines.keySet()) {
+            System.setProperty(param, defines.get(param));
+        }
 
         ServiceLocator locator = new ServiceLocatorFactory().createServiceLocator();
         Logger logger = locator.getService(Logger.class);
         Resolver resolver = locator.getService(Resolver.class);
+        Configurator configurator = locator.getService(Configurator.class);
+        MetadataResolver metadataResolver = locator.getService(MetadataResolver.class);
 
-        ResolverCli cli = new ResolverCli(logger, resolver);
+        ResolverCli cli = new ResolverCli(logger, resolver, configurator, metadataResolver);
 
         try {
             return cli.run(this);
@@ -128,6 +140,14 @@ final class ResolverCliRequest implements Callable<Integer>, IVersionProvider {
 
     public void setClasspath(boolean classpath) {
         this.classpath = classpath;
+    }
+
+    public boolean isRecursive() {
+        return recursive;
+    }
+
+    public void setRecursive(boolean recursive) {
+        this.recursive = recursive;
     }
 
     public boolean isRaw() {
