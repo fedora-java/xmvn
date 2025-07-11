@@ -158,6 +158,8 @@ class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "bin/mvnenc\\.cmd");
         expect(1, 1, "bin/mvnsh");
         expect(1, 1, "bin/mvnsh\\.cmd");
+        expect(1, 1, "bin/mvnup");
+        expect(1, 1, "bin/mvnup\\.cmd");
         expect(1, 1, "bin/mvnyjp");
         expect(1, 1, "bin/m2\\.conf");
 
