@@ -134,7 +134,7 @@ public class InstallMojo extends AbstractMojo {
         artifact.setArtifactId(mavenArtifact.getArtifactId());
         artifact.setExtension(mavenArtifact.getExtension());
         artifact.setClassifier(mavenArtifact.getClassifier());
-        artifact.setVersion(mavenArtifact.getVersion().asString());
+        artifact.setVersion(mavenArtifact.getVersion().toString());
         artifact.setPath(artifactPath.toString());
         artifact.getProperties().put("type", type);
 
@@ -152,7 +152,7 @@ public class InstallMojo extends AbstractMojo {
                 dependency.setArtifactId(coords.getArtifactId());
                 dependency.setExtension(coords.getExtension());
                 dependency.setClassifier(coords.getClassifier());
-                dependency.setRequestedVersion(coords.getVersionConstraint().asString());
+                dependency.setRequestedVersion(coords.getVersionConstraint().toString());
                 dependency.setOptional(mavenDependency.isOptional());
 
                 for (Exclusion mavenExclusion : mavenDependency.getExclusions()) {
