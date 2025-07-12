@@ -140,12 +140,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-        <plugin>
           <artifactId>maven-install-plugin</artifactId>
           <configuration>
             <skip>true</skip>
