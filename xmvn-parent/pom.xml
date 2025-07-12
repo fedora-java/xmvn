@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.fedoraproject.xmvn</groupId>
   <artifactId>xmvn-parent</artifactId>
-  <version>5.1.0</version>
+  <version>5.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>XMvn Parent</name>
   <description>XMvn Parent is project model from which all other XMvn modules are
