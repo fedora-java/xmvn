@@ -27,6 +27,6 @@ jobs:
     container: quay.io/mizdebsk/maven:latest
     steps:
       - name: Checkout git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Run build
         run: mvn -V -B -Dgpg.skip -Pquality,run-its,release verify
