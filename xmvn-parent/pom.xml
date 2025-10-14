@@ -86,7 +86,7 @@
     <dependencyPluginVersion>3.8.1</dependencyPluginVersion>
     <deployPluginVersion>3.1.4</deployPluginVersion>
     <easymockVersion>5.6.0</easymockVersion>
-    <googleJavaFormatVersion>1.24.0</googleJavaFormatVersion>
+    <googleJavaFormatVersion>1.30.0</googleJavaFormatVersion>
     <gpgPluginVersion>3.2.8</gpgPluginVersion>
     <injectionApiVersion>1</injectionApiVersion>
     <installPluginVersion>3.1.4</installPluginVersion>
