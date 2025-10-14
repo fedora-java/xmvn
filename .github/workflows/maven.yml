@@ -24,9 +24,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: quay.io/mizdebsk/maven:latest
+    container: docker.io/library/eclipse-temurin:25-jdk-ubi10-minimal
     steps:
-      - name: Checkout git repository
+      - name: Install dependencies
+        run: microdnf -y install git-core maven
+      - name: Checkout sources
         uses: actions/checkout@v5
       - name: Run build
         run: mvn -V -B -Dgpg.skip -Pquality,run-its,release verify
