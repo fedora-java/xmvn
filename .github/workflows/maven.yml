@@ -27,7 +27,7 @@ jobs:
     container: docker.io/library/eclipse-temurin:25-jdk-ubi10-minimal
     steps:
       - name: Install dependencies
-        run: microdnf -y install git-core maven
+        run: microdnf -y install git-core maven-unbound
       - name: Checkout sources
         uses: actions/checkout@v5
       - name: Run build
