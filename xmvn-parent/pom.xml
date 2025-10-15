@@ -82,7 +82,7 @@
     <buildHelperPluginVersion>3.6.1</buildHelperPluginVersion>
     <centralPublishingPluginVersion>0.8.0</centralPublishingPluginVersion>
     <cleanPluginVersion>3.5.0</cleanPluginVersion>
-    <compilerPluginVersion>3.14.0</compilerPluginVersion>
+    <compilerPluginVersion>3.14.1</compilerPluginVersion>
     <dependencyPluginVersion>3.8.1</dependencyPluginVersion>
     <deployPluginVersion>3.1.4</deployPluginVersion>
     <easymockVersion>5.6.0</easymockVersion>
