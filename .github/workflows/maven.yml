@@ -29,6 +29,6 @@ jobs:
       - name: Install dependencies
         run: microdnf -y install git-core maven-unbound
       - name: Checkout sources
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Run build
         run: mvn -V -B -Dgpg.skip -Pquality,run-its,release verify
