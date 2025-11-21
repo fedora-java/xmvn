@@ -83,7 +83,7 @@
     <centralPublishingPluginVersion>0.9.0</centralPublishingPluginVersion>
     <cleanPluginVersion>3.5.0</cleanPluginVersion>
     <compilerPluginVersion>3.14.1</compilerPluginVersion>
-    <dependencyPluginVersion>3.8.1</dependencyPluginVersion>
+    <dependencyPluginVersion>3.9.0</dependencyPluginVersion>
     <deployPluginVersion>3.1.4</deployPluginVersion>
     <easymockVersion>5.6.0</easymockVersion>
     <googleJavaFormatVersion>1.30.0</googleJavaFormatVersion>
