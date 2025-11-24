@@ -68,7 +68,7 @@
 
     <asmVersion>9.9</asmVersion>
     <mavenResolverVersion>2.0.9</mavenResolverVersion>
-    <mavenVersion>4.0.0-rc-4</mavenVersion>
+    <mavenVersion>4.0.0-rc-5</mavenVersion>
     <picocliVersion>4.7.7</picocliVersion>
     <pluginToolsVersion>3.15.1</pluginToolsVersion>
     <slf4jVersion>2.0.17</slf4jVersion>
