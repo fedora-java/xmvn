@@ -101,13 +101,13 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <configuration>
-            <excludes>
-              <exclude>src/site/markdown/**</exclude>
-              <exclude>src/site/xdoc/**</exclude>
-              <exclude>xmvn-it/**</exclude>
-              <exclude>doc/install-dfd.dia</exclude>
-              <exclude>README.md</exclude>
-            </excludes>
+            <inputExcludes>
+              <inputExclude>src/site/markdown/**</inputExclude>
+              <inputExclude>src/site/xdoc/**</inputExclude>
+              <inputExclude>xmvn-it/**</inputExclude>
+              <inputExclude>doc/install-dfd.dia</inputExclude>
+              <inputExclude>README.md</inputExclude>
+            </inputExcludes>
           </configuration>
         </plugin>
         <plugin>
