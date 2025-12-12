@@ -97,7 +97,7 @@
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.9.0</projectInfoReportsPluginVersion>
-    <ratPluginVersion>0.16.1</ratPluginVersion>
+    <ratPluginVersion>0.17</ratPluginVersion>
     <resourcesPluginVersion>3.3.1</resourcesPluginVersion>
     <sisuVersion>0.9.0.M4</sisuVersion>
     <sitePluginVersion>3.21.0</sitePluginVersion>
@@ -414,11 +414,11 @@
           <artifactId>apache-rat-plugin</artifactId>
           <version>${ratPluginVersion}</version>
           <configuration>
-            <excludes>
-              <exclude>src/test/resources/**</exclude>
-              <exclude>src/test/resources-filtered/**</exclude>
-              <exclude>eclipse-target/**</exclude>
-            </excludes>
+            <inputExcludes>
+              <inputExclude>src/test/resources/**</inputExclude>
+              <inputExclude>src/test/resources-filtered/**</inputExclude>
+              <inputExclude>eclipse-target/**</inputExclude>
+            </inputExcludes>
           </configuration>
         </plugin>
         <plugin>
