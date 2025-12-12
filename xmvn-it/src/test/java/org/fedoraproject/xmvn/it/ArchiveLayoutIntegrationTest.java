@@ -168,7 +168,8 @@ class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "boot/plexus-classworlds.license");
 
         expect(1, 1, "conf/");
-        expect(1, 1, "conf/maven\\.properties");
+        expect(1, 1, "conf/maven-system\\.properties");
+        expect(1, 1, "conf/maven-user\\.properties");
         expect(1, 1, "conf/settings\\.xml");
         expect(1, 1, "conf/toolchains\\.xml");
         expect(1, 1, "conf/logging/");
