@@ -77,7 +77,7 @@
     <kojanXmlVersion>1.0.1</kojanXmlVersion>
 
     <!-- Build dependencies -->
-    <assemblyPluginVersion>3.7.1</assemblyPluginVersion>
+    <assemblyPluginVersion>3.8.0</assemblyPluginVersion>
     <assertjVersion>3.27.6</assertjVersion>
     <buildHelperPluginVersion>3.6.1</buildHelperPluginVersion>
     <centralPublishingPluginVersion>0.10.0</centralPublishingPluginVersion>
