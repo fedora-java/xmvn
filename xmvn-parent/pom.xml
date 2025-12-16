@@ -66,7 +66,7 @@
   <properties>
     <project.build.sourceEncoding>US-ASCII</project.build.sourceEncoding>
 
-    <asmVersion>9.9</asmVersion>
+    <asmVersion>9.9.1</asmVersion>
     <mavenResolverVersion>2.0.9</mavenResolverVersion>
     <mavenVersion>4.0.0-rc-5</mavenVersion>
     <picocliVersion>4.7.7</picocliVersion>
