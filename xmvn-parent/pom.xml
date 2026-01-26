@@ -78,7 +78,7 @@
 
     <!-- Build dependencies -->
     <assemblyPluginVersion>3.8.0</assemblyPluginVersion>
-    <assertjVersion>3.27.6</assertjVersion>
+    <assertjVersion>3.27.7</assertjVersion>
     <buildHelperPluginVersion>3.6.1</buildHelperPluginVersion>
     <centralPublishingPluginVersion>0.10.0</centralPublishingPluginVersion>
     <cleanPluginVersion>3.5.0</cleanPluginVersion>
