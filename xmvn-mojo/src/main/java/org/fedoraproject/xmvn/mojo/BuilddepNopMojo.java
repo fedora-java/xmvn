@@ -32,11 +32,13 @@ public class BuilddepNopMojo extends AbstractMojo {
 
     private final Logger logger;
 
+    @Deprecated
     @Inject
     public BuilddepNopMojo(Logger logger) {
         this.logger = logger;
     }
 
+    @Deprecated
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         logger.warn("Legacy deprecated builddep MOJO called, it does nothing");
