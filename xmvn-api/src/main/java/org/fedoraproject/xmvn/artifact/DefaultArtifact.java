@@ -25,22 +25,27 @@ public final class DefaultArtifact implements Artifact {
 
     private final Artifact delegate;
 
+    @Deprecated
     public DefaultArtifact(String coords) {
         delegate = Artifact.of(coords);
     }
 
+    @Deprecated
     public DefaultArtifact(String groupId, String artifactId) {
         delegate = Artifact.of(groupId, artifactId);
     }
 
+    @Deprecated
     public DefaultArtifact(String groupId, String artifactId, String version) {
         delegate = Artifact.of(groupId, artifactId, version);
     }
 
+    @Deprecated
     public DefaultArtifact(String groupId, String artifactId, String extension, String version) {
         delegate = Artifact.of(groupId, artifactId, extension, version);
     }
 
+    @Deprecated
     public DefaultArtifact(
             String groupId,
             String artifactId,
@@ -50,6 +55,7 @@ public final class DefaultArtifact implements Artifact {
         delegate = Artifact.of(groupId, artifactId, extension, classifier, version);
     }
 
+    @Deprecated
     public DefaultArtifact(
             String groupId,
             String artifactId,
@@ -60,56 +66,67 @@ public final class DefaultArtifact implements Artifact {
         delegate = Artifact.of(groupId, artifactId, extension, classifier, version, path);
     }
 
+    @Deprecated
     @Override
     public String getGroupId() {
         return delegate.getGroupId();
     }
 
+    @Deprecated
     @Override
     public String getArtifactId() {
         return delegate.getArtifactId();
     }
 
+    @Deprecated
     @Override
     public String getExtension() {
         return delegate.getExtension();
     }
 
+    @Deprecated
     @Override
     public String getClassifier() {
         return delegate.getClassifier();
     }
 
+    @Deprecated
     @Override
     public String getVersion() {
         return delegate.getVersion();
     }
 
+    @Deprecated
     @Override
     public Path getPath() {
         return delegate.getPath();
     }
 
+    @Deprecated
     @Override
     public Artifact withVersion(String version) {
         return delegate.withVersion(version);
     }
 
+    @Deprecated
     @Override
     public Artifact withPath(Path path) {
         return delegate.withPath(path);
     }
 
+    @Deprecated
     @Override
     public String toString() {
         return delegate.toString();
     }
 
+    @Deprecated
     @Override
     public boolean equals(Object rhs) {
         return delegate.equals(rhs);
     }
 
+    @Deprecated
     @Override
     public int hashCode() {
         return delegate.hashCode();
