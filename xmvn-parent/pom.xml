@@ -97,7 +97,7 @@
     <mavenWagonVersion>1.0</mavenWagonVersion>
     <pmdPluginVersion>3.0.1</pmdPluginVersion>
     <projectInfoReportsPluginVersion>3.9.0</projectInfoReportsPluginVersion>
-    <ratPluginVersion>0.17</ratPluginVersion>
+    <ratPluginVersion>0.18</ratPluginVersion>
     <resourcesPluginVersion>3.5.0</resourcesPluginVersion>
     <sisuVersion>1.0.0</sisuVersion>
     <sitePluginVersion>3.21.0</sitePluginVersion>
