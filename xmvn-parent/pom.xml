@@ -104,7 +104,7 @@
     <sourcePluginVersion>3.4.0</sourcePluginVersion>
     <spotlessVersion>2.43.0</spotlessVersion>
     <surefireVersion>3.5.6</surefireVersion>
-    <xmlunitVersion>2.11.0</xmlunitVersion>
+    <xmlunitVersion>2.12.0</xmlunitVersion>
 
   </properties>
   <dependencyManagement>
