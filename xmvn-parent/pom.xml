@@ -99,7 +99,7 @@
     <projectInfoReportsPluginVersion>3.9.0</projectInfoReportsPluginVersion>
     <ratPluginVersion>0.18</ratPluginVersion>
     <resourcesPluginVersion>3.5.0</resourcesPluginVersion>
-    <sisuVersion>1.0.0</sisuVersion>
+    <sisuVersion>1.0.1</sisuVersion>
     <sitePluginVersion>3.22.0</sitePluginVersion>
     <sourcePluginVersion>3.4.0</sourcePluginVersion>
     <spotlessVersion>2.43.0</spotlessVersion>
