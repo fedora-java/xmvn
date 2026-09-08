@@ -162,6 +162,7 @@ class ArchiveLayoutIntegrationTest extends AbstractIntegrationTest {
         expect(1, 1, "bin/mvnup\\.cmd");
         expect(1, 1, "bin/mvnyjp");
         expect(1, 1, "bin/m2\\.conf");
+        expect(1, 1, "bin/JvmConfigParser\\.java");
 
         expect(1, 1, "boot/");
         expect(1, 1, "boot/plexus-classworlds-.*\\.jar");
