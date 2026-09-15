@@ -79,7 +79,7 @@
     <!-- Build dependencies -->
     <assemblyPluginVersion>3.8.0</assemblyPluginVersion>
     <assertjVersion>3.27.7</assertjVersion>
-    <buildHelperPluginVersion>3.6.1</buildHelperPluginVersion>
+    <buildHelperPluginVersion>3.6.2</buildHelperPluginVersion>
     <centralPublishingPluginVersion>0.11.0</centralPublishingPluginVersion>
     <cleanPluginVersion>3.5.0</cleanPluginVersion>
     <compilerPluginVersion>3.16.0</compilerPluginVersion>
