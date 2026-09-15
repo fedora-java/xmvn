@@ -84,7 +84,7 @@
     <cleanPluginVersion>3.5.0</cleanPluginVersion>
     <compilerPluginVersion>3.16.0</compilerPluginVersion>
     <dependencyPluginVersion>3.11.0</dependencyPluginVersion>
-    <deployPluginVersion>3.1.4</deployPluginVersion>
+    <deployPluginVersion>3.2.0</deployPluginVersion>
     <easymockVersion>5.7.0</easymockVersion>
     <googleJavaFormatVersion>1.30.0</googleJavaFormatVersion>
     <gpgPluginVersion>3.2.8</gpgPluginVersion>
