@@ -89,7 +89,7 @@
     <googleJavaFormatVersion>1.30.0</googleJavaFormatVersion>
     <gpgPluginVersion>3.2.8</gpgPluginVersion>
     <injectionApiVersion>1</injectionApiVersion>
-    <installPluginVersion>3.1.4</installPluginVersion>
+    <installPluginVersion>3.2.0</installPluginVersion>
     <jarPluginVersion>3.5.1</jarPluginVersion>
     <javadocPluginVersion>3.12.0</javadocPluginVersion>
     <junitVersion>6.1.3</junitVersion>
